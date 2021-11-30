@@ -121,25 +121,28 @@ func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId,
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
+	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
+	adsState := _adsState
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
+	_deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
+	deviceState := _deviceState
 
 	if closeErr := readBuffer.CloseContext("AdsReadStateResponse"); closeErr != nil {
 		return nil, closeErr

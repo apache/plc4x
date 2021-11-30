@@ -128,19 +128,21 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
+	_descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
+	descriptionType := _descriptionType
 
 	// Simple Field (knxMedium)
 	if pullErr := readBuffer.PullContext("knxMedium"); pullErr != nil {
 		return nil, pullErr
 	}
-	knxMedium, _knxMediumErr := KnxMediumParse(readBuffer)
+	_knxMedium, _knxMediumErr := KnxMediumParse(readBuffer)
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field")
 	}
+	knxMedium := _knxMedium
 	if closeErr := readBuffer.CloseContext("knxMedium"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -149,10 +151,11 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("deviceStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-	deviceStatus, _deviceStatusErr := DeviceStatusParse(readBuffer)
+	_deviceStatus, _deviceStatusErr := DeviceStatusParse(readBuffer)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field")
 	}
+	deviceStatus := CastDeviceStatus(_deviceStatus)
 	if closeErr := readBuffer.CloseContext("deviceStatus"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -161,10 +164,11 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	knxAddress := CastKnxAddress(_knxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -173,10 +177,11 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("projectInstallationIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(readBuffer)
+	_projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(readBuffer)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
+	projectInstallationIdentifier := CastProjectInstallationIdentifier(_projectInstallationIdentifier)
 	if closeErr := readBuffer.CloseContext("projectInstallationIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -191,10 +196,11 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(readBuffer)
+	_knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(readBuffer)
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field")
 	}
+	knxNetIpDeviceMulticastAddress := CastIPAddress(_knxNetIpDeviceMulticastAddress)
 	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMulticastAddress"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -203,10 +209,11 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readBuffer)
+	_knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readBuffer)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
+	knxNetIpDeviceMacAddress := CastMACAddress(_knxNetIpDeviceMacAddress)
 	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
 		return nil, closeErr
 	}

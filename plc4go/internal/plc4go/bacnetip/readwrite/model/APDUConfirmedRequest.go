@@ -152,22 +152,25 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	}
 
 	// Simple Field (segmentedMessage)
-	segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
+	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
+	segmentedMessage := _segmentedMessage
 
 	// Simple Field (moreFollows)
-	moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
+	_moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
+	moreFollows := _moreFollows
 
 	// Simple Field (segmentedResponseAccepted)
-	segmentedResponseAccepted, _segmentedResponseAcceptedErr := readBuffer.ReadBit("segmentedResponseAccepted")
+	_segmentedResponseAccepted, _segmentedResponseAcceptedErr := readBuffer.ReadBit("segmentedResponseAccepted")
 	if _segmentedResponseAcceptedErr != nil {
 		return nil, errors.Wrap(_segmentedResponseAcceptedErr, "Error parsing 'segmentedResponseAccepted' field")
 	}
+	segmentedResponseAccepted := _segmentedResponseAccepted
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -184,22 +187,25 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	}
 
 	// Simple Field (maxSegmentsAccepted)
-	maxSegmentsAccepted, _maxSegmentsAcceptedErr := readBuffer.ReadUint8("maxSegmentsAccepted", 3)
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := readBuffer.ReadUint8("maxSegmentsAccepted", 3)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field")
 	}
+	maxSegmentsAccepted := _maxSegmentsAccepted
 
 	// Simple Field (maxApduLengthAccepted)
-	maxApduLengthAccepted, _maxApduLengthAcceptedErr := readBuffer.ReadUint8("maxApduLengthAccepted", 4)
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := readBuffer.ReadUint8("maxApduLengthAccepted", 4)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field")
 	}
+	maxApduLengthAccepted := _maxApduLengthAccepted
 
 	// Simple Field (invokeId)
-	invokeId, _invokeIdErr := readBuffer.ReadUint8("invokeId", 8)
+	_invokeId, _invokeIdErr := readBuffer.ReadUint8("invokeId", 8)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
+	invokeId := _invokeId
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
@@ -225,10 +231,11 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
+	_serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+	serviceRequest := CastBACnetConfirmedServiceRequest(_serviceRequest)
 	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
 		return nil, closeErr
 	}

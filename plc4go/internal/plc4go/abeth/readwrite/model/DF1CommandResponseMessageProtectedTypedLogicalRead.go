@@ -115,14 +115,16 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 	}
 	// Length array
 	data := make([]uint8, 0)
-	_dataLength := uint16(payloadLength) - uint16(uint16(8))
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+	{
+		_dataLength := uint16(payloadLength) - uint16(uint16(8))
+		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
+		for readBuffer.GetPos() < _dataEndPos {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			}
+			data = append(data, _item)
 		}
-		data = append(data, _item)
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

@@ -104,10 +104,11 @@ func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength u
 	}
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
+	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
+	descriptorType := _descriptorType
 
 	if closeErr := readBuffer.CloseContext("ApduDataDeviceDescriptorRead"); closeErr != nil {
 		return nil, closeErr

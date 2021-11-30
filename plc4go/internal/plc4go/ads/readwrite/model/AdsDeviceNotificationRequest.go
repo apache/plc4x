@@ -123,16 +123,18 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	// Simple Field (stamps)
-	stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
+	_stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
 		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
 	}
+	stamps := _stamps
 
 	// Array field (adsStampHeaders)
 	if pullErr := readBuffer.PullContext("adsStampHeaders", utils.WithRenderAsList(true)); pullErr != nil {

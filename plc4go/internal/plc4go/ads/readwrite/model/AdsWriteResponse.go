@@ -111,10 +111,11 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, res
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}

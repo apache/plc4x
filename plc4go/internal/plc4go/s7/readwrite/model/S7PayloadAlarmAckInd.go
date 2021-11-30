@@ -117,10 +117,11 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParse(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessageAckPushTypeParse(readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field")
 	}
+	alarmMessage := CastAlarmMessageAckPushType(_alarmMessage)
 	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {
 		return nil, closeErr
 	}

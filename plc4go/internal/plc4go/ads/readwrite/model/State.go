@@ -118,58 +118,67 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	}
 
 	// Simple Field (initCommand)
-	initCommand, _initCommandErr := readBuffer.ReadBit("initCommand")
+	_initCommand, _initCommandErr := readBuffer.ReadBit("initCommand")
 	if _initCommandErr != nil {
 		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field")
 	}
+	initCommand := _initCommand
 
 	// Simple Field (updCommand)
-	updCommand, _updCommandErr := readBuffer.ReadBit("updCommand")
+	_updCommand, _updCommandErr := readBuffer.ReadBit("updCommand")
 	if _updCommandErr != nil {
 		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field")
 	}
+	updCommand := _updCommand
 
 	// Simple Field (timestampAdded)
-	timestampAdded, _timestampAddedErr := readBuffer.ReadBit("timestampAdded")
+	_timestampAdded, _timestampAddedErr := readBuffer.ReadBit("timestampAdded")
 	if _timestampAddedErr != nil {
 		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field")
 	}
+	timestampAdded := _timestampAdded
 
 	// Simple Field (highPriorityCommand)
-	highPriorityCommand, _highPriorityCommandErr := readBuffer.ReadBit("highPriorityCommand")
+	_highPriorityCommand, _highPriorityCommandErr := readBuffer.ReadBit("highPriorityCommand")
 	if _highPriorityCommandErr != nil {
 		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field")
 	}
+	highPriorityCommand := _highPriorityCommand
 
 	// Simple Field (systemCommand)
-	systemCommand, _systemCommandErr := readBuffer.ReadBit("systemCommand")
+	_systemCommand, _systemCommandErr := readBuffer.ReadBit("systemCommand")
 	if _systemCommandErr != nil {
 		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field")
 	}
+	systemCommand := _systemCommand
 
 	// Simple Field (adsCommand)
-	adsCommand, _adsCommandErr := readBuffer.ReadBit("adsCommand")
+	_adsCommand, _adsCommandErr := readBuffer.ReadBit("adsCommand")
 	if _adsCommandErr != nil {
 		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field")
 	}
+	adsCommand := _adsCommand
 
 	// Simple Field (noReturn)
-	noReturn, _noReturnErr := readBuffer.ReadBit("noReturn")
+	_noReturn, _noReturnErr := readBuffer.ReadBit("noReturn")
 	if _noReturnErr != nil {
 		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field")
 	}
+	noReturn := _noReturn
 
 	// Simple Field (response)
-	response, _responseErr := readBuffer.ReadBit("response")
+	_response, _responseErr := readBuffer.ReadBit("response")
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
 	}
+	response := _response
 
 	// Simple Field (broadcast)
-	broadcast, _broadcastErr := readBuffer.ReadBit("broadcast")
+	_broadcast, _broadcastErr := readBuffer.ReadBit("broadcast")
 	if _broadcastErr != nil {
 		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field")
 	}
+	broadcast := _broadcast
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

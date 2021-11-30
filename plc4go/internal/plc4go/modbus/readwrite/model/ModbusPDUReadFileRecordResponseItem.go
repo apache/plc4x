@@ -98,10 +98,11 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
+	referenceType := _referenceType
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(dataLength) - uint16(uint16(1)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

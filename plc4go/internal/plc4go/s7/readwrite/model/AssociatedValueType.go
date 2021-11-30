@@ -99,10 +99,11 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -111,10 +112,11 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, closeErr
 	}

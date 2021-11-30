@@ -113,10 +113,11 @@ func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, re
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 4)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -133,10 +134,11 @@ func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, re
 	}
 
 	// Simple Field (enable)
-	enable, _enableErr := readBuffer.ReadBit("enable")
+	_enable, _enableErr := readBuffer.ReadBit("enable")
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field")
 	}
+	enable := _enable
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageSubscribeDigitalPinValue"); closeErr != nil {
 		return nil, closeErr

@@ -117,16 +117,18 @@ func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, resp
 	}
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
+	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
+	quantity := _quantity
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadHoldingRegistersRequest"); closeErr != nil {
 		return nil, closeErr

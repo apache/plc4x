@@ -107,10 +107,11 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	extendedApdu, _extendedApduErr := ApduDataExtParse(readBuffer, dataLength)
+	_extendedApdu, _extendedApduErr := ApduDataExtParse(readBuffer, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
+	extendedApdu := CastApduDataExt(_extendedApdu)
 	if closeErr := readBuffer.CloseContext("extendedApdu"); closeErr != nil {
 		return nil, closeErr
 	}

@@ -145,40 +145,46 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	}
 
 	// Simple Field (frameErrorFlag)
-	frameErrorFlag, _frameErrorFlagErr := readBuffer.ReadBit("frameErrorFlag")
+	_frameErrorFlag, _frameErrorFlagErr := readBuffer.ReadBit("frameErrorFlag")
 	if _frameErrorFlagErr != nil {
 		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field")
 	}
+	frameErrorFlag := _frameErrorFlag
 
 	// Simple Field (bitErrorFlag)
-	bitErrorFlag, _bitErrorFlagErr := readBuffer.ReadBit("bitErrorFlag")
+	_bitErrorFlag, _bitErrorFlagErr := readBuffer.ReadBit("bitErrorFlag")
 	if _bitErrorFlagErr != nil {
 		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field")
 	}
+	bitErrorFlag := _bitErrorFlag
 
 	// Simple Field (parityErrorFlag)
-	parityErrorFlag, _parityErrorFlagErr := readBuffer.ReadBit("parityErrorFlag")
+	_parityErrorFlag, _parityErrorFlagErr := readBuffer.ReadBit("parityErrorFlag")
 	if _parityErrorFlagErr != nil {
 		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field")
 	}
+	parityErrorFlag := _parityErrorFlag
 
 	// Simple Field (unknownFlag)
-	unknownFlag, _unknownFlagErr := readBuffer.ReadBit("unknownFlag")
+	_unknownFlag, _unknownFlagErr := readBuffer.ReadBit("unknownFlag")
 	if _unknownFlagErr != nil {
 		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field")
 	}
+	unknownFlag := _unknownFlag
 
 	// Simple Field (lostFlag)
-	lostFlag, _lostFlagErr := readBuffer.ReadBit("lostFlag")
+	_lostFlag, _lostFlagErr := readBuffer.ReadBit("lostFlag")
 	if _lostFlagErr != nil {
 		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field")
 	}
+	lostFlag := _lostFlag
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
+	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
+	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
 		return nil, closeErr

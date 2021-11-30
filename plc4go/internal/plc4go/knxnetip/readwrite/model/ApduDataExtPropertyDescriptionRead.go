@@ -114,22 +114,25 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length
 	}
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
+	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
+	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (index)
-	index, _indexErr := readBuffer.ReadUint8("index", 8)
+	_index, _indexErr := readBuffer.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
+	index := _index
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
 		return nil, closeErr

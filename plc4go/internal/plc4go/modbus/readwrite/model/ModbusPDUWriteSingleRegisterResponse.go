@@ -117,16 +117,18 @@ func ModbusPDUWriteSingleRegisterResponseParse(readBuffer utils.ReadBuffer, resp
 	}
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := _address
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadUint16("value", 16)
+	_value, _valueErr := readBuffer.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteSingleRegisterResponse"); closeErr != nil {
 		return nil, closeErr

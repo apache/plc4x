@@ -135,43 +135,48 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	}
 
 	// Simple Field (lengthSpec)
-	lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
+	_lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
 	if _lengthSpecErr != nil {
 		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field")
 	}
+	lengthSpec := _lengthSpec
 
 	// Simple Field (syntaxId)
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
 		return nil, pullErr
 	}
-	syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
+	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
 	}
+	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (numberOfValues)
-	numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
+	_numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
 	if _numberOfValuesErr != nil {
 		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field")
 	}
+	numberOfValues := _numberOfValues
 
 	// Simple Field (eventId)
-	eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
+	_eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
 	if _eventIdErr != nil {
 		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field")
 	}
+	eventId := _eventId
 
 	// Simple Field (eventState)
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, pullErr
 	}
-	eventState, _eventStateErr := StateParse(readBuffer)
+	_eventState, _eventStateErr := StateParse(readBuffer)
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
+	eventState := CastState(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -180,10 +185,11 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if pullErr := readBuffer.PullContext("localState"); pullErr != nil {
 		return nil, pullErr
 	}
-	localState, _localStateErr := StateParse(readBuffer)
+	_localState, _localStateErr := StateParse(readBuffer)
 	if _localStateErr != nil {
 		return nil, errors.Wrap(_localStateErr, "Error parsing 'localState' field")
 	}
+	localState := CastState(_localState)
 	if closeErr := readBuffer.CloseContext("localState"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -192,10 +198,11 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
+	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
+	ackStateGoing := CastState(_ackStateGoing)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -204,10 +211,11 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateComing, _ackStateComingErr := StateParse(readBuffer)
+	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
+	ackStateComing := CastState(_ackStateComing)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, closeErr
 	}

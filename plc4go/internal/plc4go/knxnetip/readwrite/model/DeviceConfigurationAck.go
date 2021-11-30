@@ -107,10 +107,11 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
+	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
 	}
+	deviceConfigurationAckDataBlock := CastDeviceConfigurationAckDataBlock(_deviceConfigurationAckDataBlock)
 	if closeErr := readBuffer.CloseContext("deviceConfigurationAckDataBlock"); closeErr != nil {
 		return nil, closeErr
 	}

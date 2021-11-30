@@ -118,22 +118,25 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 	}
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
+	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
+	indexOffset := _indexOffset
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	if closeErr := readBuffer.CloseContext("AdsReadRequest"); closeErr != nil {
 		return nil, closeErr

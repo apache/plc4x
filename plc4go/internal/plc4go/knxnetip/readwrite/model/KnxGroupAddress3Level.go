@@ -114,22 +114,25 @@ func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*
 	}
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
+	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
+	mainGroup := _mainGroup
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 3)
+	_middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 3)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
+	middleGroup := _middleGroup
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
+	_subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress3Level"); closeErr != nil {
 		return nil, closeErr

@@ -137,10 +137,11 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, pullErr
 	}
-	service, _serviceErr := CipServiceParse(readBuffer, uint16(exchangeLen)-uint16(uint16(10)))
+	_service, _serviceErr := CipServiceParse(readBuffer, uint16(exchangeLen)-uint16(uint16(10)))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
 	}
+	service := CastCipService(_service)
 	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
 		return nil, closeErr
 	}

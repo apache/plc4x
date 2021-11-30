@@ -136,10 +136,11 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-	data, _dataErr := ServicesParse(readBuffer, uint16(serviceLen)-uint16(uint16(6)))
+	_data, _dataErr := ServicesParse(readBuffer, uint16(serviceLen)-uint16(uint16(6)))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := CastServices(_data)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
 		return nil, closeErr
 	}

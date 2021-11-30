@@ -112,10 +112,11 @@ func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, resp
 	}
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadUint8("value", 8)
+	_value, _valueErr := readBuffer.ReadUint8("value", 8)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadExceptionStatusResponse"); closeErr != nil {
 		return nil, closeErr

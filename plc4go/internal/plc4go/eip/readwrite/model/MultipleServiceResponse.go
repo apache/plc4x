@@ -146,22 +146,25 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (extStatus)
-	extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
 	}
+	extStatus := _extStatus
 
 	// Simple Field (serviceNb)
-	serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
 	if _serviceNbErr != nil {
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field")
 	}
+	serviceNb := _serviceNb
 
 	// Array field (offsets)
 	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {

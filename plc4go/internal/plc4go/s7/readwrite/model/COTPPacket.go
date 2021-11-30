@@ -160,15 +160,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)
-	_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
-	_parametersEndPos := readBuffer.GetPos() + uint16(_parametersLength)
-	for readBuffer.GetPos() < _parametersEndPos {
-		_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
+	{
+		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
+		_parametersEndPos := readBuffer.GetPos() + uint16(_parametersLength)
+		for readBuffer.GetPos() < _parametersEndPos {
+			_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
+			}
+			parameters = append(parameters, _item)
+			curPos = readBuffer.GetPos() - startPos
 		}
-		parameters = append(parameters, _item)
-		curPos = readBuffer.GetPos() - startPos
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

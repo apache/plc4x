@@ -237,10 +237,11 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, pullErr
 	}
-	unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
+	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")
 	}
+	unconnectedService := CastCipService(_unconnectedService)
 	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -255,16 +256,18 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	}
 
 	// Simple Field (backPlane)
-	backPlane, _backPlaneErr := readBuffer.ReadInt8("backPlane", 8)
+	_backPlane, _backPlaneErr := readBuffer.ReadInt8("backPlane", 8)
 	if _backPlaneErr != nil {
 		return nil, errors.Wrap(_backPlaneErr, "Error parsing 'backPlane' field")
 	}
+	backPlane := _backPlane
 
 	// Simple Field (slot)
-	slot, _slotErr := readBuffer.ReadInt8("slot", 8)
+	_slot, _slotErr := readBuffer.ReadInt8("slot", 8)
 	if _slotErr != nil {
 		return nil, errors.Wrap(_slotErr, "Error parsing 'slot' field")
 	}
+	slot := _slot
 
 	if closeErr := readBuffer.CloseContext("CipUnconnectedRequest"); closeErr != nil {
 		return nil, closeErr

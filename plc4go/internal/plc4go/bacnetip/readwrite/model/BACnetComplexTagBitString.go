@@ -125,10 +125,11 @@ func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (unusedBits)
-	unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
+	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
 		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
 	}
+	unusedBits := _unusedBits
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -136,14 +137,16 @@ func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := actualLengthInBit
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+	{
+		_dataLength := actualLengthInBit
+		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
+		for readBuffer.GetPos() < _dataEndPos {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			}
+			data = append(data, _item)
 		}
-		data = append(data, _item)
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

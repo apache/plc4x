@@ -107,10 +107,11 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*Fi
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-	command, _commandErr := FirmataCommandParse(readBuffer, response)
+	_command, _commandErr := FirmataCommandParse(readBuffer, response)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
+	command := CastFirmataCommand(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, closeErr
 	}

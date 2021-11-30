@@ -123,28 +123,31 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 	}
 
 	// Simple Field (tagNumber)
-	tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
+	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
 	if _tagNumberErr != nil {
 		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
 	}
+	tagNumber := _tagNumber
 
 	// Simple Field (tagClass)
 	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	tagClass, _tagClassErr := TagClassParse(readBuffer)
+	_tagClass, _tagClassErr := TagClassParse(readBuffer)
 	if _tagClassErr != nil {
 		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field")
 	}
+	tagClass := _tagClass
 	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
+	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
+	lengthValueType := _lengthValueType
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
@@ -172,14 +175,16 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 	}
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
-	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16((*extLength)) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
-	_propertyIdentifierEndPos := readBuffer.GetPos() + uint16(_propertyIdentifierLength)
-	for readBuffer.GetPos() < _propertyIdentifierEndPos {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+	{
+		_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16((*extLength)) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
+		_propertyIdentifierEndPos := readBuffer.GetPos() + uint16(_propertyIdentifierLength)
+		for readBuffer.GetPos() < _propertyIdentifierEndPos {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+			}
+			propertyIdentifier = append(propertyIdentifier, _item)
 		}
-		propertyIdentifier = append(propertyIdentifier, _item)
 	}
 	if closeErr := readBuffer.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -198,10 +203,11 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-	value, _valueErr := BACnetTagParse(readBuffer)
+	_value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := CastBACnetTag(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, closeErr
 	}

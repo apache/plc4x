@@ -114,10 +114,11 @@ func BACnetComplexTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
 		return nil, pullErr
 	}
-	state, _stateErr := BACnetDeviceStateParse(readBuffer)
+	_state, _stateErr := BACnetDeviceStateParse(readBuffer)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
 	}
+	state := _state
 	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
 		return nil, closeErr
 	}

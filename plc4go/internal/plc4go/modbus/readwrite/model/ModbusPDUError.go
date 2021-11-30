@@ -115,10 +115,11 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
+	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
+	exceptionCode := _exceptionCode
 	if closeErr := readBuffer.CloseContext("exceptionCode"); closeErr != nil {
 		return nil, closeErr
 	}

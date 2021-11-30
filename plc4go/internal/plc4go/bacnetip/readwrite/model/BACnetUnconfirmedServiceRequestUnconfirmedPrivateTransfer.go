@@ -144,10 +144,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	}
 
 	// Simple Field (vendorId)
-	vendorId, _vendorIdErr := readBuffer.ReadUint8("vendorId", 8)
+	_vendorId, _vendorIdErr := readBuffer.ReadUint8("vendorId", 8)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
+	vendorId := _vendorId
 
 	// Const Field (serviceNumberHeader)
 	serviceNumberHeader, _serviceNumberHeaderErr := readBuffer.ReadUint8("serviceNumberHeader", 8)
@@ -159,10 +160,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	}
 
 	// Simple Field (serviceNumber)
-	serviceNumber, _serviceNumberErr := readBuffer.ReadUint16("serviceNumber", 16)
+	_serviceNumber, _serviceNumberErr := readBuffer.ReadUint16("serviceNumber", 16)
 	if _serviceNumberErr != nil {
 		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
 	}
+	serviceNumber := _serviceNumber
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := readBuffer.ReadUint8("listOfValuesOpeningTag", 8)
@@ -179,14 +181,16 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	}
 	// Length array
 	values := make([]int8, 0)
-	_valuesLength := uint16(len) - uint16(uint16(8))
-	_valuesEndPos := readBuffer.GetPos() + uint16(_valuesLength)
-	for readBuffer.GetPos() < _valuesEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'values' field")
+	{
+		_valuesLength := uint16(len) - uint16(uint16(8))
+		_valuesEndPos := readBuffer.GetPos() + uint16(_valuesLength)
+		for readBuffer.GetPos() < _valuesEndPos {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'values' field")
+			}
+			values = append(values, _item)
 		}
-		values = append(values, _item)
 	}
 	if closeErr := readBuffer.CloseContext("values", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

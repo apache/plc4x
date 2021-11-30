@@ -111,16 +111,18 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPack
 	}
 
 	// Simple Field (eot)
-	eot, _eotErr := readBuffer.ReadBit("eot")
+	_eot, _eotErr := readBuffer.ReadBit("eot")
 	if _eotErr != nil {
 		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field")
 	}
+	eot := _eot
 
 	// Simple Field (tpduRef)
-	tpduRef, _tpduRefErr := readBuffer.ReadUint8("tpduRef", 7)
+	_tpduRef, _tpduRefErr := readBuffer.ReadUint8("tpduRef", 7)
 	if _tpduRefErr != nil {
 		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field")
 	}
+	tpduRef := _tpduRef
 
 	if closeErr := readBuffer.CloseContext("COTPPacketData"); closeErr != nil {
 		return nil, closeErr

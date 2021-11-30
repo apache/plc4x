@@ -137,16 +137,18 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	}
 
 	// Simple Field (segmentedMessage)
-	segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
+	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
+	segmentedMessage := _segmentedMessage
 
 	// Simple Field (moreFollows)
-	moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
+	_moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
+	moreFollows := _moreFollows
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -163,10 +165,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
@@ -192,10 +195,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 		return nil, pullErr
 	}
-	serviceAck, _serviceAckErr := BACnetServiceAckParse(readBuffer)
+	_serviceAck, _serviceAckErr := BACnetServiceAckParse(readBuffer)
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")
 	}
+	serviceAck := CastBACnetServiceAck(_serviceAck)
 	if closeErr := readBuffer.CloseContext("serviceAck"); closeErr != nil {
 		return nil, closeErr
 	}

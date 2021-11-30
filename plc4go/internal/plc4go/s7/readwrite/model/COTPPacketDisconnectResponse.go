@@ -111,16 +111,18 @@ func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 	}
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
+	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
+	destinationReference := _destinationReference
 
 	// Simple Field (sourceReference)
-	sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
+	_sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
 	if _sourceReferenceErr != nil {
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
+	sourceReference := _sourceReference
 
 	if closeErr := readBuffer.CloseContext("COTPPacketDisconnectResponse"); closeErr != nil {
 		return nil, closeErr

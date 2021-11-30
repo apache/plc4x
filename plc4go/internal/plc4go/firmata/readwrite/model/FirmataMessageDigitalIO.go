@@ -111,10 +111,11 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 	}
 
 	// Simple Field (pinBlock)
-	pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)
+	_pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)
 	if _pinBlockErr != nil {
 		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field")
 	}
+	pinBlock := _pinBlock
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {

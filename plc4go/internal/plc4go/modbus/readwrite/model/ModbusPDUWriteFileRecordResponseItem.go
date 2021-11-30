@@ -99,22 +99,25 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mo
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
+	referenceType := _referenceType
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
+	_fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
+	fileNumber := _fileNumber
 
 	// Simple Field (recordNumber)
-	recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
+	_recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
+	recordNumber := _recordNumber
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength, _recordLengthErr := readBuffer.ReadUint16("recordLength", 16)

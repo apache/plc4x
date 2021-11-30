@@ -107,10 +107,11 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
+	hpaiIDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiIDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}

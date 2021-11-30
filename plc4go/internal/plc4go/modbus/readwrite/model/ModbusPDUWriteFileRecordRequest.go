@@ -131,14 +131,16 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 	}
 	// Length array
 	items := make([]*ModbusPDUWriteFileRecordRequestItem, 0)
-	_itemsLength := byteCount
-	_itemsEndPos := readBuffer.GetPos() + uint16(_itemsLength)
-	for readBuffer.GetPos() < _itemsEndPos {
-		_item, _err := ModbusPDUWriteFileRecordRequestItemParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'items' field")
+	{
+		_itemsLength := byteCount
+		_itemsEndPos := readBuffer.GetPos() + uint16(_itemsLength)
+		for readBuffer.GetPos() < _itemsEndPos {
+			_item, _err := ModbusPDUWriteFileRecordRequestItemParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+			}
+			items = append(items, _item)
 		}
-		items = append(items, _item)
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

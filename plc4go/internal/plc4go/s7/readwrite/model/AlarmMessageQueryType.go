@@ -110,25 +110,28 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	}
 
 	// Simple Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
 	}
+	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
-	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
 	}
+	numberOfObjects := _numberOfObjects
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -137,10 +140,11 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, closeErr
 	}

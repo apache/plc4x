@@ -131,10 +131,11 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
+	deviceIdentifier := CastBACnetTagApplicationObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -164,10 +165,11 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, pullErr
 	}
-	fileStartPosition, _fileStartPositionErr := BACnetTagParse(readBuffer)
+	_fileStartPosition, _fileStartPositionErr := BACnetTagParse(readBuffer)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
 	}
+	fileStartPosition := CastBACnetTagApplicationSignedInteger(_fileStartPosition)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -176,10 +178,11 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
 		return nil, pullErr
 	}
-	fileData, _fileDataErr := BACnetTagParse(readBuffer)
+	_fileData, _fileDataErr := BACnetTagParse(readBuffer)
 	if _fileDataErr != nil {
 		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field")
 	}
+	fileData := CastBACnetTagApplicationOctetString(_fileData)
 	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
 		return nil, closeErr
 	}

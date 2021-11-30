@@ -136,22 +136,25 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	}
 
 	// Simple Field (maxAmqCaller)
-	maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
+	_maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
 		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
 	}
+	maxAmqCaller := _maxAmqCaller
 
 	// Simple Field (maxAmqCallee)
-	maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
+	_maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
 		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
 	}
+	maxAmqCallee := _maxAmqCallee
 
 	// Simple Field (pduLength)
-	pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
+	_pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
+	pduLength := _pduLength
 
 	if closeErr := readBuffer.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
 		return nil, closeErr

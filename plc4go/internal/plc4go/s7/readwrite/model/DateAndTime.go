@@ -194,10 +194,11 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	}
 
 	// Simple Field (dow)
-	dow, _dowErr := readBuffer.ReadUint8("dow", 4)
+	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
 	if _dowErr != nil {
 		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field")
 	}
+	dow := _dow
 
 	if closeErr := readBuffer.CloseContext("DateAndTime"); closeErr != nil {
 		return nil, closeErr

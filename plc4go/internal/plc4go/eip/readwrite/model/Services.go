@@ -97,10 +97,11 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	}
 
 	// Simple Field (serviceNb)
-	serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
 	if _serviceNbErr != nil {
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field")
 	}
+	serviceNb := _serviceNb
 
 	// Array field (offsets)
 	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {

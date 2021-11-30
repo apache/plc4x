@@ -132,22 +132,25 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 	}
 
 	// Simple Field (server)
-	server, _serverErr := readBuffer.ReadBit("server")
+	_server, _serverErr := readBuffer.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
+	server := _server
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (abortReason)
-	abortReason, _abortReasonErr := readBuffer.ReadUint8("abortReason", 8)
+	_abortReason, _abortReasonErr := readBuffer.ReadUint8("abortReason", 8)
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
+	abortReason := _abortReason
 
 	if closeErr := readBuffer.CloseContext("APDUAbort"); closeErr != nil {
 		return nil, closeErr

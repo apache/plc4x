@@ -116,25 +116,28 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 	}
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
+	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
+	destinationReference := _destinationReference
 
 	// Simple Field (sourceReference)
-	sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
+	_sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
 	if _sourceReferenceErr != nil {
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
+	sourceReference := _sourceReference
 
 	// Simple Field (protocolClass)
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
+	_protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
+	protocolClass := _protocolClass
 	if closeErr := readBuffer.CloseContext("protocolClass"); closeErr != nil {
 		return nil, closeErr
 	}

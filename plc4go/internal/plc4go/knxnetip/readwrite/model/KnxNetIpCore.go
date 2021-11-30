@@ -104,10 +104,11 @@ func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	}
 
 	// Simple Field (version)
-	version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+	version := _version
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpCore"); closeErr != nil {
 		return nil, closeErr

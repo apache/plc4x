@@ -110,52 +110,60 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	}
 
 	// Simple Field (SIG_8)
-	SIG_8, _SIG_8Err := readBuffer.ReadBit("SIG_8")
+	_SIG_8, _SIG_8Err := readBuffer.ReadBit("SIG_8")
 	if _SIG_8Err != nil {
 		return nil, errors.Wrap(_SIG_8Err, "Error parsing 'SIG_8' field")
 	}
+	SIG_8 := _SIG_8
 
 	// Simple Field (SIG_7)
-	SIG_7, _SIG_7Err := readBuffer.ReadBit("SIG_7")
+	_SIG_7, _SIG_7Err := readBuffer.ReadBit("SIG_7")
 	if _SIG_7Err != nil {
 		return nil, errors.Wrap(_SIG_7Err, "Error parsing 'SIG_7' field")
 	}
+	SIG_7 := _SIG_7
 
 	// Simple Field (SIG_6)
-	SIG_6, _SIG_6Err := readBuffer.ReadBit("SIG_6")
+	_SIG_6, _SIG_6Err := readBuffer.ReadBit("SIG_6")
 	if _SIG_6Err != nil {
 		return nil, errors.Wrap(_SIG_6Err, "Error parsing 'SIG_6' field")
 	}
+	SIG_6 := _SIG_6
 
 	// Simple Field (SIG_5)
-	SIG_5, _SIG_5Err := readBuffer.ReadBit("SIG_5")
+	_SIG_5, _SIG_5Err := readBuffer.ReadBit("SIG_5")
 	if _SIG_5Err != nil {
 		return nil, errors.Wrap(_SIG_5Err, "Error parsing 'SIG_5' field")
 	}
+	SIG_5 := _SIG_5
 
 	// Simple Field (SIG_4)
-	SIG_4, _SIG_4Err := readBuffer.ReadBit("SIG_4")
+	_SIG_4, _SIG_4Err := readBuffer.ReadBit("SIG_4")
 	if _SIG_4Err != nil {
 		return nil, errors.Wrap(_SIG_4Err, "Error parsing 'SIG_4' field")
 	}
+	SIG_4 := _SIG_4
 
 	// Simple Field (SIG_3)
-	SIG_3, _SIG_3Err := readBuffer.ReadBit("SIG_3")
+	_SIG_3, _SIG_3Err := readBuffer.ReadBit("SIG_3")
 	if _SIG_3Err != nil {
 		return nil, errors.Wrap(_SIG_3Err, "Error parsing 'SIG_3' field")
 	}
+	SIG_3 := _SIG_3
 
 	// Simple Field (SIG_2)
-	SIG_2, _SIG_2Err := readBuffer.ReadBit("SIG_2")
+	_SIG_2, _SIG_2Err := readBuffer.ReadBit("SIG_2")
 	if _SIG_2Err != nil {
 		return nil, errors.Wrap(_SIG_2Err, "Error parsing 'SIG_2' field")
 	}
+	SIG_2 := _SIG_2
 
 	// Simple Field (SIG_1)
-	SIG_1, _SIG_1Err := readBuffer.ReadBit("SIG_1")
+	_SIG_1, _SIG_1Err := readBuffer.ReadBit("SIG_1")
 	if _SIG_1Err != nil {
 		return nil, errors.Wrap(_SIG_1Err, "Error parsing 'SIG_1' field")
 	}
+	SIG_1 := _SIG_1
 
 	if closeErr := readBuffer.CloseContext("State"); closeErr != nil {
 		return nil, closeErr

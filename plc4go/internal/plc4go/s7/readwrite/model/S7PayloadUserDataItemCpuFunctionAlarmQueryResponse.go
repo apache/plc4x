@@ -155,10 +155,11 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("pudicfReturnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _pudicfReturnCodeErr != nil {
 		return nil, errors.Wrap(_pudicfReturnCodeErr, "Error parsing 'pudicfReturnCode' field")
 	}
+	pudicfReturnCode := _pudicfReturnCode
 	if closeErr := readBuffer.CloseContext("pudicfReturnCode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -167,10 +168,11 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("pudicftransportSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParse(readBuffer)
+	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParse(readBuffer)
 	if _pudicftransportSizeErr != nil {
 		return nil, errors.Wrap(_pudicftransportSizeErr, "Error parsing 'pudicftransportSize' field")
 	}
+	pudicftransportSize := _pudicftransportSize
 	if closeErr := readBuffer.CloseContext("pudicftransportSize"); closeErr != nil {
 		return nil, closeErr
 	}

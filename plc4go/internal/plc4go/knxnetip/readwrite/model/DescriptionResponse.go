@@ -112,10 +112,11 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
 		return nil, pullErr
 	}
-	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
+	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
+	dibDeviceInfo := CastDIBDeviceInfo(_dibDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -124,10 +125,11 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
 		return nil, pullErr
 	}
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
+	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	dibSuppSvcFamilies := CastDIBSuppSvcFamilies(_dibSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
 		return nil, closeErr
 	}

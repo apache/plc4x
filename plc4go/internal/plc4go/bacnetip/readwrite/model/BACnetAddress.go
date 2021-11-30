@@ -105,10 +105,11 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 	}
 
 	// Simple Field (port)
-	port, _portErr := readBuffer.ReadUint16("port", 16)
+	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
+	port := _port
 
 	if closeErr := readBuffer.CloseContext("BACnetAddress"); closeErr != nil {
 		return nil, closeErr

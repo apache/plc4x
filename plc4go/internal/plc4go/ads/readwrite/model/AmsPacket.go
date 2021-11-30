@@ -120,46 +120,51 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
-	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(readBuffer)
+	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _targetAmsNetIdErr != nil {
 		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
 	}
+	targetAmsNetId := CastAmsNetId(_targetAmsNetId)
 	if closeErr := readBuffer.CloseContext("targetAmsNetId"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (targetAmsPort)
-	targetAmsPort, _targetAmsPortErr := readBuffer.ReadUint16("targetAmsPort", 16)
+	_targetAmsPort, _targetAmsPortErr := readBuffer.ReadUint16("targetAmsPort", 16)
 	if _targetAmsPortErr != nil {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
+	targetAmsPort := _targetAmsPort
 
 	// Simple Field (sourceAmsNetId)
 	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
-	sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(readBuffer)
+	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _sourceAmsNetIdErr != nil {
 		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
 	}
+	sourceAmsNetId := CastAmsNetId(_sourceAmsNetId)
 	if closeErr := readBuffer.CloseContext("sourceAmsNetId"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (sourceAmsPort)
-	sourceAmsPort, _sourceAmsPortErr := readBuffer.ReadUint16("sourceAmsPort", 16)
+	_sourceAmsPort, _sourceAmsPortErr := readBuffer.ReadUint16("sourceAmsPort", 16)
 	if _sourceAmsPortErr != nil {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
+	sourceAmsPort := _sourceAmsPort
 
 	// Simple Field (commandId)
 	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
 		return nil, pullErr
 	}
-	commandId, _commandIdErr := CommandIdParse(readBuffer)
+	_commandId, _commandIdErr := CommandIdParse(readBuffer)
 	if _commandIdErr != nil {
 		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
 	}
+	commandId := _commandId
 	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -168,10 +173,11 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
 		return nil, pullErr
 	}
-	state, _stateErr := StateParse(readBuffer)
+	_state, _stateErr := StateParse(readBuffer)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
 	}
+	state := CastState(_state)
 	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -184,25 +190,28 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := readBuffer.ReadUint32("errorCode", 32)
+	_errorCode, _errorCodeErr := readBuffer.ReadUint32("errorCode", 32)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
+	errorCode := _errorCode
 
 	// Simple Field (invokeId)
-	invokeId, _invokeIdErr := readBuffer.ReadUint32("invokeId", 32)
+	_invokeId, _invokeIdErr := readBuffer.ReadUint32("invokeId", 32)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
+	invokeId := _invokeId
 
 	// Simple Field (data)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-	data, _dataErr := AdsDataParse(readBuffer, commandId, state.Response)
+	_data, _dataErr := AdsDataParse(readBuffer, commandId, state.Response)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := CastAdsData(_data)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
 		return nil, closeErr
 	}

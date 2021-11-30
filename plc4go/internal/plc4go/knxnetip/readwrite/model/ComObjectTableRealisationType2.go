@@ -119,16 +119,18 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 
 	// Simple Field (numEntries)
-	numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
+	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
 		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
 	}
+	numEntries := _numEntries
 
 	// Simple Field (ramFlagsTablePointer)
-	ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
+	_ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
+	ramFlagsTablePointer := _ramFlagsTablePointer
 
 	// Array field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors", utils.WithRenderAsList(true)); pullErr != nil {

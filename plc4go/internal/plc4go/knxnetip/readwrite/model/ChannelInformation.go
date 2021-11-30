@@ -86,16 +86,18 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, 
 	}
 
 	// Simple Field (numChannels)
-	numChannels, _numChannelsErr := readBuffer.ReadUint8("numChannels", 3)
+	_numChannels, _numChannelsErr := readBuffer.ReadUint8("numChannels", 3)
 	if _numChannelsErr != nil {
 		return nil, errors.Wrap(_numChannelsErr, "Error parsing 'numChannels' field")
 	}
+	numChannels := _numChannels
 
 	// Simple Field (channelCode)
-	channelCode, _channelCodeErr := readBuffer.ReadUint16("channelCode", 13)
+	_channelCode, _channelCodeErr := readBuffer.ReadUint16("channelCode", 13)
 	if _channelCodeErr != nil {
 		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field")
 	}
+	channelCode := _channelCode
 
 	if closeErr := readBuffer.CloseContext("ChannelInformation"); closeErr != nil {
 		return nil, closeErr

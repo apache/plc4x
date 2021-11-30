@@ -118,49 +118,56 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	}
 
 	// Simple Field (manufacturerId)
-	manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
+	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
 	if _manufacturerIdErr != nil {
 		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field")
 	}
+	manufacturerId := _manufacturerId
 
 	// Simple Field (deviceType)
-	deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
+	_deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
 	if _deviceTypeErr != nil {
 		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field")
 	}
+	deviceType := _deviceType
 
 	// Simple Field (version)
-	version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+	version := _version
 
 	// Simple Field (readSupported)
-	readSupported, _readSupportedErr := readBuffer.ReadBit("readSupported")
+	_readSupported, _readSupportedErr := readBuffer.ReadBit("readSupported")
 	if _readSupportedErr != nil {
 		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field")
 	}
+	readSupported := _readSupported
 
 	// Simple Field (writeSupported)
-	writeSupported, _writeSupportedErr := readBuffer.ReadBit("writeSupported")
+	_writeSupported, _writeSupportedErr := readBuffer.ReadBit("writeSupported")
 	if _writeSupportedErr != nil {
 		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field")
 	}
+	writeSupported := _writeSupported
 
 	// Simple Field (logicalTagBase)
-	logicalTagBase, _logicalTagBaseErr := readBuffer.ReadUint8("logicalTagBase", 6)
+	_logicalTagBase, _logicalTagBaseErr := readBuffer.ReadUint8("logicalTagBase", 6)
 	if _logicalTagBaseErr != nil {
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
 	}
+	logicalTagBase := _logicalTagBase
 
 	// Simple Field (channelInfo1)
 	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
 		return nil, pullErr
 	}
-	channelInfo1, _channelInfo1Err := ChannelInformationParse(readBuffer)
+	_channelInfo1, _channelInfo1Err := ChannelInformationParse(readBuffer)
 	if _channelInfo1Err != nil {
 		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field")
 	}
+	channelInfo1 := CastChannelInformation(_channelInfo1)
 	if closeErr := readBuffer.CloseContext("channelInfo1"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -169,10 +176,11 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
 		return nil, pullErr
 	}
-	channelInfo2, _channelInfo2Err := ChannelInformationParse(readBuffer)
+	_channelInfo2, _channelInfo2Err := ChannelInformationParse(readBuffer)
 	if _channelInfo2Err != nil {
 		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field")
 	}
+	channelInfo2 := CastChannelInformation(_channelInfo2)
 	if closeErr := readBuffer.CloseContext("channelInfo2"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -181,10 +189,11 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
 		return nil, pullErr
 	}
-	channelInfo3, _channelInfo3Err := ChannelInformationParse(readBuffer)
+	_channelInfo3, _channelInfo3Err := ChannelInformationParse(readBuffer)
 	if _channelInfo3Err != nil {
 		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field")
 	}
+	channelInfo3 := CastChannelInformation(_channelInfo3)
 	if closeErr := readBuffer.CloseContext("channelInfo3"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -193,10 +202,11 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
 		return nil, pullErr
 	}
-	channelInfo4, _channelInfo4Err := ChannelInformationParse(readBuffer)
+	_channelInfo4, _channelInfo4Err := ChannelInformationParse(readBuffer)
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")
 	}
+	channelInfo4 := CastChannelInformation(_channelInfo4)
 	if closeErr := readBuffer.CloseContext("channelInfo4"); closeErr != nil {
 		return nil, closeErr
 	}

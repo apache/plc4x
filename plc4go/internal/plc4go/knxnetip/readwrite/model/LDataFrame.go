@@ -121,10 +121,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (frameType)
-	frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
+	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
 	if _frameTypeErr != nil {
 		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field")
 	}
+	frameType := _frameType
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling, _pollingErr := readBuffer.ReadBit("polling")
@@ -133,10 +134,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (notRepeated)
-	notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
+	_notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
 		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field")
 	}
+	notRepeated := _notRepeated
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame, _notAckFrameErr := readBuffer.ReadBit("notAckFrame")
@@ -148,25 +150,28 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-	priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
+	_acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
 		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field")
 	}
+	acknowledgeRequested := _acknowledgeRequested
 
 	// Simple Field (errorFlag)
-	errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
+	_errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
+	errorFlag := _errorFlag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *LDataFrame

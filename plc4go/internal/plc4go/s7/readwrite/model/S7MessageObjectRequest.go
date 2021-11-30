@@ -153,10 +153,11 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
 		return nil, pullErr
 	}
-	syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
+	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
 	}
+	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -179,10 +180,11 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	if pullErr := readBuffer.PullContext("queryType"); pullErr != nil {
 		return nil, pullErr
 	}
-	queryType, _queryTypeErr := QueryTypeParse(readBuffer)
+	_queryType, _queryTypeErr := QueryTypeParse(readBuffer)
 	if _queryTypeErr != nil {
 		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field")
 	}
+	queryType := _queryType
 	if closeErr := readBuffer.CloseContext("queryType"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -205,10 +207,11 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
 		return nil, pullErr
 	}
-	alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
+	_alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
 	if _alarmTypeErr != nil {
 		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field")
 	}
+	alarmType := _alarmType
 	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {
 		return nil, closeErr
 	}

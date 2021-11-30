@@ -112,16 +112,18 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Simple Field (errorClass)
-	errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
+	_errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
+	errorClass := _errorClass
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := readBuffer.ReadUint8("errorCode", 8)
+	_errorCode, _errorCodeErr := readBuffer.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
+	errorCode := _errorCode
 
 	if closeErr := readBuffer.CloseContext("S7MessageResponse"); closeErr != nil {
 		return nil, closeErr

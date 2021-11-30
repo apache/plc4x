@@ -116,16 +116,18 @@ func BACnetComplexTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
+	_objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
+	objectType := _objectType
 
 	// Simple Field (instanceNumber)
-	instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
+	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
 	if _instanceNumberErr != nil {
 		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field")
 	}
+	instanceNumber := _instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagObjectIdentifier"); closeErr != nil {
 		return nil, closeErr

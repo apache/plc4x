@@ -117,10 +117,11 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, pullErr
 	}
-	address, _addressErr := S7AddressParse(readBuffer)
+	_address, _addressErr := S7AddressParse(readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := CastS7Address(_address)
 	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
 		return nil, closeErr
 	}

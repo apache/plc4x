@@ -117,10 +117,11 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
 	}
+	hpaiDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -129,10 +130,11 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
+	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
 	}
+	hpaiDataEndpoint := CastHPAIDataEndpoint(_hpaiDataEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -141,10 +143,11 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-	connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
+	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
+	connectionRequestInformation := CastConnectionRequestInformation(_connectionRequestInformation)
 	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {
 		return nil, closeErr
 	}

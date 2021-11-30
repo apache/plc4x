@@ -160,20 +160,22 @@ func BACnetComplexTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	wildcard := int8(_wildcard)
 
 	// Simple Field (yearMinus1900)
-	yearMinus1900, _yearMinus1900Err := readBuffer.ReadInt8("yearMinus1900", 8)
+	_yearMinus1900, _yearMinus1900Err := readBuffer.ReadInt8("yearMinus1900", 8)
 	if _yearMinus1900Err != nil {
 		return nil, errors.Wrap(_yearMinus1900Err, "Error parsing 'yearMinus1900' field")
 	}
+	yearMinus1900 := _yearMinus1900
 
 	// Virtual field
 	_yearIsWildcard := bool((yearMinus1900) == (wildcard))
 	yearIsWildcard := bool(_yearIsWildcard)
 
 	// Simple Field (month)
-	month, _monthErr := readBuffer.ReadInt8("month", 8)
+	_month, _monthErr := readBuffer.ReadInt8("month", 8)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 	}
+	month := _month
 
 	// Virtual field
 	_monthIsWildcard := bool((month) == (wildcard))
@@ -188,10 +190,11 @@ func BACnetComplexTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	evenMonthWildcard := bool(_evenMonthWildcard)
 
 	// Simple Field (dayOfMonth)
-	dayOfMonth, _dayOfMonthErr := readBuffer.ReadInt8("dayOfMonth", 8)
+	_dayOfMonth, _dayOfMonthErr := readBuffer.ReadInt8("dayOfMonth", 8)
 	if _dayOfMonthErr != nil {
 		return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 	}
+	dayOfMonth := _dayOfMonth
 
 	// Virtual field
 	_dayOfMonthIsWildcard := bool((dayOfMonth) == (wildcard))
@@ -210,10 +213,11 @@ func BACnetComplexTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	evenDayOfMonthWildcard := bool(_evenDayOfMonthWildcard)
 
 	// Simple Field (dayOfWeek)
-	dayOfWeek, _dayOfWeekErr := readBuffer.ReadInt8("dayOfWeek", 8)
+	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadInt8("dayOfWeek", 8)
 	if _dayOfWeekErr != nil {
 		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 	}
+	dayOfWeek := _dayOfWeek
 
 	// Virtual field
 	_dayOfWeekIsWildcard := bool((dayOfWeek) == (wildcard))

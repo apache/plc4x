@@ -107,10 +107,11 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}

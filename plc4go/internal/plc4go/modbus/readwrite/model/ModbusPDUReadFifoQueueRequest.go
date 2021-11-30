@@ -112,10 +112,11 @@ func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bo
 	}
 
 	// Simple Field (fifoPointerAddress)
-	fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)
+	_fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)
 	if _fifoPointerAddressErr != nil {
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
+	fifoPointerAddress := _fifoPointerAddress
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFifoQueueRequest"); closeErr != nil {
 		return nil, closeErr

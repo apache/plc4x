@@ -122,10 +122,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
+	deviceIdentifier := CastBACnetTagApplicationObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -134,10 +135,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("maximumApduLengthAcceptedLength"); pullErr != nil {
 		return nil, pullErr
 	}
-	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetTagParse(readBuffer)
+	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetTagParse(readBuffer)
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
+	maximumApduLengthAcceptedLength := CastBACnetTagApplicationUnsignedInteger(_maximumApduLengthAcceptedLength)
 	if closeErr := readBuffer.CloseContext("maximumApduLengthAcceptedLength"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -146,10 +148,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
 		return nil, pullErr
 	}
-	segmentationSupported, _segmentationSupportedErr := BACnetTagParse(readBuffer)
+	_segmentationSupported, _segmentationSupportedErr := BACnetTagParse(readBuffer)
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
+	segmentationSupported := CastBACnetTagApplicationEnumerated(_segmentationSupported)
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -158,10 +161,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	vendorId, _vendorIdErr := BACnetTagParse(readBuffer)
+	_vendorId, _vendorIdErr := BACnetTagParse(readBuffer)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
+	vendorId := CastBACnetTagApplicationUnsignedInteger(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}

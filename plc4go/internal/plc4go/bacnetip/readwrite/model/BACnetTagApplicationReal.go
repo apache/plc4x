@@ -110,10 +110,11 @@ func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 	}
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadFloat32("value", 32)
+	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationReal"); closeErr != nil {
 		return nil, closeErr

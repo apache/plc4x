@@ -111,10 +111,11 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-	command, _commandErr := DF1RequestCommandParse(readBuffer)
+	_command, _commandErr := DF1RequestCommandParse(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
+	command := CastDF1RequestCommand(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, closeErr
 	}

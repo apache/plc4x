@@ -117,10 +117,11 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len 
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
+	deviceIdentifier := CastBACnetTagApplicationObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -129,10 +130,11 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len 
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	objectIdentifier, _objectIdentifierErr := BACnetTagParse(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetTagParse(readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
+	objectIdentifier := CastBACnetTagApplicationObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -141,10 +143,11 @@ func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len 
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, pullErr
 	}
-	objectName, _objectNameErr := BACnetTagParse(readBuffer)
+	_objectName, _objectNameErr := BACnetTagParse(readBuffer)
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field")
 	}
+	objectName := CastBACnetTagApplicationCharacterString(_objectName)
 	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
 		return nil, closeErr
 	}

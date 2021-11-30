@@ -122,22 +122,25 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, 
 	}
 
 	// Simple Field (referenceAddress)
-	referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)
+	_referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)
 	if _referenceAddressErr != nil {
 		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field")
 	}
+	referenceAddress := _referenceAddress
 
 	// Simple Field (andMask)
-	andMask, _andMaskErr := readBuffer.ReadUint16("andMask", 16)
+	_andMask, _andMaskErr := readBuffer.ReadUint16("andMask", 16)
 	if _andMaskErr != nil {
 		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field")
 	}
+	andMask := _andMask
 
 	// Simple Field (orMask)
-	orMask, _orMaskErr := readBuffer.ReadUint16("orMask", 16)
+	_orMask, _orMaskErr := readBuffer.ReadUint16("orMask", 16)
 	if _orMaskErr != nil {
 		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
 	}
+	orMask := _orMask
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUMaskWriteHoldingRegisterRequest"); closeErr != nil {
 		return nil, closeErr

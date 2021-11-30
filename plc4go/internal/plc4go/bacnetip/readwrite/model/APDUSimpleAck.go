@@ -127,16 +127,18 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, 
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (serviceChoice)
-	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
+	_serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
+	serviceChoice := _serviceChoice
 
 	if closeErr := readBuffer.CloseContext("APDUSimpleAck"); closeErr != nil {
 		return nil, closeErr

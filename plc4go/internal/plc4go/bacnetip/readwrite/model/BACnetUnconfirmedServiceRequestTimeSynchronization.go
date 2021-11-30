@@ -112,10 +112,11 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
 		return nil, pullErr
 	}
-	synchronizedDate, _synchronizedDateErr := BACnetTagParse(readBuffer)
+	_synchronizedDate, _synchronizedDateErr := BACnetTagParse(readBuffer)
 	if _synchronizedDateErr != nil {
 		return nil, errors.Wrap(_synchronizedDateErr, "Error parsing 'synchronizedDate' field")
 	}
+	synchronizedDate := CastBACnetTagApplicationDate(_synchronizedDate)
 	if closeErr := readBuffer.CloseContext("synchronizedDate"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -124,10 +125,11 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("synchronizedTime"); pullErr != nil {
 		return nil, pullErr
 	}
-	synchronizedTime, _synchronizedTimeErr := BACnetTagParse(readBuffer)
+	_synchronizedTime, _synchronizedTimeErr := BACnetTagParse(readBuffer)
 	if _synchronizedTimeErr != nil {
 		return nil, errors.Wrap(_synchronizedTimeErr, "Error parsing 'synchronizedTime' field")
 	}
+	synchronizedTime := CastBACnetTagApplicationTime(_synchronizedTime)
 	if closeErr := readBuffer.CloseContext("synchronizedTime"); closeErr != nil {
 		return nil, closeErr
 	}

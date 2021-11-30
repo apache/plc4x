@@ -104,10 +104,11 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COT
 	}
 
 	// Simple Field (tsapId)
-	tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)
+	_tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)
 	if _tsapIdErr != nil {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
+	tsapId := _tsapId
 
 	if closeErr := readBuffer.CloseContext("COTPParameterCalledTsap"); closeErr != nil {
 		return nil, closeErr

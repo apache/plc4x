@@ -111,10 +111,11 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	}
 
 	// Simple Field (dataFirstByte)
-	dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
+	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
 	if _dataFirstByteErr != nil {
 		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field")
 	}
+	dataFirstByte := _dataFirstByte
 	// Byte Array field (data)
 	numberOfBytesdata := int(utils.InlineIf(bool(bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

@@ -104,10 +104,11 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	}
 
 	// Simple Field (crc)
-	crc, _crcErr := readBuffer.ReadUint8("crc", 8)
+	_crc, _crcErr := readBuffer.ReadUint8("crc", 8)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
+	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("COTPParameterChecksum"); closeErr != nil {
 		return nil, closeErr

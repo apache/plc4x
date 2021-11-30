@@ -111,10 +111,11 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 	}
 
 	// Simple Field (level)
-	level, _levelErr := readBuffer.ReadUint8("level", 8)
+	_level, _levelErr := readBuffer.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
+	level := _level
 	// Byte Array field (data)
 	numberOfBytesdata := int(uint16(4))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

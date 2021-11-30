@@ -112,14 +112,16 @@ func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16
 	}
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
-	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
-	_destinationNetworkAddressEndPos := readBuffer.GetPos() + uint16(_destinationNetworkAddressLength)
-	for readBuffer.GetPos() < _destinationNetworkAddressEndPos {
-		_item, _err := readBuffer.ReadUint16("", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
+	{
+		_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
+		_destinationNetworkAddressEndPos := readBuffer.GetPos() + uint16(_destinationNetworkAddressLength)
+		for readBuffer.GetPos() < _destinationNetworkAddressEndPos {
+			_item, _err := readBuffer.ReadUint16("", 16)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
+			}
+			destinationNetworkAddress = append(destinationNetworkAddress, _item)
 		}
-		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
 	if closeErr := readBuffer.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

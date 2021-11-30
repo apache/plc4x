@@ -108,10 +108,11 @@ func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) 
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	if closeErr := readBuffer.CloseContext("SysexCommandPinStateQuery"); closeErr != nil {
 		return nil, closeErr

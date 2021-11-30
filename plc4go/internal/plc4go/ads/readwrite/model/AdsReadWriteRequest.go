@@ -138,22 +138,25 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	}
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
+	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
+	indexOffset := _indexOffset
 
 	// Simple Field (readLength)
-	readLength, _readLengthErr := readBuffer.ReadUint32("readLength", 32)
+	_readLength, _readLengthErr := readBuffer.ReadUint32("readLength", 32)
 	if _readLengthErr != nil {
 		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field")
 	}
+	readLength := _readLength
 
 	// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	writeLength, _writeLengthErr := readBuffer.ReadUint32("writeLength", 32)

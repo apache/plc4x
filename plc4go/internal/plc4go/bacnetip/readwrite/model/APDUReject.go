@@ -127,16 +127,18 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, err
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (rejectReason)
-	rejectReason, _rejectReasonErr := readBuffer.ReadUint8("rejectReason", 8)
+	_rejectReason, _rejectReasonErr := readBuffer.ReadUint8("rejectReason", 8)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
+	rejectReason := _rejectReason
 
 	if closeErr := readBuffer.CloseContext("APDUReject"); closeErr != nil {
 		return nil, closeErr

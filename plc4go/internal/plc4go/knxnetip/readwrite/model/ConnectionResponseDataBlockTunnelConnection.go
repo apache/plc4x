@@ -107,10 +107,11 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	knxAddress := CastKnxAddress(_knxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
 		return nil, closeErr
 	}

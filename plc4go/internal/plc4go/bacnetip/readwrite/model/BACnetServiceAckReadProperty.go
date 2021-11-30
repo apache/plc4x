@@ -154,16 +154,18 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
+	_objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
+	objectType := _objectType
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
+	_objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
+	objectInstanceNumber := _objectInstanceNumber
 
 	// Const Field (propertyIdentifierHeader)
 	propertyIdentifierHeader, _propertyIdentifierHeaderErr := readBuffer.ReadUint8("propertyIdentifierHeader", 5)
@@ -175,10 +177,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	}
 
 	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
+	_propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
 	if _propertyIdentifierLengthErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierLengthErr, "Error parsing 'propertyIdentifierLength' field")
 	}
+	propertyIdentifierLength := _propertyIdentifierLength
 
 	// Array field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
@@ -210,10 +213,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-	value, _valueErr := BACnetTagParse(readBuffer)
+	_value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := CastBACnetTag(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, closeErr
 	}

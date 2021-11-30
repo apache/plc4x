@@ -122,10 +122,11 @@ func BACnetComplexTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
 		return nil, pullErr
 	}
-	encoding, _encodingErr := BACnetCharacterEncodingParse(readBuffer)
+	_encoding, _encodingErr := BACnetCharacterEncodingParse(readBuffer)
 	if _encodingErr != nil {
 		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field")
 	}
+	encoding := _encoding
 	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -135,10 +136,11 @@ func BACnetComplexTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
+	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagCharacterString"); closeErr != nil {
 		return nil, closeErr

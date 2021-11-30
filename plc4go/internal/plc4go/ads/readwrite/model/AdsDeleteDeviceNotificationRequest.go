@@ -108,10 +108,11 @@ func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, comman
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsDeleteDeviceNotificationRequest"); closeErr != nil {
 		return nil, closeErr

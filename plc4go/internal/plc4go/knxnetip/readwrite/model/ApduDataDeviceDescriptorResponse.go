@@ -111,10 +111,11 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	}
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
+	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
+	descriptorType := _descriptorType
 	// Byte Array field (data)
 	numberOfBytesdata := int(utils.InlineIf(bool(bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

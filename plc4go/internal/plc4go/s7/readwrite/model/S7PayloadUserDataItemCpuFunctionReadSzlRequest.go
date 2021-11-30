@@ -122,19 +122,21 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
 		return nil, pullErr
 	}
-	szlId, _szlIdErr := SzlIdParse(readBuffer)
+	_szlId, _szlIdErr := SzlIdParse(readBuffer)
 	if _szlIdErr != nil {
 		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field")
 	}
+	szlId := CastSzlId(_szlId)
 	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (szlIndex)
-	szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
+	_szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
 	if _szlIndexErr != nil {
 		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field")
 	}
+	szlIndex := _szlIndex
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); closeErr != nil {
 		return nil, closeErr

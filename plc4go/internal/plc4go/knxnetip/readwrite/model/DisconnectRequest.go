@@ -113,10 +113,11 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
+	communicationChannelId := _communicationChannelId
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -136,10 +137,11 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}

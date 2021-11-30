@@ -114,22 +114,25 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint3
 	}
 
 	// Simple Field (itemIndexGroup)
-	itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
+	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
 		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
+	itemIndexGroup := _itemIndexGroup
 
 	// Simple Field (itemIndexOffset)
-	itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
+	_itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
 		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
+	itemIndexOffset := _itemIndexOffset
 
 	// Simple Field (itemWriteLength)
-	itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
+	_itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
 		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
 	}
+	itemWriteLength := _itemWriteLength
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItemWrite"); closeErr != nil {
 		return nil, closeErr

@@ -149,25 +149,28 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
+	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
+	numberOfElements := _numberOfElements
 
 	// Simple Field (dbNumber)
-	dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
+	_dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
+	dbNumber := _dbNumber
 
 	// Simple Field (area)
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
 		return nil, pullErr
 	}
-	area, _areaErr := MemoryAreaParse(readBuffer)
+	_area, _areaErr := MemoryAreaParse(readBuffer)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
 	}
+	area := _area
 	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -187,16 +190,18 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (byteAddress)
-	byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
+	_byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
 		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
 	}
+	byteAddress := _byteAddress
 
 	// Simple Field (bitAddress)
-	bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
+	_bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
+	bitAddress := _bitAddress
 
 	if closeErr := readBuffer.CloseContext("S7AddressAny"); closeErr != nil {
 		return nil, closeErr

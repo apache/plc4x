@@ -95,16 +95,18 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
+	_timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
+	timestamp := _timestamp
 
 	// Simple Field (samples)
-	samples, _samplesErr := readBuffer.ReadUint32("samples", 32)
+	_samples, _samplesErr := readBuffer.ReadUint32("samples", 32)
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
+	samples := _samples
 
 	// Array field (adsNotificationSamples)
 	if pullErr := readBuffer.PullContext("adsNotificationSamples", utils.WithRenderAsList(true)); pullErr != nil {

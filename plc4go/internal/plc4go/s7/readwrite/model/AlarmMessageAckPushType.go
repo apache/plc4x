@@ -102,25 +102,28 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
+	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
 	if _TimeStampErr != nil {
 		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field")
 	}
+	TimeStamp := CastDateAndTime(_TimeStamp)
 	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
 	}
+	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
-	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
 	}
+	numberOfObjects := _numberOfObjects
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {

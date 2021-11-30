@@ -119,16 +119,18 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	}
 
 	// Simple Field (majorVersion)
-	majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
+	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
 	}
+	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
+	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
 	}
+	minorVersion := _minorVersion
 	if pullErr := readBuffer.PullContext("fileName", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}

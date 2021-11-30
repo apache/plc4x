@@ -118,43 +118,48 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMess
 	}
 
 	// Simple Field (lengthSpec)
-	lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
+	_lengthSpec, _lengthSpecErr := readBuffer.ReadUint8("lengthSpec", 8)
 	if _lengthSpecErr != nil {
 		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field")
 	}
+	lengthSpec := _lengthSpec
 
 	// Simple Field (syntaxId)
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
 		return nil, pullErr
 	}
-	syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
+	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field")
 	}
+	syntaxId := _syntaxId
 	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (numberOfValues)
-	numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
+	_numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
 	if _numberOfValuesErr != nil {
 		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field")
 	}
+	numberOfValues := _numberOfValues
 
 	// Simple Field (eventId)
-	eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
+	_eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
 	if _eventIdErr != nil {
 		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field")
 	}
+	eventId := _eventId
 
 	// Simple Field (ackStateGoing)
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
+	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
+	ackStateGoing := CastState(_ackStateGoing)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -163,10 +168,11 @@ func AlarmMessageAckObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMess
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateComing, _ackStateComingErr := StateParse(readBuffer)
+	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
+	ackStateComing := CastState(_ackStateComing)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, closeErr
 	}

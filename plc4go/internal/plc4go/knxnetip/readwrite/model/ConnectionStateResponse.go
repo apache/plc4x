@@ -109,19 +109,21 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
+	communicationChannelId := _communicationChannelId
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, pullErr
 	}
-	status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
 		return nil, closeErr
 	}

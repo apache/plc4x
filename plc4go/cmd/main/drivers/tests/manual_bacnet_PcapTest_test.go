@@ -37,7 +37,7 @@ import (
 )
 
 func Test(t *testing.T) {
-	t.Skip() // Manual test don't check in un-skipped
+	//t.Skip() // Manual test don't check in un-skipped
 
 	config.TraceTransactionManagerWorkers = false
 	config.TraceTransactionManagerTransactions = false
@@ -54,7 +54,7 @@ func Test(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(bacnetip.NewDriver())
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport())
-	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=4")
+	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=0")
 	if result.GetErr() != nil {
 		panic(result.GetErr())
 	}

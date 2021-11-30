@@ -143,31 +143,35 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (groupAddress)
-	groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
+	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
 	if _groupAddressErr != nil {
 		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field")
 	}
+	groupAddress := _groupAddress
 
 	// Simple Field (hopCount)
-	hopCount, _hopCountErr := readBuffer.ReadUint8("hopCount", 3)
+	_hopCount, _hopCountErr := readBuffer.ReadUint8("hopCount", 3)
 	if _hopCountErr != nil {
 		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field")
 	}
+	hopCount := _hopCount
 
 	// Simple Field (extendedFrameFormat)
-	extendedFrameFormat, _extendedFrameFormatErr := readBuffer.ReadUint8("extendedFrameFormat", 4)
+	_extendedFrameFormat, _extendedFrameFormatErr := readBuffer.ReadUint8("extendedFrameFormat", 4)
 	if _extendedFrameFormatErr != nil {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
 	}
+	extendedFrameFormat := _extendedFrameFormat
 
 	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	sourceAddress := CastKnxAddress(_sourceAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -189,10 +193,11 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	apdu, _apduErr := ApduParse(readBuffer, dataLength)
+	_apdu, _apduErr := ApduParse(readBuffer, dataLength)
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}
+	apdu := CastApdu(_apdu)
 	if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
 		return nil, closeErr
 	}

@@ -123,16 +123,18 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	}
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
+	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
+	adsState := _adsState
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
+	_deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
+	deviceState := _deviceState
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := readBuffer.ReadUint32("length", 32)

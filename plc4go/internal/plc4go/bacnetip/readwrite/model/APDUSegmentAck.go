@@ -142,34 +142,39 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	}
 
 	// Simple Field (negativeAck)
-	negativeAck, _negativeAckErr := readBuffer.ReadBit("negativeAck")
+	_negativeAck, _negativeAckErr := readBuffer.ReadBit("negativeAck")
 	if _negativeAckErr != nil {
 		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field")
 	}
+	negativeAck := _negativeAck
 
 	// Simple Field (server)
-	server, _serverErr := readBuffer.ReadBit("server")
+	_server, _serverErr := readBuffer.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
+	server := _server
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
+	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
+	sequenceNumber := _sequenceNumber
 
 	// Simple Field (proposedWindowSize)
-	proposedWindowSize, _proposedWindowSizeErr := readBuffer.ReadUint8("proposedWindowSize", 8)
+	_proposedWindowSize, _proposedWindowSizeErr := readBuffer.ReadUint8("proposedWindowSize", 8)
 	if _proposedWindowSizeErr != nil {
 		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field")
 	}
+	proposedWindowSize := _proposedWindowSize
 
 	if closeErr := readBuffer.CloseContext("APDUSegmentAck"); closeErr != nil {
 		return nil, closeErr

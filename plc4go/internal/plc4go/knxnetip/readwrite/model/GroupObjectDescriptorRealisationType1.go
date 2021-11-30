@@ -114,10 +114,11 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	}
 
 	// Simple Field (dataPointer)
-	dataPointer, _dataPointerErr := readBuffer.ReadUint8("dataPointer", 8)
+	_dataPointer, _dataPointerErr := readBuffer.ReadUint8("dataPointer", 8)
 	if _dataPointerErr != nil {
 		return nil, errors.Wrap(_dataPointerErr, "Error parsing 'dataPointer' field")
 	}
+	dataPointer := _dataPointer
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -134,43 +135,49 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	}
 
 	// Simple Field (transmitEnable)
-	transmitEnable, _transmitEnableErr := readBuffer.ReadBit("transmitEnable")
+	_transmitEnable, _transmitEnableErr := readBuffer.ReadBit("transmitEnable")
 	if _transmitEnableErr != nil {
 		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field")
 	}
+	transmitEnable := _transmitEnable
 
 	// Simple Field (segmentSelectorEnable)
-	segmentSelectorEnable, _segmentSelectorEnableErr := readBuffer.ReadBit("segmentSelectorEnable")
+	_segmentSelectorEnable, _segmentSelectorEnableErr := readBuffer.ReadBit("segmentSelectorEnable")
 	if _segmentSelectorEnableErr != nil {
 		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field")
 	}
+	segmentSelectorEnable := _segmentSelectorEnable
 
 	// Simple Field (writeEnable)
-	writeEnable, _writeEnableErr := readBuffer.ReadBit("writeEnable")
+	_writeEnable, _writeEnableErr := readBuffer.ReadBit("writeEnable")
 	if _writeEnableErr != nil {
 		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field")
 	}
+	writeEnable := _writeEnable
 
 	// Simple Field (readEnable)
-	readEnable, _readEnableErr := readBuffer.ReadBit("readEnable")
+	_readEnable, _readEnableErr := readBuffer.ReadBit("readEnable")
 	if _readEnableErr != nil {
 		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field")
 	}
+	readEnable := _readEnable
 
 	// Simple Field (communicationEnable)
-	communicationEnable, _communicationEnableErr := readBuffer.ReadBit("communicationEnable")
+	_communicationEnable, _communicationEnableErr := readBuffer.ReadBit("communicationEnable")
 	if _communicationEnableErr != nil {
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
+	communicationEnable := _communicationEnable
 
 	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-	priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -179,10 +186,11 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*G
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
 		return nil, pullErr
 	}
-	valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
+	_valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
+	valueType := _valueType
 	if closeErr := readBuffer.CloseContext("valueType"); closeErr != nil {
 		return nil, closeErr
 	}

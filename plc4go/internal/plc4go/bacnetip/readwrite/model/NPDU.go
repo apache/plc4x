@@ -163,16 +163,18 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Simple Field (protocolVersionNumber)
-	protocolVersionNumber, _protocolVersionNumberErr := readBuffer.ReadUint8("protocolVersionNumber", 8)
+	_protocolVersionNumber, _protocolVersionNumberErr := readBuffer.ReadUint8("protocolVersionNumber", 8)
 	if _protocolVersionNumberErr != nil {
 		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field")
 	}
+	protocolVersionNumber := _protocolVersionNumber
 
 	// Simple Field (messageTypeFieldPresent)
-	messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
+	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
 	if _messageTypeFieldPresentErr != nil {
 		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field")
 	}
+	messageTypeFieldPresent := _messageTypeFieldPresent
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -189,10 +191,11 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Simple Field (destinationSpecified)
-	destinationSpecified, _destinationSpecifiedErr := readBuffer.ReadBit("destinationSpecified")
+	_destinationSpecified, _destinationSpecifiedErr := readBuffer.ReadBit("destinationSpecified")
 	if _destinationSpecifiedErr != nil {
 		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field")
 	}
+	destinationSpecified := _destinationSpecified
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -209,22 +212,25 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Simple Field (sourceSpecified)
-	sourceSpecified, _sourceSpecifiedErr := readBuffer.ReadBit("sourceSpecified")
+	_sourceSpecified, _sourceSpecifiedErr := readBuffer.ReadBit("sourceSpecified")
 	if _sourceSpecifiedErr != nil {
 		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field")
 	}
+	sourceSpecified := _sourceSpecified
 
 	// Simple Field (expectingReply)
-	expectingReply, _expectingReplyErr := readBuffer.ReadBit("expectingReply")
+	_expectingReply, _expectingReplyErr := readBuffer.ReadBit("expectingReply")
 	if _expectingReplyErr != nil {
 		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field")
 	}
+	expectingReply := _expectingReply
 
 	// Simple Field (networkPriority)
-	networkPriority, _networkPriorityErr := readBuffer.ReadUint8("networkPriority", 2)
+	_networkPriority, _networkPriorityErr := readBuffer.ReadUint8("networkPriority", 2)
 	if _networkPriorityErr != nil {
 		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field")
 	}
+	networkPriority := _networkPriority
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var destinationNetworkAddress *uint16 = nil

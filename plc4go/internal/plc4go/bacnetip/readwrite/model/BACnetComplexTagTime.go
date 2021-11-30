@@ -145,40 +145,44 @@ func BACnetComplexTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	wildcard := int8(_wildcard)
 
 	// Simple Field (hour)
-	hour, _hourErr := readBuffer.ReadInt8("hour", 8)
+	_hour, _hourErr := readBuffer.ReadInt8("hour", 8)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 	}
+	hour := _hour
 
 	// Virtual field
 	_hourIsWildcard := bool((hour) == (wildcard))
 	hourIsWildcard := bool(_hourIsWildcard)
 
 	// Simple Field (minute)
-	minute, _minuteErr := readBuffer.ReadInt8("minute", 8)
+	_minute, _minuteErr := readBuffer.ReadInt8("minute", 8)
 	if _minuteErr != nil {
 		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field")
 	}
+	minute := _minute
 
 	// Virtual field
 	_minuteIsWildcard := bool((minute) == (wildcard))
 	minuteIsWildcard := bool(_minuteIsWildcard)
 
 	// Simple Field (second)
-	second, _secondErr := readBuffer.ReadInt8("second", 8)
+	_second, _secondErr := readBuffer.ReadInt8("second", 8)
 	if _secondErr != nil {
 		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field")
 	}
+	second := _second
 
 	// Virtual field
 	_secondIsWildcard := bool((second) == (wildcard))
 	secondIsWildcard := bool(_secondIsWildcard)
 
 	// Simple Field (fractional)
-	fractional, _fractionalErr := readBuffer.ReadInt8("fractional", 8)
+	_fractional, _fractionalErr := readBuffer.ReadInt8("fractional", 8)
 	if _fractionalErr != nil {
 		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field")
 	}
+	fractional := _fractional
 
 	// Virtual field
 	_fractionalIsWildcard := bool((fractional) == (wildcard))

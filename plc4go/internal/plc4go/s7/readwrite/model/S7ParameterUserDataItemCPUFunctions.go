@@ -155,34 +155,39 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 	}
 
 	// Simple Field (method)
-	method, _methodErr := readBuffer.ReadUint8("method", 8)
+	_method, _methodErr := readBuffer.ReadUint8("method", 8)
 	if _methodErr != nil {
 		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
 	}
+	method := _method
 
 	// Simple Field (cpuFunctionType)
-	cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
+	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
 		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
 	}
+	cpuFunctionType := _cpuFunctionType
 
 	// Simple Field (cpuFunctionGroup)
-	cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
+	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
 		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
 	}
+	cpuFunctionGroup := _cpuFunctionGroup
 
 	// Simple Field (cpuSubfunction)
-	cpuSubfunction, _cpuSubfunctionErr := readBuffer.ReadUint8("cpuSubfunction", 8)
+	_cpuSubfunction, _cpuSubfunctionErr := readBuffer.ReadUint8("cpuSubfunction", 8)
 	if _cpuSubfunctionErr != nil {
 		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field")
 	}
+	cpuSubfunction := _cpuSubfunction
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
+	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
+	sequenceNumber := _sequenceNumber
 
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var dataUnitReferenceNumber *uint8 = nil

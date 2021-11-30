@@ -107,10 +107,11 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
+	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
+	tunnelingResponseDataBlock := CastTunnelingResponseDataBlock(_tunnelingResponseDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
 		return nil, closeErr
 	}

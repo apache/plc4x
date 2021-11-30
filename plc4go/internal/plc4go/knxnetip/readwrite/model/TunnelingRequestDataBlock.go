@@ -100,16 +100,18 @@ func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRequ
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
+	communicationChannelId := _communicationChannelId
 
 	// Simple Field (sequenceCounter)
-	sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
+	_sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
 	if _sequenceCounterErr != nil {
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
+	sequenceCounter := _sequenceCounter
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

@@ -113,10 +113,11 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -133,10 +134,11 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 	}
 
 	// Simple Field (on)
-	on, _onErr := readBuffer.ReadBit("on")
+	_on, _onErr := readBuffer.ReadBit("on")
 	if _onErr != nil {
 		return nil, errors.Wrap(_onErr, "Error parsing 'on' field")
 	}
+	on := _on
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetDigitalPinValue"); closeErr != nil {
 		return nil, closeErr

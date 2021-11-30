@@ -136,16 +136,18 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Simple Field (sessionHandle)
-	sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
+	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
 	if _sessionHandleErr != nil {
 		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field")
 	}
+	sessionHandle := _sessionHandle
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint32("status", 32)
+	_status, _statusErr := readBuffer.ReadUint32("status", 32)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Array field (senderContext)
 	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
@@ -165,10 +167,11 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Simple Field (options)
-	options, _optionsErr := readBuffer.ReadUint32("options", 32)
+	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
 	if _optionsErr != nil {
 		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field")
 	}
+	options := _options
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

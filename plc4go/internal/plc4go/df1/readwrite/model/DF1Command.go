@@ -112,16 +112,18 @@ func DF1CommandParse(readBuffer utils.ReadBuffer) (*DF1Command, error) {
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (transactionCounter)
-	transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
+	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
 	if _transactionCounterErr != nil {
 		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field")
 	}
+	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *DF1Command

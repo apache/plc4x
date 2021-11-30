@@ -128,25 +128,28 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 	}
 
 	// Simple Field (destinationAddress)
-	destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
+	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
 		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field")
 	}
+	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
-	sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
+	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	sourceAddress := _sourceAddress
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-	command, _commandErr := DF1CommandParse(readBuffer)
+	_command, _commandErr := DF1CommandParse(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
+	command := CastDF1Command(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, closeErr
 	}

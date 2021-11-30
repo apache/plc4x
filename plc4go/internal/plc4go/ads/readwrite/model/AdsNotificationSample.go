@@ -92,16 +92,18 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSa
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+	notificationHandle := _notificationHandle
 
 	// Simple Field (sampleSize)
-	sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
+	_sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
+	sampleSize := _sampleSize
 	// Byte Array field (data)
 	numberOfBytesdata := int(sampleSize)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

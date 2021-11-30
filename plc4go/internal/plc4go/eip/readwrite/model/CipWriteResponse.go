@@ -127,16 +127,18 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*Cip
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (extStatus)
-	extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
 	}
+	extStatus := _extStatus
 
 	if closeErr := readBuffer.CloseContext("CipWriteResponse"); closeErr != nil {
 		return nil, closeErr

@@ -156,34 +156,39 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	}
 
 	// Simple Field (method)
-	method, _methodErr := readBuffer.ReadUint8("method", 8)
+	_method, _methodErr := readBuffer.ReadUint8("method", 8)
 	if _methodErr != nil {
 		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
 	}
+	method := _method
 
 	// Simple Field (cpuFunctionType)
-	cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
+	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
 		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
 	}
+	cpuFunctionType := _cpuFunctionType
 
 	// Simple Field (cpuFunctionGroup)
-	cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
+	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
 		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
 	}
+	cpuFunctionGroup := _cpuFunctionGroup
 
 	// Simple Field (currentMode)
-	currentMode, _currentModeErr := readBuffer.ReadUint8("currentMode", 8)
+	_currentMode, _currentModeErr := readBuffer.ReadUint8("currentMode", 8)
 	if _currentModeErr != nil {
 		return nil, errors.Wrap(_currentModeErr, "Error parsing 'currentMode' field")
 	}
+	currentMode := _currentMode
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
+	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
+	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("S7ParameterModeTransition"); closeErr != nil {
 		return nil, closeErr

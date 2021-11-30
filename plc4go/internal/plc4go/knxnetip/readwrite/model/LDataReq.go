@@ -118,10 +118,11 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	}
 
 	// Simple Field (additionalInformationLength)
-	additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
+	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
+	additionalInformationLength := _additionalInformationLength
 
 	// Array field (additionalInformation)
 	if pullErr := readBuffer.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
@@ -129,14 +130,16 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
-	_additionalInformationLength := additionalInformationLength
-	_additionalInformationEndPos := readBuffer.GetPos() + uint16(_additionalInformationLength)
-	for readBuffer.GetPos() < _additionalInformationEndPos {
-		_item, _err := CEMIAdditionalInformationParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+	{
+		_additionalInformationLength := additionalInformationLength
+		_additionalInformationEndPos := readBuffer.GetPos() + uint16(_additionalInformationLength)
+		for readBuffer.GetPos() < _additionalInformationEndPos {
+			_item, _err := CEMIAdditionalInformationParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+			}
+			additionalInformation = append(additionalInformation, _item)
 		}
-		additionalInformation = append(additionalInformation, _item)
 	}
 	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -146,10 +149,11 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-	dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+	dataFrame := CastLDataFrame(_dataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
 		return nil, closeErr
 	}

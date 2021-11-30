@@ -163,10 +163,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Simple Field (subscriberProcessIdentifier)
-	subscriberProcessIdentifier, _subscriberProcessIdentifierErr := readBuffer.ReadUint8("subscriberProcessIdentifier", 8)
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := readBuffer.ReadUint8("subscriberProcessIdentifier", 8)
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
 	}
+	subscriberProcessIdentifier := _subscriberProcessIdentifier
 
 	// Const Field (monitoredObjectIdentifierHeader)
 	monitoredObjectIdentifierHeader, _monitoredObjectIdentifierHeaderErr := readBuffer.ReadUint8("monitoredObjectIdentifierHeader", 8)
@@ -178,16 +179,18 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Simple Field (monitoredObjectType)
-	monitoredObjectType, _monitoredObjectTypeErr := readBuffer.ReadUint16("monitoredObjectType", 10)
+	_monitoredObjectType, _monitoredObjectTypeErr := readBuffer.ReadUint16("monitoredObjectType", 10)
 	if _monitoredObjectTypeErr != nil {
 		return nil, errors.Wrap(_monitoredObjectTypeErr, "Error parsing 'monitoredObjectType' field")
 	}
+	monitoredObjectType := _monitoredObjectType
 
 	// Simple Field (monitoredObjectInstanceNumber)
-	monitoredObjectInstanceNumber, _monitoredObjectInstanceNumberErr := readBuffer.ReadUint32("monitoredObjectInstanceNumber", 22)
+	_monitoredObjectInstanceNumber, _monitoredObjectInstanceNumberErr := readBuffer.ReadUint32("monitoredObjectInstanceNumber", 22)
 	if _monitoredObjectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_monitoredObjectInstanceNumberErr, "Error parsing 'monitoredObjectInstanceNumber' field")
 	}
+	monitoredObjectInstanceNumber := _monitoredObjectInstanceNumber
 
 	// Const Field (issueConfirmedNotificationsHeader)
 	issueConfirmedNotificationsHeader, _issueConfirmedNotificationsHeaderErr := readBuffer.ReadUint8("issueConfirmedNotificationsHeader", 8)
@@ -208,10 +211,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Simple Field (issueConfirmedNotifications)
-	issueConfirmedNotifications, _issueConfirmedNotificationsErr := readBuffer.ReadBit("issueConfirmedNotifications")
+	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := readBuffer.ReadBit("issueConfirmedNotifications")
 	if _issueConfirmedNotificationsErr != nil {
 		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field")
 	}
+	issueConfirmedNotifications := _issueConfirmedNotifications
 
 	// Const Field (lifetimeHeader)
 	lifetimeHeader, _lifetimeHeaderErr := readBuffer.ReadUint8("lifetimeHeader", 5)
@@ -223,10 +227,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Simple Field (lifetimeLength)
-	lifetimeLength, _lifetimeLengthErr := readBuffer.ReadUint8("lifetimeLength", 3)
+	_lifetimeLength, _lifetimeLengthErr := readBuffer.ReadUint8("lifetimeLength", 3)
 	if _lifetimeLengthErr != nil {
 		return nil, errors.Wrap(_lifetimeLengthErr, "Error parsing 'lifetimeLength' field")
 	}
+	lifetimeLength := _lifetimeLength
 
 	// Array field (lifetimeSeconds)
 	if pullErr := readBuffer.PullContext("lifetimeSeconds", utils.WithRenderAsList(true)); pullErr != nil {

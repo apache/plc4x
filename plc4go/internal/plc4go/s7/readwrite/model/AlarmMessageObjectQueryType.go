@@ -121,10 +121,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	}
 
 	// Simple Field (lengthDataset)
-	lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)
+	_lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)
 	if _lengthDatasetErr != nil {
 		return nil, errors.Wrap(_lengthDatasetErr, "Error parsing 'lengthDataset' field")
 	}
+	lengthDataset := _lengthDataset
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -153,10 +154,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, pullErr
 	}
-	eventState, _eventStateErr := StateParse(readBuffer)
+	_eventState, _eventStateErr := StateParse(readBuffer)
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
+	eventState := CastState(_eventState)
 	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -165,10 +167,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
+	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field")
 	}
+	ackStateGoing := CastState(_ackStateGoing)
 	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -177,10 +180,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
 		return nil, pullErr
 	}
-	ackStateComing, _ackStateComingErr := StateParse(readBuffer)
+	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field")
 	}
+	ackStateComing := CastState(_ackStateComing)
 	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -189,10 +193,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("timeComing"); pullErr != nil {
 		return nil, pullErr
 	}
-	timeComing, _timeComingErr := DateAndTimeParse(readBuffer)
+	_timeComing, _timeComingErr := DateAndTimeParse(readBuffer)
 	if _timeComingErr != nil {
 		return nil, errors.Wrap(_timeComingErr, "Error parsing 'timeComing' field")
 	}
+	timeComing := CastDateAndTime(_timeComing)
 	if closeErr := readBuffer.CloseContext("timeComing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -201,10 +206,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("valueComing"); pullErr != nil {
 		return nil, pullErr
 	}
-	valueComing, _valueComingErr := AssociatedValueTypeParse(readBuffer)
+	_valueComing, _valueComingErr := AssociatedValueTypeParse(readBuffer)
 	if _valueComingErr != nil {
 		return nil, errors.Wrap(_valueComingErr, "Error parsing 'valueComing' field")
 	}
+	valueComing := CastAssociatedValueType(_valueComing)
 	if closeErr := readBuffer.CloseContext("valueComing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -213,10 +219,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("timeGoing"); pullErr != nil {
 		return nil, pullErr
 	}
-	timeGoing, _timeGoingErr := DateAndTimeParse(readBuffer)
+	_timeGoing, _timeGoingErr := DateAndTimeParse(readBuffer)
 	if _timeGoingErr != nil {
 		return nil, errors.Wrap(_timeGoingErr, "Error parsing 'timeGoing' field")
 	}
+	timeGoing := CastDateAndTime(_timeGoing)
 	if closeErr := readBuffer.CloseContext("timeGoing"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -225,10 +232,11 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("valueGoing"); pullErr != nil {
 		return nil, pullErr
 	}
-	valueGoing, _valueGoingErr := AssociatedValueTypeParse(readBuffer)
+	_valueGoing, _valueGoingErr := AssociatedValueTypeParse(readBuffer)
 	if _valueGoingErr != nil {
 		return nil, errors.Wrap(_valueGoingErr, "Error parsing 'valueGoing' field")
 	}
+	valueGoing := CastAssociatedValueType(_valueGoing)
 	if closeErr := readBuffer.CloseContext("valueGoing"); closeErr != nil {
 		return nil, closeErr
 	}

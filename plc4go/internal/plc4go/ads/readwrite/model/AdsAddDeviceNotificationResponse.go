@@ -116,19 +116,21 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandI
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationResponse"); closeErr != nil {
 		return nil, closeErr

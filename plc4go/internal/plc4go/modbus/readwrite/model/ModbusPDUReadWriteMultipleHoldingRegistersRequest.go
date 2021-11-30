@@ -137,28 +137,32 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 	}
 
 	// Simple Field (readStartingAddress)
-	readStartingAddress, _readStartingAddressErr := readBuffer.ReadUint16("readStartingAddress", 16)
+	_readStartingAddress, _readStartingAddressErr := readBuffer.ReadUint16("readStartingAddress", 16)
 	if _readStartingAddressErr != nil {
 		return nil, errors.Wrap(_readStartingAddressErr, "Error parsing 'readStartingAddress' field")
 	}
+	readStartingAddress := _readStartingAddress
 
 	// Simple Field (readQuantity)
-	readQuantity, _readQuantityErr := readBuffer.ReadUint16("readQuantity", 16)
+	_readQuantity, _readQuantityErr := readBuffer.ReadUint16("readQuantity", 16)
 	if _readQuantityErr != nil {
 		return nil, errors.Wrap(_readQuantityErr, "Error parsing 'readQuantity' field")
 	}
+	readQuantity := _readQuantity
 
 	// Simple Field (writeStartingAddress)
-	writeStartingAddress, _writeStartingAddressErr := readBuffer.ReadUint16("writeStartingAddress", 16)
+	_writeStartingAddress, _writeStartingAddressErr := readBuffer.ReadUint16("writeStartingAddress", 16)
 	if _writeStartingAddressErr != nil {
 		return nil, errors.Wrap(_writeStartingAddressErr, "Error parsing 'writeStartingAddress' field")
 	}
+	writeStartingAddress := _writeStartingAddress
 
 	// Simple Field (writeQuantity)
-	writeQuantity, _writeQuantityErr := readBuffer.ReadUint16("writeQuantity", 16)
+	_writeQuantity, _writeQuantityErr := readBuffer.ReadUint16("writeQuantity", 16)
 	if _writeQuantityErr != nil {
 		return nil, errors.Wrap(_writeQuantityErr, "Error parsing 'writeQuantity' field")
 	}
+	writeQuantity := _writeQuantity
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)

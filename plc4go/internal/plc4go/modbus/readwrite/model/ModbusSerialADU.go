@@ -98,10 +98,11 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 	}
 
 	// Simple Field (transactionId)
-	transactionId, _transactionIdErr := readBuffer.ReadUint16("transactionId", 16)
+	_transactionId, _transactionIdErr := readBuffer.ReadUint16("transactionId", 16)
 	if _transactionIdErr != nil {
 		return nil, errors.Wrap(_transactionIdErr, "Error parsing 'transactionId' field")
 	}
+	transactionId := _transactionId
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -118,25 +119,28 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint16("length", 16)
+	_length, _lengthErr := readBuffer.ReadUint16("length", 16)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint8("address", 8)
+	_address, _addressErr := readBuffer.ReadUint8("address", 8)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := _address
 
 	// Simple Field (pdu)
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	pdu, _pduErr := ModbusPDUParse(readBuffer, response)
+	_pdu, _pduErr := ModbusPDUParse(readBuffer, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	pdu := CastModbusPDU(_pdu)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
 		return nil, closeErr
 	}

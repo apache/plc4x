@@ -111,16 +111,18 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Command, e
 	}
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := _address
 
 	// Simple Field (size)
-	size, _sizeErr := readBuffer.ReadUint8("size", 8)
+	_size, _sizeErr := readBuffer.ReadUint8("size", 8)
 	if _sizeErr != nil {
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field")
 	}
+	size := _size
 
 	if closeErr := readBuffer.CloseContext("DF1UnprotectedReadRequest"); closeErr != nil {
 		return nil, closeErr

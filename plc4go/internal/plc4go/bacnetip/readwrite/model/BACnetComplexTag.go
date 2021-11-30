@@ -150,10 +150,11 @@ func BACnetComplexTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
+	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
+	lengthValueType := _lengthValueType
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
@@ -237,6 +238,8 @@ func BACnetComplexTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		_parent, typeSwitchError = BACnetComplexTagTimeParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetComplexTagObjectIdentifier
 		_parent, typeSwitchError = BACnetComplexTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType)
+	case dataType == BACnetDataType_BACNET_PROPERTY_IDENTIFIER: // BACnetComplexTagPropertyIdentifier
+		_parent, typeSwitchError = BACnetComplexTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetComplexTagDeviceState
 		_parent, typeSwitchError = BACnetComplexTagDeviceStateParse(readBuffer, tagNumberArgument, dataType)
 	default:

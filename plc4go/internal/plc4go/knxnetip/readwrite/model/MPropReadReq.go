@@ -124,34 +124,39 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 	}
 
 	// Simple Field (interfaceObjectType)
-	interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
+	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
+	interfaceObjectType := _interfaceObjectType
 
 	// Simple Field (objectInstance)
-	objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
+	_objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
+	objectInstance := _objectInstance
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
+	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
+	numberOfElements := _numberOfElements
 
 	// Simple Field (startIndex)
-	startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
+	_startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
+	startIndex := _startIndex
 
 	if closeErr := readBuffer.CloseContext("MPropReadReq"); closeErr != nil {
 		return nil, closeErr

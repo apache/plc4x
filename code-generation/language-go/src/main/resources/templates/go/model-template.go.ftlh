@@ -612,18 +612,20 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
-	_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
-	_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
-	for ;readBuffer.GetPos() < _${arrayField.name}EndPos; {
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	{
+		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
+		_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
+		for ;readBuffer.GetPos() < _${arrayField.name}EndPos; {
+			_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+			}
+			${arrayField.name} = append(${arrayField.name}, _item)
+						<#-- After parsing, update the current position, but only if it's needed -->
+							<#if arrayField.loopExpression.contains("curPos")>
+			curPos = readBuffer.GetPos() - startPos
+							</#if>
 		}
-		${arrayField.name} = append(${arrayField.name}, _item)
-					<#-- After parsing, update the current position, but only if it's needed -->
-						<#if arrayField.loopExpression.contains("curPos")>
-		curPos = readBuffer.GetPos() - startPos
-						</#if>
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
@@ -982,7 +984,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				</#if>
     <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
 	<@compress single_line=true>
-	${simpleField.name}, _${simpleField.name}Err :=
+	_${simpleField.name}, _${simpleField.name}Err :=
 	<#if helper.isSimpleTypeReference(simpleField.type)>
 		${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type.asSimpleTypeReference().orElseThrow(), null, simpleField)}
 	<#else>
@@ -1015,6 +1017,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			</#if>
 	}
+	${simpleField.name} := <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>_${simpleField.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>)</#if>
 				<#if !helper.isSimpleTypeReference(simpleField.type)>
 	if closeErr := readBuffer.CloseContext("${simpleField.name}"); closeErr != nil {
 		return nil, closeErr

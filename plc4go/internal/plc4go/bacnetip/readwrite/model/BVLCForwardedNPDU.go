@@ -133,19 +133,21 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 	}
 
 	// Simple Field (port)
-	port, _portErr := readBuffer.ReadUint16("port", 16)
+	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
+	port := _port
 
 	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(10)))
+	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+	npdu := CastNPDU(_npdu)
 	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {
 		return nil, closeErr
 	}

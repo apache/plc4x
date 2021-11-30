@@ -94,28 +94,32 @@ func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Modb
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
+	referenceType := _referenceType
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
+	_fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
+	fileNumber := _fileNumber
 
 	// Simple Field (recordNumber)
-	recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
+	_recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
+	recordNumber := _recordNumber
 
 	// Simple Field (recordLength)
-	recordLength, _recordLengthErr := readBuffer.ReadUint16("recordLength", 16)
+	_recordLength, _recordLengthErr := readBuffer.ReadUint16("recordLength", 16)
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
+	recordLength := _recordLength
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordRequestItem"); closeErr != nil {
 		return nil, closeErr

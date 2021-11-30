@@ -117,16 +117,18 @@ func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool)
 	}
 
 	// Simple Field (subFunction)
-	subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
+	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
+	subFunction := _subFunction
 
 	// Simple Field (data)
-	data, _dataErr := readBuffer.ReadUint16("data", 16)
+	_data, _dataErr := readBuffer.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := _data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUDiagnosticRequest"); closeErr != nil {
 		return nil, closeErr

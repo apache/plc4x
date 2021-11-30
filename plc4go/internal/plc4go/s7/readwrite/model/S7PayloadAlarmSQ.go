@@ -117,10 +117,11 @@ func S7PayloadAlarmSQParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, c
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-	alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParse(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParse(readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field")
 	}
+	alarmMessage := CastAlarmMessagePushType(_alarmMessage)
 	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {
 		return nil, closeErr
 	}

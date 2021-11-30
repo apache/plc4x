@@ -117,10 +117,11 @@ func BACnetTagApplicationOctetStringParse(readBuffer utils.ReadBuffer, actualLen
 	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
+	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationOctetString"); closeErr != nil {
 		return nil, closeErr

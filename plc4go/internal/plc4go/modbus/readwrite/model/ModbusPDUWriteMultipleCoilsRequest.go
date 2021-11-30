@@ -127,16 +127,18 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 	}
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
+	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
+	quantity := _quantity
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)

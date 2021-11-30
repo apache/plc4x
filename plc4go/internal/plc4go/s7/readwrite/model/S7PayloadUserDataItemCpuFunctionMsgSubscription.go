@@ -137,10 +137,11 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	}
 
 	// Simple Field (Subscription)
-	Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)
+	_Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)
 	if _SubscriptionErr != nil {
 		return nil, errors.Wrap(_SubscriptionErr, "Error parsing 'Subscription' field")
 	}
+	Subscription := _Subscription
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -157,10 +158,11 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	}
 
 	// Simple Field (magicKey)
-	magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64))
+	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64))
 	if _magicKeyErr != nil {
 		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field")
 	}
+	magicKey := _magicKey
 
 	// Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
 	var Alarmtype *AlarmStateType = nil

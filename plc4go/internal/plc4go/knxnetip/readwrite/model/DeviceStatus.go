@@ -100,10 +100,11 @@ func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 	}
 
 	// Simple Field (programMode)
-	programMode, _programModeErr := readBuffer.ReadBit("programMode")
+	_programMode, _programModeErr := readBuffer.ReadBit("programMode")
 	if _programModeErr != nil {
 		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
 	}
+	programMode := _programMode
 
 	if closeErr := readBuffer.CloseContext("DeviceStatus"); closeErr != nil {
 		return nil, closeErr

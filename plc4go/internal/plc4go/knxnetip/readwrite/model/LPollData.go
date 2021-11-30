@@ -132,10 +132,11 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-	sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	sourceAddress := CastKnxAddress(_sourceAddress)
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -161,10 +162,11 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (numberExpectedPollData)
-	numberExpectedPollData, _numberExpectedPollDataErr := readBuffer.ReadUint8("numberExpectedPollData", 6)
+	_numberExpectedPollData, _numberExpectedPollDataErr := readBuffer.ReadUint8("numberExpectedPollData", 6)
 	if _numberExpectedPollDataErr != nil {
 		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field")
 	}
+	numberExpectedPollData := _numberExpectedPollData
 
 	if closeErr := readBuffer.CloseContext("LPollData"); closeErr != nil {
 		return nil, closeErr

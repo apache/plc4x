@@ -123,10 +123,11 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
 		return nil, pullErr
 	}
-	relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(readBuffer)
+	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(readBuffer)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
+	relativeTimestamp := CastRelativeTimestamp(_relativeTimestamp)
 	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {
 		return nil, closeErr
 	}
