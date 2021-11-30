@@ -121,7 +121,8 @@ func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	}
 
 	// Virtual field
-	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
@@ -154,9 +155,10 @@ func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagBitString{
-		UnusedBits: unusedBits,
-		Data:       data,
-		Parent:     &BACnetComplexTag{},
+		UnusedBits:        unusedBits,
+		Data:              data,
+		ActualLengthInBit: actualLengthInBit,
+		Parent:            &BACnetComplexTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil

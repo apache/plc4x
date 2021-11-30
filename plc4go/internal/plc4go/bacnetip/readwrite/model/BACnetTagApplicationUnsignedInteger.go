@@ -145,7 +145,8 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	isUint8 := bool((actualLength) == (1))
+	_isUint8 := bool((actualLength) == (1))
+	isUint8 := bool(_isUint8)
 
 	// Optional Field (valueUint8) (Can be skipped, if a given expression evaluates to false)
 	var valueUint8 *uint8 = nil
@@ -158,7 +159,8 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	isUint16 := bool((actualLength) == (2))
+	_isUint16 := bool((actualLength) == (2))
+	isUint16 := bool(_isUint16)
 
 	// Optional Field (valueUint16) (Can be skipped, if a given expression evaluates to false)
 	var valueUint16 *uint16 = nil
@@ -171,7 +173,8 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	isUint32 := bool((actualLength) == (3))
+	_isUint32 := bool((actualLength) == (3))
+	isUint32 := bool(_isUint32)
 
 	// Optional Field (valueUint32) (Can be skipped, if a given expression evaluates to false)
 	var valueUint32 *uint32 = nil
@@ -184,7 +187,8 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	isUint64 := bool((actualLength) == (4))
+	_isUint64 := bool((actualLength) == (4))
+	isUint64 := bool(_isUint64)
 
 	// Optional Field (valueUint64) (Can be skipped, if a given expression evaluates to false)
 	var valueUint64 *uint64 = nil
@@ -206,6 +210,10 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 		ValueUint16: valueUint16,
 		ValueUint32: valueUint32,
 		ValueUint64: valueUint64,
+		IsUint8:     isUint8,
+		IsUint16:    isUint16,
+		IsUint32:    isUint32,
+		IsUint64:    isUint64,
 		Parent:      &BACnetTag{},
 	}
 	_child.Parent.Child = _child

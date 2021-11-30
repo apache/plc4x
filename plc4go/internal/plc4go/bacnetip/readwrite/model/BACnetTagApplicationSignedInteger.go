@@ -145,7 +145,8 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	isInt8 := bool((actualLength) == (1))
+	_isInt8 := bool((actualLength) == (1))
+	isInt8 := bool(_isInt8)
 
 	// Optional Field (valueInt8) (Can be skipped, if a given expression evaluates to false)
 	var valueInt8 *int8 = nil
@@ -158,7 +159,8 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	isInt16 := bool((actualLength) == (2))
+	_isInt16 := bool((actualLength) == (2))
+	isInt16 := bool(_isInt16)
 
 	// Optional Field (valueInt16) (Can be skipped, if a given expression evaluates to false)
 	var valueInt16 *int16 = nil
@@ -171,7 +173,8 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	isInt32 := bool((actualLength) == (3))
+	_isInt32 := bool((actualLength) == (3))
+	isInt32 := bool(_isInt32)
 
 	// Optional Field (valueInt32) (Can be skipped, if a given expression evaluates to false)
 	var valueInt32 *int32 = nil
@@ -184,7 +187,8 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	isInt64 := bool((actualLength) == (4))
+	_isInt64 := bool((actualLength) == (4))
+	isInt64 := bool(_isInt64)
 
 	// Optional Field (valueInt64) (Can be skipped, if a given expression evaluates to false)
 	var valueInt64 *int64 = nil
@@ -206,6 +210,10 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 		ValueInt16: valueInt16,
 		ValueInt32: valueInt32,
 		ValueInt64: valueInt64,
+		IsInt8:     isInt8,
+		IsInt16:    isInt16,
+		IsInt32:    isInt32,
+		IsInt64:    isInt64,
 		Parent:     &BACnetTag{},
 	}
 	_child.Parent.Child = _child

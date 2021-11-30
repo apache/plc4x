@@ -114,7 +114,8 @@ func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	}
 
 	// Virtual field
-	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (value)
 	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
@@ -128,8 +129,9 @@ func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagOctetString{
-		Value:  value,
-		Parent: &BACnetComplexTag{},
+		Value:             value,
+		ActualLengthInBit: actualLengthInBit,
+		Parent:            &BACnetComplexTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil

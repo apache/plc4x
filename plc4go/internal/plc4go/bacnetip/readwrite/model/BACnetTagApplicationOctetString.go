@@ -113,7 +113,8 @@ func BACnetTagApplicationOctetStringParse(readBuffer utils.ReadBuffer, actualLen
 	}
 
 	// Virtual field
-	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Simple Field (value)
 	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
@@ -127,8 +128,9 @@ func BACnetTagApplicationOctetStringParse(readBuffer utils.ReadBuffer, actualLen
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationOctetString{
-		Value:  value,
-		Parent: &BACnetTag{},
+		Value:             value,
+		ActualLengthInBit: actualLengthInBit,
+		Parent:            &BACnetTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil

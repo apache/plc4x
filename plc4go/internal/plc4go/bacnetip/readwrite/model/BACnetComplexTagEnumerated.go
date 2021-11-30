@@ -116,7 +116,8 @@ func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	}
 
 	// Virtual field
-	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -143,8 +144,9 @@ func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagEnumerated{
-		Data:   data,
-		Parent: &BACnetComplexTag{},
+		Data:              data,
+		ActualLengthInBit: actualLengthInBit,
+		Parent:            &BACnetComplexTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil
