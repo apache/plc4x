@@ -576,9 +576,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     /**
-     * @param field this generally only is needed in order to access field attributes such as encoding etc.
-     * @param resultType the type the resulting expression should have
-     * @param term the term representing the expression
+     * @param field           this generally only is needed in order to access field attributes such as encoding etc.
+     * @param resultType      the type the resulting expression should have
+     * @param term            the term representing the expression
      * @param parserArguments any parser arguments, which could be referenced in expressions (Needed for getting the type)
      * @return Java code which does the things defined in 'term'
      */
@@ -588,9 +588,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     /**
-     * @param field this generally only is needed in order to access field attributes such as encoding etc.
-     * @param resultType the type the resulting expression should have
-     * @param term the term representing the expression
+     * @param field               this generally only is needed in order to access field attributes such as encoding etc.
+     * @param resultType          the type the resulting expression should have
+     * @param term                the term representing the expression
      * @param serializerArguments any serializer arguments, which could be referenced in expressions (Needed for getting the type)
      * @return Java code which does the things defined in 'term'
      */
@@ -628,18 +628,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (literal instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
             final String numberString = ((NumericLiteral) literal).getNumber().toString();
-            if(resultType.isIntegerTypeReference()) {
+            if (resultType.isIntegerTypeReference()) {
                 final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
-                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
                     tracer = tracer.dive("uint >= 32bit");
                     return tracer + numberString + "L";
-                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                } else if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
                     tracer = tracer.dive("int > 32bit");
                     return tracer + numberString + "L";
                 }
-            } else if(resultType.isFloatTypeReference()) {
+            } else if (resultType.isFloatTypeReference()) {
                 final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(RuntimeException::new);
-                if(floatTypeReference.getSizeInBits() <= 32) {
+                if (floatTypeReference.getSizeInBits() <= 32) {
                     tracer = tracer.dive("float < 32bit");
                     return tracer + numberString + "F";
                 }
@@ -648,12 +648,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (literal instanceof HexadecimalLiteral) {
             tracer = tracer.dive("hexadecimal literal instanceOf");
             final String hexString = ((HexadecimalLiteral) literal).getHexString();
-            if(resultType.isIntegerTypeReference()) {
+            if (resultType.isIntegerTypeReference()) {
                 final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
-                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
                     tracer = tracer.dive("uint >= 32bit");
                     return tracer + hexString + "L";
-                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                } else if (integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
                     tracer = tracer.dive("int > 32bit");
                     return tracer + hexString + "L";
                 }
@@ -689,13 +689,13 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         switch (unaryTerm.getOperation()) {
             case "!":
                 tracer = tracer.dive("case !");
-                if((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
                     throw new IllegalArgumentException("'!(...)' expression requires boolean type");
                 }
                 return tracer + "!(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             case "-":
                 tracer = tracer.dive("case -");
-                if((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
                     throw new IllegalArgumentException("'-(...)' expression requires integer or floating-point type");
                 }
                 return tracer + "-(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
@@ -715,7 +715,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         switch (operation) {
             case "^": {
                 tracer = tracer.dive(operation);
-                if((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
                     throw new IllegalArgumentException("'A^B' expression requires numeric result type");
                 }
                 return tracer + "Math.pow((" + toExpression(field, resultType, a, variableExpressionGenerator) + "), (" + toExpression(field, resultType, b, variableExpressionGenerator) + "))";
@@ -726,7 +726,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "+":
             case "-": {
                 tracer = tracer.dive(operation);
-                if((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
                     throw new IllegalArgumentException("'A" + operation + "B' expression requires numeric result type");
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
@@ -742,7 +742,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "<":
             case "==":
             case "!=": {
-                if((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
                     throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
                 }
                 // TODO: Try to infer the types of the arguments in this case
@@ -750,7 +750,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case "&&":
             case "||": {
-                if((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
+                if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
                     throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
@@ -771,7 +771,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             Term a = ternaryTerm.getA();
             Term b = ternaryTerm.getB();
             Term c = ternaryTerm.getC();
-            return tracer + "((" + toExpression(field, BOOL_TYPE_REFERENCE, a, variableExpressionGenerator) + ") ? " + toExpression(field, resultType, b, variableExpressionGenerator) + " : " + toExpression(field, resultType, c, variableExpressionGenerator) + ")";
+            return tracer +
+                "(" +
+                "(" + toExpression(field, BOOL_TYPE_REFERENCE, a, variableExpressionGenerator) + ") ? " +
+                toExpression(field, resultType, b, variableExpressionGenerator) + " : " +
+                toExpression(field, resultType, c, variableExpressionGenerator) + "" +
+                ")";
         } else {
             throw new IllegalArgumentException("Unsupported ternary operation type " + ternaryTerm.getOperation());
         }

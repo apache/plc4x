@@ -25,6 +25,8 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
+
 public class FieldReaderVirtual<T> implements FieldCommons {
 
     @SuppressWarnings({"unused", "unchecked"})
@@ -72,6 +74,10 @@ public class FieldReaderVirtual<T> implements FieldCommons {
         }
         if (type == String.class) {
             return type.cast(String.valueOf(valueExpression));
+        }
+        if (type == BigInteger.class) {
+            long longValue = valueExpression instanceof Long ? (Long) valueExpression : (long) valueExpression;
+            return (T) BigInteger.valueOf(longValue);
         }
         return type.cast(valueExpression);
     }

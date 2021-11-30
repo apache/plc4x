@@ -271,16 +271,10 @@
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetUnconfirmedServiceRequestIAm
-            [const uint 8 objectIdentifierHeader 0xC4]
-            [simple uint 10 objectType]
-            [simple uint 22 objectInstanceNumber]
-            [const uint 5 maximumApduLengthAcceptedHeader 0x04]
-            [simple uint 3 maximumApduLengthAcceptedLength]
-            [array int 8 maximumApduLengthAccepted count 'maximumApduLengthAcceptedLength']
-            [const uint 8 segmentationSupportedHeader 0x91]
-            [simple uint 8 segmentationSupported]
-            [const uint 8 vendorIdHeader 0x21]
-            [simple uint 8 vendorId]
+            [simple BACnetTagApplicationObjectIdentifier    deviceIdentifier                ]
+            [simple BACnetTagApplicationUnsignedInteger     maximumApduLengthAcceptedLength ]
+            [simple BACnetTagApplicationEnumerated          segmentationSupported ]
+            [simple BACnetTagApplicationUnsignedInteger     vendorId ]
         ]
         ['0x01' BACnetUnconfirmedServiceRequestIHave
             [simple BACnetTagApplicationObjectIdentifier    deviceIdentifier    ]
@@ -510,8 +504,13 @@
             [optional   uint 16 valueUint16 'isUint16'          ]
             [virtual    bit     isUint32    'actualLength == 3' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
+            // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]
+            [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
+            */
         ]
         ['APPLICATION_TAGS','0x3' BACnetTagApplicationSignedInteger(uint 32 actualLength)
             [virtual    bit     isInt8     'actualLength == 1'  ]
@@ -522,6 +521,7 @@
             [optional   int 32  valueInt32 'isInt32'            ]
             [virtual    bit     isInt64    'actualLength == 4'  ]
             [optional   int 64  valueInt64 'isInt64'            ]
+            [virtual    uint 64 actualValue 'isInt8?valueInt8:(isInt16?valueInt16:(isInt64?valueInt64:0))']
         ]
         ['APPLICATION_TAGS','0x4' BACnetTagApplicationReal
             [simple float 32 value]
@@ -609,8 +609,13 @@
             [optional   uint 16 valueUint16 'isUint16'          ]
             [virtual    bit     isUint32    'actualLength == 3' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
+            // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]
+            [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
+            */
         ]
         ['SIGNED_INTEGER' BACnetComplexTagSignedInteger(uint 32 actualLength)
             [virtual    bit     isInt8     'actualLength == 1'  ]
@@ -621,6 +626,7 @@
             [optional   int 32  valueInt32 'isInt32'            ]
             [virtual    bit     isInt64    'actualLength == 4'  ]
             [optional   int 64  valueInt64 'isInt64'            ]
+            [virtual    uint 64 actualValue 'isInt8?valueInt8:(isInt16?valueInt16:(isInt64?valueInt64:0))']
         ]
         ['REAL' BACnetComplexTagReal(uint 32 actualLength)
             [simple     float 32 value]
