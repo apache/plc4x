@@ -139,12 +139,14 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 	}
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
-	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
-		_item, _err := readBuffer.ReadUint16("", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
+	{
+		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
+			_item, _err := readBuffer.ReadUint16("", 16)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
+			}
+			fifoValue[curItem] = _item
 		}
-		fifoValue[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

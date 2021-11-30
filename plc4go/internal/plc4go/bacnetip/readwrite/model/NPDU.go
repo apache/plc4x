@@ -258,12 +258,14 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
+	{
+		for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
+			}
+			destinationAddress[curItem] = _item
 		}
-		destinationAddress[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -295,12 +297,14 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
+	{
+		for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
+			}
+			sourceAddress[curItem] = _item
 		}
-		sourceAddress[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("sourceAddress", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

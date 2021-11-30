@@ -172,12 +172,14 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	}
 	// Count array
 	offsets := make([]uint16, serviceNb)
-	for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
-		_item, _err := readBuffer.ReadUint16("", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'offsets' field")
+	{
+		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
+			_item, _err := readBuffer.ReadUint16("", 16)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'offsets' field")
+			}
+			offsets[curItem] = _item
 		}
-		offsets[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

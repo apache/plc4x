@@ -114,12 +114,14 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
-	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
-		_item, _err := AdsNotificationSampleParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
+	{
+		for curItem := uint16(0); curItem < uint16(samples); curItem++ {
+			_item, _err := AdsNotificationSampleParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
+			}
+			adsNotificationSamples[curItem] = _item
 		}
-		adsNotificationSamples[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

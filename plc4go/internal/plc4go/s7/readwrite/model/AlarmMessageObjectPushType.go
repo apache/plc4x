@@ -226,12 +226,14 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	}
 	// Count array
 	AssociatedValues := make([]*AssociatedValueType, numberOfValues)
-	for curItem := uint16(0); curItem < uint16(numberOfValues); curItem++ {
-		_item, _err := AssociatedValueTypeParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field")
+	{
+		for curItem := uint16(0); curItem < uint16(numberOfValues); curItem++ {
+			_item, _err := AssociatedValueTypeParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field")
+			}
+			AssociatedValues[curItem] = _item
 		}
-		AssociatedValues[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("AssociatedValues", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

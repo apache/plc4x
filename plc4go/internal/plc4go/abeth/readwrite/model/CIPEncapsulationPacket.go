@@ -155,12 +155,14 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
-	for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'senderContext' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field")
+			}
+			senderContext[curItem] = _item
 		}
-		senderContext[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

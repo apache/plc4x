@@ -109,12 +109,14 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	}
 	// Count array
 	offsets := make([]uint16, serviceNb)
-	for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
-		_item, _err := readBuffer.ReadUint16("", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'offsets' field")
+	{
+		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
+			_item, _err := readBuffer.ReadUint16("", 16)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'offsets' field")
+			}
+			offsets[curItem] = _item
 		}
-		offsets[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -126,12 +128,14 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	}
 	// Count array
 	services := make([]*CipService, serviceNb)
-	for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
-		_item, _err := CipServiceParse(readBuffer, uint16(servicesLen)/uint16(serviceNb))
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'services' field")
+	{
+		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
+			_item, _err := CipServiceParse(readBuffer, uint16(servicesLen)/uint16(serviceNb))
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'services' field")
+			}
+			services[curItem] = _item
 		}
-		services[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("services", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

@@ -143,12 +143,14 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	}
 	// Count array
 	messageObjects := make([]uint8, numberOfObjects)
-	for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+	{
+		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+			}
+			messageObjects[curItem] = _item
 		}
-		messageObjects[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

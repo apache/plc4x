@@ -180,12 +180,14 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 	}
 	// Count array
 	items := make([]*SzlDataTreeItem, szlItemCount)
-	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
-		_item, _err := SzlDataTreeItemParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'items' field")
+	{
+		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
+			_item, _err := SzlDataTreeItemParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+			}
+			items[curItem] = _item
 		}
-		items[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

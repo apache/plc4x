@@ -121,12 +121,14 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
-	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+			}
+			ip[curItem] = _item
 		}
-		ip[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

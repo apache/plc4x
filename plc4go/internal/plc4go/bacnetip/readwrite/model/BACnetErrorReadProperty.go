@@ -155,12 +155,14 @@ func BACnetErrorReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, er
 	}
 	// Count array
 	errorClass := make([]int8, errorClassLength)
-	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'errorClass' field")
+	{
+		for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'errorClass' field")
+			}
+			errorClass[curItem] = _item
 		}
-		errorClass[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("errorClass", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -188,12 +190,14 @@ func BACnetErrorReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, er
 	}
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
-	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
+	{
+		for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
+			}
+			errorCode[curItem] = _item
 		}
-		errorCode[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("errorCode", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

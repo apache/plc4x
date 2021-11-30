@@ -198,12 +198,14 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
-	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+	{
+		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+			}
+			propertyIdentifier[curItem] = _item
 		}
-		propertyIdentifier[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

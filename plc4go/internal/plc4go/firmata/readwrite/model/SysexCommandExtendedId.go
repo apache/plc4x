@@ -115,12 +115,14 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 	}
 	// Count array
 	id := make([]int8, uint16(2))
-	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'id' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'id' field")
+			}
+			id[curItem] = _item
 		}
-		id[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("id", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

@@ -138,12 +138,14 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType2, numEntries)
-	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
-		_item, _err := GroupObjectDescriptorRealisationType2Parse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
+	{
+		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
+			_item, _err := GroupObjectDescriptorRealisationType2Parse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
+			}
+			comObjectDescriptors[curItem] = _item
 		}
-		comObjectDescriptors[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
