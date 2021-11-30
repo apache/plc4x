@@ -31,11 +31,10 @@ type BACnetTagApplicationUnsignedInteger struct {
 	ValueUint8  *uint8
 	ValueUint16 *uint16
 	ValueUint32 *uint32
-	ValueUint64 *uint64
 	IsUint8     bool
 	IsUint16    bool
 	IsUint32    bool
-	IsUint64    bool
+	ActualValue uint32
 	Parent      *BACnetTag
 }
 
@@ -62,12 +61,11 @@ func (m *BACnetTagApplicationUnsignedInteger) InitializeParent(parent *BACnetTag
 	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, valueUint64 *uint64, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetTagApplicationUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationUnsignedInteger{
 		ValueUint8:  valueUint8,
 		ValueUint16: valueUint16,
 		ValueUint32: valueUint32,
-		ValueUint64: valueUint64,
 		Parent:      NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
@@ -127,11 +125,6 @@ func (m *BACnetTagApplicationUnsignedInteger) LengthInBitsConditional(lastItem b
 
 	// A virtual field doesn't have any in- or output.
 
-	// Optional Field (valueUint64)
-	if m.ValueUint64 != nil {
-		lengthInBits += 64
-	}
-
 	return lengthInBits
 }
 
@@ -187,18 +180,12 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	_isUint64 := bool((actualLength) == (4))
-	isUint64 := bool(_isUint64)
-
-	// Optional Field (valueUint64) (Can be skipped, if a given expression evaluates to false)
-	var valueUint64 *uint64 = nil
-	if isUint64 {
-		_val, _err := readBuffer.ReadUint64("valueUint64", 64)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'valueUint64' field")
-		}
-		valueUint64 = &_val
-	}
+	_actualValue := utils.InlineIf(isUint8, func() interface{} { return uint32((*valueUint8)) }, func() interface{} {
+		return uint32(uint32(utils.InlineIf(isUint16, func() interface{} { return uint32((*valueUint16)) }, func() interface{} {
+			return uint32(uint32(utils.InlineIf(isUint32, func() interface{} { return uint32((*valueUint32)) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
+		}).(uint32)))
+	}).(uint32)
+	actualValue := uint32(_actualValue)
 
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationUnsignedInteger"); closeErr != nil {
 		return nil, closeErr
@@ -209,11 +196,10 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 		ValueUint8:  valueUint8,
 		ValueUint16: valueUint16,
 		ValueUint32: valueUint32,
-		ValueUint64: valueUint64,
 		IsUint8:     isUint8,
 		IsUint16:    isUint16,
 		IsUint32:    isUint32,
-		IsUint64:    isUint64,
+		ActualValue: actualValue,
 		Parent:      &BACnetTag{},
 	}
 	_child.Parent.Child = _child
@@ -253,16 +239,6 @@ func (m *BACnetTagApplicationUnsignedInteger) Serialize(writeBuffer utils.WriteB
 			_valueUint32Err := writeBuffer.WriteUint32("valueUint32", 32, *(valueUint32))
 			if _valueUint32Err != nil {
 				return errors.Wrap(_valueUint32Err, "Error serializing 'valueUint32' field")
-			}
-		}
-
-		// Optional Field (valueUint64) (Can be skipped, if the value is null)
-		var valueUint64 *uint64 = nil
-		if m.ValueUint64 != nil {
-			valueUint64 = m.ValueUint64
-			_valueUint64Err := writeBuffer.WriteUint64("valueUint64", 64, *(valueUint64))
-			if _valueUint64Err != nil {
-				return errors.Wrap(_valueUint64Err, "Error serializing 'valueUint64' field")
 			}
 		}
 

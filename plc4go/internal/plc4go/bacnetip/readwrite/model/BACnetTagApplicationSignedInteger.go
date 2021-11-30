@@ -28,15 +28,16 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationSignedInteger struct {
-	ValueInt8  *int8
-	ValueInt16 *int16
-	ValueInt32 *int32
-	ValueInt64 *int64
-	IsInt8     bool
-	IsInt16    bool
-	IsInt32    bool
-	IsInt64    bool
-	Parent     *BACnetTag
+	ValueInt8   *int8
+	ValueInt16  *int16
+	ValueInt32  *int32
+	ValueInt64  *int64
+	IsInt8      bool
+	IsInt16     bool
+	IsInt32     bool
+	IsInt64     bool
+	ActualValue uint64
+	Parent      *BACnetTag
 }
 
 // The corresponding interface
@@ -132,6 +133,8 @@ func (m *BACnetTagApplicationSignedInteger) LengthInBitsConditional(lastItem boo
 		lengthInBits += 64
 	}
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -200,21 +203,30 @@ func BACnetTagApplicationSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 		valueInt64 = &_val
 	}
 
+	// Virtual field
+	_actualValue := utils.InlineIf(isInt8, func() interface{} { return uint64((*valueInt8)) }, func() interface{} {
+		return uint64(uint64(utils.InlineIf(isInt16, func() interface{} { return uint64((*valueInt16)) }, func() interface{} {
+			return uint64(uint64(utils.InlineIf(isInt64, func() interface{} { return uint64((*valueInt64)) }, func() interface{} { return uint64(uint64(0)) }).(uint64)))
+		}).(uint64)))
+	}).(uint64)
+	actualValue := uint64(_actualValue)
+
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationSignedInteger"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationSignedInteger{
-		ValueInt8:  valueInt8,
-		ValueInt16: valueInt16,
-		ValueInt32: valueInt32,
-		ValueInt64: valueInt64,
-		IsInt8:     isInt8,
-		IsInt16:    isInt16,
-		IsInt32:    isInt32,
-		IsInt64:    isInt64,
-		Parent:     &BACnetTag{},
+		ValueInt8:   valueInt8,
+		ValueInt16:  valueInt16,
+		ValueInt32:  valueInt32,
+		ValueInt64:  valueInt64,
+		IsInt8:      isInt8,
+		IsInt16:     isInt16,
+		IsInt32:     isInt32,
+		IsInt64:     isInt64,
+		ActualValue: actualValue,
+		Parent:      &BACnetTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil
