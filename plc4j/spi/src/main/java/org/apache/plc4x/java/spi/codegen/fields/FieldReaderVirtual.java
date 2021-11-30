@@ -36,7 +36,8 @@ public class FieldReaderVirtual<T> implements FieldCommons {
             } else if (type == byte.class) {
                 Number valueExpressionNumber = (Number) valueExpression;
                 long longValue = valueExpressionNumber.longValue();
-                if ((byte) longValue != longValue) {
+                // 0xFF is a special case and a legit value for (unsigned) byte
+                if ((byte) longValue != longValue && longValue != 0xFF) {
                     throw new ArithmeticException("byte overflow");
                 }
                 return (T) (Byte) valueExpressionNumber.byteValue();
