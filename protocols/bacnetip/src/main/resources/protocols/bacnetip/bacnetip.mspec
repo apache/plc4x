@@ -535,7 +535,7 @@
         ['APPLICATION_TAGS','0x7' BACnetTagApplicationCharacterString(uint 32 actualLength)
             [simple     BACnetCharacterEncoding      encoding]
             // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                  actualLengthInBit 'actualLength * 8']
+            [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
             // TODO: call to string on encoding or add type conversion so we can use the enum above
             [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
         ]
@@ -610,7 +610,7 @@
         ['CHARACTER_STRING' BACnetComplexTagCharacterString(uint 32 actualLength)
             [simple     BACnetCharacterEncoding      encoding]
             // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint     16                  actualLengthInBit 'actualLength * 8']
+            [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
             // TODO: call to string on encoding or add type conversion so we can use the enum above
             [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
         ]

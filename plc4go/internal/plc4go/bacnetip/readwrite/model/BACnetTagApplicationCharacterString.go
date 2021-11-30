@@ -130,7 +130,7 @@ func BACnetTagApplicationCharacterStringParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(uint16(actualLength)*uint16(uint16(8))) - uint16(uint16(8))
 
 	// Simple Field (value)
 	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
