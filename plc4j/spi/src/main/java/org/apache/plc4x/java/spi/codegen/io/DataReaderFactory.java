@@ -21,6 +21,9 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.function.Function;
 
 public class DataReaderFactory {
@@ -87,6 +90,18 @@ public class DataReaderFactory {
 
     public static <T, I> DataReaderEnumDefault<T, I> readEnum(Function<I, T> enumResolver, DataReader<I> dataReader) {
         return new DataReaderEnumDefault<>(enumResolver, dataReader);
+    }
+
+    public static DataReader<LocalDate> readDate(ReadBuffer readBuffer) {
+        return new DataReaderSimpleDate(readBuffer);
+    }
+
+    public static DataReader<LocalDateTime> readDateTime(ReadBuffer readBuffer) {
+        return new DataReaderSimpleDateTime(readBuffer);
+    }
+
+    public static DataReader<LocalTime> readTime(ReadBuffer readBuffer) {
+        return new DataReaderSimpleTime(readBuffer);
     }
 
 }

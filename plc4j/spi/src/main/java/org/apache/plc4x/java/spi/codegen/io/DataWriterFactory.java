@@ -21,6 +21,9 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.function.Function;
 
 public class DataWriterFactory {
@@ -91,6 +94,18 @@ public class DataWriterFactory {
 
     public static <T, I> DataWriterEnumDefault<T, I> writeEnum(Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> dataWriter) {
         return new DataWriterEnumDefault<>(enumSerializer, enumNamer, dataWriter);
+    }
+
+    public static DataWriter<LocalDate> writeDate(WriteBuffer writeBuffer) {
+        return new DataWriterSimpleDate(writeBuffer);
+    }
+
+    public static DataWriter<LocalDateTime> writeDateTime(WriteBuffer writeBuffer) {
+        return new DataWriterSimpleDateTime(writeBuffer);
+    }
+
+    public static DataWriter<LocalTime> writeTime(WriteBuffer writeBuffer) {
+        return new DataWriterSimpleTime(writeBuffer);
     }
 
 }

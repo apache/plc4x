@@ -415,6 +415,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 return "readString(readBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+            case TIME:
+                return "readTime(readBuffer)";
+            case DATE:
+                return "readDate(readBuffer)";
+            case DATETIME:
+                return "readDateTime(readBuffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
@@ -473,6 +479,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 return "writeString(writeBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+            case TIME:
+                return "writeTime(writeBuffer)";
+            case DATE:
+                return "writeDate(writeBuffer)";
+            case DATETIME:
+                return "writeDateTime(readBuffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
