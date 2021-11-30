@@ -192,6 +192,11 @@
         ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
         ]
         ['0x07' BACnetConfirmedServiceRequestAtomicWriteFile
+            [simple BACnetTagApplicationObjectIdentifier                deviceIdentifier    ]
+            [optional BACnetComplexTagNull('0', 'BACnetDataType.NULL')  openingTag          ]
+            [simple BACnetTagApplicationSignedInteger                   fileStartPosition   ]
+            [simple BACnetTagApplicationOctetString                     fileData            ]
+            [optional BACnetComplexTagNull('0', 'BACnetDataType.NULL')  closingTag          ]
         ]
 
         ['0x08' BACnetConfirmedServiceRequestAddListElement
