@@ -37,7 +37,7 @@ import (
 )
 
 func Test(t *testing.T) {
-	//t.Skip() // Manual test don't check in un-skipped
+	t.Skip() // Manual test don't check in un-skipped
 
 	config.TraceTransactionManagerWorkers = false
 	config.TraceTransactionManagerTransactions = false
