@@ -148,7 +148,6 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 			return nil, pullErr
 		}
 		_val, _err := HPAIDataEndpointParse(readBuffer)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
@@ -170,7 +169,6 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 			return nil, pullErr
 		}
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")

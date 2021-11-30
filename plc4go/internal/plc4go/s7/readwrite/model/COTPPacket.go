@@ -183,7 +183,6 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 			return nil, pullErr
 		}
 		_val, _err := S7MessageParse(readBuffer)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")

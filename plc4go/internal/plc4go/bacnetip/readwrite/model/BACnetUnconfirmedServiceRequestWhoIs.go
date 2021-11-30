@@ -120,7 +120,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
@@ -142,7 +141,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")

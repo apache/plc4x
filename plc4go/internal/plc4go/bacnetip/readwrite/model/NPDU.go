@@ -318,7 +318,6 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 			return nil, pullErr
 		}
 		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
@@ -340,7 +339,6 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 			return nil, pullErr
 		}
 		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")

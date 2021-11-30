@@ -134,7 +134,6 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
@@ -156,7 +155,6 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
@@ -178,7 +176,6 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(2), BACnetDataType_OCTET_STRING)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
@@ -200,7 +197,6 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")

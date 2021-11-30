@@ -111,7 +111,7 @@ func (m *BACnetTagApplicationBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagApplicationBitString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -128,7 +128,7 @@ func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValue
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) }).(uint16)
+	_dataLength := actualLength
 	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 	for readBuffer.GetPos() < _dataEndPos {
 		_item, _err := readBuffer.ReadInt8("", 8)

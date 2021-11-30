@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagOctetString struct {
-	TheString         string
+	Value             string
 	ActualLengthInBit uint16
 	Parent            *BACnetComplexTag
 }
@@ -57,10 +57,10 @@ func (m *BACnetComplexTagOctetString) InitializeParent(parent *BACnetComplexTag,
 	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetComplexTagOctetString(theString string, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
+func NewBACnetComplexTagOctetString(value string, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagOctetString{
-		TheString: theString,
-		Parent:    NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:  value,
+		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
 	return child.Parent
@@ -98,7 +98,7 @@ func (m *BACnetComplexTagOctetString) LengthInBitsConditional(lastItem bool) uin
 
 	// A virtual field doesn't have any in- or output.
 
-	// Simple field (theString)
+	// Simple field (value)
 	lengthInBits += uint16(m.ActualLengthInBit)
 
 	return lengthInBits
@@ -116,10 +116,10 @@ func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	// Virtual field
 	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
 
-	// Simple Field (theString)
-	theString, _theStringErr := readBuffer.ReadString("theString", uint32(actualLengthInBit))
-	if _theStringErr != nil {
-		return nil, errors.Wrap(_theStringErr, "Error parsing 'theString' field")
+	// Simple Field (value)
+	value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
+	if _valueErr != nil {
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagOctetString"); closeErr != nil {
@@ -128,8 +128,8 @@ func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagOctetString{
-		TheString: theString,
-		Parent:    &BACnetComplexTag{},
+		Value:  value,
+		Parent: &BACnetComplexTag{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil
@@ -141,11 +141,11 @@ func (m *BACnetComplexTagOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 			return pushErr
 		}
 
-		// Simple Field (theString)
-		theString := string(m.TheString)
-		_theStringErr := writeBuffer.WriteString("theString", uint32(m.ActualLengthInBit), "ASCII", (theString))
-		if _theStringErr != nil {
-			return errors.Wrap(_theStringErr, "Error serializing 'theString' field")
+		// Simple Field (value)
+		value := string(m.Value)
+		_valueErr := writeBuffer.WriteString("value", uint32(m.ActualLengthInBit), "ASCII", (value))
+		if _valueErr != nil {
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagOctetString"); popErr != nil {

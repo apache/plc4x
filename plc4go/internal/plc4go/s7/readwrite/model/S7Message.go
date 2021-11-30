@@ -207,7 +207,6 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 			return nil, pullErr
 		}
 		_val, _err := S7ParameterParse(readBuffer, messageType)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
@@ -229,7 +228,6 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 			return nil, pullErr
 		}
 		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")

@@ -104,7 +104,7 @@ func (m *BACnetTagApplicationReal) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagApplicationReal"); pullErr != nil {
 		return nil, pullErr
 	}

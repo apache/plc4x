@@ -232,7 +232,7 @@ func BACnetComplexTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetComplexTagOctetString
 		_parent, typeSwitchError = BACnetComplexTagOctetStringParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetComplexTagCharacterString
-		_parent, typeSwitchError = BACnetComplexTagCharacterStringParse(readBuffer, tagNumberArgument, dataType)
+		_parent, typeSwitchError = BACnetComplexTagCharacterStringParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetComplexTagBitString
 		_parent, typeSwitchError = BACnetComplexTagBitStringParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetComplexTagEnumerated

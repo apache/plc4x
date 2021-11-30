@@ -245,7 +245,6 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 			return nil, pullErr
 		}
 		_val, _err := BACnetTagParse(readBuffer)
-
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
