@@ -47,7 +47,7 @@ func (m *BACnetComplexTagObjectIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }
 
-func (m *BACnetComplexTagObjectIdentifier) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+func (m *BACnetComplexTagObjectIdentifier) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
 	m.Parent.TagNumber = tagNumber
 	m.Parent.TagClass = tagClass
 	m.Parent.LengthValueType = lengthValueType

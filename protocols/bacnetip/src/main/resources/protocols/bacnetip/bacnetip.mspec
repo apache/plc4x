@@ -239,6 +239,8 @@
         ['0x13' BACnetConfirmedServiceRequestConfirmedTextMessage
         ]
         ['0x14' BACnetConfirmedServiceRequestReinitializeDevice
+          [simple BACnetComplexTagDeviceState('0', 'BACnetDataType.BACNET_DEVICE_STATE')     reinitializedStateOfDevice  ]
+          [optional BACnetComplexTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')  password                    ]
         ]
 
         ['0x15' BACnetConfirmedServiceRequestVTOpen
@@ -592,16 +594,15 @@
 ]
 
 [discriminatedType BACnetComplexTag(uint 4 tagNumberArgument, BACnetDataType dataType)
-    [assert        uint 4           tagNumber                 'tagNumberArgument'                                           ]
-    [assert        TagClass         tagClass                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
-    [simple        uint 3           lengthValueType                                                                         ]
-    [optional      uint 8           extTagNumber              'tagNumber == 15'                                             ]
-    [virtual       uint 8           actualTagNumber           'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
-    [virtual       bit              isPrimitiveAndNotBoolean  '!(lengthValueType == 6) && tagNumber != 1'                   ]
-    [optional      uint 8           extLength        'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
-    [optional      uint 16          extExtLength     'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
-    [optional      uint 32          extExtExtLength  'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
-    [virtual       uint 32          actualLength     'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
+    [assert        uint 4           tagNumber           'tagNumberArgument'                                           ]
+    [assert        TagClass         tagClass            'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
+    [simple        uint 3           lengthValueType                                                                   ]
+    [optional      uint 8           extTagNumber        'tagNumber == 15'                                             ]
+    [virtual       uint 8           actualTagNumber     'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
+    [optional      uint 8           extLength           'lengthValueType == 5'                                        ]
+    [optional      uint 16          extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
+    [optional      uint 32          extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
+    [virtual       uint 32          actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
     [typeSwitch dataType
         ['NULL' BACnetComplexTagNull
         ]
@@ -690,8 +691,11 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard']
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetComplexTagObjectIdentifier
-            [simple     uint    10  objectType]
-            [simple     uint    22  instanceNumber]
+            [simple     uint    10  objectType      ]
+            [simple     uint    22  instanceNumber  ]
+        ]
+        ['BACNET_DEVICE_STATE' BACnetComplexTagDeviceState
+            [simple     BACnetDeviceState   state]
         ]
     ]
 ]
@@ -715,6 +719,7 @@
     ['0xA' DATE]
     ['0xB' TIME]
     ['0xC' BACNET_OBJECT_IDENTIFIER]
+    ['0xD' BACNET_DEVICE_STATE]
 ]
 
 [enum byte BACnetCharacterEncoding
@@ -738,6 +743,17 @@
     ['0x8' REMOVED_NON_BACNET]
     ['0x9' IPV6]
     ['0xA' SERIAL]
+]
+
+[enum uint 8 BACnetDeviceState
+    ['0x0' COLDSTART]
+    ['0x1' WARMSTART]
+    ['0x2' ACTIVATE_CHANGES]
+    ['0x3' STARTBACKUP]
+    ['0x4' ENDBACKUP]
+    ['0x5' STARTRESTORE]
+    ['0x6' ENDRESTORE]
+    ['0x7' ABORTRESTORE]
 ]
 
 [enum uint 8 BACnetNodeType

@@ -46,6 +46,7 @@ const (
 	BACnetDataType_DATE                     BACnetDataType = 0xA
 	BACnetDataType_TIME                     BACnetDataType = 0xB
 	BACnetDataType_BACNET_OBJECT_IDENTIFIER BACnetDataType = 0xC
+	BACnetDataType_BACNET_DEVICE_STATE      BACnetDataType = 0xD
 )
 
 var BACnetDataTypeValues []BACnetDataType
@@ -66,6 +67,7 @@ func init() {
 		BACnetDataType_DATE,
 		BACnetDataType_TIME,
 		BACnetDataType_BACNET_OBJECT_IDENTIFIER,
+		BACnetDataType_BACNET_DEVICE_STATE,
 	}
 }
 
@@ -97,6 +99,8 @@ func BACnetDataTypeByValue(value int8) BACnetDataType {
 		return BACnetDataType_TIME
 	case 0xC:
 		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+	case 0xD:
+		return BACnetDataType_BACNET_DEVICE_STATE
 	}
 	return 0
 }
@@ -129,6 +133,8 @@ func BACnetDataTypeByName(value string) BACnetDataType {
 		return BACnetDataType_TIME
 	case "BACNET_OBJECT_IDENTIFIER":
 		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+	case "BACNET_DEVICE_STATE":
+		return BACnetDataType_BACNET_DEVICE_STATE
 	}
 	return 0
 }
@@ -191,6 +197,8 @@ func (e BACnetDataType) name() string {
 		return "TIME"
 	case BACnetDataType_BACNET_OBJECT_IDENTIFIER:
 		return "BACNET_OBJECT_IDENTIFIER"
+	case BACnetDataType_BACNET_DEVICE_STATE:
+		return "BACNET_DEVICE_STATE"
 	}
 	return ""
 }
