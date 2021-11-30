@@ -132,6 +132,20 @@ public class KnxDefinitionsGenerator {
                                 deviceCounter++, manufacturerId, applicationId, applicationVersion,
                                 handler.getComObjectTableAddress());
                         }
+                        if (handler.getReplacesVersions() != null) {
+                            for (String replacesVersion : handler.getReplacesVersions()) {
+                                if(replacesVersion.length() == 1) {
+                                    replacesVersion = "0" + replacesVersion;
+                                }
+                                String replacedProductCode = String.format("M-%04X_A-%04X-%S", manufacturerId, applicationId, replacesVersion);
+                                if(!processedIds.contains(replacedProductCode)) {
+                                    System.out.printf("    ['%4d' DEV%04X%04X%S               ['0x%04X'                       ]] //replaces '%s'\n",
+                                        deviceCounter++, manufacturerId, applicationId, replacesVersion,
+                                        handler.getComObjectTableAddress(), replacesVersion);
+                                    processedIds.add(replacedProductCode);
+                                }
+                            }
+                        }
                     }
                 }
             }

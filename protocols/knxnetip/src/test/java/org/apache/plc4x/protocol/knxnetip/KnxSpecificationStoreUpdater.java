@@ -53,7 +53,7 @@ public class KnxSpecificationStoreUpdater {
         List<Integer> manufacturerIds;
         Map<String, Integer> comObjectTableStartAddresses = new TreeMap<>();
 
-        File contentDir = new File("content");
+        File contentDir = new File("../knx-webservice-content");
         if (!contentDir.exists()) {
             contentDir.mkdirs();
         }

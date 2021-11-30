@@ -190,7 +190,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	// Group Address Table reading
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// First of all, request the starting address of the group address table
+	// First, request the starting address of the group address table
 	readRequestBuilder := m.connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery("groupAddressTableAddress", knxAddressString+"#1/7")
 	readRequest, err := readRequestBuilder.Build()
@@ -443,15 +443,15 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
 		// version from the device first.
 
-		readRequestBuilder := m.connection.ReadRequestBuilder()
+		readRequestBuilder = m.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("applicationProgramVersion", knxAddressString+"#3/13")
 		readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddressString+"#4/13")
-		readRequest, err := readRequestBuilder.Build()
+		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating read request")
 		}
 
-		rrr := readRequest.Execute()
+		rrr = readRequest.Execute()
 		readRequestResult := <-rrr
 		readResponse := readRequestResult.GetResponse()
 		var programVersionData []byte
