@@ -177,9 +177,9 @@ func (b *boxedWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, va
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ string, value string, writerArgs ...WithWriterArgs) error {
+func (b *boxedWriteBuffer) WriteString(logicalName string, _ uint32, _ string, value string, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
-	b.PushBack(BoxString(logicalName, fmt.Sprintf("%#0*x %s%s", bitLength/4, value, value, additionalStringRepresentation), 0))
+	b.PushBack(BoxString(logicalName, fmt.Sprintf("%s%s", value, additionalStringRepresentation), 0))
 	return nil
 }
 
