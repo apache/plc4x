@@ -248,10 +248,10 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 	}
 
 	// Read the data in the group address table
-	readRequestBuilder = m.connection.ReadRequestBuilder()
-	readRequestBuilder.AddQuery("groupAddressTable",
-		fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses))
-	readRequest, err = readRequestBuilder.Build()
+	readRequest, err = m.connection.ReadRequestBuilder().
+		AddQuery("groupAddressTable",
+			fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses)).
+		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating read request")
 	}
@@ -439,7 +439,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 		}
 	} else if (m.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
-		// Com Object Table is programmatically, so we have to lookup the address which is extracted from the XML data
+		// Com Object Table is programmatically, so we have to look up the address which is extracted from the XML data
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
 		// version from the device first.
 
