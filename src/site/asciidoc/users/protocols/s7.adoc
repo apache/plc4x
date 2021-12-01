@@ -164,9 +164,9 @@ However we also implemented a shorter version, as above version does have some u
 
 The shorter syntax looks like this:
 
-- DB{Data-Block-Number}.{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
-- DB{Data-Block-Number}.{Start-Byte-Address}:{Data-Type-Code}[{Count}]
-- DB{Data-Block-Number}.{Start-Byte-Address}:STRING({string-length})[{Count}]
+- DB{Data-Block-Number}:{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
+- DB{Data-Block-Number}:{Start-Byte-Address}:{Data-Type-Code}[{Count}]
+- DB{Data-Block-Number}:{Start-Byte-Address}:STRING({string-length})[{Count}]
 
 The S7 driver will handle both types of notation equally.
 
