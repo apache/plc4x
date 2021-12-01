@@ -29,10 +29,10 @@ import (
 
 // The data-structure of this message
 type S7ParameterSetupCommunication struct {
+	*S7Parameter
 	MaxAmqCaller uint16
 	MaxAmqCallee uint16
 	PduLength    uint16
-	Parent       *S7Parameter
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
-		Parent:       NewS7Parameter(),
+		S7Parameter:  NewS7Parameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Parameter
 }
 
 func CastS7ParameterSetupCommunication(structType interface{}) *S7ParameterSetupCommunication {
@@ -95,7 +95,7 @@ func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
 }
 
 func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -165,10 +165,10 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
-		Parent:       &S7Parameter{},
+		S7Parameter:  &S7Parameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Parameter.Child = _child
+	return _child.S7Parameter, nil
 }
 
 func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -211,7 +211,7 @@ func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7ParameterSetupCommunication) String() string {

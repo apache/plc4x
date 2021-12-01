@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type LDataCon struct {
+	*CEMI
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
-	Parent                      *CEMI
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEM
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		Parent:                      NewCEMI(),
+		CEMI:                        NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastLDataCon(structType interface{}) *LDataCon {
@@ -90,7 +90,7 @@ func (m *LDataCon) LengthInBits() uint16 {
 }
 
 func (m *LDataCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -167,10 +167,10 @@ func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   CastLDataFrame(dataFrame),
-		Parent:                      &CEMI{},
+		CEMI:                        &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -219,7 +219,7 @@ func (m *LDataCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LDataCon) String() string {

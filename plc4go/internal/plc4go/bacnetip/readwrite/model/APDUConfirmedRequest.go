@@ -29,6 +29,7 @@ import (
 
 // The data-structure of this message
 type APDUConfirmedRequest struct {
+	*APDU
 	SegmentedMessage          bool
 	MoreFollows               bool
 	SegmentedResponseAccepted bool
@@ -38,7 +39,6 @@ type APDUConfirmedRequest struct {
 	SequenceNumber            *uint8
 	ProposedWindowSize        *uint8
 	ServiceRequest            *BACnetConfirmedServiceRequest
-	Parent                    *APDU
 }
 
 // The corresponding interface
@@ -69,10 +69,10 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		SequenceNumber:            sequenceNumber,
 		ProposedWindowSize:        proposedWindowSize,
 		ServiceRequest:            serviceRequest,
-		Parent:                    NewAPDU(),
+		APDU:                      NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUConfirmedRequest(structType interface{}) *APDUConfirmedRequest {
@@ -103,7 +103,7 @@ func (m *APDUConfirmedRequest) LengthInBits() uint16 {
 }
 
 func (m *APDUConfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -255,10 +255,10 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		SequenceNumber:            sequenceNumber,
 		ProposedWindowSize:        proposedWindowSize,
 		ServiceRequest:            CastBACnetConfirmedServiceRequest(serviceRequest),
-		Parent:                    &APDU{},
+		APDU:                      &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -354,7 +354,7 @@ func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUConfirmedRequest) String() string {

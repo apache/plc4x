@@ -29,13 +29,13 @@ import (
 
 // The data-structure of this message
 type S7AddressAny struct {
+	*S7Address
 	TransportSize    TransportSize
 	NumberOfElements uint16
 	DbNumber         uint16
 	Area             MemoryArea
 	ByteAddress      uint16
 	BitAddress       uint8
-	Parent           *S7Address
 }
 
 // The corresponding interface
@@ -63,10 +63,10 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 		Area:             area,
 		ByteAddress:      byteAddress,
 		BitAddress:       bitAddress,
-		Parent:           NewS7Address(),
+		S7Address:        NewS7Address(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Address
 }
 
 func CastS7AddressAny(structType interface{}) *S7AddressAny {
@@ -97,7 +97,7 @@ func (m *S7AddressAny) LengthInBits() uint16 {
 }
 
 func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -215,10 +215,10 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		Area:             area,
 		ByteAddress:      byteAddress,
 		BitAddress:       bitAddress,
-		Parent:           &S7Address{},
+		S7Address:        &S7Address{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Address.Child = _child
+	return _child.S7Address, nil
 }
 
 func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -292,7 +292,7 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7AddressAny) String() string {

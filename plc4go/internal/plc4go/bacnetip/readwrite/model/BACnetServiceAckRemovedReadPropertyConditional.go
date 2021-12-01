@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetServiceAckRemovedReadPropertyConditional struct {
-	Parent *BACnetServiceAck
+	*BACnetServiceAck
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) InitializeParent(parent
 
 func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAck {
 	child := &BACnetServiceAckRemovedReadPropertyConditional{
-		Parent: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) *BACnetServiceAckRemovedReadPropertyConditional {
@@ -83,7 +83,7 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetServiceAckRemovedReadPropertyConditionalParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckRemovedReadPropertyConditional{
-		Parent: &BACnetServiceAck{},
+		BACnetServiceAck: &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) Serialize(writeBuffer u
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) String() string {

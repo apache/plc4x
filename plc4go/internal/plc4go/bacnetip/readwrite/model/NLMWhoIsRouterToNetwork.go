@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type NLMWhoIsRouterToNetwork struct {
+	*NLM
 	DestinationNetworkAddress []uint16
-	Parent                    *NLM
 }
 
 // The corresponding interface
@@ -47,16 +47,16 @@ func (m *NLMWhoIsRouterToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMWhoIsRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.Parent.VendorId = vendorId
+	m.VendorId = vendorId
 }
 
 func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16) *NLM {
 	child := &NLMWhoIsRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		Parent:                    NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.NLM
 }
 
 func CastNLMWhoIsRouterToNetwork(structType interface{}) *NLMWhoIsRouterToNetwork {
@@ -87,7 +87,7 @@ func (m *NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
 }
 
 func (m *NLMWhoIsRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.DestinationNetworkAddress) > 0 {
@@ -134,10 +134,10 @@ func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16
 	// Create a partially initialized instance
 	_child := &NLMWhoIsRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		Parent:                    &NLM{},
+		NLM:                       &NLM{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.NLM.Child = _child
+	return _child.NLM, nil
 }
 
 func (m *NLMWhoIsRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +167,7 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *NLMWhoIsRouterToNetwork) String() string {

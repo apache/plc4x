@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type LBusmonInd struct {
+	*CEMI
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Crc                         *uint8
-	Parent                      *CEMI
 }
 
 // The corresponding interface
@@ -58,10 +58,10 @@ func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*C
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		Parent:                      NewCEMI(),
+		CEMI:                        NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastLBusmonInd(structType interface{}) *LBusmonInd {
@@ -92,7 +92,7 @@ func (m *LBusmonInd) LengthInBits() uint16 {
 }
 
 func (m *LBusmonInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -185,10 +185,10 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   CastLDataFrame(dataFrame),
 		Crc:                         crc,
-		Parent:                      &CEMI{},
+		CEMI:                        &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -247,7 +247,7 @@ func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LBusmonInd) String() string {

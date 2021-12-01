@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type MPropReadReq struct {
+	*CEMI
 	InterfaceObjectType uint16
 	ObjectInstance      uint8
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
-	Parent              *CEMI
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Parent:              NewCEMI(),
+		CEMI:                NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMPropReadReq(structType interface{}) *MPropReadReq {
@@ -94,7 +94,7 @@ func (m *MPropReadReq) LengthInBits() uint16 {
 }
 
 func (m *MPropReadReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -169,10 +169,10 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Parent:              &CEMI{},
+		CEMI:                &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -221,7 +221,7 @@ func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MPropReadReq) String() string {

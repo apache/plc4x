@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type SearchResponse struct {
+	*KnxNetIpMessage
 	HpaiControlEndpoint *HPAIControlEndpoint
 	DibDeviceInfo       *DIBDeviceInfo
 	DibSuppSvcFamilies  *DIBSuppSvcFamilies
-	Parent              *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		DibDeviceInfo:       dibDeviceInfo,
 		DibSuppSvcFamilies:  dibSuppSvcFamilies,
-		Parent:              NewKnxNetIpMessage(),
+		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastSearchResponse(structType interface{}) *SearchResponse {
@@ -90,7 +90,7 @@ func (m *SearchResponse) LengthInBits() uint16 {
 }
 
 func (m *SearchResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -161,10 +161,10 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) 
 		HpaiControlEndpoint: CastHPAIControlEndpoint(hpaiControlEndpoint),
 		DibDeviceInfo:       CastDIBDeviceInfo(dibDeviceInfo),
 		DibSuppSvcFamilies:  CastDIBSuppSvcFamilies(dibSuppSvcFamilies),
-		Parent:              &KnxNetIpMessage{},
+		KnxNetIpMessage:     &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -214,7 +214,7 @@ func (m *SearchResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SearchResponse) String() string {

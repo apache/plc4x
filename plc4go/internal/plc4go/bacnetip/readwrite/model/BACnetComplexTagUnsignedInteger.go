@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagUnsignedInteger struct {
+	*BACnetComplexTag
 	ValueUint8  *uint8
 	ValueUint16 *uint16
 	ValueUint32 *uint32
@@ -35,7 +36,6 @@ type BACnetComplexTagUnsignedInteger struct {
 	IsUint16    bool
 	IsUint32    bool
 	ActualValue uint32
-	Parent      *BACnetComplexTag
 }
 
 // The corresponding interface
@@ -53,24 +53,24 @@ func (m *BACnetComplexTagUnsignedInteger) DataType() BACnetDataType {
 }
 
 func (m *BACnetComplexTagUnsignedInteger) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetComplexTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagUnsignedInteger{
-		ValueUint8:  valueUint8,
-		ValueUint16: valueUint16,
-		ValueUint32: valueUint32,
-		Parent:      NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		ValueUint8:       valueUint8,
+		ValueUint16:      valueUint16,
+		ValueUint32:      valueUint32,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagUnsignedInteger(structType interface{}) *BACnetComplexTagUnsignedInteger {
@@ -101,7 +101,7 @@ func (m *BACnetComplexTagUnsignedInteger) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagUnsignedInteger) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -194,17 +194,17 @@ func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagUnsignedInteger{
-		ValueUint8:  valueUint8,
-		ValueUint16: valueUint16,
-		ValueUint32: valueUint32,
-		IsUint8:     isUint8,
-		IsUint16:    isUint16,
-		IsUint32:    isUint32,
-		ActualValue: actualValue,
-		Parent:      &BACnetComplexTag{},
+		ValueUint8:       valueUint8,
+		ValueUint16:      valueUint16,
+		ValueUint32:      valueUint32,
+		IsUint8:          isUint8,
+		IsUint16:         isUint16,
+		IsUint32:         isUint32,
+		ActualValue:      actualValue,
+		BACnetComplexTag: &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -248,7 +248,7 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagUnsignedInteger) String() string {

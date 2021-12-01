@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ApduDataExtAuthorizeResponse struct {
-	Level  uint8
-	Parent *ApduDataExt
+	*ApduDataExt
+	Level uint8
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *ApduDataExtAuthorizeResponse) InitializeParent(parent *ApduDataExt) {
 
 func NewApduDataExtAuthorizeResponse(level uint8) *ApduDataExt {
 	child := &ApduDataExtAuthorizeResponse{
-		Level:  level,
-		Parent: NewApduDataExt(),
+		Level:       level,
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtAuthorizeResponse(structType interface{}) *ApduDataExtAuthorizeResponse {
@@ -86,7 +86,7 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -116,11 +116,11 @@ func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeResponse{
-		Level:  level,
-		Parent: &ApduDataExt{},
+		Level:       level,
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtAuthorizeResponse) String() string {

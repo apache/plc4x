@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtReadRoutingTableRequest struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtReadRoutingTableRequest) InitializeParent(parent *ApduDataEx
 
 func NewApduDataExtReadRoutingTableRequest() *ApduDataExt {
 	child := &ApduDataExtReadRoutingTableRequest{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtReadRoutingTableRequest(structType interface{}) *ApduDataExtReadRoutingTableRequest {
@@ -83,7 +83,7 @@ func (m *ApduDataExtReadRoutingTableRequest) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ApduDataExtReadRoutingTableRequestParse(readBuffer utils.ReadBuffer, length
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRoutingTableRequest{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtReadRoutingTableRequest) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) String() string {

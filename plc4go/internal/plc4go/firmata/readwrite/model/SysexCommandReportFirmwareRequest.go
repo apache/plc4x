@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type SysexCommandReportFirmwareRequest struct {
-	Parent *SysexCommand
+	*SysexCommand
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexComman
 
 func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 	child := &SysexCommandReportFirmwareRequest{
-		Parent: NewSysexCommand(),
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandReportFirmwareRequest(structType interface{}) *SysexCommandReportFirmwareRequest {
@@ -87,7 +87,7 @@ func (m *SysexCommandReportFirmwareRequest) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandReportFirmwareRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -107,10 +107,10 @@ func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, respons
 
 	// Create a partially initialized instance
 	_child := &SysexCommandReportFirmwareRequest{
-		Parent: &SysexCommand{},
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandReportFirmwareRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *SysexCommandReportFirmwareRequest) Serialize(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandReportFirmwareRequest) String() string {

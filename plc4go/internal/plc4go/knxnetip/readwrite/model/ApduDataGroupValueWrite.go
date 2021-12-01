@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataGroupValueWrite struct {
+	*ApduData
 	DataFirstByte int8
 	Data          []byte
-	Parent        *ApduData
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *ApduData {
 	child := &ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		Parent:        NewApduData(),
+		ApduData:      NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataGroupValueWrite(structType interface{}) *ApduDataGroupValueWrite {
@@ -88,7 +88,7 @@ func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
 }
 
 func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -131,10 +131,10 @@ func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8)
 	_child := &ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		Parent:        &ApduData{},
+		ApduData:      &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,7 +164,7 @@ func (m *ApduDataGroupValueWrite) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataGroupValueWrite) String() string {

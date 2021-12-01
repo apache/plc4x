@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetErrorGetEventInformation struct {
-	Parent *BACnetError
+	*BACnetError
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetErrorGetEventInformation) InitializeParent(parent *BACnetError) {
 
 func NewBACnetErrorGetEventInformation() *BACnetError {
 	child := &BACnetErrorGetEventInformation{
-		Parent: NewBACnetError(),
+		BACnetError: NewBACnetError(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetError
 }
 
 func CastBACnetErrorGetEventInformation(structType interface{}) *BACnetErrorGetEventInformation {
@@ -83,7 +83,7 @@ func (m *BACnetErrorGetEventInformation) LengthInBits() uint16 {
 }
 
 func (m *BACnetErrorGetEventInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetErrorGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetEr
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetEventInformation{
-		Parent: &BACnetError{},
+		BACnetError: &BACnetError{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetError.Child = _child
+	return _child.BACnetError, nil
 }
 
 func (m *BACnetErrorGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetErrorGetEventInformation) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetErrorGetEventInformation) String() string {

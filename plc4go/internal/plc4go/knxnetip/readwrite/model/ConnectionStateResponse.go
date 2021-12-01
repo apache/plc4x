@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ConnectionStateResponse struct {
+	*KnxNetIpMessage
 	CommunicationChannelId uint8
 	Status                 Status
-	Parent                 *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) *Kn
 	child := &ConnectionStateResponse{
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
-		Parent:                 NewKnxNetIpMessage(),
+		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastConnectionStateResponse(structType interface{}) *ConnectionStateResponse {
@@ -88,7 +88,7 @@ func (m *ConnectionStateResponse) LengthInBits() uint16 {
 }
 
 func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -136,10 +136,10 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage
 	_child := &ConnectionStateResponse{
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
-		Parent:                 &KnxNetIpMessage{},
+		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *ConnectionStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -172,7 +172,7 @@ func (m *ConnectionStateResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionStateResponse) String() string {

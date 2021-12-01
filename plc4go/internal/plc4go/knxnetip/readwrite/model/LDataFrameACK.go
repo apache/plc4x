@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type LDataFrameACK struct {
-	Parent *LDataFrame
+	*LDataFrame
 }
 
 // The corresponding interface
@@ -49,19 +49,19 @@ func (m *LDataFrameACK) Polling() bool {
 }
 
 func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-	m.Parent.FrameType = frameType
-	m.Parent.NotRepeated = notRepeated
-	m.Parent.Priority = priority
-	m.Parent.AcknowledgeRequested = acknowledgeRequested
-	m.Parent.ErrorFlag = errorFlag
+	m.FrameType = frameType
+	m.NotRepeated = notRepeated
+	m.Priority = priority
+	m.AcknowledgeRequested = acknowledgeRequested
+	m.ErrorFlag = errorFlag
 }
 
 func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LDataFrameACK{
-		Parent: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+		LDataFrame: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.LDataFrame
 }
 
 func CastLDataFrameACK(structType interface{}) *LDataFrameACK {
@@ -92,7 +92,7 @@ func (m *LDataFrameACK) LengthInBits() uint16 {
 }
 
 func (m *LDataFrameACK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -112,10 +112,10 @@ func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Create a partially initialized instance
 	_child := &LDataFrameACK{
-		Parent: &LDataFrame{},
+		LDataFrame: &LDataFrame{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.LDataFrame.Child = _child
+	return _child.LDataFrame, nil
 }
 
 func (m *LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -129,7 +129,7 @@ func (m *LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LDataFrameACK) String() string {

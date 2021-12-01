@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReportServerIdResponse struct {
-	Value  []byte
-	Parent *ModbusPDU
+	*ModbusPDU
+	Value []byte
 }
 
 // The corresponding interface
@@ -59,11 +59,11 @@ func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {
 
 func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReportServerIdResponse{
-		Value:  value,
-		Parent: NewModbusPDU(),
+		Value:     value,
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReportServerIdResponse(structType interface{}) *ModbusPDUReportServerIdResponse {
@@ -94,7 +94,7 @@ func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReportServerIdResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -135,11 +135,11 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response 
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdResponse{
-		Value:  value,
-		Parent: &ModbusPDU{},
+		Value:     value,
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -169,7 +169,7 @@ func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReportServerIdResponse) String() string {

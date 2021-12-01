@@ -29,8 +29,8 @@ import (
 
 // The data-structure of this message
 type FirmataCommandSysex struct {
+	*FirmataCommand
 	Command *SysexCommand
-	Parent  *FirmataCommand
 }
 
 // The corresponding interface
@@ -52,11 +52,11 @@ func (m *FirmataCommandSysex) InitializeParent(parent *FirmataCommand) {
 
 func NewFirmataCommandSysex(command *SysexCommand) *FirmataCommand {
 	child := &FirmataCommandSysex{
-		Command: command,
-		Parent:  NewFirmataCommand(),
+		Command:        command,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandSysex(structType interface{}) *FirmataCommandSysex {
@@ -87,7 +87,7 @@ func (m *FirmataCommandSysex) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandSysex) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (command)
 	lengthInBits += m.Command.LengthInBits()
@@ -140,11 +140,11 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSysex{
-		Command: CastSysexCommand(command),
-		Parent:  &FirmataCommand{},
+		Command:        CastSysexCommand(command),
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +178,7 @@ func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandSysex) String() string {

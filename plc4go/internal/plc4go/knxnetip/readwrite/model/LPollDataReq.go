@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type LPollDataReq struct {
-	Parent *CEMI
+	*CEMI
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *LPollDataReq) InitializeParent(parent *CEMI) {
 
 func NewLPollDataReq() *CEMI {
 	child := &LPollDataReq{
-		Parent: NewCEMI(),
+		CEMI: NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastLPollDataReq(structType interface{}) *LPollDataReq {
@@ -83,7 +83,7 @@ func (m *LPollDataReq) LengthInBits() uint16 {
 }
 
 func (m *LPollDataReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 
 	// Create a partially initialized instance
 	_child := &LPollDataReq{
-		Parent: &CEMI{},
+		CEMI: &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *LPollDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *LPollDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LPollDataReq) String() string {

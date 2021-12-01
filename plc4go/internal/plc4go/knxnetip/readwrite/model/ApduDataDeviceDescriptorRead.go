@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ApduDataDeviceDescriptorRead struct {
+	*ApduData
 	DescriptorType uint8
-	Parent         *ApduData
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *ApduDataDeviceDescriptorRead) InitializeParent(parent *ApduData) {
 func NewApduDataDeviceDescriptorRead(descriptorType uint8) *ApduData {
 	child := &ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
-		Parent:         NewApduData(),
+		ApduData:       NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataDeviceDescriptorRead(structType interface{}) *ApduDataDeviceDescriptorRead {
@@ -86,7 +86,7 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataDeviceDescriptorRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -117,10 +117,10 @@ func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength u
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
-		Parent:         &ApduData{},
+		ApduData:       &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataDeviceDescriptorRead) String() string {

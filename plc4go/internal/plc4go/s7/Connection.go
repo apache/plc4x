@@ -172,18 +172,18 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 				if cotpPacketData == nil {
 					return false
 				}
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
 				if messageResponseData == nil {
 					return false
 				}
-				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
 				return parameterSetupCommunication != nil
 			},
 			func(message interface{}) error {
 				tpktPacket := readWriteModel.CastTPKTPacket(message)
 				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
-				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
+				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
 				s7ConnectionResult <- setupCommunication
 				return nil
 			},
@@ -239,17 +239,17 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 					if cotpPacketData == nil {
 						return false
 					}
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
 					if messageUserData == nil {
 						return false
 					}
-					return readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload) != nil
+					return readWriteModel.CastS7PayloadUserData(messageUserData.Payload) != nil
 				},
 				func(message interface{}) error {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
-					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload)
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
+					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Payload)
 					return nil
 				},
 				func(err error) error {
@@ -375,7 +375,7 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 }
 
 func (m *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse *readWriteModel.COTPPacketConnectionResponse) *readWriteModel.TPKTPacket {
-	for _, parameter := range cotpPacketConnectionResponse.Parent.Parameters {
+	for _, parameter := range cotpPacketConnectionResponse.Parameters {
 		switch parameter.Child.(type) {
 		case *readWriteModel.COTPParameterCalledTsap:
 			cotpParameterCalledTsap := parameter.Child.(*readWriteModel.COTPParameterCalledTsap)

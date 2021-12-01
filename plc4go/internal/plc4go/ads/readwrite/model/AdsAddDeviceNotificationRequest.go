@@ -30,13 +30,13 @@ import (
 
 // The data-structure of this message
 type AdsAddDeviceNotificationRequest struct {
+	*AdsData
 	IndexGroup       uint32
 	IndexOffset      uint32
 	Length           uint32
 	TransmissionMode uint32
 	MaxDelay         uint32
 	CycleTime        uint32
-	Parent           *AdsData
 }
 
 // The corresponding interface
@@ -68,10 +68,10 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		Parent:           NewAdsData(),
+		AdsData:          NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsAddDeviceNotificationRequest(structType interface{}) *AdsAddDeviceNotificationRequest {
@@ -102,7 +102,7 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -205,10 +205,10 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		Parent:           &AdsData{},
+		AdsData:          &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -272,7 +272,7 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsAddDeviceNotificationRequest) String() string {

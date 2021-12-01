@@ -32,13 +32,13 @@ const CEMIAdditionalInformationBusmonitorInfo_LEN uint8 = uint8(1)
 
 // The data-structure of this message
 type CEMIAdditionalInformationBusmonitorInfo struct {
+	*CEMIAdditionalInformation
 	FrameErrorFlag  bool
 	BitErrorFlag    bool
 	ParityErrorFlag bool
 	UnknownFlag     bool
 	LostFlag        bool
 	SequenceNumber  uint8
-	Parent          *CEMIAdditionalInformation
 }
 
 // The corresponding interface
@@ -60,16 +60,16 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent *CEMIA
 
 func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationBusmonitorInfo{
-		FrameErrorFlag:  frameErrorFlag,
-		BitErrorFlag:    bitErrorFlag,
-		ParityErrorFlag: parityErrorFlag,
-		UnknownFlag:     unknownFlag,
-		LostFlag:        lostFlag,
-		SequenceNumber:  sequenceNumber,
-		Parent:          NewCEMIAdditionalInformation(),
+		FrameErrorFlag:            frameErrorFlag,
+		BitErrorFlag:              bitErrorFlag,
+		ParityErrorFlag:           parityErrorFlag,
+		UnknownFlag:               unknownFlag,
+		LostFlag:                  lostFlag,
+		SequenceNumber:            sequenceNumber,
+		CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMIAdditionalInformation
 }
 
 func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) *CEMIAdditionalInformationBusmonitorInfo {
@@ -100,7 +100,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -192,16 +192,16 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 
 	// Create a partially initialized instance
 	_child := &CEMIAdditionalInformationBusmonitorInfo{
-		FrameErrorFlag:  frameErrorFlag,
-		BitErrorFlag:    bitErrorFlag,
-		ParityErrorFlag: parityErrorFlag,
-		UnknownFlag:     unknownFlag,
-		LostFlag:        lostFlag,
-		SequenceNumber:  sequenceNumber,
-		Parent:          &CEMIAdditionalInformation{},
+		FrameErrorFlag:            frameErrorFlag,
+		BitErrorFlag:              bitErrorFlag,
+		ParityErrorFlag:           parityErrorFlag,
+		UnknownFlag:               unknownFlag,
+		LostFlag:                  lostFlag,
+		SequenceNumber:            sequenceNumber,
+		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMIAdditionalInformation.Child = _child
+	return _child.CEMIAdditionalInformation, nil
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -263,7 +263,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) String() string {

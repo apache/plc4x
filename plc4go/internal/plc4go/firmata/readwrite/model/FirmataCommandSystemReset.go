@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type FirmataCommandSystemReset struct {
-	Parent *FirmataCommand
+	*FirmataCommand
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {
 
 func NewFirmataCommandSystemReset() *FirmataCommand {
 	child := &FirmataCommandSystemReset{
-		Parent: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandSystemReset(structType interface{}) *FirmataCommandSystemReset {
@@ -83,7 +83,7 @@ func (m *FirmataCommandSystemReset) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandSystemReset) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) 
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSystemReset{
-		Parent: &FirmataCommand{},
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandSystemReset) String() string {

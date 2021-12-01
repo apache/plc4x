@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUSimpleAck struct {
+	*APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) *APDU {
 	child := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {
@@ -89,7 +89,7 @@ func (m *APDUSimpleAck) LengthInBits() uint16 {
 }
 
 func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -148,10 +148,10 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, 
 	_child := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +187,7 @@ func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUSimpleAck) String() string {

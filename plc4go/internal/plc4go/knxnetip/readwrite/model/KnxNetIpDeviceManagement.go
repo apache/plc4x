@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type KnxNetIpDeviceManagement struct {
+	*ServiceId
 	Version uint8
-	Parent  *ServiceId
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *KnxNetIpDeviceManagement) InitializeParent(parent *ServiceId) {
 
 func NewKnxNetIpDeviceManagement(version uint8) *ServiceId {
 	child := &KnxNetIpDeviceManagement{
-		Version: version,
-		Parent:  NewServiceId(),
+		Version:   version,
+		ServiceId: NewServiceId(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ServiceId
 }
 
 func CastKnxNetIpDeviceManagement(structType interface{}) *KnxNetIpDeviceManagement {
@@ -86,7 +86,7 @@ func (m *KnxNetIpDeviceManagement) LengthInBits() uint16 {
 }
 
 func (m *KnxNetIpDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -116,11 +116,11 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*ServiceId, err
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpDeviceManagement{
-		Version: version,
-		Parent:  &ServiceId{},
+		Version:   version,
+		ServiceId: &ServiceId{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ServiceId.Child = _child
+	return _child.ServiceId, nil
 }
 
 func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *KnxNetIpDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxNetIpDeviceManagement) String() string {

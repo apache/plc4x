@@ -693,10 +693,7 @@
             [simple     uint    22  instanceNumber  ]
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetComplexTagPropertyIdentifier(uint 32 actualLength)
-            // TODO: we should fix this in codegen to properly downcast
-            [virtual uint 16 slimmedLength 'actualLength']
-            [array   byte                       data count  'slimmedLength'                  ]
-            [virtual BACnetPropertyIdentifier   value       'STATIC_CALL("mapToPropertyIdentifier", data)' ]
+            [manual  BACnetPropertyIdentifier   value   'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, value)' '_value.actualLength']
         ]
         ['BACNET_DEVICE_STATE' BACnetComplexTagDeviceState
             [simple BACnetDeviceState   state]

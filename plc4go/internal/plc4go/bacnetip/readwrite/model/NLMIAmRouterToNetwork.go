@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type NLMIAmRouterToNetwork struct {
+	*NLM
 	DestinationNetworkAddress []uint16
-	Parent                    *NLM
 }
 
 // The corresponding interface
@@ -47,16 +47,16 @@ func (m *NLMIAmRouterToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMIAmRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.Parent.VendorId = vendorId
+	m.VendorId = vendorId
 }
 
 func NewNLMIAmRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16) *NLM {
 	child := &NLMIAmRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		Parent:                    NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.NLM
 }
 
 func CastNLMIAmRouterToNetwork(structType interface{}) *NLMIAmRouterToNetwork {
@@ -87,7 +87,7 @@ func (m *NLMIAmRouterToNetwork) LengthInBits() uint16 {
 }
 
 func (m *NLMIAmRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.DestinationNetworkAddress) > 0 {
@@ -134,10 +134,10 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	// Create a partially initialized instance
 	_child := &NLMIAmRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		Parent:                    &NLM{},
+		NLM:                       &NLM{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.NLM.Child = _child
+	return _child.NLM, nil
 }
 
 func (m *NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +167,7 @@ func (m *NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *NLMIAmRouterToNetwork) String() string {

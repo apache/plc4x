@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BVLCReadBroadcastDistributionTable struct {
-	Parent *BVLC
+	*BVLC
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BVLCReadBroadcastDistributionTable) InitializeParent(parent *BVLC) {
 
 func NewBVLCReadBroadcastDistributionTable() *BVLC {
 	child := &BVLCReadBroadcastDistributionTable{
-		Parent: NewBVLC(),
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCReadBroadcastDistributionTable(structType interface{}) *BVLCReadBroadcastDistributionTable {
@@ -83,7 +83,7 @@ func (m *BVLCReadBroadcastDistributionTable) LengthInBits() uint16 {
 }
 
 func (m *BVLCReadBroadcastDistributionTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (*BVLC
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTable{
-		Parent: &BVLC{},
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCReadBroadcastDistributionTable) String() string {

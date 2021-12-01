@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type CipWriteRequest struct {
+	*CipService
 	RequestPathSize int8
 	Tag             []byte
 	DataType        CIPDataTypeCode
 	ElementNb       uint16
 	Data            []byte
-	Parent          *CipService
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCo
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		Parent:          NewCipService(),
+		CipService:      NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipWriteRequest(structType interface{}) *CipWriteRequest {
@@ -94,7 +94,7 @@ func (m *CipWriteRequest) LengthInBits() uint16 {
 }
 
 func (m *CipWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -177,10 +177,10 @@ func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		Parent:          &CipService{},
+		CipService:      &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -238,7 +238,7 @@ func (m *CipWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipWriteRequest) String() string {

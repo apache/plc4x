@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ModbusPDUMaskWriteHoldingRegisterResponse struct {
+	*ModbusPDU
 	ReferenceAddress uint16
 	AndMask          uint16
 	OrMask           uint16
-	Parent           *ModbusPDU
 }
 
 // The corresponding interface
@@ -64,10 +64,10 @@ func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMa
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
-		Parent:           NewModbusPDU(),
+		ModbusPDU:        NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) *ModbusPDUMaskWriteHoldingRegisterResponse {
@@ -98,7 +98,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -151,10 +151,10 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer,
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
-		Parent:           &ModbusPDU{},
+		ModbusPDU:        &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -189,7 +189,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) String() string {

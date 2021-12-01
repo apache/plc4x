@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type KnxNetIpTunneling struct {
+	*ServiceId
 	Version uint8
-	Parent  *ServiceId
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {
 
 func NewKnxNetIpTunneling(version uint8) *ServiceId {
 	child := &KnxNetIpTunneling{
-		Version: version,
-		Parent:  NewServiceId(),
+		Version:   version,
+		ServiceId: NewServiceId(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ServiceId
 }
 
 func CastKnxNetIpTunneling(structType interface{}) *KnxNetIpTunneling {
@@ -86,7 +86,7 @@ func (m *KnxNetIpTunneling) LengthInBits() uint16 {
 }
 
 func (m *KnxNetIpTunneling) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -116,11 +116,11 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpTunneling{
-		Version: version,
-		Parent:  &ServiceId{},
+		Version:   version,
+		ServiceId: &ServiceId{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ServiceId.Child = _child
+	return _child.ServiceId, nil
 }
 
 func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxNetIpTunneling) String() string {

@@ -29,12 +29,12 @@ import (
 
 // The data-structure of this message
 type MultipleServiceResponse struct {
+	*CipService
 	Status       uint8
 	ExtStatus    uint8
 	ServiceNb    uint16
 	Offsets      []uint16
 	ServicesData []byte
-	Parent       *CipService
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
-		Parent:       NewCipService(),
+		CipService:   NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastMultipleServiceResponse(structType interface{}) *MultipleServiceResponse {
@@ -95,7 +95,7 @@ func (m *MultipleServiceResponse) LengthInBits() uint16 {
 }
 
 func (m *MultipleServiceResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -202,10 +202,10 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
-		Parent:       &CipService{},
+		CipService:   &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -273,7 +273,7 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MultipleServiceResponse) String() string {

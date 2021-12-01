@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type SysexCommandSamplingInterval struct {
-	Parent *SysexCommand
+	*SysexCommand
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {
 
 func NewSysexCommandSamplingInterval() *SysexCommand {
 	child := &SysexCommandSamplingInterval{
-		Parent: NewSysexCommand(),
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandSamplingInterval(structType interface{}) *SysexCommandSamplingInterval {
@@ -87,7 +87,7 @@ func (m *SysexCommandSamplingInterval) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandSamplingInterval) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -107,10 +107,10 @@ func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response boo
 
 	// Create a partially initialized instance
 	_child := &SysexCommandSamplingInterval{
-		Parent: &SysexCommand{},
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandSamplingInterval) String() string {

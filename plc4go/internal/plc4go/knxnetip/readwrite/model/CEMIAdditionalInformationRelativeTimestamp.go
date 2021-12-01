@@ -32,8 +32,8 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
 // The data-structure of this message
 type CEMIAdditionalInformationRelativeTimestamp struct {
+	*CEMIAdditionalInformation
 	RelativeTimestamp *RelativeTimestamp
-	Parent            *CEMIAdditionalInformation
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent *CE
 
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp *RelativeTimestamp) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp: relativeTimestamp,
-		Parent:            NewCEMIAdditionalInformation(),
+		RelativeTimestamp:         relativeTimestamp,
+		CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMIAdditionalInformation
 }
 
 func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) *CEMIAdditionalInformationRelativeTimestamp {
@@ -90,7 +90,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -138,11 +138,11 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &CEMIAdditionalInformationRelativeTimestamp{
-		RelativeTimestamp: CastRelativeTimestamp(relativeTimestamp),
-		Parent:            &CEMIAdditionalInformation{},
+		RelativeTimestamp:         CastRelativeTimestamp(relativeTimestamp),
+		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMIAdditionalInformation.Child = _child
+	return _child.CEMIAdditionalInformation, nil
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -174,7 +174,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) String() string {

@@ -19,13 +19,48 @@
 
 package model
 
-import "encoding/binary"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
+)
 
-func MapToPropertyIdentifier(data []byte) BACnetPropertyIdentifier {
-	offset := 8 - len(data)
-	longBytes := make([]byte, 8)
-	for i := 8 - 1; i >= 0 && i-offset >= 0; i-- {
-		longBytes[i] = data[i-offset]
+func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetPropertyIdentifier, error) {
+	bitsToRead := actualLength * 8
+	var readUnsignedLong uint32
+	var err error
+	if bitsToRead <= 8 {
+		var readValue uint8
+		readValue, err = readBuffer.ReadUint8("", 8)
+		readUnsignedLong = uint32(readValue)
+	} else if bitsToRead <= 16 {
+		var readValue uint16
+		readValue, err = readBuffer.ReadUint16("", 16)
+		readUnsignedLong = uint32(readValue)
+	} else if bitsToRead <= 32 {
+		var readValue uint32
+		readValue, err = readBuffer.ReadUint32("", 32)
+		readUnsignedLong = uint32(readValue)
+	} else {
+		return 0, errors.Errorf("%d overflows", bitsToRead)
 	}
-	return BACnetPropertyIdentifier(binary.BigEndian.Uint32(longBytes))
+	if err != nil {
+		return 0, err
+	}
+
+	return BACnetPropertyIdentifier(readUnsignedLong), nil
+}
+
+func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetPropertyIdentifier) error {
+	var bitsToWrite uint8
+	valueValue := uint64(value)
+	if valueValue <= 0xff {
+		bitsToWrite = 8
+	} else if valueValue <= 0xffff {
+		bitsToWrite = 16
+	} else if valueValue <= 0xffffffff {
+		bitsToWrite = 32
+	} else {
+		bitsToWrite = 32
+	}
+	return writeBuffer.WriteUint32("", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
 }

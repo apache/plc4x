@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWriteGroup struct {
-	Parent *BACnetUnconfirmedServiceRequest
+	*BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) InitializeParent(parent *BAC
 
 func NewBACnetUnconfirmedServiceRequestWriteGroup() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWriteGroup{
-		Parent: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) *BACnetUnconfirmedServiceRequestWriteGroup {
@@ -83,7 +83,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
 }
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWriteGroup{
-		Parent: &BACnetUnconfirmedServiceRequest{},
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) String() string {

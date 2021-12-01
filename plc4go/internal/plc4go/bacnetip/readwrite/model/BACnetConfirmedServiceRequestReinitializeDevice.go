@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDevice struct {
+	*BACnetConfirmedServiceRequest
 	ReinitializedStateOfDevice *BACnetComplexTagDeviceState
 	Password                   *BACnetComplexTagCharacterString
-	Parent                     *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) InitializeParent(paren
 
 func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetComplexTagDeviceState, password *BACnetComplexTagCharacterString) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReinitializeDevice{
-		ReinitializedStateOfDevice: reinitializedStateOfDevice,
-		Password:                   password,
-		Parent:                     NewBACnetConfirmedServiceRequest(),
+		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
+		Password:                      password,
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDevice(structType interface{}) *BACnetConfirmedServiceRequestReinitializeDevice {
@@ -88,7 +88,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (reinitializedStateOfDevice)
 	lengthInBits += m.ReinitializedStateOfDevice.LengthInBits()
@@ -150,12 +150,12 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{
-		ReinitializedStateOfDevice: CastBACnetComplexTagDeviceState(reinitializedStateOfDevice),
-		Password:                   CastBACnetComplexTagCharacterString(password),
-		Parent:                     &BACnetConfirmedServiceRequest{},
+		ReinitializedStateOfDevice:    CastBACnetComplexTagDeviceState(reinitializedStateOfDevice),
+		Password:                      CastBACnetComplexTagCharacterString(password),
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -197,7 +197,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) String() string {

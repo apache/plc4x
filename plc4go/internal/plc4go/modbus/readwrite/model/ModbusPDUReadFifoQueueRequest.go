@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueRequest struct {
+	*ModbusPDU
 	FifoPointerAddress uint16
-	Parent             *ModbusPDU
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
-		Parent:             NewModbusPDU(),
+		ModbusPDU:          NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadFifoQueueRequest(structType interface{}) *ModbusPDUReadFifoQueueRequest {
@@ -94,7 +94,7 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -125,10 +125,10 @@ func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bo
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
-		Parent:             &ModbusPDU{},
+		ModbusPDU:          &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -149,7 +149,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) String() string {

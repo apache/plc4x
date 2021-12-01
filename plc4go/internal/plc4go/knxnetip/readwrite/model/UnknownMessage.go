@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type UnknownMessage struct {
+	*KnxNetIpMessage
 	UnknownData []byte
-	Parent      *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {
 
 func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
 	child := &UnknownMessage{
-		UnknownData: unknownData,
-		Parent:      NewKnxNetIpMessage(),
+		UnknownData:     unknownData,
+		KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastUnknownMessage(structType interface{}) *UnknownMessage {
@@ -86,7 +86,7 @@ func (m *UnknownMessage) LengthInBits() uint16 {
 }
 
 func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -117,11 +117,11 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{
-		UnknownData: unknownData,
-		Parent:      &KnxNetIpMessage{},
+		UnknownData:     unknownData,
+		KnxNetIpMessage: &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +144,7 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *UnknownMessage) String() string {

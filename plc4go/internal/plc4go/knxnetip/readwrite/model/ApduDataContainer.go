@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ApduDataContainer struct {
+	*Apdu
 	DataApdu *ApduData
-	Parent   *Apdu
 }
 
 // The corresponding interface
@@ -47,17 +47,17 @@ func (m *ApduDataContainer) Control() uint8 {
 }
 
 func (m *ApduDataContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
-	m.Parent.Numbered = numbered
-	m.Parent.Counter = counter
+	m.Numbered = numbered
+	m.Counter = counter
 }
 
 func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8) *Apdu {
 	child := &ApduDataContainer{
 		DataApdu: dataApdu,
-		Parent:   NewApdu(numbered, counter),
+		Apdu:     NewApdu(numbered, counter),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.Apdu
 }
 
 func CastApduDataContainer(structType interface{}) *ApduDataContainer {
@@ -88,7 +88,7 @@ func (m *ApduDataContainer) LengthInBits() uint16 {
 }
 
 func (m *ApduDataContainer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (dataApdu)
 	lengthInBits += m.DataApdu.LengthInBits()
@@ -125,10 +125,10 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 	// Create a partially initialized instance
 	_child := &ApduDataContainer{
 		DataApdu: CastApduData(dataApdu),
-		Parent:   &Apdu{},
+		Apdu:     &Apdu{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.Apdu.Child = _child
+	return _child.Apdu, nil
 }
 
 func (m *ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -154,7 +154,7 @@ func (m *ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataContainer) String() string {

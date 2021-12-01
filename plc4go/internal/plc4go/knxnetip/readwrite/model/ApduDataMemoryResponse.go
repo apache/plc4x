@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataMemoryResponse struct {
+	*ApduData
 	Address uint16
 	Data    []byte
-	Parent  *ApduData
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {
 
 func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
 	child := &ApduDataMemoryResponse{
-		Address: address,
-		Data:    data,
-		Parent:  NewApduData(),
+		Address:  address,
+		Data:     data,
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataMemoryResponse(structType interface{}) *ApduDataMemoryResponse {
@@ -88,7 +88,7 @@ func (m *ApduDataMemoryResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -139,12 +139,12 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryResponse{
-		Address: address,
-		Data:    data,
-		Parent:  &ApduData{},
+		Address:  address,
+		Data:     data,
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -181,7 +181,7 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataMemoryResponse) String() string {

@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type CipWriteResponse struct {
+	*CipService
 	Status    uint8
 	ExtStatus uint8
-	Parent    *CipService
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *CipWriteResponse) InitializeParent(parent *CipService) {
 
 func NewCipWriteResponse(status uint8, extStatus uint8) *CipService {
 	child := &CipWriteResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		Parent:    NewCipService(),
+		Status:     status,
+		ExtStatus:  extStatus,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipWriteResponse(structType interface{}) *CipWriteResponse {
@@ -89,7 +89,7 @@ func (m *CipWriteResponse) LengthInBits() uint16 {
 }
 
 func (m *CipWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -146,12 +146,12 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*Cip
 
 	// Create a partially initialized instance
 	_child := &CipWriteResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		Parent:    &CipService{},
+		Status:     status,
+		ExtStatus:  extStatus,
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +187,7 @@ func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipWriteResponse) String() string {

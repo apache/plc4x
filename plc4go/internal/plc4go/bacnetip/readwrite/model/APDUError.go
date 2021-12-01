@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUError struct {
+	*APDU
 	OriginalInvokeId uint8
 	Error            *BACnetError
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
 	child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            error,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUError(structType interface{}) *APDUError {
@@ -89,7 +89,7 @@ func (m *APDUError) LengthInBits() uint16 {
 }
 
 func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -154,10 +154,10 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 	_child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            CastBACnetError(error),
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -198,7 +198,7 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUError) String() string {

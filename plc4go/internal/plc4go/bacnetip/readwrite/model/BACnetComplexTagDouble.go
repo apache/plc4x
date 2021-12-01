@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagDouble struct {
-	Value  float64
-	Parent *BACnetComplexTag
+	*BACnetComplexTag
+	Value float64
 }
 
 // The corresponding interface
@@ -47,22 +47,22 @@ func (m *BACnetComplexTagDouble) DataType() BACnetDataType {
 }
 
 func (m *BACnetComplexTagDouble) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetComplexTagDouble(value float64, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagDouble{
-		Value:  value,
-		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:            value,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagDouble(structType interface{}) *BACnetComplexTagDouble {
@@ -93,7 +93,7 @@ func (m *BACnetComplexTagDouble) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagDouble) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -123,11 +123,11 @@ func BACnetComplexTagDoubleParse(readBuffer utils.ReadBuffer, tagNumberArgument 
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagDouble{
-		Value:  value,
-		Parent: &BACnetComplexTag{},
+		Value:            value,
+		BACnetComplexTag: &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagDouble) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,7 +148,7 @@ func (m *BACnetComplexTagDouble) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagDouble) String() string {

@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ComObjectTableRealisationType1 struct {
+	*ComObjectTable
 	NumEntries           uint8
 	RamFlagsTablePointer uint8
 	ComObjectDescriptors []*GroupObjectDescriptorRealisationType1
-	Parent               *ComObjectTable
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer ui
 		NumEntries:           numEntries,
 		RamFlagsTablePointer: ramFlagsTablePointer,
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               NewComObjectTable(),
+		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ComObjectTable
 }
 
 func CastComObjectTableRealisationType1(structType interface{}) *ComObjectTableRealisationType1 {
@@ -90,7 +90,7 @@ func (m *ComObjectTableRealisationType1) LengthInBits() uint16 {
 }
 
 func (m *ComObjectTableRealisationType1) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -160,10 +160,10 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 		NumEntries:           numEntries,
 		RamFlagsTablePointer: ramFlagsTablePointer,
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               &ComObjectTable{},
+		ComObjectTable:       &ComObjectTable{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ComObjectTable.Child = _child
+	return _child.ComObjectTable, nil
 }
 
 func (m *ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -207,7 +207,7 @@ func (m *ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ComObjectTableRealisationType1) String() string {

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
+	*S7PayloadUserDataItem
 	Result     uint8
 	Reserved01 uint8
-	Parent     *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -56,18 +56,18 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) DataLength(
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8, reserved01 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		Result:     result,
-		Reserved01: reserved01,
-		Parent:     NewS7PayloadUserDataItem(returnCode, transportSize),
+		Result:                result,
+		Reserved01:            reserved01,
+		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7PayloadUserDataItem
 }
 
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
@@ -98,7 +98,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBit
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 8
@@ -138,12 +138,12 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		Result:     result,
-		Reserved01: reserved01,
-		Parent:     &S7PayloadUserDataItem{},
+		Result:                result,
+		Reserved01:            reserved01,
+		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7PayloadUserDataItem.Child = _child
+	return _child.S7PayloadUserDataItem, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,7 +171,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize(w
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() string {

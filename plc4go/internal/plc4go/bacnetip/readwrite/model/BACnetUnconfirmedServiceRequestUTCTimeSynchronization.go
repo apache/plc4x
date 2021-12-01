@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
-	Parent *BACnetUnconfirmedServiceRequest
+	*BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) InitializeParent
 
 func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		Parent: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) *BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
@@ -83,7 +83,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() u
 }
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		Parent: &BACnetUnconfirmedServiceRequest{},
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(writeB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) String() string {

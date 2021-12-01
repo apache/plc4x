@@ -144,7 +144,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						cipWriteResponse := readWriteModel.CastCipWriteResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse.Parent, writeRequest)
+						readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse.CipService, writeRequest)
 
 						if err != nil {
 							result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -241,7 +241,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						multipleServiceResponse := readWriteModel.CastMultipleServiceResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse.Parent, writeRequest)
+						readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse.CipService, writeRequest)
 
 						if err != nil {
 							result <- &plc4goModel.DefaultPlcWriteRequestResult{

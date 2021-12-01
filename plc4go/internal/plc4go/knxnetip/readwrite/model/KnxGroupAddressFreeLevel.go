@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type KnxGroupAddressFreeLevel struct {
+	*KnxGroupAddress
 	SubGroup uint16
-	Parent   *KnxGroupAddress
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *KnxGroupAddressFreeLevel) InitializeParent(parent *KnxGroupAddress) {
 
 func NewKnxGroupAddressFreeLevel(subGroup uint16) *KnxGroupAddress {
 	child := &KnxGroupAddressFreeLevel{
-		SubGroup: subGroup,
-		Parent:   NewKnxGroupAddress(),
+		SubGroup:        subGroup,
+		KnxGroupAddress: NewKnxGroupAddress(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxGroupAddress
 }
 
 func CastKnxGroupAddressFreeLevel(structType interface{}) *KnxGroupAddressFreeLevel {
@@ -86,7 +86,7 @@ func (m *KnxGroupAddressFreeLevel) LengthInBits() uint16 {
 }
 
 func (m *KnxGroupAddressFreeLevel) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -116,11 +116,11 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddressFreeLevel{
-		SubGroup: subGroup,
-		Parent:   &KnxGroupAddress{},
+		SubGroup:        subGroup,
+		KnxGroupAddress: &KnxGroupAddress{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxGroupAddress.Child = _child
+	return _child.KnxGroupAddress, nil
 }
 
 func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxGroupAddressFreeLevel) String() string {

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationOctetString struct {
+	*BACnetTag
 	Value             string
 	ActualLengthInBit uint16
-	Parent            *BACnetTag
 }
 
 // The corresponding interface
@@ -48,21 +48,21 @@ func (m *BACnetTagApplicationOctetString) TagClass() TagClass {
 }
 
 func (m *BACnetTagApplicationOctetString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetTagApplicationOctetString(value string, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationOctetString{
-		Value:  value,
-		Parent: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:     value,
+		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationOctetString(structType interface{}) *BACnetTagApplicationOctetString {
@@ -93,7 +93,7 @@ func (m *BACnetTagApplicationOctetString) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationOctetString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -131,10 +131,10 @@ func BACnetTagApplicationOctetStringParse(readBuffer utils.ReadBuffer, actualLen
 	_child := &BACnetTagApplicationOctetString{
 		Value:             value,
 		ActualLengthInBit: actualLengthInBit,
-		Parent:            &BACnetTag{},
+		BACnetTag:         &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -155,7 +155,7 @@ func (m *BACnetTagApplicationOctetString) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationOctetString) String() string {

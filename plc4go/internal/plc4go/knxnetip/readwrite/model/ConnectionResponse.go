@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type ConnectionResponse struct {
+	*KnxNetIpMessage
 	CommunicationChannelId      uint8
 	Status                      Status
 	HpaiDataEndpoint            *HPAIDataEndpoint
 	ConnectionResponseDataBlock *ConnectionResponseDataBlock
-	Parent                      *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -58,10 +58,10 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 		Status:                      status,
 		HpaiDataEndpoint:            hpaiDataEndpoint,
 		ConnectionResponseDataBlock: connectionResponseDataBlock,
-		Parent:                      NewKnxNetIpMessage(),
+		KnxNetIpMessage:             NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastConnectionResponse(structType interface{}) *ConnectionResponse {
@@ -92,7 +92,7 @@ func (m *ConnectionResponse) LengthInBits() uint16 {
 }
 
 func (m *ConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -194,10 +194,10 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		Status:                      status,
 		HpaiDataEndpoint:            CastHPAIDataEndpoint(hpaiDataEndpoint),
 		ConnectionResponseDataBlock: CastConnectionResponseDataBlock(connectionResponseDataBlock),
-		Parent:                      &KnxNetIpMessage{},
+		KnxNetIpMessage:             &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -262,7 +262,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionResponse) String() string {

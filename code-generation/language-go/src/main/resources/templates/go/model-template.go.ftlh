@@ -82,6 +82,9 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // The data-structure of this message
 type ${type.name} struct {
+<#if type.parentType??>
+	*${type.parentType.name}
+</#if>
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 	<#list type.propertyFields as field>
@@ -93,13 +96,6 @@ type ${type.name} struct {
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
 	Child I${type.name}Child
-</#if>
-<#--
-	This is GO's version of inheritance
-	(Makes all properties of the following type available in this tpye)
--->
-<#if type.parentType??>
-	Parent *${type.parentType.name}
 </#if>
 }
 
@@ -158,7 +154,7 @@ func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLan
 
 func (m *${type.name}) InitializeParent(parent *${type.parentType.name}<#if type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content>, <#list type.parentPropertyFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list></#if><#if type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if><#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list>) {
 	<#list type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
-	m.Parent.${field.name?cap_first} = ${field.name}
+	m.${field.name?cap_first} = ${field.name}
 	</#list>
 }
 </#if>
@@ -169,10 +165,10 @@ func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if
 	<#list type.getPropertyFields() as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-		Parent: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list>),
+    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list>),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.${type.parentType.name}
 <#else>
 	return &${type.name}{<#list type.getPropertyFields() as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
 </#if>
@@ -213,7 +209,7 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 	<#else>
 		<#if type.isDiscriminatedChildTypeDefinition()>
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 		<#else>
 	lengthInBits := uint16(0)
 		</#if>
@@ -1115,10 +1111,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
         <#list type.virtualFields as field>
             ${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>)</#if>,
         </#list>
-		Parent: &${type.parentType.name}{},
+        ${type.parentType.name}: &${type.parentType.name}{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.${type.parentType.name}.Child = _child
+	return _child.${type.parentType.name}, nil
 	<#else>
 	// Create the instance
 	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name}<#sep>, </#sep></#list>), nil
@@ -1302,7 +1298,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		for _, _value := range m.${manualArrayField.name?cap_first} {
+		for _, m := range m.${manualArrayField.name?cap_first} {
 			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong therefore we substract it with substring-->
 			${helper.toSerializationExpression(manualArrayField, manualArrayField.type, manualArrayField.serializeExpression, parserArguments)?replace("m.","")}
 		}
@@ -1315,7 +1311,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("${manualField.name}"); pushErr != nil {
 		return pushErr
 	}
 	_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
@@ -1433,7 +1429,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
 		return popErr

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUDiagnosticRequest struct {
+	*ModbusPDU
 	SubFunction uint16
 	Data        uint16
-	Parent      *ModbusPDU
 }
 
 // The corresponding interface
@@ -62,10 +62,10 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDU {
 	child := &ModbusPDUDiagnosticRequest{
 		SubFunction: subFunction,
 		Data:        data,
-		Parent:      NewModbusPDU(),
+		ModbusPDU:   NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUDiagnosticRequest(structType interface{}) *ModbusPDUDiagnosticRequest {
@@ -96,7 +96,7 @@ func (m *ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -138,10 +138,10 @@ func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool)
 	_child := &ModbusPDUDiagnosticRequest{
 		SubFunction: subFunction,
 		Data:        data,
-		Parent:      &ModbusPDU{},
+		ModbusPDU:   &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUDiagnosticRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -169,7 +169,7 @@ func (m *ModbusPDUDiagnosticRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUDiagnosticRequest) String() string {

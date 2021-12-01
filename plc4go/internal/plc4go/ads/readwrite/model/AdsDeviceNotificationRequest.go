@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type AdsDeviceNotificationRequest struct {
+	*AdsData
 	Length          uint32
 	Stamps          uint32
 	AdsStampHeaders []*AdsStampHeader
-	Parent          *AdsData
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeade
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		Parent:          NewAdsData(),
+		AdsData:         NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsDeviceNotificationRequest(structType interface{}) *AdsDeviceNotificationRequest {
@@ -94,7 +94,7 @@ func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -164,10 +164,10 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		Parent:          &AdsData{},
+		AdsData:         &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -211,7 +211,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsDeviceNotificationRequest) String() string {

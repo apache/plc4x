@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type COTPParameterCallingTsap struct {
+	*COTPParameter
 	TsapId uint16
-	Parent *COTPParameter
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {
 
 func NewCOTPParameterCallingTsap(tsapId uint16) *COTPParameter {
 	child := &COTPParameterCallingTsap{
-		TsapId: tsapId,
-		Parent: NewCOTPParameter(),
+		TsapId:        tsapId,
+		COTPParameter: NewCOTPParameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPParameter
 }
 
 func CastCOTPParameterCallingTsap(structType interface{}) *COTPParameterCallingTsap {
@@ -86,7 +86,7 @@ func (m *COTPParameterCallingTsap) LengthInBits() uint16 {
 }
 
 func (m *COTPParameterCallingTsap) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -116,11 +116,11 @@ func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*CO
 
 	// Create a partially initialized instance
 	_child := &COTPParameterCallingTsap{
-		TsapId: tsapId,
-		Parent: &COTPParameter{},
+		TsapId:        tsapId,
+		COTPParameter: &COTPParameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPParameter.Child = _child
+	return _child.COTPParameter, nil
 }
 
 func (m *COTPParameterCallingTsap) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -141,7 +141,7 @@ func (m *COTPParameterCallingTsap) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPParameterCallingTsap) String() string {

@@ -29,10 +29,10 @@ import (
 
 // The data-structure of this message
 type APDUAbort struct {
+	*APDU
 	Server           bool
 	OriginalInvokeId uint8
 	AbortReason      uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -57,10 +57,10 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) *APDU 
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUAbort(structType interface{}) *APDUAbort {
@@ -91,7 +91,7 @@ func (m *APDUAbort) LengthInBits() uint16 {
 }
 
 func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -161,10 +161,10 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -207,7 +207,7 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUAbort) String() string {

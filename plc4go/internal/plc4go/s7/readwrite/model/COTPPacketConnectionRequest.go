@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type COTPPacketConnectionRequest struct {
+	*COTPPacket
 	DestinationReference uint16
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
-	Parent               *COTPPacket
 }
 
 // The corresponding interface
@@ -49,8 +49,8 @@ func (m *COTPPacketConnectionRequest) TpduCode() uint8 {
 }
 
 func (m *COTPPacketConnectionRequest) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
-	m.Parent.Parameters = parameters
-	m.Parent.Payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 }
 
 func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
@@ -58,10 +58,10 @@ func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		Parent:               NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPPacket
 }
 
 func CastCOTPPacketConnectionRequest(structType interface{}) *COTPPacketConnectionRequest {
@@ -92,7 +92,7 @@ func (m *COTPPacketConnectionRequest) LengthInBits() uint16 {
 }
 
 func (m *COTPPacketConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -151,10 +151,10 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
-		Parent:               &COTPPacket{},
+		COTPPacket:           &COTPPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPPacket.Child = _child
+	return _child.COTPPacket, nil
 }
 
 func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -194,7 +194,7 @@ func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPPacketConnectionRequest) String() string {

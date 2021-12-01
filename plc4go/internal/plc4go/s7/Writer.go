@@ -110,7 +110,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					if cotpPacketData == nil {
 						return false
 					}
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					if payload == nil {
 						return false
 					}
@@ -121,7 +121,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
 					readResponse, err := m.ToPlc4xWriteResponse(*payload, writeRequest)

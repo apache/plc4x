@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetErrorConfirmedPrivateTransfer struct {
-	Parent *BACnetError
+	*BACnetError
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetErr
 
 func NewBACnetErrorConfirmedPrivateTransfer() *BACnetError {
 	child := &BACnetErrorConfirmedPrivateTransfer{
-		Parent: NewBACnetError(),
+		BACnetError: NewBACnetError(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetError
 }
 
 func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) *BACnetErrorConfirmedPrivateTransfer {
@@ -83,7 +83,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BAC
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorConfirmedPrivateTransfer{
-		Parent: &BACnetError{},
+		BACnetError: &BACnetError{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetError.Child = _child
+	return _child.BACnetError, nil
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) String() string {

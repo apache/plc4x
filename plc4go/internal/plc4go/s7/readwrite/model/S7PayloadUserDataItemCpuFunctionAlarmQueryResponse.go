@@ -34,9 +34,9 @@ const S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ uint8 
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
+	*S7PayloadUserDataItem
 	PudicfReturnCode    DataTransportErrorCode
 	PudicftransportSize DataTransportSize
-	Parent              *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -62,18 +62,18 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) DataLength() uint16
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode DataTransportErrorCode, pudicftransportSize DataTransportSize, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		PudicfReturnCode:    pudicfReturnCode,
-		PudicftransportSize: pudicftransportSize,
-		Parent:              NewS7PayloadUserDataItem(returnCode, transportSize),
+		PudicfReturnCode:      pudicfReturnCode,
+		PudicftransportSize:   pudicftransportSize,
+		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7PayloadUserDataItem
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
@@ -104,7 +104,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) LengthInBits() uint
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -197,12 +197,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		PudicfReturnCode:    pudicfReturnCode,
-		PudicftransportSize: pudicftransportSize,
-		Parent:              &S7PayloadUserDataItem{},
+		PudicfReturnCode:      pudicfReturnCode,
+		PudicftransportSize:   pudicftransportSize,
+		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7PayloadUserDataItem.Child = _child
+	return _child.S7PayloadUserDataItem, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -260,7 +260,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {

@@ -28,10 +28,8 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagPropertyIdentifier struct {
-	Data          []byte
-	SlimmedLength uint16
-	Value         BACnetPropertyIdentifier
-	Parent        *BACnetComplexTag
+	*BACnetComplexTag
+	Value BACnetPropertyIdentifier
 }
 
 // The corresponding interface
@@ -49,22 +47,22 @@ func (m *BACnetComplexTagPropertyIdentifier) DataType() BACnetDataType {
 }
 
 func (m *BACnetComplexTagPropertyIdentifier) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetComplexTagPropertyIdentifier(data []byte, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
+func NewBACnetComplexTagPropertyIdentifier(value BACnetPropertyIdentifier, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagPropertyIdentifier{
-		Data:   data,
-		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:            value,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagPropertyIdentifier(structType interface{}) *BACnetComplexTagPropertyIdentifier {
@@ -95,16 +93,10 @@ func (m *BACnetComplexTagPropertyIdentifier) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagPropertyIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
-
-	// A virtual field doesn't have any in- or output.
+	// Manual Field (value)
+	lengthInBits += uint16(m.ActualLength * 8)
 
 	return lengthInBits
 }
@@ -118,19 +110,17 @@ func BACnetComplexTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, pullErr
 	}
 
-	// Virtual field
-	_slimmedLength := actualLength
-	slimmedLength := uint16(_slimmedLength)
-	// Byte Array field (data)
-	numberOfBytesdata := int(slimmedLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+	// Manual Field (value)
+	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
+		return nil, pullErr
 	}
-
-	// Virtual field
-	_value := MapToPropertyIdentifier(data)
-	value := BACnetPropertyIdentifier(_value)
+	value, _valueErr := ReadPropertyIdentifier(readBuffer, actualLength)
+	if _valueErr != nil {
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagPropertyIdentifier"); closeErr != nil {
 		return nil, closeErr
@@ -138,13 +128,11 @@ func BACnetComplexTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagPropertyIdentifier{
-		Data:          data,
-		SlimmedLength: slimmedLength,
-		Value:         value,
-		Parent:        &BACnetComplexTag{},
+		Value:            value,
+		BACnetComplexTag: &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -153,13 +141,16 @@ func (m *BACnetComplexTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBu
 			return pushErr
 		}
 
-		// Array Field (data)
-		if m.Data != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Manual Field (value)
+		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
+			return pushErr
+		}
+		_valueErr := WritePropertyIdentifier(writeBuffer, m.Value)
+		if popErr := writeBuffer.PopContext("value"); popErr != nil {
+			return popErr
+		}
+		if _valueErr != nil {
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagPropertyIdentifier"); popErr != nil {
@@ -167,7 +158,7 @@ func (m *BACnetComplexTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagPropertyIdentifier) String() string {

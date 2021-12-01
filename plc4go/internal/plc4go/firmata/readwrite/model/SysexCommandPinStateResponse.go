@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type SysexCommandPinStateResponse struct {
+	*SysexCommand
 	Pin      uint8
 	PinMode  uint8
 	PinState uint8
-	Parent   *SysexCommand
 }
 
 // The corresponding interface
@@ -57,13 +57,13 @@ func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {
 
 func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommand {
 	child := &SysexCommandPinStateResponse{
-		Pin:      pin,
-		PinMode:  pinMode,
-		PinState: pinState,
-		Parent:   NewSysexCommand(),
+		Pin:          pin,
+		PinMode:      pinMode,
+		PinState:     pinState,
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandPinStateResponse(structType interface{}) *SysexCommandPinStateResponse {
@@ -94,7 +94,7 @@ func (m *SysexCommandPinStateResponse) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandPinStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -144,13 +144,13 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 
 	// Create a partially initialized instance
 	_child := &SysexCommandPinStateResponse{
-		Pin:      pin,
-		PinMode:  pinMode,
-		PinState: pinState,
-		Parent:   &SysexCommand{},
+		Pin:          pin,
+		PinMode:      pinMode,
+		PinState:     pinState,
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +185,7 @@ func (m *SysexCommandPinStateResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandPinStateResponse) String() string {

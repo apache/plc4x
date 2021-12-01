@@ -33,7 +33,7 @@ const EipConnectionRequest_FLAGS uint16 = 0x00
 
 // The data-structure of this message
 type EipConnectionRequest struct {
-	Parent *EipPacket
+	*EipPacket
 }
 
 // The corresponding interface
@@ -51,18 +51,18 @@ func (m *EipConnectionRequest) Command() uint16 {
 }
 
 func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.Parent.SessionHandle = sessionHandle
-	m.Parent.Status = status
-	m.Parent.SenderContext = senderContext
-	m.Parent.Options = options
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
 func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &EipConnectionRequest{
-		Parent: NewEipPacket(sessionHandle, status, senderContext, options),
+		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.EipPacket
 }
 
 func CastEipConnectionRequest(structType interface{}) *EipConnectionRequest {
@@ -93,7 +93,7 @@ func (m *EipConnectionRequest) LengthInBits() uint16 {
 }
 
 func (m *EipConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16
@@ -137,10 +137,10 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) 
 
 	// Create a partially initialized instance
 	_child := &EipConnectionRequest{
-		Parent: &EipPacket{},
+		EipPacket: &EipPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.EipPacket.Child = _child
+	return _child.EipPacket, nil
 }
 
 func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -166,7 +166,7 @@ func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *EipConnectionRequest) String() string {

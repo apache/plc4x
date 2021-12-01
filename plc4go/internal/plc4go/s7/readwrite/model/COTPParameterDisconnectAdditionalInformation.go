@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type COTPParameterDisconnectAdditionalInformation struct {
-	Data   []byte
-	Parent *COTPParameter
+	*COTPParameter
+	Data []byte
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *
 
 func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
 	child := &COTPParameterDisconnectAdditionalInformation{
-		Data:   data,
-		Parent: NewCOTPParameter(),
+		Data:          data,
+		COTPParameter: NewCOTPParameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPParameter
 }
 
 func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) *COTPParameterDisconnectAdditionalInformation {
@@ -86,7 +86,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -117,11 +117,11 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &COTPParameterDisconnectAdditionalInformation{
-		Data:   data,
-		Parent: &COTPParameter{},
+		Data:          data,
+		COTPParameter: &COTPParameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPParameter.Child = _child
+	return _child.COTPParameter, nil
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +144,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) String() string {

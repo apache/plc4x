@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type MFuncPropStateReadReq struct {
-	Parent *CEMI
+	*CEMI
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {
 
 func NewMFuncPropStateReadReq() *CEMI {
 	child := &MFuncPropStateReadReq{
-		Parent: NewCEMI(),
+		CEMI: NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMFuncPropStateReadReq(structType interface{}) *MFuncPropStateReadReq {
@@ -83,7 +83,7 @@ func (m *MFuncPropStateReadReq) LengthInBits() uint16 {
 }
 
 func (m *MFuncPropStateReadReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI
 
 	// Create a partially initialized instance
 	_child := &MFuncPropStateReadReq{
-		Parent: &CEMI{},
+		CEMI: &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MFuncPropStateReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *MFuncPropStateReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MFuncPropStateReadReq) String() string {

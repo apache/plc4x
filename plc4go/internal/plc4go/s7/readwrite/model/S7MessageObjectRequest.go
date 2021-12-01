@@ -34,10 +34,10 @@ const S7MessageObjectRequest_LENGTH uint8 = 0x08
 
 // The data-structure of this message
 type S7MessageObjectRequest struct {
+	*S7DataAlarmMessage
 	SyntaxId  SyntaxIdType
 	QueryType QueryType
 	AlarmType AlarmType
-	Parent    *S7DataAlarmMessage
 }
 
 // The corresponding interface
@@ -59,13 +59,13 @@ func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {
 
 func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
 	child := &S7MessageObjectRequest{
-		SyntaxId:  syntaxId,
-		QueryType: queryType,
-		AlarmType: alarmType,
-		Parent:    NewS7DataAlarmMessage(),
+		SyntaxId:           syntaxId,
+		QueryType:          queryType,
+		AlarmType:          alarmType,
+		S7DataAlarmMessage: NewS7DataAlarmMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7DataAlarmMessage
 }
 
 func CastS7MessageObjectRequest(structType interface{}) *S7MessageObjectRequest {
@@ -96,7 +96,7 @@ func (m *S7MessageObjectRequest) LengthInBits() uint16 {
 }
 
 func (m *S7MessageObjectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -222,13 +222,13 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 
 	// Create a partially initialized instance
 	_child := &S7MessageObjectRequest{
-		SyntaxId:  syntaxId,
-		QueryType: queryType,
-		AlarmType: alarmType,
-		Parent:    &S7DataAlarmMessage{},
+		SyntaxId:           syntaxId,
+		QueryType:          queryType,
+		AlarmType:          alarmType,
+		S7DataAlarmMessage: &S7DataAlarmMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7DataAlarmMessage.Child = _child
+	return _child.S7DataAlarmMessage, nil
 }
 
 func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -306,7 +306,7 @@ func (m *S7MessageObjectRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7MessageObjectRequest) String() string {

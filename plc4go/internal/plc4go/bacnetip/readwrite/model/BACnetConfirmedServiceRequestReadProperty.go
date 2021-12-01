@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReadProperty struct {
+	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetComplexTagObjectIdentifier
 	PropertyIdentifier *BACnetComplexTagPropertyIdentifier
 	ArrayIndex         *uint32
-	Parent             *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -53,13 +53,13 @@ func (m *BACnetConfirmedServiceRequestReadProperty) InitializeParent(parent *BAC
 
 func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetComplexTagObjectIdentifier, propertyIdentifier *BACnetComplexTagPropertyIdentifier, arrayIndex *uint32) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReadProperty{
-		ObjectIdentifier:   objectIdentifier,
-		PropertyIdentifier: propertyIdentifier,
-		ArrayIndex:         arrayIndex,
-		Parent:             NewBACnetConfirmedServiceRequest(),
+		ObjectIdentifier:              objectIdentifier,
+		PropertyIdentifier:            propertyIdentifier,
+		ArrayIndex:                    arrayIndex,
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) *BACnetConfirmedServiceRequestReadProperty {
@@ -90,7 +90,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (objectIdentifier)
 	lengthInBits += m.ObjectIdentifier.LengthInBits()
@@ -157,13 +157,13 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadProperty{
-		ObjectIdentifier:   CastBACnetComplexTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier: CastBACnetComplexTagPropertyIdentifier(propertyIdentifier),
-		ArrayIndex:         arrayIndex,
-		Parent:             &BACnetConfirmedServiceRequest{},
+		ObjectIdentifier:              CastBACnetComplexTagObjectIdentifier(objectIdentifier),
+		PropertyIdentifier:            CastBACnetComplexTagPropertyIdentifier(propertyIdentifier),
+		ArrayIndex:                    arrayIndex,
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -211,7 +211,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestReadProperty) String() string {

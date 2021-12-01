@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationUnsignedInteger struct {
+	*BACnetTag
 	ValueUint8  *uint8
 	ValueUint16 *uint16
 	ValueUint32 *uint32
@@ -35,7 +36,6 @@ type BACnetTagApplicationUnsignedInteger struct {
 	IsUint16    bool
 	IsUint32    bool
 	ActualValue uint32
-	Parent      *BACnetTag
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *BACnetTagApplicationUnsignedInteger) TagClass() TagClass {
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetTagApplicationUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
@@ -66,10 +66,10 @@ func NewBACnetTagApplicationUnsignedInteger(valueUint8 *uint8, valueUint16 *uint
 		ValueUint8:  valueUint8,
 		ValueUint16: valueUint16,
 		ValueUint32: valueUint32,
-		Parent:      NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		BACnetTag:   NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationUnsignedInteger(structType interface{}) *BACnetTagApplicationUnsignedInteger {
@@ -100,7 +100,7 @@ func (m *BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -200,10 +200,10 @@ func BACnetTagApplicationUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 		IsUint16:    isUint16,
 		IsUint32:    isUint32,
 		ActualValue: actualValue,
-		Parent:      &BACnetTag{},
+		BACnetTag:   &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -247,7 +247,7 @@ func (m *BACnetTagApplicationUnsignedInteger) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) String() string {

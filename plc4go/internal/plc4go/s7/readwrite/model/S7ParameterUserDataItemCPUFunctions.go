@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type S7ParameterUserDataItemCPUFunctions struct {
+	*S7ParameterUserDataItem
 	Method                  uint8
 	CpuFunctionType         uint8
 	CpuFunctionGroup        uint8
@@ -36,7 +37,6 @@ type S7ParameterUserDataItemCPUFunctions struct {
 	DataUnitReferenceNumber *uint8
 	LastDataUnit            *uint8
 	ErrorCode               *uint16
-	Parent                  *S7ParameterUserDataItem
 }
 
 // The corresponding interface
@@ -66,10 +66,10 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 		DataUnitReferenceNumber: dataUnitReferenceNumber,
 		LastDataUnit:            lastDataUnit,
 		ErrorCode:               errorCode,
-		Parent:                  NewS7ParameterUserDataItem(),
+		S7ParameterUserDataItem: NewS7ParameterUserDataItem(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7ParameterUserDataItem
 }
 
 func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) *S7ParameterUserDataItemCPUFunctions {
@@ -100,7 +100,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -233,10 +233,10 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 		DataUnitReferenceNumber: dataUnitReferenceNumber,
 		LastDataUnit:            lastDataUnit,
 		ErrorCode:               errorCode,
-		Parent:                  &S7ParameterUserDataItem{},
+		S7ParameterUserDataItem: &S7ParameterUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7ParameterUserDataItem.Child = _child
+	return _child.S7ParameterUserDataItem, nil
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -322,7 +322,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) String() string {

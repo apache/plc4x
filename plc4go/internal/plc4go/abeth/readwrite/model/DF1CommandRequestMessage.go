@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type DF1CommandRequestMessage struct {
+	*DF1RequestMessage
 	Command *DF1RequestCommand
-	Parent  *DF1RequestMessage
 }
 
 // The corresponding interface
@@ -47,19 +47,19 @@ func (m *DF1CommandRequestMessage) CommandCode() uint8 {
 }
 
 func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
-	m.Parent.DestinationAddress = destinationAddress
-	m.Parent.SourceAddress = sourceAddress
-	m.Parent.Status = status
-	m.Parent.TransactionCounter = transactionCounter
+	m.DestinationAddress = destinationAddress
+	m.SourceAddress = sourceAddress
+	m.Status = status
+	m.TransactionCounter = transactionCounter
 }
 
 func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
 	child := &DF1CommandRequestMessage{
-		Command: command,
-		Parent:  NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
+		Command:           command,
+		DF1RequestMessage: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1RequestMessage
 }
 
 func CastDF1CommandRequestMessage(structType interface{}) *DF1CommandRequestMessage {
@@ -90,7 +90,7 @@ func (m *DF1CommandRequestMessage) LengthInBits() uint16 {
 }
 
 func (m *DF1CommandRequestMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (command)
 	lengthInBits += m.Command.LengthInBits()
@@ -126,11 +126,11 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 
 	// Create a partially initialized instance
 	_child := &DF1CommandRequestMessage{
-		Command: CastDF1RequestCommand(command),
-		Parent:  &DF1RequestMessage{},
+		Command:           CastDF1RequestCommand(command),
+		DF1RequestMessage: &DF1RequestMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1RequestMessage.Child = _child
+	return _child.DF1RequestMessage, nil
 }
 
 func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -156,7 +156,7 @@ func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1CommandRequestMessage) String() string {

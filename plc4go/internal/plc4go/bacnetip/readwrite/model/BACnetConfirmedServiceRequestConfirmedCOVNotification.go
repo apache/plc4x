@@ -37,6 +37,7 @@ const BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESCLOSINGT
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
+	*BACnetConfirmedServiceRequest
 	SubscriberProcessIdentifier               uint8
 	MonitoredObjectType                       uint16
 	MonitoredObjectInstanceNumber             uint32
@@ -45,7 +46,6 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	LifetimeLength                            uint8
 	LifetimeSeconds                           []int8
 	Notifications                             []*BACnetTagWithContent
-	Parent                                    *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -75,10 +75,10 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
 		LifetimeLength:                            lifetimeLength,
 		LifetimeSeconds:                           lifetimeSeconds,
 		Notifications:                             notifications,
-		Parent:                                    NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest:             NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
@@ -109,7 +109,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() u
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8
@@ -321,10 +321,10 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		LifetimeLength:                            lifetimeLength,
 		LifetimeSeconds:                           lifetimeSeconds,
 		Notifications:                             notifications,
-		Parent:                                    &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest:             &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -448,7 +448,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string {

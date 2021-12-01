@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationTime struct {
+	*BACnetTag
 	Hour                 int8
 	Minute               int8
 	Second               int8
@@ -37,7 +38,6 @@ type BACnetTagApplicationTime struct {
 	MinuteIsWildcard     bool
 	SecondIsWildcard     bool
 	FractionalIsWildcard bool
-	Parent               *BACnetTag
 }
 
 // The corresponding interface
@@ -55,12 +55,12 @@ func (m *BACnetTagApplicationTime) TagClass() TagClass {
 }
 
 func (m *BACnetTagApplicationTime) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetTagApplicationTime(hour int8, minute int8, second int8, fractional int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
@@ -69,10 +69,10 @@ func NewBACnetTagApplicationTime(hour int8, minute int8, second int8, fractional
 		Minute:     minute,
 		Second:     second,
 		Fractional: fractional,
-		Parent:     NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		BACnetTag:  NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationTime(structType interface{}) *BACnetTagApplicationTime {
@@ -103,7 +103,7 @@ func (m *BACnetTagApplicationTime) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationTime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -202,10 +202,10 @@ func BACnetTagApplicationTimeParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 		MinuteIsWildcard:     minuteIsWildcard,
 		SecondIsWildcard:     secondIsWildcard,
 		FractionalIsWildcard: fractionalIsWildcard,
-		Parent:               &BACnetTag{},
+		BACnetTag:            &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -247,7 +247,7 @@ func (m *BACnetTagApplicationTime) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationTime) String() string {

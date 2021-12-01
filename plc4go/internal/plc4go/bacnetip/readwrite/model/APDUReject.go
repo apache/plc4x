@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUReject struct {
+	*APDU
 	OriginalInvokeId uint8
 	RejectReason     uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
 	child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUReject(structType interface{}) *APDUReject {
@@ -89,7 +89,7 @@ func (m *APDUReject) LengthInBits() uint16 {
 }
 
 func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -148,10 +148,10 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, err
 	_child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +187,7 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUReject) String() string {

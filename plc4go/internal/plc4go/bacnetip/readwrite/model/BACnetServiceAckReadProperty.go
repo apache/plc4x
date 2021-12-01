@@ -35,12 +35,12 @@ const BACnetServiceAckReadProperty_CLOSINGTAG uint8 = 0x3F
 
 // The data-structure of this message
 type BACnetServiceAckReadProperty struct {
+	*BACnetServiceAck
 	ObjectType               uint16
 	ObjectInstanceNumber     uint32
 	PropertyIdentifierLength uint8
 	PropertyIdentifier       []int8
 	Value                    *BACnetTag
-	Parent                   *BACnetServiceAck
 }
 
 // The corresponding interface
@@ -67,10 +67,10 @@ func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uin
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
 		Value:                    value,
-		Parent:                   NewBACnetServiceAck(),
+		BACnetServiceAck:         NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckReadProperty(structType interface{}) *BACnetServiceAckReadProperty {
@@ -101,7 +101,7 @@ func (m *BACnetServiceAckReadProperty) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -244,10 +244,10 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
 		Value:                    CastBACnetTag(value),
-		Parent:                   &BACnetServiceAck{},
+		BACnetServiceAck:         &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -334,7 +334,7 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckReadProperty) String() string {

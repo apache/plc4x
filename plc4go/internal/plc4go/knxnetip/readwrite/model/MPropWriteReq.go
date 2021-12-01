@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type MPropWriteReq struct {
-	Parent *CEMI
+	*CEMI
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *MPropWriteReq) InitializeParent(parent *CEMI) {
 
 func NewMPropWriteReq() *CEMI {
 	child := &MPropWriteReq{
-		Parent: NewCEMI(),
+		CEMI: NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMPropWriteReq(structType interface{}) *MPropWriteReq {
@@ -83,7 +83,7 @@ func (m *MPropWriteReq) LengthInBits() uint16 {
 }
 
 func (m *MPropWriteReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func MPropWriteReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error)
 
 	// Create a partially initialized instance
 	_child := &MPropWriteReq{
-		Parent: &CEMI{},
+		CEMI: &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MPropWriteReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *MPropWriteReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MPropWriteReq) String() string {

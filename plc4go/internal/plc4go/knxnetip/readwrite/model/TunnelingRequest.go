@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type TunnelingRequest struct {
+	*KnxNetIpMessage
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
-	Parent                    *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, c
 	child := &TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
-		Parent:                    NewKnxNetIpMessage(),
+		KnxNetIpMessage:           NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
@@ -88,7 +88,7 @@ func (m *TunnelingRequest) LengthInBits() uint16 {
 }
 
 func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
@@ -142,10 +142,10 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 	_child := &TunnelingRequest{
 		TunnelingRequestDataBlock: CastTunnelingRequestDataBlock(tunnelingRequestDataBlock),
 		Cemi:                      CastCEMI(cemi),
-		Parent:                    &KnxNetIpMessage{},
+		KnxNetIpMessage:           &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -183,7 +183,7 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *TunnelingRequest) String() string {

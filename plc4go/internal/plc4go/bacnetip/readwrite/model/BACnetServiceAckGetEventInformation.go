@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetServiceAckGetEventInformation struct {
-	Parent *BACnetServiceAck
+	*BACnetServiceAck
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetServiceAckGetEventInformation) InitializeParent(parent *BACnetSer
 
 func NewBACnetServiceAckGetEventInformation() *BACnetServiceAck {
 	child := &BACnetServiceAckGetEventInformation{
-		Parent: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckGetEventInformation(structType interface{}) *BACnetServiceAckGetEventInformation {
@@ -83,7 +83,7 @@ func (m *BACnetServiceAckGetEventInformation) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckGetEventInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BAC
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEventInformation{
-		Parent: &BACnetServiceAck{},
+		BACnetServiceAck: &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckGetEventInformation) String() string {

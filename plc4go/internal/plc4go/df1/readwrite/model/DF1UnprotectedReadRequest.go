@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type DF1UnprotectedReadRequest struct {
+	*DF1Command
 	Address uint16
 	Size    uint8
-	Parent  *DF1Command
 }
 
 // The corresponding interface
@@ -48,18 +48,18 @@ func (m *DF1UnprotectedReadRequest) CommandCode() uint8 {
 }
 
 func (m *DF1UnprotectedReadRequest) InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16) {
-	m.Parent.Status = status
-	m.Parent.TransactionCounter = transactionCounter
+	m.Status = status
+	m.TransactionCounter = transactionCounter
 }
 
 func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1Command {
 	child := &DF1UnprotectedReadRequest{
-		Address: address,
-		Size:    size,
-		Parent:  NewDF1Command(status, transactionCounter),
+		Address:    address,
+		Size:       size,
+		DF1Command: NewDF1Command(status, transactionCounter),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1Command
 }
 
 func CastDF1UnprotectedReadRequest(structType interface{}) *DF1UnprotectedReadRequest {
@@ -90,7 +90,7 @@ func (m *DF1UnprotectedReadRequest) LengthInBits() uint16 {
 }
 
 func (m *DF1UnprotectedReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -130,12 +130,12 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Command, e
 
 	// Create a partially initialized instance
 	_child := &DF1UnprotectedReadRequest{
-		Address: address,
-		Size:    size,
-		Parent:  &DF1Command{},
+		Address:    address,
+		Size:       size,
+		DF1Command: &DF1Command{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1Command.Child = _child
+	return _child.DF1Command, nil
 }
 
 func (m *DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -163,7 +163,7 @@ func (m *DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1UnprotectedReadRequest) String() string {

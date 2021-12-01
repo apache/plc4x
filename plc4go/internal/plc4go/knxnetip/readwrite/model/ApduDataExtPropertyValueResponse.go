@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type ApduDataExtPropertyValueResponse struct {
+	*ApduDataExt
 	ObjectIndex uint8
 	PropertyId  uint8
 	Count       uint8
 	Index       uint16
 	Data        []byte
-	Parent      *ApduDataExt
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, co
 		Count:       count,
 		Index:       index,
 		Data:        data,
-		Parent:      NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtPropertyValueResponse(structType interface{}) *ApduDataExtPropertyValueResponse {
@@ -94,7 +94,7 @@ func (m *ApduDataExtPropertyValueResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtPropertyValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -170,10 +170,10 @@ func ApduDataExtPropertyValueResponseParse(readBuffer utils.ReadBuffer, length u
 		Count:       count,
 		Index:       index,
 		Data:        data,
-		Parent:      &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtPropertyValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -224,7 +224,7 @@ func (m *ApduDataExtPropertyValueResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtPropertyValueResponse) String() string {

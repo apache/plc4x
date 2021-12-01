@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type AdsReadDeviceInfoResponse struct {
+	*AdsData
 	Result       ReturnCode
 	MajorVersion uint8
 	MinorVersion uint8
 	Version      uint16
 	Device       []byte
-	Parent       *AdsData
 }
 
 // The corresponding interface
@@ -64,10 +64,10 @@ func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVe
 		MinorVersion: minorVersion,
 		Version:      version,
 		Device:       device,
-		Parent:       NewAdsData(),
+		AdsData:      NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsReadDeviceInfoResponse(structType interface{}) *AdsReadDeviceInfoResponse {
@@ -98,7 +98,7 @@ func (m *AdsReadDeviceInfoResponse) LengthInBits() uint16 {
 }
 
 func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -180,10 +180,10 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 		MinorVersion: minorVersion,
 		Version:      version,
 		Device:       device,
-		Parent:       &AdsData{},
+		AdsData:      &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -239,7 +239,7 @@ func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsReadDeviceInfoResponse) String() string {

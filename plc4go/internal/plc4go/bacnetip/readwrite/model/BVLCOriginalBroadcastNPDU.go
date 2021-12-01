@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type BVLCOriginalBroadcastNPDU struct {
-	Npdu   *NPDU
-	Parent *BVLC
+	*BVLC
+	Npdu *NPDU
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC) {
 
 func NewBVLCOriginalBroadcastNPDU(npdu *NPDU) *BVLC {
 	child := &BVLCOriginalBroadcastNPDU{
-		Npdu:   npdu,
-		Parent: NewBVLC(),
+		Npdu: npdu,
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCOriginalBroadcastNPDU(structType interface{}) *BVLCOriginalBroadcastNPDU {
@@ -86,7 +86,7 @@ func (m *BVLCOriginalBroadcastNPDU) LengthInBits() uint16 {
 }
 
 func (m *BVLCOriginalBroadcastNPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.LengthInBits()
@@ -122,11 +122,11 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalBroadcastNPDU{
-		Npdu:   CastNPDU(npdu),
-		Parent: &BVLC{},
+		Npdu: CastNPDU(npdu),
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCOriginalBroadcastNPDU) String() string {

@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type FirmataMessageSubscribeDigitalPinValue struct {
+	*FirmataMessage
 	Pin    uint8
 	Enable bool
-	Parent *FirmataMessage
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *FirmataMessageSubscribeDigitalPinValue) InitializeParent(parent *Firmat
 
 func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool) *FirmataMessage {
 	child := &FirmataMessageSubscribeDigitalPinValue{
-		Pin:    pin,
-		Enable: enable,
-		Parent: NewFirmataMessage(),
+		Pin:            pin,
+		Enable:         enable,
+		FirmataMessage: NewFirmataMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataMessage
 }
 
 func CastFirmataMessageSubscribeDigitalPinValue(structType interface{}) *FirmataMessageSubscribeDigitalPinValue {
@@ -89,7 +89,7 @@ func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBits() uint16 {
 }
 
 func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -146,12 +146,12 @@ func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, re
 
 	// Create a partially initialized instance
 	_child := &FirmataMessageSubscribeDigitalPinValue{
-		Pin:    pin,
-		Enable: enable,
-		Parent: &FirmataMessage{},
+		Pin:            pin,
+		Enable:         enable,
+		FirmataMessage: &FirmataMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataMessage.Child = _child
+	return _child.FirmataMessage, nil
 }
 
 func (m *FirmataMessageSubscribeDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +187,7 @@ func (m *FirmataMessageSubscribeDigitalPinValue) Serialize(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataMessageSubscribeDigitalPinValue) String() string {

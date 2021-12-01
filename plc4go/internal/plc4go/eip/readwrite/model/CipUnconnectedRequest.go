@@ -33,10 +33,10 @@ const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
 // The data-structure of this message
 type CipUnconnectedRequest struct {
+	*CipService
 	UnconnectedService *CipService
 	BackPlane          int8
 	Slot               int8
-	Parent             *CipService
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, sl
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		Parent:             NewCipService(),
+		CipService:         NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipUnconnectedRequest(structType interface{}) *CipUnconnectedRequest {
@@ -95,7 +95,7 @@ func (m *CipUnconnectedRequest) LengthInBits() uint16 {
 }
 
 func (m *CipUnconnectedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -278,10 +278,10 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 		UnconnectedService: CastCipService(unconnectedService),
 		BackPlane:          backPlane,
 		Slot:               slot,
-		Parent:             &CipService{},
+		CipService:         &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -382,7 +382,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipUnconnectedRequest) String() string {

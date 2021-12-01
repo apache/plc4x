@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type FirmataCommandProtocolVersion struct {
+	*FirmataCommand
 	MajorVersion uint8
 	MinorVersion uint8
-	Parent       *FirmataCommand
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand)
 
 func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *FirmataCommand {
 	child := &FirmataCommandProtocolVersion{
-		MajorVersion: majorVersion,
-		MinorVersion: minorVersion,
-		Parent:       NewFirmataCommand(),
+		MajorVersion:   majorVersion,
+		MinorVersion:   minorVersion,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandProtocolVersion(structType interface{}) *FirmataCommandProtocolVersion {
@@ -88,7 +88,7 @@ func (m *FirmataCommandProtocolVersion) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandProtocolVersion) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -128,12 +128,12 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandProtocolVersion{
-		MajorVersion: majorVersion,
-		MinorVersion: minorVersion,
-		Parent:       &FirmataCommand{},
+		MajorVersion:   majorVersion,
+		MinorVersion:   minorVersion,
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -161,7 +161,7 @@ func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandProtocolVersion) String() string {

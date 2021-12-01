@@ -141,7 +141,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						multipleServiceResponse := readWriteModel.CastMultipleServiceResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse.Parent, readRequest)
+						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse.CipService, readRequest)
 
 						if err != nil {
 							result <- &plc4goModel.DefaultPlcReadRequestResult{
@@ -221,7 +221,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						cipReadResponse := readWriteModel.CastCipReadResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse.Parent, readRequest)
+						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse.CipService, readRequest)
 
 						if err != nil {
 							result <- &plc4goModel.DefaultPlcReadRequestResult{

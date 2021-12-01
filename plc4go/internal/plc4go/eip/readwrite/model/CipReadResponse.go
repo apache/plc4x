@@ -29,11 +29,11 @@ import (
 
 // The data-structure of this message
 type CipReadResponse struct {
+	*CipService
 	Status    uint8
 	ExtStatus uint8
 	DataType  CIPDataTypeCode
 	Data      []byte
-	Parent    *CipService
 }
 
 // The corresponding interface
@@ -55,14 +55,14 @@ func (m *CipReadResponse) InitializeParent(parent *CipService) {
 
 func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte) *CipService {
 	child := &CipReadResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		DataType:  dataType,
-		Data:      data,
-		Parent:    NewCipService(),
+		Status:     status,
+		ExtStatus:  extStatus,
+		DataType:   dataType,
+		Data:       data,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipReadResponse(structType interface{}) *CipReadResponse {
@@ -93,7 +93,7 @@ func (m *CipReadResponse) LengthInBits() uint16 {
 }
 
 func (m *CipReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -177,14 +177,14 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 
 	// Create a partially initialized instance
 	_child := &CipReadResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		DataType:  dataType,
-		Data:      data,
-		Parent:    &CipService{},
+		Status:     status,
+		ExtStatus:  extStatus,
+		DataType:   dataType,
+		Data:       data,
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -241,7 +241,7 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipReadResponse) String() string {

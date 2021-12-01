@@ -27,8 +27,8 @@ import (
 
 // The data-structure of this message
 type DF1UnprotectedReadResponse struct {
-	Data   []byte
-	Parent *DF1Command
+	*DF1Command
+	Data []byte
 }
 
 // The corresponding interface
@@ -46,17 +46,17 @@ func (m *DF1UnprotectedReadResponse) CommandCode() uint8 {
 }
 
 func (m *DF1UnprotectedReadResponse) InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16) {
-	m.Parent.Status = status
-	m.Parent.TransactionCounter = transactionCounter
+	m.Status = status
+	m.TransactionCounter = transactionCounter
 }
 
 func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1Command {
 	child := &DF1UnprotectedReadResponse{
-		Data:   data,
-		Parent: NewDF1Command(status, transactionCounter),
+		Data:       data,
+		DF1Command: NewDF1Command(status, transactionCounter),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1Command
 }
 
 func CastDF1UnprotectedReadResponse(structType interface{}) *DF1UnprotectedReadResponse {
@@ -87,7 +87,7 @@ func (m *DF1UnprotectedReadResponse) LengthInBits() uint16 {
 }
 
 func (m *DF1UnprotectedReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Manual Array Field (data)
 	data := m.Data
@@ -128,11 +128,11 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 
 	// Create a partially initialized instance
 	_child := &DF1UnprotectedReadResponse{
-		Data:   data,
-		Parent: &DF1Command{},
+		Data:       data,
+		DF1Command: &DF1Command{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1Command.Child = _child
+	return _child.DF1Command, nil
 }
 
 func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -146,8 +146,8 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			for _, _value := range m.Data {
-				WriteData(writeBuffer, _value)
+			for _, m := range m.Data {
+				WriteData(writeBuffer, m)
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
@@ -159,7 +159,7 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1UnprotectedReadResponse) String() string {

@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type AdsDeleteDeviceNotificationRequest struct {
+	*AdsData
 	NotificationHandle uint32
-	Parent             *AdsData
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func (m *AdsDeleteDeviceNotificationRequest) InitializeParent(parent *AdsData) {
 func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
 	child := &AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
-		Parent:             NewAdsData(),
+		AdsData:            NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsDeleteDeviceNotificationRequest(structType interface{}) *AdsDeleteDeviceNotificationRequest {
@@ -90,7 +90,7 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -121,10 +121,10 @@ func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, comman
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
-		Parent:             &AdsData{},
+		AdsData:            &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -145,7 +145,7 @@ func (m *AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) String() string {

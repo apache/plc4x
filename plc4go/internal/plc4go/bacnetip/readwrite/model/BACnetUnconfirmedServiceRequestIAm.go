@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIAm struct {
+	*BACnetUnconfirmedServiceRequest
 	DeviceIdentifier                *BACnetTagApplicationObjectIdentifier
 	MaximumApduLengthAcceptedLength *BACnetTagApplicationUnsignedInteger
 	SegmentationSupported           *BACnetTagApplicationEnumerated
 	VendorId                        *BACnetTagApplicationUnsignedInteger
-	Parent                          *BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -58,10 +58,10 @@ func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetTagApplicatio
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
 		SegmentationSupported:           segmentationSupported,
 		VendorId:                        vendorId,
-		Parent:                          NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) *BACnetUnconfirmedServiceRequestIAm {
@@ -92,7 +92,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.LengthInBits()
@@ -180,10 +180,10 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 		MaximumApduLengthAcceptedLength: CastBACnetTagApplicationUnsignedInteger(maximumApduLengthAcceptedLength),
 		SegmentationSupported:           CastBACnetTagApplicationEnumerated(segmentationSupported),
 		VendorId:                        CastBACnetTagApplicationUnsignedInteger(vendorId),
-		Parent:                          &BACnetUnconfirmedServiceRequest{},
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -245,7 +245,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) String() string {

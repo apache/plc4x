@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type S7PayloadWriteVarResponse struct {
-	Items  []*S7VarPayloadStatusItem
-	Parent *S7Payload
+	*S7Payload
+	Items []*S7VarPayloadStatusItem
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *S7PayloadWriteVarResponse) InitializeParent(parent *S7Payload) {
 
 func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem) *S7Payload {
 	child := &S7PayloadWriteVarResponse{
-		Items:  items,
-		Parent: NewS7Payload(),
+		Items:     items,
+		S7Payload: NewS7Payload(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Payload
 }
 
 func CastS7PayloadWriteVarResponse(structType interface{}) *S7PayloadWriteVarResponse {
@@ -90,7 +90,7 @@ func (m *S7PayloadWriteVarResponse) LengthInBits() uint16 {
 }
 
 func (m *S7PayloadWriteVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {
@@ -137,11 +137,11 @@ func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uin
 
 	// Create a partially initialized instance
 	_child := &S7PayloadWriteVarResponse{
-		Items:  items,
-		Parent: &S7Payload{},
+		Items:     items,
+		S7Payload: &S7Payload{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Payload.Child = _child
+	return _child.S7Payload, nil
 }
 
 func (m *S7PayloadWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -171,7 +171,7 @@ func (m *S7PayloadWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadWriteVarResponse) String() string {

@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type SysexCommandExtendedId struct {
-	Id     []int8
-	Parent *SysexCommand
+	*SysexCommand
+	Id []int8
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {
 
 func NewSysexCommandExtendedId(id []int8) *SysexCommand {
 	child := &SysexCommandExtendedId{
-		Id:     id,
-		Parent: NewSysexCommand(),
+		Id:           id,
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandExtendedId(structType interface{}) *SysexCommandExtendedId {
@@ -90,7 +90,7 @@ func (m *SysexCommandExtendedId) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandExtendedId) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Id) > 0 {
@@ -134,11 +134,11 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 
 	// Create a partially initialized instance
 	_child := &SysexCommandExtendedId{
-		Id:     id,
-		Parent: &SysexCommand{},
+		Id:           id,
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -168,7 +168,7 @@ func (m *SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandExtendedId) String() string {

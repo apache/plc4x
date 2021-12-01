@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type SysexCommandAnalogMappingQueryRequest struct {
-	Parent *SysexCommand
+	*SysexCommand
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *SysexCommandAnalogMappingQueryRequest) InitializeParent(parent *SysexCo
 
 func NewSysexCommandAnalogMappingQueryRequest() *SysexCommand {
 	child := &SysexCommandAnalogMappingQueryRequest{
-		Parent: NewSysexCommand(),
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandAnalogMappingQueryRequest(structType interface{}) *SysexCommandAnalogMappingQueryRequest {
@@ -87,7 +87,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandAnalogMappingQueryRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -107,10 +107,10 @@ func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, res
 
 	// Create a partially initialized instance
 	_child := &SysexCommandAnalogMappingQueryRequest{
-		Parent: &SysexCommand{},
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandAnalogMappingQueryRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) Serialize(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandAnalogMappingQueryRequest) String() string {

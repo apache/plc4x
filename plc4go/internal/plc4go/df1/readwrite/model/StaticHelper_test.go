@@ -53,7 +53,7 @@ func TestDF1UtilsCrcCheck(t *testing.T) {
 						0xAFFE,
 						response,
 					}
-					response.Parent = command
+					response.DF1Command = command
 					return command
 				}(),
 			},

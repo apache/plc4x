@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueInfoReport struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) InitializeParent(parent *ApduD
 
 func NewApduDataExtGroupPropertyValueInfoReport() *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueInfoReport{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtGroupPropertyValueInfoReport(structType interface{}) *ApduDataExtGroupPropertyValueInfoReport {
@@ -83,7 +83,7 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ApduDataExtGroupPropertyValueInfoReportParse(readBuffer utils.ReadBuffer, l
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtGroupPropertyValueInfoReport{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) Serialize(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) String() string {

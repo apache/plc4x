@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type FirmataMessageCommand struct {
+	*FirmataMessage
 	Command *FirmataCommand
-	Parent  *FirmataMessage
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *FirmataMessageCommand) InitializeParent(parent *FirmataMessage) {
 
 func NewFirmataMessageCommand(command *FirmataCommand) *FirmataMessage {
 	child := &FirmataMessageCommand{
-		Command: command,
-		Parent:  NewFirmataMessage(),
+		Command:        command,
+		FirmataMessage: NewFirmataMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataMessage
 }
 
 func CastFirmataMessageCommand(structType interface{}) *FirmataMessageCommand {
@@ -86,7 +86,7 @@ func (m *FirmataMessageCommand) LengthInBits() uint16 {
 }
 
 func (m *FirmataMessageCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (command)
 	lengthInBits += m.Command.LengthInBits()
@@ -122,11 +122,11 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*Fi
 
 	// Create a partially initialized instance
 	_child := &FirmataMessageCommand{
-		Command: CastFirmataCommand(command),
-		Parent:  &FirmataMessage{},
+		Command:        CastFirmataCommand(command),
+		FirmataMessage: &FirmataMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataMessage.Child = _child
+	return _child.FirmataMessage, nil
 }
 
 func (m *FirmataMessageCommand) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *FirmataMessageCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataMessageCommand) String() string {

@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadDeviceIdentificationRequest struct {
-	Parent *ModbusPDU
+	*ModbusPDU
 }
 
 // The corresponding interface
@@ -57,10 +57,10 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) InitializeParent(parent *Modb
 
 func NewModbusPDUReadDeviceIdentificationRequest() *ModbusPDU {
 	child := &ModbusPDUReadDeviceIdentificationRequest{
-		Parent: NewModbusPDU(),
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) *ModbusPDUReadDeviceIdentificationRequest {
@@ -91,7 +91,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -111,10 +111,10 @@ func ModbusPDUReadDeviceIdentificationRequestParse(readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationRequest{
-		Parent: &ModbusPDU{},
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,7 +128,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) String() string {

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWhoIs struct {
+	*BACnetUnconfirmedServiceRequest
 	DeviceInstanceRangeLowLimit  *BACnetComplexTagUnsignedInteger
 	DeviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger
-	Parent                       *BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) InitializeParent(parent *BACnetUn
 
 func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoIs{
-		DeviceInstanceRangeLowLimit:  deviceInstanceRangeLowLimit,
-		DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
-		Parent:                       NewBACnetUnconfirmedServiceRequest(),
+		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
+		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) *BACnetUnconfirmedServiceRequestWhoIs {
@@ -88,7 +88,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
@@ -160,12 +160,12 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoIs{
-		DeviceInstanceRangeLowLimit:  CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeLowLimit),
-		DeviceInstanceRangeHighLimit: CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeHighLimit),
-		Parent:                       &BACnetUnconfirmedServiceRequest{},
+		DeviceInstanceRangeLowLimit:     CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeLowLimit),
+		DeviceInstanceRangeHighLimit:    CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeHighLimit),
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -211,7 +211,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) String() string {

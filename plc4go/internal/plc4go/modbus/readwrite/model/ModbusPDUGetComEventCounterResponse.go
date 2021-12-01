@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUGetComEventCounterResponse struct {
+	*ModbusPDU
 	Status     uint16
 	EventCount uint16
-	Parent     *ModbusPDU
 }
 
 // The corresponding interface
@@ -62,10 +62,10 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *M
 	child := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
-		Parent:     NewModbusPDU(),
+		ModbusPDU:  NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUGetComEventCounterResponse(structType interface{}) *ModbusPDUGetComEventCounterResponse {
@@ -96,7 +96,7 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -138,10 +138,10 @@ func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, respo
 	_child := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
-		Parent:     &ModbusPDU{},
+		ModbusPDU:  &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -169,7 +169,7 @@ func (m *ModbusPDUGetComEventCounterResponse) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) String() string {

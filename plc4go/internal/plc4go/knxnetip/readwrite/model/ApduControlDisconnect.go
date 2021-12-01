@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduControlDisconnect struct {
-	Parent *ApduControl
+	*ApduControl
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduControlDisconnect) InitializeParent(parent *ApduControl) {
 
 func NewApduControlDisconnect() *ApduControl {
 	child := &ApduControlDisconnect{
-		Parent: NewApduControl(),
+		ApduControl: NewApduControl(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduControl
 }
 
 func CastApduControlDisconnect(structType interface{}) *ApduControlDisconnect {
@@ -83,7 +83,7 @@ func (m *ApduControlDisconnect) LengthInBits() uint16 {
 }
 
 func (m *ApduControlDisconnect) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControl, erro
 
 	// Create a partially initialized instance
 	_child := &ApduControlDisconnect{
-		Parent: &ApduControl{},
+		ApduControl: &ApduControl{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduControl.Child = _child
+	return _child.ApduControl, nil
 }
 
 func (m *ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduControlDisconnect) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduControlDisconnect) String() string {

@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ComObjectTableRealisationType6 struct {
+	*ComObjectTable
 	ComObjectDescriptors *GroupObjectDescriptorRealisationType6
-	Parent               *ComObjectTable
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *ComObjectTableRealisationType6) InitializeParent(parent *ComObjectTable
 func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
 	child := &ComObjectTableRealisationType6{
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               NewComObjectTable(),
+		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ComObjectTable
 }
 
 func CastComObjectTableRealisationType6(structType interface{}) *ComObjectTableRealisationType6 {
@@ -86,7 +86,7 @@ func (m *ComObjectTableRealisationType6) LengthInBits() uint16 {
 }
 
 func (m *ComObjectTableRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (comObjectDescriptors)
 	lengthInBits += m.ComObjectDescriptors.LengthInBits()
@@ -123,10 +123,10 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{
 		ComObjectDescriptors: CastGroupObjectDescriptorRealisationType6(comObjectDescriptors),
-		Parent:               &ComObjectTable{},
+		ComObjectTable:       &ComObjectTable{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ComObjectTable.Child = _child
+	return _child.ComObjectTable, nil
 }
 
 func (m *ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ComObjectTableRealisationType6) String() string {

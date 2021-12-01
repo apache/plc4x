@@ -214,7 +214,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (year)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("year"); pushErr != nil {
 		return pushErr
 	}
 	_yearErr := ByteToBcd(writeBuffer, m.Year)
@@ -226,7 +226,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (month)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("month"); pushErr != nil {
 		return pushErr
 	}
 	_monthErr := ByteToBcd(writeBuffer, m.Month)
@@ -238,7 +238,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (day)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("day"); pushErr != nil {
 		return pushErr
 	}
 	_dayErr := ByteToBcd(writeBuffer, m.Day)
@@ -250,7 +250,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (hour)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("hour"); pushErr != nil {
 		return pushErr
 	}
 	_hourErr := ByteToBcd(writeBuffer, m.Hour)
@@ -262,7 +262,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (minutes)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("minutes"); pushErr != nil {
 		return pushErr
 	}
 	_minutesErr := ByteToBcd(writeBuffer, m.Minutes)
@@ -274,7 +274,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (seconds)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("seconds"); pushErr != nil {
 		return pushErr
 	}
 	_secondsErr := ByteToBcd(writeBuffer, m.Seconds)
@@ -286,7 +286,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (msec)
-	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("msec"); pushErr != nil {
 		return pushErr
 	}
 	_msecErr := IntToS7msec(writeBuffer, m.Msec)

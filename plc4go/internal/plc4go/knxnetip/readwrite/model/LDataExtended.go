@@ -28,13 +28,13 @@ import (
 
 // The data-structure of this message
 type LDataExtended struct {
+	*LDataFrame
 	GroupAddress        bool
 	HopCount            uint8
 	ExtendedFrameFormat uint8
 	SourceAddress       *KnxAddress
 	DestinationAddress  []byte
 	Apdu                *Apdu
-	Parent              *LDataFrame
 }
 
 // The corresponding interface
@@ -56,11 +56,11 @@ func (m *LDataExtended) Polling() bool {
 }
 
 func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-	m.Parent.FrameType = frameType
-	m.Parent.NotRepeated = notRepeated
-	m.Parent.Priority = priority
-	m.Parent.AcknowledgeRequested = acknowledgeRequested
-	m.Parent.ErrorFlag = errorFlag
+	m.FrameType = frameType
+	m.NotRepeated = notRepeated
+	m.Priority = priority
+	m.AcknowledgeRequested = acknowledgeRequested
+	m.ErrorFlag = errorFlag
 }
 
 func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
@@ -71,10 +71,10 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 		SourceAddress:       sourceAddress,
 		DestinationAddress:  destinationAddress,
 		Apdu:                apdu,
-		Parent:              NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+		LDataFrame:          NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.LDataFrame
 }
 
 func CastLDataExtended(structType interface{}) *LDataExtended {
@@ -105,7 +105,7 @@ func (m *LDataExtended) LengthInBits() uint16 {
 }
 
 func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -214,10 +214,10 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		SourceAddress:       CastKnxAddress(sourceAddress),
 		DestinationAddress:  destinationAddress,
 		Apdu:                CastApdu(apdu),
-		Parent:              &LDataFrame{},
+		LDataFrame:          &LDataFrame{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.LDataFrame.Child = _child
+	return _child.LDataFrame, nil
 }
 
 func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -292,7 +292,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LDataExtended) String() string {

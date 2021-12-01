@@ -33,8 +33,8 @@ const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
 // The data-structure of this message
 type MultipleServiceRequest struct {
-	Data   *Services
-	Parent *CipService
+	*CipService
+	Data *Services
 }
 
 // The corresponding interface
@@ -56,11 +56,11 @@ func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {
 
 func NewMultipleServiceRequest(data *Services) *CipService {
 	child := &MultipleServiceRequest{
-		Data:   data,
-		Parent: NewCipService(),
+		Data:       data,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastMultipleServiceRequest(structType interface{}) *MultipleServiceRequest {
@@ -91,7 +91,7 @@ func (m *MultipleServiceRequest) LengthInBits() uint16 {
 }
 
 func (m *MultipleServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (requestPathSize)
 	lengthInBits += 8
@@ -151,11 +151,11 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Create a partially initialized instance
 	_child := &MultipleServiceRequest{
-		Data:   CastServices(data),
-		Parent: &CipService{},
+		Data:       CastServices(data),
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -193,7 +193,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MultipleServiceRequest) String() string {

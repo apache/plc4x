@@ -29,8 +29,8 @@ import (
 
 // The data-structure of this message
 type CipRRData struct {
+	*EipPacket
 	Exchange *CipExchange
-	Parent   *EipPacket
 }
 
 // The corresponding interface
@@ -48,19 +48,19 @@ func (m *CipRRData) Command() uint16 {
 }
 
 func (m *CipRRData) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.Parent.SessionHandle = sessionHandle
-	m.Parent.Status = status
-	m.Parent.SenderContext = senderContext
-	m.Parent.Options = options
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
 func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &CipRRData{
-		Exchange: exchange,
-		Parent:   NewEipPacket(sessionHandle, status, senderContext, options),
+		Exchange:  exchange,
+		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.EipPacket
 }
 
 func CastCipRRData(structType interface{}) *CipRRData {
@@ -91,7 +91,7 @@ func (m *CipRRData) LengthInBits() uint16 {
 }
 
 func (m *CipRRData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 32
@@ -161,11 +161,11 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error)
 
 	// Create a partially initialized instance
 	_child := &CipRRData{
-		Exchange: CastCipExchange(exchange),
-		Parent:   &EipPacket{},
+		Exchange:  CastCipExchange(exchange),
+		EipPacket: &EipPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.EipPacket.Child = _child
+	return _child.EipPacket, nil
 }
 
 func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -207,7 +207,7 @@ func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipRRData) String() string {

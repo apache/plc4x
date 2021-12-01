@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type FirmataMessageDigitalIO struct {
+	*FirmataMessage
 	PinBlock uint8
 	Data     []int8
-	Parent   *FirmataMessage
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *FirmataMessageDigitalIO) InitializeParent(parent *FirmataMessage) {
 
 func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageDigitalIO{
-		PinBlock: pinBlock,
-		Data:     data,
-		Parent:   NewFirmataMessage(),
+		PinBlock:       pinBlock,
+		Data:           data,
+		FirmataMessage: NewFirmataMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataMessage
 }
 
 func CastFirmataMessageDigitalIO(structType interface{}) *FirmataMessageDigitalIO {
@@ -88,7 +88,7 @@ func (m *FirmataMessageDigitalIO) LengthInBits() uint16 {
 }
 
 func (m *FirmataMessageDigitalIO) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pinBlock)
 	lengthInBits += 4
@@ -142,12 +142,12 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 
 	// Create a partially initialized instance
 	_child := &FirmataMessageDigitalIO{
-		PinBlock: pinBlock,
-		Data:     data,
-		Parent:   &FirmataMessage{},
+		PinBlock:       pinBlock,
+		Data:           data,
+		FirmataMessage: &FirmataMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataMessage.Child = _child
+	return _child.FirmataMessage, nil
 }
 
 func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -184,7 +184,7 @@ func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataMessageDigitalIO) String() string {

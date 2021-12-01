@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
+	*S7PayloadUserDataItem
 	SzlId    *SzlId
 	SzlIndex uint16
-	Parent   *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -56,18 +56,18 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) DataLength() uint16 {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId *SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
-		SzlId:    szlId,
-		SzlIndex: szlIndex,
-		Parent:   NewS7PayloadUserDataItem(returnCode, transportSize),
+		SzlId:                 szlId,
+		SzlIndex:              szlIndex,
+		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7PayloadUserDataItem
 }
 
 func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlRequest {
@@ -98,7 +98,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (szlId)
 	lengthInBits += m.SzlId.LengthInBits()
@@ -144,12 +144,12 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
-		SzlId:    CastSzlId(szlId),
-		SzlIndex: szlIndex,
-		Parent:   &S7PayloadUserDataItem{},
+		SzlId:                 CastSzlId(szlId),
+		SzlIndex:              szlIndex,
+		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7PayloadUserDataItem.Child = _child
+	return _child.S7PayloadUserDataItem, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -182,7 +182,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer u
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {

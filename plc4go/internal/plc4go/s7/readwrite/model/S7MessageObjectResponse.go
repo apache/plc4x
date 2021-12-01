@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type S7MessageObjectResponse struct {
+	*S7DataAlarmMessage
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
-	Parent        *S7DataAlarmMessage
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *S7MessageObjectResponse) InitializeParent(parent *S7DataAlarmMessage) {
 
 func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7DataAlarmMessage {
 	child := &S7MessageObjectResponse{
-		ReturnCode:    returnCode,
-		TransportSize: transportSize,
-		Parent:        NewS7DataAlarmMessage(),
+		ReturnCode:         returnCode,
+		TransportSize:      transportSize,
+		S7DataAlarmMessage: NewS7DataAlarmMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7DataAlarmMessage
 }
 
 func CastS7MessageObjectResponse(structType interface{}) *S7MessageObjectResponse {
@@ -89,7 +89,7 @@ func (m *S7MessageObjectResponse) LengthInBits() uint16 {
 }
 
 func (m *S7MessageObjectResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -158,12 +158,12 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 
 	// Create a partially initialized instance
 	_child := &S7MessageObjectResponse{
-		ReturnCode:    returnCode,
-		TransportSize: transportSize,
-		Parent:        &S7DataAlarmMessage{},
+		ReturnCode:         returnCode,
+		TransportSize:      transportSize,
+		S7DataAlarmMessage: &S7DataAlarmMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7DataAlarmMessage.Child = _child
+	return _child.S7DataAlarmMessage, nil
 }
 
 func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -209,7 +209,7 @@ func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7MessageObjectResponse) String() string {

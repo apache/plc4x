@@ -35,13 +35,13 @@ const BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG uint8 = 0x3F
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestWriteProperty struct {
+	*BACnetConfirmedServiceRequest
 	ObjectType               uint16
 	ObjectInstanceNumber     uint32
 	PropertyIdentifierLength uint8
 	PropertyIdentifier       []int8
 	Value                    *BACnetTag
 	Priority                 *BACnetTag
-	Parent                   *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -63,16 +63,16 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent *BA
 
 func NewBACnetConfirmedServiceRequestWriteProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value *BACnetTag, priority *BACnetTag) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWriteProperty{
-		ObjectType:               objectType,
-		ObjectInstanceNumber:     objectInstanceNumber,
-		PropertyIdentifierLength: propertyIdentifierLength,
-		PropertyIdentifier:       propertyIdentifier,
-		Value:                    value,
-		Priority:                 priority,
-		Parent:                   NewBACnetConfirmedServiceRequest(),
+		ObjectType:                    objectType,
+		ObjectInstanceNumber:          objectInstanceNumber,
+		PropertyIdentifierLength:      propertyIdentifierLength,
+		PropertyIdentifier:            propertyIdentifier,
+		Value:                         value,
+		Priority:                      priority,
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) *BACnetConfirmedServiceRequestWriteProperty {
@@ -103,7 +103,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -270,16 +270,16 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWriteProperty{
-		ObjectType:               objectType,
-		ObjectInstanceNumber:     objectInstanceNumber,
-		PropertyIdentifierLength: propertyIdentifierLength,
-		PropertyIdentifier:       propertyIdentifier,
-		Value:                    CastBACnetTag(value),
-		Priority:                 CastBACnetTag(priority),
-		Parent:                   &BACnetConfirmedServiceRequest{},
+		ObjectType:                    objectType,
+		ObjectInstanceNumber:          objectInstanceNumber,
+		PropertyIdentifierLength:      propertyIdentifierLength,
+		PropertyIdentifier:            propertyIdentifier,
+		Value:                         CastBACnetTag(value),
+		Priority:                      CastBACnetTag(priority),
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -382,7 +382,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) String() string {

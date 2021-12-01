@@ -29,13 +29,13 @@ import (
 
 // The data-structure of this message
 type APDUComplexAck struct {
+	*APDU
 	SegmentedMessage   bool
 	MoreFollows        bool
 	OriginalInvokeId   uint8
 	SequenceNumber     *uint8
 	ProposedWindowSize *uint8
 	ServiceAck         *BACnetServiceAck
-	Parent             *APDU
 }
 
 // The corresponding interface
@@ -63,10 +63,10 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
 		ServiceAck:         serviceAck,
-		Parent:             NewAPDU(),
+		APDU:               NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUComplexAck(structType interface{}) *APDUComplexAck {
@@ -97,7 +97,7 @@ func (m *APDUComplexAck) LengthInBits() uint16 {
 }
 
 func (m *APDUComplexAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -216,10 +216,10 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
 		ServiceAck:         CastBACnetServiceAck(serviceAck),
-		Parent:             &APDU{},
+		APDU:               &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -294,7 +294,7 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUComplexAck) String() string {

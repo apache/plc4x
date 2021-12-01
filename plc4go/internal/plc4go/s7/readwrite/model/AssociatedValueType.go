@@ -190,7 +190,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (valueLength)
-	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("valueLength"); pushErr != nil {
 		return pushErr
 	}
 	_valueLengthErr := LeftShift3(writeBuffer, m.ValueLength)

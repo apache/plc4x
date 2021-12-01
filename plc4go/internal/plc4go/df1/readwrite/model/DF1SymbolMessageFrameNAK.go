@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type DF1SymbolMessageFrameNAK struct {
-	Parent *DF1Symbol
+	*DF1Symbol
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {
 
 func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameNAK{
-		Parent: NewDF1Symbol(),
+		DF1Symbol: NewDF1Symbol(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1Symbol
 }
 
 func CastDF1SymbolMessageFrameNAK(structType interface{}) *DF1SymbolMessageFrameNAK {
@@ -83,7 +83,7 @@ func (m *DF1SymbolMessageFrameNAK) LengthInBits() uint16 {
 }
 
 func (m *DF1SymbolMessageFrameNAK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, err
 
 	// Create a partially initialized instance
 	_child := &DF1SymbolMessageFrameNAK{
-		Parent: &DF1Symbol{},
+		DF1Symbol: &DF1Symbol{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1Symbol.Child = _child
+	return _child.DF1Symbol, nil
 }
 
 func (m *DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1SymbolMessageFrameNAK) String() string {

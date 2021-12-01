@@ -29,10 +29,10 @@ import (
 
 // The data-structure of this message
 type LPollData struct {
+	*LDataFrame
 	SourceAddress          *KnxAddress
 	TargetAddress          []byte
 	NumberExpectedPollData uint8
-	Parent                 *LDataFrame
 }
 
 // The corresponding interface
@@ -54,11 +54,11 @@ func (m *LPollData) Polling() bool {
 }
 
 func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-	m.Parent.FrameType = frameType
-	m.Parent.NotRepeated = notRepeated
-	m.Parent.Priority = priority
-	m.Parent.AcknowledgeRequested = acknowledgeRequested
-	m.Parent.ErrorFlag = errorFlag
+	m.FrameType = frameType
+	m.NotRepeated = notRepeated
+	m.Priority = priority
+	m.AcknowledgeRequested = acknowledgeRequested
+	m.ErrorFlag = errorFlag
 }
 
 func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
@@ -66,10 +66,10 @@ func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpecte
 		SourceAddress:          sourceAddress,
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
-		Parent:                 NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+		LDataFrame:             NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.LDataFrame
 }
 
 func CastLPollData(structType interface{}) *LPollData {
@@ -100,7 +100,7 @@ func (m *LPollData) LengthInBits() uint16 {
 }
 
 func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.LengthInBits()
@@ -177,10 +177,10 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		SourceAddress:          CastKnxAddress(sourceAddress),
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
-		Parent:                 &LDataFrame{},
+		LDataFrame:             &LDataFrame{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.LDataFrame.Child = _child
+	return _child.LDataFrame, nil
 }
 
 func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -230,7 +230,7 @@ func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LPollData) String() string {

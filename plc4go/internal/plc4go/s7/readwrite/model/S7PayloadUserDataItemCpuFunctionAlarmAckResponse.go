@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionAlarmAckResponse struct {
+	*S7PayloadUserDataItem
 	FunctionId     uint8
 	MessageObjects []uint8
-	Parent         *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -56,18 +56,18 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) DataLength() uint16 {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
-		FunctionId:     functionId,
-		MessageObjects: messageObjects,
-		Parent:         NewS7PayloadUserDataItem(returnCode, transportSize),
+		FunctionId:            functionId,
+		MessageObjects:        messageObjects,
+		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7PayloadUserDataItem
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
@@ -98,7 +98,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBits() uint16
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -162,12 +162,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
-		FunctionId:     functionId,
-		MessageObjects: messageObjects,
-		Parent:         &S7PayloadUserDataItem{},
+		FunctionId:            functionId,
+		MessageObjects:        messageObjects,
+		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7PayloadUserDataItem.Child = _child
+	return _child.S7PayloadUserDataItem, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -211,7 +211,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) String() string {

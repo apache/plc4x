@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type BVLCForwardedNPDU struct {
-	Ip     []uint8
-	Port   uint16
-	Npdu   *NPDU
-	Parent *BVLC
+	*BVLC
+	Ip   []uint8
+	Port uint16
+	Npdu *NPDU
 }
 
 // The corresponding interface
@@ -53,13 +53,13 @@ func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC) {
 
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU) *BVLC {
 	child := &BVLCForwardedNPDU{
-		Ip:     ip,
-		Port:   port,
-		Npdu:   npdu,
-		Parent: NewBVLC(),
+		Ip:   ip,
+		Port: port,
+		Npdu: npdu,
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCForwardedNPDU(structType interface{}) *BVLCForwardedNPDU {
@@ -90,7 +90,7 @@ func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
 }
 
 func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -160,13 +160,13 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 
 	// Create a partially initialized instance
 	_child := &BVLCForwardedNPDU{
-		Ip:     ip,
-		Port:   port,
-		Npdu:   CastNPDU(npdu),
-		Parent: &BVLC{},
+		Ip:   ip,
+		Port: port,
+		Npdu: CastNPDU(npdu),
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -215,7 +215,7 @@ func (m *BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCForwardedNPDU) String() string {

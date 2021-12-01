@@ -19,20 +19,33 @@
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.nio.ByteBuffer;
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
 public class StaticHelper {
 
-    public static BACnetPropertyIdentifier mapToPropertyIdentifier(byte[] bytes) {
-        int offset = Long.BYTES - bytes.length;
-        byte[] longBytes = new byte[Long.BYTES];
-        for (int i = Long.BYTES - 1; i >= 0 && i - offset >= 0; i--) {
-            longBytes[i] = bytes[i - offset];
+    public static Object readPropertyIdentifier(ReadBuffer readBuffer, Long actualLength) throws ParseException {
+        int bitsToRead = (int) (actualLength * 8);
+        long readUnsignedLong = readBuffer.readUnsignedLong(bitsToRead);
+        return BACnetPropertyIdentifier.enumForValue(readUnsignedLong);
+    }
+
+    public static void writePropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier value) throws SerializationException {
+        int bitsToWrite;
+        long valueValue = value.getValue();
+        if (valueValue <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (valueValue <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (valueValue <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
         }
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.put(longBytes);
-        buffer.flip();
-        return BACnetPropertyIdentifier.enumForValue(buffer.getLong());
+        writeBuffer.writeUnsignedLong("", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
     }
 }

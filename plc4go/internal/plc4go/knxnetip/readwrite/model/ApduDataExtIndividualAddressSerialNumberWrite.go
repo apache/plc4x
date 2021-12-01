@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtIndividualAddressSerialNumberWrite struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) InitializeParent(parent 
 
 func NewApduDataExtIndividualAddressSerialNumberWrite() *ApduDataExt {
 	child := &ApduDataExtIndividualAddressSerialNumberWrite{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtIndividualAddressSerialNumberWrite(structType interface{}) *ApduDataExtIndividualAddressSerialNumberWrite {
@@ -83,7 +83,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberWrite{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(writeBuffer ut
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) String() string {

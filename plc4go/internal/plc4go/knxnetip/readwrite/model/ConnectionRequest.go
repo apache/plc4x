@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ConnectionRequest struct {
+	*KnxNetIpMessage
 	HpaiDiscoveryEndpoint        *HPAIDiscoveryEndpoint
 	HpaiDataEndpoint             *HPAIDataEndpoint
 	ConnectionRequestInformation *ConnectionRequestInformation
-	Parent                       *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiData
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
 		HpaiDataEndpoint:             hpaiDataEndpoint,
 		ConnectionRequestInformation: connectionRequestInformation,
-		Parent:                       NewKnxNetIpMessage(),
+		KnxNetIpMessage:              NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastConnectionRequest(structType interface{}) *ConnectionRequest {
@@ -90,7 +90,7 @@ func (m *ConnectionRequest) LengthInBits() uint16 {
 }
 
 func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
@@ -161,10 +161,10 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		HpaiDiscoveryEndpoint:        CastHPAIDiscoveryEndpoint(hpaiDiscoveryEndpoint),
 		HpaiDataEndpoint:             CastHPAIDataEndpoint(hpaiDataEndpoint),
 		ConnectionRequestInformation: CastConnectionRequestInformation(connectionRequestInformation),
-		Parent:                       &KnxNetIpMessage{},
+		KnxNetIpMessage:              &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -214,7 +214,7 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionRequest) String() string {

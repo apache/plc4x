@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationDate struct {
+	*BACnetTag
 	YearMinus1900          int8
 	Month                  int8
 	DayOfMonth             int8
@@ -43,7 +44,6 @@ type BACnetTagApplicationDate struct {
 	OddDayOfMonthWildcard  bool
 	EvenDayOfMonthWildcard bool
 	DayOfWeekIsWildcard    bool
-	Parent                 *BACnetTag
 }
 
 // The corresponding interface
@@ -61,12 +61,12 @@ func (m *BACnetTagApplicationDate) TagClass() TagClass {
 }
 
 func (m *BACnetTagApplicationDate) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetTagApplicationDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
@@ -75,10 +75,10 @@ func NewBACnetTagApplicationDate(yearMinus1900 int8, month int8, dayOfMonth int8
 		Month:         month,
 		DayOfMonth:    dayOfMonth,
 		DayOfWeek:     dayOfWeek,
-		Parent:        NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		BACnetTag:     NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationDate(structType interface{}) *BACnetTagApplicationDate {
@@ -109,7 +109,7 @@ func (m *BACnetTagApplicationDate) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationDate) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -250,10 +250,10 @@ func BACnetTagApplicationDateParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
 		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
 		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
-		Parent:                 &BACnetTag{},
+		BACnetTag:              &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationDate) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -295,7 +295,7 @@ func (m *BACnetTagApplicationDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationDate) String() string {

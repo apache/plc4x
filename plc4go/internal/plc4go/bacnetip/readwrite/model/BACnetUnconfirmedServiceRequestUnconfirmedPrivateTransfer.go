@@ -35,10 +35,10 @@ const BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOS
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
+	*BACnetUnconfirmedServiceRequest
 	VendorId      uint8
 	ServiceNumber uint16
 	Values        []int8
-	Parent        *BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -60,13 +60,13 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) InitializePa
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8, serviceNumber uint16, values []int8) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		VendorId:      vendorId,
-		ServiceNumber: serviceNumber,
-		Values:        values,
-		Parent:        NewBACnetUnconfirmedServiceRequest(),
+		VendorId:                        vendorId,
+		ServiceNumber:                   serviceNumber,
+		Values:                          values,
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
@@ -97,7 +97,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (vendorIdHeader)
 	lengthInBits += 8
@@ -211,13 +211,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		VendorId:      vendorId,
-		ServiceNumber: serviceNumber,
-		Values:        values,
-		Parent:        &BACnetUnconfirmedServiceRequest{},
+		VendorId:                        vendorId,
+		ServiceNumber:                   serviceNumber,
+		Values:                          values,
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -285,7 +285,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(wr
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() string {

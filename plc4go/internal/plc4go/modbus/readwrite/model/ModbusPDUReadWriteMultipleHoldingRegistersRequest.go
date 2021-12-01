@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
+	*ModbusPDU
 	ReadStartingAddress  uint16
 	ReadQuantity         uint16
 	WriteStartingAddress uint16
 	WriteQuantity        uint16
 	Value                []byte
-	Parent               *ModbusPDU
 }
 
 // The corresponding interface
@@ -68,10 +68,10 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress ui
 		WriteStartingAddress: writeStartingAddress,
 		WriteQuantity:        writeQuantity,
 		Value:                value,
-		Parent:               NewModbusPDU(),
+		ModbusPDU:            NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType interface{}) *ModbusPDUReadWriteMultipleHoldingRegistersRequest {
@@ -102,7 +102,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint1
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -188,10 +188,10 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 		WriteStartingAddress: writeStartingAddress,
 		WriteQuantity:        writeQuantity,
 		Value:                value,
-		Parent:               &ModbusPDU{},
+		ModbusPDU:            &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -249,7 +249,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {

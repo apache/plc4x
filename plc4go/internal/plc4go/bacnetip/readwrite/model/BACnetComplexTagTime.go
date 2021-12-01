@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagTime struct {
+	*BACnetComplexTag
 	Hour                 int8
 	Minute               int8
 	Second               int8
@@ -37,7 +38,6 @@ type BACnetComplexTagTime struct {
 	MinuteIsWildcard     bool
 	SecondIsWildcard     bool
 	FractionalIsWildcard bool
-	Parent               *BACnetComplexTag
 }
 
 // The corresponding interface
@@ -55,25 +55,25 @@ func (m *BACnetComplexTagTime) DataType() BACnetDataType {
 }
 
 func (m *BACnetComplexTagTime) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetComplexTagTime(hour int8, minute int8, second int8, fractional int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagTime{
-		Hour:       hour,
-		Minute:     minute,
-		Second:     second,
-		Fractional: fractional,
-		Parent:     NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Hour:             hour,
+		Minute:           minute,
+		Second:           second,
+		Fractional:       fractional,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagTime(structType interface{}) *BACnetComplexTagTime {
@@ -104,7 +104,7 @@ func (m *BACnetComplexTagTime) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagTime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// A virtual field doesn't have any in- or output.
 
@@ -203,10 +203,10 @@ func BACnetComplexTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 		MinuteIsWildcard:     minuteIsWildcard,
 		SecondIsWildcard:     secondIsWildcard,
 		FractionalIsWildcard: fractionalIsWildcard,
-		Parent:               &BACnetComplexTag{},
+		BACnetComplexTag:     &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -248,7 +248,7 @@ func (m *BACnetComplexTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagTime) String() string {

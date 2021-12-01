@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type FirmataCommandSetDigitalPinValue struct {
-	Pin    uint8
-	On     bool
-	Parent *FirmataCommand
+	*FirmataCommand
+	Pin uint8
+	On  bool
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataComma
 
 func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
 	child := &FirmataCommandSetDigitalPinValue{
-		Pin:    pin,
-		On:     on,
-		Parent: NewFirmataCommand(),
+		Pin:            pin,
+		On:             on,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandSetDigitalPinValue(structType interface{}) *FirmataCommandSetDigitalPinValue {
@@ -89,7 +89,7 @@ func (m *FirmataCommandSetDigitalPinValue) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -146,12 +146,12 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSetDigitalPinValue{
-		Pin:    pin,
-		On:     on,
-		Parent: &FirmataCommand{},
+		Pin:            pin,
+		On:             on,
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +187,7 @@ func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandSetDigitalPinValue) String() string {

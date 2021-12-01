@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type AdsReadRequest struct {
+	*AdsData
 	IndexGroup  uint32
 	IndexOffset uint32
 	Length      uint32
-	Parent      *AdsData
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *Ad
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
-		Parent:      NewAdsData(),
+		AdsData:     NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsReadRequest(structType interface{}) *AdsReadRequest {
@@ -94,7 +94,7 @@ func (m *AdsReadRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -147,10 +147,10 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
-		Parent:      &AdsData{},
+		AdsData:     &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +185,7 @@ func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsReadRequest) String() string {

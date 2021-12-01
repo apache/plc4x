@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtNetworkParameterWrite struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtNetworkParameterWrite) InitializeParent(parent *ApduDataExt)
 
 func NewApduDataExtNetworkParameterWrite() *ApduDataExt {
 	child := &ApduDataExtNetworkParameterWrite{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtNetworkParameterWrite(structType interface{}) *ApduDataExtNetworkParameterWrite {
@@ -83,7 +83,7 @@ func (m *ApduDataExtNetworkParameterWrite) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtNetworkParameterWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length u
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterWrite{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtNetworkParameterWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtNetworkParameterWrite) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtNetworkParameterWrite) String() string {

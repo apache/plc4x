@@ -29,6 +29,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtPropertyDescriptionResponse struct {
+	*ApduDataExt
 	ObjectIndex      uint8
 	PropertyId       uint8
 	Index            uint8
@@ -37,7 +38,6 @@ type ApduDataExtPropertyDescriptionResponse struct {
 	MaxNrOfElements  uint16
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
-	Parent           *ApduDataExt
 }
 
 // The corresponding interface
@@ -67,10 +67,10 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		Parent:           NewApduDataExt(),
+		ApduDataExt:      NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtPropertyDescriptionResponse(structType interface{}) *ApduDataExtPropertyDescriptionResponse {
@@ -101,7 +101,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -261,10 +261,10 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, le
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		Parent:           &ApduDataExt{},
+		ApduDataExt:      &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -365,7 +365,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) String() string {

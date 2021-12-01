@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ModbusPDUWriteMultipleCoilsRequest struct {
+	*ModbusPDU
 	StartingAddress uint16
 	Quantity        uint16
 	Value           []byte
-	Parent          *ModbusPDU
 }
 
 // The corresponding interface
@@ -64,10 +64,10 @@ func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		Value:           value,
-		Parent:          NewModbusPDU(),
+		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) *ModbusPDUWriteMultipleCoilsRequest {
@@ -98,7 +98,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -162,10 +162,10 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, respon
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		Value:           value,
-		Parent:          &ModbusPDU{},
+		ModbusPDU:       &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -209,7 +209,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) String() string {

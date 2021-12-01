@@ -28,6 +28,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadDiagnosticMessage struct {
+	*S7PayloadUserDataItem
 	EventId       uint16
 	PriorityClass uint8
 	ObNumber      uint8
@@ -35,7 +36,6 @@ type S7PayloadDiagnosticMessage struct {
 	Info1         uint16
 	Info2         uint32
 	TimeStamp     *DateAndTime
-	Parent        *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -61,23 +61,23 @@ func (m *S7PayloadDiagnosticMessage) DataLength() uint16 {
 }
 
 func (m *S7PayloadDiagnosticMessage) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
 }
 
 func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadDiagnosticMessage{
-		EventId:       EventId,
-		PriorityClass: PriorityClass,
-		ObNumber:      ObNumber,
-		DatId:         DatId,
-		Info1:         Info1,
-		Info2:         Info2,
-		TimeStamp:     TimeStamp,
-		Parent:        NewS7PayloadUserDataItem(returnCode, transportSize),
+		EventId:               EventId,
+		PriorityClass:         PriorityClass,
+		ObNumber:              ObNumber,
+		DatId:                 DatId,
+		Info1:                 Info1,
+		Info2:                 Info2,
+		TimeStamp:             TimeStamp,
+		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7PayloadUserDataItem
 }
 
 func CastS7PayloadDiagnosticMessage(structType interface{}) *S7PayloadDiagnosticMessage {
@@ -108,7 +108,7 @@ func (m *S7PayloadDiagnosticMessage) LengthInBits() uint16 {
 }
 
 func (m *S7PayloadDiagnosticMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (EventId)
 	lengthInBits += 16
@@ -204,17 +204,17 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionTyp
 
 	// Create a partially initialized instance
 	_child := &S7PayloadDiagnosticMessage{
-		EventId:       EventId,
-		PriorityClass: PriorityClass,
-		ObNumber:      ObNumber,
-		DatId:         DatId,
-		Info1:         Info1,
-		Info2:         Info2,
-		TimeStamp:     CastDateAndTime(TimeStamp),
-		Parent:        &S7PayloadUserDataItem{},
+		EventId:               EventId,
+		PriorityClass:         PriorityClass,
+		ObNumber:              ObNumber,
+		DatId:                 DatId,
+		Info1:                 Info1,
+		Info2:                 Info2,
+		TimeStamp:             CastDateAndTime(TimeStamp),
+		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7PayloadUserDataItem.Child = _child
+	return _child.S7PayloadUserDataItem, nil
 }
 
 func (m *S7PayloadDiagnosticMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -282,7 +282,7 @@ func (m *S7PayloadDiagnosticMessage) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadDiagnosticMessage) String() string {

@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAtomicWriteFile struct {
+	*BACnetConfirmedServiceRequest
 	DeviceIdentifier  *BACnetTagApplicationObjectIdentifier
 	OpeningTag        *BACnetComplexTagNull
 	FileStartPosition *BACnetTagApplicationSignedInteger
 	FileData          *BACnetTagApplicationOctetString
 	ClosingTag        *BACnetComplexTagNull
-	Parent            *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -55,15 +55,15 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) InitializeParent(parent *
 
 func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetTagApplicationObjectIdentifier, openingTag *BACnetComplexTagNull, fileStartPosition *BACnetTagApplicationSignedInteger, fileData *BACnetTagApplicationOctetString, closingTag *BACnetComplexTagNull) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:  deviceIdentifier,
-		OpeningTag:        openingTag,
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-		ClosingTag:        closingTag,
-		Parent:            NewBACnetConfirmedServiceRequest(),
+		DeviceIdentifier:              deviceIdentifier,
+		OpeningTag:                    openingTag,
+		FileStartPosition:             fileStartPosition,
+		FileData:                      fileData,
+		ClosingTag:                    closingTag,
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicWriteFile {
@@ -94,7 +94,7 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
 	lengthInBits += m.DeviceIdentifier.LengthInBits()
@@ -214,15 +214,15 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:  CastBACnetTagApplicationObjectIdentifier(deviceIdentifier),
-		OpeningTag:        CastBACnetComplexTagNull(openingTag),
-		FileStartPosition: CastBACnetTagApplicationSignedInteger(fileStartPosition),
-		FileData:          CastBACnetTagApplicationOctetString(fileData),
-		ClosingTag:        CastBACnetComplexTagNull(closingTag),
-		Parent:            &BACnetConfirmedServiceRequest{},
+		DeviceIdentifier:              CastBACnetTagApplicationObjectIdentifier(deviceIdentifier),
+		OpeningTag:                    CastBACnetComplexTagNull(openingTag),
+		FileStartPosition:             CastBACnetTagApplicationSignedInteger(fileStartPosition),
+		FileData:                      CastBACnetTagApplicationOctetString(fileData),
+		ClosingTag:                    CastBACnetComplexTagNull(closingTag),
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -304,7 +304,7 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) String() string {

@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationAck struct {
+	*KnxNetIpMessage
 	DeviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock
-	Parent                          *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
 	child := &DeviceConfigurationAck{
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
-		Parent:                          NewKnxNetIpMessage(),
+		KnxNetIpMessage:                 NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck {
@@ -86,7 +86,7 @@ func (m *DeviceConfigurationAck) LengthInBits() uint16 {
 }
 
 func (m *DeviceConfigurationAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationAckDataBlock)
 	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
@@ -123,10 +123,10 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationAck{
 		DeviceConfigurationAckDataBlock: CastDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock),
-		Parent:                          &KnxNetIpMessage{},
+		KnxNetIpMessage:                 &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DeviceConfigurationAck) String() string {
