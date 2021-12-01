@@ -110,87 +110,45 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	}
 
 	// Manual Field (year)
-	if pullErr := readBuffer.PullContext("year"); pullErr != nil {
-		return nil, pullErr
-	}
 	year, _yearErr := BcdToInt(readBuffer)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 	}
-	if closeErr := readBuffer.CloseContext("year"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (month)
-	if pullErr := readBuffer.PullContext("month"); pullErr != nil {
-		return nil, pullErr
-	}
 	month, _monthErr := BcdToInt(readBuffer)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 	}
-	if closeErr := readBuffer.CloseContext("month"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (day)
-	if pullErr := readBuffer.PullContext("day"); pullErr != nil {
-		return nil, pullErr
-	}
 	day, _dayErr := BcdToInt(readBuffer)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 	}
-	if closeErr := readBuffer.CloseContext("day"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (hour)
-	if pullErr := readBuffer.PullContext("hour"); pullErr != nil {
-		return nil, pullErr
-	}
 	hour, _hourErr := BcdToInt(readBuffer)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 	}
-	if closeErr := readBuffer.CloseContext("hour"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (minutes)
-	if pullErr := readBuffer.PullContext("minutes"); pullErr != nil {
-		return nil, pullErr
-	}
 	minutes, _minutesErr := BcdToInt(readBuffer)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 	}
-	if closeErr := readBuffer.CloseContext("minutes"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (seconds)
-	if pullErr := readBuffer.PullContext("seconds"); pullErr != nil {
-		return nil, pullErr
-	}
 	seconds, _secondsErr := BcdToInt(readBuffer)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 	}
-	if closeErr := readBuffer.CloseContext("seconds"); closeErr != nil {
-		return nil, closeErr
-	}
 
 	// Manual Field (msec)
-	if pullErr := readBuffer.PullContext("msec"); pullErr != nil {
-		return nil, pullErr
-	}
 	msec, _msecErr := S7msecToInt(readBuffer)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field")
-	}
-	if closeErr := readBuffer.CloseContext("msec"); closeErr != nil {
-		return nil, closeErr
 	}
 
 	// Simple Field (dow)
@@ -214,85 +172,43 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (year)
-	if pushErr := writeBuffer.PushContext("year"); pushErr != nil {
-		return pushErr
-	}
 	_yearErr := ByteToBcd(writeBuffer, m.Year)
-	if popErr := writeBuffer.PopContext("year"); popErr != nil {
-		return popErr
-	}
 	if _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
 	// Manual Field (month)
-	if pushErr := writeBuffer.PushContext("month"); pushErr != nil {
-		return pushErr
-	}
 	_monthErr := ByteToBcd(writeBuffer, m.Month)
-	if popErr := writeBuffer.PopContext("month"); popErr != nil {
-		return popErr
-	}
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 
 	// Manual Field (day)
-	if pushErr := writeBuffer.PushContext("day"); pushErr != nil {
-		return pushErr
-	}
 	_dayErr := ByteToBcd(writeBuffer, m.Day)
-	if popErr := writeBuffer.PopContext("day"); popErr != nil {
-		return popErr
-	}
 	if _dayErr != nil {
 		return errors.Wrap(_dayErr, "Error serializing 'day' field")
 	}
 
 	// Manual Field (hour)
-	if pushErr := writeBuffer.PushContext("hour"); pushErr != nil {
-		return pushErr
-	}
 	_hourErr := ByteToBcd(writeBuffer, m.Hour)
-	if popErr := writeBuffer.PopContext("hour"); popErr != nil {
-		return popErr
-	}
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 
 	// Manual Field (minutes)
-	if pushErr := writeBuffer.PushContext("minutes"); pushErr != nil {
-		return pushErr
-	}
 	_minutesErr := ByteToBcd(writeBuffer, m.Minutes)
-	if popErr := writeBuffer.PopContext("minutes"); popErr != nil {
-		return popErr
-	}
 	if _minutesErr != nil {
 		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
 	}
 
 	// Manual Field (seconds)
-	if pushErr := writeBuffer.PushContext("seconds"); pushErr != nil {
-		return pushErr
-	}
 	_secondsErr := ByteToBcd(writeBuffer, m.Seconds)
-	if popErr := writeBuffer.PopContext("seconds"); popErr != nil {
-		return popErr
-	}
 	if _secondsErr != nil {
 		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
 	}
 
 	// Manual Field (msec)
-	if pushErr := writeBuffer.PushContext("msec"); pushErr != nil {
-		return pushErr
-	}
 	_msecErr := IntToS7msec(writeBuffer, m.Msec)
-	if popErr := writeBuffer.PopContext("msec"); popErr != nil {
-		return popErr
-	}
 	if _msecErr != nil {
 		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
 	}

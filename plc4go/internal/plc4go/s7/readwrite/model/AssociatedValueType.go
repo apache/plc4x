@@ -122,15 +122,9 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	}
 
 	// Manual Field (valueLength)
-	if pullErr := readBuffer.PullContext("valueLength"); pullErr != nil {
-		return nil, pullErr
-	}
 	valueLength, _valueLengthErr := RightShift3(readBuffer)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field")
-	}
-	if closeErr := readBuffer.CloseContext("valueLength"); closeErr != nil {
-		return nil, closeErr
 	}
 
 	// Array field (data)
@@ -190,13 +184,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (valueLength)
-	if pushErr := writeBuffer.PushContext("valueLength"); pushErr != nil {
-		return pushErr
-	}
 	_valueLengthErr := LeftShift3(writeBuffer, m.ValueLength)
-	if popErr := writeBuffer.PopContext("valueLength"); popErr != nil {
-		return popErr
-	}
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}

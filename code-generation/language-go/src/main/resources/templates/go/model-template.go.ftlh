@@ -813,15 +813,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	if pullErr := readBuffer.PullContext("${manualField.name}"); pullErr != nil {
-		return nil, pullErr
-	}
 	${manualField.name}, _${manualField.name}Err := ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}
 	if _${manualField.name}Err != nil {
 		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-	if closeErr := readBuffer.CloseContext("${manualField.name}"); closeErr != nil {
-		return nil, closeErr
 	}
 			<#break>
 			<#case "optional">
@@ -1311,13 +1305,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	if pushErr := writeBuffer.PushContext("${manualField.name}"); pushErr != nil {
-		return pushErr
-	}
 	_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
-	if popErr := writeBuffer.PopContext("${manualField.name}"); popErr != nil {
-		return popErr
-	}
 	if _${manualField.name}Err != nil {
 		return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}

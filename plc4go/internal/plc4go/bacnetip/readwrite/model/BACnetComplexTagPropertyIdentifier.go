@@ -111,15 +111,9 @@ func BACnetComplexTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 	}
 
 	// Manual Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, pullErr
-	}
 	value, _valueErr := ReadPropertyIdentifier(readBuffer, actualLength)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
-	}
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, closeErr
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagPropertyIdentifier"); closeErr != nil {
@@ -142,13 +136,7 @@ func (m *BACnetComplexTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Manual Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return pushErr
-		}
 		_valueErr := WritePropertyIdentifier(writeBuffer, m.Value)
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return popErr
-		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
