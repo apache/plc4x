@@ -442,12 +442,8 @@
         ['0x0A' BACnetErrorCreateObject
         ]
         ['0x0C' BACnetErrorReadProperty
-            [const uint 5 errorClassHeader 0x12]
-            [simple uint 3 errorClassLength]
-            [array int 8 errorClass count 'errorClassLength']
-            [const uint 5 errorCodeHeader 0x12]
-            [simple uint 3 errorCodeLength]
-            [array int 8 errorCode count 'errorCodeLength']
+            [simple BACnetTagApplicationEnumerated errorClass]
+            [simple BACnetTagApplicationEnumerated errorCode]
         ]
         ['0x0E' BACnetErrorReadPropertyMultiple
         ]
@@ -455,6 +451,10 @@
         ]
 
         ['0x12' BACnetErrorConfirmedPrivateTransfer
+        ]
+        ['0x14' BACnetErrorPasswordFailure
+            [simple BACnetTagApplicationEnumerated errorClass]
+            [simple BACnetTagApplicationEnumerated errorCode]
         ]
 
         ['0x15' BACnetErrorVTOpen
