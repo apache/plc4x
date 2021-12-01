@@ -129,10 +129,12 @@ func (m *TransportInstance) Connect() error {
 	m.reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
+		packageCount := 0
 		var lastPacketTime *time.Time
 		for m.connected {
 			packetData, captureInfo, err := m.handle.ReadPacketData()
-			log.Info().Msgf("Read new package %#v", captureInfo)
+			packageCount++
+			log.Info().Msgf("Read new package (nr. %d) %#v", packageCount, captureInfo)
 			if err != nil {
 				if err == io.EOF {
 					log.Info().Msg("Done reading pcap")
@@ -150,6 +152,7 @@ func (m *TransportInstance) Connect() error {
 
 			// Decode a packet
 			packet := gopacket.NewPacket(packetData, layers.LayerTypeEthernet, gopacket.Default)
+			log.Debug().Msgf("Packet dump (nr. %d):\n%s", packageCount, packet.Dump())
 			var payload []byte
 			switch m.transportType {
 			case TCP:
