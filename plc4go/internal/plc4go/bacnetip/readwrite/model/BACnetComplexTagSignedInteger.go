@@ -238,6 +238,10 @@ func (m *BACnetComplexTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagSignedInteger"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isInt8Err := writeBuffer.WriteVirtual("isInt8", m.IsInt8); _isInt8Err != nil {
+			return errors.Wrap(_isInt8Err, "Error serializing 'isInt8' field")
+		}
 
 		// Optional Field (valueInt8) (Can be skipped, if the value is null)
 		var valueInt8 *int8 = nil
@@ -247,6 +251,10 @@ func (m *BACnetComplexTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 			if _valueInt8Err != nil {
 				return errors.Wrap(_valueInt8Err, "Error serializing 'valueInt8' field")
 			}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isInt16Err := writeBuffer.WriteVirtual("isInt16", m.IsInt16); _isInt16Err != nil {
+			return errors.Wrap(_isInt16Err, "Error serializing 'isInt16' field")
 		}
 
 		// Optional Field (valueInt16) (Can be skipped, if the value is null)
@@ -258,6 +266,10 @@ func (m *BACnetComplexTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt16Err, "Error serializing 'valueInt16' field")
 			}
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isInt32Err := writeBuffer.WriteVirtual("isInt32", m.IsInt32); _isInt32Err != nil {
+			return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
+		}
 
 		// Optional Field (valueInt32) (Can be skipped, if the value is null)
 		var valueInt32 *int32 = nil
@@ -268,6 +280,10 @@ func (m *BACnetComplexTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt32Err, "Error serializing 'valueInt32' field")
 			}
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isInt64Err := writeBuffer.WriteVirtual("isInt64", m.IsInt64); _isInt64Err != nil {
+			return errors.Wrap(_isInt64Err, "Error serializing 'isInt64' field")
+		}
 
 		// Optional Field (valueInt64) (Can be skipped, if the value is null)
 		var valueInt64 *int64 = nil
@@ -277,6 +293,10 @@ func (m *BACnetComplexTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 			if _valueInt64Err != nil {
 				return errors.Wrap(_valueInt64Err, "Error serializing 'valueInt64' field")
 			}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagSignedInteger"); popErr != nil {

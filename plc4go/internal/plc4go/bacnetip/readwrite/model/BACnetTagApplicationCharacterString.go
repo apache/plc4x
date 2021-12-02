@@ -173,6 +173,10 @@ func (m *BACnetTagApplicationCharacterString) Serialize(writeBuffer utils.WriteB
 		if _encodingErr != nil {
 			return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
+			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
+		}
 
 		// Simple Field (value)
 		value := string(m.Value)

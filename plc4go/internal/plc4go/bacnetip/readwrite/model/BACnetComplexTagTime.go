@@ -214,12 +214,20 @@ func (m *BACnetComplexTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagTime"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.Wildcard); _wildcardErr != nil {
+			return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
+		}
 
 		// Simple Field (hour)
 		hour := int8(m.Hour)
 		_hourErr := writeBuffer.WriteInt8("hour", 8, (hour))
 		if _hourErr != nil {
 			return errors.Wrap(_hourErr, "Error serializing 'hour' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _hourIsWildcardErr := writeBuffer.WriteVirtual("hourIsWildcard", m.HourIsWildcard); _hourIsWildcardErr != nil {
+			return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 		}
 
 		// Simple Field (minute)
@@ -228,6 +236,10 @@ func (m *BACnetComplexTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _minuteErr != nil {
 			return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _minuteIsWildcardErr := writeBuffer.WriteVirtual("minuteIsWildcard", m.MinuteIsWildcard); _minuteIsWildcardErr != nil {
+			return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
+		}
 
 		// Simple Field (second)
 		second := int8(m.Second)
@@ -235,12 +247,20 @@ func (m *BACnetComplexTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _secondErr != nil {
 			return errors.Wrap(_secondErr, "Error serializing 'second' field")
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _secondIsWildcardErr := writeBuffer.WriteVirtual("secondIsWildcard", m.SecondIsWildcard); _secondIsWildcardErr != nil {
+			return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
+		}
 
 		// Simple Field (fractional)
 		fractional := int8(m.Fractional)
 		_fractionalErr := writeBuffer.WriteInt8("fractional", 8, (fractional))
 		if _fractionalErr != nil {
 			return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _fractionalIsWildcardErr := writeBuffer.WriteVirtual("fractionalIsWildcard", m.FractionalIsWildcard); _fractionalIsWildcardErr != nil {
+			return errors.Wrap(_fractionalIsWildcardErr, "Error serializing 'fractionalIsWildcard' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagTime"); popErr != nil {

@@ -159,6 +159,10 @@ func (m *BACnetComplexTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagEnumerated"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
+			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
+		}
 
 		// Array Field (data)
 		if m.Data != nil {

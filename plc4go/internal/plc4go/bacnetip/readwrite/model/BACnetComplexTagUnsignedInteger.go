@@ -212,6 +212,10 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagUnsignedInteger"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint8Err := writeBuffer.WriteVirtual("isUint8", m.IsUint8); _isUint8Err != nil {
+			return errors.Wrap(_isUint8Err, "Error serializing 'isUint8' field")
+		}
 
 		// Optional Field (valueUint8) (Can be skipped, if the value is null)
 		var valueUint8 *uint8 = nil
@@ -221,6 +225,10 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 			if _valueUint8Err != nil {
 				return errors.Wrap(_valueUint8Err, "Error serializing 'valueUint8' field")
 			}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint16Err := writeBuffer.WriteVirtual("isUint16", m.IsUint16); _isUint16Err != nil {
+			return errors.Wrap(_isUint16Err, "Error serializing 'isUint16' field")
 		}
 
 		// Optional Field (valueUint16) (Can be skipped, if the value is null)
@@ -232,6 +240,10 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 				return errors.Wrap(_valueUint16Err, "Error serializing 'valueUint16' field")
 			}
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint32Err := writeBuffer.WriteVirtual("isUint32", m.IsUint32); _isUint32Err != nil {
+			return errors.Wrap(_isUint32Err, "Error serializing 'isUint32' field")
+		}
 
 		// Optional Field (valueUint32) (Can be skipped, if the value is null)
 		var valueUint32 *uint32 = nil
@@ -241,6 +253,10 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 			if _valueUint32Err != nil {
 				return errors.Wrap(_valueUint32Err, "Error serializing 'valueUint32' field")
 			}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagUnsignedInteger"); popErr != nil {

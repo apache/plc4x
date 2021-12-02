@@ -142,6 +142,10 @@ func (m *BACnetTagApplicationOctetString) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("BACnetTagApplicationOctetString"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
+			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
+		}
 
 		// Simple Field (value)
 		value := string(m.Value)

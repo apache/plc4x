@@ -260,8 +260,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

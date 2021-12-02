@@ -77,10 +77,6 @@ func (wb *byteWriteBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 
-func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {
-	return nil
-}
-
 func (wb *byteWriteBuffer) SetByteOrder(byteOrder binary.ByteOrder) {
 	wb.byteOrder = byteOrder
 }
@@ -215,4 +211,13 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 		wb.writer.TryWriteByte(theByte)
 	}
 	return wb.writer.TryError
+}
+
+func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+	// NO-OP
+	return nil
+}
+
+func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {
+	return nil
 }

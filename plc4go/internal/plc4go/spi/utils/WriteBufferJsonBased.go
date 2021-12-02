@@ -167,6 +167,11 @@ func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, enco
 	return j.encodeNode(logicalName, value, attr)
 }
 
+func (j *jsonWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+	// NO-OP
+	return nil
+}
+
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	pop := j.Pop()
 	var poppedName string

@@ -261,12 +261,24 @@ func (m *BACnetTagApplicationDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		if pushErr := writeBuffer.PushContext("BACnetTagApplicationDate"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.Wildcard); _wildcardErr != nil {
+			return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
+		}
 
 		// Simple Field (yearMinus1900)
 		yearMinus1900 := int8(m.YearMinus1900)
 		_yearMinus1900Err := writeBuffer.WriteInt8("yearMinus1900", 8, (yearMinus1900))
 		if _yearMinus1900Err != nil {
 			return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _yearIsWildcardErr := writeBuffer.WriteVirtual("yearIsWildcard", m.YearIsWildcard); _yearIsWildcardErr != nil {
+			return errors.Wrap(_yearIsWildcardErr, "Error serializing 'yearIsWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _yearErr := writeBuffer.WriteVirtual("year", m.Year); _yearErr != nil {
+			return errors.Wrap(_yearErr, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
@@ -275,6 +287,18 @@ func (m *BACnetTagApplicationDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		if _monthErr != nil {
 			return errors.Wrap(_monthErr, "Error serializing 'month' field")
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _monthIsWildcardErr := writeBuffer.WriteVirtual("monthIsWildcard", m.MonthIsWildcard); _monthIsWildcardErr != nil {
+			return errors.Wrap(_monthIsWildcardErr, "Error serializing 'monthIsWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _oddMonthWildcardErr := writeBuffer.WriteVirtual("oddMonthWildcard", m.OddMonthWildcard); _oddMonthWildcardErr != nil {
+			return errors.Wrap(_oddMonthWildcardErr, "Error serializing 'oddMonthWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _evenMonthWildcardErr := writeBuffer.WriteVirtual("evenMonthWildcard", m.EvenMonthWildcard); _evenMonthWildcardErr != nil {
+			return errors.Wrap(_evenMonthWildcardErr, "Error serializing 'evenMonthWildcard' field")
+		}
 
 		// Simple Field (dayOfMonth)
 		dayOfMonth := int8(m.DayOfMonth)
@@ -282,12 +306,32 @@ func (m *BACnetTagApplicationDate) Serialize(writeBuffer utils.WriteBuffer) erro
 		if _dayOfMonthErr != nil {
 			return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _dayOfMonthIsWildcardErr := writeBuffer.WriteVirtual("dayOfMonthIsWildcard", m.DayOfMonthIsWildcard); _dayOfMonthIsWildcardErr != nil {
+			return errors.Wrap(_dayOfMonthIsWildcardErr, "Error serializing 'dayOfMonthIsWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _lastDayOfMonthWildcardErr := writeBuffer.WriteVirtual("lastDayOfMonthWildcard", m.LastDayOfMonthWildcard); _lastDayOfMonthWildcardErr != nil {
+			return errors.Wrap(_lastDayOfMonthWildcardErr, "Error serializing 'lastDayOfMonthWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _oddDayOfMonthWildcardErr := writeBuffer.WriteVirtual("oddDayOfMonthWildcard", m.OddDayOfMonthWildcard); _oddDayOfMonthWildcardErr != nil {
+			return errors.Wrap(_oddDayOfMonthWildcardErr, "Error serializing 'oddDayOfMonthWildcard' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _evenDayOfMonthWildcardErr := writeBuffer.WriteVirtual("evenDayOfMonthWildcard", m.EvenDayOfMonthWildcard); _evenDayOfMonthWildcardErr != nil {
+			return errors.Wrap(_evenDayOfMonthWildcardErr, "Error serializing 'evenDayOfMonthWildcard' field")
+		}
 
 		// Simple Field (dayOfWeek)
 		dayOfWeek := int8(m.DayOfWeek)
 		_dayOfWeekErr := writeBuffer.WriteInt8("dayOfWeek", 8, (dayOfWeek))
 		if _dayOfWeekErr != nil {
 			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _dayOfWeekIsWildcardErr := writeBuffer.WriteVirtual("dayOfWeekIsWildcard", m.DayOfWeekIsWildcard); _dayOfWeekIsWildcardErr != nil {
+			return errors.Wrap(_dayOfWeekIsWildcardErr, "Error serializing 'dayOfWeekIsWildcard' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTagApplicationDate"); popErr != nil {

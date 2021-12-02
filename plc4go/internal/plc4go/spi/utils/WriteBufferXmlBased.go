@@ -158,6 +158,11 @@ func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encod
 	return x.encodeElement(logicalName, value, attr, writerArgs...)
 }
 
+func (x *xmlWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+	// NO-OP
+	return nil
+}
+
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
 	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}}); err != nil {
 		return err

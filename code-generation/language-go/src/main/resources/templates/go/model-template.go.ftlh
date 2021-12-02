@@ -1401,12 +1401,18 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign switchField = field.asSwitchField().orElseThrow()>
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "virtual">
+                	<#assign virtualField = field.asVirtualField().orElseThrow()>
+                	<#assign typedField = field.asTypedField().orElseThrow()>
+                	<#assign namedField = field.asNamedField().orElseThrow()>
+	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	if _${namedField.name}Err := writeBuffer.WriteVirtual("${namedField.name}", m.${namedField.name?cap_first}); _${namedField.name}Err != nil {
+		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
 					<#break>
 			</#switch>
 		</#list>
