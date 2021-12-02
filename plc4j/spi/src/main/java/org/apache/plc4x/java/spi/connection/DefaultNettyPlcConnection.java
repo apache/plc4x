@@ -166,6 +166,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             sessionDisconnectCompleteFuture.complete(null);
         }
 
+        // Shutdown the Worker Group
+        channelFactory.closeEventLoopForChannel(channel);
+
         channel = null;
         connected = false;
     }
