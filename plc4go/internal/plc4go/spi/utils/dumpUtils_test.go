@@ -42,11 +42,11 @@ func TestBoxAnything(t *testing.T) {
 				anything:  true,
 				charWidth: 0,
 			},
-			want: `
+			want: asciiBox(`
 ╔═exampleBool╗
 ║  b1 true   ║
 ╚════════════╝
-`,
+`),
 		},
 		{
 			name: "test int",
@@ -55,11 +55,11 @@ func TestBoxAnything(t *testing.T) {
 				anything:  1,
 				charWidth: 0,
 			},
-			want: `
+			want:  asciiBox(`
 ╔═exampleInt═════════╗
 ║0x0000000000000001 1║
 ╚════════════════════╝
-`,
+`),
 		},
 		{
 			name: "test int 123123123",
@@ -68,11 +68,11 @@ func TestBoxAnything(t *testing.T) {
 				anything:  123123123,
 				charWidth: 0,
 			},
-			want: `
+			want:  asciiBox(`
 ╔═exampleInt═════════════════╗
 ║0x000000000756b5b3 123123123║
 ╚════════════════════════════╝
-`,
+`),
 		},
 	}
 	for _, tt := range tests {
@@ -125,7 +125,7 @@ func TestBoxedDump(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDump(tt.args.name, tt.args.data); got != AsciiBox(strings.Trim(tt.want, "\n")) {
+			if got := BoxedDump(tt.args.name, tt.args.data); got != asciiBox(strings.Trim(tt.want, "\n")) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})
@@ -227,7 +227,7 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDumpFixedWidth(tt.args.name, tt.args.data, tt.args.charWidth); got != AsciiBox(strings.Trim(tt.want, "\n")) {
+			if got := BoxedDumpFixedWidth(tt.args.name, tt.args.data, tt.args.charWidth); got != asciiBox(strings.Trim(tt.want, "\n")) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})

@@ -870,7 +870,7 @@ func TestS7MessageBytes(t *testing.T) {
 					t.Error(err)
 				}
 				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
-				if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
+				if got := boxWriter.GetBox().String(); got != tt.wantStringSerialized {
 					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
 				}
 			})
@@ -880,7 +880,7 @@ func TestS7MessageBytes(t *testing.T) {
 					t.Error(err)
 				}
 				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
-				if got := string(boxWriter.GetBox()); got != tt.wantStringSerializedCompact {
+				if got := boxWriter.GetBox().String(); got != tt.wantStringSerializedCompact {
 					t.Errorf("Serialize BoxedCompact() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
 				}
 			})
