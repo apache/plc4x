@@ -55,4 +55,4 @@ jobs:
             }
 
       - name: Run mvnw
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -B -Pwith-sandbox,with-c,with-go install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -B -P'with-sandbox,with-c,with-go' install
