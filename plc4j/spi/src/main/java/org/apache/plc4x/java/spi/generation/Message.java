@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
-public interface Message {
+import org.apache.plc4x.java.spi.utils.Serializable;
 
-    void serialize(WriteBuffer writeBuffer) throws SerializationException;
+public interface Message extends Serializable {
 
     int getLengthInBytes();
 

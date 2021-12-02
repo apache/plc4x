@@ -278,8 +278,8 @@
         ['0x00' BACnetUnconfirmedServiceRequestIAm
             [simple BACnetTagApplicationObjectIdentifier    deviceIdentifier                ]
             [simple BACnetTagApplicationUnsignedInteger     maximumApduLengthAcceptedLength ]
-            [simple BACnetTagApplicationEnumerated          segmentationSupported ]
-            [simple BACnetTagApplicationUnsignedInteger     vendorId ]
+            [simple BACnetTagApplicationEnumerated          segmentationSupported ] // TODO: map to enum
+            [simple BACnetTagApplicationUnsignedInteger     vendorId ] // TODO: vendor list?
         ]
         ['0x01' BACnetUnconfirmedServiceRequestIHave
             [simple BACnetTagApplicationObjectIdentifier    deviceIdentifier    ]
@@ -582,7 +582,7 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard']
         ]
         ['APPLICATION_TAGS','0xC' BACnetTagApplicationObjectIdentifier
-            [simple     uint    10  objectType]
+            [simple     uint    10  objectType] // TODO: map to enum
             [simple     uint    22  instanceNumber]
         ]
         ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext (uint 4 tagNumber, uint 8 extTagNumber, uint 3 lengthValueType, uint 8 extLength)
