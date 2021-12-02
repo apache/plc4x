@@ -24,12 +24,18 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
-import static org.apache.plc4x.java.spi.utils.ascii.AsciiBoxUtils.*;
-
 public class AsciiBox {
+    private final AsciiBoxWriter asciiBoxWriter;
+
     private final String data;
 
-    public AsciiBox(String data) {
+    protected AsciiBox(String data) {
+        asciiBoxWriter = AsciiBoxWriter.DEFAULT;
+        this.data = data;
+    }
+
+    protected AsciiBox(AsciiBoxWriter asciiBoxWriter, String data) {
+        this.asciiBoxWriter = asciiBoxWriter;
         this.data = data;
     }
 
@@ -62,7 +68,7 @@ public class AsciiBox {
     }
 
     public String getBoxName() {
-        Matcher matcher = boxNameRegex.matcher(data);
+        Matcher matcher = asciiBoxWriter.boxNameRegex.matcher(data);
         if (!matcher.find()) {
             return "";
         }
@@ -70,17 +76,17 @@ public class AsciiBox {
     }
 
     public AsciiBox changeBoxName(String newName) {
-        if (!hasBorders(this)) {
-            return boxString(newName, this.toString(), 0);
+        if (!asciiBoxWriter.hasBorders(this)) {
+            return asciiBoxWriter.boxString(newName, this.toString(), 0);
         }
-        int minimumWidthWithNewName = (upperLeftCorner + horizontalLine + newName + upperRightCorner).length();
-        int nameLengthDifference = minimumWidthWithNewName - (unwrap(this).width() + borderWidth + borderWidth);
-        return boxString(newName, unwrap(this).toString(), this.width() + nameLengthDifference);
+        int minimumWidthWithNewName = (asciiBoxWriter.upperLeftCorner + asciiBoxWriter.horizontalLine + newName + asciiBoxWriter.upperRightCorner).length();
+        int nameLengthDifference = minimumWidthWithNewName - (asciiBoxWriter.unwrap(this).width() + asciiBoxWriter.borderWidth + asciiBoxWriter.borderWidth);
+        return asciiBoxWriter.boxString(newName, asciiBoxWriter.unwrap(this).toString(), this.width() + nameLengthDifference);
     }
 
     public boolean isEmpty() {
-        if (hasBorders(this)) {
-            return StringUtils.isBlank(unwrap(this).toString());
+        if (asciiBoxWriter.hasBorders(this)) {
+            return StringUtils.isBlank(asciiBoxWriter.unwrap(this).toString());
         }
         return StringUtils.isBlank(this.toString());
     }

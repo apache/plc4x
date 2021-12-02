@@ -30,25 +30,53 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class AsciiBoxUtils {
+public class AsciiBoxWriter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AsciiBoxUtils.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(AsciiBoxWriter.class);
 
-    static final String upperLeftCorner = "╔";
-    static final String upperRightCorner = "╗";
-    static final String horizontalLine = "═";
-    static final String verticalLine = "║";
-    static final String lowerLeftCorner = "╚";
-    static final String lowerRightCorner = "╝";
-    static final String newLine = "\n";
-    static final String emptyPadding = " ";
+    public static AsciiBoxWriter DEFAULT = new AsciiBoxWriter();
+
+    //public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("┌","┐","┄","┆","└","┘");
+    public static AsciiBoxWriter LIGHT = new AsciiBoxWriter("╭","╮","┄","┆","╰","╯");
+
+    final String upperLeftCorner;
+    final String upperRightCorner;
+    final String horizontalLine;
+    final String verticalLine;
+    final String lowerLeftCorner;
+    final String lowerRightCorner;
+    final String newLine;
+    final String emptyPadding;
     // the name gets prefixed with a extra symbol for indent
-    static final int extraNameCharIndent = 1;
-    static final int borderWidth = 1;
-    static final int newLineCharWidth = 1;
-    static Pattern boxNameRegex = Pattern.compile("^" + upperLeftCorner + horizontalLine + "(?<name>[\\w /]+)" + horizontalLine + "*" + upperRightCorner);
+    final int extraNameCharIndent;
+    final int borderWidth;
+    final int newLineCharWidth;
+    final Pattern boxNameRegex;
 
-    static boolean DebugAsciiBox;
+    public AsciiBoxWriter() {
+        this("╔", "╗", "═", "║", "╚", "╝");
+    }
+
+    public AsciiBoxWriter(String upperLeftCorner,
+                          String upperRightCorner,
+                          String horizontalLine,
+                          String verticalLine,
+                          String lowerLeftCorner,
+                          String lowerRightCorner) {
+        this.upperLeftCorner = upperLeftCorner;
+        this.upperRightCorner = upperRightCorner;
+        this.horizontalLine = horizontalLine;
+        this.verticalLine = verticalLine;
+        this.lowerLeftCorner = lowerLeftCorner;
+        this.lowerRightCorner = lowerRightCorner;
+        this.newLine = "\n";
+        this.emptyPadding = " ";
+        // the name gets prefixed with a extra symbol for indent
+        this.extraNameCharIndent = 1;
+        this.borderWidth = 1;
+        this.newLineCharWidth = 1;
+        this.boxNameRegex = Pattern.compile("^" + upperLeftCorner + horizontalLine + "(?<name>[\\w /]+)" + horizontalLine + "*" + upperRightCorner);
+    }
 
     /**
      * BoxBox boxes a box
@@ -58,7 +86,7 @@ public class AsciiBoxUtils {
      * @param charWidth the desired width
      * @return boxed data
      */
-    public static AsciiBox boxBox(String name, AsciiBox box, int charWidth) {
+    public AsciiBox boxBox(String name, AsciiBox box, int charWidth) {
         return boxString(name, box.toString(), charWidth);
     }
 
@@ -70,19 +98,16 @@ public class AsciiBoxUtils {
      * @param charWidth desired width
      * @return boxed data
      */
-    public static AsciiBox boxString(String name, String data, int charWidth) {
+    public AsciiBox boxString(String name, String data, int charWidth) {
         AsciiBox rawBox = new AsciiBox(data);
         int longestLine = rawBox.width();
         if (charWidth < longestLine) {
-            if (DebugAsciiBox) {
-                LOGGER.debug("Overflow by {} chars", longestLine - charWidth);
-            }
+            LOGGER.trace("Overflow by {} chars", longestLine - charWidth);
             charWidth = longestLine + borderWidth + borderWidth;
         }
         StringBuilder boxedString = new StringBuilder();
         int namePadding = (Math.max(charWidth - name.length() - borderWidth - extraNameCharIndent - borderWidth, 0));
-        boxedString.append(upperLeftCorner + horizontalLine).append(name).append(StringUtils.repeat(horizontalLine, namePadding)).append(upperRightCorner);
-        boxedString.append(newLine);
+        boxedString.append(upperLeftCorner).append(horizontalLine).append(name).append(StringUtils.repeat(horizontalLine, namePadding)).append(upperRightCorner).append(newLine);
         // Name of the header stretches the box so we align to that
         charWidth = borderWidth + extraNameCharIndent + name.length() + namePadding + borderWidth;
         for (String line : rawBox.lines()) {
@@ -92,8 +117,7 @@ public class AsciiBoxUtils {
             }
             int frontPadding = (int) Math.floor(linePadding / 2.0);
             int backPadding = (int) Math.ceil(linePadding / 2.0);
-            boxedString.append(verticalLine).append(StringUtils.repeat(emptyPadding, frontPadding)).append(line).append(StringUtils.repeat(emptyPadding, backPadding)).append(verticalLine);
-            boxedString.append(newLine);
+            boxedString.append(verticalLine).append(StringUtils.repeat(emptyPadding, frontPadding)).append(line).append(StringUtils.repeat(emptyPadding, backPadding)).append(verticalLine).append(newLine);
         }
         int bottomPadding = namePadding + name.length() + extraNameCharIndent;
         boxedString.append(lowerLeftCorner).append(StringUtils.repeat(horizontalLine, bottomPadding)).append(lowerRightCorner);
@@ -107,7 +131,7 @@ public class AsciiBoxUtils {
      * @param desiredWidth width desired
      * @return the aligned box.
      */
-    public static AsciiBox alignBoxes(Collection<AsciiBox> boxes, int desiredWidth) {
+    public AsciiBox alignBoxes(Collection<AsciiBox> boxes, int desiredWidth) {
         if (boxes.size() == 0) {
             return new AsciiBox("");
         }
@@ -115,15 +139,11 @@ public class AsciiBoxUtils {
         for (AsciiBox box : boxes) {
             int boxWidth = box.width();
             if (boxWidth > actualWidth) {
-                if (DebugAsciiBox) {
-                    LOGGER.debug("Overflow by {} chars", boxWidth - desiredWidth);
-                }
+                LOGGER.trace("Overflow by {} chars", boxWidth - desiredWidth);
                 actualWidth = boxWidth;
             }
         }
-        if (DebugAsciiBox) {
-            LOGGER.debug("Working with {} chars", actualWidth);
-        }
+        LOGGER.trace("Working with {} chars", actualWidth);
         AsciiBox bigBox = new AsciiBox("");
         List<AsciiBox> currentBoxRow = new LinkedList<>();
         int currentRowLength = 0;
@@ -160,7 +180,7 @@ public class AsciiBoxUtils {
      * @param box2 right of box1
      * @return box1 left of box2
      */
-    public static AsciiBox boxSideBySide(AsciiBox box1, AsciiBox box2) {
+    public AsciiBox boxSideBySide(AsciiBox box1, AsciiBox box2) {
         StringBuilder aggregateBox = new StringBuilder();
         int box1Width = box1.width();
         String[] box1Lines = box1.lines();
@@ -202,7 +222,7 @@ public class AsciiBoxUtils {
      * @param box2 below box1
      * @return box1 above box2
      */
-    public static AsciiBox boxBelowBox(AsciiBox box1, AsciiBox box2) {
+    public AsciiBox boxBelowBox(AsciiBox box1, AsciiBox box2) {
         int box1Width = box1.width();
         int box2Width = box2.width();
         if (box1Width < box2Width) {
@@ -213,7 +233,7 @@ public class AsciiBoxUtils {
         return new AsciiBox(box1.toString() + "\n" + box2.toString());
     }
 
-    static AsciiBox mergeHorizontal(List<AsciiBox> boxes) {
+    AsciiBox mergeHorizontal(List<AsciiBox> boxes) {
         switch (boxes.size()) {
             case 0:
                 return new AsciiBox("");
@@ -226,7 +246,7 @@ public class AsciiBoxUtils {
         }
     }
 
-    static AsciiBox expandBox(AsciiBox box, int desiredWidth) {
+    AsciiBox expandBox(AsciiBox box, int desiredWidth) {
         if (box.width() >= desiredWidth) {
             return box;
         }
@@ -252,7 +272,7 @@ public class AsciiBoxUtils {
      * @param box the box to be checked
      * @return true if it has borders
      */
-    public static boolean hasBorders(AsciiBox box) {
+    public boolean hasBorders(AsciiBox box) {
         if (StringUtils.isBlank(box.toString())) {
             return false;
         }
@@ -260,7 +280,7 @@ public class AsciiBoxUtils {
         return upperLeftCorner.equals(box.toString().substring(0, 1));
     }
 
-    public static AsciiBox unwrap(AsciiBox box) {
+    public AsciiBox unwrap(AsciiBox box) {
         if (!hasBorders(box)) {
             return box;
         }

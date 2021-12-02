@@ -21,7 +21,9 @@ package org.apache.plc4x.java.spi.generation;
 
 import io.vavr.control.Either;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
 
 import java.math.BigDecimal;
@@ -30,21 +32,28 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Deque;
 
-import static org.apache.plc4x.java.spi.utils.ascii.AsciiBoxUtils.*;
-
 public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
 
-    private Deque<Either<AsciiBox, Deque<AsciiBox>>> boxes = new LinkedList<>();
-    private int desiredWidth = 120;
-    private int currentWidth = 118;
-    private boolean mergeSingleBoxes;
-    private boolean omitEmptyBoxes;
+    private final Deque<Either<AsciiBox, Deque<AsciiBox>>> boxes = new LinkedList<>();
+    private final AsciiBoxWriter asciiBoxWriter;
+    private final AsciiBoxWriter asciiBoxWriterLight;
+    private final int desiredWidth = 120;
+    private final boolean mergeSingleBoxes;
+    private final boolean omitEmptyBoxes;
+    private int currentWidth = desiredWidth - 2;
 
     public WriteBufferBoxBased() {
-
+        this(false, false);
     }
 
     public WriteBufferBoxBased(boolean mergeSingleBoxes, boolean omitEmptyBoxes) {
+        this(AsciiBoxWriter.DEFAULT, AsciiBoxWriter.LIGHT, mergeSingleBoxes, omitEmptyBoxes);
+    }
+
+
+    private WriteBufferBoxBased(AsciiBoxWriter asciiBoxWriter, AsciiBoxWriter asciiBoxWriterLight, boolean mergeSingleBoxes, boolean omitEmptyBoxes) {
+        this.asciiBoxWriter = asciiBoxWriter;
+        this.asciiBoxWriterLight = asciiBoxWriterLight;
         this.mergeSingleBoxes = mergeSingleBoxes;
         this.omitEmptyBoxes = omitEmptyBoxes;
     }
@@ -74,13 +83,13 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("b%d %b%s", value ? 1 : 0, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("b%d %b%s", value ? 1 : 0, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("%02x%s", value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%02x%s", value, additionalStringRepresentation), 0)));
     }
 
     @Override
@@ -89,91 +98,121 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
         if (StringUtils.isNotBlank(additionalStringRepresentation)) {
             additionalStringRepresentation += "\n";
         }
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("%s%s", Hex.dump(bytes), additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%s%s", Hex.dump(bytes), additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0)));
+    }
+
+    @Override
+    public void writeVirtual(String logicalName, Object value, WithWriterArgs... writerArgs) throws SerializationException {
+        String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
+        AsciiBox virtualBox;
+        if (value instanceof String) {
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0);
+        } else if (value instanceof Number) {
+            // TODO: adjust rendering
+            Number number = (Number) value;
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("0x%x %d%s", number, number, additionalStringRepresentation), 0);
+        } else if (value instanceof Boolean) {
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("b%d %b%s", (Boolean) value ? 1 : 0, value, additionalStringRepresentation), 0);
+        } else if (value instanceof Enum) {
+            Enum<?> enumValue = (Enum<?>) value;
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%s%s", enumValue.name(), additionalStringRepresentation), 0);
+        } else if (value instanceof Serializable) {
+            Serializable serializable = (Serializable) value;
+            try {
+                WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(asciiBoxWriterLight, asciiBoxWriterLight, true, true);
+                serializable.serialize(writeBuffer);
+                virtualBox = asciiBoxWriterLight.boxBox(logicalName, writeBuffer.getBox(), 0);
+            } catch (SerializationException e) {
+                virtualBox = asciiBoxWriterLight.boxString(logicalName, e.getMessage(), 0);
+            }
+        } else {
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, "un-renderable", 0);
+        }
+        boxes.offerLast(Either.left(virtualBox));
     }
 
     @Override
@@ -208,7 +247,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
             boxes.offerLast(Either.left(onlyChild));
             return;
         }
-        AsciiBox asciiBox = boxBox(logicalName, alignBoxes(finalBoxes, currentWidth), 0);
+        AsciiBox asciiBox = asciiBoxWriter.boxBox(logicalName, asciiBoxWriter.alignBoxes(finalBoxes, currentWidth), 0);
         if (omitEmptyBoxes && asciiBox.isEmpty()) {
             return;
         }

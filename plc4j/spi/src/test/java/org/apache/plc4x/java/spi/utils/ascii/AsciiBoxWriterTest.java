@@ -27,36 +27,30 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.plc4x.java.spi.utils.ascii.AsciiBoxUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class AsciiBoxUtilsTest {
-
-    @BeforeEach
-    void setUp() {
-        AsciiBoxUtils.DebugAsciiBox = true;
-    }
+class AsciiBoxWriterTest {
 
     @Nested
     class GetBoxName {
         @Test
         void simpleName() {
-            assertEquals("someName", boxString("someName", "some content", 0).getBoxName());
+            assertEquals("someName", AsciiBoxWriter.DEFAULT.boxString("someName", "some content", 0).getBoxName());
         }
 
         @Test
         void noName() {
-            assertEquals("", boxString("", "some content", 0).getBoxName());
+            assertEquals("", AsciiBoxWriter.DEFAULT.boxString("", "some content", 0).getBoxName());
         }
 
         @Test
         void longName() {
-            assertEquals("veryLongName12_13", boxString("veryLongName12_13", "some content", 0).getBoxName());
+            assertEquals("veryLongName12_13", AsciiBoxWriter.DEFAULT.boxString("veryLongName12_13", "some content", 0).getBoxName());
         }
 
         @Test
         void nameWithSpacesAndSlashes() {
-            assertEquals("payload / Message / Concrete Message", boxString("payload / Message / Concrete Message", "some content", 0).getBoxName());
+            assertEquals("payload / Message / Concrete Message", AsciiBoxWriter.DEFAULT.boxString("payload / Message / Concrete Message", "some content", 0).getBoxName());
         }
     }
 
@@ -64,23 +58,23 @@ class AsciiBoxUtilsTest {
     class ChangeBoxName {
         @Test
         void boxWithSimpleName() {
-            AsciiBox asciiBox = boxString("simpleName", "some content", 0);
+            AsciiBox asciiBox = AsciiBoxWriter.DEFAULT.boxString("simpleName", "some content", 0);
             asciiBox = asciiBox.changeBoxName("newSimpleName");
-            assertEquals(boxString("newSimpleName", "some content", 0), asciiBox);
+            assertEquals(AsciiBoxWriter.DEFAULT.boxString("newSimpleName", "some content", 0), asciiBox);
         }
 
         @Test
         void boxWithShorterName() {
-            AsciiBox asciiBox = boxString("veryLongName", "some content", 0);
+            AsciiBox asciiBox = AsciiBoxWriter.DEFAULT.boxString("veryLongName", "some content", 0);
             asciiBox = asciiBox.changeBoxName("name");
-            assertEquals(boxString("name", "some content", 0), asciiBox);
+            assertEquals(AsciiBoxWriter.DEFAULT.boxString("name", "some content", 0), asciiBox);
         }
 
         @Test
         void boxGettingDressed() {
-            AsciiBox asciiBox = boxString("", "some content", 0);
+            AsciiBox asciiBox = AsciiBoxWriter.DEFAULT.boxString("", "some content", 0);
             asciiBox = asciiBox.changeBoxName("name");
-            assertEquals(boxString("name", "some content", 0), asciiBox);
+            assertEquals(AsciiBoxWriter.DEFAULT.boxString("name", "some content", 0), asciiBox);
         }
     }
 
@@ -98,12 +92,12 @@ class AsciiBoxUtilsTest {
 
         @Test
         void nameEmptyBox() {
-            assertTrue(boxString("name", "", 0).isEmpty());
+            assertTrue(AsciiBoxWriter.DEFAULT.boxString("name", "", 0).isEmpty());
         }
 
         @Test
         void nameNonEmptyBox() {
-            assertFalse(boxString("name", "a", 0).isEmpty());
+            assertFalse(AsciiBoxWriter.DEFAULT.boxString("name", "a", 0).isEmpty());
         }
     }
 
@@ -137,7 +131,7 @@ class AsciiBoxUtilsTest {
                 "                                                  ║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║\n" +
                 "                                                  ║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║\n" +
                 "                                                  ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝";
-            assertEquals(new AsciiBox(want), boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
         }
 
         @Test
@@ -154,7 +148,7 @@ class AsciiBoxUtilsTest {
                 "╔═exampleInt╗╔═exampleInt╗\n" +
                 "║     4     ║║     7     ║\n" +
                 "╚═══════════╝╚═══════════╝";
-            assertEquals(new AsciiBox(want), boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
         }
 
         @Test
@@ -173,7 +167,7 @@ class AsciiBoxUtilsTest {
                 "║     4     ║║     7     ║\n" +
                 "║     4     ║╚═══════════╝\n" +
                 "╚═══════════╝             ";
-            assertEquals(new AsciiBox(want), boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
         }
 
         @Test
@@ -192,7 +186,7 @@ class AsciiBoxUtilsTest {
                 "║     4     ║║     7     ║\n" +
                 "╚═══════════╝║     7     ║\n" +
                 "             ╚═══════════╝";
-            assertEquals(new AsciiBox(want), boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxSideBySide(new AsciiBox(box1), new AsciiBox(box2)));
         }
     }
 
@@ -231,7 +225,7 @@ class AsciiBoxUtilsTest {
                 "║  120 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║\n" +
                 "║  144 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║\n" +
                 "╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝";
-            assertEquals(new AsciiBox(want), boxBelowBox(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxBelowBox(new AsciiBox(box1), new AsciiBox(box2)));
         }
 
         @Test
@@ -251,7 +245,7 @@ class AsciiBoxUtilsTest {
                 "╔═sampleField╗            \n" +
                 "║123123123123║            \n" +
                 "╚════════════╝            ";
-            assertEquals(new AsciiBox(want), boxBelowBox(new AsciiBox(box1), new AsciiBox(box2)));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxBelowBox(new AsciiBox(box1), new AsciiBox(box2)));
         }
     }
 
@@ -266,7 +260,7 @@ class AsciiBoxUtilsTest {
                 "╔═sampleField╗\n" +
                 "║123123123123║\n" +
                 "╚════════════╝";
-            assertEquals(new AsciiBox(want), boxString(name, data, charWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
         }
 
         @Test
@@ -278,7 +272,7 @@ class AsciiBoxUtilsTest {
                 "╔════════════╗\n" +
                 "║123123123123║\n" +
                 "╚════════════╝";
-            assertEquals(new AsciiBox(want), boxString(name, data, charWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
         }
 
         @Test
@@ -291,7 +285,7 @@ class AsciiBoxUtilsTest {
                 "║      123123123123      ║\n" +
                 "║123123123123123123123123║\n" +
                 "╚════════════════════════╝";
-            assertEquals(new AsciiBox(want), boxString(name, data, charWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
         }
 
         @Test
@@ -304,7 +298,7 @@ class AsciiBoxUtilsTest {
                 "║                123123123123                 ║\n" +
                 "║          123123123123123123123123           ║\n" +
                 "╚═════════════════════════════════════════════╝";
-            assertEquals(new AsciiBox(want), boxString(name, data, charWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.boxString(name, data, charWidth));
         }
     }
 
@@ -330,7 +324,7 @@ class AsciiBoxUtilsTest {
                 "║      123123123123      ║║      123123123123      ║\n" +
                 "║123123ABABABABABAB123123║║123123123123123123123123║\n" +
                 "╚════════════════════════╝╚════════════════════════╝";
-            assertEquals(new AsciiBox(want), alignBoxes(boxes, desiredWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.alignBoxes(boxes, desiredWidth));
         }
 
         @Test
@@ -357,7 +351,7 @@ class AsciiBoxUtilsTest {
                 "║      123123123123      ║\n" +
                 "║123123123123123123123123║\n" +
                 "╚════════════════════════╝";
-            assertEquals(new AsciiBox(want), alignBoxes(boxes, desiredWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.alignBoxes(boxes, desiredWidth));
         }
 
         @Test
@@ -422,7 +416,7 @@ class AsciiBoxUtilsTest {
                 "║      123123123123      ║║      123123123123      ║\n" +
                 "║123123ABABABABABAB123123║║123123123123123123123123║\n" +
                 "╚════════════════════════╝╚════════════════════════╝";
-            assertEquals(new AsciiBox(want), alignBoxes(boxes, desiredWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.alignBoxes(boxes, desiredWidth));
         }
 
         @Test
@@ -483,7 +477,7 @@ class AsciiBoxUtilsTest {
                 "║      123123123123      ║║      123123123123      ║                          \n" +
                 "║123123ABABABABABAB123123║║123123123123123123123123║                          \n" +
                 "╚════════════════════════╝╚════════════════════════╝                          ";
-            assertEquals(new AsciiBox(want), alignBoxes(boxes, desiredWidth));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.alignBoxes(boxes, desiredWidth));
         }
     }
 
@@ -530,7 +524,7 @@ class AsciiBoxUtilsTest {
                 "123123123abcabcabczxyzxyzxy\n" +
                 "123123123abcabcabczxyzxyzxy\n" +
                 "123123123abcabcabczxyzxyzxy";
-            assertEquals(new AsciiBox(want), mergeHorizontal(boxes));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.mergeHorizontal(boxes));
         }
 
         @Test
@@ -553,7 +547,7 @@ class AsciiBoxUtilsTest {
                 "123123123abcabcabc                  zxyzxyzxy\n" +
                 "123123123abcabcabcabcabcabcabcabcabczxyzxyzxy\n" +
                 "123123123abcabcabc                  zxyzxyzxy";
-            assertEquals(new AsciiBox(want), mergeHorizontal(boxes));
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.DEFAULT.mergeHorizontal(boxes));
         }
     }
 
@@ -569,7 +563,7 @@ class AsciiBoxUtilsTest {
                 "123123123                                                                                           \n" +
                 "123123123                                                                                           \n" +
                 "123123123                                                                                           ");
-            assertEquals(want, expandBox(box, 100));
+            assertEquals(want, AsciiBoxWriter.DEFAULT.expandBox(box, 100));
         }
 
         @Test
@@ -582,7 +576,22 @@ class AsciiBoxUtilsTest {
                 "123123123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       \n" +
                 "123123123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       \n" +
                 "123123123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ");
-            assertEquals(want, expandBox(box, 10000));
+            assertEquals(want, AsciiBoxWriter.DEFAULT.expandBox(box, 10000));
+        }
+    }
+
+    @Nested
+    class LightBoxString {
+        @Test
+        void simpleBox() {
+            String name = "sampleField";
+            String data = "123123123123";
+            int charWidth = 1;
+            String want = "" +
+                "╭┄sampleField╮\n" +
+                "┆123123123123┆\n" +
+                "╰┄┄┄┄┄┄┄┄┄┄┄┄╯";
+            assertEquals(new AsciiBox(want), AsciiBoxWriter.LIGHT.boxString(name, data, charWidth));
         }
     }
 }

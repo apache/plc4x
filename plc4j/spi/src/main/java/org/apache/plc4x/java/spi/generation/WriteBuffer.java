@@ -128,6 +128,10 @@ public interface WriteBuffer extends ByteOrderAware {
 
     void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException;
 
+    default void writeVirtual(String logicalName, Object value, WithWriterArgs... writerArgs) throws SerializationException {
+        // No-Op
+    }
+
     default void writeString(int bitLength, String encoding, String value) throws SerializationException {
         writeString("", bitLength, encoding, value);
     }

@@ -296,6 +296,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
                         // Virtual field (doesn't actually serialize anything, just makes the value available)
                         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = get${namedField.name?cap_first}();
+                        writeBuffer.writeVirtual("${namedField.name}", ${namedField.name});
                         <#break>
                 </#switch>
             </#list>
