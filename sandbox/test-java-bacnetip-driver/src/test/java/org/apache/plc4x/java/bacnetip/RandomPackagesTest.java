@@ -51,6 +51,19 @@ import static org.junit.jupiter.api.Assertions.*;
 // Tests from http://kargs.net/captures
 public class RandomPackagesTest {
 
+    @BeforeAll
+    static void setUp() {
+        Assumptions.assumeTrue(() -> {
+            try {
+                System.out.println("Pcap version: " + Pcaps.libVersion());
+            } catch (Error e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }, "no pcap version on system");
+    }
+
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
     @AfterEach
