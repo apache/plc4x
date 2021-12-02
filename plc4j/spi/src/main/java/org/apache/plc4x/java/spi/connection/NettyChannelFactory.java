@@ -117,7 +117,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             final Channel channel = f.channel();
 
             // Add to Event Loop Group
-            eventLoops.put(channel, workerGroup);
+            if (workerGroup != null) {
+                eventLoops.put(channel, workerGroup);
+            }
 
             // It seems the embedded channel operates differently.
             // Intentionally using the class name as we don't want to require a
