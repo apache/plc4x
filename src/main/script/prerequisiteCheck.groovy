@@ -411,15 +411,17 @@ def checkDocker() {
     // TODO: Implement the actual check ...
 }
 
-def checkLibPcap() {
+def checkLibPcap(String minVersion) {
+    print "Detecting LibPcap version: "
     try {
-        def versionString = org.pcap4j.core.Pcaps.libVersion()
-        String version = versionString - ~/^libpcap version /
-        def result =  checkVersionAtLeast(version, "1.10.1")
+        output = org.pcap4j.core.Pcaps.libVersion()
+        String version = output - ~/^libpcap version /
+        def result =  checkVersionAtLeast(version, minVersion)
         if (!result) {
             allConditionsMet = false
         }
     } catch (Error e) {
+        output = ""
         println "missing"
         allConditionsMet = false
     }
@@ -572,7 +574,10 @@ if (cppEnabled && (os == "win")) {
     allConditionsMet = false
 }
 
-checkLibPcap()
+if (os == "mac") {
+    // The current system version from mac crashes so we assert for a version coming with brew
+    checkLibPcap("1.10.1")
+}
 
 if (!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")
