@@ -18,9 +18,11 @@
  */
 package org.apache.plc4x.java.bacnetip;
 
+import com.vdurmont.semver4j.Semver;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
@@ -45,18 +47,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-@Disabled("These needs finishing. On mac the pcap lib is unstable")
 // Tests from http://kargs.net/captures
 public class RandomPackagesTest {
 
     @BeforeAll
     static void setUp() {
-        Assumptions.assumeTrue(() -> {
+        assumeTrue(() -> {
             try {
-                System.out.println("Pcap version: " + Pcaps.libVersion());
+                String version = Pcaps.libVersion();
+                System.out.println("Pcap version: " + version);
+                Semver libpcap_version = new Semver(StringUtils.removeStart(version, "libpcap version "));
+                Semver minimumVersion = new Semver("1.10.1");
+                if (libpcap_version.isLowerThan(minimumVersion)) {
+                    System.err.println("pcap with at least " + minimumVersion + " required.");
+                    return false;
+                }
             } catch (Error e) {
                 e.printStackTrace();
                 return false;
@@ -86,7 +96,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed whoIs",
                 () -> {
@@ -94,7 +104,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Results",
                 () -> {
@@ -102,7 +112,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is",
                 () -> {
@@ -110,7 +120,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
                 () -> {
@@ -118,7 +128,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
                 () -> {
@@ -126,7 +136,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
                 () -> {
@@ -134,7 +144,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
                 () -> {
@@ -142,7 +152,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
                 () -> {
@@ -150,7 +160,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
                 () -> {
@@ -158,7 +168,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
                 () -> {
@@ -166,7 +176,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
                 () -> {
@@ -174,7 +184,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
                 () -> {
@@ -182,7 +192,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
                 () -> {
@@ -190,7 +200,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -206,7 +216,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -214,7 +224,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -230,7 +240,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -238,7 +248,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -254,7 +264,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -262,7 +272,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -278,7 +288,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -286,7 +296,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -302,7 +312,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -310,7 +320,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -326,7 +336,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -334,7 +344,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -350,7 +360,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -358,7 +368,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -374,7 +384,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -382,7 +392,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -398,15 +408,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -422,7 +424,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -430,7 +432,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -446,7 +448,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -454,7 +456,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -470,7 +472,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -478,7 +480,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -488,21 +490,30 @@ public class RandomPackagesTest {
     Collection<DynamicTest> CriticalRoom55_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-2.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[113] analog-value,1 present-value",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
+                    BACnetTag value = baCnetConfirmedServiceRequestWriteProperty.getValue();
+                    assertNotNull(value);
+                    BACnetTagApplicationReal baCnetTagApplicationReal = (BACnetTagApplicationReal) value;
+                    assertEquals(123.0f, baCnetTagApplicationReal.getValue());
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Abort",
                 () -> {
+                    // TODO: package is malformed
+                    assumeTrue(false);
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -518,7 +529,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -526,7 +537,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -542,7 +553,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -550,7 +561,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -566,39 +577,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
-    }
-
-    @TestFactory
-    @DisplayName("LGE-LITH")
-    Collection<DynamicTest> LGE_LITH() throws Exception {
-        PCAPEvaluator pcapEvaluator = pcapEvaluator("LGE-LITH.CAP");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -614,7 +593,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -622,7 +601,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -638,7 +617,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -646,7 +625,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -662,7 +641,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -670,7 +649,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -686,15 +665,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -710,7 +681,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -718,7 +689,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -734,7 +705,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -742,7 +713,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -758,7 +729,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -766,7 +737,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -776,13 +747,13 @@ public class RandomPackagesTest {
     Collection<DynamicTest> Subordinate_List() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Subordinate%20List.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ readProperty[152] structured-view,1 subordinate-list",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -790,7 +761,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -806,7 +777,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -814,7 +785,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -830,7 +801,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -838,7 +809,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -854,7 +825,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -862,7 +833,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -878,7 +849,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -886,7 +857,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -902,7 +873,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -910,7 +881,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -926,7 +897,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -934,7 +905,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -950,7 +921,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -958,7 +929,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -974,7 +945,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -982,7 +953,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -998,7 +969,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1006,7 +977,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1022,7 +993,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1030,7 +1001,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1046,7 +1017,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1054,7 +1025,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1070,7 +1041,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1078,7 +1049,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1094,7 +1065,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1102,7 +1073,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1118,7 +1089,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1126,7 +1097,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1142,7 +1113,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1150,7 +1121,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1166,7 +1137,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1174,7 +1145,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1190,7 +1161,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1198,7 +1169,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1214,7 +1185,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1222,7 +1193,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1238,39 +1209,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
-    }
-
-    @TestFactory
-    @DisplayName("Tower333 Lighting 5min MSTP.ncf")
-    Collection<DynamicTest> Tower333_Lighting_5min_MSTP_ncf() throws Exception {
-        PCAPEvaluator pcapEvaluator = pcapEvaluator("Tower333%20Lighting%205min%20MSTP.ncf");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1286,7 +1225,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1294,7 +1233,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1310,7 +1249,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1318,7 +1257,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1334,7 +1273,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1342,7 +1281,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1358,7 +1297,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1366,7 +1305,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1382,7 +1321,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1390,7 +1329,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1406,7 +1345,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1414,7 +1353,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1430,7 +1369,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1438,7 +1377,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1454,7 +1393,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1462,7 +1401,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1478,7 +1417,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1486,7 +1425,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1502,7 +1441,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1510,7 +1449,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1526,15 +1465,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1550,7 +1481,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1558,7 +1489,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1574,7 +1505,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1582,7 +1513,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1598,7 +1529,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1606,7 +1537,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1622,7 +1553,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1630,7 +1561,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1640,21 +1571,28 @@ public class RandomPackagesTest {
     Collection<DynamicTest> alerton_plugfest_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-version",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
+
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAckReadProperty);
+                    assertEquals(baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType(), 8);
+                    assertEquals(baCnetServiceAckReadProperty.getPropertyIdentifier().getValue(), BACnetPropertyIdentifier.PROTOCOL_VERSION);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1670,7 +1608,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1678,7 +1616,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1694,7 +1632,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1702,7 +1640,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1718,7 +1656,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1726,7 +1664,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1742,7 +1680,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1750,7 +1688,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1766,7 +1704,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1774,7 +1712,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1790,7 +1728,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1798,7 +1736,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1814,7 +1752,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1822,7 +1760,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1838,7 +1776,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1846,7 +1784,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1862,7 +1800,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1870,7 +1808,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1886,7 +1824,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1894,7 +1832,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1910,7 +1848,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1918,7 +1856,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1934,7 +1872,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1942,7 +1880,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1958,7 +1896,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1966,7 +1904,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -1982,7 +1920,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -1990,7 +1928,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2006,7 +1944,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2014,7 +1952,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2030,7 +1968,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2038,7 +1976,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2054,7 +1992,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2062,7 +2000,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2078,7 +2016,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2086,7 +2024,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2102,7 +2040,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2110,7 +2048,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2126,7 +2064,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2134,7 +2072,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2150,7 +2088,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2158,7 +2096,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2174,7 +2112,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2182,7 +2120,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2198,7 +2136,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2206,7 +2144,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2222,7 +2160,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2230,7 +2168,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2246,7 +2184,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2254,7 +2192,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2270,7 +2208,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2278,7 +2216,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2294,7 +2232,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2302,7 +2240,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2318,7 +2256,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2326,7 +2264,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2342,7 +2280,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2350,7 +2288,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2366,7 +2304,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2374,7 +2312,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2390,15 +2328,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2407,6 +2337,9 @@ public class RandomPackagesTest {
     @DisplayName("bo_command_failure_original")
     Collection<DynamicTest> bo_command_failure_original() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure_original.pcap");
+        // TODO: we should set a filter for bacnet
+        // Pcap starts with 20 non bacnet packages
+        pcapEvaluator.skipPackages(20);
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2414,7 +2347,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2422,7 +2355,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2438,7 +2371,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2446,7 +2379,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2462,7 +2395,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2470,7 +2403,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2486,7 +2419,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2494,7 +2427,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2510,7 +2443,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2518,7 +2451,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2534,7 +2467,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2542,14 +2475,15 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
 
     @TestFactory
     @DisplayName("bvlc")
-    Collection<DynamicTest> bvlc() throws Exception {
+    Collection<DynamicTest>
+    bvlc() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
@@ -2558,15 +2492,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2582,7 +2508,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2590,7 +2516,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2606,7 +2532,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2614,7 +2540,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2624,13 +2550,13 @@ public class RandomPackagesTest {
     Collection<DynamicTest> confirmedEventNotification() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("confirmedEventNotification.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ confirmedEventNotification[103] device,1041000 analog-input,3000016 present-value",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2638,7 +2564,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2654,7 +2580,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2662,7 +2588,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2678,7 +2604,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2686,7 +2612,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2702,7 +2628,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2710,7 +2636,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2726,7 +2652,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2734,7 +2660,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2750,7 +2676,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2758,7 +2684,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2774,7 +2700,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2782,7 +2708,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2798,7 +2724,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2806,7 +2732,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2822,7 +2748,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2830,7 +2756,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2846,7 +2772,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2854,7 +2780,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2870,7 +2796,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2878,11 +2804,12 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
 
+    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("foreign-device-npdu")
     Collection<DynamicTest> foreign_device_npdu() throws Exception {
@@ -2894,7 +2821,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2902,7 +2829,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2918,7 +2845,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2926,7 +2853,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2942,7 +2869,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2950,31 +2877,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
-    }
-
-    @TestFactory
-    @DisplayName("irb.lua")
-    Collection<DynamicTest> irb_lua() throws Exception {
-        PCAPEvaluator pcapEvaluator = pcapEvaluator("irb.lua");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -2990,7 +2893,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -2998,7 +2901,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3014,7 +2917,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3022,7 +2925,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3038,7 +2941,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3046,7 +2949,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3062,7 +2965,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3070,7 +2973,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3086,7 +2989,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3094,7 +2997,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3110,7 +3013,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3118,7 +3021,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3134,7 +3037,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3142,7 +3045,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3158,7 +3061,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3166,7 +3069,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3182,7 +3085,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3190,7 +3093,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3206,7 +3109,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3214,7 +3117,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3230,7 +3133,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3238,7 +3141,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3254,7 +3157,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3262,7 +3165,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3278,7 +3181,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3286,7 +3189,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3302,7 +3205,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3310,7 +3213,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3326,7 +3229,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3334,7 +3237,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3350,7 +3253,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3358,7 +3261,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3374,7 +3277,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3382,7 +3285,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3398,7 +3301,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3406,7 +3309,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3422,7 +3325,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3430,7 +3333,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3446,7 +3349,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3454,7 +3357,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3470,7 +3373,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3478,7 +3381,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3494,7 +3397,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3502,7 +3405,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3518,7 +3421,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3526,7 +3429,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3542,7 +3445,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3550,7 +3453,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3566,7 +3469,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3574,7 +3477,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3590,7 +3493,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3598,7 +3501,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3614,7 +3517,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3622,7 +3525,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3638,7 +3541,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3646,7 +3549,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3662,7 +3565,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3670,7 +3573,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3686,7 +3589,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3694,7 +3597,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3710,7 +3613,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3718,7 +3621,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3734,7 +3637,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3742,7 +3645,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3758,7 +3661,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3766,7 +3669,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3782,7 +3685,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3790,7 +3693,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3806,7 +3709,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3814,7 +3717,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3824,13 +3727,16 @@ public class RandomPackagesTest {
     Collection<DynamicTest> plugfest_2011_trane_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Unconfirmed REQ who-Is",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    assertTrue(serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoIs);
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3838,7 +3744,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3854,7 +3760,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3862,7 +3768,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3878,7 +3784,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3886,7 +3792,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3902,7 +3808,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3910,7 +3816,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3926,7 +3832,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3934,7 +3840,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3946,19 +3852,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3974,7 +3882,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -3982,7 +3890,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -3998,7 +3906,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4006,7 +3914,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4022,7 +3930,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4030,7 +3938,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4046,7 +3954,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4054,7 +3962,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4070,7 +3978,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4078,7 +3986,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4094,7 +4002,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4102,7 +4010,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4118,7 +4026,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4126,7 +4034,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4142,7 +4050,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4150,7 +4058,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4166,7 +4074,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4174,7 +4082,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4190,15 +4098,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4214,7 +4114,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4222,7 +4122,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4238,7 +4138,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4246,7 +4146,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4258,19 +4158,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4286,7 +4188,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4294,7 +4196,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4310,7 +4212,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4318,7 +4220,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4334,7 +4236,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4342,7 +4244,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4358,7 +4260,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4366,7 +4268,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4382,7 +4284,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4390,7 +4292,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4406,7 +4308,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4414,7 +4316,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4430,7 +4332,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4438,7 +4340,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4454,7 +4356,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4462,7 +4364,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4478,7 +4380,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4486,7 +4388,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4502,7 +4404,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4510,11 +4412,12 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
 
+    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("special-events")
     Collection<DynamicTest> special_events() throws Exception {
@@ -4526,7 +4429,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4534,7 +4437,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4550,7 +4453,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4558,7 +4461,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4574,7 +4477,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4582,7 +4485,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4598,7 +4501,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4606,7 +4509,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4622,7 +4525,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4630,7 +4533,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4646,7 +4549,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4654,7 +4557,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4670,7 +4573,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4678,7 +4581,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4694,7 +4597,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4702,7 +4605,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4718,7 +4621,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4726,11 +4629,12 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
 
+    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("tridium jace2")
     Collection<DynamicTest> tridium_jace2() throws Exception {
@@ -4742,7 +4646,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4750,7 +4654,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4766,7 +4670,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4774,7 +4678,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4790,7 +4694,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4798,7 +4702,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4814,7 +4718,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4822,7 +4726,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4838,7 +4742,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4846,7 +4750,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4862,7 +4766,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4870,7 +4774,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4886,7 +4790,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4894,7 +4798,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4910,7 +4814,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4918,7 +4822,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4934,7 +4838,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4942,7 +4846,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4958,7 +4862,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4966,7 +4870,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -4982,7 +4886,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -4990,7 +4894,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5006,7 +4910,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -5014,7 +4918,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5026,19 +4930,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5050,19 +4956,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5074,19 +4982,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5102,7 +5012,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -5110,7 +5020,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5126,7 +5036,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -5134,7 +5044,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5150,7 +5060,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -5158,7 +5068,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5170,19 +5080,21 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5198,7 +5110,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
@@ -5206,7 +5118,7 @@ public class RandomPackagesTest {
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
-                    Assumptions.assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 })
         );
     }
@@ -5234,9 +5146,21 @@ public class RandomPackagesTest {
             pcapHandle = getHandle(toParse);
         }
 
+        public void skipPackages(int numberOfPackages) {
+            IntStream.rangeClosed(1, numberOfPackages + 1).forEach(i -> {
+                System.out.println("Skipping package " + i);
+                try {
+                    pcapHandle.getNextPacket();
+                } catch (NotOpenException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
         private BVLC nextBVLC() throws NotOpenException, ParseException {
-            Packet nextPacket = pcapHandle.getNextPacket();
-            UdpPacket udpPacket = nextPacket.get(UdpPacket.class);
+            Packet packet = pcapHandle.getNextPacket();
+            UdpPacket udpPacket = packet.get(UdpPacket.class);
+            assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
             byte[] rawData = udpPacket.getPayload().getRawData();
             System.err.println("Reading BVLC from:");
             System.err.println(Hex.dump(rawData));

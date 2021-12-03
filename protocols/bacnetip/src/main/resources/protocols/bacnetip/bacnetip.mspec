@@ -212,16 +212,15 @@
             [simple BACnetComplexTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
+            // TODO: check if values are missing here?
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty
-            [const    uint 8    objectIdentifierHeader    0x0C                          ]
-            [simple   uint 10   objectType                                                ]
-            [simple   uint 22   objectInstanceNumber                                      ]
-            [const    uint 5    propertyIdentifierHeader 0x03                           ]
-            [simple   uint 3    propertyIdentifierLength                                  ]
-            [array    int 8     propertyIdentifier        count 'propertyIdentifierLength']
+            [simple BACnetComplexTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier   ]
+            [simple BACnetComplexTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
+            // TODO: check if this is the right identifier type and size
+            [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
             [const    uint 8    openingTag                0x3E                          ]
             [simple   BACnetTag value                                                     ]
             [const    uint 8    closingTag                0x3F                          ]
@@ -348,15 +347,10 @@
 
         ]
         ['0x0C' BACnetServiceAckReadProperty
-            [const uint 8 objectIdentifierHeader 0x0C]
-            [simple uint 10 objectType]
-            [simple uint 22 objectInstanceNumber]
-            [const uint 5 propertyIdentifierHeader 0x03]
-            [simple uint 3 propertyIdentifierLength]
-            [array int 8 propertyIdentifier count 'propertyIdentifierLength']
-            [const uint 8 openingTag 0x3E]
-            [simple BACnetTag value]
-            [const uint 8 closingTag 0x3F]
+            [simple BACnetComplexTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier   ]
+            [simple BACnetComplexTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
+            // TODO: check if this is the right identifier type and size
+            [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -428,6 +422,10 @@
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x03' BACnetErrorGetAlarmSummary
+        ]
+        ['0x02' BACnetErrorConfirmedEventNotification
+            [simple BACnetTagApplicationEnumerated errorClass]
+            [simple BACnetTagApplicationEnumerated errorCode]
         ]
         ['0x04' BACnetErrorGetEnrollmentSummary
         ]
@@ -1203,6 +1201,7 @@
     ['93'  PROPORTIONAL_CONSTANT]
     ['94'  PROPORTIONAL_CONSTANT_UNITS]
     ['482' PROTOCOL_LEVEL]
+    ['95'  PROTOCOL_CONFORMANCE_CLASS]
     ['96'  PROTOCOL_OBJECT_TYPES_SUPPORTED]
     ['139' PROTOCOL_REVISION]
     ['97'  PROTOCOL_SERVICES_SUPPORTED]
@@ -1313,4 +1312,5 @@
     ['320' ZONE_FROM]
     ['165' ZONE_MEMBERS]
     ['321' ZONE_TO]
+    ['9999' VENDOR_PROPRIETARY_VALUE]
 ]
