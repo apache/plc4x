@@ -164,13 +164,13 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %f%s", Float.valueOf(value).longValue(), value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %f%s", Double.valueOf(value).longValue(), value, additionalStringRepresentation), 0)));
     }
 
     @Override
