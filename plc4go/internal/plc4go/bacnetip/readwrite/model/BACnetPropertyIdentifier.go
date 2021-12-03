@@ -379,6 +379,7 @@ const (
 	BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT               BACnetPropertyIdentifier = 93
 	BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS         BACnetPropertyIdentifier = 94
 	BACnetPropertyIdentifier_PROTOCOL_LEVEL                      BACnetPropertyIdentifier = 482
+	BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS          BACnetPropertyIdentifier = 95
 	BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED     BACnetPropertyIdentifier = 96
 	BACnetPropertyIdentifier_PROTOCOL_REVISION                   BACnetPropertyIdentifier = 139
 	BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED         BACnetPropertyIdentifier = 97
@@ -489,6 +490,7 @@ const (
 	BACnetPropertyIdentifier_ZONE_FROM                           BACnetPropertyIdentifier = 320
 	BACnetPropertyIdentifier_ZONE_MEMBERS                        BACnetPropertyIdentifier = 165
 	BACnetPropertyIdentifier_ZONE_TO                             BACnetPropertyIdentifier = 321
+	BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE            BACnetPropertyIdentifier = 9999
 )
 
 var BACnetPropertyIdentifierValues []BACnetPropertyIdentifier
@@ -842,6 +844,7 @@ func init() {
 		BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT,
 		BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS,
 		BACnetPropertyIdentifier_PROTOCOL_LEVEL,
+		BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS,
 		BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED,
 		BACnetPropertyIdentifier_PROTOCOL_REVISION,
 		BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED,
@@ -952,6 +955,7 @@ func init() {
 		BACnetPropertyIdentifier_ZONE_FROM,
 		BACnetPropertyIdentifier_ZONE_MEMBERS,
 		BACnetPropertyIdentifier_ZONE_TO,
+		BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE,
 	}
 }
 
@@ -1861,6 +1865,8 @@ func BACnetPropertyIdentifierByValue(value uint32) BACnetPropertyIdentifier {
 		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT
 	case 94:
 		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS
+	case 95:
+		return BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS
 	case 96:
 		return BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED
 	case 97:
@@ -1869,6 +1875,8 @@ func BACnetPropertyIdentifierByValue(value uint32) BACnetPropertyIdentifier {
 		return BACnetPropertyIdentifier_PROTOCOL_VERSION
 	case 99:
 		return BACnetPropertyIdentifier_READ_ONLY
+	case 9999:
+		return BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
 	}
 	return 0
 }
@@ -2779,6 +2787,8 @@ func BACnetPropertyIdentifierByName(value string) BACnetPropertyIdentifier {
 		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT
 	case "PROPORTIONAL_CONSTANT_UNITS":
 		return BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS
+	case "PROTOCOL_CONFORMANCE_CLASS":
+		return BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS
 	case "PROTOCOL_OBJECT_TYPES_SUPPORTED":
 		return BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED
 	case "PROTOCOL_SERVICES_SUPPORTED":
@@ -2787,6 +2797,8 @@ func BACnetPropertyIdentifierByName(value string) BACnetPropertyIdentifier {
 		return BACnetPropertyIdentifier_PROTOCOL_VERSION
 	case "READ_ONLY":
 		return BACnetPropertyIdentifier_READ_ONLY
+	case "VENDOR_PROPRIETARY_VALUE":
+		return BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE
 	}
 	return 0
 }
@@ -3727,6 +3739,8 @@ func (e BACnetPropertyIdentifier) name() string {
 		return "PROPORTIONAL_CONSTANT"
 	case BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS:
 		return "PROPORTIONAL_CONSTANT_UNITS"
+	case BACnetPropertyIdentifier_PROTOCOL_CONFORMANCE_CLASS:
+		return "PROTOCOL_CONFORMANCE_CLASS"
 	case BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED:
 		return "PROTOCOL_OBJECT_TYPES_SUPPORTED"
 	case BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED:
@@ -3735,6 +3749,8 @@ func (e BACnetPropertyIdentifier) name() string {
 		return "PROTOCOL_VERSION"
 	case BACnetPropertyIdentifier_READ_ONLY:
 		return "READ_ONLY"
+	case BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE:
+		return "VENDOR_PROPRIETARY_VALUE"
 	}
 	return ""
 }

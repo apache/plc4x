@@ -31,7 +31,7 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 	*BACnetUnconfirmedServiceRequest
 	DeviceInstanceRangeLowLimit  *BACnetComplexTagUnsignedInteger
 	DeviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger
-	ObjectIdentifier             *BACnetComplexTagOctetString
+	ObjectIdentifier             *BACnetComplexTagObjectIdentifier
 	ObjectName                   *BACnetComplexTagOctetString
 }
 
@@ -52,7 +52,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) ServiceChoice() uint8 {
 func (m *BACnetUnconfirmedServiceRequestWhoHas) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger, objectIdentifier *BACnetComplexTagOctetString, objectName *BACnetComplexTagOctetString) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger, objectIdentifier *BACnetComplexTagObjectIdentifier, objectName *BACnetComplexTagOctetString) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoHas{
 		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
@@ -169,20 +169,20 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	}
 
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var objectIdentifier *BACnetComplexTagOctetString = nil
+	var objectIdentifier *BACnetComplexTagObjectIdentifier = nil
 	{
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetComplexTagParse(readBuffer, uint8(2), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetComplexTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
 		case _err == utils.ParseAssertError:
 			readBuffer.SetPos(currentPos)
 		default:
-			objectIdentifier = CastBACnetComplexTagOctetString(_val)
+			objectIdentifier = CastBACnetComplexTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -218,7 +218,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	_child := &BACnetUnconfirmedServiceRequestWhoHas{
 		DeviceInstanceRangeLowLimit:     CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeLowLimit),
 		DeviceInstanceRangeHighLimit:    CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeHighLimit),
-		ObjectIdentifier:                CastBACnetComplexTagOctetString(objectIdentifier),
+		ObjectIdentifier:                CastBACnetComplexTagObjectIdentifier(objectIdentifier),
 		ObjectName:                      CastBACnetComplexTagOctetString(objectName),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
@@ -265,7 +265,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 		}
 
 		// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-		var objectIdentifier *BACnetComplexTagOctetString = nil
+		var objectIdentifier *BACnetComplexTagObjectIdentifier = nil
 		if m.ObjectIdentifier != nil {
 			if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 				return pushErr

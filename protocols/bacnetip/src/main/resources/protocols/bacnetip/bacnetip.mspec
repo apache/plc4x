@@ -305,10 +305,10 @@
             [simple BACnetTagApplicationTime synchronizedTime]
         ]
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
-            [optional BACnetComplexTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                         ]
-            [optional BACnetComplexTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
-            [optional BACnetComplexTagOctetString('2', 'BACnetDataType.OCTET_STRING')           objectIdentifier                                                    ]
-            [optional BACnetComplexTagOctetString('3', 'BACnetDataType.OCTET_STRING')           objectName                    'objectIdentifier == null'            ]
+            [optional BACnetComplexTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeLowLimit                                         ]
+            [optional BACnetComplexTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')           deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
+            [optional BACnetComplexTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  objectIdentifier                                                    ]
+            [optional BACnetComplexTagOctetString('3', 'BACnetDataType.OCTET_STRING')                   objectName                    'objectIdentifier == null'            ]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
             [optional BACnetComplexTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                         ]
@@ -340,7 +340,7 @@
 
         ]
         ['0x07' BACnetServiceAckAtomicWriteFile
-
+            [simple BACnetComplexTagSignedInteger('0', 'BACnetDataType.SIGNED_INTEGER') fileStartPosition]
         ]
 
         ['0x0A' BACnetServiceAckCreateObject

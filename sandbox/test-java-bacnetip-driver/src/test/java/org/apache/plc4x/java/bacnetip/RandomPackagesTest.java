@@ -43,9 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.FileSystems;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.IntStream;
 
@@ -57,6 +55,8 @@ public class RandomPackagesTest {
 
     @BeforeAll
     static void setUp() {
+        // TODO: for mac only don't commit
+        System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
         assumeTrue(() -> {
             try {
                 String version = Pcaps.libVersion();
@@ -4733,24 +4733,165 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("who-has")
-    Collection<DynamicTest> who_has() throws Exception {
+    Collection<DynamicNode> who_has() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("who-has.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 133 133",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getActualValue());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                }),
+            DynamicTest.dynamicTest("skip 2 LLC packages",
+                () -> {
+                    pcapEvaluator.skipPackages(2);
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ I-Am 133 133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestIAm baCnetUnconfirmedServiceRequestIAm = (BACnetUnconfirmedServiceRequestIAm) apduUnconfirmedRequest.getServiceRequest();
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
+                    assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
+                    // TODO: we should use a enum here
+                    assertEquals(Arrays.asList((Byte) (byte) 0x0), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
+                }),
+            DynamicContainer.dynamicContainer("Confirmed-REQ atomicWriteFile 1-30", () -> {
+                Collection<DynamicNode> nodes = new LinkedList<>();
+                IntStream.range(1, 31).forEach(i -> {
+                    nodes.add(DynamicTest.dynamicTest("Confirmed-REQ atomicWriteFile [" + i + "] file,0", () -> {
+                        BVLC bvlc = pcapEvaluator.nextBVLC();
+                        dump(bvlc);
+                        BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                        APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                        BACnetConfirmedServiceRequestAtomicWriteFile baCnetConfirmedServiceRequestAtomicWriteFile = (BACnetConfirmedServiceRequestAtomicWriteFile) apduConfirmedRequest.getServiceRequest();
+                        // TODO: we should use a enum here
+                        assertEquals(10, baCnetConfirmedServiceRequestAtomicWriteFile.getDeviceIdentifier().getObjectType());
+                        assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileStartPosition());
+                        assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileData());
+                    }));
+                    nodes.add(DynamicTest.dynamicTest("Confirmed-Ack     atomicWriteFile [" + i + "]", () -> {
+                        BVLC bvlc = pcapEvaluator.nextBVLC();
+                        dump(bvlc);
+                        BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                        APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                        BACnetServiceAckAtomicWriteFile baCnetServiceAckAtomicWriteFile = (BACnetServiceAckAtomicWriteFile) apduComplexAck.getServiceAck();
+                        assertNotNull(baCnetServiceAckAtomicWriteFile.getFileStartPosition());
+                    }));
+                });
+                return nodes.iterator();
+            }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
+                    assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
+                    assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                }),
+            DynamicTest.dynamicTest("skip 1 LLC packages",
+                () -> pcapEvaluator.skipPackages(1)),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(4194303, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
+                    assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
+                    assertEquals("SYNERGY", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
+                    assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
+                    assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
+                }),
+            DynamicTest.dynamicTest("skip 1 LLC packages",
+                () -> pcapEvaluator.skipPackages(1)),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(4194303, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
+                    assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
+                    // TODO: we should use a enum here
+                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
+                    assertEquals("SYNERGY", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 })
         );
     }
@@ -5147,7 +5288,7 @@ public class RandomPackagesTest {
         }
 
         public void skipPackages(int numberOfPackages) {
-            IntStream.rangeClosed(1, numberOfPackages + 1).forEach(i -> {
+            IntStream.rangeClosed(1, numberOfPackages).forEach(i -> {
                 System.out.println("Skipping package " + i);
                 try {
                     pcapHandle.getNextPacket();
