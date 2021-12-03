@@ -400,10 +400,6 @@
 
 ]
 
-[type 'DataTypeDefinition'
-
-]
-
 <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and not(@BaseType)]"/>
 <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType"/>
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
