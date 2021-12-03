@@ -411,6 +411,20 @@ def checkDocker() {
     // TODO: Implement the actual check ...
 }
 
+def checkLibPcap() {
+    try {
+        def versionString = org.pcap4j.core.Pcaps.libVersion()
+        String version = versionString - ~/^libpcap version /
+        def result =  checkVersionAtLeast(version, "1.10.1")
+        if (!result) {
+            allConditionsMet = false
+        }
+    } catch (Error e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 /**
  * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -557,6 +571,8 @@ if (cppEnabled && (os == "win")) {
     print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
     allConditionsMet = false
 }
+
+checkLibPcap()
 
 if (!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")
