@@ -56,7 +56,7 @@ public class RandomPackagesTest {
     @BeforeAll
     static void setUp() {
         // TODO: for mac only don't commit
-        System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
+        //System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
         assumeTrue(() -> {
             try {
                 String version = Pcaps.libVersion();
@@ -1581,8 +1581,8 @@ public class RandomPackagesTest {
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
                     assertNotNull(baCnetServiceAckReadProperty);
-                    assertEquals(baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType(), 8);
-                    assertEquals(baCnetServiceAckReadProperty.getPropertyIdentifier().getValue(), BACnetPropertyIdentifier.PROTOCOL_VERSION);
+                    assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION,baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
@@ -4755,8 +4755,7 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit().getActualValue());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("skip 2 LLC packages",
@@ -4770,8 +4769,7 @@ public class RandomPackagesTest {
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
                     BACnetUnconfirmedServiceRequestIAm baCnetUnconfirmedServiceRequestIAm = (BACnetUnconfirmedServiceRequestIAm) apduUnconfirmedRequest.getServiceRequest();
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
                     // TODO: we should use a enum here
@@ -4787,8 +4785,7 @@ public class RandomPackagesTest {
                         BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                         APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                         BACnetConfirmedServiceRequestAtomicWriteFile baCnetConfirmedServiceRequestAtomicWriteFile = (BACnetConfirmedServiceRequestAtomicWriteFile) apduConfirmedRequest.getServiceRequest();
-                        // TODO: we should use a enum here
-                        assertEquals(10, baCnetConfirmedServiceRequestAtomicWriteFile.getDeviceIdentifier().getObjectType());
+                        assertEquals(BACnetObjectType.FILE, baCnetConfirmedServiceRequestAtomicWriteFile.getDeviceIdentifier().getObjectType());
                         assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileStartPosition());
                         assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileData());
                     }));
@@ -4812,8 +4809,7 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("skip 1 LLC packages",
@@ -4825,11 +4821,9 @@ public class RandomPackagesTest {
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
                     BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
                     assertEquals(4194303, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
@@ -4840,11 +4834,9 @@ public class RandomPackagesTest {
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("SYNERGY", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
@@ -4857,8 +4849,7 @@ public class RandomPackagesTest {
                     BACnetUnconfirmedServiceRequestWhoHas baCnetUnconfirmedServiceRequestWhoHas = (BACnetUnconfirmedServiceRequestWhoHas) apduUnconfirmedRequest.getServiceRequest();
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
                     assertNull(baCnetUnconfirmedServiceRequestWhoHas.getDeviceInstanceRangeLowLimit());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
             DynamicTest.dynamicTest("skip 1 LLC packages",
@@ -4870,11 +4861,9 @@ public class RandomPackagesTest {
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
                     BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
                     assertEquals(4194303, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
@@ -4885,11 +4874,9 @@ public class RandomPackagesTest {
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetUnconfirmedServiceRequestIHave baCnetUnconfirmedServiceRequestIHave = (BACnetUnconfirmedServiceRequestIHave) apduUnconfirmedRequest.getServiceRequest();
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getDeviceIdentifier().getInstanceNumber());
-                    // TODO: we should use a enum here
-                    assertEquals(8, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("SYNERGY", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 })

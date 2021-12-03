@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type BACnetTagApplicationObjectIdentifier struct {
 	*BACnetTag
-	ObjectType     uint16
+	ObjectType     BACnetObjectType
 	InstanceNumber uint32
 }
 
@@ -56,7 +56,7 @@ func (m *BACnetTagApplicationObjectIdentifier) InitializeParent(parent *BACnetTa
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationObjectIdentifier(objectType uint16, instanceNumber uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetTagApplicationObjectIdentifier(objectType BACnetObjectType, instanceNumber uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationObjectIdentifier{
 		ObjectType:     objectType,
 		InstanceNumber: instanceNumber,
@@ -115,11 +115,17 @@ func BACnetTagApplicationObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BA
 	}
 
 	// Simple Field (objectType)
-	_objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
+	if pullErr := readBuffer.PullContext("objectType"); pullErr != nil {
+		return nil, pullErr
+	}
+	_objectType, _objectTypeErr := BACnetObjectTypeParse(readBuffer)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
 	objectType := _objectType
+	if closeErr := readBuffer.CloseContext("objectType"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (instanceNumber)
 	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
@@ -149,8 +155,13 @@ func (m *BACnetTagApplicationObjectIdentifier) Serialize(writeBuffer utils.Write
 		}
 
 		// Simple Field (objectType)
-		objectType := uint16(m.ObjectType)
-		_objectTypeErr := writeBuffer.WriteUint16("objectType", 10, (objectType))
+		if pushErr := writeBuffer.PushContext("objectType"); pushErr != nil {
+			return pushErr
+		}
+		_objectTypeErr := m.ObjectType.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("objectType"); popErr != nil {
+			return popErr
+		}
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
