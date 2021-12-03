@@ -62,7 +62,10 @@ public class RandomPackagesTest {
             try {
                 String version = Pcaps.libVersion();
                 System.out.println("Pcap version: " + version);
-                Semver libpcap_version = new Semver(StringUtils.removeStart(version, "libpcap version "));
+                String libpcap_version_string = StringUtils.removeStart(version, "libpcap version ");
+                // Remove any trailing extra info
+                libpcap_version_string = StringUtils.split(libpcap_version_string," ")[0];
+                Semver libpcap_version = new Semver(libpcap_version_string);
                 if (SystemUtils.IS_OS_MAC) {
                     Semver minimumVersion = new Semver("1.10.1");
 
@@ -71,7 +74,7 @@ public class RandomPackagesTest {
                         return false;
                     }
                 }
-            } catch (Error e) {
+            } catch (Exception | Error e) {
                 e.printStackTrace();
                 return false;
             }
