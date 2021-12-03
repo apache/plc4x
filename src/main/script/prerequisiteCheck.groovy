@@ -418,7 +418,9 @@ def checkLibPcap(String minVersion) {
         String version = output - ~/^libpcap version /
         def result =  checkVersionAtLeast(version, minVersion)
         if (!result) {
-            allConditionsMet = false
+            // TODO: only on mac we need the minimum version so we need to refine this
+            // allConditionsMet = false
+            println "This will probably a problem on mac"
         }
     } catch (Error e) {
         output = ""

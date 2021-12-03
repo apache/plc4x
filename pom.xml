@@ -161,7 +161,7 @@
     <slf4j.version>1.7.32</slf4j.version>
     <thrift.version>0.13.0</thrift.version>
     <vavr.version>0.10.4</vavr.version>
-    <xmlunit.version>2.8.2</xmlunit.version>
+    <xmlunit.version>2.8.3</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
@@ -322,6 +322,11 @@
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
         <version>${jaxb.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>3.0.1</version>
       </dependency>
 
       <dependency>
