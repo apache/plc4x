@@ -110,7 +110,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             f.addListener(future -> {
                 if (!future.isSuccess()) {
                     logger.info("Unable to connect, shutting down worker thread.");
-                    workerGroup.shutdownGracefully();
+                    if (workerGroup != null) {
+                        workerGroup.shutdownGracefully();
+                    }
                 }
             });
 
