@@ -56,6 +56,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Set Platform options
+        id: platform_opts
+        uses: actions/github-script@v5.0.0
+        env:
+          OS: ${{ matrix.os }}
+        with:
+          script: |
+            const { OS } = process.env
+            if (OS.includes("windows")) {
+              core.setOutput('platform_opts', ``)
+            } else if (OS.includes("macos")) {
+              core.setOutput('platform_opts', `-Djna.library.path="$(find /usr/local/Cellar/libpcap/ -name lib)"`)
+            } else if (OS.includes("ubuntu")) {
+              core.setOutput('platform_opts', ``)
+            } else {
+              core.setOutput('platform_opts', ``)
+            }
+
       - name: Calculate platform suffix
         id: platform_suffix
         uses: actions/github-script@v5.0.0
@@ -71,4 +89,4 @@ jobs:
             }
 
       - name: Run mvnw
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -B -P'with-sandbox,with-c,with-go' install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_suffix.outputs.platform_suffix }} install
