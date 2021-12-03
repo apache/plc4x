@@ -52,6 +52,7 @@
             <configuration>
               <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <debug>true</debug>
+              <streamLogsOnFailures>true</streamLogsOnFailures>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>

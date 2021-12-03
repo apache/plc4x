@@ -55,7 +55,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  1,
 				charWidth: 0,
 			},
-			want:  asciiBox(`
+			want: asciiBox(`
 ╔═exampleInt═════════╗
 ║0x0000000000000001 1║
 ╚════════════════════╝
@@ -68,7 +68,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  123123123,
 				charWidth: 0,
 			},
-			want:  asciiBox(`
+			want: asciiBox(`
 ╔═exampleInt═════════════════╗
 ║0x000000000756b5b3 123123123║
 ╚════════════════════════════╝
