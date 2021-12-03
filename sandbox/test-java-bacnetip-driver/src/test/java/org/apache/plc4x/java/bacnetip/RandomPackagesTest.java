@@ -22,6 +22,7 @@ import com.vdurmont.semver4j.Semver;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -62,10 +63,13 @@ public class RandomPackagesTest {
                 String version = Pcaps.libVersion();
                 System.out.println("Pcap version: " + version);
                 Semver libpcap_version = new Semver(StringUtils.removeStart(version, "libpcap version "));
-                Semver minimumVersion = new Semver("1.10.1");
-                if (libpcap_version.isLowerThan(minimumVersion)) {
-                    System.err.println("pcap with at least " + minimumVersion + " required.");
-                    return false;
+                if (SystemUtils.IS_OS_MAC) {
+                    Semver minimumVersion = new Semver("1.10.1");
+
+                    if (libpcap_version.isLowerThan(minimumVersion)) {
+                        System.err.println("pcap with at least " + minimumVersion + " required.");
+                        return false;
+                    }
                 }
             } catch (Error e) {
                 e.printStackTrace();
@@ -1582,7 +1586,7 @@ public class RandomPackagesTest {
                     BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
                     assertNotNull(baCnetServiceAckReadProperty);
                     assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION,baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
+                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
