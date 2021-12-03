@@ -30,6 +30,14 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install libpcap for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install libpcap-dev
+
+      - name: Install libpcap for macos
+        if: matrix.os == 'macos-latest'
+        run: brew install libpcap
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
