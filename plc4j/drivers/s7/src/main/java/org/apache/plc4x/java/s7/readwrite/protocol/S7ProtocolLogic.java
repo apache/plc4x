@@ -499,11 +499,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         //return toPlcSubscriptionResponse(subscriptionRequest, future);
                     }
                     break;
-                    case EVENT_UNSUBSCRIPTION:;
-                    //encodeEventUnSubcriptionRequest(msg, out);
+                    case EVENT_UNSUBSCRIPTION:
+                        //encodeEventUnSubcriptionRequest(msg, out);
                     break;
-                    case ALARM_ACK:;
-                    //encodeAlarmAckRequest(request, parameterItems, payloadItems);
+                    case ALARM_ACK:
+                        //encodeAlarmAckRequest(request, parameterItems, payloadItems);
                     break;
                     case ALARM_QUERY:{
                         parameterItems.clear();
@@ -658,8 +658,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         
                     }
                     break;
-                    default:;
-                };
+                    default:
+                }
 
                 try {
                     valuesResponse.put(fieldName, decodeEventSubcriptionRequest(fieldName, subscriptionRequest, futures.get(fieldName).get()));
@@ -702,7 +702,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();      
         PlcSubscriptionResponse plcresponse;    
         try {
-            plcresponse = (PlcSubscriptionResponse) decodeEventSubcriptionRequest(null, subscriptionRequest, response.get());
+            plcresponse = decodeEventSubcriptionRequest(null, subscriptionRequest, response.get());
             future.complete(plcresponse);
         } catch (Exception ex) {
             logger.warn(ex.toString());
@@ -1779,7 +1779,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for(int i = 0; i < field.getNumberOfElements(); i++) {
-                WriteBufferByteBased writeBuffer = (WriteBufferByteBased) DataItemIO.staticSerialize(plcValue.getIndex(i),
+                WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue.getIndex(i),
                     field.getDataType().getDataProtocolId(), stringLength);
                 if(writeBuffer != null) {
                     // Allocate enough space for all items.

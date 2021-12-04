@@ -68,16 +68,15 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     private final BlockingQueue eventqueue;
     private final BlockingQueue dispachqueue = new ArrayBlockingQueue<>(1024);
 
-    private Map<EventType, Map<PlcConsumerRegistration, Consumer>> mapIndex = new HashMap();
-    private Map<EventType, PlcSubscriptionHandle> eventtypehandles = new HashMap();
-    ;
+    private final Map<EventType, Map<PlcConsumerRegistration, Consumer>> mapIndex = new HashMap();
+    private final Map<EventType, PlcSubscriptionHandle> eventtypehandles = new HashMap();
 
     private final Runnable runnProcessor;
     private final Runnable runnDispacher;
 
 
-    private Thread processor;
-    private Thread dispacher;
+    private final Thread processor;
+    private final Thread dispacher;
 
     public S7ProtocolEventLogic(BlockingQueue eventqueue) {
         this.eventqueue = eventqueue;
@@ -135,7 +134,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
         private final BlockingQueue eventqueue;
         private final BlockingQueue dispathqueue;
         private boolean shutdown = false;
-        private int delay = 5000;
+        private final int delay = 5000;
 
         public ObjectProcessor(BlockingQueue eventqueue, BlockingQueue dispathqueue) {
             this.eventqueue = eventqueue;
@@ -195,7 +194,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     private class EventDispacher implements Runnable {
         private final BlockingQueue dispachqueue;
         private boolean shutdown = false;
-        private int delay = 5000;
+        private final int delay = 5000;
         private Object cycDelayedObject = null;
 
         public EventDispacher(BlockingQueue dispachqueue) {

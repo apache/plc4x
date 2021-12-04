@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -158,8 +159,6 @@ public class S7AlarmEvent implements S7Event {
         SIG_7_DATA_LENGTH,
         SIG_8_DATA_LENGTH,
     }
-
-    ;
 
     private Instant timeStamp;
     private final Map<String, Object> map;
@@ -393,9 +392,6 @@ public class S7AlarmEvent implements S7Event {
         }
     }
 
-    ;
-
-
     @Override
     public Map<String, Object> getMap() {
         return map;
@@ -489,7 +485,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getByte(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -521,7 +516,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getShort(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -553,7 +547,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getInt(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -610,7 +603,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getLong(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -642,7 +634,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getFloat(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -674,7 +665,6 @@ public class S7AlarmEvent implements S7Event {
                 return bytebuf.getDouble(index);
             }
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -722,9 +712,8 @@ public class S7AlarmEvent implements S7Event {
     public String getString(String name) {
         if (map.get(name) instanceof byte[]) {
             ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
-            return bytebuf.readCharSequence(bytebuf.readableBytes(), Charset.forName("utf-8")).toString();
+            return bytebuf.readCharSequence(bytebuf.readableBytes(), StandardCharsets.UTF_8).toString();
         }
-        ;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

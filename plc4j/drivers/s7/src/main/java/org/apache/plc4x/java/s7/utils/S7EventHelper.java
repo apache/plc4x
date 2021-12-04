@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -183,8 +184,8 @@ public class S7EventHelper {
         PROG_ERR(0X0079, "OB121 Program error interrupt"),
         MOD_ERR(0X007A, "OB122 Module error interrupt");
 
-        private int code;
-        private String description;
+        private final int code;
+        private final String description;
 
         private static final Map<Integer, OB> map;
 
@@ -220,7 +221,7 @@ public class S7EventHelper {
         FM(0X80),
         CP(0XC0);
 
-        private int code;
+        private final int code;
 
         MODULE(final int code) {
             this.code = code;
@@ -264,8 +265,8 @@ public class S7EventHelper {
         APPL_STATE_RED(0X00EC, "APPL_STATE_RED"),
         APPL_STATE_GREEN(0X00ED, "APPL_STATE_GREEN");
 
-        private int code;
-        private String description;
+        private final int code;
+        private final String description;
 
         private static final Map<Integer, LED_ID> map;
 
@@ -352,8 +353,8 @@ public class S7EventHelper {
         CH_0x0401(0X0401, "SFC 87 \"C_DIAG\" is available"),
         CH_0x0402(0X0402, "SFC 88 \"C_CNTRL\" is available)");
 
-        private int code;
-        private String description;
+        private final int code;
+        private final String description;
 
         private static final Map<Integer, CPU_CHARACTERISTICS> map;
 
@@ -554,8 +555,8 @@ public class S7EventHelper {
 
         };
 
-        private int code;
-        private String description;
+        private final int code;
+        private final String description;
 
         private static final Map<Integer, SZL> map;
 
@@ -608,7 +609,7 @@ public class S7EventHelper {
                     sb.append("Ausbe (Firmware version): ").append(data.readShort()).append("\r\n");
                 }
             } catch (Exception ex) {
-                sb.append(ex.toString());
+                sb.append(ex);
             }
             return sb;
         }
@@ -631,7 +632,7 @@ public class S7EventHelper {
                         append(CPU_CHARACTERISTICS.valueOf(code).getDescription()).append("\r\n");
                 }
             } catch (Exception ex) {
-                sb.append(ex.toString());
+                sb.append(ex);
             }
             return sb;
         }
@@ -692,7 +693,7 @@ public class S7EventHelper {
 
                 }
             } catch (Exception ex) {
-                sb.append(ex.toString());
+                sb.append(ex);
             }
             return sb;
         }
@@ -761,7 +762,7 @@ public class S7EventHelper {
                     sb.append("Reman: ").append(reman).append("\r\n");
                 }
             } catch (Exception ex) {
-                sb.append(ex.toString());
+                sb.append(ex);
             }
             return sb;
         }
@@ -776,9 +777,7 @@ public class S7EventHelper {
                 sb.append("SZL-ID: ").append(szl_length).append("\r\n");
                 sb.append("SZL-Index: ").append(szl_length).append("\r\n");
                 sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
-                ;
                 sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
-                ;
 
                 for (int i = 1; i <= szl_count; i++) {
                     sb.append("Data Record: ").append(i).append("\r\n");
@@ -802,11 +801,8 @@ public class S7EventHelper {
                         default:
                     }
                     sb.append("Maximum number of blocks of the type: ").append(data.readShort()).append("\r\n");
-                    ;
                     sb.append("Maximum total size of the object to be loaded in Kbytes: ").append(data.readShort()).append("\r\n");
-                    ;
                     sb.append("Maximum length of the work memory part of a block in bytes: ").append(data.readInt()).append("\r\n");
-                    ;
                 }
             } catch (Exception ex) {
                 sb.append(ex);
@@ -1105,7 +1101,7 @@ public class S7EventHelper {
                     ByteBuf infobytes = data.readSlice(10);
                     sb.append("Info: ").append(ByteBufUtil.hexDump(infobytes)).append("\r\n");
                     infobytes = data.readSlice(8);
-                    sb.append("Timestamp: ").append(readDateAndTime(infobytes).toString()).append("\r\n");
+                    sb.append("Timestamp: ").append(readDateAndTime(infobytes)).append("\r\n");
                     sb.append("Desc: ").append(S7DiagnosticEventId.valueOf(id).getDescription()).append("\r\n");
                     i++;
                 }
@@ -1379,13 +1375,13 @@ public class S7EventHelper {
         res[4] = ByteToBcd(data.getMinute());
         res[5] = ByteToBcd(data.getSecond());
 
-        long ms = (long) (data.getNano() / 1_000_000);
+        long ms = data.getNano() / 1_000_000;
         res[6] = (byte) ((int) (((ms / 100) << 4) | ((ms / 10) % 10)));
         //Java:1 (Monday) to 7 (Sunday)->S7:1 (Sunday) to 7 (Saturday)        
         byte dayofweek = (byte) ((data.getDayOfWeek().getValue() < 7) ?
             data.getDayOfWeek().getValue() + 1 :
             (byte) 0x01);
-        res[7] = (byte) (((ms % 10) << 4) | ((byte) (dayofweek)));
+        res[7] = (byte) (((ms % 10) << 4) | dayofweek);
 
         return res;
     }
@@ -1535,7 +1531,7 @@ public class S7EventHelper {
         int length = 0;
         int sig = 0;
         long value = 0;
-        String strOut = new String(eventtext);
+        String strOut = eventtext;
         String strField = null;
 
         while (matcher.find()) {
@@ -1554,7 +1550,6 @@ public class S7EventHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -1573,7 +1568,6 @@ public class S7EventHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "C":
                     if (format.contains("%T#")) {
@@ -1585,11 +1579,10 @@ public class S7EventHelper {
                             length = Integer.parseInt(fieldformat.group(1));
                             length = (length > bytebuf.capacity()) ? bytebuf.capacity() : length;
                             strField =
-                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
+                                bytebuf.readCharSequence(length, StandardCharsets.UTF_8).toString();
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -1608,7 +1601,6 @@ public class S7EventHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -1626,9 +1618,7 @@ public class S7EventHelper {
                         value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
@@ -1646,9 +1636,7 @@ public class S7EventHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
@@ -1666,9 +1654,7 @@ public class S7EventHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
@@ -1676,7 +1662,6 @@ public class S7EventHelper {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
-                    ;
                     break;
             }
         }
@@ -1754,7 +1739,7 @@ public class S7EventHelper {
         int length = 0;
         int sig = 0;
         long value = 0;
-        String strOut = new String(alarmtext);
+        String strOut = alarmtext;
         String strField = null;
 
         while (matcher.find()) {
@@ -1771,7 +1756,6 @@ public class S7EventHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -1790,15 +1774,14 @@ public class S7EventHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "C":
                     if (bytebuf.capacity() < Short.BYTES) break;
                     if (format.contains("%T#")) {
                         if (textlist == null) break;
                         String strlist = format.substring(
-                            format.indexOf("%T#") + 3,
-                            format.length());
+                            format.indexOf("%T#") + 3
+                        );
                         HashMap<Integer, Pair<Integer, HashMap<Integer, String>>>
                             customlist = textlist.get(strlist);
                         short libID = bytebuf.getShort(0);
@@ -1815,11 +1798,10 @@ public class S7EventHelper {
                             length = Integer.parseInt(fieldformat.group(1));
                             length = (length > bytebuf.capacity()) ? bytebuf.capacity() : length;
                             strField =
-                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
+                                bytebuf.readCharSequence(length, StandardCharsets.UTF_8).toString();
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -1838,7 +1820,6 @@ public class S7EventHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -1856,9 +1837,7 @@ public class S7EventHelper {
                         value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "X":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -1867,18 +1846,16 @@ public class S7EventHelper {
                         String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
                     } else if (format.contains("D")) {
-                        value = (long) bytebuf.getInt(0);
+                        value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     } else if (format.contains("B")) {
                         value = bytebuf.getUnsignedInt(0);
                         strField = Long.toBinaryString(value);
                     } else {
-                        value = (long) bytebuf.getInt(0);
+                        value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
@@ -1896,9 +1873,7 @@ public class S7EventHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
@@ -1908,7 +1883,6 @@ public class S7EventHelper {
                         strField = String.format(format, fvalue);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
-                    ;
                     break;
 
             }

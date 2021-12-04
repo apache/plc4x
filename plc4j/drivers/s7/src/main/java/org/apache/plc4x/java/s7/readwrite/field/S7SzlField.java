@@ -23,10 +23,6 @@ import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
-/**
- *
- * @author cgarcia
- */
 public class S7SzlField  implements PlcField {
     
    //SZL_ID=0xYYYY;INDEX=0xZZZZ

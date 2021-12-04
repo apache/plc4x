@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.types;
 
-/**
- *
- * @author cgarcia
- */
 public enum S7SubscriptionFieldType {
     EVENT_SUBSCRIPTION,
     EVENT_UNSUBSCRIPTION,

@@ -57,7 +57,7 @@ public class S7AckField implements PlcField {
             String EventIds = matcher.group(2);
             String[] arrStrEventId = EventIds.split(",");
             ArrayList<Integer> arrAlarmIds = new ArrayList<>();
-            ArrayList<Integer> arrAlarmSigs = new ArrayList<>();                
+            ArrayList<Integer> arrAlarmSigs = new ArrayList<>();
             for (String EventId:arrStrEventId){
                 EventId = EventId.replaceAll("16#", "");
                 arrIdAndSig =  EventId.split(";");
