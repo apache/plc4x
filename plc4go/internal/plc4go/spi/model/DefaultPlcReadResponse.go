@@ -80,7 +80,7 @@ func (m DefaultPlcReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 			return err
 		}
 		codeName := m.GetResponseCode(fieldName).GetName()
-		if err := writeBuffer.WriteString("result", uint8(len([]rune(codeName))*8), "UTF-8", codeName); err != nil {
+		if err := writeBuffer.WriteString("result", uint32(len([]rune(codeName))*8), "UTF-8", codeName); err != nil {
 			return err
 		}
 

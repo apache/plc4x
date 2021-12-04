@@ -24,7 +24,7 @@ import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.readwrite.IPAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 

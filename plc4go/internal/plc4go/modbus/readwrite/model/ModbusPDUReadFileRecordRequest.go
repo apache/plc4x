@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadFileRecordRequest struct {
-	Items  []*ModbusPDUReadFileRecordRequestItem
-	Parent *ModbusPDU
+	*ModbusPDU
+	Items []*ModbusPDUReadFileRecordRequestItem
 }
 
 // The corresponding interface
@@ -43,7 +43,7 @@ type IModbusPDUReadFileRecordRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadFileRecordRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFileRecordRequest) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadFileRecordRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadFileRecordRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFileRecordRequest) InitializeParent(parent *ModbusPDU) {
@@ -59,11 +59,11 @@ func (m *ModbusPDUReadFileRecordRequest) InitializeParent(parent *ModbusPDU) {
 
 func NewModbusPDUReadFileRecordRequest(items []*ModbusPDUReadFileRecordRequestItem) *ModbusPDU {
 	child := &ModbusPDUReadFileRecordRequest{
-		Items:  items,
-		Parent: NewModbusPDU(),
+		Items:     items,
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadFileRecordRequest(structType interface{}) *ModbusPDUReadFileRecordRequest {
@@ -94,7 +94,7 @@ func (m *ModbusPDUReadFileRecordRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadFileRecordRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -113,7 +113,7 @@ func (m *ModbusPDUReadFileRecordRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -131,14 +131,16 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer) (*ModbusPD
 	}
 	// Length array
 	items := make([]*ModbusPDUReadFileRecordRequestItem, 0)
-	_itemsLength := byteCount
-	_itemsEndPos := readBuffer.GetPos() + uint16(_itemsLength)
-	for readBuffer.GetPos() < _itemsEndPos {
-		_item, _err := ModbusPDUReadFileRecordRequestItemParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'items' field")
+	{
+		_itemsLength := byteCount
+		_itemsEndPos := readBuffer.GetPos() + uint16(_itemsLength)
+		for readBuffer.GetPos() < _itemsEndPos {
+			_item, _err := ModbusPDUReadFileRecordRequestItemParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+			}
+			items = append(items, _item)
 		}
-		items = append(items, _item)
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -150,11 +152,11 @@ func ModbusPDUReadFileRecordRequestParse(readBuffer utils.ReadBuffer) (*ModbusPD
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFileRecordRequest{
-		Items:  items,
-		Parent: &ModbusPDU{},
+		Items:     items,
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadFileRecordRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -198,7 +200,7 @@ func (m *ModbusPDUReadFileRecordRequest) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadFileRecordRequest) String() string {

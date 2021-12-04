@@ -23,10 +23,6 @@ import org.apache.plc4x.java.ads.field.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
-import org.apache.plc4x.java.ads.readwrite.types.CommandId;
-import org.apache.plc4x.java.ads.readwrite.types.ReservedIndexGroups;
-import org.apache.plc4x.java.ads.readwrite.types.ReturnCode;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -100,7 +96,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
-        // AMS/ADS doesn't know a concept of a connect.
+        // AMS/ADS doesn't know a concept of a "connect".
         context.fireConnected();
     }
 
@@ -244,7 +240,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
                 (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .toArray(AdsMultiRequestItem[]::new), null);
+                .collect(Collectors.toList()), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -283,12 +279,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
         if (adsData instanceof AdsReadResponse) {
             AdsReadResponse adsReadResponse = (AdsReadResponse) adsData;
-            readBuffer = new ReadBufferByteBased(adsReadResponse.getData(), true);
+            readBuffer = new ReadBufferByteBased(adsReadResponse.getData(), ByteOrder.LITTLE_ENDIAN);
             responseCodes.put(readRequest.getFieldNames().stream().findFirst().orElse(""),
                 parsePlcResponseCode(adsReadResponse.getResult()));
         } else if (adsData instanceof AdsReadWriteResponse) {
             AdsReadWriteResponse adsReadWriteResponse = (AdsReadWriteResponse) adsData;
-            readBuffer = new ReadBufferByteBased(adsReadWriteResponse.getData(), true);
+            readBuffer = new ReadBufferByteBased(adsReadWriteResponse.getData(), ByteOrder.LITTLE_ENDIAN);
             // When parsing a multi-item response, the error codes of each items come
             // in sequence and then come the values.
             for (String fieldName : readRequest.getFieldNames()) {
@@ -433,7 +429,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
         try {
             WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength, true);
+                plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
             AdsData adsData = new AdsWriteRequest(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
             AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -491,7 +487,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             try {
                 final WriteBufferByteBased itemWriteBuffer = DataItemIO.staticSerialize(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength, true);
+                    field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 assert itemWriteBuffer != null;
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
@@ -507,7 +503,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
                 ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .toArray(AdsMultiRequestItem[]::new), writeBuffer);
+                .collect(Collectors.toList()), writeBuffer);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -545,7 +541,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 parsePlcResponseCode(adsWriteResponse.getResult()));
         } else if (adsData instanceof AdsReadWriteResponse) {
             AdsReadWriteResponse adsReadWriteResponse = (AdsReadWriteResponse) adsData;
-            ReadBuffer readBuffer = new ReadBufferByteBased(adsReadWriteResponse.getData(), true);
+            ReadBuffer readBuffer = new ReadBufferByteBased(adsReadWriteResponse.getData(), ByteOrder.LITTLE_ENDIAN);
             // When parsing a multi-item response, the error codes of each items come
             // in sequence and then come the values.
             for (String fieldName : writeRequest.getFieldNames()) {
@@ -922,7 +918,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
                         symbolicAdsField.getSymbolicAddress() + " got return code " + responseAdsData.getResult().name()));
                 } else {
-                    ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), true);
+                    ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), ByteOrder.LITTLE_ENDIAN);
                     try {
                         // Read the handle.
                         long handle = readBuffer.readUnsignedLong(32);
@@ -953,7 +949,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             symbolicAdsFields.size(), expectedResponseDataSize, symbolicAdsFields.stream().map(symbolicAdsField ->
             new AdsMultiRequestItemReadWrite(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
                 4, symbolicAdsField.getSymbolicAddress().length())
-        ).toArray(AdsMultiRequestItem[]::new), addressData);
+        ).collect(Collectors.toList()), addressData);
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
@@ -970,7 +966,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .check(AdsReadWriteResponse.class::isInstance)
             .unwrap(AdsReadWriteResponse.class::cast)
             .handle(responseAdsData -> {
-                ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), true);
+                ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), ByteOrder.LITTLE_ENDIAN);
                 Map<SymbolicAdsField, Long> returnCodes = new HashMap<>();
                 // In the response first come the return codes and the data-lengths for each item.
                 symbolicAdsFields.forEach(symbolicAdsField -> {

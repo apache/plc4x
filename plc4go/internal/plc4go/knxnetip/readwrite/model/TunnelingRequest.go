@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type TunnelingRequest struct {
+	*KnxNetIpMessage
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
-	Parent                    *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, c
 	child := &TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
-		Parent:                    NewKnxNetIpMessage(),
+		KnxNetIpMessage:           NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
@@ -88,7 +88,7 @@ func (m *TunnelingRequest) LengthInBits() uint16 {
 }
 
 func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
@@ -108,28 +108,28 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 		return nil, pullErr
 	}
 
+	// Simple Field (tunnelingRequestDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (tunnelingRequestDataBlock)
-	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(readBuffer)
+	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(readBuffer)
 	if _tunnelingRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field")
 	}
+	tunnelingRequestDataBlock := CastTunnelingRequestDataBlock(_tunnelingRequestDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingRequestDataBlock"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (cemi)
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (cemi)
-	cemi, _cemiErr := CEMIParse(readBuffer, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
+	cemi := CastCEMI(_cemi)
 	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,12 +140,12 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 
 	// Create a partially initialized instance
 	_child := &TunnelingRequest{
-		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
-		Cemi:                      cemi,
-		Parent:                    &KnxNetIpMessage{},
+		TunnelingRequestDataBlock: CastTunnelingRequestDataBlock(tunnelingRequestDataBlock),
+		Cemi:                      CastCEMI(cemi),
+		KnxNetIpMessage:           &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -183,7 +183,7 @@ func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *TunnelingRequest) String() string {

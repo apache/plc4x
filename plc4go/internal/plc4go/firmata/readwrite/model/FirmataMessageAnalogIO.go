@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type FirmataMessageAnalogIO struct {
-	Pin    uint8
-	Data   []int8
-	Parent *FirmataMessage
+	*FirmataMessage
+	Pin  uint8
+	Data []int8
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {
 
 func NewFirmataMessageAnalogIO(pin uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageAnalogIO{
-		Pin:    pin,
-		Data:   data,
-		Parent: NewFirmataMessage(),
+		Pin:            pin,
+		Data:           data,
+		FirmataMessage: NewFirmataMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataMessage
 }
 
 func CastFirmataMessageAnalogIO(structType interface{}) *FirmataMessageAnalogIO {
@@ -88,7 +88,7 @@ func (m *FirmataMessageAnalogIO) LengthInBits() uint16 {
 }
 
 func (m *FirmataMessageAnalogIO) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -105,16 +105,17 @@ func (m *FirmataMessageAnalogIO) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer) (*FirmataMessage, error) {
+func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 4)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -122,12 +123,14 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer) (*FirmataMessage, 
 	}
 	// Count array
 	data := make([]int8, uint16(2))
-	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			}
+			data[curItem] = _item
 		}
-		data[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -139,12 +142,12 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer) (*FirmataMessage, 
 
 	// Create a partially initialized instance
 	_child := &FirmataMessageAnalogIO{
-		Pin:    pin,
-		Data:   data,
-		Parent: &FirmataMessage{},
+		Pin:            pin,
+		Data:           data,
+		FirmataMessage: &FirmataMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataMessage.Child = _child
+	return _child.FirmataMessage, nil
 }
 
 func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -181,7 +184,7 @@ func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataMessageAnalogIO) String() string {

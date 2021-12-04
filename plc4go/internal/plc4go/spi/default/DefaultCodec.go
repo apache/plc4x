@@ -21,6 +21,11 @@ package _default
 
 import (
 	"fmt"
+	"runtime/debug"
+	"time"
+
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
+
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -28,7 +33,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
@@ -45,7 +49,7 @@ type DefaultCodec interface {
 }
 
 // NewDefaultCodec is the factory for a DefaultCodec
-func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...WithOption) DefaultCodec {
+func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	return buildDefaultCodec(requirements, transportInstance, options...)
 }
 
@@ -56,7 +60,7 @@ type DefaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool) WithOption {
+func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
 }
 
@@ -67,7 +71,7 @@ func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequi
 //
 
 type withCustomMessageHandler struct {
-	option
+	options.Option
 	customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
 }
 
@@ -80,13 +84,10 @@ type defaultCodec struct {
 	customMessageHandling         func(codec *DefaultCodecRequirements, message interface{}) bool
 }
 
-func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...WithOption) DefaultCodec {
+func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	var customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
 
 	for _, option := range options {
-		if !option.isOption() {
-			panic("not a option")
-		}
 		switch option.(type) {
 		case withCustomMessageHandler:
 			customMessageHandler = option.(withCustomMessageHandler).customMessageHandler
@@ -143,7 +144,7 @@ func (m *defaultCodec) Connect() error {
 	err := m.transportInstance.Connect()
 	if err == nil {
 		if !m.running {
-			log.Debug().Msg("Message codec currently not running")
+			log.Debug().Msg("Message codec currently not running, starting worker now")
 			go m.Work(&m.DefaultCodecRequirements)
 		}
 		m.running = true
@@ -231,7 +232,8 @@ func (m *defaultCodec) HandleMessages(message interface{}) bool {
 func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Error().Msgf("recovered from %v", err)
+			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
+			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
 		}
 		log.Info().Msg("Keep running")
 		m.Work(codec)
@@ -288,9 +290,14 @@ mainLoop:
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
+			timeout := time.NewTimer(time.Millisecond * 40)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-			case <-time.After(time.Millisecond * 40):
+				if !timeout.Stop() {
+					<-timeout.C
+				}
+			case <-timeout.C:
+				timeout.Stop()
 				workerLog.Warn().Msgf("Message discarded %s", message)
 			}
 		}

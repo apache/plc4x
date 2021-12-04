@@ -31,7 +31,7 @@
 
 ## Java Specific
 
-- Development should be done in Java 8
+- Development should be done in Java >=9
 - Providing Java 7 compatible versions should be possible by using the retrolambda plugin
   - Usage of default implementations does cause more problems than it solves in this case. 
 

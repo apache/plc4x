@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type S7MessageResponse struct {
+	*S7Message
 	ErrorClass uint8
 	ErrorCode  uint8
-	Parent     *S7Message
 }
 
 // The corresponding interface
@@ -48,19 +48,19 @@ func (m *S7MessageResponse) MessageType() uint8 {
 }
 
 func (m *S7MessageResponse) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
-	m.Parent.TpduReference = tpduReference
-	m.Parent.Parameter = parameter
-	m.Parent.Payload = payload
+	m.TpduReference = tpduReference
+	m.Parameter = parameter
+	m.Payload = payload
 }
 
 func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageResponse{
 		ErrorClass: errorClass,
 		ErrorCode:  errorCode,
-		Parent:     NewS7Message(tpduReference, parameter, payload),
+		S7Message:  NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Message
 }
 
 func CastS7MessageResponse(structType interface{}) *S7MessageResponse {
@@ -91,7 +91,7 @@ func (m *S7MessageResponse) LengthInBits() uint16 {
 }
 
 func (m *S7MessageResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -112,16 +112,18 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Simple Field (errorClass)
-	errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
+	_errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
+	errorClass := _errorClass
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := readBuffer.ReadUint8("errorCode", 8)
+	_errorCode, _errorCodeErr := readBuffer.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
+	errorCode := _errorCode
 
 	if closeErr := readBuffer.CloseContext("S7MessageResponse"); closeErr != nil {
 		return nil, closeErr
@@ -131,10 +133,10 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	_child := &S7MessageResponse{
 		ErrorClass: errorClass,
 		ErrorCode:  errorCode,
-		Parent:     &S7Message{},
+		S7Message:  &S7Message{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Message.Child = _child
+	return _child.S7Message, nil
 }
 
 func (m *S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -162,7 +164,7 @@ func (m *S7MessageResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7MessageResponse) String() string {

@@ -29,7 +29,7 @@ import (
 
 // The data-structure of this message
 type ApduDataGroupValueRead struct {
-	Parent *ApduData
+	*ApduData
 }
 
 // The corresponding interface
@@ -51,10 +51,10 @@ func (m *ApduDataGroupValueRead) InitializeParent(parent *ApduData) {
 
 func NewApduDataGroupValueRead() *ApduData {
 	child := &ApduDataGroupValueRead{
-		Parent: NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataGroupValueRead(structType interface{}) *ApduDataGroupValueRead {
@@ -85,7 +85,7 @@ func (m *ApduDataGroupValueRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataGroupValueRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -97,7 +97,7 @@ func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,10 +122,10 @@ func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer) (*ApduData, error)
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueRead{
-		Parent: &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataGroupValueRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -147,7 +147,7 @@ func (m *ApduDataGroupValueRead) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataGroupValueRead) String() string {

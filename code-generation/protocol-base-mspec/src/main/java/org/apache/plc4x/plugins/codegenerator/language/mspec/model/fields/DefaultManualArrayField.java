@@ -22,7 +22,10 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultManualArrayField extends DefaultTaggedField implements ManualArrayField {
+import java.util.Map;
+import java.util.Objects;
+
+public class DefaultManualArrayField extends DefaultField implements ManualArrayField {
 
     private final TypeReference type;
     private final String name;
@@ -31,18 +34,16 @@ public class DefaultManualArrayField extends DefaultTaggedField implements Manua
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
-    private final Term[] params;
 
-    public DefaultManualArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.loopType = loopType;
-        this.loopExpression = loopExpression;
-        this.parseExpression = parseExpression;
-        this.serializeExpression = serializeExpression;
-        this.lengthExpression = lengthExpression;
-        this.params = params;
+    public DefaultManualArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.loopType = Objects.requireNonNull(loopType);
+        this.loopExpression = Objects.requireNonNull(loopExpression);
+        this.parseExpression = Objects.requireNonNull(parseExpression);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
+        this.lengthExpression = Objects.requireNonNull(lengthExpression);
     }
 
     public TypeReference getType() {
@@ -71,11 +72,6 @@ public class DefaultManualArrayField extends DefaultTaggedField implements Manua
 
     public Term getLengthExpression() {
         return lengthExpression;
-    }
-
-    @Override
-    public Term[] getParams() {
-        return params;
     }
 
 }

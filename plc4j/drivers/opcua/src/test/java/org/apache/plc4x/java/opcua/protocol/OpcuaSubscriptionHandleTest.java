@@ -22,14 +22,16 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
-import org.assertj.core.api.Assertions;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  */
@@ -80,13 +82,23 @@ public class OpcuaSubscriptionHandleTest {
     @BeforeAll
     public static void setup() {
         try {
+            // When switching JDK versions from a newer to an older version,
+            // this can cause the server to not start correctly.
+            // Deleting the directory makes sure the key-store is initialized correctly.
+            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+
             exampleServer = new ExampleServer();
             exampleServer.startup().get();
             //Connect
             opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -99,7 +111,7 @@ public class OpcuaSubscriptionHandleTest {
 
             exampleServer.shutdown().get();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

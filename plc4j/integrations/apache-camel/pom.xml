@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-camel</artifactId>
@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>3.1.0</camel.version>
+    <camel.version>3.10.0</camel.version>
   </properties>
 
   <build>
@@ -41,7 +41,7 @@
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-package-maven-plugin</artifactId>
-        <version>2.20.1</version>
+        <version>${camel.version}</version>
         <executions>
           <execution>
             <id>prepare</id>
@@ -138,23 +138,28 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core-engine</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core-model</artifactId>
       <version>${camel.version}</version>
     </dependency>
     <dependency>
@@ -182,86 +187,63 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-
-    <!-- Support camel documentation-->
-    <!-- TODO: Do we need this? -->
-    <!--dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>apt</artifactId>
-      <!- TODO: version temporary defined due to PLC4X-22->
-      <version>${camel.version}</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!-- TODO: Do we need this? And if we do, definitely not as scope=compile -->
-    <!--dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <!- TODO: version temporary defined due to PLC4X-22->
-        <exclusions>
-          <exclusion>
-            <artifactId>hamcrest-core</artifactId>
-            <groupId>org.hamcrest</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency-->
 
     <!-- Testing -->
     <dependency>
@@ -275,7 +257,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

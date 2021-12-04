@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type ConnectionResponse struct {
+	*KnxNetIpMessage
 	CommunicationChannelId      uint8
 	Status                      Status
 	HpaiDataEndpoint            *HPAIDataEndpoint
 	ConnectionResponseDataBlock *ConnectionResponseDataBlock
-	Parent                      *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -58,10 +58,10 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 		Status:                      status,
 		HpaiDataEndpoint:            hpaiDataEndpoint,
 		ConnectionResponseDataBlock: connectionResponseDataBlock,
-		Parent:                      NewKnxNetIpMessage(),
+		KnxNetIpMessage:             NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastConnectionResponse(structType interface{}) *ConnectionResponse {
@@ -92,7 +92,7 @@ func (m *ConnectionResponse) LengthInBits() uint16 {
 }
 
 func (m *ConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -123,20 +123,21 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
+	communicationChannelId := _communicationChannelId
 
+	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (status)
-	status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -144,21 +145,43 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		_val, _err := HPAIDataEndpointParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
+			return nil, pullErr
 		}
-		hpaiDataEndpoint = _val
+		_val, _err := HPAIDataEndpointParse(readBuffer)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
+			if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
+			return nil, pullErr
 		}
-		connectionResponseDataBlock = _val
+		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
+			if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponse"); closeErr != nil {
@@ -169,12 +192,12 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	_child := &ConnectionResponse{
 		CommunicationChannelId:      communicationChannelId,
 		Status:                      status,
-		HpaiDataEndpoint:            hpaiDataEndpoint,
-		ConnectionResponseDataBlock: connectionResponseDataBlock,
-		Parent:                      &KnxNetIpMessage{},
+		HpaiDataEndpoint:            CastHPAIDataEndpoint(hpaiDataEndpoint),
+		ConnectionResponseDataBlock: CastConnectionResponseDataBlock(connectionResponseDataBlock),
+		KnxNetIpMessage:             &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -205,8 +228,14 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
 		var hpaiDataEndpoint *HPAIDataEndpoint = nil
 		if m.HpaiDataEndpoint != nil {
+			if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
+				return pushErr
+			}
 			hpaiDataEndpoint = m.HpaiDataEndpoint
 			_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
+				return popErr
+			}
 			if _hpaiDataEndpointErr != nil {
 				return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 			}
@@ -215,8 +244,14 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
 		var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 		if m.ConnectionResponseDataBlock != nil {
+			if pushErr := writeBuffer.PushContext("connectionResponseDataBlock"); pushErr != nil {
+				return pushErr
+			}
 			connectionResponseDataBlock = m.ConnectionResponseDataBlock
 			_connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
+				return popErr
+			}
 			if _connectionResponseDataBlockErr != nil {
 				return errors.Wrap(_connectionResponseDataBlockErr, "Error serializing 'connectionResponseDataBlock' field")
 			}
@@ -227,7 +262,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionResponse) String() string {

@@ -52,7 +52,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		if len(readRequest.GetFieldNames()) != 1 {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("modbus only supports single-item requests"),
@@ -65,7 +65,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		field := readRequest.GetField(fieldName)
 		modbusField, err := CastToModbusFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -86,14 +86,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
 		case ExtendedRegister:
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("modbus currently doesn't support extended register requests"),
 			}
 			return
 		default:
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Errorf("unsupported field type %x", modbusField.FieldType),
@@ -136,28 +136,28 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
 
 				if err != nil {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					// TODO: should we return the error here?
 					return nil
 				}
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: readResponse,
 				}
 				return nil
 			},
 			func(err error) error {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
 					Err:     errors.Wrap(err, "got timeout while waiting for response"),
 				}
 				return nil
 			},
 			time.Second*1); err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error sending message"),
@@ -172,19 +172,19 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	switch responseAdu.Pdu.Child.(type) {
 	case *readWriteModel.ModbusPDUReadDiscreteInputsResponse:
 		pdu := readWriteModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// Pure Boolean ...
 	case *readWriteModel.ModbusPDUReadCoilsResponse:
 		pdu := readWriteModel.CastModbusPDUReadCoilsResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// Pure Boolean ...
 	case *readWriteModel.ModbusPDUReadInputRegistersResponse:
 		pdu := readWriteModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// DataIo ...
 	case *readWriteModel.ModbusPDUReadHoldingRegistersResponse:
 		pdu := readWriteModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 	case *readWriteModel.ModbusPDUError:
 		return nil, errors.Errorf("got an error from remote. Errorcode %x", responseAdu.Pdu.Child.(*readWriteModel.ModbusPDUError).ExceptionCode)
 	default:

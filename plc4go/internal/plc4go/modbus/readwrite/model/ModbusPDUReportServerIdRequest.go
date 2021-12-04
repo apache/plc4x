@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReportServerIdRequest struct {
-	Parent *ModbusPDU
+	*ModbusPDU
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusPDUReportServerIdRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReportServerIdRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReportServerIdRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReportServerIdRequest) InitializeParent(parent *ModbusPDU) {
@@ -57,10 +57,10 @@ func (m *ModbusPDUReportServerIdRequest) InitializeParent(parent *ModbusPDU) {
 
 func NewModbusPDUReportServerIdRequest() *ModbusPDU {
 	child := &ModbusPDUReportServerIdRequest{
-		Parent: NewModbusPDU(),
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReportServerIdRequest(structType interface{}) *ModbusPDUReportServerIdRequest {
@@ -91,7 +91,7 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReportServerIdRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -100,7 +100,7 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -111,10 +111,10 @@ func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer) (*ModbusPD
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdRequest{
-		Parent: &ModbusPDU{},
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,7 +128,7 @@ func (m *ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReportServerIdRequest) String() string {

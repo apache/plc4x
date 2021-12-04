@@ -22,10 +22,10 @@ package transports
 import "net/url"
 
 type Transport interface {
-	// Get the short code used to identify this transport (As used in the connection string)
+	// GetTransportCode Get the short code used to identify this transport (As used in the connection string)
 	GetTransportCode() string
-	// Get a human readable name for this transport
+	// GetTransportName Get a human-readable name for this transport
 	GetTransportName() string
-
+	// CreateTransportInstance creates transport instance
 	CreateTransportInstance(transportUrl url.URL, options map[string][]string) (TransportInstance, error)
 }

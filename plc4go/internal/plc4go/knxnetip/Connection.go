@@ -23,6 +23,12 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
@@ -34,10 +40,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
 )
 
 type ConnectionMetadata struct {
@@ -48,9 +50,9 @@ type ConnectionMetadata struct {
 
 	ProjectNumber          uint8
 	InstallationNumber     uint8
-	DeviceSerialNumber     []int8
-	DeviceMulticastAddress []int8
-	DeviceMacAddress       []int8
+	DeviceSerialNumber     []byte
+	DeviceMulticastAddress []byte
+	DeviceMacAddress       []byte
 	SupportedServices      []string
 }
 
@@ -63,9 +65,9 @@ func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
 
 		"ProjectNumber":          strconv.Itoa(int(m.ProjectNumber)),
 		"InstallationNumber":     strconv.Itoa(int(m.InstallationNumber)),
-		"DeviceSerialNumber":     utils.Int8ArrayToString(m.DeviceSerialNumber, " "),
-		"DeviceMulticastAddress": utils.Int8ArrayToString(m.DeviceSerialNumber, "."),
-		"DeviceMacAddress":       utils.Int8ArrayToString(m.DeviceSerialNumber, ":"),
+		"DeviceSerialNumber":     utils.ByteArrayToString(m.DeviceSerialNumber, " "),
+		"DeviceMulticastAddress": utils.ByteArrayToString(m.DeviceSerialNumber, "."),
+		"DeviceMacAddress":       utils.ByteArrayToString(m.DeviceSerialNumber, ":"),
 		"SupportedServices":      strings.Join(m.SupportedServices, ", "),
 	}
 }
@@ -106,7 +108,7 @@ type Connection struct {
 	quitConnectionStateTimer chan struct{}
 	subscribers              []*Subscriber
 
-	valueCache      map[uint16][]int8
+	valueCache      map[uint16][]byte
 	valueCacheMutex sync.RWMutex
 	metadata        *ConnectionMetadata
 	defaultTtl      time.Duration
@@ -171,7 +173,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 			internalModel.NewDefaultPlcWriteResponse,
 		),
 		subscribers:             []*Subscriber{},
-		valueCache:              map[uint16][]int8{},
+		valueCache:              map[uint16][]byte{},
 		valueCacheMutex:         sync.RWMutex{},
 		metadata:                &ConnectionMetadata{},
 		defaultTtl:              time.Second * 10,
@@ -194,7 +196,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	result := make(chan plc4go.PlcConnectionConnectResult)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
-		result <- plc4go.NewPlcConnectionConnectResult(connection, err)
+		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
 	}
 
 	go func() {
@@ -214,8 +216,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 		// Save some important information
 		m.metadata.KnxMedium = searchResponse.DibDeviceInfo.KnxMedium
-		m.metadata.GatewayName = string(bytes.Trim(utils.Int8ArrayToByteArray(
-			searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+		m.metadata.GatewayName = string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
 		m.GatewayKnxAddress = searchResponse.DibDeviceInfo.KnxAddress
 		m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
 		m.metadata.ProjectNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.ProjectNumber
@@ -334,11 +335,16 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (m *Connection) BlockingClose() {
+	ttlTimer := time.NewTimer(m.defaultTtl)
 	closeResults := m.Close()
 	select {
 	case <-closeResults:
+		if !ttlTimer.Stop() {
+			<-ttlTimer.C
+		}
 		return
-	case <-time.After(m.defaultTtl):
+	case <-ttlTimer.C:
+		ttlTimer.Stop()
 		return
 	}
 }
@@ -354,10 +360,15 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 		// Disconnect from all knx devices we are still connected to.
 		for targetAddress := range m.DeviceConnections {
+			ttlTimer := time.NewTimer(m.defaultTtl)
 			disconnects := m.DeviceDisconnect(targetAddress)
 			select {
 			case _ = <-disconnects:
-			case <-time.After(m.defaultTtl):
+				if !ttlTimer.Stop() {
+					<-ttlTimer.C
+				}
+			case <-ttlTimer.C:
+				ttlTimer.Stop()
 				// If we got a timeout here, well just continue the device will just auto disconnect.
 				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(&targetAddress))
 			}
@@ -366,9 +377,9 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Send a disconnect request from the gateway.
 		_, err := m.sendGatewayDisconnectionRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
+			result <- _default.NewDefaultPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
 		} else {
-			result <- plc4go.NewPlcConnectionCloseResult(m, nil)
+			result <- _default.NewDefaultPlcConnectionCloseResult(m, nil)
 		}
 	}()
 
@@ -377,11 +388,16 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 func (m *Connection) IsConnected() bool {
 	if m.messageCodec != nil {
+		ttlTimer := time.NewTimer(m.defaultTtl)
 		pingChannel := m.Ping()
 		select {
 		case pingResponse := <-pingChannel:
-			return pingResponse.Err == nil
-		case <-time.After(m.defaultTtl):
+			if !ttlTimer.Stop() {
+				<-ttlTimer.C
+			}
+			return pingResponse.GetErr() == nil
+		case <-ttlTimer.C:
+			ttlTimer.Stop()
 			m.handleTimeout()
 			return false
 		}
@@ -396,9 +412,9 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		// Send the connection state request
 		_, err := m.sendConnectionStateRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionPingResult(errors.Wrap(err, "got an error"))
+			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got an error"))
 		} else {
-			result <- plc4go.NewPlcConnectionPingResult(nil)
+			result <- _default.NewDefaultPlcConnectionPingResult(nil)
 		}
 		return
 	}()

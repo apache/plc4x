@@ -30,6 +30,29 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
   return plc4c_modbus_read_write_modbus_data_type_null_const;
 }
 
+// Parse function.
+plc4c_return_code plc4c_modbus_read_write_modbus_data_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_data_type** _message) {
+    plc4c_return_code _res = OK;
+
+    // Allocate enough memory to contain this data structure.
+    (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_data_type));
+    if(*_message == NULL) {
+        return NO_MEMORY;
+    }
+
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) *_message);
+
+    return _res;
+}
+
+plc4c_return_code plc4c_modbus_read_write_modbus_data_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type* _message) {
+    plc4c_return_code _res = OK;
+
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
+
+    return _res;
+}
+
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_value_of(char* value_string) {
     if(strcmp(value_string, "BOOL") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_BOOL;
@@ -315,4 +338,12 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
             return -1;
         }
     }
+}
+
+uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bytes(plc4c_modbus_read_write_modbus_data_type* _message) {
+    return plc4c_modbus_read_write_modbus_data_type_length_in_bits(_message) / 8;
+}
+
+uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bits(plc4c_modbus_read_write_modbus_data_type* _message) {
+    return 8;
 }

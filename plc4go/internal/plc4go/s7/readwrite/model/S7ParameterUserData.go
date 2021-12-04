@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type S7ParameterUserData struct {
-	Items  []*S7ParameterUserDataItem
-	Parent *S7Parameter
+	*S7Parameter
+	Items []*S7ParameterUserDataItem
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *S7ParameterUserData) InitializeParent(parent *S7Parameter) {
 
 func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7Parameter {
 	child := &S7ParameterUserData{
-		Items:  items,
-		Parent: NewS7Parameter(),
+		Items:       items,
+		S7Parameter: NewS7Parameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Parameter
 }
 
 func CastS7ParameterUserData(structType interface{}) *S7ParameterUserData {
@@ -90,7 +90,7 @@ func (m *S7ParameterUserData) LengthInBits() uint16 {
 }
 
 func (m *S7ParameterUserData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -110,7 +110,7 @@ func (m *S7ParameterUserData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterUserDataParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterUserData"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -128,12 +128,14 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer) (*S7Parameter, error)
 	}
 	// Count array
 	items := make([]*S7ParameterUserDataItem, numItems)
-	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
-		_item, _err := S7ParameterUserDataItemParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'items' field")
+	{
+		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
+			_item, _err := S7ParameterUserDataItemParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+			}
+			items[curItem] = _item
 		}
-		items[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -145,11 +147,11 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer) (*S7Parameter, error)
 
 	// Create a partially initialized instance
 	_child := &S7ParameterUserData{
-		Items:  items,
-		Parent: &S7Parameter{},
+		Items:       items,
+		S7Parameter: &S7Parameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Parameter.Child = _child
+	return _child.S7Parameter, nil
 }
 
 func (m *S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -186,7 +188,7 @@ func (m *S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7ParameterUserData) String() string {

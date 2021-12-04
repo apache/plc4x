@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtKeyResponse struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtKeyResponse) InitializeParent(parent *ApduDataExt) {
 
 func NewApduDataExtKeyResponse() *ApduDataExt {
 	child := &ApduDataExtKeyResponse{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtKeyResponse(structType interface{}) *ApduDataExtKeyResponse {
@@ -83,7 +83,7 @@ func (m *ApduDataExtKeyResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtKeyResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtKeyResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, err
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtKeyResponse{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtKeyResponse) String() string {

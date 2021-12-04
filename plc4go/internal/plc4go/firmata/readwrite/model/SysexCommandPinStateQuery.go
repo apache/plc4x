@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type SysexCommandPinStateQuery struct {
-	Pin    uint8
-	Parent *SysexCommand
+	*SysexCommand
+	Pin uint8
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *SysexCommandPinStateQuery) InitializeParent(parent *SysexCommand) {
 
 func NewSysexCommandPinStateQuery(pin uint8) *SysexCommand {
 	child := &SysexCommandPinStateQuery{
-		Pin:    pin,
-		Parent: NewSysexCommand(),
+		Pin:          pin,
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandPinStateQuery(structType interface{}) *SysexCommandPinStateQuery {
@@ -90,7 +90,7 @@ func (m *SysexCommandPinStateQuery) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandPinStateQuery) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -102,16 +102,17 @@ func (m *SysexCommandPinStateQuery) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateQuery"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	if closeErr := readBuffer.CloseContext("SysexCommandPinStateQuery"); closeErr != nil {
 		return nil, closeErr
@@ -119,11 +120,11 @@ func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer) (*SysexCommand,
 
 	// Create a partially initialized instance
 	_child := &SysexCommandPinStateQuery{
-		Pin:    pin,
-		Parent: &SysexCommand{},
+		Pin:          pin,
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandPinStateQuery) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +145,7 @@ func (m *SysexCommandPinStateQuery) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandPinStateQuery) String() string {

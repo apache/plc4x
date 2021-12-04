@@ -24,31 +24,36 @@ import (
 )
 
 type DefaultPlcDiscoveryEvent struct {
-	protocolCode  string
-	transportCode string
-	transportUrl  url.URL
-	options       map[string][]string
+	ProtocolCode  string
+	TransportCode string
+	TransportUrl  url.URL
+	Options       map[string][]string
+	Name          string
 }
 
-func (d DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-	return d.transportCode
+func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
+	return d.ProtocolCode
 }
 
-func (d DefaultPlcDiscoveryEvent) GetTransportCode() string {
-	return d.transportCode
+func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
+	return d.TransportCode
 }
 
-func (d DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
-	return d.transportUrl
+func (d *DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
+	return d.TransportUrl
 }
 
-func (d DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
-	return d.options
+func (d *DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
+	return d.Options
 }
 
-func (d DefaultPlcDiscoveryEvent) GetConnectionString() string {
-	if d.options != nil {
+func (d *DefaultPlcDiscoveryEvent) GetName() string {
+	return d.Name
+}
+
+func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
+	if d.Options != nil {
 		panic("Not implemented")
 	}
-	return d.protocolCode + ":" + d.transportCode + "//" + d.transportUrl.Host
+	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
 }

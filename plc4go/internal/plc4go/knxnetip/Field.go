@@ -116,10 +116,10 @@ func (k GroupAddress3LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddres
 	}
 	ga := &driverModel.KnxGroupAddress{}
 	l3 := &driverModel.KnxGroupAddress3Level{
-		MainGroup:   uint8(mainGroup),
-		MiddleGroup: uint8(middleGroup),
-		SubGroup:    uint8(subGroup),
-		Parent:      ga,
+		MainGroup:       uint8(mainGroup),
+		MiddleGroup:     uint8(middleGroup),
+		SubGroup:        uint8(subGroup),
+		KnxGroupAddress: ga,
 	}
 	ga.Child = l3
 	return ga
@@ -187,9 +187,9 @@ func (k GroupAddress2LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddres
 	}
 	ga := &driverModel.KnxGroupAddress{}
 	l3 := &driverModel.KnxGroupAddress2Level{
-		MainGroup: uint8(mainGroup),
-		SubGroup:  uint16(subGroup),
-		Parent:    ga,
+		MainGroup:       uint8(mainGroup),
+		SubGroup:        uint16(subGroup),
+		KnxGroupAddress: ga,
 	}
 	ga.Child = l3
 	return ga
@@ -247,8 +247,8 @@ func (k GroupAddress1LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddres
 	}
 	ga := &driverModel.KnxGroupAddress{}
 	l3 := &driverModel.KnxGroupAddressFreeLevel{
-		SubGroup: uint16(mainGroup),
-		Parent:   ga,
+		SubGroup:        uint16(mainGroup),
+		KnxGroupAddress: ga,
 	}
 	ga.Child = l3
 	return ga

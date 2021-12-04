@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationReal struct {
-	Value  float32
-	Parent *BACnetTag
+	*BACnetTag
+	Value float32
 }
 
 // The corresponding interface
@@ -42,24 +42,26 @@ type IBACnetTagApplicationReal interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationReal) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationReal) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationReal) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
+func (m *BACnetTagApplicationReal) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationReal(value float32, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationReal(value float32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationReal{
-		Value:  value,
-		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		Value:     value,
+		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationReal(structType interface{}) *BACnetTagApplicationReal {
@@ -90,7 +92,7 @@ func (m *BACnetTagApplicationReal) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationReal) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 32
@@ -102,16 +104,17 @@ func (m *BACnetTagApplicationReal) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagApplicationReal"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationReal"); closeErr != nil {
 		return nil, closeErr
@@ -119,11 +122,11 @@ func BACnetTagApplicationRealParse(readBuffer utils.ReadBuffer, lengthValueType 
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationReal{
-		Value:  value,
-		Parent: &BACnetTag{},
+		Value:     value,
+		BACnetTag: &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationReal) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +147,7 @@ func (m *BACnetTagApplicationReal) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationReal) String() string {

@@ -121,15 +121,6 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     }
 
     @Override
-    public PollingConsumer createPollingConsumer() throws Exception {
-        //Checking if connection is still up and reconnecting if not
-        if (!connection.isConnected()) {
-            connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-        }
-        return new Plc4XPollingConsumer(this);
-    }
-
-    @Override
     public boolean isSingleton() {
         return true;
     }

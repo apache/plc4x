@@ -18,19 +18,16 @@
  */
 package org.apache.plc4x.java.canopen.api.conversation.canopen;
 
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrameBuilder;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 
-public interface CANConversation<W extends CANOpenFrame> {
+public interface CANConversation {
 
     int getNodeId();
 
-    CANOpenFrameBuilder createBuilder();
+    SendRequestContext<CANOpenFrame> send(CANOpenFrame frame);
 
-    SendRequestContext<W> send(W frame);
-
-    void sendToWire(W frame);
+    void sendToWire(CANOpenFrame frame);
 
 }
 

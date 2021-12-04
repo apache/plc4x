@@ -44,7 +44,7 @@ Currently the following scanners are active:
 - JSON
 - JUnit
 - Java
-- Java 8
+- Java 9
 - Java EE 6
 - Maven 3
 - OSGi

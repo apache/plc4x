@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols</artifactId>
@@ -41,6 +41,7 @@
     <module>df1</module>
     <module>eip</module>
     <module>firmata</module>
+    <module>genericcan</module>
     <module>knxnetip</module>
     <module>modbus</module>
     <module>opcua</module>
@@ -48,6 +49,7 @@
     <module>profinet</module>
     <module>s7</module>
     <module>simulated</module>
+    <module>socketcan</module>
   </modules>
 
   <build>

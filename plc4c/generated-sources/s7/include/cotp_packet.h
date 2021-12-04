@@ -22,10 +22,10 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/driver_s7_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
-#include "cotp_packet.h"
 #include "s7_message.h"
 #include "cotp_parameter.h"
 #include "cotp_protocol_class.h"

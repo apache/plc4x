@@ -22,19 +22,20 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultEnumField extends DefaultTaggedField implements EnumField {
+import java.util.Map;
+import java.util.Objects;
+
+public class DefaultEnumField extends DefaultField implements EnumField {
 
     private final TypeReference type;
     private final String name;
     private final String fieldName;
-    private final Term[] params;
 
-    public DefaultEnumField(String[] tags, TypeReference type, String name, String fieldName, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.fieldName = fieldName;
-        this.params = params;
+    public DefaultEnumField(Map<String, Term> attributes, TypeReference type, String name, String fieldName) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.fieldName = Objects.requireNonNull(fieldName);
     }
 
     public TypeReference getType() {
@@ -47,10 +48,6 @@ public class DefaultEnumField extends DefaultTaggedField implements EnumField {
 
     public String getFieldName() {
         return fieldName;
-    }
-
-    public Term[] getParams() {
-        return params;
     }
 
 }

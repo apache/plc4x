@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
-	Parent *BACnetUnconfirmedServiceRequest
+	*BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Init
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		Parent: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
@@ -83,7 +83,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Leng
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Leng
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		Parent: &BACnetUnconfirmedServiceRequest{},
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Seri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) String() string {

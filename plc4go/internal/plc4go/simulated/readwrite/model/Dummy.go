@@ -82,10 +82,11 @@ func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 	}
 
 	// Simple Field (dummy)
-	dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
+	_dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
 	if _dummyErr != nil {
 		return nil, errors.Wrap(_dummyErr, "Error parsing 'dummy' field")
 	}
+	dummy := _dummy
 
 	if closeErr := readBuffer.CloseContext("Dummy"); closeErr != nil {
 		return nil, closeErr

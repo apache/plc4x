@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKRemovedReadPropertyConditional struct {
-	Parent *BACnetConfirmedServiceACK
+	*BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) InitializePare
 
 func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
-		Parent: NewBACnetConfirmedServiceACK(),
+		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceACK
 }
 
 func CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(structType interface{}) *BACnetConfirmedServiceACKRemovedReadPropertyConditional {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBits()
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
-		Parent: &BACnetConfirmedServiceACK{},
+		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceACK.Child = _child
+	return _child.BACnetConfirmedServiceACK, nil
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) String() string {

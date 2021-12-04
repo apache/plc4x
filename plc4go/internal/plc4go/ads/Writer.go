@@ -59,7 +59,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 	go func() {
 		// If we are requesting only one field, use a
 		if len(writeRequest.GetFieldNames()) != 1 {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("ads only supports single-item requests"),
@@ -73,7 +73,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -83,7 +83,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 			}
 			field, err = m.reader.resolveField(adsField)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -94,7 +94,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -106,14 +106,14 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewLittleEndianWriteBufferByteBased()
 		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.DataFormatName(), adsField.StringLength); err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error serializing value"),
 			}
 			return
 		}
-		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
+		data := io.GetBytes()
 
 		userdata := readWriteModel.AmsPacket{
 			TargetAmsNetId: &m.targetAmsNetId,
@@ -135,7 +135,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		case SymbolicAdsStringField, SymbolicAdsField:
 			panic("we should never reach this point as symbols are resolved before")
 		default:
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("unsupported field type"),
@@ -172,12 +172,12 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, *responseAmsTcpPaket, writeRequest)
 
 				if err != nil {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 				} else {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: readResponse,
 					}
@@ -185,7 +185,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 				return nil
 			},
 			func(err error) error {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
 					Err:     errors.New("got timeout while waiting for response"),
 				}

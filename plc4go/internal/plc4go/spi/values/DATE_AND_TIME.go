@@ -48,5 +48,5 @@ func (m PlcDATE_AND_TIME) GetString() string {
 }
 
 func (m PlcDATE_AND_TIME) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_TIME", byte(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }

@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type FirmataCommandSetDigitalPinValue struct {
-	Pin    uint8
-	On     bool
-	Parent *FirmataCommand
+	*FirmataCommand
+	Pin uint8
+	On  bool
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataComma
 
 func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
 	child := &FirmataCommandSetDigitalPinValue{
-		Pin:    pin,
-		On:     on,
-		Parent: NewFirmataCommand(),
+		Pin:            pin,
+		On:             on,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandSetDigitalPinValue(structType interface{}) *FirmataCommandSetDigitalPinValue {
@@ -89,7 +89,7 @@ func (m *FirmataCommandSetDigitalPinValue) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -107,16 +107,17 @@ func (m *FirmataCommandSetDigitalPinValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -133,10 +134,11 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer) (*Firmat
 	}
 
 	// Simple Field (on)
-	on, _onErr := readBuffer.ReadBit("on")
+	_on, _onErr := readBuffer.ReadBit("on")
 	if _onErr != nil {
 		return nil, errors.Wrap(_onErr, "Error parsing 'on' field")
 	}
+	on := _on
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetDigitalPinValue"); closeErr != nil {
 		return nil, closeErr
@@ -144,12 +146,12 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer) (*Firmat
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSetDigitalPinValue{
-		Pin:    pin,
-		On:     on,
-		Parent: &FirmataCommand{},
+		Pin:            pin,
+		On:             on,
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +187,7 @@ func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandSetDigitalPinValue) String() string {

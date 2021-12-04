@@ -26,39 +26,32 @@ FROM azul/zulu-openjdk:11 as build
 RUN apt update -y
 
 # Install general purpose tools
-RUN apt install -y make libpcap-dev libc-dev
+RUN apt install -y make libpcap-dev libc-dev git
 
 # Requied for "with-boost" profile
-RUN apt install -y bison flex gcc g++
+#RUN apt install -y bison flex gcc g++
 
 # Required for "with-cpp" profile
-RUN apt install -y gcc g++
+#RUN apt install -y gcc g++
 
 # Required for "with-proxies" and "with-cpp"
-RUN apt install -y clang
+#RUN apt install -y clang
 
 # Required for "with-proxies" and "with-cpp"
-RUN apt install -y cmake
+#RUN apt install -y cmake
 
 # Required for "with-dotnet" profile
 RUN apt install -y wget
-RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+RUN wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN apt install -y software-properties-common
 RUN add-apt-repository universe -y
 RUN apt install -y apt-transport-https
 RUN apt update -y
-RUN apt install -y dotnet-sdk-2.2
+RUN apt install -y dotnet-sdk-3.1
 
 # Required for "with-go" profile
-RUN add-apt-repository ppa:ubuntu-lxc/stable
 RUN apt install -y golang
-
-# Required for the general build
-RUN apt install -y git
-
-# Required for "with-proxies"
-RUN apt install -y bison flex gcc g++
 
 # Required for "with-python" profile
 RUN apt install -y python-setuptools python
@@ -74,17 +67,19 @@ WORKDIR /ws
 
 # Make the maven wrapper script executalbe (needed when running on Windows)
 RUN chmod +x ./mvnw
-# Change the line endint to unix-style (needed when running on Windows)
+# Change the line ending to unix-style (needed when running on Windows)
 RUN dos2unix ./mvnw
 RUN dos2unix .mvn/wrapper/maven-wrapper.properties
 
 # Tell Maven to fetch all needed dependencies first, so they can get cached
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
-RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+#RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+RUN ./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 
 # Build everything with all tests
-RUN ./mvnw -P skip-prerequisite-check,with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox install
+#RUN ./mvnw -P skip-prerequisite-check,with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-python,with-sandbox install
+RUN ./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version
@@ -94,7 +89,7 @@ RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpressio
 ##########################################################################################
 
 # Move the file to a place we can reference it from without a version
-RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-storage-elasticsearch/target/plc4j-hello-storage-elasticsearch-$PROJECT_VERSION-uber-jar.jar plc4xdemo.jar
+RUN PROJECT_VERSION=`cat project_version`; mv plc4j/examples/hello-integration-iotdb/target/plc4j-hello-integration-iotdb-${PROJECT_VERSION}-uber-jar.jar plc4xdemo.jar
 
 # Build a highly optimized JRE
 FROM alpine:3.10 as packager

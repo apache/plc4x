@@ -36,8 +36,6 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import io.netty.buffer.ByteBuf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -49,9 +47,7 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.confi
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriver.class);
-
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>tcp))?://" +
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>[a-z0-9]*))?://" +
                                                                         "(?<transportHost>[\\w.-]+)(:" +
                                                                         "(?<transportPort>\\d*))?");
 
@@ -169,6 +165,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         configuration.setTransportCode(transportCode);
         configuration.setHost(transportHost);
         configuration.setPort(transportPort);
+        configuration.setTransportEndpoint(transportEndpoint);
         configuration.setEndpoint("opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint);
 
         // Try to find a transport in order to create a communication channel.

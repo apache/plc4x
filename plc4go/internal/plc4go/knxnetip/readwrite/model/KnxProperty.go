@@ -72,7 +72,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcINT(value), nil
-	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
@@ -93,7 +93,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -202,7 +202,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -211,7 +211,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", true, 11, 52)
+		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -222,11 +222,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((10)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -236,11 +236,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (groupAddress)
 		var groupAddress []api.PlcValue
 		for i := 0; i < int((2)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("groupAddress", 8)
+			_item, _itemErr := readBuffer.ReadByte("groupAddress")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			groupAddress = append(groupAddress, values.NewPlcUSINT(_item))
+			groupAddress = append(groupAddress, values.NewPlcBYTE(_item))
 		}
 
 		// Simple Field (disable)
@@ -268,11 +268,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((5)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -422,11 +422,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((1)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -435,11 +435,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((2)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -448,11 +448,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((3)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -461,11 +461,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((4)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -474,11 +474,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((5)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -487,11 +487,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((6)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -500,11 +500,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((7)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -513,11 +513,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((8)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -526,11 +526,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((9)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -539,11 +539,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((10)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -552,11 +552,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((11)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -565,11 +565,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((12)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -578,11 +578,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((13)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -591,11 +591,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((14)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -604,11 +604,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((15)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -617,11 +617,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((16)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -630,11 +630,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((17)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -643,11 +643,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((18)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -656,11 +656,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((19)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -669,11 +669,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((20)); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -856,11 +856,11 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(dataLengthInBytes); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+			_item, _itemErr := readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -901,7 +901,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
@@ -1009,7 +1009,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1019,7 +1019,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 		// Array Field (groupAddress)
 		for i := uint32(0); i < uint32((2)); i++ {
 			groupAddress := value.GetValue("groupAddress")
-			_itemErr := writeBuffer.WriteUint8("", 8, groupAddress.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", groupAddress.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1043,7 +1043,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1158,7 +1158,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((1)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1167,7 +1167,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((2)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1176,7 +1176,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((3)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1185,7 +1185,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((4)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1194,7 +1194,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1203,7 +1203,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((6)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1212,7 +1212,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((7)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1221,7 +1221,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1230,7 +1230,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((9)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1239,7 +1239,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1248,7 +1248,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((11)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1257,7 +1257,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((12)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1266,7 +1266,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((13)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1275,7 +1275,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((14)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1284,7 +1284,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((15)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1293,7 +1293,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1302,7 +1302,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((17)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1311,7 +1311,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((18)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1320,7 +1320,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((19)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1329,7 +1329,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((20)); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1461,7 +1461,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32(dataLengthInBytes); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

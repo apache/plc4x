@@ -22,29 +22,28 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
-import org.apache.plc4x.java.canopen.readwrite.types.SDOResponseCommand;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
-    private final CANConversation<CANOpenFrame> delegate;
+    private final CANConversation delegate;
     private final IndexAddress indexAddress;
     private final byte[] data;
 
-    public SDODownloadConversation(CANConversation<CANOpenFrame> delegate, int nodeId, int answerNodeId, IndexAddress indexAddress, PlcValue value, CANOpenDataType type) {
+    public SDODownloadConversation(CANConversation delegate, int nodeId, int answerNodeId, IndexAddress indexAddress, PlcValue value, CANOpenDataType type) {
         super(delegate, nodeId, answerNodeId);
         this.delegate = delegate;
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItemIO.staticSerialize(value, type,  null,true).getData();
-        } catch (ParseException e) {
+            data = DataItemIO.staticSerialize(value, type,  null, ByteOrder.LITTLE_ENDIAN).getData();
+        } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }
     }

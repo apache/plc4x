@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ConnectionResponseDataBlockTunnelConnection struct {
+	*ConnectionResponseDataBlock
 	KnxAddress *KnxAddress
-	Parent     *ConnectionResponseDataBlock
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *ConnectionResponseDataBlockTunnelConnection) InitializeParent(parent *C
 
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockTunnelConnection{
-		KnxAddress: knxAddress,
-		Parent:     NewConnectionResponseDataBlock(),
+		KnxAddress:                  knxAddress,
+		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ConnectionResponseDataBlock
 }
 
 func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *ConnectionResponseDataBlockTunnelConnection {
@@ -86,7 +86,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.LengthInBits()
@@ -103,15 +103,15 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 		return nil, pullErr
 	}
 
+	// Simple Field (knxAddress)
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxAddress)
-	knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	knxAddress := CastKnxAddress(_knxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -122,11 +122,11 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockTunnelConnection{
-		KnxAddress: knxAddress,
-		Parent:     &ConnectionResponseDataBlock{},
+		KnxAddress:                  CastKnxAddress(knxAddress),
+		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ConnectionResponseDataBlock.Child = _child
+	return _child.ConnectionResponseDataBlock, nil
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer util
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) String() string {

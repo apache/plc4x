@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type FirmataMessageSubscribeAnalogPinValue struct {
+	*FirmataMessage
 	Pin    uint8
 	Enable bool
-	Parent *FirmataMessage
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *FirmataMessageSubscribeAnalogPinValue) InitializeParent(parent *Firmata
 
 func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool) *FirmataMessage {
 	child := &FirmataMessageSubscribeAnalogPinValue{
-		Pin:    pin,
-		Enable: enable,
-		Parent: NewFirmataMessage(),
+		Pin:            pin,
+		Enable:         enable,
+		FirmataMessage: NewFirmataMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataMessage
 }
 
 func CastFirmataMessageSubscribeAnalogPinValue(structType interface{}) *FirmataMessageSubscribeAnalogPinValue {
@@ -89,7 +89,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBits() uint16 {
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -107,16 +107,17 @@ func (m *FirmataMessageSubscribeAnalogPinValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer) (*FirmataMessage, error) {
+func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 4)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -133,10 +134,11 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer) (*F
 	}
 
 	// Simple Field (enable)
-	enable, _enableErr := readBuffer.ReadBit("enable")
+	_enable, _enableErr := readBuffer.ReadBit("enable")
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field")
 	}
+	enable := _enable
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageSubscribeAnalogPinValue"); closeErr != nil {
 		return nil, closeErr
@@ -144,12 +146,12 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer) (*F
 
 	// Create a partially initialized instance
 	_child := &FirmataMessageSubscribeAnalogPinValue{
-		Pin:    pin,
-		Enable: enable,
-		Parent: &FirmataMessage{},
+		Pin:            pin,
+		Enable:         enable,
+		FirmataMessage: &FirmataMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataMessage.Child = _child
+	return _child.FirmataMessage, nil
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +187,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) String() string {

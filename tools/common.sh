@@ -25,7 +25,7 @@ PLC4X_ROOT_DIR=.
 # BUNDLE_DIR is results of maven release:perform's creation of release candidate
 BUNDLE_DIR=${PLC4X_ROOT_DIR}/target/checkout/target
 
-PLC4X_ASF_GIT_URL=https://git-wip-us.apache.org/repos/asf/plc4x.git
+PLC4X_ASF_GIT_URL=https://gitbox.apache.org/repos/asf/plc4x.git
 PLC4X_ASF_DIST_URL=https://downloads.apache.org/plc4x
 PLC4X_ASF_DIST_DYN_URL=https://www.apache.org/dyn/closer.cgi/plc4x
 PLC4X_ASF_SVN_RELEASE_URL=https://dist.apache.org/repos/dist/release/plc4x

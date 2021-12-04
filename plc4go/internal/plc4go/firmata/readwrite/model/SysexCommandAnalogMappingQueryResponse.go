@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type SysexCommandAnalogMappingQueryResponse struct {
-	Pin    uint8
-	Parent *SysexCommand
+	*SysexCommand
+	Pin uint8
 }
 
 // The corresponding interface
@@ -47,7 +47,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) CommandType() uint8 {
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) InitializeParent(parent *SysexCommand) {
@@ -55,11 +55,11 @@ func (m *SysexCommandAnalogMappingQueryResponse) InitializeParent(parent *SysexC
 
 func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommand {
 	child := &SysexCommandAnalogMappingQueryResponse{
-		Pin:    pin,
-		Parent: NewSysexCommand(),
+		Pin:          pin,
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandAnalogMappingQueryResponse(structType interface{}) *SysexCommandAnalogMappingQueryResponse {
@@ -90,7 +90,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -102,16 +102,17 @@ func (m *SysexCommandAnalogMappingQueryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
 	if closeErr := readBuffer.CloseContext("SysexCommandAnalogMappingQueryResponse"); closeErr != nil {
 		return nil, closeErr
@@ -119,11 +120,11 @@ func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer) (*
 
 	// Create a partially initialized instance
 	_child := &SysexCommandAnalogMappingQueryResponse{
-		Pin:    pin,
-		Parent: &SysexCommand{},
+		Pin:          pin,
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +145,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) String() string {

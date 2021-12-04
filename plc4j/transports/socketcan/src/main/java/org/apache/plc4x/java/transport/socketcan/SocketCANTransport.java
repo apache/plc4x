@@ -18,14 +18,26 @@
  */
 package org.apache.plc4x.java.transport.socketcan;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
+import org.apache.plc4x.java.socketcan.readwrite.io.SocketCANFrameIO;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.transport.can.CANFrameBuilder;
+import org.apache.plc4x.java.transport.can.CANTransport;
+import org.apache.plc4x.java.transport.can.FrameData;
 import org.apache.plc4x.java.transport.socketcan.netty.address.SocketCANAddress;
 
 /**
  * CAN specific transport which rely on JavaCAN library.
  */
-public class SocketCANTransport implements Transport {
+public class SocketCANTransport implements CANTransport<SocketCANFrame> {
 
     @Override
     public String getTransportCode() {
@@ -43,4 +55,57 @@ public class SocketCANTransport implements Transport {
         return new SocketCANChannelFactory(address);
     }
 
+    @Override
+    public ToIntFunction<ByteBuf> getEstimator() {
+        return (buff) -> 16;
+    }
+
+    @Override
+    public MessageInput<SocketCANFrame> getMessageInput(Configuration cfg) {
+        return new SocketCANFrameIO();
+    }
+
+    @Override
+    public Class<SocketCANFrame> getMessageType() {
+        return SocketCANFrame.class;
+    }
+
+    @Override
+    public CANFrameBuilder<SocketCANFrame> getTransportFrameBuilder() {
+        return new SocketCANFrameBuilder();
+    }
+
+    @Override
+    public Function<SocketCANFrame, FrameData> adapter() {
+        return new Function<SocketCANFrame, FrameData>() {
+            @Override
+            public FrameData apply(SocketCANFrame frame) {
+                return new FrameData() {
+                    @Override
+                    public int getNodeId() {
+                        return frame.getIdentifier();
+                    }
+
+                    @Override
+                    public int getDataLength() {
+                        return frame.getData().length;
+                    }
+
+                    @Override
+                    public byte[] getData() {
+                        return frame.getData();
+                    }
+
+                    @Override
+                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
+                        try {
+                            return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
+                        } catch (ParseException e) {
+                            throw new PlcRuntimeException(e);
+                        }
+                    }
+                };
+            }
+        };
+    }
 }

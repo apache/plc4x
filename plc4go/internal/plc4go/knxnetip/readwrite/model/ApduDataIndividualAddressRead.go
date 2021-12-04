@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataIndividualAddressRead struct {
-	Parent *ApduData
+	*ApduData
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataIndividualAddressRead) InitializeParent(parent *ApduData) {
 
 func NewApduDataIndividualAddressRead() *ApduData {
 	child := &ApduDataIndividualAddressRead{
-		Parent: NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataIndividualAddressRead(structType interface{}) *ApduDataIndividualAddressRead {
@@ -83,7 +83,7 @@ func (m *ApduDataIndividualAddressRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataIndividualAddressRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataIndividualAddressRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer) (*ApduData,
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressRead{
-		Parent: &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataIndividualAddressRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataIndividualAddressRead) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataIndividualAddressRead) String() string {

@@ -61,6 +61,54 @@ func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writ
 	return SingleItemRequestInterceptor{readRequestFactory, writeRequestFactory, readResponseFactory, writeResponseFactory}
 }
 
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type interceptedPlcReadRequestResult struct {
+	Request  model.PlcReadRequest
+	Response model.PlcReadResponse
+	Err      error
+}
+
+func (d *interceptedPlcReadRequestResult) GetRequest() model.PlcReadRequest {
+	return d.Request
+}
+
+func (d *interceptedPlcReadRequestResult) GetResponse() model.PlcReadResponse {
+	return d.Response
+}
+
+func (d *interceptedPlcReadRequestResult) GetErr() error {
+	return d.Err
+}
+
+type interceptedPlcWriteRequestResult struct {
+	Request  model.PlcWriteRequest
+	Response model.PlcWriteResponse
+	Err      error
+}
+
+func (d *interceptedPlcWriteRequestResult) GetRequest() model.PlcWriteRequest {
+	return d.Request
+}
+
+func (d *interceptedPlcWriteRequestResult) GetResponse() model.PlcWriteResponse {
+	return d.Response
+}
+
+func (d *interceptedPlcWriteRequestResult) GetErr() error {
+	return d.Err
+}
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
+
 func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest {
 	// If this request just has one field, go the shortcut
 	if len(readRequest.GetFieldNames()) == 1 {
@@ -94,26 +142,26 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest model.Plc
 	val := map[string]values.PlcValue{}
 	var err error = nil
 	for _, readResult := range readResults {
-		if readResult.Err != nil {
-			log.Debug().Err(readResult.Err).Msgf("Error during read")
+		if readResult.GetErr() != nil {
+			log.Debug().Err(readResult.GetErr()).Msgf("Error during read")
 			if err == nil {
 				// Lazy initialization of multi error
-				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.Err}}
+				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.GetErr()}}
 			} else {
 				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, readResult.Err)
+				multiError.Errors = append(multiError.Errors, readResult.GetErr())
 			}
-		} else if readResult.Response != nil {
-			if len(readResult.Response.GetRequest().GetFieldNames()) > 1 {
-				log.Error().Int("numberOfFields", len(readResult.Response.GetRequest().GetFieldNames())).Msg("We should only get 1")
+		} else if readResult.GetResponse() != nil {
+			if len(readResult.GetResponse().GetRequest().GetFieldNames()) > 1 {
+				log.Error().Int("numberOfFields", len(readResult.GetResponse().GetRequest().GetFieldNames())).Msg("We should only get 1")
 			}
-			for _, fieldName := range readResult.Response.GetRequest().GetFieldNames() {
-				responseCodes[fieldName] = readResult.Response.GetResponseCode(fieldName)
-				val[fieldName] = readResult.Response.GetValue(fieldName)
+			for _, fieldName := range readResult.GetResponse().GetRequest().GetFieldNames() {
+				responseCodes[fieldName] = readResult.GetResponse().GetResponseCode(fieldName)
+				val[fieldName] = readResult.GetResponse().GetValue(fieldName)
 			}
 		}
 	}
-	return model.PlcReadRequestResult{
+	return &interceptedPlcReadRequestResult{
 		Request:  readRequest,
 		Response: m.readResponseFactory(readRequest, responseCodes, val),
 		Err:      err,
@@ -153,25 +201,25 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest model.P
 	responseCodes := map[string]model.PlcResponseCode{}
 	var err error = nil
 	for _, writeResult := range writeResults {
-		if writeResult.Err != nil {
-			log.Debug().Err(writeResult.Err).Msgf("Error during write")
+		if writeResult.GetErr() != nil {
+			log.Debug().Err(writeResult.GetErr()).Msgf("Error during write")
 			if err == nil {
 				// Lazy initialization of multi error
-				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{writeResult.Err}}
+				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{writeResult.GetErr()}}
 			} else {
 				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, writeResult.Err)
+				multiError.Errors = append(multiError.Errors, writeResult.GetErr())
 			}
-		} else if writeResult.Response != nil {
-			if len(writeResult.Response.GetRequest().GetFieldNames()) > 1 {
-				log.Error().Int("numberOfFields", len(writeResult.Response.GetRequest().GetFieldNames())).Msg("We should only get 1")
+		} else if writeResult.GetResponse() != nil {
+			if len(writeResult.GetResponse().GetRequest().GetFieldNames()) > 1 {
+				log.Error().Int("numberOfFields", len(writeResult.GetResponse().GetRequest().GetFieldNames())).Msg("We should only get 1")
 			}
-			for _, fieldName := range writeResult.Response.GetRequest().GetFieldNames() {
-				responseCodes[fieldName] = writeResult.Response.GetResponseCode(fieldName)
+			for _, fieldName := range writeResult.GetResponse().GetRequest().GetFieldNames() {
+				responseCodes[fieldName] = writeResult.GetResponse().GetResponseCode(fieldName)
 			}
 		}
 	}
-	return model.PlcWriteRequestResult{
+	return &interceptedPlcWriteRequestResult{
 		Request:  writeRequest,
 		Response: m.writeResponseFactory(writeRequest, responseCodes),
 		Err:      err,

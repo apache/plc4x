@@ -30,7 +30,6 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 public abstract class BaseOptimizer {

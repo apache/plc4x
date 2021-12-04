@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type AdsReadDeviceInfoRequest struct {
-	Parent *AdsData
+	*AdsData
 }
 
 // The corresponding interface
@@ -45,7 +45,7 @@ func (m *AdsReadDeviceInfoRequest) CommandId() CommandId {
 }
 
 func (m *AdsReadDeviceInfoRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {
@@ -53,10 +53,10 @@ func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {
 
 func NewAdsReadDeviceInfoRequest() *AdsData {
 	child := &AdsReadDeviceInfoRequest{
-		Parent: NewAdsData(),
+		AdsData: NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsReadDeviceInfoRequest(structType interface{}) *AdsReadDeviceInfoRequest {
@@ -87,7 +87,7 @@ func (m *AdsReadDeviceInfoRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsReadDeviceInfoRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -96,7 +96,7 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,10 +107,10 @@ func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoRequest{
-		Parent: &AdsData{},
+		AdsData: &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsReadDeviceInfoRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *AdsReadDeviceInfoRequest) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsReadDeviceInfoRequest) String() string {

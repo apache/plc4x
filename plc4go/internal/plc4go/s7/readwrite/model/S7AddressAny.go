@@ -29,13 +29,13 @@ import (
 
 // The data-structure of this message
 type S7AddressAny struct {
+	*S7Address
 	TransportSize    TransportSize
 	NumberOfElements uint16
 	DbNumber         uint16
 	Area             MemoryArea
 	ByteAddress      uint16
 	BitAddress       uint8
-	Parent           *S7Address
 }
 
 // The corresponding interface
@@ -63,10 +63,10 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 		Area:             area,
 		ByteAddress:      byteAddress,
 		BitAddress:       bitAddress,
-		Parent:           NewS7Address(),
+		S7Address:        NewS7Address(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Address
 }
 
 func CastS7AddressAny(structType interface{}) *S7AddressAny {
@@ -97,7 +97,7 @@ func (m *S7AddressAny) LengthInBits() uint16 {
 }
 
 func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -108,7 +108,7 @@ func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (dbNumber)
 	lengthInBits += 16
 
-	// Enum Field (area)
+	// Simple field (area)
 	lengthInBits += 8
 
 	// Reserved Field (reserved)
@@ -149,25 +149,28 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
+	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
+	numberOfElements := _numberOfElements
 
 	// Simple Field (dbNumber)
-	dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
+	_dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
+	dbNumber := _dbNumber
 
+	// Simple Field (area)
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (area)
-	area, _areaErr := MemoryAreaParse(readBuffer)
+	_area, _areaErr := MemoryAreaParse(readBuffer)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
 	}
+	area := _area
 	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -187,16 +190,18 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (byteAddress)
-	byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
+	_byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
 		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
 	}
+	byteAddress := _byteAddress
 
 	// Simple Field (bitAddress)
-	bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
+	_bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
+	bitAddress := _bitAddress
 
 	if closeErr := readBuffer.CloseContext("S7AddressAny"); closeErr != nil {
 		return nil, closeErr
@@ -210,10 +215,10 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		Area:             area,
 		ByteAddress:      byteAddress,
 		BitAddress:       bitAddress,
-		Parent:           &S7Address{},
+		S7Address:        &S7Address{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Address.Child = _child
+	return _child.S7Address, nil
 }
 
 func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -248,17 +253,16 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
+		// Simple Field (area)
 		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (area)
-		area := CastMemoryArea(m.Area)
-		_areaErr := area.Serialize(writeBuffer)
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
-		}
+		_areaErr := m.Area.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("area"); popErr != nil {
 			return popErr
+		}
+		if _areaErr != nil {
+			return errors.Wrap(_areaErr, "Error serializing 'area' field")
 		}
 
 		// Reserved Field (reserved)
@@ -288,7 +292,7 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7AddressAny) String() string {

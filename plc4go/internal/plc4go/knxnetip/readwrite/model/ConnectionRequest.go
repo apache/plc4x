@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ConnectionRequest struct {
+	*KnxNetIpMessage
 	HpaiDiscoveryEndpoint        *HPAIDiscoveryEndpoint
 	HpaiDataEndpoint             *HPAIDataEndpoint
 	ConnectionRequestInformation *ConnectionRequestInformation
-	Parent                       *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiData
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
 		HpaiDataEndpoint:             hpaiDataEndpoint,
 		ConnectionRequestInformation: connectionRequestInformation,
-		Parent:                       NewKnxNetIpMessage(),
+		KnxNetIpMessage:              NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastConnectionRequest(structType interface{}) *ConnectionRequest {
@@ -90,7 +90,7 @@ func (m *ConnectionRequest) LengthInBits() uint16 {
 }
 
 func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
@@ -113,41 +113,41 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		return nil, pullErr
 	}
 
+	// Simple Field (hpaiDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hpaiDiscoveryEndpoint)
-	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
 	}
+	hpaiDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (hpaiDataEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hpaiDataEndpoint)
-	hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
+	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
 	}
+	hpaiDataEndpoint := CastHPAIDataEndpoint(_hpaiDataEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (connectionRequestInformation)
 	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (connectionRequestInformation)
-	connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
+	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
+	connectionRequestInformation := CastConnectionRequestInformation(_connectionRequestInformation)
 	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -158,13 +158,13 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequest{
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
-		Parent:                       &KnxNetIpMessage{},
+		HpaiDiscoveryEndpoint:        CastHPAIDiscoveryEndpoint(hpaiDiscoveryEndpoint),
+		HpaiDataEndpoint:             CastHPAIDataEndpoint(hpaiDataEndpoint),
+		ConnectionRequestInformation: CastConnectionRequestInformation(connectionRequestInformation),
+		KnxNetIpMessage:              &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -214,7 +214,7 @@ func (m *ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionRequest) String() string {

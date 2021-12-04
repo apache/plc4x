@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKGetEventInformation struct {
-	Parent *BACnetConfirmedServiceACK
+	*BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) InitializeParent(parent *
 
 func NewBACnetConfirmedServiceACKGetEventInformation() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKGetEventInformation{
-		Parent: NewBACnetConfirmedServiceACK(),
+		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceACK
 }
 
 func CastBACnetConfirmedServiceACKGetEventInformation(structType interface{}) *BACnetConfirmedServiceACKGetEventInformation {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceACKGetEventInformationParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetEventInformation{
-		Parent: &BACnetConfirmedServiceACK{},
+		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceACK.Child = _child
+	return _child.BACnetConfirmedServiceACK, nil
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) String() string {

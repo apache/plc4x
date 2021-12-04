@@ -81,9 +81,9 @@ public class EncryptionHandler {
         }
         int numberOfBlocks = preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH;
         int encryptedLength = numberOfBlocks * 256 + positionFirstBlock;
-        WriteBufferByteBased buf = new WriteBufferByteBased(encryptedLength, true);
+        WriteBufferByteBased buf = new WriteBufferByteBased(encryptedLength, ByteOrder.LITTLE_ENDIAN);
         try {
-            OpcuaAPUIO.staticSerialize(buf, new OpcuaAPU(pdu));
+            new OpcuaAPU(pdu).serialize(buf);
             byte paddingByte = (byte) paddingSize;
             buf.writeByte(paddingByte);
             for (int i = 0; i < paddingSize; i++) {
@@ -96,13 +96,13 @@ public class EncryptionHandler {
             buf.setPos(tempPos);
             byte[] signature = sign(buf.getBytes(0, unencryptedLength + paddingSize + 1));
             //Write the signature to the end of the buffer
-            for (int i = 0; i < signature.length; i++) {
-                buf.writeByte(signature[i]);
+            for (byte b : signature) {
+                buf.writeByte(b);
             }
             buf.setPos(positionFirstBlock);
             encryptBlock(buf, buf.getBytes(positionFirstBlock, positionFirstBlock + preEncryptedLength));
-            return new ReadBufferByteBased(buf.getData(), true);
-        } catch (ParseException e) {
+            return new ReadBufferByteBased(buf.getData(), ByteOrder.LITTLE_ENDIAN);
+        } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse apu prior to encrypting");
         }
     }
@@ -126,8 +126,8 @@ public class EncryptionHandler {
                     int encryptedMessageLength = message.length + 8;
                     int headerLength = encryptedLength - encryptedMessageLength;
                     int numberOfBlocks = encryptedMessageLength / 256;
-                    WriteBufferByteBased buf = new WriteBufferByteBased(headerLength + numberOfBlocks * 256, true);
-                    OpcuaAPUIO.staticSerialize(buf, pdu);
+                    WriteBufferByteBased buf = new WriteBufferByteBased(headerLength + numberOfBlocks * 256, ByteOrder.LITTLE_ENDIAN);
+                    pdu.serialize(buf);
                     byte[] data = buf.getBytes(headerLength, encryptedLength);
                     buf.setPos(headerLength);
                     decryptBlock(buf, data);
@@ -138,9 +138,9 @@ public class EncryptionHandler {
                     }
                     buf.setPos(4);
                     buf.writeInt(32, tempPos - 256);
-                    ReadBuffer readBuffer = new ReadBufferByteBased(buf.getBytes(0, tempPos - 256), true);
+                    ReadBuffer readBuffer = new ReadBufferByteBased(buf.getBytes(0, tempPos - 256), ByteOrder.LITTLE_ENDIAN);
                     return OpcuaAPUIO.staticParse(readBuffer, true);
-                } catch (ParseException e) {
+                } catch (SerializationException | ParseException e) {
                     LOGGER.error("Unable to Parse encrypted message");
                 }
         }

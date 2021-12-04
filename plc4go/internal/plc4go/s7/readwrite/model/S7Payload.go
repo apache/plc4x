@@ -101,13 +101,13 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S
 	var typeSwitchError error
 	switch {
 	case CastS7Parameter(parameter).Child.ParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		_parent, typeSwitchError = S7PayloadReadVarResponseParse(readBuffer, parameter)
+		_parent, typeSwitchError = S7PayloadReadVarResponseParse(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		_parent, typeSwitchError = S7PayloadWriteVarRequestParse(readBuffer, parameter)
+		_parent, typeSwitchError = S7PayloadWriteVarRequestParse(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(readBuffer, parameter)
+		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(readBuffer, messageType, parameter)
 	case CastS7Parameter(parameter).Child.ParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		_parent, typeSwitchError = S7PayloadUserDataParse(readBuffer, parameter)
+		_parent, typeSwitchError = S7PayloadUserDataParse(readBuffer, messageType, parameter)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -135,8 +135,7 @@ func (m *S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Payl
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

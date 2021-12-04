@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationRequest struct {
+	*KnxNetIpMessage
 	DeviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock
 	Cemi                                *CEMI
-	Parent                              *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceCo
 	child := &DeviceConfigurationRequest{
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
-		Parent:                              NewKnxNetIpMessage(),
+		KnxNetIpMessage:                     NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastDeviceConfigurationRequest(structType interface{}) *DeviceConfigurationRequest {
@@ -88,7 +88,7 @@ func (m *DeviceConfigurationRequest) LengthInBits() uint16 {
 }
 
 func (m *DeviceConfigurationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationRequestDataBlock)
 	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
@@ -108,28 +108,28 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 		return nil, pullErr
 	}
 
+	// Simple Field (deviceConfigurationRequestDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (deviceConfigurationRequestDataBlock)
-	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(readBuffer)
+	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(readBuffer)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
 	}
+	deviceConfigurationRequestDataBlock := CastDeviceConfigurationRequestDataBlock(_deviceConfigurationRequestDataBlock)
 	if closeErr := readBuffer.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (cemi)
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (cemi)
-	cemi, _cemiErr := CEMIParse(readBuffer, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
+	cemi := CastCEMI(_cemi)
 	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,12 +140,12 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationRequest{
-		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
-		Cemi:                                cemi,
-		Parent:                              &KnxNetIpMessage{},
+		DeviceConfigurationRequestDataBlock: CastDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock),
+		Cemi:                                CastCEMI(cemi),
+		KnxNetIpMessage:                     &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -183,7 +183,7 @@ func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DeviceConfigurationRequest) String() string {

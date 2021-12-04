@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataMemoryResponse struct {
+	*ApduData
 	Address uint16
-	Data    []uint8
-	Parent  *ApduData
+	Data    []byte
 }
 
 // The corresponding interface
@@ -50,14 +50,14 @@ func (m *ApduDataMemoryResponse) ApciType() uint8 {
 func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {
 }
 
-func NewApduDataMemoryResponse(address uint16, data []uint8) *ApduData {
+func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
 	child := &ApduDataMemoryResponse{
-		Address: address,
-		Data:    data,
-		Parent:  NewApduData(),
+		Address:  address,
+		Data:     data,
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataMemoryResponse(structType interface{}) *ApduDataMemoryResponse {
@@ -88,7 +88,7 @@ func (m *ApduDataMemoryResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -108,7 +108,7 @@ func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,26 +121,16 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error)
 	}
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]uint8, numBytes)
-	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	address := _address
+	// Byte Array field (data)
+	numberOfBytesdata := int(numBytes)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
@@ -149,12 +139,12 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error)
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryResponse{
-		Address: address,
-		Data:    data,
-		Parent:  &ApduData{},
+		Address:  address,
+		Data:     data,
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -179,17 +169,10 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
 		}
 
@@ -198,7 +181,7 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataMemoryResponse) String() string {

@@ -30,7 +30,7 @@ import (
 type AdsNotificationSample struct {
 	NotificationHandle uint32
 	SampleSize         uint32
-	Data               []int8
+	Data               []byte
 }
 
 // The corresponding interface
@@ -40,7 +40,7 @@ type IAdsNotificationSample interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []int8) *AdsNotificationSample {
+func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *AdsNotificationSample {
 	return &AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
 }
 
@@ -92,32 +92,23 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSa
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+	notificationHandle := _notificationHandle
 
 	// Simple Field (sampleSize)
-	sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
+	_sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]int8, sampleSize)
-	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	sampleSize := _sampleSize
+	// Byte Array field (data)
+	numberOfBytesdata := int(sampleSize)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsNotificationSample"); closeErr != nil {
@@ -149,17 +140,10 @@ func (m *AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Array Field (data)
 	if m.Data != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Data {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (data)
+		_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 		}
 	}
 

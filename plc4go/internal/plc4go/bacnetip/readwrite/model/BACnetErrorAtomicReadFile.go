@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetErrorAtomicReadFile struct {
-	Parent *BACnetError
+	*BACnetError
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetErrorAtomicReadFile) InitializeParent(parent *BACnetError) {
 
 func NewBACnetErrorAtomicReadFile() *BACnetError {
 	child := &BACnetErrorAtomicReadFile{
-		Parent: NewBACnetError(),
+		BACnetError: NewBACnetError(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetError
 }
 
 func CastBACnetErrorAtomicReadFile(structType interface{}) *BACnetErrorAtomicReadFile {
@@ -83,7 +83,7 @@ func (m *BACnetErrorAtomicReadFile) LengthInBits() uint16 {
 }
 
 func (m *BACnetErrorAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetErrorAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetError, 
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorAtomicReadFile{
-		Parent: &BACnetError{},
+		BACnetError: &BACnetError{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetError.Child = _child
+	return _child.BACnetError, nil
 }
 
 func (m *BACnetErrorAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetErrorAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetErrorAtomicReadFile) String() string {

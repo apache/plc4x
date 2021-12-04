@@ -25,7 +25,7 @@ import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

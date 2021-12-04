@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataMemoryRead struct {
+	*ApduData
 	NumBytes uint8
 	Address  uint16
-	Parent   *ApduData
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewApduDataMemoryRead(numBytes uint8, address uint16) *ApduData {
 	child := &ApduDataMemoryRead{
 		NumBytes: numBytes,
 		Address:  address,
-		Parent:   NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataMemoryRead(structType interface{}) *ApduDataMemoryRead {
@@ -88,7 +88,7 @@ func (m *ApduDataMemoryRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataMemoryRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -103,22 +103,24 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryRead"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (numBytes)
-	numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)
+	_numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)
 	if _numBytesErr != nil {
 		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
+	numBytes := _numBytes
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := _address
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryRead"); closeErr != nil {
 		return nil, closeErr
@@ -128,10 +130,10 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
 	_child := &ApduDataMemoryRead{
 		NumBytes: numBytes,
 		Address:  address,
-		Parent:   &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,7 +161,7 @@ func (m *ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataMemoryRead) String() string {

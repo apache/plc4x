@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type BVLCForwardedNPDU struct {
-	Ip     []uint8
-	Port   uint16
-	Npdu   *NPDU
-	Parent *BVLC
+	*BVLC
+	Ip   []uint8
+	Port uint16
+	Npdu *NPDU
 }
 
 // The corresponding interface
@@ -53,13 +53,13 @@ func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC) {
 
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU) *BVLC {
 	child := &BVLCForwardedNPDU{
-		Ip:     ip,
-		Port:   port,
-		Npdu:   npdu,
-		Parent: NewBVLC(),
+		Ip:   ip,
+		Port: port,
+		Npdu: npdu,
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCForwardedNPDU(structType interface{}) *BVLCForwardedNPDU {
@@ -90,7 +90,7 @@ func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
 }
 
 func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -121,32 +121,35 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 	}
 	// Count array
 	ip := make([]uint8, uint16(4))
-	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'ip' field")
+			}
+			ip[curItem] = _item
 		}
-		ip[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (port)
-	port, _portErr := readBuffer.ReadUint16("port", 16)
+	_port, _portErr := readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
+	port := _port
 
+	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (npdu)
-	npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(10)))
+	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+	npdu := CastNPDU(_npdu)
 	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -157,13 +160,13 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 
 	// Create a partially initialized instance
 	_child := &BVLCForwardedNPDU{
-		Ip:     ip,
-		Port:   port,
-		Npdu:   npdu,
-		Parent: &BVLC{},
+		Ip:   ip,
+		Port: port,
+		Npdu: CastNPDU(npdu),
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -212,7 +215,7 @@ func (m *BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCForwardedNPDU) String() string {

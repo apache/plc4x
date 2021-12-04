@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUGetComEventCounterResponse struct {
+	*ModbusPDU
 	Status     uint16
 	EventCount uint16
-	Parent     *ModbusPDU
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IModbusPDUGetComEventCounterResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUGetComEventCounterResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUGetComEventCounterResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) InitializeParent(parent *ModbusPDU) {
@@ -62,10 +62,10 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *M
 	child := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
-		Parent:     NewModbusPDU(),
+		ModbusPDU:  NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUGetComEventCounterResponse(structType interface{}) *ModbusPDUGetComEventCounterResponse {
@@ -96,7 +96,7 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -111,22 +111,24 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint16("status", 16)
+	_status, _statusErr := readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (eventCount)
-	eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
+	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
+	eventCount := _eventCount
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventCounterResponse"); closeErr != nil {
 		return nil, closeErr
@@ -136,10 +138,10 @@ func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer) (*Mod
 	_child := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
-		Parent:     &ModbusPDU{},
+		ModbusPDU:  &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +169,7 @@ func (m *ModbusPDUGetComEventCounterResponse) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUGetComEventCounterResponse) String() string {

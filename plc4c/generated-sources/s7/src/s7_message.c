@@ -28,13 +28,13 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_discriminators[] = {
   {/* plc4c_s7_read_write_s7_message_request */
-   .messageType = 0x01},
+   .messageType = 0x01 },
   {/* plc4c_s7_read_write_s7_message_response */
-   .messageType = 0x02},
+   .messageType = 0x02 },
   {/* plc4c_s7_read_write_s7_message_response_data */
-   .messageType = 0x03},
+   .messageType = 0x03 },
   {/* plc4c_s7_read_write_s7_message_user_data */
-   .messageType = 0x07}
+   .messageType = 0x07 }
 
 };
 
@@ -60,7 +60,6 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

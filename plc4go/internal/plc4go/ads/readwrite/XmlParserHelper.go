@@ -43,11 +43,11 @@ func init() {
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 32)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		indexGroup := uint32(parsedUint)
+		indexGroup := uint32(parsedUint0)
 		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -62,7 +62,7 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AdsData":
 		commandId := model.CommandIdByName(parserArguments[0])
 		response := parserArguments[1] == "true"
-		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), &commandId, response)
+		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
 	case "AmsNetId":
 		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":

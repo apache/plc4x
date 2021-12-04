@@ -303,7 +303,7 @@ def checkPython() {
                 allConditionsMet = false
             }
         } else {
-            println "missing"
+            println "missing (Please install at least version 3.6.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
@@ -411,6 +411,24 @@ def checkDocker() {
     // TODO: Implement the actual check ...
 }
 
+def checkLibPcap(String minVersion) {
+    print "Detecting LibPcap version: "
+    try {
+        output = org.pcap4j.core.Pcaps.libVersion()
+        String version = output - ~/^libpcap version /
+        def result =  checkVersionAtLeast(version, minVersion)
+        if (!result) {
+            // TODO: only on mac we need the minimum version so we need to refine this
+            // allConditionsMet = false
+            println "This will probably a problem on mac"
+        }
+    } catch (Error e) {
+        output = ""
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 /**
  * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -493,6 +511,9 @@ if (os == "win") {
 // profiles.
 /////////////////////////////////////////////////////
 
+// Codegen requires at least java 9
+checkJavaVersion("9", null)
+
 if (dotnetEnabled) {
     checkDotnet()
 }
@@ -553,6 +574,11 @@ if (apacheReleaseEnabled) {
 if (cppEnabled && (os == "win")) {
     print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
     allConditionsMet = false
+}
+
+if (os == "mac") {
+    // The current system version from mac crashes so we assert for a version coming with brew
+    checkLibPcap("1.10.1")
 }
 
 if (!allConditionsMet) {

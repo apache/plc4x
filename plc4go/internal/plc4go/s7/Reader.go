@@ -56,7 +56,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			field := readRequest.GetField(fieldName)
 			address, err := encodeS7Address(field)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
@@ -107,7 +107,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					if cotpPacketData == nil {
 						return false
 					}
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					if payload == nil {
 						return false
 					}
@@ -118,33 +118,33 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
 					readResponse, err := m.ToPlc4xReadResponse(*payload, readRequest)
 
 					if err != nil {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
 					}
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: readResponse,
 					}
 					return transaction.EndRequest()
 				},
 				func(err error) error {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
 						Err:     errors.Wrap(err, "got timeout while waiting for response"),
 					}
 					return transaction.EndRequest()
 				},
 				time.Second*1); err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),

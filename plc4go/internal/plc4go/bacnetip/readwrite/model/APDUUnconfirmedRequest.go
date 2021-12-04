@@ -29,8 +29,8 @@ import (
 
 // The data-structure of this message
 type APDUUnconfirmedRequest struct {
+	*APDU
 	ServiceRequest *BACnetUnconfirmedServiceRequest
-	Parent         *APDU
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {
 func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest) *APDU {
 	child := &APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
-		Parent:         NewAPDU(),
+		APDU:           NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest {
@@ -87,7 +87,7 @@ func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
 }
 
 func (m *APDUUnconfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -121,15 +121,15 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 		}
 	}
 
+	// Simple Field (serviceRequest)
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (serviceRequest)
-	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(1)))
+	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+	serviceRequest := CastBACnetUnconfirmedServiceRequest(_serviceRequest)
 	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,11 +140,11 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 
 	// Create a partially initialized instance
 	_child := &APDUUnconfirmedRequest{
-		ServiceRequest: serviceRequest,
-		Parent:         &APDU{},
+		ServiceRequest: CastBACnetUnconfirmedServiceRequest(serviceRequest),
+		APDU:           &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +178,7 @@ func (m *APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUUnconfirmedRequest) String() string {

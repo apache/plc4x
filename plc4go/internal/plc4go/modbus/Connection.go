@@ -86,20 +86,20 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				if message != nil {
 					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
 					log.Trace().Msg("got valid response")
-					result <- plc4go.NewPlcConnectionPingResult(nil)
+					result <- _default.NewDefaultPlcConnectionPingResult(nil)
 				} else {
 					log.Trace().Msg("got no response")
-					result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
+					result <- _default.NewDefaultPlcConnectionPingResult(errors.New("no response"))
 				}
 				return nil
 			},
 			func(err error) error {
 				log.Trace().Msgf("Received Error")
-				result <- plc4go.NewPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
+				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
 			time.Second*1); err != nil {
-			result <- plc4go.NewPlcConnectionPingResult(err)
+			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
 	}()
 	return result

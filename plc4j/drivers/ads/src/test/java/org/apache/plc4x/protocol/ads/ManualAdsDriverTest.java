@@ -71,7 +71,7 @@ public class ManualAdsDriverTest extends ManualTest {
         String spsIp = "192.168.23.20";
         /////
         // TODO: adjust this to your ip address
-        String clientIp = "192.168.24.1";
+        String clientIp = "192.168.23.200";
         //
         ////
         String sourceAmsNetId = clientIp + ".1.1";

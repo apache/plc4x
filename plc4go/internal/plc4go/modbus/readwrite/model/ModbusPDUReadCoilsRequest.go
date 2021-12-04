@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadCoilsRequest struct {
+	*ModbusPDU
 	StartingAddress uint16
 	Quantity        uint16
-	Parent          *ModbusPDU
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IModbusPDUReadCoilsRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadCoilsRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadCoilsRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadCoilsRequest) InitializeParent(parent *ModbusPDU) {
@@ -62,10 +62,10 @@ func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *Modb
 	child := &ModbusPDUReadCoilsRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
-		Parent:          NewModbusPDU(),
+		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadCoilsRequest(structType interface{}) *ModbusPDUReadCoilsRequest {
@@ -96,7 +96,7 @@ func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadCoilsRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -111,22 +111,24 @@ func (m *ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
+	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
+	quantity := _quantity
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadCoilsRequest"); closeErr != nil {
 		return nil, closeErr
@@ -136,10 +138,10 @@ func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, er
 	_child := &ModbusPDUReadCoilsRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
-		Parent:          &ModbusPDU{},
+		ModbusPDU:       &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadCoilsRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +169,7 @@ func (m *ModbusPDUReadCoilsRequest) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadCoilsRequest) String() string {

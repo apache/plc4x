@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type DisconnectRequest struct {
+	*KnxNetIpMessage
 	CommunicationChannelId uint8
 	HpaiControlEndpoint    *HPAIControlEndpoint
-	Parent                 *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPA
 	child := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
 		HpaiControlEndpoint:    hpaiControlEndpoint,
-		Parent:                 NewKnxNetIpMessage(),
+		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastDisconnectRequest(structType interface{}) *DisconnectRequest {
@@ -89,7 +89,7 @@ func (m *DisconnectRequest) LengthInBits() uint16 {
 }
 
 func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -113,10 +113,11 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
+	communicationChannelId := _communicationChannelId
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -132,15 +133,15 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		}
 	}
 
+	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -152,11 +153,11 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	// Create a partially initialized instance
 	_child := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
-		HpaiControlEndpoint:    hpaiControlEndpoint,
-		Parent:                 &KnxNetIpMessage{},
+		HpaiControlEndpoint:    CastHPAIControlEndpoint(hpaiControlEndpoint),
+		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -197,7 +198,7 @@ func (m *DisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DisconnectRequest) String() string {

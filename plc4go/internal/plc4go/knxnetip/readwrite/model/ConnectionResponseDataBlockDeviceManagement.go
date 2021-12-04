@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ConnectionResponseDataBlockDeviceManagement struct {
-	Parent *ConnectionResponseDataBlock
+	*ConnectionResponseDataBlock
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ConnectionResponseDataBlockDeviceManagement) InitializeParent(parent *C
 
 func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockDeviceManagement{
-		Parent: NewConnectionResponseDataBlock(),
+		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ConnectionResponseDataBlock
 }
 
 func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) *ConnectionResponseDataBlockDeviceManagement {
@@ -83,7 +83,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockDeviceManagement{
-		Parent: &ConnectionResponseDataBlock{},
+		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ConnectionResponseDataBlock.Child = _child
+	return _child.ConnectionResponseDataBlock, nil
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer util
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) String() string {

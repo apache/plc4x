@@ -23,12 +23,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcSINT extends PlcIECValue<Byte> {
@@ -276,7 +275,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.writeByte(getClass().getSimpleName(), value);
     }
 

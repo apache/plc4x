@@ -33,10 +33,10 @@ const DF1SymbolMessageFrame_ENDTRANSACTION uint8 = 0x03
 
 // The data-structure of this message
 type DF1SymbolMessageFrame struct {
+	*DF1Symbol
 	DestinationAddress uint8
 	SourceAddress      uint8
 	Command            *DF1Command
-	Parent             *DF1Symbol
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
 		Command:            command,
-		Parent:             NewDF1Symbol(),
+		DF1Symbol:          NewDF1Symbol(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1Symbol
 }
 
 func CastDF1SymbolMessageFrame(structType interface{}) *DF1SymbolMessageFrame {
@@ -95,7 +95,7 @@ func (m *DF1SymbolMessageFrame) LengthInBits() uint16 {
 }
 
 func (m *DF1SymbolMessageFrame) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (destinationAddress)
 	lengthInBits += 8
@@ -128,26 +128,28 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 	}
 
 	// Simple Field (destinationAddress)
-	destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
+	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
 		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field")
 	}
+	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
-	sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
+	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	sourceAddress := _sourceAddress
 
+	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (command)
-	command, _commandErr := DF1CommandParse(readBuffer)
+	_command, _commandErr := DF1CommandParse(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}
+	command := CastDF1Command(_command)
 	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -176,7 +178,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")
 		}
-		checksum, _checksumErr := DF1UtilsCrcCheck(destinationAddress, sourceAddress, command)
+		checksum, _checksumErr := CrcCheck(destinationAddress, sourceAddress, command)
 		if _checksumErr != nil {
 			return nil, errors.Wrap(_checksumErr, "Error parsing 'checksum' field")
 		}
@@ -193,11 +195,11 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 	_child := &DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
-		Command:            command,
-		Parent:             &DF1Symbol{},
+		Command:            CastDF1Command(command),
+		DF1Symbol:          &DF1Symbol{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1Symbol.Child = _child
+	return _child.DF1Symbol, nil
 }
 
 func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -246,7 +248,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Checksum Field (checksum) (Calculated)
 		{
-			_checksum, _checksumErr := DF1UtilsCrcCheck(m.DestinationAddress, m.SourceAddress, m.Command)
+			_checksum, _checksumErr := CrcCheck(m.DestinationAddress, m.SourceAddress, m.Command)
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")
 			}
@@ -261,7 +263,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1SymbolMessageFrame) String() string {

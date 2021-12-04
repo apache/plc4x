@@ -17,10 +17,10 @@
  * under the License.
  */
 
-[discriminatedType 'Request'
+[discriminatedType Request byteOrder='BIG_ENDIAN'
     // TODO: Replace this with an discriminator field asap
-    [simple RequestType 'type']
-    [typeSwitch 'type'
+    [simple RequestType type]
+    [typeSwitch type
         ['RequestType.ReadRequest' 'ReadRequest'
             [simple
         ]
@@ -36,7 +36,7 @@
     ]
 ]
 
-[enum uint 8 'RequestType'
+[enum uint 8 RequestType
     ['0x01' ReadRequest]
     ['0x02' ReadResponse]
     ['0x03' WriteRequest]

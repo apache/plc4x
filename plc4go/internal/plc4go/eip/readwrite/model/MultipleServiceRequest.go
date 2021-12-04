@@ -33,8 +33,8 @@ const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
 // The data-structure of this message
 type MultipleServiceRequest struct {
-	Data   *Services
-	Parent *CipService
+	*CipService
+	Data *Services
 }
 
 // The corresponding interface
@@ -56,11 +56,11 @@ func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {
 
 func NewMultipleServiceRequest(data *Services) *CipService {
 	child := &MultipleServiceRequest{
-		Data:   data,
-		Parent: NewCipService(),
+		Data:       data,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastMultipleServiceRequest(structType interface{}) *MultipleServiceRequest {
@@ -91,12 +91,12 @@ func (m *MultipleServiceRequest) LengthInBits() uint16 {
 }
 
 func (m *MultipleServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Const Field (RequestPathSize)
+	// Const Field (requestPathSize)
 	lengthInBits += 8
 
-	// Const Field (RequestPath)
+	// Const Field (requestPath)
 	lengthInBits += 32
 
 	// Simple field (data)
@@ -114,33 +114,33 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 		return nil, pullErr
 	}
 
-	// Const Field (RequestPathSize)
-	RequestPathSize, _RequestPathSizeErr := readBuffer.ReadInt8("RequestPathSize", 8)
-	if _RequestPathSizeErr != nil {
-		return nil, errors.Wrap(_RequestPathSizeErr, "Error parsing 'RequestPathSize' field")
+	// Const Field (requestPathSize)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	if _requestPathSizeErr != nil {
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
 	}
-	if RequestPathSize != MultipleServiceRequest_REQUESTPATHSIZE {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATHSIZE) + " but got " + fmt.Sprintf("%d", RequestPathSize))
-	}
-
-	// Const Field (RequestPath)
-	RequestPath, _RequestPathErr := readBuffer.ReadUint32("RequestPath", 32)
-	if _RequestPathErr != nil {
-		return nil, errors.Wrap(_RequestPathErr, "Error parsing 'RequestPath' field")
-	}
-	if RequestPath != MultipleServiceRequest_REQUESTPATH {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATH) + " but got " + fmt.Sprintf("%d", RequestPath))
+	if requestPathSize != MultipleServiceRequest_REQUESTPATHSIZE {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATHSIZE) + " but got " + fmt.Sprintf("%d", requestPathSize))
 	}
 
-	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-		return nil, pullErr
+	// Const Field (requestPath)
+	requestPath, _requestPathErr := readBuffer.ReadUint32("requestPath", 32)
+	if _requestPathErr != nil {
+		return nil, errors.Wrap(_requestPathErr, "Error parsing 'requestPath' field")
+	}
+	if requestPath != MultipleServiceRequest_REQUESTPATH {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATH) + " but got " + fmt.Sprintf("%d", requestPath))
 	}
 
 	// Simple Field (data)
-	data, _dataErr := ServicesParse(readBuffer, uint16(serviceLen)-uint16(uint16(6)))
+	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
+		return nil, pullErr
+	}
+	_data, _dataErr := ServicesParse(readBuffer, uint16(serviceLen)-uint16(uint16(6)))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := CastServices(_data)
 	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -151,11 +151,11 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Create a partially initialized instance
 	_child := &MultipleServiceRequest{
-		Data:   data,
-		Parent: &CipService{},
+		Data:       CastServices(data),
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -164,16 +164,16 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 			return pushErr
 		}
 
-		// Const Field (RequestPathSize)
-		_RequestPathSizeErr := writeBuffer.WriteInt8("RequestPathSize", 8, 0x02)
-		if _RequestPathSizeErr != nil {
-			return errors.Wrap(_RequestPathSizeErr, "Error serializing 'RequestPathSize' field")
+		// Const Field (requestPathSize)
+		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, 0x02)
+		if _requestPathSizeErr != nil {
+			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
-		// Const Field (RequestPath)
-		_RequestPathErr := writeBuffer.WriteUint32("RequestPath", 32, 0x01240220)
-		if _RequestPathErr != nil {
-			return errors.Wrap(_RequestPathErr, "Error serializing 'RequestPath' field")
+		// Const Field (requestPath)
+		_requestPathErr := writeBuffer.WriteUint32("requestPath", 32, 0x01240220)
+		if _requestPathErr != nil {
+			return errors.Wrap(_requestPathErr, "Error serializing 'requestPath' field")
 		}
 
 		// Simple Field (data)
@@ -193,7 +193,7 @@ func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MultipleServiceRequest) String() string {

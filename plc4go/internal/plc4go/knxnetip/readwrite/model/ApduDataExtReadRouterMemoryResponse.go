@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtReadRouterMemoryResponse struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtReadRouterMemoryResponse) InitializeParent(parent *ApduDataE
 
 func NewApduDataExtReadRouterMemoryResponse() *ApduDataExt {
 	child := &ApduDataExtReadRouterMemoryResponse{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtReadRouterMemoryResponse(structType interface{}) *ApduDataExtReadRouterMemoryResponse {
@@ -83,7 +83,7 @@ func (m *ApduDataExtReadRouterMemoryResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtReadRouterMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtReadRouterMemoryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer) (*Apd
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRouterMemoryResponse{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtReadRouterMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtReadRouterMemoryResponse) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtReadRouterMemoryResponse) String() string {

@@ -19,22 +19,14 @@
 
 package model
 
-import "net/url"
+import (
+	"net/url"
+)
 
-type PlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
-}
-
-func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
-	return PlcDiscoveryEvent{
-		ProtocolCode:  protocolCode,
-		TransportCode: transportCode,
-		TransportUrl:  transportUrl,
-		Options:       options,
-		Name:          name,
-	}
+type PlcDiscoveryEvent interface {
+	GetProtocolCode() string
+	GetTransportCode() string
+	GetTransportUrl() url.URL
+	GetOptions() map[string][]string
+	GetName() string
 }

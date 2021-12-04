@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-kafka</artifactId>
@@ -32,8 +32,8 @@
   <description>Integration module for integrating PLC4X into Apache Kafka (Kafka-Connect-Plugin)</description>
 
   <properties>
-    <kafka.version>2.5.0</kafka.version>
-    <kafka.connect.maven.plugin.version>0.11.3</kafka.connect.maven.plugin.version>
+    <kafka.version>2.8.0</kafka.version>
+    <kafka.connect.maven.plugin.version>0.12.0</kafka.connect.maven.plugin.version>
   </properties>
 
   <repositories>
@@ -88,8 +88,8 @@
       </plugin>
       <plugin>
         <groupId>io.confluent</groupId>
-        <version>${kafka.connect.maven.plugin.version}</version>
         <artifactId>kafka-connect-maven-plugin</artifactId>
+        <version>${kafka.connect.maven.plugin.version}</version>
         <executions>
             <execution>
                 <goals>
@@ -180,17 +180,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -210,61 +210,61 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 

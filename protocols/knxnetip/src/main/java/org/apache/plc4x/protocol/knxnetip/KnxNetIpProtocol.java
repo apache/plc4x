@@ -22,12 +22,16 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageForma
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class KnxNetIpProtocol implements Protocol {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocol.class);
 
     @Override
     public String getName() {
@@ -36,24 +40,27 @@ public class KnxNetIpProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+        LOGGER.info("Parsing: knxnetip.mspec");
         InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/knxnetip.mspec");
-        if(schemaInputStream == null) {
+        if (schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
         Map<String, TypeDefinition> typeDefinitionMap =
             new LinkedHashMap<>(new MessageFormatParser().parse(schemaInputStream));
 
+        LOGGER.info("Parsing: knx-master-data.mspec");
         InputStream masterDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/knx-master-data.mspec");
-        if(masterDataInputStream == null) {
+        if (masterDataInputStream == null) {
             throw new GenerationException("Error loading knx-master-data schema for protocol '" + getName() + "'");
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(masterDataInputStream));
 
+        LOGGER.info("Parsing: device-info.mspec");
         InputStream deviceDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/device-info.mspec");
-        if(deviceDataInputStream == null) {
+        if (deviceDataInputStream == null) {
             throw new GenerationException("Error loading device-info schema for protocol '" + getName() + "'");
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(deviceDataInputStream));

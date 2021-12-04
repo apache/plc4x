@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-transports</artifactId>
@@ -34,6 +34,7 @@
   <description>Collection of base-types for implementing different types of drivers.</description>
 
   <modules>
+    <module>can</module>
     <module>pcap-replay</module>
     <module>pcap-shared</module>
     <module>raw-socket</module>
@@ -41,6 +42,7 @@
     <module>serial</module>
     <module>tcp</module>
     <module>udp</module>
+    <module>virtualcan</module>
     <module>test</module>
   </modules>
 

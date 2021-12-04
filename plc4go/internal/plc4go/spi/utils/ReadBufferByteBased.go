@@ -82,8 +82,26 @@ func (rb *byteReadBuffer) Reset() {
 	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
 }
 
+func (rb *byteReadBuffer) SetByteOrder(byteOrder binary.ByteOrder) {
+	rb.byteOrder = byteOrder
+}
+
+func (rb *byteReadBuffer) GetByteOrder() binary.ByteOrder {
+	return rb.byteOrder
+}
+
 func (rb *byteReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
+}
+
+func (rb *byteReadBuffer) SetPos(pos uint16) {
+	rb.Reset()
+	bytesToSkip := make([]byte, pos)
+	_, err := rb.reader.Read(bytesToSkip)
+	if err != nil {
+		panic(err)
+	}
+	rb.pos = uint64(pos * 8)
 }
 
 func (rb *byteReadBuffer) GetBytes() []byte {
@@ -300,21 +318,17 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 	return res, nil
 }
 
-func (rb *byteReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, _ ...WithReaderArgs) (float32, error) {
+func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (float32, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigFloat(logicalName, signed, exponentBitLength, mantissaBitLength)
+		bigInt, err := rb.ReadBigFloat(logicalName, bitLength)
 		if err != nil {
 			return 0, err
 		}
 		f, _ := bigInt.Float32()
 		return f, nil
 	}
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength++
-	}
-	if signed && exponentBitLength == 8 && mantissaBitLength == 23 {
+	if bitLength == 32 {
 		rb.pos += uint64(bitLength)
 		uintValue := uint32(rb.reader.TryReadBits(bitLength))
 		res := math.Float32frombits(uintValue)
@@ -324,19 +338,16 @@ func (rb *byteReadBuffer) ReadFloat32(logicalName string, signed bool, exponentB
 		return res, nil
 	} else if bitLength < 32 {
 		// TODO: Note ... this is the format as described in the KNX specification
-		sign := true
 		var err error
-		if signed {
-			sign, err = rb.ReadBit(logicalName)
-			if err != nil {
-				return 0.0, errors.Wrap(err, "error reading sign")
-			}
+		sign, err := rb.ReadBit(logicalName)
+		if err != nil {
+			return 0.0, errors.Wrap(err, "error reading sign")
 		}
-		exp, err := rb.ReadInt32(logicalName, exponentBitLength)
+		exp, err := rb.ReadInt32(logicalName, 5)
 		if err != nil {
 			return 0.0, errors.Wrap(err, "error reading exponent")
 		}
-		mantissa, err := rb.ReadUint32(logicalName, mantissaBitLength)
+		mantissa, err := rb.ReadUint32(logicalName, 10)
 		// In the mantissa notation actually the first bit is omitted, we need to add it back
 		f := (0.01 * float64(mantissa)) * math.Pow(float64(2), float64(exp))
 		if sign {
@@ -348,8 +359,7 @@ func (rb *byteReadBuffer) ReadFloat32(logicalName string, signed bool, exponentB
 	}
 }
 
-func (rb *byteReadBuffer) ReadFloat64(_ string, _ bool, exponentBitLength uint8, mantissaBitLength uint8, _ ...WithReaderArgs) (float64, error) {
-	bitLength := 1 + exponentBitLength + mantissaBitLength
+func (rb *byteReadBuffer) ReadFloat64(_ string, bitLength uint8, _ ...WithReaderArgs) (float64, error) {
 	rb.pos += uint64(bitLength)
 	uintValue := rb.reader.TryReadBits(bitLength)
 	if rb.byteOrder == binary.LittleEndian {
@@ -364,8 +374,8 @@ func (rb *byteReadBuffer) ReadFloat64(_ string, _ bool, exponentBitLength uint8,
 	return res, nil
 }
 
-func (rb *byteReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, _ ...WithReaderArgs) (*big.Float, error) {
-	readFloat64, err := rb.ReadFloat64(logicalName, signed, exponentBitLength, mantissaBitLength)
+func (rb *byteReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, _ ...WithReaderArgs) (*big.Float, error) {
+	readFloat64, err := rb.ReadFloat64(logicalName, bitLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error reading float64")
 	}

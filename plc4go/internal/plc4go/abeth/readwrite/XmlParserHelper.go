@@ -47,11 +47,11 @@ func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 	case "DF1RequestMessage":
 		return model.DF1RequestMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1ResponseMessage":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		payloadLength := uint16(parsedUint)
+		payloadLength := uint16(parsedUint0)
 		return model.DF1ResponseMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
 	case "CIPEncapsulationPacket":
 		return model.CIPEncapsulationPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

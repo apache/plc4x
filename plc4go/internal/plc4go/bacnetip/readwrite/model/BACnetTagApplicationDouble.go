@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationDouble struct {
-	Value  float64
-	Parent *BACnetTag
+	*BACnetTag
+	Value float64
 }
 
 // The corresponding interface
@@ -42,24 +42,26 @@ type IBACnetTagApplicationDouble interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationDouble) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationDouble) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationDouble) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
+func (m *BACnetTagApplicationDouble) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationDouble(value float64, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationDouble(value float64, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationDouble{
-		Value:  value,
-		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		Value:     value,
+		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationDouble(structType interface{}) *BACnetTagApplicationDouble {
@@ -90,7 +92,7 @@ func (m *BACnetTagApplicationDouble) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationDouble) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -102,16 +104,17 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDoubleParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagApplicationDouble"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadFloat64("value", true, 11, 52)
+	_value, _valueErr := readBuffer.ReadFloat64("value", 64)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagApplicationDouble"); closeErr != nil {
 		return nil, closeErr
@@ -119,11 +122,11 @@ func BACnetTagApplicationDoubleParse(readBuffer utils.ReadBuffer, lengthValueTyp
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationDouble{
-		Value:  value,
-		Parent: &BACnetTag{},
+		Value:     value,
+		BACnetTag: &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationDouble) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +147,7 @@ func (m *BACnetTagApplicationDouble) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationDouble) String() string {

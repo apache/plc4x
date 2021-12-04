@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationNull struct {
-	Parent *BACnetTag
+	*BACnetTag
 }
 
 // The corresponding interface
@@ -40,23 +40,25 @@ type IBACnetTagApplicationNull interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationNull) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationNull) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationNull) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
+func (m *BACnetTagApplicationNull) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationNull(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationNull(tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationNull{
-		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationNull(structType interface{}) *BACnetTagApplicationNull {
@@ -87,7 +89,7 @@ func (m *BACnetTagApplicationNull) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationNull) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -107,10 +109,10 @@ func BACnetTagApplicationNullParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationNull{
-		Parent: &BACnetTag{},
+		BACnetTag: &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationNull) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +126,7 @@ func (m *BACnetTagApplicationNull) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationNull) String() string {

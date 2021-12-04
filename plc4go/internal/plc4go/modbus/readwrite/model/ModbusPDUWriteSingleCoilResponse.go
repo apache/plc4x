@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUWriteSingleCoilResponse struct {
+	*ModbusPDU
 	Address uint16
 	Value   uint16
-	Parent  *ModbusPDU
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IModbusPDUWriteSingleCoilResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUWriteSingleCoilResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) InitializeParent(parent *ModbusPDU) {
@@ -60,12 +60,12 @@ func (m *ModbusPDUWriteSingleCoilResponse) InitializeParent(parent *ModbusPDU) {
 
 func NewModbusPDUWriteSingleCoilResponse(address uint16, value uint16) *ModbusPDU {
 	child := &ModbusPDUWriteSingleCoilResponse{
-		Address: address,
-		Value:   value,
-		Parent:  NewModbusPDU(),
+		Address:   address,
+		Value:     value,
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUWriteSingleCoilResponse(structType interface{}) *ModbusPDUWriteSingleCoilResponse {
@@ -96,7 +96,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -111,22 +111,24 @@ func (m *ModbusPDUWriteSingleCoilResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (address)
-	address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := _address
 
 	// Simple Field (value)
-	value, _valueErr := readBuffer.ReadUint16("value", 16)
+	_value, _valueErr := readBuffer.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteSingleCoilResponse"); closeErr != nil {
 		return nil, closeErr
@@ -134,12 +136,12 @@ func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer) (*Modbus
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleCoilResponse{
-		Address: address,
-		Value:   value,
-		Parent:  &ModbusPDU{},
+		Address:   address,
+		Value:     value,
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +169,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) String() string {

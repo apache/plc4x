@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type CIPEncapsulationReadRequest struct {
+	*CIPEncapsulationPacket
 	Request *DF1RequestMessage
-	Parent  *CIPEncapsulationPacket
 }
 
 // The corresponding interface
@@ -47,19 +47,19 @@ func (m *CIPEncapsulationReadRequest) CommandType() uint16 {
 }
 
 func (m *CIPEncapsulationReadRequest) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.Parent.SessionHandle = sessionHandle
-	m.Parent.Status = status
-	m.Parent.SenderContext = senderContext
-	m.Parent.Options = options
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
 func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationReadRequest{
-		Request: request,
-		Parent:  NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Request:                request,
+		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CIPEncapsulationPacket
 }
 
 func CastCIPEncapsulationReadRequest(structType interface{}) *CIPEncapsulationReadRequest {
@@ -90,7 +90,7 @@ func (m *CIPEncapsulationReadRequest) LengthInBits() uint16 {
 }
 
 func (m *CIPEncapsulationReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (request)
 	lengthInBits += m.Request.LengthInBits()
@@ -107,15 +107,15 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 		return nil, pullErr
 	}
 
+	// Simple Field (request)
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (request)
-	request, _requestErr := DF1RequestMessageParse(readBuffer)
+	_request, _requestErr := DF1RequestMessageParse(readBuffer)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")
 	}
+	request := CastDF1RequestMessage(_request)
 	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -126,11 +126,11 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 
 	// Create a partially initialized instance
 	_child := &CIPEncapsulationReadRequest{
-		Request: request,
-		Parent:  &CIPEncapsulationPacket{},
+		Request:                CastDF1RequestMessage(request),
+		CIPEncapsulationPacket: &CIPEncapsulationPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CIPEncapsulationPacket.Child = _child
+	return _child.CIPEncapsulationPacket, nil
 }
 
 func (m *CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -156,7 +156,7 @@ func (m *CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CIPEncapsulationReadRequest) String() string {

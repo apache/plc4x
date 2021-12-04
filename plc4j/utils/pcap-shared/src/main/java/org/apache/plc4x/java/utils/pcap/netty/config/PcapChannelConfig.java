@@ -60,26 +60,26 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
 
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
-        if(option == PcapChannelOption.SUPPORT_VLANS) {
-            if(value instanceof Boolean) {
+        if (option == PcapChannelOption.SUPPORT_VLANS) {
+            if (value instanceof Boolean) {
                 supportVlans = (Boolean) value;
                 return true;
             }
             return false;
-        } else if(option == PcapChannelOption.PORT) {
-            if(value instanceof Integer) {
+        } else if (option == PcapChannelOption.PORT) {
+            if (value instanceof Integer) {
                 port = (Integer) value;
                 return true;
             }
             return false;
-        } else if(option == PcapChannelOption.PROTOCOL_ID) {
-            if(value instanceof Integer) {
+        } else if (option == PcapChannelOption.PROTOCOL_ID) {
+            if (value instanceof Integer) {
                 protocolId = (Integer) value;
                 return true;
             }
             return false;
-        } else if(option == PcapChannelOption.PACKET_HANDLER) {
-            if(value instanceof PacketHandler) {
+        } else if (option == PcapChannelOption.PACKET_HANDLER) {
+            if (value instanceof PacketHandler) {
                 packetHandler = (PacketHandler) value;
                 return true;
             }
@@ -119,22 +119,21 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
 
     public String getFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
         StringBuilder sb = new StringBuilder();
-        if(isSupportVlans()) {
-            final PcapChannelConfig clone = (PcapChannelConfig) this.clone();
+        if (isSupportVlans()) {
+            final PcapChannelConfig clone = this.clone();
             clone.supportVlans = false;
             String subFilterString = clone.getFilterString(localAddress, remoteAddress);
-            if(subFilterString.isEmpty()) {
+            if (subFilterString.isEmpty()) {
                 sb.append(" and (vlan)");
             } else {
-                sb.append(" and ((vlan and ").append(subFilterString).append(") " +
-                    "or (").append(subFilterString).append("))");
+                sb.append(" and ((vlan and ").append(subFilterString).append(") or (").append(subFilterString).append("))");
             }
         } else {
             if (getProtocolId() != ALL_PROTOCOLS) {
                 sb.append(" and (ether proto ").append(getProtocolId()).append(")");
             }
             // Add a filter for TCP or UDP port.
-            if(getPort() != ALL_PORTS) {
+            if (getPort() != ALL_PORTS) {
                 sb.append(" and (port ").append(getPort()).append(")");
             }
             // Add a filter for source or target address.
@@ -146,7 +145,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
                 sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
             }*/
         }
-        return (sb.length() > 0) ? sb.toString().substring(" and ".length()) : "";
+        return (sb.length() > 0) ? sb.substring(" and ".length()) : "";
     }
 
 }

@@ -90,7 +90,7 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -99,12 +99,12 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType *FirmwareType
 	var _parent *ComObjectTable
 	var typeSwitchError error
 	switch {
-	case *firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer)
-	case *firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer)
-	case *firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer)
+	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
+		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
+	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
+		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
+	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
+		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -132,8 +132,7 @@ func (m *ComObjectTable) SerializeParent(writeBuffer utils.WriteBuffer, child IC
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

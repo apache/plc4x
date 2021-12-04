@@ -29,8 +29,8 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
+	*ConnectionRequestInformation
 	KnxLayer KnxLayer
-	Parent   *ConnectionRequestInformation
 }
 
 // The corresponding interface
@@ -52,11 +52,11 @@ func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *
 
 func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationTunnelConnection{
-		KnxLayer: knxLayer,
-		Parent:   NewConnectionRequestInformation(),
+		KnxLayer:                     knxLayer,
+		ConnectionRequestInformation: NewConnectionRequestInformation(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ConnectionRequestInformation
 }
 
 func CastConnectionRequestInformationTunnelConnection(structType interface{}) *ConnectionRequestInformationTunnelConnection {
@@ -87,7 +87,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (knxLayer)
 	lengthInBits += 8
@@ -107,15 +107,15 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 		return nil, pullErr
 	}
 
+	// Simple Field (knxLayer)
 	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxLayer)
-	knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
+	_knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
 	}
+	knxLayer := _knxLayer
 	if closeErr := readBuffer.CloseContext("knxLayer"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,11 +140,11 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationTunnelConnection{
-		KnxLayer: knxLayer,
-		Parent:   &ConnectionRequestInformation{},
+		KnxLayer:                     knxLayer,
+		ConnectionRequestInformation: &ConnectionRequestInformation{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ConnectionRequestInformation.Child = _child
+	return _child.ConnectionRequestInformation, nil
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +178,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) String() string {

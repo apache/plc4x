@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataUserMessage struct {
-	Parent *ApduData
+	*ApduData
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataUserMessage) InitializeParent(parent *ApduData) {
 
 func NewApduDataUserMessage() *ApduData {
 	child := &ApduDataUserMessage{
-		Parent: NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataUserMessage(structType interface{}) *ApduDataUserMessage {
@@ -83,7 +83,7 @@ func (m *ApduDataUserMessage) LengthInBits() uint16 {
 }
 
 func (m *ApduDataUserMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataUserMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataUserMessageParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataUserMessageParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataUserMessage{
-		Parent: &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataUserMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataUserMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataUserMessage) String() string {

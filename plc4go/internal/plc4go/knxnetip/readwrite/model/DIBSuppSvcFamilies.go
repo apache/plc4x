@@ -100,10 +100,11 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, 
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
+	_descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
+	descriptionType := _descriptionType
 
 	// Array field (serviceIds)
 	if pullErr := readBuffer.PullContext("serviceIds", utils.WithRenderAsList(true)); pullErr != nil {
@@ -111,14 +112,16 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, 
 	}
 	// Length array
 	serviceIds := make([]*ServiceId, 0)
-	_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
-	_serviceIdsEndPos := readBuffer.GetPos() + uint16(_serviceIdsLength)
-	for readBuffer.GetPos() < _serviceIdsEndPos {
-		_item, _err := ServiceIdParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field")
+	{
+		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
+		_serviceIdsEndPos := readBuffer.GetPos() + uint16(_serviceIdsLength)
+		for readBuffer.GetPos() < _serviceIdsEndPos {
+			_item, _err := ServiceIdParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field")
+			}
+			serviceIds = append(serviceIds, _item)
 		}
-		serviceIds = append(serviceIds, _item)
 	}
 	if closeErr := readBuffer.CloseContext("serviceIds", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

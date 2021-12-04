@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BVLCDeleteForeignDeviceTableEntry struct {
-	Parent *BVLC
+	*BVLC
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {
 
 func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
 	child := &BVLCDeleteForeignDeviceTableEntry{
-		Parent: NewBVLC(),
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteForeignDeviceTableEntry {
@@ -83,7 +83,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLC,
 
 	// Create a partially initialized instance
 	_child := &BVLCDeleteForeignDeviceTableEntry{
-		Parent: &BVLC{},
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) String() string {

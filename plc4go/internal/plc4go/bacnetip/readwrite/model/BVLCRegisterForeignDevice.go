@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BVLCRegisterForeignDevice struct {
-	Parent *BVLC
+	*BVLC
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC) {
 
 func NewBVLCRegisterForeignDevice() *BVLC {
 	child := &BVLCRegisterForeignDevice{
-		Parent: NewBVLC(),
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCRegisterForeignDevice(structType interface{}) *BVLCRegisterForeignDevice {
@@ -83,7 +83,7 @@ func (m *BVLCRegisterForeignDevice) LengthInBits() uint16 {
 }
 
 func (m *BVLCRegisterForeignDevice) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLC, error) 
 
 	// Create a partially initialized instance
 	_child := &BVLCRegisterForeignDevice{
-		Parent: &BVLC{},
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BVLCRegisterForeignDevice) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCRegisterForeignDevice) String() string {

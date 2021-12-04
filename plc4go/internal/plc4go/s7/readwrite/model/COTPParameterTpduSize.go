@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type COTPParameterTpduSize struct {
+	*COTPParameter
 	TpduSize COTPTpduSize
-	Parent   *COTPParameter
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *COTPParameterTpduSize) InitializeParent(parent *COTPParameter) {
 
 func NewCOTPParameterTpduSize(tpduSize COTPTpduSize) *COTPParameter {
 	child := &COTPParameterTpduSize{
-		TpduSize: tpduSize,
-		Parent:   NewCOTPParameter(),
+		TpduSize:      tpduSize,
+		COTPParameter: NewCOTPParameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPParameter
 }
 
 func CastCOTPParameterTpduSize(structType interface{}) *COTPParameterTpduSize {
@@ -86,9 +86,9 @@ func (m *COTPParameterTpduSize) LengthInBits() uint16 {
 }
 
 func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Enum Field (tpduSize)
+	// Simple field (tpduSize)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -98,19 +98,20 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (tpduSize)
 	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (tpduSize)
-	tpduSize, _tpduSizeErr := COTPTpduSizeParse(readBuffer)
+	_tpduSize, _tpduSizeErr := COTPTpduSizeParse(readBuffer)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
+	tpduSize := _tpduSize
 	if closeErr := readBuffer.CloseContext("tpduSize"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -121,11 +122,11 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer) (*COTPParameter, er
 
 	// Create a partially initialized instance
 	_child := &COTPParameterTpduSize{
-		TpduSize: tpduSize,
-		Parent:   &COTPParameter{},
+		TpduSize:      tpduSize,
+		COTPParameter: &COTPParameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPParameter.Child = _child
+	return _child.COTPParameter, nil
 }
 
 func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -134,17 +135,16 @@ func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
 			return pushErr
 		}
 
+		// Simple Field (tpduSize)
 		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (tpduSize)
-		tpduSize := CastCOTPTpduSize(m.TpduSize)
-		_tpduSizeErr := tpduSize.Serialize(writeBuffer)
-		if _tpduSizeErr != nil {
-			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
-		}
+		_tpduSizeErr := m.TpduSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
 			return popErr
+		}
+		if _tpduSizeErr != nil {
+			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterTpduSize"); popErr != nil {
@@ -152,7 +152,7 @@ func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPParameterTpduSize) String() string {

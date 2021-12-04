@@ -86,10 +86,10 @@ There are multiple articles and sources which attempts to give introduction, yet
 There are two dominant formats of frames - CAN 2.0A and 2.0B:
 
 - CAN 2.0A uses 11 bit identifier and up to 8 bytes of data.
-- CAN 2.0B uses 29 bit identifier and up to 64 bytes of data.
+- CAN 2.0B uses 29 bit identifier and up to 8 bytes of data.
 
 To make things worse with introduction of CAN FD amount of combinations increased even more.
-Double check frame format as this integration supports CANopen and does not support CANopen FD.
+Double check frame format as this integration supports CANopen and does not support CANopen FD nor CAN 2.0B.
 
 Further reading on CAN flavors:
 https://en.wikipedia.org/wiki/CAN_bus[https://en.wikipedia.org/wiki/CAN_bus]

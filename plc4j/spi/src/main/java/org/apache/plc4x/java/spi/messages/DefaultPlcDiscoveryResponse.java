@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -57,7 +58,7 @@ public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, Serial
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcDiscoveryResponse");
 
         // TODO: Implement

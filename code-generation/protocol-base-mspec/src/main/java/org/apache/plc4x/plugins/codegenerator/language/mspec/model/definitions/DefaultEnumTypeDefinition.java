@@ -22,21 +22,21 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements EnumTypeDefinition {
 
     private final TypeReference type;
-    private final EnumValue[] enumValues;
+    private final List<EnumValue> enumValues;
     private final Map<String, TypeReference> constants;
 
-    public DefaultEnumTypeDefinition(String name, TypeReference type, EnumValue[] enumValues,
-                                     Argument[] constants, String[] tags) {
-        super(name, constants, tags);
-        this.type = type;
-        this.enumValues = enumValues;
+    public DefaultEnumTypeDefinition(String name, TypeReference type, Map<String, Term> attributes, List<EnumValue> enumValues,
+                                     List<Argument> constants) {
+        super(name, attributes, constants);
+        this.type = Objects.requireNonNull(type);
+        this.enumValues = Objects.requireNonNull(enumValues);
         this.constants = new HashMap<>();
         if (constants != null) {
             for (Argument constant : constants) {
@@ -51,13 +51,13 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     }
 
     @Override
-    public EnumValue[] getEnumValues() {
+    public List<EnumValue> getEnumValues() {
         return enumValues;
     }
 
     @Override
-    public String[] getConstantNames() {
-        return constants.keySet().toArray(new String[0]);
+    public List<String> getConstantNames() {
+        return new ArrayList<>(constants.keySet());
     }
 
     @Override

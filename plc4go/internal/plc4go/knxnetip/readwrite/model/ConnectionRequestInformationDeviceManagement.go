@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationDeviceManagement struct {
-	Parent *ConnectionRequestInformation
+	*ConnectionRequestInformation
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ConnectionRequestInformationDeviceManagement) InitializeParent(parent *
 
 func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationDeviceManagement{
-		Parent: NewConnectionRequestInformation(),
+		ConnectionRequestInformation: NewConnectionRequestInformation(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ConnectionRequestInformation
 }
 
 func CastConnectionRequestInformationDeviceManagement(structType interface{}) *ConnectionRequestInformationDeviceManagement {
@@ -83,7 +83,7 @@ func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func ConnectionRequestInformationDeviceManagementParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationDeviceManagement{
-		Parent: &ConnectionRequestInformation{},
+		ConnectionRequestInformation: &ConnectionRequestInformation{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ConnectionRequestInformation.Child = _child
+	return _child.ConnectionRequestInformation, nil
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ConnectionRequestInformationDeviceManagement) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) String() string {

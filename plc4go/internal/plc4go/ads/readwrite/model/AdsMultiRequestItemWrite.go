@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type AdsMultiRequestItemWrite struct {
+	*AdsMultiRequestItem
 	ItemIndexGroup  uint32
 	ItemIndexOffset uint32
 	ItemWriteLength uint32
-	Parent          *AdsMultiRequestItem
 }
 
 // The corresponding interface
@@ -45,7 +45,7 @@ type IAdsMultiRequestItemWrite interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsMultiRequestItemWrite) IndexGroup() uint32 {
-	return 61569
+	return uint32(61569)
 }
 
 func (m *AdsMultiRequestItemWrite) InitializeParent(parent *AdsMultiRequestItem) {
@@ -53,13 +53,13 @@ func (m *AdsMultiRequestItemWrite) InitializeParent(parent *AdsMultiRequestItem)
 
 func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemWrite{
-		ItemIndexGroup:  itemIndexGroup,
-		ItemIndexOffset: itemIndexOffset,
-		ItemWriteLength: itemWriteLength,
-		Parent:          NewAdsMultiRequestItem(),
+		ItemIndexGroup:      itemIndexGroup,
+		ItemIndexOffset:     itemIndexOffset,
+		ItemWriteLength:     itemWriteLength,
+		AdsMultiRequestItem: NewAdsMultiRequestItem(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsMultiRequestItem
 }
 
 func CastAdsMultiRequestItemWrite(structType interface{}) *AdsMultiRequestItemWrite {
@@ -90,7 +90,7 @@ func (m *AdsMultiRequestItemWrite) LengthInBits() uint16 {
 }
 
 func (m *AdsMultiRequestItemWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -108,28 +108,31 @@ func (m *AdsMultiRequestItemWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemWrite"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (itemIndexGroup)
-	itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
+	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
 		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
+	itemIndexGroup := _itemIndexGroup
 
 	// Simple Field (itemIndexOffset)
-	itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
+	_itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
 		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
+	itemIndexOffset := _itemIndexOffset
 
 	// Simple Field (itemWriteLength)
-	itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
+	_itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
 		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
 	}
+	itemWriteLength := _itemWriteLength
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItemWrite"); closeErr != nil {
 		return nil, closeErr
@@ -137,13 +140,13 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer) (*AdsMultiReques
 
 	// Create a partially initialized instance
 	_child := &AdsMultiRequestItemWrite{
-		ItemIndexGroup:  itemIndexGroup,
-		ItemIndexOffset: itemIndexOffset,
-		ItemWriteLength: itemWriteLength,
-		Parent:          &AdsMultiRequestItem{},
+		ItemIndexGroup:      itemIndexGroup,
+		ItemIndexOffset:     itemIndexOffset,
+		ItemWriteLength:     itemWriteLength,
+		AdsMultiRequestItem: &AdsMultiRequestItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsMultiRequestItem.Child = _child
+	return _child.AdsMultiRequestItem, nil
 }
 
 func (m *AdsMultiRequestItemWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +181,7 @@ func (m *AdsMultiRequestItemWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsMultiRequestItemWrite) String() string {

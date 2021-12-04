@@ -30,13 +30,13 @@ import (
 
 // The data-structure of this message
 type AdsAddDeviceNotificationRequest struct {
+	*AdsData
 	IndexGroup       uint32
 	IndexOffset      uint32
 	Length           uint32
 	TransmissionMode uint32
 	MaxDelay         uint32
 	CycleTime        uint32
-	Parent           *AdsData
 }
 
 // The corresponding interface
@@ -54,7 +54,7 @@ func (m *AdsAddDeviceNotificationRequest) CommandId() CommandId {
 }
 
 func (m *AdsAddDeviceNotificationRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {
@@ -68,10 +68,10 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		Parent:           NewAdsData(),
+		AdsData:          NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsAddDeviceNotificationRequest(structType interface{}) *AdsAddDeviceNotificationRequest {
@@ -102,7 +102,7 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -132,46 +132,52 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
+	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
+	indexOffset := _indexOffset
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	// Simple Field (transmissionMode)
-	transmissionMode, _transmissionModeErr := readBuffer.ReadUint32("transmissionMode", 32)
+	_transmissionMode, _transmissionModeErr := readBuffer.ReadUint32("transmissionMode", 32)
 	if _transmissionModeErr != nil {
 		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field")
 	}
+	transmissionMode := _transmissionMode
 
 	// Simple Field (maxDelay)
-	maxDelay, _maxDelayErr := readBuffer.ReadUint32("maxDelay", 32)
+	_maxDelay, _maxDelayErr := readBuffer.ReadUint32("maxDelay", 32)
 	if _maxDelayErr != nil {
 		return nil, errors.Wrap(_maxDelayErr, "Error parsing 'maxDelay' field")
 	}
+	maxDelay := _maxDelay
 
 	// Simple Field (cycleTime)
-	cycleTime, _cycleTimeErr := readBuffer.ReadUint32("cycleTime", 32)
+	_cycleTime, _cycleTimeErr := readBuffer.ReadUint32("cycleTime", 32)
 	if _cycleTimeErr != nil {
 		return nil, errors.Wrap(_cycleTimeErr, "Error parsing 'cycleTime' field")
 	}
+	cycleTime := _cycleTime
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -199,10 +205,10 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData
 		TransmissionMode: transmissionMode,
 		MaxDelay:         maxDelay,
 		CycleTime:        cycleTime,
-		Parent:           &AdsData{},
+		AdsData:          &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -266,7 +272,7 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsAddDeviceNotificationRequest) String() string {

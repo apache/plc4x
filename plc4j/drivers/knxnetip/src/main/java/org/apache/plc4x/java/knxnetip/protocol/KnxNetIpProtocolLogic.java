@@ -37,7 +37,6 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
-import org.apache.plc4x.java.knxnetip.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
@@ -114,7 +113,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 .handle(searchResponse -> {
                     LOGGER.info("Got KNXnet/IP Search Response.");
                     // Check if this device supports tunneling services.
-                    final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
+                    final ServiceId tunnelingService = searchResponse.getDibSuppSvcFamilies().getServiceIds().stream().filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
 
                     // If this device supports this type of service, tell the driver, we found a suitable device.
                     if (tunnelingService != null) {
@@ -292,7 +291,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
-                } catch (ParseException e) {
+                } catch (SerializationException e) {
                     future.completeExceptionally(new PlcRuntimeException("Error serializing PlcValue.", e));
                     return future;
                 }
@@ -341,7 +340,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             TunnelingRequest knxRequest = new TunnelingRequest(
                 new TunnelingRequestDataBlock(communicationChannelId,
                     (short) sequenceCounter.getAndIncrement()),
-                new LDataReq((short) 0, new CEMIAdditionalInformation[0],
+                new LDataReq((short) 0, new ArrayList<>(0),
                     new LDataExtended(false, false, CEMIPriority.LOW, false, false,
                         true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
                         new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data)))

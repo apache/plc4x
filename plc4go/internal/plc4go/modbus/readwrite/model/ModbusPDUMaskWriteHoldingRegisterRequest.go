@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ModbusPDUMaskWriteHoldingRegisterRequest struct {
+	*ModbusPDU
 	ReferenceAddress uint16
 	AndMask          uint16
 	OrMask           uint16
-	Parent           *ModbusPDU
 }
 
 // The corresponding interface
@@ -45,7 +45,7 @@ type IModbusPDUMaskWriteHoldingRegisterRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) FunctionFlag() uint8 {
@@ -53,7 +53,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) InitializeParent(parent *ModbusPDU) {
@@ -64,10 +64,10 @@ func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMas
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
-		Parent:           NewModbusPDU(),
+		ModbusPDU:        NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) *ModbusPDUMaskWriteHoldingRegisterRequest {
@@ -98,7 +98,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -116,28 +116,31 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (referenceAddress)
-	referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)
+	_referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)
 	if _referenceAddressErr != nil {
 		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field")
 	}
+	referenceAddress := _referenceAddress
 
 	// Simple Field (andMask)
-	andMask, _andMaskErr := readBuffer.ReadUint16("andMask", 16)
+	_andMask, _andMaskErr := readBuffer.ReadUint16("andMask", 16)
 	if _andMaskErr != nil {
 		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field")
 	}
+	andMask := _andMask
 
 	// Simple Field (orMask)
-	orMask, _orMaskErr := readBuffer.ReadUint16("orMask", 16)
+	_orMask, _orMaskErr := readBuffer.ReadUint16("orMask", 16)
 	if _orMaskErr != nil {
 		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
 	}
+	orMask := _orMask
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUMaskWriteHoldingRegisterRequest"); closeErr != nil {
 		return nil, closeErr
@@ -148,10 +151,10 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer) 
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
-		Parent:           &ModbusPDU{},
+		ModbusPDU:        &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -186,7 +189,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) String() string {

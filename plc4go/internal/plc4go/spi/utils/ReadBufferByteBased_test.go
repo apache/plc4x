@@ -229,9 +229,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 		byteOrder binary.ByteOrder
 	}
 	type args struct {
-		signed            bool
-		exponentBitLength uint8
-		mantissaBitLength uint8
+		bitLength uint8
 	}
 	tests := []struct {
 		name    string
@@ -250,7 +248,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadBigFloat("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadBigFloat("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadBigFloat() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -344,9 +342,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 		byteOrder binary.ByteOrder
 	}
 	type args struct {
-		signed            bool
-		exponentBitLength uint8
-		mantissaBitLength uint8
+		bitLength uint8
 	}
 	tests := []struct {
 		name    string
@@ -365,7 +361,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadFloat32("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadFloat32("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadFloat32() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -385,9 +381,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		byteOrder binary.ByteOrder
 	}
 	type args struct {
-		signed            bool
-		exponentBitLength uint8
-		mantissaBitLength uint8
+		bitLength uint8
 	}
 	tests := []struct {
 		name    string
@@ -418,9 +412,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0,
 			wantErr: false,
@@ -439,9 +431,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0,
 			wantErr: false,
@@ -460,9 +450,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0000000000000002,
 			wantErr: false,
@@ -481,9 +469,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0000000000000002,
 			wantErr: false,
@@ -500,9 +486,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0000000000000004,
 			wantErr: false,
@@ -519,9 +503,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0000000000000004,
 			wantErr: false,
@@ -538,9 +520,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2,
 			wantErr: false,
@@ -557,9 +537,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2,
 			wantErr: false,
@@ -576,9 +554,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    -2,
 			wantErr: false,
@@ -595,9 +571,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    -2,
 			wantErr: false,
@@ -623,9 +597,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    3,
 			wantErr: false,
@@ -642,9 +614,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    3,
 			wantErr: false,
@@ -661,9 +631,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    4,
 			wantErr: false,
@@ -680,9 +648,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    4,
 			wantErr: false,
@@ -699,9 +665,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    5,
 			wantErr: false,
@@ -718,9 +682,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    5,
 			wantErr: false,
@@ -737,9 +699,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    6,
 			wantErr: false,
@@ -756,9 +716,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    6,
 			wantErr: false,
@@ -775,9 +733,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    23,
 			wantErr: false,
@@ -794,9 +750,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    23,
 			wantErr: false,
@@ -813,9 +767,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    0.01171875,
 			wantErr: false,
@@ -832,9 +784,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    0.01171875,
 			wantErr: false,
@@ -858,9 +808,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Pow(2, -1074),
 			wantErr: false,
@@ -877,9 +825,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Pow(2, -1074),
 			wantErr: false,
@@ -896,9 +842,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2.2250738585072009 * math.Pow(10, -308),
 			wantErr: false,
@@ -915,9 +859,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2.2250738585072009 * math.Pow(10, -308),
 			wantErr: false,
@@ -934,9 +876,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2.2250738585072014 * math.Pow(10, -308),
 			wantErr: false,
@@ -953,9 +893,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    2.2250738585072014 * math.Pow(10, -308),
 			wantErr: false,
@@ -972,9 +910,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.MaxFloat64, // should be 1.7976931348623157 * math.Pow(10, 308)
 			wantErr: false,
@@ -991,9 +927,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.MaxFloat64, // should be 1.7976931348623157 * math.Pow(10, 308),
 			wantErr: false,
@@ -1021,9 +955,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    0,
 			wantErr: false,
@@ -1040,9 +972,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    0,
 			wantErr: false,
@@ -1059,9 +989,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.SmallestNonzeroFloat64,
 			wantErr: false,
@@ -1078,9 +1006,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.SmallestNonzeroFloat64,
 			wantErr: false,
@@ -1097,9 +1023,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Inf(1),
 			wantErr: false,
@@ -1116,9 +1040,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Inf(1),
 			wantErr: false,
@@ -1135,9 +1057,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Inf(-1),
 			wantErr: false,
@@ -1154,9 +1074,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Inf(-1),
 			wantErr: false,
@@ -1173,9 +1091,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1192,9 +1108,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1211,9 +1125,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1230,9 +1142,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1249,9 +1159,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1268,9 +1176,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.NaN(),
 			wantErr: false,
@@ -1290,9 +1196,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0 / 3.0,
 			wantErr: false,
@@ -1309,9 +1213,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    1.0 / 3.0,
 			wantErr: false,
@@ -1332,9 +1234,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Pi,
 			wantErr: false,
@@ -1351,9 +1251,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				}
 			}(),
 			args: args{
-				signed:            true,
-				exponentBitLength: 11,
-				mantissaBitLength: 52,
+				bitLength: 64,
 			},
 			want:    math.Pi,
 			wantErr: false,
@@ -1367,7 +1265,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadFloat64("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadFloat64("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadFloat64() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -28,13 +28,13 @@ import (
 
 // The data-structure of this message
 type MPropReadCon struct {
+	*CEMI
 	InterfaceObjectType uint16
 	ObjectInstance      uint8
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
 	Data                uint16
-	Parent              *CEMI
 }
 
 // The corresponding interface
@@ -62,10 +62,10 @@ func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyI
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		Parent:              NewCEMI(),
+		CEMI:                NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMPropReadCon(structType interface{}) *MPropReadCon {
@@ -96,7 +96,7 @@ func (m *MPropReadCon) LengthInBits() uint16 {
 }
 
 func (m *MPropReadCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -123,46 +123,52 @@ func (m *MPropReadCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropReadConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (interfaceObjectType)
-	interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
+	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
+	interfaceObjectType := _interfaceObjectType
 
 	// Simple Field (objectInstance)
-	objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
+	_objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
+	objectInstance := _objectInstance
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
+	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
+	numberOfElements := _numberOfElements
 
 	// Simple Field (startIndex)
-	startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
+	_startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
+	startIndex := _startIndex
 
 	// Simple Field (data)
-	data, _dataErr := readBuffer.ReadUint16("data", 16)
+	_data, _dataErr := readBuffer.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := _data
 
 	if closeErr := readBuffer.CloseContext("MPropReadCon"); closeErr != nil {
 		return nil, closeErr
@@ -176,10 +182,10 @@ func MPropReadConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 		Data:                data,
-		Parent:              &CEMI{},
+		CEMI:                &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -235,7 +241,7 @@ func (m *MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MPropReadCon) String() string {

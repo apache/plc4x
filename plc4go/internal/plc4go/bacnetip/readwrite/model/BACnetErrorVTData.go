@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetErrorVTData struct {
-	Parent *BACnetError
+	*BACnetError
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetErrorVTData) InitializeParent(parent *BACnetError) {
 
 func NewBACnetErrorVTData() *BACnetError {
 	child := &BACnetErrorVTData{
-		Parent: NewBACnetError(),
+		BACnetError: NewBACnetError(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetError
 }
 
 func CastBACnetErrorVTData(structType interface{}) *BACnetErrorVTData {
@@ -83,7 +83,7 @@ func (m *BACnetErrorVTData) LengthInBits() uint16 {
 }
 
 func (m *BACnetErrorVTData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetErrorVTDataParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorVTData{
-		Parent: &BACnetError{},
+		BACnetError: &BACnetError{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetError.Child = _child
+	return _child.BACnetError, nil
 }
 
 func (m *BACnetErrorVTData) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetErrorVTData) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetErrorVTData) String() string {

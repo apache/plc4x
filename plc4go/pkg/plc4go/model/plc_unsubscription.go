@@ -23,10 +23,10 @@ type PlcUnsubscriptionRequestBuilder interface {
 	// TODO: Implement
 }
 
-type PlcUnsubscriptionRequestResult struct {
-	Request  PlcUnsubscriptionRequest
-	Response PlcUnsubscriptionResponse
-	Err      error
+type PlcUnsubscriptionRequestResult interface {
+	GetRequest() PlcUnsubscriptionRequest
+	GetResponse() PlcUnsubscriptionResponse
+	GetErr() error
 }
 
 type PlcUnsubscriptionRequest interface {
@@ -34,5 +34,5 @@ type PlcUnsubscriptionRequest interface {
 	PlcRequest
 }
 
-type PlcUnsubscriptionResponse struct {
+type PlcUnsubscriptionResponse interface {
 }

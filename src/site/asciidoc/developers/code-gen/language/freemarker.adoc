@@ -29,60 +29,134 @@ This class configures a Freemarker context and provides standardized attributes 
 - type: `ComplexTypeDefinition` instance containing all the information for the type that code should be generated for.
 - helper: As some times it is pretty complicated to create all the output in Freemarker, the helper allows to provide code that is used by the template that help with generating output.
 
-A Freemarker-based output module, has to provide a list of `Template` instances as well as provide a `FreemarkerLanguageTemplateHelper` instance.
+A Freemarker-based output module, has to provide a set of `Template` instances as well as provide a `FreemarkerLanguageTemplateHelper` instance.
 
-What the `FreemarkerLanguageOutput` then does, is iterate over all complex types provided by the protocol module, and then iterates over all templates the current language defines.
+In general, we distinguish between these types of templates:
+
+- `Spec Templates` (Global output generated once per driver in total)
+- `Complex Type Templates` (Generates output for a complex type)
+- `Enum Templates` (Generates output for enum types)
+- `DataIO Templates` (Generates output for reading and writing PlcValues, which are our PLC4X form of presenting input and output data to our users)
+
+For each of these, the developer can provide a list of templates, which then can generate multiple files per type (Which is important for languages such as `C` where for every type we need to generate a `Header file (.h)` and an `Implementation (.c)`)
+
+What the `FreemarkerLanguageOutput` then does, is iterate over all types provided by the protocol module, and then iterate over all templates the current language defines.
 
 The only convention used in this utility, is that the first line of output a template generates will be treated as the path relative to the base output directory.
 
 It will automatically create all needed intermediate directories and generate the rest of the input to the file specified by the first line.
 
-If this line is empty, the output is skipped for this instance.
+If this line is empty, the output is skipped for this type.
 
 === Example `Java` output
 
 ....
 package org.apache.plc4x.language.java;
 
-import freemarker.template.*;
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.FormatterException;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaLanguageOutput.class);
+
+    private final Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
         return "Java";
     }
 
-    protected List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException {
+    @Override
+    public Set<String> supportedOptions() {
+        return Collections.singleton("package");
+    }
+
+    @Override
+    public List<String> supportedOutputFlavors() {
+        return Arrays.asList("read-write", "read-only", "passive");
+    }
+
+    @Override
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/java/pojo-template.java.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/java/io-template.java.ftlh"));
     }
 
-    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types) {
-        return new JavaLanguageTemplateHelper(types);
+    @Override
+    protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/java/enum-template.java.ftlh"));
     }
 
+    @Override
+    protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/java/data-io-template.java.ftlh"));
+    }
+
+    @Override
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+                                                         Map<String, String> options) {
+        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
+    }
+
+    @Override
+    protected void postProcessTemplateOutput(File outputFile) {
+        try {
+            FileUtils.writeStringToFile(
+                outputFile,
+                formatter.formatSourceAndFixImports(
+                    FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8)
+                ),
+                StandardCharsets.UTF_8
+            );
+        } catch (IOException | FormatterException e) {
+            LOGGER.error("Error formatting {}", outputFile, e);
+        }
+    }
 }
 ....
 
-As you can see, this output generates up to two files for every complex type.
+The `getName` method returns `Java`, this is what needs to be defined in the `plc4x-maven-plugin` configuration in the `language` option in order to select this output format.
 
-This is one file, providing the code for the POJO itself.
-The second one generates the IO-component, which contains all the code for parsing and serializing the corresponding POJO.
+`supportedOptions` tells the plugin which `option` tags this code-generation output supports. In case of the `Java` output, this is only the `package` option, which defines the package name of the generated output.
 
-In other languages, for example `C++` it's possible to use a third one to generate Header files or for `Python` perhaps only one in total.
+With `supportedOutputFlavors` we tell the user, that in general we support the three options: `read-write`, `read-only` and `passive` as valid inputs for the `outputFlavor` config option of the code-generation plugin.
+
+In this case Java doesn't require any global files being generated for java, so we simply return an empty collection.
+
+For complex types, we currently use two templates (however this will soon be reduced to one). So for every complex type in a protocol definition, the templates: `templates/java/pojo-template.java.ftlh` and `templates/java/io-template.java.ftlh` will be executed.
+
+In case of enum types, only one template is being used.
+
+Same as for data-io.
+
+The next important method is the `getHelper` method, which returns an object, that is passed to the templates with the name `helper`. As mentioned before, a lot of operations would be too complex to implement in pure Freemarker code, so with these helpers every language can provide a helper utility for handling the complex operations.
 
 Here an example for a part of a template for generating Java POJOs:
 
 ....
-${packageName?replace(".", "/")}/${typeName}.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.java
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -101,11 +175,13 @@ ${packageName?replace(".", "/")}/${typeName}.java
  * specific language governing permissions and limitations
  * under the License.
  */
-package ${packageName};
+package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
-import org.apache.plc4x.java.utils.SizeAware;
+... imports ...
 
-public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
+// Code generated by code-generation. DO NOT EDIT.
+
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
 
     ... SNIP ...
 
@@ -113,4 +189,5 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 ....
 
 So as you can see, the first line will generate the file-path of the to be generated output.
-Which is followed
+
+As when creating more and more outputs for different languages, we have realized, that a lot of the code needed in the `Helper` utility repeats, we therefore introduced a so-called `BaseFreemarkerLanguageTemplateHelper` which contains a lot of stuff, that is important when generating new language output.

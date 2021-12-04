@@ -96,7 +96,12 @@ func (x *xmlWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ..
 }
 
 func (x *xmlWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, fmt.Sprintf("%#02x", data), x.generateAttr(rwByteKey, uint(len(data)*8), writerArgs...), writerArgs...)
+	hexString := fmt.Sprintf("%#02x", data)
+	if hexString == "00" {
+		// golang does mess up the formatting on empty arrays
+		hexString = "0x"
+	}
+	return x.encodeElement(logicalName, hexString, x.generateAttr(rwByteKey, uint(len(data)*8), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
@@ -147,10 +152,15 @@ func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, valu
 	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
 	return x.encodeElement(logicalName, value, attr, writerArgs...)
+}
+
+func (x *xmlWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+	// NO-OP
+	return nil
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

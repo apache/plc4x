@@ -27,17 +27,22 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
- | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
- | 'enum' (type=typeReference)? name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
- | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
+ : 'type' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
+ | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)+
+ | 'enum' (type=typeReference)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
- : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : LBRACKET field (attributes=attributeList) RBRACKET
+ ;
+
+batchSetDefinition
+ : LBRACKET 'batchSet' attributes=attributeList fieldDefinition+ RBRACKET
  ;
 
 dataIoDefinition
+// TODO: remove typeSwitchField as it's a uncessary indirection
  : LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
@@ -49,6 +54,7 @@ field
  | discriminatorField
  | enumField
  | implicitField
+ | assertField
  | manualArrayField
  | manualField
  | optionalField
@@ -73,7 +79,7 @@ checksumField
  ;
 
 constField
- : 'const' type=dataType name=idExpression expected=expression
+ : 'const' type=typeReference name=idExpression expected=valueLiteral
  ;
 
 discriminatorField
@@ -81,11 +87,15 @@ discriminatorField
  ;
 
 enumField
- : 'enum' type=typeReference name=idExpression (fieldName=idExpression)?
+ : 'enum' type=typeReference name=idExpression fieldName=idExpression
  ;
 
 implicitField
  : 'implicit' type=dataType name=idExpression serializeExpression=expression
+ ;
+
+assertField
+ : 'assert' type=typeReference name=idExpression condition=expression
  ;
 
 manualArrayField
@@ -97,7 +107,7 @@ manualField
  ;
 
 optionalField
- : 'optional' type=typeReference name=idExpression condition=expression
+ : 'optional' type=typeReference name=idExpression (condition=expression)?
  ;
 
 paddingField
@@ -113,7 +123,7 @@ simpleField
  ;
 
 typeSwitchField
- : 'typeSwitch' discriminators=multipleExpressions caseStatement*
+ : 'typeSwitch' discriminators=multipleVariableLiterals caseStatement*
  ;
 
 unknownField
@@ -129,12 +139,12 @@ enumValueDefinition
  ;
 
 typeReference
- : complexTypeReference=IDENTIFIER_LITERAL
+ : complexTypeReference=IDENTIFIER_LITERAL (LRBRACKET params=multipleExpressions RRBRACKET)?
  | simpleTypeReference=dataType
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
  ;
 
 dataType
@@ -142,12 +152,21 @@ dataType
  | base='byte'
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
- | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='string' length=expression (encoding=idExpression)?
+ | base='float' size=INTEGER_LITERAL
+ | base='ufloat' size=INTEGER_LITERAL
+ | base='string' size=INTEGER_LITERAL
+ | base='vstring' (length=expression)?
  | base='time'
  | base='date'
  | base='dateTime'
+ ;
+
+attribute
+ : name=IDENTIFIER_LITERAL '=' value=expression
+ ;
+
+attributeList
+ : attribute*
  ;
 
 argument
@@ -166,8 +185,18 @@ multipleExpressions
  : expression (',' expression)*
  ;
 
+multipleVariableLiterals
+ : variableLiteral (',' variableLiteral)*
+ ;
+
+variableLiteral
+ : IDENTIFIER_LITERAL
+ | IDENTIFIER_LITERAL '.' variableLiteral // Field Reference or method call
+ | variableLiteral '[' + INTEGER_LITERAL + ']' // Array index
+ ;
+
 innerExpression
- : BOOLEAN_LITERAL
+ : valueLiteral
  // Explicitly allow the loop type keywords in expressions
  | ARRAY_LOOP_TYPE
  | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
@@ -178,20 +207,27 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
+ ;
+
+valueLiteral
+ : BOOLEAN_LITERAL
  | HEX_LITERAL
  | INTEGER_LITERAL
+ | FLOAT_LITERAL
  | STRING_LITERAL
  ;
 
 idExpression
- : TICK id=IDENTIFIER_LITERAL TICK
+ : id=IDENTIFIER_LITERAL
  // Explicitly allow the loop type keywords in id-expressions
- | TICK id=ARRAY_LOOP_TYPE TICK
+ | id=ARRAY_LOOP_TYPE
  ;
 
 TICK : '\'';
 LBRACKET : '[';
 RBRACKET : ']';
+LRBRACKET : '(';
+RRBRACKET : ')';
 LCBRACKET : '{';
 RCBRACKET : '}';
 
@@ -236,6 +272,10 @@ INTEGER_CHARACTERS
 fragment
 INTEGER_CHARACTER
  : [0-9]
+ ;
+
+FLOAT_LITERAL
+ : INTEGER_LITERAL.INTEGER_LITERAL
  ;
 
 // Hexadecimal literals

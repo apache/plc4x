@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadDeviceIdentificationResponse struct {
-	Parent *ModbusPDU
+	*ModbusPDU
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusPDUReadDeviceIdentificationResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadDeviceIdentificationResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *ModbusPDU) {
@@ -57,10 +57,10 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *Mod
 
 func NewModbusPDUReadDeviceIdentificationResponse() *ModbusPDU {
 	child := &ModbusPDUReadDeviceIdentificationResponse{
-		Parent: NewModbusPDU(),
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) *ModbusPDUReadDeviceIdentificationResponse {
@@ -91,7 +91,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -100,7 +100,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -111,10 +111,10 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer)
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationResponse{
-		Parent: &ModbusPDU{},
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,7 +128,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) String() string {

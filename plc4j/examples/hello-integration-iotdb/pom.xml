@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-integration-iotdb</artifactId>
@@ -32,7 +32,7 @@
   <description>Application using Edgent to output PLC data to the IoTDB.</description>
 
   <properties>
-    <iotdb.version>0.11.2</iotdb.version>
+    <iotdb.version>0.12.1</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
   </properties>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-apache-edgent</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -131,7 +131,7 @@
       <dependency>
         <groupId>com.sun.xml.fastinfoset</groupId>
         <artifactId>FastInfoset</artifactId>
-        <version>1.2.18</version>
+        <version>2.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

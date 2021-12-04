@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -720,7 +720,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcReadResponse");
 
         if(request instanceof Serializable) {

@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type ModbusPDUGetComEventLogResponse struct {
+	*ModbusPDU
 	Status       uint16
 	EventCount   uint16
 	MessageCount uint16
-	Events       []int8
-	Parent       *ModbusPDU
+	Events       []byte
 }
 
 // The corresponding interface
@@ -46,7 +46,7 @@ type IModbusPDUGetComEventLogResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
@@ -54,22 +54,22 @@ func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUGetComEventLogResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) *ModbusPDU {
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDU {
 	child := &ModbusPDUGetComEventLogResponse{
 		Status:       status,
 		EventCount:   eventCount,
 		MessageCount: messageCount,
 		Events:       events,
-		Parent:       NewModbusPDU(),
+		ModbusPDU:    NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUGetComEventLogResponse(structType interface{}) *ModbusPDUGetComEventLogResponse {
@@ -100,7 +100,7 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUGetComEventLogResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -126,7 +126,7 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -139,38 +139,30 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint16("status", 16)
+	_status, _statusErr := readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (eventCount)
-	eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
+	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
+	eventCount := _eventCount
 
 	// Simple Field (messageCount)
-	messageCount, _messageCountErr := readBuffer.ReadUint16("messageCount", 16)
+	_messageCount, _messageCountErr := readBuffer.ReadUint16("messageCount", 16)
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
-
-	// Array field (events)
-	if pullErr := readBuffer.PullContext("events", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'events' field")
-		}
-		events[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("events", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	messageCount := _messageCount
+	// Byte Array field (events)
+	numberOfBytesevents := int(uint16(byteCount) - uint16(uint16(6)))
+	events, _readArrayErr := readBuffer.ReadByteArray("events", numberOfBytesevents)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {
@@ -183,10 +175,10 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 		EventCount:   eventCount,
 		MessageCount: messageCount,
 		Events:       events,
-		Parent:       &ModbusPDU{},
+		ModbusPDU:    &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -225,17 +217,10 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffe
 
 		// Array Field (events)
 		if m.Events != nil {
-			if pushErr := writeBuffer.PushContext("events", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Events {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'events' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("events", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (events)
+			_writeArrayErr := writeBuffer.WriteByteArray("events", m.Events)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'events' field")
 			}
 		}
 
@@ -244,7 +229,7 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) String() string {

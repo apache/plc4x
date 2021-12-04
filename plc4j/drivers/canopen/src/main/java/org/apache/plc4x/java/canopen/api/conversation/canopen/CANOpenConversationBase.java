@@ -21,11 +21,10 @@ package org.apache.plc4x.java.canopen.api.conversation.canopen;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 
@@ -34,18 +33,18 @@ import java.util.function.Predicate;
 
 public abstract class CANOpenConversationBase {
 
-    protected final CANConversation<CANOpenFrame> delegate;
+    protected final CANConversation delegate;
     protected final int nodeId;
     protected final int answerNodeId;
 
-    public CANOpenConversationBase(CANConversation<CANOpenFrame> delegate, int nodeId, int answerNodeId) {
+    public CANOpenConversationBase(CANConversation delegate, int nodeId, int answerNodeId) {
         this.delegate = delegate;
         this.nodeId = nodeId;
         this.answerNodeId = answerNodeId;
     }
 
     protected PlcValue decodeFrom(byte[] data, CANOpenDataType type, int length) throws ParseException {
-        return DataItemIO.staticParse(new ReadBufferByteBased(data, true), type, length);
+        return DataItemIO.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), type, length);
     }
 
     protected <T> void onError(CompletableFuture<T> receiver, CANOpenSDOResponse response, Throwable error) {
@@ -72,11 +71,7 @@ public abstract class CANOpenConversationBase {
     }
 
     protected CANOpenFrame createFrame(SDORequest rq) {
-        return delegate.createBuilder()
-            .withNodeId(nodeId)
-            .withService(CANOpenService.RECEIVE_SDO)
-            .withPayload(new CANOpenSDORequest(rq.getCommand(), rq))
-            .build();
+        return new CANOpenFrame((short) nodeId, CANOpenService.RECEIVE_SDO, new CANOpenSDORequest(rq.getCommand(), rq));
     }
 
     static class NodeIdPredicate implements Predicate<CANOpenFrame> {

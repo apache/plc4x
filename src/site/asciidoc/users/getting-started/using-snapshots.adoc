@@ -1,0 +1,59 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Using SNAPSHOT versions
+
+Especially when it comes to trying to verify if an issue you are facing has already been fixed in the development version, you might want to or be asked to try out the absolute latest version of PLC4X. You can generally do this by adding "-SNAPSHOT" to the version number of PLC4X.
+
+We also provide convenience built `SNAPSHOT` versions, however are these not automatically synced with `Maven Central`. So Maven will not automatically be able to find them.
+
+Our `SNAPSHOT` versions are deployed on the `Apache Maven repository`.
+
+In order to access these, you need to add the following block to your `pom.xml` file:
+
+[subs=attributes+]
+----
+  <!-- Make Snapshots of Apache projects available -->
+  <repositories>
+    <repository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <!-- Make Snapshots of Apache plugins available -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+----
+
+After adding this block, you should be able to also use `SNAPSHOT` versions.

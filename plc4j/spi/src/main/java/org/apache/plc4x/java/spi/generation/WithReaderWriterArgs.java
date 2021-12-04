@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.generation;
 
 public interface WithReaderWriterArgs extends WithReaderArgs, WithWriterArgs {
+
     static WithReaderWriterArgs WithRenderAsList(boolean renderAsList) {
         return (withRenderAsList) () -> renderAsList;
     }
@@ -26,6 +27,7 @@ public interface WithReaderWriterArgs extends WithReaderArgs, WithWriterArgs {
     static WithReaderWriterArgs WithAdditionalStringRepresentation(String stringRepresentation) {
         return (withAdditionalStringRepresentation) () -> stringRepresentation;
     }
+
 }
 
 interface withRenderAsList extends WithReaderWriterArgs {

@@ -17,15 +17,14 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols-opcua</artifactId>
@@ -35,11 +34,11 @@
 
   <build>
     <plugins>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-datatypes</id>
             <phase>generate-resources</phase>
@@ -55,13 +54,7 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-statuscodes</id>
             <phase>generate-resources</phase>
@@ -75,12 +68,6 @@
               <outputFileName>StatusCode.csv</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-discriminators</id>
             <phase>generate-resources</phase>
@@ -94,12 +81,6 @@
               <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-services-enum</id>
             <phase>generate-resources</phase>
@@ -238,11 +219,6 @@
             <artifactId>Saxon-HE</artifactId>
             <version>10.5</version>
           </dependency>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4x-build-utils-language-base-freemarker</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
-          </dependency>
         </dependencies>
       </plugin>
     </plugins>
@@ -252,7 +228,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

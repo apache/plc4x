@@ -19,12 +19,21 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive);
+    default Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive) {
+        return configurePipeline(configuration, pipeline, passive, Collections.emptyList());
+    }
+
+    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> listeners);
 
 }

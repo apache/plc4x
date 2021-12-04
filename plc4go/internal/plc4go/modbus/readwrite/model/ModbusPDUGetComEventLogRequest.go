@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUGetComEventLogRequest struct {
-	Parent *ModbusPDU
+	*ModbusPDU
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusPDUGetComEventLogRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUGetComEventLogRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventLogRequest) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUGetComEventLogRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUGetComEventLogRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventLogRequest) InitializeParent(parent *ModbusPDU) {
@@ -57,10 +57,10 @@ func (m *ModbusPDUGetComEventLogRequest) InitializeParent(parent *ModbusPDU) {
 
 func NewModbusPDUGetComEventLogRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventLogRequest{
-		Parent: NewModbusPDU(),
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUGetComEventLogRequest(structType interface{}) *ModbusPDUGetComEventLogRequest {
@@ -91,7 +91,7 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUGetComEventLogRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -100,7 +100,7 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -111,10 +111,10 @@ func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer) (*ModbusPD
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{
-		Parent: &ModbusPDU{},
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUGetComEventLogRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,7 +128,7 @@ func (m *ModbusPDUGetComEventLogRequest) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUGetComEventLogRequest) String() string {

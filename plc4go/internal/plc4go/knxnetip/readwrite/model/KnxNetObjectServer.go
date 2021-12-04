@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type KnxNetObjectServer struct {
+	*ServiceId
 	Version uint8
-	Parent  *ServiceId
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {
 
 func NewKnxNetObjectServer(version uint8) *ServiceId {
 	child := &KnxNetObjectServer{
-		Version: version,
-		Parent:  NewServiceId(),
+		Version:   version,
+		ServiceId: NewServiceId(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ServiceId
 }
 
 func CastKnxNetObjectServer(structType interface{}) *KnxNetObjectServer {
@@ -86,7 +86,7 @@ func (m *KnxNetObjectServer) LengthInBits() uint16 {
 }
 
 func (m *KnxNetObjectServer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -104,10 +104,11 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	}
 
 	// Simple Field (version)
-	version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+	version := _version
 
 	if closeErr := readBuffer.CloseContext("KnxNetObjectServer"); closeErr != nil {
 		return nil, closeErr
@@ -115,11 +116,11 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 
 	// Create a partially initialized instance
 	_child := &KnxNetObjectServer{
-		Version: version,
-		Parent:  &ServiceId{},
+		Version:   version,
+		ServiceId: &ServiceId{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ServiceId.Child = _child
+	return _child.ServiceId, nil
 }
 
 func (m *KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -140,7 +141,7 @@ func (m *KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxNetObjectServer) String() string {

@@ -24,13 +24,13 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-code-generation</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4X: Code-Generation</name>
+  <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
   <modules>
@@ -39,6 +39,7 @@
     <module>protocol-test</module>
 
     <module>language-java</module>
+    <!--module>language-java-old</module-->
   </modules>
 
   <profiles>

@@ -108,29 +108,29 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint1
 	var typeSwitchError error
 	switch {
 	case serviceChoice == 0x00: // BACnetUnconfirmedServiceRequestIAm
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(readBuffer, len)
 	case serviceChoice == 0x01: // BACnetUnconfirmedServiceRequestIHave
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(readBuffer, len)
 	case serviceChoice == 0x02: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer, len)
 	case serviceChoice == 0x03: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer, len)
 	case serviceChoice == 0x04: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer, len)
 	case serviceChoice == 0x05: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer, len)
 	case serviceChoice == 0x06: // BACnetUnconfirmedServiceRequestTimeSynchronization
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer, len)
 	case serviceChoice == 0x07: // BACnetUnconfirmedServiceRequestWhoHas
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer, len)
 	case serviceChoice == 0x08: // BACnetUnconfirmedServiceRequestWhoIs
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer, len)
 	case serviceChoice == 0x09: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer, len)
 	case serviceChoice == 0x0A: // BACnetUnconfirmedServiceRequestWriteGroup
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer, len)
 	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer)
+		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -166,8 +166,7 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

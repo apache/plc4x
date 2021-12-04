@@ -76,32 +76,29 @@ public class PcapReplayChannel extends OioByteStreamChannel {
     protected void doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
         this.localAddress = localAddress;
 
-        if(!(remoteAddress instanceof PcapReplayAddress)) {
+        if (!(remoteAddress instanceof PcapReplayAddress)) {
             logger.error("Expecting remote address of type PcapSocketAddress");
-            pipeline().fireExceptionCaught(
-                new PcapException("Expecting remote address of type PcapSocketAddress"));
+            pipeline().fireExceptionCaught(new PcapException("Expecting remote address of type PcapSocketAddress"));
             return;
         }
         remoteRawSocketAddress = (PcapReplayAddress) remoteAddress;
 
         // Get a handle to the network-device and open it.
         File pcapFile = remoteRawSocketAddress.getPcapFile();
-        if(!pcapFile.exists()) {
-            logger.error(String.format("Couldn't find PCAP capture file at: %s", pcapFile.getAbsolutePath()));
-            pipeline().fireExceptionCaught(new PcapException(String.format(
-                "Couldn't find PCAP capture file at: %s", pcapFile.getAbsolutePath())));
+        if (!pcapFile.exists()) {
+            logger.error("Couldn't find PCAP capture file at: {}", pcapFile.getAbsolutePath());
+            PcapException exception = new PcapException(String.format("Couldn't find PCAP capture file at: %s", pcapFile.getAbsolutePath()));
+            pipeline().fireExceptionCaught(exception);
             return;
         }
-        if(logger.isDebugEnabled()) {
-            logger.debug(String.format("Opening PCAP capture file at: %s", pcapFile.getAbsolutePath()));
-        }
+        logger.debug("Opening PCAP capture file at: {}", pcapFile.getAbsolutePath());
 
         handle = Pcaps.openOffline(remoteRawSocketAddress.getPcapFile().getAbsolutePath(),
             PcapHandle.TimestampPrecision.NANO);
 
         // If the address allows fine tuning which packets to process, set a filter to reduce the load.
         String filter = "";//config.getFilterString(localAddress, remoteAddress);
-        if(filter.length() > 0) {
+        if (filter.length() > 0) {
             handle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
 
@@ -120,7 +117,7 @@ public class PcapReplayChannel extends OioByteStreamChannel {
                         Timestamp curPacketTime = handle.getTimestamp();
 
                         // Only enable the throttling if it is not disabled.
-                        if(config.getSpeedFactor() != PcapReplayChannelConfig.SPEED_FAST_FULL) {
+                        if (config.getSpeedFactor() != PcapReplayChannelConfig.SPEED_FAST_FULL) {
                             // If last-time is not null, wait for the given number of nano-seconds.
                             if (lastPacketTime != null) {
                                 int numMicrosecondsSleep = (int)
@@ -131,7 +128,7 @@ public class PcapReplayChannel extends OioByteStreamChannel {
 
                         // Send the bytes to the netty pipeline.
                         byte[] data = config.getPacketHandler().getData(packet);
-                        if(data != null) {
+                        if (data != null) {
                             buffer.writeBytes(data);
                         }
 

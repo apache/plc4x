@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.connectionpool2;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -171,7 +172,9 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
 
     @Override
     public CompletableFuture<Void> ping() {
-        throw new UnsupportedOperationException();
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
+        return future;
     }
 
     @Override

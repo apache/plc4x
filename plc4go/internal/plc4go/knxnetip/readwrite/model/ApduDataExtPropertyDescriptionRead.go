@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ApduDataExtPropertyDescriptionRead struct {
+	*ApduDataExt
 	ObjectIndex uint8
 	PropertyId  uint8
 	Index       uint8
-	Parent      *ApduDataExt
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, 
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Index:       index,
-		Parent:      NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtPropertyDescriptionRead(structType interface{}) *ApduDataExtPropertyDescriptionRead {
@@ -90,7 +90,7 @@ func (m *ApduDataExtPropertyDescriptionRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -108,28 +108,31 @@ func (m *ApduDataExtPropertyDescriptionRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionRead"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
+	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
+	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (index)
-	index, _indexErr := readBuffer.ReadUint8("index", 8)
+	_index, _indexErr := readBuffer.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
+	index := _index
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
 		return nil, closeErr
@@ -140,10 +143,10 @@ func ApduDataExtPropertyDescriptionReadParse(readBuffer utils.ReadBuffer) (*Apdu
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Index:       index,
-		Parent:      &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +181,7 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) String() string {

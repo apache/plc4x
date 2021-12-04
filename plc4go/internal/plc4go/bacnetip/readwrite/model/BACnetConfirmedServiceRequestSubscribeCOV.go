@@ -36,13 +36,13 @@ const BACnetConfirmedServiceRequestSubscribeCOV_LIFETIMEHEADER uint8 = 0x07
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOV struct {
+	*BACnetConfirmedServiceRequest
 	SubscriberProcessIdentifier   uint8
 	MonitoredObjectType           uint16
 	MonitoredObjectInstanceNumber uint32
 	IssueConfirmedNotifications   bool
 	LifetimeLength                uint8
 	LifetimeSeconds               []int8
-	Parent                        *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -70,10 +70,10 @@ func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier ui
 		IssueConfirmedNotifications:   issueConfirmedNotifications,
 		LifetimeLength:                lifetimeLength,
 		LifetimeSeconds:               lifetimeSeconds,
-		Parent:                        NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) *BACnetConfirmedServiceRequestSubscribeCOV {
@@ -104,7 +104,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8
@@ -148,7 +148,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOV"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -163,10 +163,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (subscriberProcessIdentifier)
-	subscriberProcessIdentifier, _subscriberProcessIdentifierErr := readBuffer.ReadUint8("subscriberProcessIdentifier", 8)
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := readBuffer.ReadUint8("subscriberProcessIdentifier", 8)
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
 	}
+	subscriberProcessIdentifier := _subscriberProcessIdentifier
 
 	// Const Field (monitoredObjectIdentifierHeader)
 	monitoredObjectIdentifierHeader, _monitoredObjectIdentifierHeaderErr := readBuffer.ReadUint8("monitoredObjectIdentifierHeader", 8)
@@ -178,16 +179,18 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (monitoredObjectType)
-	monitoredObjectType, _monitoredObjectTypeErr := readBuffer.ReadUint16("monitoredObjectType", 10)
+	_monitoredObjectType, _monitoredObjectTypeErr := readBuffer.ReadUint16("monitoredObjectType", 10)
 	if _monitoredObjectTypeErr != nil {
 		return nil, errors.Wrap(_monitoredObjectTypeErr, "Error parsing 'monitoredObjectType' field")
 	}
+	monitoredObjectType := _monitoredObjectType
 
 	// Simple Field (monitoredObjectInstanceNumber)
-	monitoredObjectInstanceNumber, _monitoredObjectInstanceNumberErr := readBuffer.ReadUint32("monitoredObjectInstanceNumber", 22)
+	_monitoredObjectInstanceNumber, _monitoredObjectInstanceNumberErr := readBuffer.ReadUint32("monitoredObjectInstanceNumber", 22)
 	if _monitoredObjectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_monitoredObjectInstanceNumberErr, "Error parsing 'monitoredObjectInstanceNumber' field")
 	}
+	monitoredObjectInstanceNumber := _monitoredObjectInstanceNumber
 
 	// Const Field (issueConfirmedNotificationsHeader)
 	issueConfirmedNotificationsHeader, _issueConfirmedNotificationsHeaderErr := readBuffer.ReadUint8("issueConfirmedNotificationsHeader", 8)
@@ -208,10 +211,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (issueConfirmedNotifications)
-	issueConfirmedNotifications, _issueConfirmedNotificationsErr := readBuffer.ReadBit("issueConfirmedNotifications")
+	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := readBuffer.ReadBit("issueConfirmedNotifications")
 	if _issueConfirmedNotificationsErr != nil {
 		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field")
 	}
+	issueConfirmedNotifications := _issueConfirmedNotifications
 
 	// Const Field (lifetimeHeader)
 	lifetimeHeader, _lifetimeHeaderErr := readBuffer.ReadUint8("lifetimeHeader", 5)
@@ -223,10 +227,11 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (lifetimeLength)
-	lifetimeLength, _lifetimeLengthErr := readBuffer.ReadUint8("lifetimeLength", 3)
+	_lifetimeLength, _lifetimeLengthErr := readBuffer.ReadUint8("lifetimeLength", 3)
 	if _lifetimeLengthErr != nil {
 		return nil, errors.Wrap(_lifetimeLengthErr, "Error parsing 'lifetimeLength' field")
 	}
+	lifetimeLength := _lifetimeLength
 
 	// Array field (lifetimeSeconds)
 	if pullErr := readBuffer.PullContext("lifetimeSeconds", utils.WithRenderAsList(true)); pullErr != nil {
@@ -234,12 +239,14 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 	}
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
-	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'lifetimeSeconds' field")
+	{
+		for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'lifetimeSeconds' field")
+			}
+			lifetimeSeconds[curItem] = _item
 		}
-		lifetimeSeconds[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -257,10 +264,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer)
 		IssueConfirmedNotifications:   issueConfirmedNotifications,
 		LifetimeLength:                lifetimeLength,
 		LifetimeSeconds:               lifetimeSeconds,
-		Parent:                        &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -355,7 +362,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) String() string {

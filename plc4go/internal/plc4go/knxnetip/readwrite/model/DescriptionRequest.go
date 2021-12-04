@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type DescriptionRequest struct {
+	*KnxNetIpMessage
 	HpaiControlEndpoint *HPAIControlEndpoint
-	Parent              *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *DescriptionRequest) InitializeParent(parent *KnxNetIpMessage) {
 func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DescriptionRequest{
 		HpaiControlEndpoint: hpaiControlEndpoint,
-		Parent:              NewKnxNetIpMessage(),
+		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastDescriptionRequest(structType interface{}) *DescriptionRequest {
@@ -86,7 +86,7 @@ func (m *DescriptionRequest) LengthInBits() uint16 {
 }
 
 func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -103,15 +103,15 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		return nil, pullErr
 	}
 
+	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	hpaiControlEndpoint := CastHPAIControlEndpoint(_hpaiControlEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -122,11 +122,11 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 
 	// Create a partially initialized instance
 	_child := &DescriptionRequest{
-		HpaiControlEndpoint: hpaiControlEndpoint,
-		Parent:              &KnxNetIpMessage{},
+		HpaiControlEndpoint: CastHPAIControlEndpoint(hpaiControlEndpoint),
+		KnxNetIpMessage:     &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DescriptionRequest) String() string {

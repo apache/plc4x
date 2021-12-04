@@ -95,16 +95,18 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
+	_timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
+	timestamp := _timestamp
 
 	// Simple Field (samples)
-	samples, _samplesErr := readBuffer.ReadUint32("samples", 32)
+	_samples, _samplesErr := readBuffer.ReadUint32("samples", 32)
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
+	samples := _samples
 
 	// Array field (adsNotificationSamples)
 	if pullErr := readBuffer.PullContext("adsNotificationSamples", utils.WithRenderAsList(true)); pullErr != nil {
@@ -112,12 +114,14 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
-	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
-		_item, _err := AdsNotificationSampleParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
+	{
+		for curItem := uint16(0); curItem < uint16(samples); curItem++ {
+			_item, _err := AdsNotificationSampleParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
+			}
+			adsNotificationSamples[curItem] = _item
 		}
-		adsNotificationSamples[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

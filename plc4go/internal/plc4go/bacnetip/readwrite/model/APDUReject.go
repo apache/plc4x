@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUReject struct {
+	*APDU
 	OriginalInvokeId uint8
 	RejectReason     uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
 	child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUReject(structType interface{}) *APDUReject {
@@ -89,7 +89,7 @@ func (m *APDUReject) LengthInBits() uint16 {
 }
 
 func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -107,7 +107,7 @@ func (m *APDUReject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -127,16 +127,18 @@ func APDURejectParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (rejectReason)
-	rejectReason, _rejectReasonErr := readBuffer.ReadUint8("rejectReason", 8)
+	_rejectReason, _rejectReasonErr := readBuffer.ReadUint8("rejectReason", 8)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
+	rejectReason := _rejectReason
 
 	if closeErr := readBuffer.CloseContext("APDUReject"); closeErr != nil {
 		return nil, closeErr
@@ -146,10 +148,10 @@ func APDURejectParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	_child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +187,7 @@ func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUReject) String() string {

@@ -24,8 +24,8 @@ import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	"testing"
 )
 
@@ -84,7 +84,7 @@ func TestManualAds(t *testing.T) {
 	connectionString := fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(ads.NewDriver())
-	driverManager.RegisterTransport(tcp.NewTransport())
+	transports.RegisterTcpTransport(driverManager)
 	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})

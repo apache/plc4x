@@ -19,12 +19,27 @@
 package org.apache.plc4x.java.spi.generation;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Collection;
+import java.util.List;
 
 public class StaticHelper {
 
     public static int ARRAY_SIZE_IN_BYTES(Object obj) {
+        if (obj instanceof List) {
+            List list = (List) obj;
+            int numBytes = 0;
+            for (Object element : list) {
+                if (element instanceof Message) {
+                    numBytes += ((Message) element).getLengthInBytes();
+                } else {
+                    throw new RuntimeException(
+                        "Array elements for array size in bytes must implement Message interface");
+                }
+            }
+            return numBytes;
+        }
         if (obj.getClass().isArray() && !obj.getClass().getComponentType().isPrimitive()) {
             Object[] arr = (Object[]) obj;
             int numBytes = 0;
@@ -86,6 +101,17 @@ public class StaticHelper {
         throw new PlcRuntimeException("Unable to count object of type " + obj.getClass().getName());
     }
 
+    public static int STR_LEN(Object str) {
+        if (str == null) {
+            return 0;
+        }
+        if (str instanceof PlcValue) {
+            PlcValue plcValue = (PlcValue) str;
+            return plcValue.getString().length();
+        }
+        return str.toString().length();
+    }
+
     public static <T> T CAST(Object obj, Class<T> clazz) {
         try {
             return clazz.cast(obj);
@@ -98,7 +124,8 @@ public class StaticHelper {
         return (int) Math.ceil(value);
     }
 
-    public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
+    // TODO: Commented out this block and the next as we're trying to get rid of the code all together.
+    /*public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
         return toFloat(io, "", signed, bitsExponent, bitsMantissa);
     }
 
@@ -123,7 +150,7 @@ public class StaticHelper {
         } catch (ParseException e) {
             return 0.0f;
         }
-    }
+    }*/
 
     public static boolean fromFloatSign(double value) {
         return value < 0;

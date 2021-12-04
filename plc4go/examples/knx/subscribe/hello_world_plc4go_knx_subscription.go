@@ -42,11 +42,11 @@ func main() {
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
-	if connectionResult.Err != nil {
-		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
+	if connectionResult.GetErr() != nil {
+		fmt.Printf("error connecting to PLC: %s", connectionResult.GetErr().Error())
 		return
 	}
-	connection := connectionResult.Connection
+	connection := connectionResult.GetConnection()
 
 	// Make sure the connection is closed at the end
 	defer connection.BlockingClose()
@@ -96,22 +96,22 @@ func main() {
 
 		// Wait for the response to finish
 		rrr := <-rrc
-		if rrr.Err != nil {
-			fmt.Printf("error executing subscription-request: %s", rrr.Err.Error())
+		if rrr.GetErr() != nil {
+			fmt.Printf("error executing subscription-request: %s", rrr.GetErr().Error())
 			return
 		}
 
 		// Do something with the response
-		for _, fieldName := range rrr.Response.GetFieldNames() {
-			if rrr.Response.GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
+		for _, fieldName := range rrr.GetResponse().GetFieldNames() {
+			if rrr.GetResponse().GetResponseCode(fieldName) != model.PlcResponseCode_OK {
+				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.GetResponse().GetResponseCode(fieldName).GetName())
 				continue
 			}
 		}
 
 		time.Sleep(time.Minute * 5)
 	} else {
-		fmt.Printf("error preparing subscription-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing subscription-request: %s", connectionResult.GetErr().Error())
 		return
 	}
 }

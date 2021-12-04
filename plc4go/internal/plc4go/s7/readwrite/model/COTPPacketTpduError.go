@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type COTPPacketTpduError struct {
+	*COTPPacket
 	DestinationReference uint16
 	RejectCause          uint8
-	Parent               *COTPPacket
 }
 
 // The corresponding interface
@@ -48,18 +48,18 @@ func (m *COTPPacketTpduError) TpduCode() uint8 {
 }
 
 func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
-	m.Parent.Parameters = parameters
-	m.Parent.Payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 }
 
 func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	child := &COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		Parent:               NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPPacket
 }
 
 func CastCOTPPacketTpduError(structType interface{}) *COTPPacketTpduError {
@@ -90,7 +90,7 @@ func (m *COTPPacketTpduError) LengthInBits() uint16 {
 }
 
 func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -105,22 +105,24 @@ func (m *COTPPacketTpduError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketTpduError"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
+	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
+	destinationReference := _destinationReference
 
 	// Simple Field (rejectCause)
-	rejectCause, _rejectCauseErr := readBuffer.ReadUint8("rejectCause", 8)
+	_rejectCause, _rejectCauseErr := readBuffer.ReadUint8("rejectCause", 8)
 	if _rejectCauseErr != nil {
 		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field")
 	}
+	rejectCause := _rejectCause
 
 	if closeErr := readBuffer.CloseContext("COTPPacketTpduError"); closeErr != nil {
 		return nil, closeErr
@@ -130,10 +132,10 @@ func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer) (*COTPPacket, error) 
 	_child := &COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		Parent:               &COTPPacket{},
+		COTPPacket:           &COTPPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPPacket.Child = _child
+	return _child.COTPPacket, nil
 }
 
 func (m *COTPPacketTpduError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -161,7 +163,7 @@ func (m *COTPPacketTpduError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPPacketTpduError) String() string {

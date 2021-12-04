@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type S7ParameterReadVarResponse struct {
+	*S7Parameter
 	NumItems uint8
-	Parent   *S7Parameter
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *S7ParameterReadVarResponse) InitializeParent(parent *S7Parameter) {
 
 func NewS7ParameterReadVarResponse(numItems uint8) *S7Parameter {
 	child := &S7ParameterReadVarResponse{
-		NumItems: numItems,
-		Parent:   NewS7Parameter(),
+		NumItems:    numItems,
+		S7Parameter: NewS7Parameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Parameter
 }
 
 func CastS7ParameterReadVarResponse(structType interface{}) *S7ParameterReadVarResponse {
@@ -90,7 +90,7 @@ func (m *S7ParameterReadVarResponse) LengthInBits() uint16 {
 }
 
 func (m *S7ParameterReadVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -102,16 +102,17 @@ func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (numItems)
-	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
+	_numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
+	numItems := _numItems
 
 	if closeErr := readBuffer.CloseContext("S7ParameterReadVarResponse"); closeErr != nil {
 		return nil, closeErr
@@ -119,11 +120,11 @@ func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer) (*S7Parameter,
 
 	// Create a partially initialized instance
 	_child := &S7ParameterReadVarResponse{
-		NumItems: numItems,
-		Parent:   &S7Parameter{},
+		NumItems:    numItems,
+		S7Parameter: &S7Parameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Parameter.Child = _child
+	return _child.S7Parameter, nil
 }
 
 func (m *S7ParameterReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -144,7 +145,7 @@ func (m *S7ParameterReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7ParameterReadVarResponse) String() string {

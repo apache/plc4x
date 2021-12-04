@@ -24,13 +24,13 @@ type PlcBrowseRequestBuilder interface {
 	Build() (PlcBrowseRequest, error)
 }
 
-type PlcBrowseQueryResult struct {
-	Field             PlcField
-	Name              string
-	Readable          bool
-	Writable          bool
-	Subscribable      bool
-	PossibleDataTypes []string
+type PlcBrowseQueryResult interface {
+	GetField() PlcField
+	GetName() string
+	IsReadable() bool
+	IsWritable() bool
+	IsSubscribable() bool
+	GetPossibleDataTypes() []string
 }
 
 type PlcBrowseRequest interface {
@@ -50,15 +50,15 @@ type PlcBrowseResponse interface {
 	PlcResponse
 }
 
-type PlcBrowseRequestResult struct {
-	Request  PlcBrowseRequest
-	Response PlcBrowseResponse
-	Err      error
+type PlcBrowseRequestResult interface {
+	GetRequest() PlcBrowseRequest
+	GetResponse() PlcBrowseResponse
+	GetErr() error
 }
 
-type PlcBrowseEvent struct {
-	Request   PlcBrowseRequest
-	QueryName string
-	Result    *PlcBrowseQueryResult
-	Err       error
+type PlcBrowseEvent interface {
+	GetRequest() PlcBrowseRequest
+	GetQueryName() string
+	GetResult() PlcBrowseQueryResult
+	GetErr() error
 }

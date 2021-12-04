@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ComObjectTableRealisationType6 struct {
+	*ComObjectTable
 	ComObjectDescriptors *GroupObjectDescriptorRealisationType6
-	Parent               *ComObjectTable
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *ComObjectTableRealisationType6) InitializeParent(parent *ComObjectTable
 func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
 	child := &ComObjectTableRealisationType6{
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               NewComObjectTable(),
+		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ComObjectTable
 }
 
 func CastComObjectTableRealisationType6(structType interface{}) *ComObjectTableRealisationType6 {
@@ -86,7 +86,7 @@ func (m *ComObjectTableRealisationType6) LengthInBits() uint16 {
 }
 
 func (m *ComObjectTableRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (comObjectDescriptors)
 	lengthInBits += m.ComObjectDescriptors.LengthInBits()
@@ -98,20 +98,20 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (comObjectDescriptors)
-	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
+	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
+	comObjectDescriptors := CastGroupObjectDescriptorRealisationType6(_comObjectDescriptors)
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -122,11 +122,11 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer) (*ComObjec
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{
-		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               &ComObjectTable{},
+		ComObjectDescriptors: CastGroupObjectDescriptorRealisationType6(comObjectDescriptors),
+		ComObjectTable:       &ComObjectTable{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ComObjectTable.Child = _child
+	return _child.ComObjectTable, nil
 }
 
 func (m *ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ComObjectTableRealisationType6) String() string {

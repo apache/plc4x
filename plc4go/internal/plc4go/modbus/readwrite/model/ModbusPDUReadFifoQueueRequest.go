@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueRequest struct {
+	*ModbusPDU
 	FifoPointerAddress uint16
-	Parent             *ModbusPDU
 }
 
 // The corresponding interface
@@ -43,7 +43,7 @@ type IModbusPDUReadFifoQueueRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {
@@ -60,10 +60,10 @@ func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
-		Parent:             NewModbusPDU(),
+		ModbusPDU:          NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadFifoQueueRequest(structType interface{}) *ModbusPDUReadFifoQueueRequest {
@@ -94,7 +94,7 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -106,16 +106,17 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (fifoPointerAddress)
-	fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)
+	_fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)
 	if _fifoPointerAddressErr != nil {
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
+	fifoPointerAddress := _fifoPointerAddress
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFifoQueueRequest"); closeErr != nil {
 		return nil, closeErr
@@ -124,10 +125,10 @@ func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
-		Parent:             &ModbusPDU{},
+		ModbusPDU:          &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -148,7 +149,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) String() string {

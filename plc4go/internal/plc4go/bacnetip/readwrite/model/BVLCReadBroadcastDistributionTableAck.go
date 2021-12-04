@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BVLCReadBroadcastDistributionTableAck struct {
-	Parent *BVLC
+	*BVLC
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BVLCReadBroadcastDistributionTableAck) InitializeParent(parent *BVLC) {
 
 func NewBVLCReadBroadcastDistributionTableAck() *BVLC {
 	child := &BVLCReadBroadcastDistributionTableAck{
-		Parent: NewBVLC(),
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) *BVLCReadBroadcastDistributionTableAck {
@@ -83,7 +83,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) LengthInBits() uint16 {
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BVLCReadBroadcastDistributionTableAckParse(readBuffer utils.ReadBuffer) (*B
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTableAck{
-		Parent: &BVLC{},
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) Serialize(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) String() string {

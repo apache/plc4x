@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type TDataIndividualInd struct {
-	Parent *CEMI
+	*CEMI
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *TDataIndividualInd) InitializeParent(parent *CEMI) {
 
 func NewTDataIndividualInd() *CEMI {
 	child := &TDataIndividualInd{
-		Parent: NewCEMI(),
+		CEMI: NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastTDataIndividualInd(structType interface{}) *TDataIndividualInd {
@@ -83,7 +83,7 @@ func (m *TDataIndividualInd) LengthInBits() uint16 {
 }
 
 func (m *TDataIndividualInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *TDataIndividualInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataIndividualIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualInd{
-		Parent: &CEMI{},
+		CEMI: &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *TDataIndividualInd) String() string {

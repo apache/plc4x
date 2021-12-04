@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataRestart struct {
-	Parent *ApduData
+	*ApduData
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataRestart) InitializeParent(parent *ApduData) {
 
 func NewApduDataRestart() *ApduData {
 	child := &ApduDataRestart{
-		Parent: NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataRestart(structType interface{}) *ApduDataRestart {
@@ -83,7 +83,7 @@ func (m *ApduDataRestart) LengthInBits() uint16 {
 }
 
 func (m *ApduDataRestart) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataRestartParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataRestart{
-		Parent: &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataRestart) String() string {

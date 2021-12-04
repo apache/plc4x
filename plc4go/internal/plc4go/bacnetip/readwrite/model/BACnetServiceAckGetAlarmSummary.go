@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetServiceAckGetAlarmSummary struct {
-	Parent *BACnetServiceAck
+	*BACnetServiceAck
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetServiceAckGetAlarmSummary) InitializeParent(parent *BACnetService
 
 func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetAlarmSummary{
-		Parent: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckGetAlarmSummary(structType interface{}) *BACnetServiceAckGetAlarmSummary {
@@ -83,7 +83,7 @@ func (m *BACnetServiceAckGetAlarmSummary) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckGetAlarmSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer) (*BACnetS
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetAlarmSummary{
-		Parent: &BACnetServiceAck{},
+		BACnetServiceAck: &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetServiceAckGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckGetAlarmSummary) String() string {

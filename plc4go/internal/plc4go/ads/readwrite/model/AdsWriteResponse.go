@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type AdsWriteResponse struct {
+	*AdsData
 	Result ReturnCode
-	Parent *AdsData
 }
 
 // The corresponding interface
@@ -47,7 +47,7 @@ func (m *AdsWriteResponse) CommandId() CommandId {
 }
 
 func (m *AdsWriteResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsWriteResponse) InitializeParent(parent *AdsData) {
@@ -55,11 +55,11 @@ func (m *AdsWriteResponse) InitializeParent(parent *AdsData) {
 
 func NewAdsWriteResponse(result ReturnCode) *AdsData {
 	child := &AdsWriteResponse{
-		Result: result,
-		Parent: NewAdsData(),
+		Result:  result,
+		AdsData: NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsWriteResponse(structType interface{}) *AdsWriteResponse {
@@ -90,7 +90,7 @@ func (m *AdsWriteResponse) LengthInBits() uint16 {
 }
 
 func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -102,20 +102,20 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (result)
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -126,11 +126,11 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 
 	// Create a partially initialized instance
 	_child := &AdsWriteResponse{
-		Result: result,
-		Parent: &AdsData{},
+		Result:  result,
+		AdsData: &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -156,7 +156,7 @@ func (m *AdsWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsWriteResponse) String() string {

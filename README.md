@@ -19,6 +19,7 @@
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Platform compatibility](https://img.shields.io/github/workflow/status/apache/plc4x/Platform%20compatibility?label=Platform%20compatibility)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
 
 
@@ -73,8 +74,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is exactly Java 11
-(Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
+NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java 1.8 or above is ok. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -83,15 +83,17 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 ### Environment
 
-Currently the project is configured to require the following software:
+Currently, the project is configured to require the following software when building only the Java parts:
 
-1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
- point to that.
+1. Java 11 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
 
-With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
+With this setup you will be able to build the Java part of PLC4X.
+
+The build however does automatically run a prerequisite check and fail the build with an explanation, if not all requirements are meet.
+
 For a full build of PLC4X with all options the following has to be provided:
 
 #### Linux
@@ -202,16 +204,24 @@ If you don't want to bother setting up the environment on your normal system and
 
 ### Getting Started
 
-You must have at least Java 8 installed on your system and connectivity to Maven Central
+You must have at least Java >=9 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). However in order to build all parts
 of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
+NOTE: When running from sources-zip, the `mvnw` might not be executable on `Mac` or `Linux`. This can easily be fixed by running the following command in the directory.
+
+```
+$ chmod +x mvnw
+```
+
+NOTE: If you are working on a `Windows` system, please use `mvnw.cmd` instead of `./mvnw` in the following build commands.
+
 Build PLC4X Java jars and install them in your local maven repository
 
 ```
-mvn install # add -DskipTests to omit running the tests
+./mvnw install # add -DskipTests to omit running the tests
 ```
 
 You can now construct Java applications that use PLC4X. The PLC4X examples
@@ -221,37 +231,41 @@ directory.
 The `Go` drivers can be built by enabling the `with-go` profile:
 
 ```
-mvn -P with-go install  # add -DskipTests to omit running the tests
+./mvnw -P with-go install  # add -DskipTests to omit running the tests
 ```
 
 NOTE: The C++ build is considered experimental and currently not working properly.
 
 The `C++` drivers are still under development and still not really usable. 
-Therefore, they are located in the so-called `sandbox`. 
-If you want to build them, this has to be enabled by activating the `with-sandbox` and `with-cpp` maven profiles:
+Therefore, they are located in the so-called `sandbox`. Also does it rely on a 
+library called, `boost`, which needs to also be built.
+
+If you want to build them, this has to be enabled by activating the `with-boost`, `with-sandbox` and `with-cpp` maven profiles:
 
 ```
-mvn -P with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
+./mvnw -P with-boost,with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
 ```
 
-Same applies for the `C# / .Net` implementation with `with-dotnet` profiles.
+The `C# / .Net` implementation is currently in a `work in progress` state.
+In order to be able to build the `C# / .Net` module, you currently need to activate the:
+`with-sandbox` and `with-dotnet` profiles.
 
 ```
-mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
 ```
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
 In order to be able to build the Python module, you currently need to activate the:
-`with-sandbox`, `with-python` and `with-proxies` profiles.
+`with-sandbox` and `with-python` profiles.
 
 ```
-mvn -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-python install  # add -DskipTests to omit running the tests
 ```
 
 In order to build everything the following command should work:
 
 ```
-mvn -P with-go,with-boost,with-dotnet,with-proxies,with-python,with-sandbox install
+./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
 ```
 
 ## Community
@@ -275,7 +289,7 @@ Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://
 
 There are multiple forms in which you can become involved with the PLC4X project.
 
-These usually are, but are not limited to:
+These are, but are not limited to:
 
 * Submitting Pull Requests
 * Filing Bug-Reports

@@ -53,5 +53,5 @@ func (m PlcTIME) GetString() string {
 }
 
 func (m PlcTIME) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME", byte(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataGroupValueResponse struct {
+	*ApduData
 	DataFirstByte int8
-	Data          []int8
-	Parent        *ApduData
+	Data          []byte
 }
 
 // The corresponding interface
@@ -50,14 +50,14 @@ func (m *ApduDataGroupValueResponse) ApciType() uint8 {
 func (m *ApduDataGroupValueResponse) InitializeParent(parent *ApduData) {
 }
 
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []int8) *ApduData {
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte) *ApduData {
 	child := &ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		Parent:        NewApduData(),
+		ApduData:      NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataGroupValueResponse(structType interface{}) *ApduDataGroupValueResponse {
@@ -88,7 +88,7 @@ func (m *ApduDataGroupValueResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataGroupValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -111,26 +111,16 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	}
 
 	// Simple Field (dataFirstByte)
-	dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
+	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
 	if _dataFirstByteErr != nil {
 		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	dataFirstByte := _dataFirstByte
+	// Byte Array field (data)
+	numberOfBytesdata := int(utils.InlineIf(bool(bool((dataLength) < (1))), func() interface{} { return uint16(uint16(0)) }, func() interface{} { return uint16(uint16(dataLength) - uint16(uint16(1))) }).(uint16))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataGroupValueResponse"); closeErr != nil {
@@ -141,10 +131,10 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	_child := &ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		Parent:        &ApduData{},
+		ApduData:      &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -162,17 +152,10 @@ func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) er
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
 		}
 
@@ -181,7 +164,7 @@ func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataGroupValueResponse) String() string {

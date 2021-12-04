@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ApduDataExtAuthorizeRequest struct {
-	Level  uint8
-	Data   []uint8
-	Parent *ApduDataExt
+	*ApduDataExt
+	Level uint8
+	Data  []byte
 }
 
 // The corresponding interface
@@ -50,14 +50,14 @@ func (m *ApduDataExtAuthorizeRequest) ExtApciType() uint8 {
 func (m *ApduDataExtAuthorizeRequest) InitializeParent(parent *ApduDataExt) {
 }
 
-func NewApduDataExtAuthorizeRequest(level uint8, data []uint8) *ApduDataExt {
+func NewApduDataExtAuthorizeRequest(level uint8, data []byte) *ApduDataExt {
 	child := &ApduDataExtAuthorizeRequest{
-		Level:  level,
-		Data:   data,
-		Parent: NewApduDataExt(),
+		Level:       level,
+		Data:        data,
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtAuthorizeRequest(structType interface{}) *ApduDataExtAuthorizeRequest {
@@ -88,7 +88,7 @@ func (m *ApduDataExtAuthorizeRequest) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtAuthorizeRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -105,32 +105,22 @@ func (m *ApduDataExtAuthorizeRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (level)
-	level, _levelErr := readBuffer.ReadUint8("level", 8)
+	_level, _levelErr := readBuffer.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]uint8, uint16(4))
-	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	level := _level
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(4))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtAuthorizeRequest"); closeErr != nil {
@@ -139,12 +129,12 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeRequest{
-		Level:  level,
-		Data:   data,
-		Parent: &ApduDataExt{},
+		Level:       level,
+		Data:        data,
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -162,17 +152,10 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) e
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
 		}
 
@@ -181,7 +164,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtAuthorizeRequest) String() string {

@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
 
   <name>KNXNet/IP</name>
 
@@ -136,12 +137,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">-56</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">54964</ipPort>
@@ -173,12 +169,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">11</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">3671</ipPort>
@@ -210,68 +201,18 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber isList="true">
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">8</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">64</value>
-                <value dataType="int" bitLength="8">-104</value>
-                <value dataType="int" bitLength="8">82</value>
-              </knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber dataType="byte" bitLength="48">0x00082d409852</knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-32</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">23</value>
-                    <value dataType="int" bitLength="8">12</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xe000170c</addr>
                 </IPAddress>
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">10</value>
-                    <value dataType="int" bitLength="8">-77</value>
-                    <value dataType="int" bitLength="8">39</value>
-                    <value dataType="int" bitLength="8">85</value>
-                    <value dataType="int" bitLength="8">54</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="48">0x000ab3275536</addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName isList="true">
-                <value dataType="int" bitLength="8">71</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">114</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">32</value>
-                <value dataType="int" bitLength="8">75</value>
-                <value dataType="int" bitLength="8">78</value>
-                <value dataType="int" bitLength="8">88</value>
-                <value dataType="int" bitLength="8">47</value>
-                <value dataType="int" bitLength="8">73</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">83</value>
-                <value dataType="int" bitLength="8">99</value>
-                <value dataType="int" bitLength="8">104</value>
-                <value dataType="int" bitLength="8">110</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">101</value>
-                <value dataType="int" bitLength="8">108</value>
-                <value dataType="int" bitLength="8">108</value>
-                <value dataType="int" bitLength="8">101</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-              </deviceFriendlyName>
+              <deviceFriendlyName dataType="byte" bitLength="240">0x47697261204b4e582f49502d5363686e6974747374656c6c650000000000</deviceFriendlyName>
             </DIBDeviceInfo>
           </dibDeviceInfo>
           <dibSuppSvcFamilies>
@@ -324,12 +265,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0x00000000</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">0</ipPort>
@@ -379,68 +315,18 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber isList="true">
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">8</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">64</value>
-                <value dataType="int" bitLength="8">-104</value>
-                <value dataType="int" bitLength="8">82</value>
-              </knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber dataType="byte" bitLength="48">0x00082d409852</knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-32</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">23</value>
-                    <value dataType="int" bitLength="8">12</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xe000170c</addr>
                 </IPAddress>
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">10</value>
-                    <value dataType="int" bitLength="8">-77</value>
-                    <value dataType="int" bitLength="8">39</value>
-                    <value dataType="int" bitLength="8">85</value>
-                    <value dataType="int" bitLength="8">54</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="48">0x000ab3275536</addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName isList="true">
-                <value dataType="int" bitLength="8">71</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">114</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">32</value>
-                <value dataType="int" bitLength="8">75</value>
-                <value dataType="int" bitLength="8">78</value>
-                <value dataType="int" bitLength="8">88</value>
-                <value dataType="int" bitLength="8">47</value>
-                <value dataType="int" bitLength="8">73</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">83</value>
-                <value dataType="int" bitLength="8">99</value>
-                <value dataType="int" bitLength="8">104</value>
-                <value dataType="int" bitLength="8">110</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">101</value>
-                <value dataType="int" bitLength="8">108</value>
-                <value dataType="int" bitLength="8">108</value>
-                <value dataType="int" bitLength="8">101</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-              </deviceFriendlyName>
+              <deviceFriendlyName dataType="byte" bitLength="240">0x47697261204b4e582f49502d5363686e6974747374656c6c650000000000</deviceFriendlyName>
             </DIBDeviceInfo>
           </dibDeviceInfo>
           <dibSuppSvcFamilies>
@@ -494,12 +380,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">-56</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">54964</ipPort>
@@ -513,12 +394,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">-56</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">54964</ipPort>
@@ -556,36 +432,35 @@
           <status>
             <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
-          <HPAIDataEndpoint>
-            <structureLength dataType="uint" bitLength="8">8</structureLength>
-            <hostProtocolCode>
-              <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
-            </hostProtocolCode>
-            <ipAddress>
-              <IPAddress>
-                <addr isList="true">
-                  <value dataType="int" bitLength="8">-64</value>
-                  <value dataType="int" bitLength="8">-88</value>
-                  <value dataType="int" bitLength="8">42</value>
-                  <value dataType="int" bitLength="8">11</value>
-                </addr>
-              </IPAddress>
-            </ipAddress>
-            <ipPort dataType="uint" bitLength="16">3671</ipPort>
-          </HPAIDataEndpoint>
-          <ConnectionResponseDataBlock>
-            <structureLength dataType="uint" bitLength="8">4</structureLength>
-            <connectionType dataType="uint" bitLength="8">4</connectionType>
-            <ConnectionResponseDataBlockTunnelConnection>
-              <knxAddress>
-                <KnxAddress>
-                  <mainGroup dataType="uint" bitLength="4">15</mainGroup>
-                  <middleGroup dataType="uint" bitLength="4">15</middleGroup>
-                  <subGroup dataType="uint" bitLength="8">254</subGroup>
-                </KnxAddress>
-              </knxAddress>
-            </ConnectionResponseDataBlockTunnelConnection>
-          </ConnectionResponseDataBlock>
+          <hpaiDataEndpoint>
+            <HPAIDataEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">3671</ipPort>
+            </HPAIDataEndpoint>
+          </hpaiDataEndpoint>
+          <connectionResponseDataBlock>
+            <ConnectionResponseDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <connectionType dataType="uint" bitLength="8">4</connectionType>
+              <ConnectionResponseDataBlockTunnelConnection>
+                <knxAddress>
+                  <KnxAddress>
+                    <mainGroup dataType="uint" bitLength="4">15</mainGroup>
+                    <middleGroup dataType="uint" bitLength="4">15</middleGroup>
+                    <subGroup dataType="uint" bitLength="8">254</subGroup>
+                  </KnxAddress>
+                </knxAddress>
+              </ConnectionResponseDataBlockTunnelConnection>
+            </ConnectionResponseDataBlock>
+          </connectionResponseDataBlock>
         </ConnectionResponse>
       </KnxNetIpMessage>
     </xml>
@@ -612,12 +487,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">-56</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82ac8</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">54964</ipPort>
@@ -731,12 +601,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">11</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">3671</ipPort>
@@ -815,10 +680,7 @@
                           <subGroup dataType="uint" bitLength="8">10</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress isList="true">
-                        <value dataType="int" bitLength="8">18</value>
-                        <value dataType="int" bitLength="8">12</value>
-                      </destinationAddress>
+                      <destinationAddress dataType="byte" bitLength="16">0x120c</destinationAddress>
                       <dataLength dataType="uint" bitLength="8">1</dataLength>
                       <apdu>
                         <Apdu>
@@ -831,8 +693,7 @@
                                 <apciType dataType="uint" bitLength="4">2</apciType>
                                 <ApduDataGroupValueWrite>
                                   <dataFirstByte dataType="int" bitLength="6">1</dataFirstByte>
-                                  <data isList="true">
-                                  </data>
+                                  <data dataType="byte" bitLength="0">0x</data>
                                 </ApduDataGroupValueWrite>
                               </ApduData>
                             </dataApdu>
@@ -925,10 +786,7 @@
                           <subGroup dataType="uint" bitLength="8">30</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress isList="true">
-                        <value dataType="int" bitLength="8">12</value>
-                        <value dataType="int" bitLength="8">-31</value>
-                      </destinationAddress>
+                      <destinationAddress dataType="byte" bitLength="16">0x0ce1</destinationAddress>
                       <dataLength dataType="uint" bitLength="8">0</dataLength>
                       <apdu>
                         <Apdu>
@@ -1003,12 +861,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">70</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82a46</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">50185</ipPort>
@@ -1022,12 +875,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr isList="true">
-                    <value dataType="int" bitLength="8">-64</value>
-                    <value dataType="int" bitLength="8">-88</value>
-                    <value dataType="int" bitLength="8">42</value>
-                    <value dataType="int" bitLength="8">70</value>
-                  </addr>
+                  <addr dataType="byte" bitLength="32">0xc0a82a46</addr>
                 </IPAddress>
               </ipAddress>
               <ipPort dataType="uint" bitLength="16">50186</ipPort>

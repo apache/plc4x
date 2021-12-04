@@ -22,17 +22,19 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultImplicitField extends DefaultTaggedField implements ImplicitField {
+import java.util.*;
+
+public class DefaultImplicitField extends DefaultField implements ImplicitField {
 
     private final TypeReference type;
     private final String name;
     private final Term serializeExpression;
 
-    public DefaultImplicitField(String[] tags, TypeReference type, String name, Term serializeExpression) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.serializeExpression = serializeExpression;
+    public DefaultImplicitField(Map<String, Term> attributes, TypeReference type, String name, Term serializeExpression) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
     }
 
     public TypeReference getType() {
@@ -45,10 +47,6 @@ public class DefaultImplicitField extends DefaultTaggedField implements Implicit
 
     public Term getSerializeExpression() {
         return serializeExpression;
-    }
-
-    public Term[] getParams() {
-        return new Term[0];
     }
 
 }

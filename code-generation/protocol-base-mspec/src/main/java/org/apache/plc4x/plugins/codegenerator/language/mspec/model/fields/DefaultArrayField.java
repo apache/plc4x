@@ -22,21 +22,24 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultArrayField extends DefaultTaggedField implements ArrayField {
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+public class DefaultArrayField extends DefaultField implements ArrayField {
 
     private final TypeReference type;
     private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
-    private final Term[] params;
 
-    public DefaultArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.loopType = loopType;
-        this.loopExpression = loopExpression;
-        this.params = params;
+    public DefaultArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.loopType = Objects.requireNonNull(loopType);
+        this.loopExpression = Objects.requireNonNull(loopExpression);
     }
 
     public TypeReference getType() {
@@ -53,11 +56,6 @@ public class DefaultArrayField extends DefaultTaggedField implements ArrayField 
 
     public Term getLoopExpression() {
         return loopExpression;
-    }
-
-    @Override
-    public Term[] getParams() {
-        return params;
     }
 
 }

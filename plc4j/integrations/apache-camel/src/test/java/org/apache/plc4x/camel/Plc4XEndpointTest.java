@@ -20,13 +20,14 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Component;
 import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class Plc4XEndpointTest {
 
@@ -34,7 +35,9 @@ public class Plc4XEndpointTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
+        Component mockComponent = mock(Component.class, RETURNS_DEEP_STUBS);
+        when(mockComponent.getCamelContext()).thenReturn(new DefaultCamelContext());
+        SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mockComponent);
     }
 
     // TODO: figure out what this is

@@ -160,10 +160,11 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Simple Field (tpduReference)
-	tpduReference, _tpduReferenceErr := readBuffer.ReadUint16("tpduReference", 16)
+	_tpduReference, _tpduReferenceErr := readBuffer.ReadUint16("tpduReference", 16)
 	if _tpduReferenceErr != nil {
 		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field")
 	}
+	tpduReference := _tpduReference
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint16("parameterLength", 16)
@@ -202,21 +203,43 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
 	if bool((parameterLength) > (0)) {
-		_val, _err := S7ParameterParse(readBuffer, messageType)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
+			return nil, pullErr
 		}
-		parameter = _val
+		_val, _err := S7ParameterParse(readBuffer, messageType)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			parameter = CastS7Parameter(_val)
+			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
 	if bool((payloadLength) > (0)) {
-		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+			return nil, pullErr
 		}
-		payload = _val
+		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			payload = CastS7Payload(_val)
+			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Message"); closeErr != nil {
@@ -267,30 +290,35 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), func() uint16 { return uint16(m.Parameter.LengthInBytes()) }, func() uint16 { return uint16(uint16(0)) }))
+	parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), func() interface{} { return uint16(m.Parameter.LengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	_parameterLengthErr := writeBuffer.WriteUint16("parameterLength", 16, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint16(0)) }))
+	payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), func() interface{} { return uint16(m.Payload.LengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, (payloadLength))
 	if _payloadLengthErr != nil {
 		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	// Optional Field (parameter) (Can be skipped, if the value is null)
 	var parameter *S7Parameter = nil
 	if m.Parameter != nil {
+		if pushErr := writeBuffer.PushContext("parameter"); pushErr != nil {
+			return pushErr
+		}
 		parameter = m.Parameter
 		_parameterErr := parameter.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
+			return popErr
+		}
 		if _parameterErr != nil {
 			return errors.Wrap(_parameterErr, "Error serializing 'parameter' field")
 		}
@@ -299,8 +327,14 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *S7Payload = nil
 	if m.Payload != nil {
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
 		payload = m.Payload
 		_payloadErr := payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}

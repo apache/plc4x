@@ -109,6 +109,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	switch {
 	case serviceChoice == 0x03: // BACnetErrorGetAlarmSummary
 		_parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(readBuffer)
+	case serviceChoice == 0x02: // BACnetErrorConfirmedEventNotification
+		_parent, typeSwitchError = BACnetErrorConfirmedEventNotificationParse(readBuffer)
 	case serviceChoice == 0x04: // BACnetErrorGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(readBuffer)
 	case serviceChoice == 0x1D: // BACnetErrorGetEventInformation
@@ -127,6 +129,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		_parent, typeSwitchError = BACnetErrorReadRangeParse(readBuffer)
 	case serviceChoice == 0x12: // BACnetErrorConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(readBuffer)
+	case serviceChoice == 0x14: // BACnetErrorPasswordFailure
+		_parent, typeSwitchError = BACnetErrorPasswordFailureParse(readBuffer)
 	case serviceChoice == 0x15: // BACnetErrorVTOpen
 		_parent, typeSwitchError = BACnetErrorVTOpenParse(readBuffer)
 	case serviceChoice == 0x17: // BACnetErrorVTData
@@ -170,8 +174,7 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

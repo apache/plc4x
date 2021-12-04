@@ -25,9 +25,8 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* readBuffer, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
@@ -36,21 +35,21 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
     return NO_MEMORY;
   }
 
-  // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &returnCode);
+  // Simple Field (returnCode)
+  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = returnCode;
+  (*_message)->return_code = *returnCode;
 
-  // Enum field (transportSize)
-  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &transportSize);
+  // Simple Field (transportSize)
+  plc4c_s7_read_write_data_transport_size* transportSize;
+  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = transportSize;
+  (*_message)->transport_size = *transportSize;
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
@@ -67,7 +66,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
   {
     // Count array
-    uint16_t itemCount = ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
+    uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(*transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
       char* _value = malloc(sizeof(char));
@@ -82,7 +81,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Padding Field (padding)
   {
-    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, 8)) && (((lastItem) ? 0 : (plc4c_spi_evaluation_helper_count(data)) % (2))));
+    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, 8)) && ((plc4c_spi_evaluation_helper_count(data)) % (2)));
     while (_timesPadding-- > 0) {
       // Just read the padding data and ignore it
       uint8_t _paddingValue = 0;
@@ -96,17 +95,17 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_payload_data_item* _message, bool lastItem) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
   plc4c_return_code _res = OK;
 
-  // Enum field (returnCode)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->return_code);
+  // Simple Field (returnCode)
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
-  // Enum field (transportSize)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->transport_size);
+  // Simple Field (transportSize)
+  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
@@ -129,10 +128,10 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
 
   // Padding Field (padding)
   {
-    int _timesPadding = (int) (((lastItem) ? 0 : (plc4c_spi_evaluation_helper_count(_message->data)) % (2)));
+    int _timesPadding = (int) ((plc4c_spi_evaluation_helper_count(_message->data)) % (2));
     while (_timesPadding-- > 0) {
       // Just output the default padding data
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0);
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
       if(_res != OK) {
         return _res;
       }
@@ -149,11 +148,11 @@ uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bytes(plc4c_s7_r
 uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_read_write_s7_var_payload_data_item* _message) {
   uint16_t lengthInBits = 0;
 
-  // Enum Field (returnCode)
-  lengthInBits += 8;
+  // Simple field (returnCode)
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
 
-  // Enum Field (transportSize)
-  lengthInBits += 8;
+  // Simple field (transportSize)
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
 
   // Implicit Field (dataLength)
   lengthInBits += 16;
@@ -162,7 +161,7 @@ uint16_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_re
   lengthInBits += 8 * plc4c_utils_list_size(_message->data);
 
   // Padding Field (padding)
- int _needsPadding = (int) (((false) ? 0 : (plc4c_spi_evaluation_helper_count(_message->data)) % (2)));
+ int _needsPadding = (int) ((plc4c_spi_evaluation_helper_count(_message->data)) % (2));
  while(_needsPadding-- > 0) {
     lengthInBits += 8;
   }

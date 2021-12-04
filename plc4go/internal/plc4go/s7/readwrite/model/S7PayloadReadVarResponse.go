@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type S7PayloadReadVarResponse struct {
-	Items  []*S7VarPayloadDataItem
-	Parent *S7Payload
+	*S7Payload
+	Items []*S7VarPayloadDataItem
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *S7PayloadReadVarResponse) InitializeParent(parent *S7Payload) {
 
 func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem) *S7Payload {
 	child := &S7PayloadReadVarResponse{
-		Items:  items,
-		Parent: NewS7Payload(),
+		Items:     items,
+		S7Payload: NewS7Payload(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Payload
 }
 
 func CastS7PayloadReadVarResponse(structType interface{}) *S7PayloadReadVarResponse {
@@ -90,7 +90,7 @@ func (m *S7PayloadReadVarResponse) LengthInBits() uint16 {
 }
 
 func (m *S7PayloadReadVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {
@@ -107,7 +107,7 @@ func (m *S7PayloadReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -118,13 +118,14 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, parameter *S7Par
 	}
 	// Count array
 	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).NumItems)
-	for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).NumItems); curItem++ {
-		lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).NumItems-1)
-		_item, _err := S7VarPayloadDataItemParse(readBuffer, lastItem)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'items' field")
+	{
+		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).NumItems); curItem++ {
+			_item, _err := S7VarPayloadDataItemParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'items' field")
+			}
+			items[curItem] = _item
 		}
-		items[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -136,11 +137,11 @@ func S7PayloadReadVarResponseParse(readBuffer utils.ReadBuffer, parameter *S7Par
 
 	// Create a partially initialized instance
 	_child := &S7PayloadReadVarResponse{
-		Items:  items,
-		Parent: &S7Payload{},
+		Items:     items,
+		S7Payload: &S7Payload{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Payload.Child = _child
+	return _child.S7Payload, nil
 }
 
 func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -154,15 +155,11 @@ func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			itemCount := uint16(len(m.Items))
-			var curItem uint16 = 0
 			for _, _element := range m.Items {
-				var lastItem bool = curItem == (itemCount - 1)
-				_elementErr := _element.Serialize(writeBuffer, lastItem)
+				_elementErr := _element.Serialize(writeBuffer)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
-				curItem++
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
@@ -174,7 +171,7 @@ func (m *S7PayloadReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7PayloadReadVarResponse) String() string {

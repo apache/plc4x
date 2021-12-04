@@ -21,7 +21,7 @@ package org.apache.plc4x.java.canopen.configuration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.socketcan.CANTransportConfiguration;
+import org.apache.plc4x.java.transport.can.CANTransportConfiguration;
 
 public class CANOpenConfiguration implements Configuration, CANTransportConfiguration {
 

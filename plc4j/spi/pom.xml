@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-spi</artifactId>
@@ -73,7 +73,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -101,10 +101,15 @@
         <configuration>
           <instructions>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
-              *
+                com.fasterxml.jackson.annotation;resolution:=optional,   
+                com.github.jinahya.bit.io;resolution:=optional,   
+                *
             </Import-Package>
+            <Private-Package>com.github.jinahya.bit.io</Private-Package>
             <Export-package>io.netty.bootstrap,*</Export-package>
+
+            <SPI-consumer>*</SPI-consumer>
+            <SPI-Provider>*</SPI-Provider>
           </instructions>
         </configuration>
       </plugin>

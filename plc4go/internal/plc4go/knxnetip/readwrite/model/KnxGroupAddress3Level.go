@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type KnxGroupAddress3Level struct {
+	*KnxGroupAddress
 	MainGroup   uint8
 	MiddleGroup uint8
 	SubGroup    uint8
-	Parent      *KnxGroupAddress
 }
 
 // The corresponding interface
@@ -45,7 +45,7 @@ type IKnxGroupAddress3Level interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *KnxGroupAddress3Level) NumLevels() uint8 {
-	return 3
+	return uint8(3)
 }
 
 func (m *KnxGroupAddress3Level) InitializeParent(parent *KnxGroupAddress) {
@@ -53,13 +53,13 @@ func (m *KnxGroupAddress3Level) InitializeParent(parent *KnxGroupAddress) {
 
 func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxGroupAddress {
 	child := &KnxGroupAddress3Level{
-		MainGroup:   mainGroup,
-		MiddleGroup: middleGroup,
-		SubGroup:    subGroup,
-		Parent:      NewKnxGroupAddress(),
+		MainGroup:       mainGroup,
+		MiddleGroup:     middleGroup,
+		SubGroup:        subGroup,
+		KnxGroupAddress: NewKnxGroupAddress(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxGroupAddress
 }
 
 func CastKnxGroupAddress3Level(structType interface{}) *KnxGroupAddress3Level {
@@ -90,7 +90,7 @@ func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
 }
 
 func (m *KnxGroupAddress3Level) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -108,28 +108,31 @@ func (m *KnxGroupAddress3Level) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
 	if pullErr := readBuffer.PullContext("KnxGroupAddress3Level"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
+	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
+	mainGroup := _mainGroup
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 3)
+	_middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 3)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
+	middleGroup := _middleGroup
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
+	_subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress3Level"); closeErr != nil {
 		return nil, closeErr
@@ -137,13 +140,13 @@ func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer) (*KnxGroupAddress, 
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress3Level{
-		MainGroup:   mainGroup,
-		MiddleGroup: middleGroup,
-		SubGroup:    subGroup,
-		Parent:      &KnxGroupAddress{},
+		MainGroup:       mainGroup,
+		MiddleGroup:     middleGroup,
+		SubGroup:        subGroup,
+		KnxGroupAddress: &KnxGroupAddress{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxGroupAddress.Child = _child
+	return _child.KnxGroupAddress, nil
 }
 
 func (m *KnxGroupAddress3Level) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -178,7 +181,7 @@ func (m *KnxGroupAddress3Level) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxGroupAddress3Level) String() string {

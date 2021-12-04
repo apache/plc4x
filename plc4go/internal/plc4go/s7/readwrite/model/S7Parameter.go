@@ -109,17 +109,19 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
-		_parent, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
-		_parent, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
-		_parent, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
-		_parent, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
-		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer, messageType)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
-		_parent, typeSwitchError = S7ParameterUserDataParse(readBuffer)
+		_parent, typeSwitchError = S7ParameterUserDataParse(readBuffer, messageType)
+	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
+		_parent, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -155,8 +157,7 @@ func (m *S7Parameter) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Pa
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

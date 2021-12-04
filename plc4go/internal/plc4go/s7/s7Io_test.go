@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"reflect"
@@ -30,6 +31,7 @@ import (
 func TestS7MessageBytes(t *testing.T) {
 	type debuggable interface {
 		utils.Serializable
+		fmt.Stringer
 	}
 	type args struct {
 		debuggable debuggable
@@ -37,7 +39,6 @@ func TestS7MessageBytes(t *testing.T) {
 	tests := []struct {
 		name                        string
 		args                        args
-		wantString                  string
 		wantStringSerialized        string
 		wantStringSerializedCompact string
 		wantStringXml               string
@@ -70,47 +71,10 @@ func TestS7MessageBytes(t *testing.T) {
 					),
 				),
 			},
-			wantString: `
-╔═TPKTPacket══════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═ProtocolId╗╔═reserved╗╔═Len═════╗                                                                                  ║
-║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                                  ║
-║╚═══════════╝╚═════════╝╚═════════╝                                                                                  ║
-║╔═COTPPacket/COTPPacketData/payload═════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═HeaderLength╗╔═TpduCode╗╔═Eot════╗╔═TpduRef╗╔═Parameters═════════════════════════════════════════════════╗       ║║
-║║║   0x05 5    ║║0xf0 240 ║║b0 false║║0x0d 13 ║║╔═COTPParameter/COTPParameterTpduSize══════════════════════╗║       ║║
-║║╚═════════════╝╚═════════╝╚════════╝╚════════╝║║╔═ParameterType╗╔═ParameterLength╗╔═COTPTpduSize/tpduSize╗║║       ║║
-║║                                              ║║║   0xc0 192   ║║     0x01 1     ║║    0x0c SIZE_4096    ║║║       ║║
-║║                                              ║║╚══════════════╝╚════════════════╝╚══════════════════════╝║║       ║║
-║║                                              ║╚══════════════════════════════════════════════════════════╝║       ║║
-║║                                              ╚════════════════════════════════════════════════════════════╝       ║║
-║║╔═S7Message/S7MessageResponseData/payload═════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═ProtocolId╗╔═MessageType╗╔═reserved╗╔═TpduReference╗╔═ParameterLength╗╔═PayloadLength╗╔═ErrorClass╗╔═ErrorCode╗║║║
-║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║║  0x00 0   ║║  0x00 0  ║║║║
-║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝╚═══════════╝╚══════════╝║║║
-║║║╔═S7Parameter/S7ParameterReadVarResponse/parameter╗                                                              ║║║
-║║║║           ╔═ParameterType╗╔═NumItems╗           ║                                                              ║║║
-║║║║           ║    0x04 4    ║║ 0x01 1  ║           ║                                                              ║║║
-║║║║           ╚══════════════╝╚═════════╝           ║                                                              ║║║
-║║║╚═════════════════════════════════════════════════╝                                                              ║║║
-║║║╔═S7Payload/S7PayloadReadVarResponse/payload════════════════════════════════════════════════════════════════╗    ║║║
-║║║║╔═Items═══════════════════════════════════════════════════════════════════════════════════════════════════╗║    ║║║
-║║║║║╔═S7VarPayloadDataItem══════════════════════════════════════════════════════════════════════════════════╗║║    ║║║
-║║║║║║╔═DataTransportErrorCode/returnCode╗╔═DataTransportSize/transportSize╗╔═DataLength╗╔═Data═══╗╔═padding╗║║║    ║║║
-║║║║║║║             0xff OK              ║║            0x03 BIT            ║║ 0x0001 1  ║║╔══════╗║║ 0x00 0 ║║║║    ║║║
-║║║║║║╚══════════════════════════════════╝╚════════════════════════════════╝╚═══════════╝║║0x01 1║║╚════════╝║║║    ║║║
-║║║║║║                                                                                   ║╚══════╝║          ║║║    ║║║
-║║║║║║                                                                                   ╚════════╝          ║║║    ║║║
-║║║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║    ║║║
-║║║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║    ║║║
-║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝    ║║║
-║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`,
 			wantStringSerialized: `
 ╔═TPKTPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                               ║
-║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                               ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                                               ║
 ║╚═══════════╝╚═════════╝╚═════════╝                                                                               ║
 ║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════╗║
 ║║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════╗║║
@@ -125,80 +89,88 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║                                                ║║                                  ╚══════════════════════╝║║║║║
 ║║║                                                ║╚══════════════════════════════════════════════════════════╝║║║║
 ║║║                                                ╚════════════════════════════════════════════════════════════╝║║║
-║║║╔═S7Message══════════════════════════════════════════════════════════════════════════════╗                    ║║║
-║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗║                    ║║║
-║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║║                    ║║║
-║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝║                    ║║║
-║║║║╔═S7MessageResponseData═══╗╔═S7Parameter═════════════════════════════════╗              ║                    ║║║
-║║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse╗║              ║                    ║║║
-║║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║        ╔═numItems╗        ║║              ║                    ║║║
-║║║║║╚═══════════╝╚══════════╝║║╚══════════════╝║        ║ 0x01 1  ║        ║║              ║                    ║║║
-║║║║╚═════════════════════════╝║                ║        ╚═════════╝        ║║              ║                    ║║║
-║║║║                           ║                ╚═══════════════════════════╝║              ║                    ║║║
-║║║║                           ╚═════════════════════════════════════════════╝              ║                    ║║║
-║║║║╔═S7Payload══════════════════════════════════════════════════════════╗                  ║                    ║║║
-║║║║║╔═S7PayloadReadVarResponse═════════════════════════════════════════╗║                  ║                    ║║║
-║║║║║║╔═items══════════════════════════════════════════════════════════╗║║                  ║                    ║║║
-║║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════╗║║║                  ║                    ║║║
-║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════╗╔═dataLength╗║║║║                  ║                    ║║║
-║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize╗║║ 0x0001 1  ║║║║║                  ║                    ║║║
-║║║║║║║║║║      0xff 255 OK      ║║║║    0x03 3 BIT    ║║╚═══════════╝║║║║                  ║                    ║║║
-║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║║║║                  ║                    ║║║
-║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ║║║║                  ║                    ║║║
-║║║║║║║║╔═data═══════════════════════════════════════╗╔═padding╗      ║║║║                  ║                    ║║║
-║║║║║║║║║0|01                            '.         '║║        ║      ║║║║                  ║                    ║║║
-║║║║║║║║╚════════════════════════════════════════════╝╚════════╝      ║║║║                  ║                    ║║║
-║║║║║║║╚══════════════════════════════════════════════════════════════╝║║║                  ║                    ║║║
-║║║║║║╚════════════════════════════════════════════════════════════════╝║║                  ║                    ║║║
-║║║║║╚══════════════════════════════════════════════════════════════════╝║                  ║                    ║║║
-║║║║╚════════════════════════════════════════════════════════════════════╝                  ║                    ║║║
-║║║╚════════════════════════════════════════════════════════════════════════════════════════╝                    ║║║
+║║║╔═payload══════════════════════════════════════════════════════════════════════════════════╗                  ║║║
+║║║║╔═S7Message══════════════════════════════════════════════════════════════════════════════╗║                  ║║║
+║║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗║║                  ║║║
+║║║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║║║                  ║║║
+║║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝║║                  ║║║
+║║║║║╔═S7MessageResponseData═══╗╔═parameter═════════════════════════════════════╗            ║║                  ║║║
+║║║║║║╔═errorClass╗╔═errorCode╗║║╔═S7Parameter═════════════════════════════════╗║            ║║                  ║║║
+║║║║║║║  0x00 0   ║║  0x00 0  ║║║║╔═parameterType╗╔═S7ParameterReadVarResponse╗║║            ║║                  ║║║
+║║║║║║╚═══════════╝╚══════════╝║║║║    0x04 4    ║║        ╔═numItems╗        ║║║            ║║                  ║║║
+║║║║║╚═════════════════════════╝║║╚══════════════╝║        ║ 0x01 1  ║        ║║║            ║║                  ║║║
+║║║║║                           ║║                ║        ╚═════════╝        ║║║            ║║                  ║║║
+║║║║║                           ║║                ╚═══════════════════════════╝║║            ║║                  ║║║
+║║║║║                           ║╚═════════════════════════════════════════════╝║            ║║                  ║║║
+║║║║║                           ╚═══════════════════════════════════════════════╝            ║║                  ║║║
+║║║║║╔═payload══════════════════════════════════════════════════════════════╗                ║║                  ║║║
+║║║║║║╔═S7Payload══════════════════════════════════════════════════════════╗║                ║║                  ║║║
+║║║║║║║╔═S7PayloadReadVarResponse═════════════════════════════════════════╗║║                ║║                  ║║║
+║║║║║║║║╔═items══════════════════════════════════════════════════════════╗║║║                ║║                  ║║║
+║║║║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════╗║║║║                ║║                  ║║║
+║║║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════╗╔═dataLength╗║║║║║                ║║                  ║║║
+║║║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize╗║║ 0x0001 1  ║║║║║║                ║║                  ║║║
+║║║║║║║║║║║║      0xff 255 OK      ║║║║    0x03 3 BIT    ║║╚═══════════╝║║║║║                ║║                  ║║║
+║║║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║║║║║                ║║                  ║║║
+║║║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ║║║║║                ║║                  ║║║
+║║║║║║║║║║╔═data═══════════════════════════════════════╗╔═padding╗      ║║║║║                ║║                  ║║║
+║║║║║║║║║║║0|01                            '.         '║║╔══════╗║      ║║║║║                ║║                  ║║║
+║║║║║║║║║║╚════════════════════════════════════════════╝║║0x00 0║║      ║║║║║                ║║                  ║║║
+║║║║║║║║║║                                              ║╚══════╝║      ║║║║║                ║║                  ║║║
+║║║║║║║║║║                                              ╚════════╝      ║║║║║                ║║                  ║║║
+║║║║║║║║║╚══════════════════════════════════════════════════════════════╝║║║║                ║║                  ║║║
+║║║║║║║║╚════════════════════════════════════════════════════════════════╝║║║                ║║                  ║║║
+║║║║║║║╚══════════════════════════════════════════════════════════════════╝║║                ║║                  ║║║
+║║║║║║╚════════════════════════════════════════════════════════════════════╝║                ║║                  ║║║
+║║║║║╚══════════════════════════════════════════════════════════════════════╝                ║║                  ║║║
+║║║║╚════════════════════════════════════════════════════════════════════════════════════════╝║                  ║║║
+║║║╚══════════════════════════════════════════════════════════════════════════════════════════╝                  ║║║
 ║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
 			wantStringSerializedCompact: `
-╔═TPKTPacket══════════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                          ║
-║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                          ║
-║╚═══════════╝╚═════════╝╚═════════╝                                                                          ║
-║╔═payload/COTPPacket════════════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗                                                           ║║
-║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║                                                           ║║
-║║╚═════════════╝╚═════════╝║║b0 false║║ 0xd 13 ║║                                                           ║║
-║║                          ║╚════════╝╚════════╝║                                                           ║║
-║║                          ╚════════════════════╝                                                           ║║
-║║╔═parameters/COTPParameter════════════════════════════════════════════════════════════╗                    ║║
-║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize/tpduSize/COTPTpduSize═════╗║                    ║║
-║║║║   0xc0 192   ║║     0x01 1     ║║                0x0c 12 SIZE_4096                ║║                    ║║
-║║║╚══════════════╝╚════════════════╝╚═════════════════════════════════════════════════╝║                    ║║
-║║╚═════════════════════════════════════════════════════════════════════════════════════╝                    ║║
-║║╔═S7Message═══════════════════════════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗                 ║║║
-║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║                 ║║║
-║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝                 ║║║
-║║║╔═S7MessageResponseData═══╗╔═S7Parameter═════════════════════════════════════════════╗                   ║║║
-║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse/numItems═══╗║                   ║║║
-║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║                0x01 1                 ║║                   ║║║
-║║║║╚═══════════╝╚══════════╝║║╚══════════════╝╚═══════════════════════════════════════╝║                   ║║║
-║║║╚═════════════════════════╝╚═════════════════════════════════════════════════════════╝                   ║║║
-║║║╔═S7Payload/S7PayloadReadVarResponse/items/S7VarPayloadDataItem═════════════════════════════════════════╗║║║
-║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗╔═dataLength╗║║║║
-║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║ 0x0001 1  ║║║║║
-║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝╚═══════════╝║║║║
-║║║║╔═data═══════════════════════════════════════╗                                                         ║║║║
-║║║║║0|01                            '.         '║                                                         ║║║║
-║║║║╚════════════════════════════════════════════╝                                                         ║║║║
-║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
-║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔═TPKTPacket═════════════════════════════════════════════════════════════════════════════════════╗
+║╔═protocolId╗╔═reserved╗╔═len═════╗                                                             ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001e 30║                                                             ║
+║╚═══════════╝╚═════════╝╚═════════╝                                                             ║
+║╔═payload/COTPPacket═══════════════════════════════════════════════════════════════════════════╗║
+║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗                                              ║║
+║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║                                              ║║
+║║╚═════════════╝╚═════════╝║║b0 false║║ 0xd 13 ║║                                              ║║
+║║                          ║╚════════╝╚════════╝║                                              ║║
+║║                          ╚════════════════════╝                                              ║║
+║║╔═parameters/COTPParameter════════════════════════════════════════════════════════════╗       ║║
+║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize/tpduSize/COTPTpduSize═════╗║       ║║
+║║║║   0xc0 192   ║║     0x01 1     ║║                0x0c 12 SIZE_4096                ║║       ║║
+║║║╚══════════════╝╚════════════════╝╚═════════════════════════════════════════════════╝║       ║║
+║║╚═════════════════════════════════════════════════════════════════════════════════════╝       ║║
+║║╔═payload/S7Message══════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗    ║║║
+║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0006 6   ║    ║║║
+║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝    ║║║
+║║║╔═S7MessageResponseData═══╗╔═parameter/S7Parameter═══════════════════════════════════╗      ║║║
+║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse/numItems═══╗║      ║║║
+║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║                0x01 1                 ║║      ║║║
+║║║║╚═══════════╝╚══════════╝║║╚══════════════╝╚═══════════════════════════════════════╝║      ║║║
+║║║╚═════════════════════════╝╚═════════════════════════════════════════════════════════╝      ║║║
+║║║╔═payload/S7Payload/S7PayloadReadVarResponse/items/S7VarPayloadDataItem════════════════════╗║║║
+║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗║║║║
+║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║║║║
+║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝║║║║
+║║║║╔═dataLength╗╔═data═══════════════════════════════════════╗╔═padding/╗                    ║║║║
+║║║║║ 0x0001 1  ║║0|01                            '.         '║║ 0x00 0  ║                    ║║║║
+║║║║╚═══════════╝╚════════════════════════════════════════════╝╚═════════╝                    ║║║║
+║║║╚══════════════════════════════════════════════════════════════════════════════════════════╝║║║
+║║╚════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║╚══════════════════════════════════════════════════════════════════════════════════════════════╝║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
 			wantStringXml: `
 <TPKTPacket>
   <protocolId dataType="uint" bitLength="8">3</protocolId>
   <reserved dataType="uint" bitLength="8">0</reserved>
-  <len dataType="uint" bitLength="16">29</len>
+  <len dataType="uint" bitLength="16">30</len>
   <payload>
     <COTPPacket>
       <headerLength dataType="uint" bitLength="8">5</headerLength>
@@ -218,41 +190,49 @@ func TestS7MessageBytes(t *testing.T) {
           </COTPParameterTpduSize>
         </COTPParameter>
       </parameters>
-      <S7Message>
-        <protocolId dataType="uint" bitLength="8">50</protocolId>
-        <messageType dataType="uint" bitLength="8">3</messageType>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <tpduReference dataType="uint" bitLength="16">11</tpduReference>
-        <parameterLength dataType="uint" bitLength="16">2</parameterLength>
-        <payloadLength dataType="uint" bitLength="16">5</payloadLength>
-        <S7MessageResponseData>
-          <errorClass dataType="uint" bitLength="8">0</errorClass>
-          <errorCode dataType="uint" bitLength="8">0</errorCode>
-        </S7MessageResponseData>
-        <S7Parameter>
-          <parameterType dataType="uint" bitLength="8">4</parameterType>
-          <S7ParameterReadVarResponse>
-            <numItems dataType="uint" bitLength="8">1</numItems>
-          </S7ParameterReadVarResponse>
-        </S7Parameter>
-        <S7Payload>
-          <S7PayloadReadVarResponse>
-            <items isList="true">
-              <S7VarPayloadDataItem>
-                <returnCode>
-                  <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
-                </returnCode>
-                <transportSize>
-                  <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
-                </transportSize>
-                <dataLength dataType="uint" bitLength="16">1</dataLength>
-                <data dataType="byte" bitLength="8">0x01</data>
-                <padding isList="true"></padding>
-              </S7VarPayloadDataItem>
-            </items>
-          </S7PayloadReadVarResponse>
-        </S7Payload>
-      </S7Message>
+      <payload>
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">3</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">11</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">2</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">6</payloadLength>
+          <S7MessageResponseData>
+            <errorClass dataType="uint" bitLength="8">0</errorClass>
+            <errorCode dataType="uint" bitLength="8">0</errorCode>
+          </S7MessageResponseData>
+          <parameter>
+            <S7Parameter>
+              <parameterType dataType="uint" bitLength="8">4</parameterType>
+              <S7ParameterReadVarResponse>
+                <numItems dataType="uint" bitLength="8">1</numItems>
+              </S7ParameterReadVarResponse>
+            </S7Parameter>
+          </parameter>
+          <payload>
+            <S7Payload>
+              <S7PayloadReadVarResponse>
+                <items isList="true">
+                  <S7VarPayloadDataItem>
+                    <returnCode>
+                      <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                    </returnCode>
+                    <transportSize>
+                      <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
+                    </transportSize>
+                    <dataLength dataType="uint" bitLength="16">1</dataLength>
+                    <data dataType="byte" bitLength="8">0x01</data>
+                    <padding isList="true">
+                      <value dataType="uint" bitLength="8">0</value>
+                    </padding>
+                  </S7VarPayloadDataItem>
+                </items>
+              </S7PayloadReadVarResponse>
+            </S7Payload>
+          </payload>
+        </S7Message>
+      </payload>
     </COTPPacket>
   </payload>
 </TPKTPacket>
@@ -260,7 +240,7 @@ func TestS7MessageBytes(t *testing.T) {
 			wantStringJson: `
 {
   "TPKTPacket": {
-    "len": 29,
+    "len": 30,
     "len__plc4x_bitLength": 16,
     "len__plc4x_dataType": "uint",
     "payload": {
@@ -272,73 +252,6 @@ func TestS7MessageBytes(t *testing.T) {
           "tpduRef": 13,
           "tpduRef__plc4x_bitLength": 7,
           "tpduRef__plc4x_dataType": "uint"
-        },
-        "S7Message": {
-          "S7MessageResponseData": {
-            "errorClass": 0,
-            "errorClass__plc4x_bitLength": 8,
-            "errorClass__plc4x_dataType": "uint",
-            "errorCode": 0,
-            "errorCode__plc4x_bitLength": 8,
-            "errorCode__plc4x_dataType": "uint"
-          },
-          "S7Parameter": {
-            "S7ParameterReadVarResponse": {
-              "numItems": 1,
-              "numItems__plc4x_bitLength": 8,
-              "numItems__plc4x_dataType": "uint"
-            },
-            "parameterType": 4,
-            "parameterType__plc4x_bitLength": 8,
-            "parameterType__plc4x_dataType": "uint"
-          },
-          "S7Payload": {
-            "S7PayloadReadVarResponse": {
-              "items": [
-                {
-                  "S7VarPayloadDataItem": {
-                    "data": "0x01",
-                    "dataLength": 1,
-                    "dataLength__plc4x_bitLength": 16,
-                    "dataLength__plc4x_dataType": "uint",
-                    "data__plc4x_bitLength": 8,
-                    "data__plc4x_dataType": "byte",
-                    "padding": [],
-                    "returnCode": {
-                      "DataTransportErrorCode": 255,
-                      "DataTransportErrorCode__plc4x_bitLength": 8,
-                      "DataTransportErrorCode__plc4x_dataType": "uint",
-                      "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
-                    },
-                    "transportSize": {
-                      "DataTransportSize": 3,
-                      "DataTransportSize__plc4x_bitLength": 8,
-                      "DataTransportSize__plc4x_dataType": "uint",
-                      "DataTransportSize__plc4x_stringRepresentation": "BIT"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "messageType": 3,
-          "messageType__plc4x_bitLength": 8,
-          "messageType__plc4x_dataType": "uint",
-          "parameterLength": 2,
-          "parameterLength__plc4x_bitLength": 16,
-          "parameterLength__plc4x_dataType": "uint",
-          "payloadLength": 5,
-          "payloadLength__plc4x_bitLength": 16,
-          "payloadLength__plc4x_dataType": "uint",
-          "protocolId": 50,
-          "protocolId__plc4x_bitLength": 8,
-          "protocolId__plc4x_dataType": "uint",
-          "reserved": 0,
-          "reserved__plc4x_bitLength": 16,
-          "reserved__plc4x_dataType": "uint",
-          "tpduReference": 11,
-          "tpduReference__plc4x_bitLength": 16,
-          "tpduReference__plc4x_dataType": "uint"
         },
         "headerLength": 5,
         "headerLength__plc4x_bitLength": 8,
@@ -363,6 +276,85 @@ func TestS7MessageBytes(t *testing.T) {
             }
           }
         ],
+        "payload": {
+          "S7Message": {
+            "S7MessageResponseData": {
+              "errorClass": 0,
+              "errorClass__plc4x_bitLength": 8,
+              "errorClass__plc4x_dataType": "uint",
+              "errorCode": 0,
+              "errorCode__plc4x_bitLength": 8,
+              "errorCode__plc4x_dataType": "uint"
+            },
+            "messageType": 3,
+            "messageType__plc4x_bitLength": 8,
+            "messageType__plc4x_dataType": "uint",
+            "parameter": {
+              "S7Parameter": {
+                "S7ParameterReadVarResponse": {
+                  "numItems": 1,
+                  "numItems__plc4x_bitLength": 8,
+                  "numItems__plc4x_dataType": "uint"
+                },
+                "parameterType": 4,
+                "parameterType__plc4x_bitLength": 8,
+                "parameterType__plc4x_dataType": "uint"
+              }
+            },
+            "parameterLength": 2,
+            "parameterLength__plc4x_bitLength": 16,
+            "parameterLength__plc4x_dataType": "uint",
+            "payload": {
+              "S7Payload": {
+                "S7PayloadReadVarResponse": {
+                  "items": [
+                    {
+                      "S7VarPayloadDataItem": {
+                        "data": "0x01",
+                        "dataLength": 1,
+                        "dataLength__plc4x_bitLength": 16,
+                        "dataLength__plc4x_dataType": "uint",
+                        "data__plc4x_bitLength": 8,
+                        "data__plc4x_dataType": "byte",
+                        "padding": [
+                          {
+                            "value": 0,
+                            "value__plc4x_bitLength": 8,
+                            "value__plc4x_dataType": "uint"
+                          }
+                        ],
+                        "returnCode": {
+                          "DataTransportErrorCode": 255,
+                          "DataTransportErrorCode__plc4x_bitLength": 8,
+                          "DataTransportErrorCode__plc4x_dataType": "uint",
+                          "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
+                        },
+                        "transportSize": {
+                          "DataTransportSize": 3,
+                          "DataTransportSize__plc4x_bitLength": 8,
+                          "DataTransportSize__plc4x_dataType": "uint",
+                          "DataTransportSize__plc4x_stringRepresentation": "BIT"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "payloadLength": 6,
+            "payloadLength__plc4x_bitLength": 16,
+            "payloadLength__plc4x_dataType": "uint",
+            "protocolId": 50,
+            "protocolId__plc4x_bitLength": 8,
+            "protocolId__plc4x_dataType": "uint",
+            "reserved": 0,
+            "reserved__plc4x_bitLength": 16,
+            "reserved__plc4x_dataType": "uint",
+            "tpduReference": 11,
+            "tpduReference__plc4x_bitLength": 16,
+            "tpduReference__plc4x_dataType": "uint"
+          }
+        },
         "tpduCode": 240,
         "tpduCode__plc4x_bitLength": 8,
         "tpduCode__plc4x_dataType": "uint"
@@ -378,9 +370,9 @@ func TestS7MessageBytes(t *testing.T) {
 }
 `,
 			wantDump: `
-00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
-10|32 03 00 00 00 0b 00 02 00 05 '2.........'
-20|00 00 04 01 ff 03 00 01 01    '......... '
+00|03 00 00 1e 05 f0 0d c0 01 0c '..........'
+10|32 03 00 00 00 0b 00 02 00 06 '2.........'
+20|00 00 04 01 ff 03 00 01 01 00 '..........'
 `,
 		},
 		{
@@ -423,96 +415,99 @@ func TestS7MessageBytes(t *testing.T) {
 					),
 				),
 			},
-			wantString: `
-TBD
-`,
 			wantStringSerialized: `
-╔═TPKTPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═protocolId╗╔═reserved╗╔═len══════╗                                                                              ║
-║║  0x03 3   ║║ 0x00 0  ║║0x0066 102║                                                                              ║
-║╚═══════════╝╚═════════╝╚══════════╝                                                                              ║
-║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════╗║
-║║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════╗║║
-║║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗╔═parameters═════════════════════════════════════════════════╗║║║
-║║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║║╔═COTPParameter════════════════════════════════════════════╗║║║║
-║║║╚═════════════╝╚═════════╝║║b0 false║║ 0xd 13 ║║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize╗║║║║║
-║║║                          ║╚════════╝╚════════╝║║║║   0xc0 192   ║║     0x01 1     ║║╔═tpduSize══════════╗ ║║║║║║
-║║║                          ╚════════════════════╝║║╚══════════════╝╚════════════════╝║║╔═COTPTpduSize════╗║ ║║║║║║
-║║║                                                ║║                                  ║║║0x0c 12 SIZE_4096║║ ║║║║║║
-║║║                                                ║║                                  ║║╚═════════════════╝║ ║║║║║║
-║║║                                                ║║                                  ║╚═══════════════════╝ ║║║║║║
-║║║                                                ║║                                  ╚══════════════════════╝║║║║║
-║║║                                                ║╚══════════════════════════════════════════════════════════╝║║║║
-║║║                                                ╚════════════════════════════════════════════════════════════╝║║║
-║║║╔═S7Message══════════════════════════════════════════════════════════════════════════════════════════════════╗║║║
-║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗╔═S7MessageRequest╗ ║║║║
-║║║║║  0x32 50  ║║   0x01 1   ║║0x0000 0 ║║  0x000d 13   ║║   0x000e 14    ║║  0x0044 68   ║║                 ║ ║║║║
-║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝╚═════════════════╝ ║║║║
-║║║║╔═S7Parameter══════════════════════════════════════════════════════════════════════════════════════════════╗║║║║
-║║║║║╔═parameterType╗                                                                                          ║║║║║
-║║║║║║    0x05 5    ║                                                                                          ║║║║║
-║║║║║╚══════════════╝                                                                                          ║║║║║
-║║║║║╔═S7ParameterWriteVarRequest═════════════════════════════════════════════════════════════════════════════╗║║║║║
-║║║║║║╔═numItems╗                                                                                             ║║║║║║
-║║║║║║║ 0x01 1  ║                                                                                             ║║║║║║
-║║║║║║╚═════════╝                                                                                             ║║║║║║
-║║║║║║╔═items════════════════════════════════════════════════════════════════════════════════════════════════╗║║║║║║
-║║║║║║║╔═S7VarRequestParameterItem══════════════════════════════════════════════════════════════════════════╗║║║║║║║
-║║║║║║║║╔═itemType╗                                                                                         ║║║║║║║║
-║║║║║║║║║ 0x12 18 ║                                                                                         ║║║║║║║║
-║║║║║║║║╚═════════╝                                                                                         ║║║║║║║║
-║║║║║║║║╔═S7VarRequestParameterItemAddress═════════════════════════════════════════════════════════════════╗║║║║║║║║
-║║║║║║║║║╔═itemLength╗                                                                                     ║║║║║║║║║
-║║║║║║║║║║  0x0a 10  ║                                                                                     ║║║║║║║║║
-║║║║║║║║║╚═══════════╝                                                                                     ║║║║║║║║║
-║║║║║║║║║╔═address════════════════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║
-║║║║║║║║║║╔═S7Address════════════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║║
-║║║║║║║║║║║╔═addressType╗                                                                                ║║║║║║║║║║║
-║║║║║║║║║║║║  0x10 16   ║                                                                                ║║║║║║║║║║║
-║║║║║║║║║║║╚════════════╝                                                                                ║║║║║║║║║║║
-║║║║║║║║║║║╔═S7AddressAny═══════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║║║
-║║║║║║║║║║║║╔═transportSize══╗╔═numberOfElements╗╔═dbNumber╗╔═area════════════╗╔═reserved╗╔═byteAddress╗║║║║║║║║║║║║
-║║║║║║║║║║║║║╔═TransportSize╗║║    0x0040 64    ║║0x000d 13║║╔═MemoryArea════╗║║  0x0 0  ║║  0x0000 0  ║║║║║║║║║║║║║
-║║║║║║║║║║║║║║ 0x02 2 BYTE  ║║╚═════════════════╝╚═════════╝║║0x81 129 INPUTS║║╚═════════╝╚════════════╝║║║║║║║║║║║║
-║║║║║║║║║║║║║╚══════════════╝║                              ║╚═══════════════╝║                         ║║║║║║║║║║║║
-║║║║║║║║║║║║╚════════════════╝                              ╚═════════════════╝                         ║║║║║║║║║║║║
-║║║║║║║║║║║║╔═bitAddress╗                                                                               ║║║║║║║║║║║║
-║║║║║║║║║║║║║   0x0 0   ║                                                                               ║║║║║║║║║║║║
-║║║║║║║║║║║║╚═══════════╝                                                                               ║║║║║║║║║║║║
-║║║║║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║║
-║║║║║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║
-║║║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║
-║║║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║
-║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║
-║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║
-║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║
-║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║
-║║║║╔═S7Payload══════════════════════════════════════════════════════════════╗                                  ║║║║
-║║║║║╔═S7PayloadWriteVarRequest═════════════════════════════════════════════╗║                                  ║║║║
-║║║║║║╔═items══════════════════════════════════════════════════════════════╗║║                                  ║║║║
-║║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════════╗║║║                                  ║║║║
-║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════════╗╔═dataLength╗║║║║                                  ║║║║
-║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize════╗║║0x0200 512 ║║║║║                                  ║║║║
-║║║║║║║║║║      0xff 255 OK      ║║║║0x04 4 BYTE_WORD_DWORD║║╚═══════════╝║║║║                                  ║║║║
-║║║║║║║║║╚═══════════════════════╝║║╚══════════════════════╝║             ║║║║                                  ║║║║
-║║║║║║║║╚═════════════════════════╝╚════════════════════════╝             ║║║║                                  ║║║║
-║║║║║║║║╔═data════════════════════════════════════════╗╔═padding╗         ║║║║                                  ║║║║
-║║║║║║║║║00|af fe af fe af fe af fe af fe '..........'║║        ║         ║║║║                                  ║║║║
-║║║║║║║║║10|af fe af fe af fe af fe af fe '..........'║╚════════╝         ║║║║                                  ║║║║
-║║║║║║║║║20|af fe af fe af fe af fe af fe '..........'║                   ║║║║                                  ║║║║
-║║║║║║║║║30|af fe af fe af fe af fe af fe '..........'║                   ║║║║                                  ║║║║
-║║║║║║║║║40|af fe af fe af fe af fe af fe '..........'║                   ║║║║                                  ║║║║
-║║║║║║║║║50|af fe af fe af fe af fe af fe '..........'║                   ║║║║                                  ║║║║
-║║║║║║║║║60|af fe af fe                   '....      '║                   ║║║║                                  ║║║║
-║║║║║║║║╚═════════════════════════════════════════════╝                   ║║║║                                  ║║║║
-║║║║║║║╚══════════════════════════════════════════════════════════════════╝║║║                                  ║║║║
-║║║║║║╚════════════════════════════════════════════════════════════════════╝║║                                  ║║║║
-║║║║║╚══════════════════════════════════════════════════════════════════════╝║                                  ║║║║
-║║║║╚════════════════════════════════════════════════════════════════════════╝                                  ║║║║
-║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
-║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
-║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔═TPKTPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═protocolId╗╔═reserved╗╔═len══════╗                                                                                  ║
+║║  0x03 3   ║║ 0x00 0  ║║0x0066 102║                                                                                  ║
+║╚═══════════╝╚═════════╝╚══════════╝                                                                                  ║
+║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗╔═parameters═════════════════════════════════════════════════╗    ║║║
+║║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║║╔═COTPParameter════════════════════════════════════════════╗║    ║║║
+║║║╚═════════════╝╚═════════╝║║b0 false║║ 0xd 13 ║║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize╗║║    ║║║
+║║║                          ║╚════════╝╚════════╝║║║║   0xc0 192   ║║     0x01 1     ║║╔═tpduSize══════════╗ ║║║    ║║║
+║║║                          ╚════════════════════╝║║╚══════════════╝╚════════════════╝║║╔═COTPTpduSize════╗║ ║║║    ║║║
+║║║                                                ║║                                  ║║║0x0c 12 SIZE_4096║║ ║║║    ║║║
+║║║                                                ║║                                  ║║╚═════════════════╝║ ║║║    ║║║
+║║║                                                ║║                                  ║╚═══════════════════╝ ║║║    ║║║
+║║║                                                ║║                                  ╚══════════════════════╝║║    ║║║
+║║║                                                ║╚══════════════════════════════════════════════════════════╝║    ║║║
+║║║                                                ╚════════════════════════════════════════════════════════════╝    ║║║
+║║║╔═payload════════════════════════════════════════════════════════════════════════════════════════════════════════╗║║║
+║║║║╔═S7Message════════════════════════════════════════════════════════════════════════════════════════════════════╗║║║║
+║║║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗╔═S7MessageRequest╗   ║║║║║
+║║║║║║  0x32 50  ║║   0x01 1   ║║0x0000 0 ║║  0x000d 13   ║║   0x000e 14    ║║  0x0044 68   ║║                 ║   ║║║║║
+║║║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝╚═════════════════╝   ║║║║║
+║║║║║╔═parameter══════════════════════════════════════════════════════════════════════════════════════════════════╗║║║║║
+║║║║║║╔═S7Parameter══════════════════════════════════════════════════════════════════════════════════════════════╗║║║║║║
+║║║║║║║╔═parameterType╗                                                                                          ║║║║║║║
+║║║║║║║║    0x05 5    ║                                                                                          ║║║║║║║
+║║║║║║║╚══════════════╝                                                                                          ║║║║║║║
+║║║║║║║╔═S7ParameterWriteVarRequest═════════════════════════════════════════════════════════════════════════════╗║║║║║║║
+║║║║║║║║╔═numItems╗                                                                                             ║║║║║║║║
+║║║║║║║║║ 0x01 1  ║                                                                                             ║║║║║║║║
+║║║║║║║║╚═════════╝                                                                                             ║║║║║║║║
+║║║║║║║║╔═items════════════════════════════════════════════════════════════════════════════════════════════════╗║║║║║║║║
+║║║║║║║║║╔═S7VarRequestParameterItem══════════════════════════════════════════════════════════════════════════╗║║║║║║║║║
+║║║║║║║║║║╔═itemType╗                                                                                         ║║║║║║║║║║
+║║║║║║║║║║║ 0x12 18 ║                                                                                         ║║║║║║║║║║
+║║║║║║║║║║╚═════════╝                                                                                         ║║║║║║║║║║
+║║║║║║║║║║╔═S7VarRequestParameterItemAddress═════════════════════════════════════════════════════════════════╗║║║║║║║║║║
+║║║║║║║║║║║╔═itemLength╗                                                                                     ║║║║║║║║║║║
+║║║║║║║║║║║║  0x0a 10  ║                                                                                     ║║║║║║║║║║║
+║║║║║║║║║║║╚═══════════╝                                                                                     ║║║║║║║║║║║
+║║║║║║║║║║║╔═address════════════════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║║║
+║║║║║║║║║║║║╔═S7Address════════════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║║║║
+║║║║║║║║║║║║║╔═addressType╗                                                                                ║║║║║║║║║║║║║
+║║║║║║║║║║║║║║  0x10 16   ║                                                                                ║║║║║║║║║║║║║
+║║║║║║║║║║║║║╚════════════╝                                                                                ║║║║║║║║║║║║║
+║║║║║║║║║║║║║╔═S7AddressAny═══════════════════════════════════════════════════════════════════════════════╗║║║║║║║║║║║║║
+║║║║║║║║║║║║║║╔═transportSize══╗╔═numberOfElements╗╔═dbNumber╗╔═area════════════╗╔═reserved╗╔═byteAddress╗║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║║╔═TransportSize╗║║    0x0040 64    ║║0x000d 13║║╔═MemoryArea════╗║║  0x0 0  ║║  0x0000 0  ║║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║║║ 0x02 2 BYTE  ║║╚═════════════════╝╚═════════╝║║0x81 129 INPUTS║║╚═════════╝╚════════════╝║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║║╚══════════════╝║                              ║╚═══════════════╝║                         ║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║╚════════════════╝                              ╚═════════════════╝                         ║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║╔═bitAddress╗                                                                               ║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║║   0x0 0   ║                                                                               ║║║║║║║║║║║║║║
+║║║║║║║║║║║║║║╚═══════════╝                                                                               ║║║║║║║║║║║║║║
+║║║║║║║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║║║║
+║║║║║║║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║║║
+║║║║║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║║
+║║║║║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║║
+║║║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║║
+║║║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║║
+║║║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║║
+║║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║║
+║║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║
+║║║║║╔═payload══════════════════════════════════════════════════════════════════╗                                  ║║║║║
+║║║║║║╔═S7Payload══════════════════════════════════════════════════════════════╗║                                  ║║║║║
+║║║║║║║╔═S7PayloadWriteVarRequest═════════════════════════════════════════════╗║║                                  ║║║║║
+║║║║║║║║╔═items══════════════════════════════════════════════════════════════╗║║║                                  ║║║║║
+║║║║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════════╗║║║║                                  ║║║║║
+║║║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════════╗╔═dataLength╗║║║║║                                  ║║║║║
+║║║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize════╗║║0x0200 512 ║║║║║║                                  ║║║║║
+║║║║║║║║║║║║      0xff 255 OK      ║║║║0x04 4 BYTE_WORD_DWORD║║╚═══════════╝║║║║║                                  ║║║║║
+║║║║║║║║║║║╚═══════════════════════╝║║╚══════════════════════╝║             ║║║║║                                  ║║║║║
+║║║║║║║║║║╚═════════════════════════╝╚════════════════════════╝             ║║║║║                                  ║║║║║
+║║║║║║║║║║╔═data════════════════════════════════════════╗╔═padding╗         ║║║║║                                  ║║║║║
+║║║║║║║║║║║00|af fe af fe af fe af fe af fe '..........'║║        ║         ║║║║║                                  ║║║║║
+║║║║║║║║║║║10|af fe af fe af fe af fe af fe '..........'║╚════════╝         ║║║║║                                  ║║║║║
+║║║║║║║║║║║20|af fe af fe af fe af fe af fe '..........'║                   ║║║║║                                  ║║║║║
+║║║║║║║║║║║30|af fe af fe af fe af fe af fe '..........'║                   ║║║║║                                  ║║║║║
+║║║║║║║║║║║40|af fe af fe af fe af fe af fe '..........'║                   ║║║║║                                  ║║║║║
+║║║║║║║║║║║50|af fe af fe af fe af fe af fe '..........'║                   ║║║║║                                  ║║║║║
+║║║║║║║║║║║60|af fe af fe                   '....      '║                   ║║║║║                                  ║║║║║
+║║║║║║║║║║╚═════════════════════════════════════════════╝                   ║║║║║                                  ║║║║║
+║║║║║║║║║╚══════════════════════════════════════════════════════════════════╝║║║║                                  ║║║║║
+║║║║║║║║╚════════════════════════════════════════════════════════════════════╝║║║                                  ║║║║║
+║║║║║║║╚══════════════════════════════════════════════════════════════════════╝║║                                  ║║║║║
+║║║║║║╚════════════════════════════════════════════════════════════════════════╝║                                  ║║║║║
+║║║║║╚══════════════════════════════════════════════════════════════════════════╝                                  ║║║║║
+║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║
+║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
+║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
 			wantStringSerializedCompact: `
 ╔═TPKTPacket═════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -530,11 +525,11 @@ TBD
 ║║║║   0xc0 192   ║║     0x01 1     ║║                0x0c 12 SIZE_4096                ║║                   ║║
 ║║║╚══════════════╝╚════════════════╝╚═════════════════════════════════════════════════╝║                   ║║
 ║║╚═════════════════════════════════════════════════════════════════════════════════════╝                   ║║
-║║╔═S7Message══════════════════════════════════════════════════════════════════════════════════════════════╗║║
+║║╔═payload/S7Message══════════════════════════════════════════════════════════════════════════════════════╗║║
 ║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗                ║║║
 ║║║║  0x32 50  ║║   0x01 1   ║║0x0000 0 ║║  0x000d 13   ║║   0x000e 14    ║║  0x0044 68   ║                ║║║
 ║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝                ║║║
-║║║╔═S7Parameter══════════════════════════════════════════════════════════════════════════════════════════╗║║║
+║║║╔═parameter/S7Parameter════════════════════════════════════════════════════════════════════════════════╗║║║
 ║║║║╔═parameterType╗                                                                                      ║║║║
 ║║║║║    0x05 5    ║                                                                                      ║║║║
 ║║║║╚══════════════╝                                                                                      ║║║║
@@ -567,7 +562,7 @@ TBD
 ║║║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║║
 ║║║║╚════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║║
 ║║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
-║║║╔═S7Payload/S7PayloadWriteVarRequest/items/S7VarPayloadDataItem═════════════════════════════════╗       ║║║
+║║║╔═payload/S7Payload/S7PayloadWriteVarRequest/items/S7VarPayloadDataItem═════════════════════════╗       ║║║
 ║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize╗╔═dataLength╗║       ║║║
 ║║║║║                 0xff 255 OK                  ║║     0x04 4 BYTE_WORD_DWORD     ║║0x0200 512 ║║       ║║║
 ║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════╝╚═══════════╝║       ║║║
@@ -609,64 +604,70 @@ TBD
           </COTPParameterTpduSize>
         </COTPParameter>
       </parameters>
-      <S7Message>
-        <protocolId dataType="uint" bitLength="8">50</protocolId>
-        <messageType dataType="uint" bitLength="8">1</messageType>
-        <reserved dataType="uint" bitLength="16">0</reserved>
-        <tpduReference dataType="uint" bitLength="16">13</tpduReference>
-        <parameterLength dataType="uint" bitLength="16">14</parameterLength>
-        <payloadLength dataType="uint" bitLength="16">68</payloadLength>
-        <S7MessageRequest></S7MessageRequest>
-        <S7Parameter>
-          <parameterType dataType="uint" bitLength="8">5</parameterType>
-          <S7ParameterWriteVarRequest>
-            <numItems dataType="uint" bitLength="8">1</numItems>
-            <items isList="true">
-              <S7VarRequestParameterItem>
-                <itemType dataType="uint" bitLength="8">18</itemType>
-                <S7VarRequestParameterItemAddress>
-                  <itemLength dataType="uint" bitLength="8">10</itemLength>
-                  <address>
-                    <S7Address>
-                      <addressType dataType="uint" bitLength="8">16</addressType>
-                      <S7AddressAny>
-                        <transportSize>
-                          <TransportSize dataType="uint" bitLength="8" stringRepresentation="BYTE">2</TransportSize>
-                        </transportSize>
-                        <numberOfElements dataType="uint" bitLength="16">64</numberOfElements>
-                        <dbNumber dataType="uint" bitLength="16">13</dbNumber>
-                        <area>
-                          <MemoryArea dataType="uint" bitLength="8" stringRepresentation="INPUTS">129</MemoryArea>
-                        </area>
-                        <reserved dataType="uint" bitLength="5">0</reserved>
-                        <byteAddress dataType="uint" bitLength="16">0</byteAddress>
-                        <bitAddress dataType="uint" bitLength="3">0</bitAddress>
-                      </S7AddressAny>
-                    </S7Address>
-                  </address>
-                </S7VarRequestParameterItemAddress>
-              </S7VarRequestParameterItem>
-            </items>
-          </S7ParameterWriteVarRequest>
-        </S7Parameter>
-        <S7Payload>
-          <S7PayloadWriteVarRequest>
-            <items isList="true">
-              <S7VarPayloadDataItem>
-                <returnCode>
-                  <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
-                </returnCode>
-                <transportSize>
-                  <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BYTE_WORD_DWORD">4</DataTransportSize>
-                </transportSize>
-                <dataLength dataType="uint" bitLength="16">512</dataLength>
-                <data dataType="byte" bitLength="512">0xaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe</data>
-                <padding isList="true"></padding>
-              </S7VarPayloadDataItem>
-            </items>
-          </S7PayloadWriteVarRequest>
-        </S7Payload>
-      </S7Message>
+      <payload>
+        <S7Message>
+          <protocolId dataType="uint" bitLength="8">50</protocolId>
+          <messageType dataType="uint" bitLength="8">1</messageType>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <tpduReference dataType="uint" bitLength="16">13</tpduReference>
+          <parameterLength dataType="uint" bitLength="16">14</parameterLength>
+          <payloadLength dataType="uint" bitLength="16">68</payloadLength>
+          <S7MessageRequest></S7MessageRequest>
+          <parameter>
+            <S7Parameter>
+              <parameterType dataType="uint" bitLength="8">5</parameterType>
+              <S7ParameterWriteVarRequest>
+                <numItems dataType="uint" bitLength="8">1</numItems>
+                <items isList="true">
+                  <S7VarRequestParameterItem>
+                    <itemType dataType="uint" bitLength="8">18</itemType>
+                    <S7VarRequestParameterItemAddress>
+                      <itemLength dataType="uint" bitLength="8">10</itemLength>
+                      <address>
+                        <S7Address>
+                          <addressType dataType="uint" bitLength="8">16</addressType>
+                          <S7AddressAny>
+                            <transportSize>
+                              <TransportSize dataType="uint" bitLength="8" stringRepresentation="BYTE">2</TransportSize>
+                            </transportSize>
+                            <numberOfElements dataType="uint" bitLength="16">64</numberOfElements>
+                            <dbNumber dataType="uint" bitLength="16">13</dbNumber>
+                            <area>
+                              <MemoryArea dataType="uint" bitLength="8" stringRepresentation="INPUTS">129</MemoryArea>
+                            </area>
+                            <reserved dataType="uint" bitLength="5">0</reserved>
+                            <byteAddress dataType="uint" bitLength="16">0</byteAddress>
+                            <bitAddress dataType="uint" bitLength="3">0</bitAddress>
+                          </S7AddressAny>
+                        </S7Address>
+                      </address>
+                    </S7VarRequestParameterItemAddress>
+                  </S7VarRequestParameterItem>
+                </items>
+              </S7ParameterWriteVarRequest>
+            </S7Parameter>
+          </parameter>
+          <payload>
+            <S7Payload>
+              <S7PayloadWriteVarRequest>
+                <items isList="true">
+                  <S7VarPayloadDataItem>
+                    <returnCode>
+                      <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                    </returnCode>
+                    <transportSize>
+                      <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BYTE_WORD_DWORD">4</DataTransportSize>
+                    </transportSize>
+                    <dataLength dataType="uint" bitLength="16">512</dataLength>
+                    <data dataType="byte" bitLength="512">0xaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe</data>
+                    <padding isList="true"></padding>
+                  </S7VarPayloadDataItem>
+                </items>
+              </S7PayloadWriteVarRequest>
+            </S7Payload>
+          </payload>
+        </S7Message>
+      </payload>
     </COTPPacket>
   </payload>
 </TPKTPacket>
@@ -686,116 +687,6 @@ TBD
           "tpduRef": 13,
           "tpduRef__plc4x_bitLength": 7,
           "tpduRef__plc4x_dataType": "uint"
-        },
-        "S7Message": {
-          "S7MessageRequest": {},
-          "S7Parameter": {
-            "S7ParameterWriteVarRequest": {
-              "items": [
-                {
-                  "S7VarRequestParameterItem": {
-                    "S7VarRequestParameterItemAddress": {
-                      "address": {
-                        "S7Address": {
-                          "S7AddressAny": {
-                            "area": {
-                              "MemoryArea": 129,
-                              "MemoryArea__plc4x_bitLength": 8,
-                              "MemoryArea__plc4x_dataType": "uint",
-                              "MemoryArea__plc4x_stringRepresentation": "INPUTS"
-                            },
-                            "bitAddress": 0,
-                            "bitAddress__plc4x_bitLength": 3,
-                            "bitAddress__plc4x_dataType": "uint",
-                            "byteAddress": 0,
-                            "byteAddress__plc4x_bitLength": 16,
-                            "byteAddress__plc4x_dataType": "uint",
-                            "dbNumber": 13,
-                            "dbNumber__plc4x_bitLength": 16,
-                            "dbNumber__plc4x_dataType": "uint",
-                            "numberOfElements": 64,
-                            "numberOfElements__plc4x_bitLength": 16,
-                            "numberOfElements__plc4x_dataType": "uint",
-                            "reserved": 0,
-                            "reserved__plc4x_bitLength": 5,
-                            "reserved__plc4x_dataType": "uint",
-                            "transportSize": {
-                              "TransportSize": 2,
-                              "TransportSize__plc4x_bitLength": 8,
-                              "TransportSize__plc4x_dataType": "uint",
-                              "TransportSize__plc4x_stringRepresentation": "BYTE"
-                            }
-                          },
-                          "addressType": 16,
-                          "addressType__plc4x_bitLength": 8,
-                          "addressType__plc4x_dataType": "uint"
-                        }
-                      },
-                      "itemLength": 10,
-                      "itemLength__plc4x_bitLength": 8,
-                      "itemLength__plc4x_dataType": "uint"
-                    },
-                    "itemType": 18,
-                    "itemType__plc4x_bitLength": 8,
-                    "itemType__plc4x_dataType": "uint"
-                  }
-                }
-              ],
-              "numItems": 1,
-              "numItems__plc4x_bitLength": 8,
-              "numItems__plc4x_dataType": "uint"
-            },
-            "parameterType": 5,
-            "parameterType__plc4x_bitLength": 8,
-            "parameterType__plc4x_dataType": "uint"
-          },
-          "S7Payload": {
-            "S7PayloadWriteVarRequest": {
-              "items": [
-                {
-                  "S7VarPayloadDataItem": {
-                    "data": "0xaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe",
-                    "dataLength": 512,
-                    "dataLength__plc4x_bitLength": 16,
-                    "dataLength__plc4x_dataType": "uint",
-                    "data__plc4x_bitLength": 512,
-                    "data__plc4x_dataType": "byte",
-                    "padding": [],
-                    "returnCode": {
-                      "DataTransportErrorCode": 255,
-                      "DataTransportErrorCode__plc4x_bitLength": 8,
-                      "DataTransportErrorCode__plc4x_dataType": "uint",
-                      "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
-                    },
-                    "transportSize": {
-                      "DataTransportSize": 4,
-                      "DataTransportSize__plc4x_bitLength": 8,
-                      "DataTransportSize__plc4x_dataType": "uint",
-                      "DataTransportSize__plc4x_stringRepresentation": "BYTE_WORD_DWORD"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "messageType": 1,
-          "messageType__plc4x_bitLength": 8,
-          "messageType__plc4x_dataType": "uint",
-          "parameterLength": 14,
-          "parameterLength__plc4x_bitLength": 16,
-          "parameterLength__plc4x_dataType": "uint",
-          "payloadLength": 68,
-          "payloadLength__plc4x_bitLength": 16,
-          "payloadLength__plc4x_dataType": "uint",
-          "protocolId": 50,
-          "protocolId__plc4x_bitLength": 8,
-          "protocolId__plc4x_dataType": "uint",
-          "reserved": 0,
-          "reserved__plc4x_bitLength": 16,
-          "reserved__plc4x_dataType": "uint",
-          "tpduReference": 13,
-          "tpduReference__plc4x_bitLength": 16,
-          "tpduReference__plc4x_dataType": "uint"
         },
         "headerLength": 5,
         "headerLength__plc4x_bitLength": 8,
@@ -820,6 +711,122 @@ TBD
             }
           }
         ],
+        "payload": {
+          "S7Message": {
+            "S7MessageRequest": {},
+            "messageType": 1,
+            "messageType__plc4x_bitLength": 8,
+            "messageType__plc4x_dataType": "uint",
+            "parameter": {
+              "S7Parameter": {
+                "S7ParameterWriteVarRequest": {
+                  "items": [
+                    {
+                      "S7VarRequestParameterItem": {
+                        "S7VarRequestParameterItemAddress": {
+                          "address": {
+                            "S7Address": {
+                              "S7AddressAny": {
+                                "area": {
+                                  "MemoryArea": 129,
+                                  "MemoryArea__plc4x_bitLength": 8,
+                                  "MemoryArea__plc4x_dataType": "uint",
+                                  "MemoryArea__plc4x_stringRepresentation": "INPUTS"
+                                },
+                                "bitAddress": 0,
+                                "bitAddress__plc4x_bitLength": 3,
+                                "bitAddress__plc4x_dataType": "uint",
+                                "byteAddress": 0,
+                                "byteAddress__plc4x_bitLength": 16,
+                                "byteAddress__plc4x_dataType": "uint",
+                                "dbNumber": 13,
+                                "dbNumber__plc4x_bitLength": 16,
+                                "dbNumber__plc4x_dataType": "uint",
+                                "numberOfElements": 64,
+                                "numberOfElements__plc4x_bitLength": 16,
+                                "numberOfElements__plc4x_dataType": "uint",
+                                "reserved": 0,
+                                "reserved__plc4x_bitLength": 5,
+                                "reserved__plc4x_dataType": "uint",
+                                "transportSize": {
+                                  "TransportSize": 2,
+                                  "TransportSize__plc4x_bitLength": 8,
+                                  "TransportSize__plc4x_dataType": "uint",
+                                  "TransportSize__plc4x_stringRepresentation": "BYTE"
+                                }
+                              },
+                              "addressType": 16,
+                              "addressType__plc4x_bitLength": 8,
+                              "addressType__plc4x_dataType": "uint"
+                            }
+                          },
+                          "itemLength": 10,
+                          "itemLength__plc4x_bitLength": 8,
+                          "itemLength__plc4x_dataType": "uint"
+                        },
+                        "itemType": 18,
+                        "itemType__plc4x_bitLength": 8,
+                        "itemType__plc4x_dataType": "uint"
+                      }
+                    }
+                  ],
+                  "numItems": 1,
+                  "numItems__plc4x_bitLength": 8,
+                  "numItems__plc4x_dataType": "uint"
+                },
+                "parameterType": 5,
+                "parameterType__plc4x_bitLength": 8,
+                "parameterType__plc4x_dataType": "uint"
+              }
+            },
+            "parameterLength": 14,
+            "parameterLength__plc4x_bitLength": 16,
+            "parameterLength__plc4x_dataType": "uint",
+            "payload": {
+              "S7Payload": {
+                "S7PayloadWriteVarRequest": {
+                  "items": [
+                    {
+                      "S7VarPayloadDataItem": {
+                        "data": "0xaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe",
+                        "dataLength": 512,
+                        "dataLength__plc4x_bitLength": 16,
+                        "dataLength__plc4x_dataType": "uint",
+                        "data__plc4x_bitLength": 512,
+                        "data__plc4x_dataType": "byte",
+                        "padding": [],
+                        "returnCode": {
+                          "DataTransportErrorCode": 255,
+                          "DataTransportErrorCode__plc4x_bitLength": 8,
+                          "DataTransportErrorCode__plc4x_dataType": "uint",
+                          "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
+                        },
+                        "transportSize": {
+                          "DataTransportSize": 4,
+                          "DataTransportSize__plc4x_bitLength": 8,
+                          "DataTransportSize__plc4x_dataType": "uint",
+                          "DataTransportSize__plc4x_stringRepresentation": "BYTE_WORD_DWORD"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "payloadLength": 68,
+            "payloadLength__plc4x_bitLength": 16,
+            "payloadLength__plc4x_dataType": "uint",
+            "protocolId": 50,
+            "protocolId__plc4x_bitLength": 8,
+            "protocolId__plc4x_dataType": "uint",
+            "reserved": 0,
+            "reserved__plc4x_bitLength": 16,
+            "reserved__plc4x_dataType": "uint",
+            "tpduReference": 13,
+            "tpduReference__plc4x_bitLength": 16,
+            "tpduReference__plc4x_dataType": "uint"
+          }
+        },
         "tpduCode": 240,
         "tpduCode__plc4x_bitLength": 8,
         "tpduCode__plc4x_dataType": "uint"
@@ -851,20 +858,19 @@ TBD
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// TODO: reimplement String() method with serializer and box based
-			/*t.Run("Simple 2 String", func(t *testing.T) {
-				tt.wantString = strings.Trim(tt.wantString, "\n")
-				if got := tt.args.debuggable.String(); got != tt.wantString {
-					t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
+			t.Run("Simple 2 String", func(t *testing.T) {
+				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
+				if got := tt.args.debuggable.String(); got != tt.wantStringSerializedCompact {
+					t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
 				}
-			})*/
+			})
 			t.Run("Simple 2 Box", func(t *testing.T) {
 				boxWriter := utils.NewBoxedWriteBuffer()
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
-				if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
+				if got := boxWriter.GetBox().String(); got != tt.wantStringSerialized {
 					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
 				}
 			})
@@ -874,7 +880,7 @@ TBD
 					t.Error(err)
 				}
 				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
-				if got := string(boxWriter.GetBox()); got != tt.wantStringSerializedCompact {
+				if got := boxWriter.GetBox().String(); got != tt.wantStringSerializedCompact {
 					t.Errorf("Serialize BoxedCompact() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
 				}
 			})

@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type S7VarRequestParameterItemAddress struct {
+	*S7VarRequestParameterItem
 	Address *S7Address
-	Parent  *S7VarRequestParameterItem
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequest
 
 func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItem {
 	child := &S7VarRequestParameterItemAddress{
-		Address: address,
-		Parent:  NewS7VarRequestParameterItem(),
+		Address:                   address,
+		S7VarRequestParameterItem: NewS7VarRequestParameterItem(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7VarRequestParameterItem
 }
 
 func CastS7VarRequestParameterItemAddress(structType interface{}) *S7VarRequestParameterItemAddress {
@@ -86,7 +86,7 @@ func (m *S7VarRequestParameterItemAddress) LengthInBits() uint16 {
 }
 
 func (m *S7VarRequestParameterItemAddress) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -113,15 +113,15 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
+	// Simple Field (address)
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (address)
-	address, _addressErr := S7AddressParse(readBuffer)
+	_address, _addressErr := S7AddressParse(readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	address := CastS7Address(_address)
 	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -132,11 +132,11 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 
 	// Create a partially initialized instance
 	_child := &S7VarRequestParameterItemAddress{
-		Address: address,
-		Parent:  &S7VarRequestParameterItem{},
+		Address:                   CastS7Address(address),
+		S7VarRequestParameterItem: &S7VarRequestParameterItem{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7VarRequestParameterItem.Child = _child
+	return _child.S7VarRequestParameterItem, nil
 }
 
 func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -169,7 +169,7 @@ func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7VarRequestParameterItemAddress) String() string {

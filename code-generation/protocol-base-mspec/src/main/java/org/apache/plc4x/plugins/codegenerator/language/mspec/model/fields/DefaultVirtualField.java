@@ -22,17 +22,19 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultVirtualField extends DefaultTaggedField implements VirtualField {
+import java.util.*;
+
+public class DefaultVirtualField extends DefaultField implements VirtualField {
 
     private final TypeReference type;
     private final String name;
     private final Term valueExpression;
 
-    public DefaultVirtualField(String[] tags, TypeReference type, String name, Term valueExpression) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.valueExpression = valueExpression;
+    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.valueExpression = Objects.requireNonNull(valueExpression);
     }
 
     public TypeReference getType() {
@@ -45,10 +47,6 @@ public class DefaultVirtualField extends DefaultTaggedField implements VirtualFi
 
     public Term getValueExpression() {
         return valueExpression;
-    }
-
-    public Term[] getParams() {
-        return new Term[0];
     }
 
 }

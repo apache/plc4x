@@ -44,5 +44,5 @@ func (m PlcWSTRING) GetString() string {
 }
 
 func (m PlcWSTRING) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcSTRING", uint8(len([]rune(m.value))*8), "UTF-8", string(m.value))
+	return writeBuffer.WriteString("PlcSTRING", uint32(len([]rune(m.value))*8), "UTF-8", string(m.value))
 }

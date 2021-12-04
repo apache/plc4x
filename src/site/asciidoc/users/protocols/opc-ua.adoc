@@ -99,7 +99,7 @@ is selected based on the datatype of the returned value. For Unsigned data types
 
 ----
 
-ns={namespace-index};[s|i|g|b]={Identifier}:{Data Type}
+ns={namespace-index};[s|i|g|b]={Identifier};{Data Type}
 
 ----
 
@@ -135,17 +135,17 @@ The following are examples of valid addresses
 String address:
 ----
 ns=2;s=HelloWorld/ScalarTypes/Boolean
-ns=2;s=HelloWorld/ScalarTypes/Boolean:BOOL
+ns=2;s=HelloWorld/ScalarTypes/Boolean;BOOL
 ----
 Numeric address
 ----
 ns=1;i=1337
-ns=1;i=1337:DINT
+ns=1;i=1337;DINT
 ----
 GUID address:
 ----
 ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
-ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a:REAL
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
 ----
 
 Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.

@@ -56,6 +56,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     private String host;
     private String port;
     private String endpoint;
+    private String transportEndpoint;
     private String params;
     private Boolean isEncrypted = false;
     private PascalByteString thumbprint;
@@ -170,6 +171,10 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return endpoint;
     }
 
+    public String getTransportEndpoint() {
+        return transportEndpoint;
+    }
+
     public byte[] getSenderCertificate() {
         return this.senderCertificate;
     }
@@ -189,6 +194,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
+
+    public void setTransportEndpoint(String transportEndpoint) { this.transportEndpoint = transportEndpoint; }
 
     public void openKeyStore() throws Exception {
         this.isEncrypted = true;

@@ -20,15 +20,16 @@
 package transports
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterTransport(tcp.NewTransport())
+	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport())
 }
 
 func RegisterUdpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterTransport(udp.NewTransport())
+	driverManager.(spi.TransportAware).RegisterTransport(udp.NewTransport())
 }

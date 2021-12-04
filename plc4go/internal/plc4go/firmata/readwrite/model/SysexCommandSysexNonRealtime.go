@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type SysexCommandSysexNonRealtime struct {
-	Parent *SysexCommand
+	*SysexCommand
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *SysexCommandSysexNonRealtime) InitializeParent(parent *SysexCommand) {
 
 func NewSysexCommandSysexNonRealtime() *SysexCommand {
 	child := &SysexCommandSysexNonRealtime{
-		Parent: NewSysexCommand(),
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandSysexNonRealtime(structType interface{}) *SysexCommandSysexNonRealtime {
@@ -87,7 +87,7 @@ func (m *SysexCommandSysexNonRealtime) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandSysexNonRealtime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -96,7 +96,7 @@ func (m *SysexCommandSysexNonRealtime) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,10 +107,10 @@ func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer) (*SysexComma
 
 	// Create a partially initialized instance
 	_child := &SysexCommandSysexNonRealtime{
-		Parent: &SysexCommand{},
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandSysexNonRealtime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *SysexCommandSysexNonRealtime) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandSysexNonRealtime) String() string {

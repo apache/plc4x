@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationBitString struct {
+	*BACnetTag
 	UnusedBits uint8
 	Data       []int8
-	Parent     *BACnetTag
 }
 
 // The corresponding interface
@@ -43,25 +43,27 @@ type IBACnetTagApplicationBitString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationBitString) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationBitString) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationBitString) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
+func (m *BACnetTagApplicationBitString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationBitString{
 		UnusedBits: unusedBits,
 		Data:       data,
-		Parent:     NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		BACnetTag:  NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetTag
 }
 
 func CastBACnetTagApplicationBitString(structType interface{}) *BACnetTagApplicationBitString {
@@ -92,7 +94,7 @@ func (m *BACnetTagApplicationBitString) LengthInBits() uint16 {
 }
 
 func (m *BACnetTagApplicationBitString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (unusedBits)
 	lengthInBits += 8
@@ -109,16 +111,17 @@ func (m *BACnetTagApplicationBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagApplicationBitString"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (unusedBits)
-	unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
+	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
 		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
 	}
+	unusedBits := _unusedBits
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -126,14 +129,16 @@ func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValue
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+	{
+		_dataLength := actualLength
+		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
+		for readBuffer.GetPos() < _dataEndPos {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			}
+			data = append(data, _item)
 		}
-		data = append(data, _item)
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -147,10 +152,10 @@ func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValue
 	_child := &BACnetTagApplicationBitString{
 		UnusedBits: unusedBits,
 		Data:       data,
-		Parent:     &BACnetTag{},
+		BACnetTag:  &BACnetTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetTag.Child = _child
+	return _child.BACnetTag, nil
 }
 
 func (m *BACnetTagApplicationBitString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -187,7 +192,7 @@ func (m *BACnetTagApplicationBitString) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetTagApplicationBitString) String() string {

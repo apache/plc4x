@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUDiagnosticResponse struct {
+	*ModbusPDU
 	SubFunction uint16
 	Data        uint16
-	Parent      *ModbusPDU
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IModbusPDUDiagnosticResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUDiagnosticResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUDiagnosticResponse) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUDiagnosticResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUDiagnosticResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUDiagnosticResponse) InitializeParent(parent *ModbusPDU) {
@@ -62,10 +62,10 @@ func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *ModbusPDU 
 	child := &ModbusPDUDiagnosticResponse{
 		SubFunction: subFunction,
 		Data:        data,
-		Parent:      NewModbusPDU(),
+		ModbusPDU:   NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUDiagnosticResponse(structType interface{}) *ModbusPDUDiagnosticResponse {
@@ -96,7 +96,7 @@ func (m *ModbusPDUDiagnosticResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUDiagnosticResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -111,22 +111,24 @@ func (m *ModbusPDUDiagnosticResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (subFunction)
-	subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
+	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
+	subFunction := _subFunction
 
 	// Simple Field (data)
-	data, _dataErr := readBuffer.ReadUint16("data", 16)
+	_data, _dataErr := readBuffer.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	data := _data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUDiagnosticResponse"); closeErr != nil {
 		return nil, closeErr
@@ -136,10 +138,10 @@ func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, 
 	_child := &ModbusPDUDiagnosticResponse{
 		SubFunction: subFunction,
 		Data:        data,
-		Parent:      &ModbusPDU{},
+		ModbusPDU:   &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +169,7 @@ func (m *ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUDiagnosticResponse) String() string {

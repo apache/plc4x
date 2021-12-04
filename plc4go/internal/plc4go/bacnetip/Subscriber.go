@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
@@ -51,7 +52,7 @@ func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionReque
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 		}
 
-		result <- apiModel.PlcSubscriptionRequestResult{
+		result <- &plc4goModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
 			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
 			Err:      nil,

@@ -118,13 +118,13 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		_parent, typeSwitchError = COTPParameterTpduSizeParse(readBuffer)
+		_parent, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		_parent, typeSwitchError = COTPParameterCallingTsapParse(readBuffer)
+		_parent, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		_parent, typeSwitchError = COTPParameterCalledTsapParse(readBuffer)
+		_parent, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
 	case parameterType == 0xC3: // COTPParameterChecksum
-		_parent, typeSwitchError = COTPParameterChecksumParse(readBuffer)
+		_parent, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
 	default:
@@ -169,8 +169,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
