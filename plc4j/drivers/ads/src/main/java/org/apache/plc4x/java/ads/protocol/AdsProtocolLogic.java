@@ -65,9 +65,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         false, false, false, false, false, true, false, false, false);
 
     private final AtomicLong invokeIdGenerator = new AtomicLong(1);
-    private RequestTransactionManager tm;
+    private final RequestTransactionManager tm;
 
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
     private final ConcurrentHashMap<SymbolicAdsField, CompletableFuture<Void>> pendingResolutionRequests;
@@ -122,15 +122,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 errorFuture.completeExceptionally(new PlcException("Fields are null"));
                 return errorFuture;
             }
-        }
-        // If there are still symbolic addresses that have to be resolved, send the
-        // request as soon as the resolution is done.
-        // In order to instantly be able to return a future, for the final result we have to
-        // create a new one which is then completed later on. Unfortunately as soon as the
-        // directAdsFieldsFuture is completed we still don't have the end result, but we can
-        // now actually send the delayed read request ... as soon as that future completes
-        // we can complete the initial one.
-        else {
+        } else {
+            // If there are still symbolic addresses that have to be resolved, send the
+            // request as soon as the resolution is done.
+            // In order to instantly be able to return a future, for the final result we have to
+            // create a new one which is then completed later on. Unfortunately as soon as the
+            // directAdsFieldsFuture is completed we still don't have the end result, but we can
+            // now actually send the delayed read request ... as soon as that future completes
+            // we can complete the initial one.
             CompletableFuture<PlcReadResponse> delayedRead = new CompletableFuture<>();
             directAdsFieldsFuture.handle((directAdsFields, throwable) -> {
                 if (directAdsFields != null) {
@@ -238,8 +237,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         AdsData adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
-                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                    (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
                 .collect(Collectors.toList()), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -501,8 +500,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         AdsData adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), directAdsFields.size(), (long) directAdsFields.size() * 4,
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
-                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                    ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
                 .collect(Collectors.toList()), writeBuffer);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -613,19 +612,19 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         List<AdsData> adsData = subscribeRequest.getFields().stream()
             .map(field -> (DefaultPlcSubscriptionField) field)
             .map(field -> new AdsAddDeviceNotificationRequest(
-                symbolicFieldMapping.get(field.getPlcField()).getIndexGroup(),
-                symbolicFieldMapping.get(field.getPlcField()).getIndexOffset(),
+                symbolicFieldMapping.get((SymbolicAdsField) field.getPlcField()).getIndexGroup(),
+                symbolicFieldMapping.get((SymbolicAdsField) field.getPlcField()).getIndexOffset(),
                 (long) ((AdsField) field.getPlcField()).getAdsDataType().getNumBytes() * field.getNumberOfElements(),
                 field.getPlcSubscriptionType() == PlcSubscriptionType.CYCLIC ? 3 : 4, // if it's not cyclic, it's on change or event
-                0 , // there is no api for that yet
+                0, // there is no api for that yet
                 field.getDuration().orElse(Duration.ZERO).toMillis()))
             .collect(Collectors.toList());
 
-        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map( data ->
+        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map(data ->
             new AmsTCPPacket(new AmsPacket(
                 configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_ADD_DEVICE_NOTIFICATION, DEFAULT_COMMAND_STATE, 0, getInvokeId(), data))).collect(Collectors.toList());
+                CommandId.ADS_ADD_DEVICE_NOTIFICATION, DEFAULT_COMMAND_STATE, 0, getInvokeId(), data))).collect(Collectors.toList());
 
         Map<String, ResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
 
@@ -713,7 +712,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .map(AdsDeleteDeviceNotificationRequest::new)
             .collect(Collectors.toList());
 
-        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map( data -> new AmsTCPPacket(
+        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map(data -> new AmsTCPPacket(
             new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                 CommandId.ADS_DELETE_DEVICE_NOTIFICATION, DEFAULT_COMMAND_STATE, 0, getInvokeId(), data))).collect(Collectors.toList());
@@ -727,7 +726,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private Runnable unsubscribeRecursively(PlcUnsubscriptionRequest unsubscriptionRequest,
                                             CompletableFuture<PlcUnsubscriptionResponse> future,
                                             Iterator<AmsTCPPacket> amsTCPPackets,
-                                            RequestTransactionManager.RequestTransaction transaction){
+                                            RequestTransactionManager.RequestTransaction transaction) {
         return () -> {
             AmsTCPPacket packet = amsTCPPackets.next();
             boolean hasMorePackets = amsTCPPackets.hasNext();
@@ -767,18 +766,17 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     protected void decode(ConversationContext<AmsTCPPacket> context, AmsTCPPacket msg) throws Exception {
-        if (msg.getUserdata().getData() instanceof AdsDeviceNotificationRequest){
+        if (msg.getUserdata().getData() instanceof AdsDeviceNotificationRequest) {
             AdsDeviceNotificationRequest notificationData = (AdsDeviceNotificationRequest) msg.getUserdata().getData();
-            AdsStampHeader[] stamps = notificationData.getAdsStampHeaders();
-            for (int stamp=0; stamp < notificationData.getStamps(); stamp++){
+            List<AdsStampHeader> stamps = notificationData.getAdsStampHeaders();
+            for (AdsStampHeader stamp : stamps) {
                 // convert Windows FILETIME format to unix epoch
-                long unixEpochTimestamp = stamps[stamp].getTimestamp().divide(BigInteger.valueOf(10000L)).longValue() - 11644473600000L;
-                AdsNotificationSample[] samples = stamps[stamp].getAdsNotificationSamples();
-                for (int smpl=0; smpl < stamps[stamp].getSamples(); smpl++){
-                    long handle = samples[smpl].getNotificationHandle();
-                    final AdsNotificationSample sample = samples[smpl];
-                    for (DefaultPlcConsumerRegistration registration : consumers.keySet()){
-                        for(PlcSubscriptionHandle subscriptionHandle : registration.getSubscriptionHandles()){
+                long unixEpochTimestamp = stamp.getTimestamp().divide(BigInteger.valueOf(10000L)).longValue() - 11644473600000L;
+                List<AdsNotificationSample> samples = stamp.getAdsNotificationSamples();
+                for (AdsNotificationSample sample : samples) {
+                    long handle = sample.getNotificationHandle();
+                    for (DefaultPlcConsumerRegistration registration : consumers.keySet()) {
+                        for (PlcSubscriptionHandle subscriptionHandle : registration.getSubscriptionHandles()) {
                             if (subscriptionHandle instanceof AdsSubscriptionHandle) {
                                 AdsSubscriptionHandle adsHandle = (AdsSubscriptionHandle) subscriptionHandle;
                                 if (adsHandle.getNotificationHandle() == handle)
@@ -796,7 +794,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private Map<String, ResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
         ParseException {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, true);
+        ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getPlcFieldName(), new ResponseItem<>(PlcResponseCode.OK,
             DataItemIO.staticParse(readBuffer, subscriptionHandle.getAdsDataType().getDataFormatName(), data.length)));
         return values;
