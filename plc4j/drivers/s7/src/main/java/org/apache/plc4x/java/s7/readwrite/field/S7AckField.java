@@ -24,10 +24,6 @@ import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionFieldType;
 
-/**
- *
- * @author cgarcia
- */
 public class S7AckField implements PlcField {
     
     private static final Pattern EVENT_ALARM_ACK_PATTERN = 
@@ -39,9 +35,8 @@ public class S7AckField implements PlcField {
     public S7AckField(ArrayList<Integer> ackAlarmIds, ArrayList<Integer> ackAlarmSigs){
         this.ackAlarmIds = ackAlarmIds;
         this.ackAlarmSigs = ackAlarmSigs;
-    };    
-    
-    
+    }
+
     public ArrayList<Integer> getAlarmIds() {
         return ackAlarmIds;
     }
@@ -71,7 +66,5 @@ public class S7AckField implements PlcField {
             }
             return new S7AckField(arrAlarmIds, arrAlarmSigs);                
         } else return null;                
-    };    
-    
-    
+    }
 }

@@ -34,6 +34,7 @@ import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
+
 import org.apache.plc4x.java.s7.readwrite.field.S7AckField;
 import org.apache.plc4x.java.s7.readwrite.field.S7SzlField;
 
@@ -66,23 +67,22 @@ public class S7Optimizer extends BaseOptimizer {
         for (String fieldName : readRequest.getFieldNames()) {
             if ((readRequest.getField(fieldName) instanceof S7SzlField)) {
                 LinkedHashMap<String, PlcField> sslFields = new LinkedHashMap<>();
-                S7SzlField field = (S7SzlField) readRequest.getField(fieldName);                
+                S7SzlField field = (S7SzlField) readRequest.getField(fieldName);
                 sslFields.put(fieldName, field);
                 processedRequests.add(new DefaultPlcReadRequest(
                     ((DefaultPlcReadRequest) readRequest).getReader(), sslFields));
                 continue;
             }
-            
+
             if ((readRequest.getField(fieldName) instanceof S7AckField)) {
                 LinkedHashMap<String, PlcField> ackFields = new LinkedHashMap<>();
-                S7AckField field = (S7AckField) readRequest.getField(fieldName);                
+                S7AckField field = (S7AckField) readRequest.getField(fieldName);
                 ackFields.put(fieldName, field);
                 processedRequests.add(new DefaultPlcReadRequest(
                     ((DefaultPlcReadRequest) readRequest).getReader(), ackFields));
                 continue;
-            }            
-            
-            
+            }
+
             S7Field field = (S7Field) readRequest.getField(fieldName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
@@ -113,7 +113,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.
-                if(((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) &&
                     ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Field size exceeds maximum payload for one item.");
                 }
@@ -122,11 +122,11 @@ public class S7Optimizer extends BaseOptimizer {
         }
 
         // Create a new PlcReadRequest from the remaining field items.
-        if(!curFields.isEmpty()) {
+        if (!curFields.isEmpty()) {
             processedRequests.add(new DefaultPlcReadRequest(
                 ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
         }
-        
+
         return processedRequests;
     }
 
@@ -180,7 +180,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.
-                if(((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) &&
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Field size exceeds maximum payload for one item.");
                 }
@@ -189,12 +189,11 @@ public class S7Optimizer extends BaseOptimizer {
         }
 
         // Create a new PlcWriteRequest from the remaining field items.
-        if(!curFields.isEmpty()) {
+        if (!curFields.isEmpty()) {
             processedRequests.add(new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(), curFields));
         }
 
         return processedRequests;
     }
-
 }

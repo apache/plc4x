@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.utils;
 
-import java.nio.charset.Charset;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -189,9 +188,9 @@ public class StaticHelper {
     }
 
     /*
-    * A variable of data type CHAR (character) occupies one byte.
-    */
-    
+     * A variable of data type CHAR (character) occupies one byte.
+     */
+
     public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding) {
         // TODO: Need to implement the serialization or we can't write strings
         if ("UTF-8".equalsIgnoreCase(encoding)) {
@@ -204,48 +203,45 @@ public class StaticHelper {
     }
 
     /*           +-------------------+
-    * Byte n     | Maximum length    | (k)
-    *            +-------------------+   
-    * Byte n+1   | Current Length    | (m)
-    *            +-------------------+   
-    * Byte n+2   | 1st character     | \         \
-    *            +-------------------+  |         |
-    * Byte n+3   | 2st character     |  | Current |
-    *            +-------------------+   >        |
-    * Byte ...   | ...               |  | length  |  Maximum
-    *            +-------------------+  |          >
-    * Byte n+m+1 | mth character     | /          |  length
-    *            +-------------------+            |
-    * Byte ...   | ...               |            |
-    *            +-------------------+            |
-    * Byte ...   | ...               |           /
-    *            +-------------------+    
-    * For this version, the user must read the maximum acceptable length in
-    * the string in a first instance.
-    * Then the user application should avoid the envelope of the adjacent 
-    * fields passing the maximum length in "stringLength".
-    * If your application does not handle S7string, you can handle 
-    * the String as char arrays from your application.
-    */
+     * Byte n     | Maximum length    | (k)
+     *            +-------------------+
+     * Byte n+1   | Current Length    | (m)
+     *            +-------------------+
+     * Byte n+2   | 1st character     | \         \
+     *            +-------------------+  |         |
+     * Byte n+3   | 2st character     |  | Current |
+     *            +-------------------+   >        |
+     * Byte ...   | ...               |  | length  |  Maximum
+     *            +-------------------+  |          >
+     * Byte n+m+1 | mth character     | /          |  length
+     *            +-------------------+            |
+     * Byte ...   | ...               |            |
+     *            +-------------------+            |
+     * Byte ...   | ...               |           /
+     *            +-------------------+
+     * For this version, the user must read the maximum acceptable length in
+     * the string in a first instance.
+     * Then the user application should avoid the envelope of the adjacent
+     * fields passing the maximum length in "stringLength".
+     * If your application does not handle S7string, you can handle
+     * the String as char arrays from your application.
+     */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        byte k = (byte) ((stringLength > 250)?250:stringLength);
+        byte k = (byte) ((stringLength > 250) ? 250 : stringLength);
         byte m = (byte) value.getString().length();
-        m = (m > k)?k:m;    
+        m = (m > k) ? k : m;
         byte[] chars = new byte[m];
         for (int i = 0; i < m; ++i) {
-             char c = value.getString().charAt(i);
-             chars[i]= (byte) c;
-          }   
-        
+            char c = value.getString().charAt(i);
+            chars[i] = (byte) c;
+        }
+
         try {
             io.writeByte(k);
-            io.writeByte(m); 
-            io.writeByteArray(chars); 
+            io.writeByte(m);
+            io.writeByteArray(chars);
         } catch (ParseException ex) {
             Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
- 
 }
