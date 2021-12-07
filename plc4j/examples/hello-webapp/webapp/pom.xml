@@ -228,7 +228,7 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-client</artifactId>
-      <version>5.15.12</version>
+      <version>5.16.3</version>
     </dependency>
 
     <dependency>
