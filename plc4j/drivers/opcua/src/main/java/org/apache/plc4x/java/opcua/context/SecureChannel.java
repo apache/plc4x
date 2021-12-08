@@ -1205,7 +1205,7 @@ public class SecureChannel {
                     new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
-                byte[] passwordBytes = this.password.getBytes();
+                byte[] passwordBytes = this.password == null ? new byte[0] : this.password.getBytes();
                 ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + this.senderNonce.length);
                 encodeableBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 encodeableBuffer.putInt(passwordBytes.length + this.senderNonce.length);
