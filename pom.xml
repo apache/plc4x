@@ -167,6 +167,8 @@
     <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.1</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
+
+    <skip-code-generation-tests>true</skip-code-generation-tests>
   </properties>
 
   <modules>

@@ -37,7 +37,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.2.2</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -50,11 +49,19 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <debug>true</debug>
+              <streamLogsOnFailures>true</streamLogsOnFailures>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
               <settingsFile>src/test/resources/settings.xml</settingsFile>
+              <extraArtifacts>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-language-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-maven-plugin:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-protocol-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
+              </extraArtifacts>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
               </pomIncludes>
