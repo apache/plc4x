@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetServiceAckReadProperty struct {
 	*BACnetServiceAck
-	ObjectIdentifier   *BACnetComplexTagObjectIdentifier
-	PropertyIdentifier *BACnetComplexTagPropertyIdentifier
+	ObjectIdentifier   *BACnetContextTagObjectIdentifier
+	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
 }
 
@@ -51,7 +51,7 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetComplexTagObjectIdentifier, propertyIdentifier *BACnetComplexTagPropertyIdentifier, arrayIndex *uint32) *BACnetServiceAck {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
@@ -119,11 +119,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
-	objectIdentifier := CastBACnetComplexTagObjectIdentifier(_objectIdentifier)
+	objectIdentifier := CastBACnetContextTagObjectIdentifier(_objectIdentifier)
 	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -132,11 +132,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
-	propertyIdentifier := CastBACnetComplexTagPropertyIdentifier(_propertyIdentifier)
+	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
 	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -157,8 +157,8 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadProperty{
-		ObjectIdentifier:   CastBACnetComplexTagObjectIdentifier(objectIdentifier),
-		PropertyIdentifier: CastBACnetComplexTagPropertyIdentifier(propertyIdentifier),
+		ObjectIdentifier:   CastBACnetContextTagObjectIdentifier(objectIdentifier),
+		PropertyIdentifier: CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:         arrayIndex,
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}

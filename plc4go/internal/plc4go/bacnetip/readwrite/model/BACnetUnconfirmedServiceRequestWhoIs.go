@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWhoIs struct {
 	*BACnetUnconfirmedServiceRequest
-	DeviceInstanceRangeLowLimit  *BACnetComplexTagUnsignedInteger
-	DeviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger
+	DeviceInstanceRangeLowLimit  *BACnetContextTagUnsignedInteger
+	DeviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger
 }
 
 // The corresponding interface
@@ -50,7 +50,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
 func (m *BACnetUnconfirmedServiceRequestWhoIs) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoIs{
 		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
@@ -113,20 +113,20 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 	}
 
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
-	var deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger = nil
+	var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 	{
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		case _err == utils.ParseAssertError:
 			readBuffer.SetPos(currentPos)
 		default:
-			deviceInstanceRangeLowLimit = CastBACnetComplexTagUnsignedInteger(_val)
+			deviceInstanceRangeLowLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -134,20 +134,20 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 	}
 
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
-	var deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger = nil
+	var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		case _err == utils.ParseAssertError:
 			readBuffer.SetPos(currentPos)
 		default:
-			deviceInstanceRangeHighLimit = CastBACnetComplexTagUnsignedInteger(_val)
+			deviceInstanceRangeHighLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -160,8 +160,8 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoIs{
-		DeviceInstanceRangeLowLimit:     CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeLowLimit),
-		DeviceInstanceRangeHighLimit:    CastBACnetComplexTagUnsignedInteger(deviceInstanceRangeHighLimit),
+		DeviceInstanceRangeLowLimit:     CastBACnetContextTagUnsignedInteger(deviceInstanceRangeLowLimit),
+		DeviceInstanceRangeHighLimit:    CastBACnetContextTagUnsignedInteger(deviceInstanceRangeHighLimit),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
@@ -175,7 +175,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Write
 		}
 
 		// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if the value is null)
-		var deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger = nil
+		var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 		if m.DeviceInstanceRangeLowLimit != nil {
 			if pushErr := writeBuffer.PushContext("deviceInstanceRangeLowLimit"); pushErr != nil {
 				return pushErr
@@ -191,7 +191,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.Write
 		}
 
 		// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if the value is null)
-		var deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger = nil
+		var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 		if m.DeviceInstanceRangeHighLimit != nil {
 			if pushErr := writeBuffer.PushContext("deviceInstanceRangeHighLimit"); pushErr != nil {
 				return pushErr

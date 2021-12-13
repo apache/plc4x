@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	*BACnetConfirmedServiceRequest
-	ReinitializedStateOfDevice *BACnetComplexTagDeviceState
-	Password                   *BACnetComplexTagCharacterString
+	ReinitializedStateOfDevice *BACnetContextTagDeviceState
+	Password                   *BACnetContextTagCharacterString
 }
 
 // The corresponding interface
@@ -50,7 +50,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) ServiceChoice() uint8 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetComplexTagDeviceState, password *BACnetComplexTagCharacterString) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
 		Password:                      password,
@@ -114,30 +114,30 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_DEVICE_STATE)
+	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_DEVICE_STATE)
 	if _reinitializedStateOfDeviceErr != nil {
 		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field")
 	}
-	reinitializedStateOfDevice := CastBACnetComplexTagDeviceState(_reinitializedStateOfDevice)
+	reinitializedStateOfDevice := CastBACnetContextTagDeviceState(_reinitializedStateOfDevice)
 	if closeErr := readBuffer.CloseContext("reinitializedStateOfDevice"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
-	var password *BACnetComplexTagCharacterString = nil
+	var password *BACnetContextTagCharacterString = nil
 	{
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'password' field")
 		case _err == utils.ParseAssertError:
 			readBuffer.SetPos(currentPos)
 		default:
-			password = CastBACnetComplexTagCharacterString(_val)
+			password = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -150,8 +150,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{
-		ReinitializedStateOfDevice:    CastBACnetComplexTagDeviceState(reinitializedStateOfDevice),
-		Password:                      CastBACnetComplexTagCharacterString(password),
+		ReinitializedStateOfDevice:    CastBACnetContextTagDeviceState(reinitializedStateOfDevice),
+		Password:                      CastBACnetContextTagCharacterString(password),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
@@ -177,7 +177,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(writeBuffer 
 		}
 
 		// Optional Field (password) (Can be skipped, if the value is null)
-		var password *BACnetComplexTagCharacterString = nil
+		var password *BACnetContextTagCharacterString = nil
 		if m.Password != nil {
 			if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
 				return pushErr

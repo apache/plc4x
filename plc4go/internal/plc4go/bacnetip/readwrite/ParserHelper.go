@@ -32,13 +32,13 @@ type BacnetipParserHelper struct {
 
 func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
-	case "BACnetComplexTag":
+	case "BACnetContextTag":
 		tagNumberArgument, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		var dataType model.BACnetDataType
-		return model.BACnetComplexTagParse(io, tagNumberArgument, dataType)
+		return model.BACnetContextTagParse(io, tagNumberArgument, dataType)
 	case "APDU":
 		apduLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {

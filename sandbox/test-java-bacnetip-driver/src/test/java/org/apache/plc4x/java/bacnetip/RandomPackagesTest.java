@@ -64,7 +64,7 @@ public class RandomPackagesTest {
                 System.out.println("Pcap version: " + version);
                 String libpcap_version_string = StringUtils.removeStart(version, "libpcap version ");
                 // Remove any trailing extra info
-                libpcap_version_string = StringUtils.split(libpcap_version_string," ")[0];
+                libpcap_version_string = StringUtils.split(libpcap_version_string, " ")[0];
                 Semver libpcap_version = new Semver(libpcap_version_string);
                 if (SystemUtils.IS_OS_MAC) {
                     Semver minimumVersion = new Semver("1.10.1");
@@ -361,21 +361,112 @@ public class RandomPackagesTest {
     Collection<DynamicTest> BBMD_readProperty() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BBMD_readproperty.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCDistributeBroadcastToNetwork bvlcDistributeBroadcastToNetwork = (BVLCDistributeBroadcastToNetwork) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcDistributeBroadcastToNetwork.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) serviceRequest;
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) serviceRequest;
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestIAm baCnetUnconfirmedServiceRequestIAm = (BACnetUnconfirmedServiceRequestIAm) serviceRequest;
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
+                    assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
+                    assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) serviceRequest;
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) serviceRequest;
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
+                    BACnetUnconfirmedServiceRequest serviceRequest = apduUnconfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetUnconfirmedServiceRequestIAm baCnetUnconfirmedServiceRequestIAm = (BACnetUnconfirmedServiceRequestIAm) serviceRequest;
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
+                    assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
+                    assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
+                }),
+            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 priority-array",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetServiceAck baCnetServiceAck = apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAck);
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
+                    // TODO: here the array is missing
                 })
         );
     }
@@ -5273,9 +5364,11 @@ public class RandomPackagesTest {
     }
 
     private static class PCAPEvaluator implements Closeable {
+        private final String pcapFile;
         private final PcapHandle pcapHandle;
 
         public PCAPEvaluator(String pcapFile) throws IOException, PcapNativeException {
+            this.pcapFile = pcapFile;
             String toParse = DownloadAndCache(pcapFile);
             System.out.println("Reading " + toParse);
             pcapHandle = getHandle(toParse);
@@ -5294,8 +5387,12 @@ public class RandomPackagesTest {
 
         private BVLC nextBVLC() throws NotOpenException, ParseException {
             Packet packet = pcapHandle.getNextPacket();
+            System.err.println("Next packet:");
+            System.err.println(packet);
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
+            System.err.println("Handling UDP");
+            System.err.println(udpPacket);
             byte[] rawData = udpPacket.getPayload().getRawData();
             System.err.println("Reading BVLC from:");
             System.err.println(Hex.dump(rawData));
@@ -5321,6 +5418,14 @@ public class RandomPackagesTest {
         @Override
         public void close() throws IOException {
             pcapHandle.close();
+        }
+
+        @Override
+        public String toString() {
+            return "PCAPEvaluator{" +
+                "pcapFile='" + pcapFile + '\'' +
+                ", pcapHandle=" + pcapHandle +
+                '}';
         }
     }
 }
