@@ -21,7 +21,7 @@
 
 === TL/DR
 
-IMPORTANT: Please be sure to execute the release with a Java version between 1.8 and 11 or the Karaf feature tests will not run.
+IMPORTANT: Please be sure to execute the release with a Java version 11 or the Karaf feature tests will not run.
 
 [%interactive]
 * [ ] Update the `RELEASE_NOTES`

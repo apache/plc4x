@@ -30,7 +30,7 @@ As soon as you're building with the `with-c`, `with-cpp` or `with-proxies` you n
 
 TIP: Currently, Java 11 is the sweet-spot for being able to build all parts of PLC4X.
 
-TIP: We have tested the build with Java 9 up to Java 14 (Latest version at the time of writing this document).
+TIP: We have tested the build with Java 11 up to Java 16 (Latest version at the time of writing this document).
 
 If a new version comes out, please give us a little time to verify and handle any related issues.
 We'll probably fix them as soon as possible.
