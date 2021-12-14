@@ -36,6 +36,7 @@
             [simple NPDU('bvlcLength - 10') npdu   ]
         ]
         ['0x05' BVLCRegisterForeignDevice
+            [simple uint 16 ttl]
         ]
         ['0x06' BVLCReadForeignDeviceTable
         ]
@@ -352,6 +353,7 @@
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
+            // TODO: here comes data always starting with a BACnetContextTag number 3, value 6, then the data depending on the type and then a termination by BACnetContextTag number 3, value 7
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 

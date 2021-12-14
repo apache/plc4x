@@ -467,8 +467,27 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     // TODO: here the array is missing
+                }),
+            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCRegisterForeignDevice bvlcRegisterForeignDevice = (BVLCRegisterForeignDevice) bvlc;
+                    assertEquals(60000, bvlcRegisterForeignDevice.getTtl());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipPackages(1);
+                }),
+            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Result",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCRegisterForeignDevice bvlcRegisterForeignDevice = (BVLCRegisterForeignDevice) bvlc;
+                    assertEquals(60000, bvlcRegisterForeignDevice.getTtl());
                 })
-        );
+            );
     }
 
     @TestFactory
