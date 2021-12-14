@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.1</version>
   </parent>
 
   <artifactId>plc4j-apache-nifi</artifactId>

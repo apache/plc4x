@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.9.1-SNAPSHOT</version>
+  <version>0.9.1</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>

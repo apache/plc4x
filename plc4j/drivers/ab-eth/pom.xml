@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.1</version>
   </parent>
 
   <artifactId>plc4j-driver-ab-eth</artifactId>
@@ -114,18 +114,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
     </dependency>
 
     <dependency>
@@ -144,14 +144,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -159,14 +159,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
