@@ -53,7 +53,7 @@ We are planning on shipping libraries for usage in:
 
 1. Java
 2. Go
-3. C/C++ (not ready for usage)
+3. C (not ready for usage)
 4. Python (not ready for usage)
 5. C# (.Net) (not ready for usage)
 
@@ -74,7 +74,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java 1.8 or above is ok. 
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -83,9 +83,9 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 ### Environment
 
-Currently, the project is configured to require the following software when building only the Java parts:
+Currently, the project is configured to require the following software:
 
-1. Java 11 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
+1. Java 11 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
@@ -204,9 +204,8 @@ If you don't want to bother setting up the environment on your normal system and
 
 ### Getting Started
 
-You must have at least Java >=9 installed on your system and connectivity to Maven Central
-(for downloading external third party dependencies). However in order to build all parts
-of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
+You must have at least Java 11 installed on your system and connectivity to Maven Central
+(for downloading external third party dependencies). Maven 3.6 is required to build, so be sure it's installed and available on your system. 
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
