@@ -57,7 +57,7 @@ public class RandomPackagesTest {
     @BeforeAll
     static void setUp() {
         // TODO: for mac only don't commit
-        //System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
+        System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
         assumeTrue(() -> {
             try {
                 String version = Pcaps.libVersion();
@@ -484,8 +484,12 @@ public class RandomPackagesTest {
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    BVLCRegisterForeignDevice bvlcRegisterForeignDevice = (BVLCRegisterForeignDevice) bvlc;
-                    assertEquals(60000, bvlcRegisterForeignDevice.getTtl());
+                    BVLCResult bvlcResult = (BVLCResult) bvlc;
+                    assertEquals(BVLCResultCode.SUCCESSFUL_COMPLETION, bvlcResult.getCode());
+                }),
+            DynamicTest.dynamicTest("TODO",
+                () -> {
+                    // TODO: implement next package...
                 })
             );
     }

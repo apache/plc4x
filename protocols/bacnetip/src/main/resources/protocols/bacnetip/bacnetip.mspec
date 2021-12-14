@@ -23,6 +23,7 @@
     [implicit      uint 16 bvlcLength 'lengthInBytes']
     [typeSwitch bvlcFunction
         ['0x00' BVLCResult
+            [simple BVLCResultCode code]
         ]
         ['0x01' BVLCWideBroadcastDistributionTable
         ]
@@ -700,6 +701,16 @@
             [simple BACnetDeviceState   state]
         ]
     ]
+]
+
+[enum uint 16 BVLCResultCode
+    ['0x0000' SUCCESSFUL_COMPLETION]
+    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK]
+    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK]
+    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK]
+    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK]
+    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK]
+    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK]
 ]
 
 [enum uint 1 TagClass
