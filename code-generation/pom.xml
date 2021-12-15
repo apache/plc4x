@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -39,26 +40,30 @@
     <module>protocol-test</module>
 
     <module>language-java</module>
-    <!--module>language-java-old</module-->
   </modules>
 
   <profiles>
-  <!-- Build PLC4X including the C modules -->
-  <profile>
-    <id>with-c</id>
-    <modules>
-      <module>language-c</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>language-c</module>
+      </modules>
+    </profile>
 
-  <profile>
-    <id>with-go</id>
-    <modules>
-      <module>language-go</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-dotnet</id>
+      <modules>
+        <module>language-cs</module>
+      </modules>
+    </profile>
 
-</profiles>
+    <profile>
+      <id>with-go</id>
+      <modules>
+        <module>language-go</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencies>
     <!-- JUnit 5 Support -->

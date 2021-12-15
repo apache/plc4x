@@ -209,7 +209,7 @@ namespace org.apache.plc4net.spi.model.values
             return default;
         }
 
-        public IPlcValue[] GetList()
+        public List<IPlcValue> GetList()
         {
             return default;
         }

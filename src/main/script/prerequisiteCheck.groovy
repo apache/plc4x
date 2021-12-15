@@ -354,10 +354,6 @@ def checkSetupTools() {
     }
 }
 
-def checkGo() {
-    //TODO: (On windows) ensure the "go" executable is in the path, or there are failures when running the tests.
-}
-
 /*
  * This check does an extremely simple check, if the boost library exists in the maven local repo.
  * We're not checking if it could be resolved.
@@ -588,10 +584,6 @@ if (sandboxEnabled && dockerEnabled) {
 if (cppEnabled || cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
-}
-
-if (goEnabled) {
-    checkGo()
 }
 
 if (apacheReleaseEnabled) {

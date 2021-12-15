@@ -35,7 +35,7 @@ namespace org.apache.plc4net.test.knxnetip.readwrite.model
             var input = StrToByteArray("0041b00000");
             IPlcValue expected = new PlcREAL(22.0f);
             
-            var actual = new KnxDatapoint().Parse(new ReadBuffer(input), formatName);
+            var actual = KnxDatapoint.StaticParse(new ReadBuffer(input), KnxDatapointType.DPT_SSSBMode);
             
             Assert.Equal(expected, actual);
         }

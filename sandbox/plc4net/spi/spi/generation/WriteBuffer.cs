@@ -46,12 +46,12 @@ namespace org.apache.plc4net.spi.generation
             return _writer.Length / 8 + (_writer.Length % 8 != 0 ? 1 : 0);
         }
 
-        public void WriteBit(bool value)
+        public void WriteBit(String logicalName, bool value)
         {
             _writer.WriteBool(value);
         }
 
-        public void WriteByte(int bitLength, byte value)
+        public void WriteByte(String logicalName, int bitLength, byte value)
         {
             if (bitLength > 8)
             {
@@ -60,7 +60,7 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteByte(value, bitLength);
         }
         
-        public void WriteUshort(int bitLength, ushort value)
+        public void WriteUshort(String logicalName, int bitLength, ushort value)
         {
             if (bitLength > 16)
             {
@@ -69,7 +69,7 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteInt(value, bitLength);
         }
 
-        public void WriteUint(int bitLength, uint value)
+        public void WriteUint(String logicalName, int bitLength, uint value)
         {
             if (bitLength > 32)
             {
@@ -78,7 +78,7 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteInt((int) value, bitLength);
         }
 
-        public void WriteUlong(int bitLength, ulong value)
+        public void WriteUlong(String logicalName, int bitLength, ulong value)
         {
             if (bitLength > 64)
             {
@@ -97,7 +97,7 @@ namespace org.apache.plc4net.spi.generation
             }
         }
 
-        public void WriteSbyte(int bitLength, sbyte value)
+        public void WriteSbyte(String logicalName, int bitLength, sbyte value)
         {
             if (bitLength > 8)
             {
@@ -106,7 +106,7 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteInt(value, bitLength);
         }
         
-        public void WriteShort(int bitLength, short value)
+        public void WriteShort(String logicalName, int bitLength, short value)
         {
             if (bitLength > 16)
             {
@@ -115,7 +115,7 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteInt(value, bitLength);
         }
 
-        public void WriteInt(int bitLength, int value)
+        public void WriteInt(String logicalName, int bitLength, int value)
         {
             if (bitLength > 32)
             {
@@ -124,16 +124,16 @@ namespace org.apache.plc4net.spi.generation
             _writer.WriteInt(value, bitLength);
         }
 
-        public void WriteLong(int bitLength, long value)
+        public void WriteLong(String logicalName, int bitLength, long value)
         {
             if (bitLength > 64)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            WriteUlong(bitLength, (ulong) value);
+            WriteUlong(logicalName, bitLength, (ulong) value);
         }
 
-        public void WriteFloat(int bitLength, float value)
+        public void WriteFloat(String logicalName, int bitLength, float value)
         {
             if (bitLength == 32)
             {
@@ -153,7 +153,7 @@ namespace org.apache.plc4net.spi.generation
             }
         }
 
-        public void WriteDouble(int bitLength, double value)
+        public void WriteDouble(String logicalName, int bitLength, double value)
         {
             if (bitLength == 64)
             {
@@ -169,7 +169,7 @@ namespace org.apache.plc4net.spi.generation
             }
         }
 
-        public void WriteString(int bitLength, string encoding, string value)
+        public void WriteString(String logicalName, int bitLength, string encoding, string value)
         {
             throw new NotImplementedException("This encoding is currently not supported");
         }

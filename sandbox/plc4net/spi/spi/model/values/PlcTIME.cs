@@ -24,9 +24,9 @@ namespace org.apache.plc4net.spi.model.values
 {
     public class PlcTIME : PlcSimpleValueAdapter
     {
-        private DateTime value;
+        private TimeSpan value;
          
-        public PlcTIME(DateTime value)
+        public PlcTIME(TimeSpan value)
         {
             this.value = value;
         }

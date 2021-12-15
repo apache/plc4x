@@ -75,7 +75,7 @@ namespace org.apache.plc4net.api.value
         bool IsList();
         int GetLength();
         IPlcValue GetIndex(int index);
-        IPlcValue[] GetList();
+        List<IPlcValue> GetList();
 
         // Struct Methods
         bool IsStruct();

@@ -65,12 +65,12 @@ namespace org.apache.plc4net.spi.generation
             return _data[(_reader.Position / 8) + offset];
         }
 
-        public bool ReadBit()
+        public bool ReadBit(String logicalName)
         {
             return _reader.ReadBool();
         }
 
-        public byte ReadByte(int bitLength)
+        public byte ReadByte(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 8)) 
             {
@@ -79,7 +79,7 @@ namespace org.apache.plc4net.spi.generation
             return (byte) _reader.ReadInt(bitLength);
         }
         
-        public ushort ReadUshort(int bitLength)
+        public ushort ReadUshort(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 16)) 
             {
@@ -88,7 +88,7 @@ namespace org.apache.plc4net.spi.generation
             return (ushort) _reader.ReadInt(bitLength);
         }
 
-        public uint ReadUint(int bitLength)
+        public uint ReadUint(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 32)) 
             {
@@ -97,7 +97,7 @@ namespace org.apache.plc4net.spi.generation
             return (uint) _reader.ReadInt(bitLength);
         }
 
-        public ulong ReadUlong(int bitLength)
+        public ulong ReadUlong(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 64)) 
             {
@@ -112,7 +112,7 @@ namespace org.apache.plc4net.spi.generation
             return firstInt | (ulong) _reader.ReadInt(bitLength);
         }
 
-        public sbyte ReadSbyte(int bitLength)
+        public sbyte ReadSbyte(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 8)) 
             {
@@ -121,7 +121,7 @@ namespace org.apache.plc4net.spi.generation
             return (sbyte) _reader.ReadInt(bitLength);
         }
         
-        public short ReadShort(int bitLength)
+        public short ReadShort(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 16)) 
             {
@@ -130,7 +130,7 @@ namespace org.apache.plc4net.spi.generation
             return (short) _reader.ReadInt(bitLength);
         }
 
-        public int ReadInt(int bitLength)
+        public int ReadInt(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 32)) 
             {
@@ -139,7 +139,7 @@ namespace org.apache.plc4net.spi.generation
             return _reader.ReadInt(bitLength);
         }
 
-        public long ReadLong(int bitLength)
+        public long ReadLong(String logicalName, int bitLength)
         {
             if ((bitLength < 0) || (bitLength > 64)) 
             {
@@ -154,22 +154,20 @@ namespace org.apache.plc4net.spi.generation
             return firstInt | (long) _reader.ReadInt(bitLength);
         }
 
-        public float ReadFloat(bool signed, int exponentBitLength, int mantissaBitLength)
+        public float ReadFloat(String logicalName, int bitLength)
         {
-            if (signed && exponentBitLength == 8 && mantissaBitLength == 23)
+            if (bitLength == 32)
             {
-                return BitConverter.ToSingle(BitConverter.GetBytes(ReadInt(32)), 0);
+                return BitConverter.ToSingle(BitConverter.GetBytes(ReadInt(logicalName, 32)), 0);
             }
             // This is the format as described in the KNX spec ... it's not a real half precision floating point.
-            if (signed && exponentBitLength == 4 && mantissaBitLength == 11)
+            if (bitLength == 16)
             {
                 bool sign = true;
-                if (signed) {
-                    sign = _reader.ReadBool();
-                }
+                sign = _reader.ReadBool();
 
-                var exp = _reader.ReadInt(exponentBitLength);
-                var mantissa = _reader.ReadInt(mantissaBitLength);
+                var exp = _reader.ReadInt(4);
+                var mantissa = _reader.ReadInt(11);
                 // In the mantissa notation actually the first bit is omitted, we need to add it back
                 var f = 0.01 * mantissa * Math.Pow(2, exp);
                 if (sign)
@@ -181,20 +179,20 @@ namespace org.apache.plc4net.spi.generation
             throw new NotImplementedException("This encoding is currently not supported");
         }
 
-        public double ReadDouble(bool signed, int exponentBitLength, int mantissaBitLength)
+        public double ReadDouble(String logicalName, int bitLength)
         {
-            if (signed && exponentBitLength == 8 && mantissaBitLength == 23)
+            if (bitLength == 32)
             {
-                return BitConverter.ToDouble(BitConverter.GetBytes(ReadInt(32)), 0);
+                return BitConverter.ToDouble(BitConverter.GetBytes(ReadInt(logicalName, 32)), 0);
             }
-            if (signed && exponentBitLength == 11 && mantissaBitLength == 52)
+            if (bitLength == 64)
             {
-                return BitConverter.ToDouble(BitConverter.GetBytes(ReadLong(64)), 0);
+                return BitConverter.ToDouble(BitConverter.GetBytes(ReadLong(logicalName, 64)), 0);
             }
             throw new NotImplementedException("This encoding is currently not supported");
         }
 
-        public string ReadString(int bitLength, Encoding encoding)
+        public string ReadString(String logicalName, int bitLength, Encoding encoding)
         {
             throw new NotImplementedException("This encoding is currently not supported");
         }
