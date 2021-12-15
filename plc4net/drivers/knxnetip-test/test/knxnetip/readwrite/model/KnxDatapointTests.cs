@@ -31,11 +31,10 @@ namespace org.apache.plc4net.test.knxnetip.readwrite.model
         [Fact]
         public void DecodeKnxData1()
         {
-            var formatName = "F32";
-            var input = StrToByteArray("0041b00000");
+            var input = StrToByteArray("41b00000");
             IPlcValue expected = new PlcREAL(22.0f);
             
-            var actual = KnxDatapoint.StaticParse(new ReadBuffer(input), KnxDatapointType.DPT_SSSBMode);
+            var actual = KnxDatapoint.StaticParse(new ReadBuffer(input), KnxDatapointType.DPT_Value_Electric_Current);
             
             Assert.Equal(expected, actual);
         }
