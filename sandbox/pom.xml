@@ -91,14 +91,6 @@
       </modules>
     </profile>
 
-    <!-- Build PLC4X including the .Net modules -->
-    <profile>
-      <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
-      </modules>
-    </profile>
-
     <!-- Build PLC4X including the Python modules -->
     <profile>
       <id>with-python</id>

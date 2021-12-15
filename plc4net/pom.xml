@@ -22,15 +22,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.sandbox</groupId>
-    <artifactId>plc4x-sandbox</artifactId>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-parent</artifactId>
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4net</artifactId>
   <packaging>pom</packaging>
 
-  <name>Sandbox: PLC4Net</name>
+  <name>PLC4Net</name>
   <description>Implementation of the protocol adapters for usage as .Net module.</description>
 
   <!-- Disabled for now as C# support is currently not installed in Apache SonarQube -->
