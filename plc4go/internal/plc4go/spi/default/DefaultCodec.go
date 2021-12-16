@@ -153,7 +153,7 @@ func (m *defaultCodec) Connect() error {
 }
 
 func (m *defaultCodec) Disconnect() error {
-	log.Info().Msg("Disconnecting")
+	log.Trace().Msg("Disconnecting")
 	m.running = false
 	return m.transportInstance.Close()
 }
