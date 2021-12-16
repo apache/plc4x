@@ -203,14 +203,14 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		// Open the UDP Connection
 		err := m.messageCodec.Connect()
 		if err != nil {
-			sendResult(nil, errors.Wrap(err, "error opening connection"))
+			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error opening connection")) })
 			return
 		}
 
 		// Send a search request before connecting to the device.
 		searchResponse, err := m.sendGatewaySearchRequest()
 		if err != nil {
-			sendResult(nil, errors.Wrap(err, "error discovering device capabilities"))
+			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error discovering device capabilities")) })
 			return
 		}
 
@@ -242,7 +242,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			// As soon as we got a successful search-response back, send a connection request.
 			connectionResponse, err := m.sendGatewayConnectionRequest()
 			if err != nil {
-				sendResult(nil, errors.Wrap(err, "error connecting to device"))
+				m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error connecting to device")) })
 				return
 			}
 
@@ -322,16 +322,24 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// Fire the "connected" event
 				sendResult(m, nil)
 			case driverModel.Status_NO_MORE_CONNECTIONS:
-				sendResult(nil, errors.New("no more connections"))
+				m.doSomethingAndClose(func() { sendResult(nil, errors.New("no more connections")) })
 			default:
-				sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.Status))
+				m.doSomethingAndClose(func() { sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.Status)) })
 			}
 		} else {
-			sendResult(nil, errors.New("this device doesn't support tunneling"))
+			m.doSomethingAndClose(func() { sendResult(nil, errors.New("this device doesn't support tunneling")) })
 		}
 	}()
 
 	return result
+}
+
+func (m *Connection) doSomethingAndClose(something func()) {
+	something()
+	err := m.messageCodec.Disconnect()
+	if err != nil {
+		log.Warn().Msgf("error closing connection: %s", err)
+	}
 }
 
 func (m *Connection) BlockingClose() {
