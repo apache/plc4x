@@ -230,19 +230,20 @@ func (m *defaultCodec) HandleMessages(message interface{}) bool {
 }
 
 func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
-	defer func() {
-		if err := recover(); err != nil {
-			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
-			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
-		}
-		log.Trace().Msg("Keep running")
-		m.Work(codec)
-	}()
-
 	workerLog := log.With().Logger()
 	if !config.TraceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+
+	defer func(workerLog zerolog.Logger) {
+		if err := recover(); err != nil {
+			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
+			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
+		}
+		workerLog.Warn().Msg("Keep running")
+		m.Work(codec)
+	}(workerLog)
+
 	// Start an endless loop
 mainLoop:
 	for m.running {
