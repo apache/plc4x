@@ -240,8 +240,12 @@ func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
 		}
-		workerLog.Warn().Msg("Keep running")
-		m.Work(codec)
+		if m.running {
+			workerLog.Warn().Msg("Keep running")
+			m.Work(codec)
+		} else {
+			workerLog.Info().Msg("Worker terminated")
+		}
 	}(workerLog)
 
 	// Start an endless loop
