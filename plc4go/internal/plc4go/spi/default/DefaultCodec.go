@@ -235,7 +235,7 @@ func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
 		}
-		log.Info().Msg("Keep running")
+		log.Trace().Msg("Keep running")
 		m.Work(codec)
 	}()
 
