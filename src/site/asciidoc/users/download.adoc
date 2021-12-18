@@ -21,8 +21,20 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
+==== 0.9.1 Official https://www.apache.org/dyn/closer.lua/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.asc[ASC] ]
+
+This is a bugfix release aiming at directly fixing CVE-2021-43083 as well as updating the dependency to Log4J 2.14.0 which was affected by CVE-2021-44228
+
+Please note that CVE-2021-43083 only affects the PLC4C part of PLC4X.
+
+===== Bug Fixes
+
+CVE-2021-43083 Apache PLC4X 0.9.0 Buffer overflow in PLC4C via crafted server response
+
+=== Previous Releases
+
 [#release-0_9_0]
-==== 0.9.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.asc[ASC] ]
+==== 0.9.0 Official https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.asc[ASC] ]
 
 This is an ordinary PLC4X release, containing changes that
 accumulated over time. It doesn't have an explicit focus on
@@ -56,8 +68,6 @@ operation fails with an internal error
 PLC4X-299   Modbus - Kafka Connect Configuration
 PLC4X-312   CAN NOT READ STRING FROM S7 PLC
 PLC4X-314   CAN NOT WRITING MANY DATA TO S7 ONE TIME
-
-=== Previous Releases
 
 [#release-0_8_0]
 ==== 0.8.0 Official https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.asc[ASC] ]
