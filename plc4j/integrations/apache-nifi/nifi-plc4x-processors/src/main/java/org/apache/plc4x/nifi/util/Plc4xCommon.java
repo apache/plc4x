@@ -50,9 +50,14 @@ public class Plc4xCommon {
 	public static final String PLC4X_RECORD_TIMESTAMP_FIELD_NAME = "ts";
 	
 	/**
-	 * This is used to infer output AVRO schema directly from the PlcReadResponse object. 
-	 * And used directly from the RecordPlc4xWriter.writePlcReadResponse() method.
+	 * This method is used to infer output AVRO schema directly from the PlcReadResponse object. 
+	 * It is directly used from the RecordPlc4xWriter.writePlcReadResponse() method.
 	 * However, to make sure output schema does not change, it is built from the processor configuration (variable memory addresses).
+	 * 
+	 * At the moment this method does not handle the following Object Types: PlcValueAdapter, PlcIECValue<T>, PlcSimpleValue<T>
+	 * 
+	 * @param responseDataStructure: a map that reflects the structure of the answer given by the PLC when making a Read Request.
+	 * @return AVRO Schema built from responseDataStructure.
 	 */
 	public static Schema createSchema(Map<String, ? extends PlcValue> responseDataStructure){
 		//plc and record datatype map
@@ -85,8 +90,6 @@ public class Plc4xCommon {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().intType().endUnion().noDefault();				
 			}else if (entry.getValue() instanceof PlcLINT) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-//			}else if (entry.getValue() instanceof PlcList) {
-//				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcLREAL) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcLTIME) {
@@ -119,17 +122,9 @@ public class Plc4xCommon {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcWORD) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();				
-			}
-			//TODO these should be included too?
-			//}else if (entry.getValue() instanceof PlcValueAdapter) {
-			//}else if (entry.getValue() instanceof PlcValues) {
-			//}else if (entry.getValue() instanceof PlcIECValue<T>) {
-			//}else if (entry.getValue() instanceof PlcSimpleValue<T>) {
-			
-			else if(entry.getValue() instanceof PlcList) {
+			}else if(entry.getValue() instanceof PlcList) {
 				if(!entry.getValue().getList().isEmpty()) {
 					if(entry.getValue().getList().get(0) instanceof PlcBOOL) {
-						//builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().bytesType().endUnion().noDefault();
 						builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().array().items().booleanType().endUnion().noDefault();
 					}
 				} else {
@@ -139,7 +134,6 @@ public class Plc4xCommon {
 			else { //TODO try forcing any other datatype to string...
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();	
 			}
-			
 		}
 		
 		//add timestamp field to schema

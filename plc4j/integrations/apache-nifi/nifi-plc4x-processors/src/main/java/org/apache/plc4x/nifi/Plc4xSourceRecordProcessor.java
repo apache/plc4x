@@ -209,7 +209,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				session.remove(fileToProcess);
 				fileToProcess = null;
 			}
-			session.commit();
+			session.commitAsync();
 			
 		} catch (PlcConnectionException e) {
 			logger.error("Error getting the PLC connection", e);

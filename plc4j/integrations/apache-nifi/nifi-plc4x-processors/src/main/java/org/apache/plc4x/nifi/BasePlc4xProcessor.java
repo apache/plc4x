@@ -113,8 +113,8 @@ abstract class BasePlc4xProcessor extends AbstractProcessor {
     public void onScheduled(final ProcessContext context) {
         connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         addressMap = new HashMap<>();
-        PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
-        for (String segment : addresses.getValue().split(";")) {
+        String addresses = context.getProperty(PLC_ADDRESS_STRING.getName()).evaluateAttributeExpressions().getValue();
+        for (String segment : addresses.split(";")) {
             String[] parts = segment.split("=");
             if(parts.length != 2) {
                 throw new PlcRuntimeException("Invalid address format");
