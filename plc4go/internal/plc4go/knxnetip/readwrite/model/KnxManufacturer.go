@@ -606,8 +606,11 @@ const (
 	KnxManufacturer_M_CannX                                              KnxManufacturer = 568
 	KnxManufacturer_M_EGI___EARTH_GOODNESS                               KnxManufacturer = 569
 	KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG                              KnxManufacturer = 570
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 571
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 572
+	KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS                           KnxManufacturer = 571
+	KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_                        KnxManufacturer = 572
+	KnxManufacturer_M_ACE_TECHNOLOGY                                     KnxManufacturer = 573
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 574
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 575
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1186,6 +1189,9 @@ func init() {
 		KnxManufacturer_M_CannX,
 		KnxManufacturer_M_EGI___EARTH_GOODNESS,
 		KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG,
+		KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS,
+		KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_,
+		KnxManufacturer_M_ACE_TECHNOLOGY,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3295,10 +3301,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 571:
 		{ /* '571' */
-			return 43954
+			return 629
 		}
 	case 572:
 		{ /* '572' */
+			return 630
+		}
+	case 573:
+		{ /* '573' */
+			return 631
+		}
+	case 574:
+		{ /* '574' */
+			return 43954
+		}
+	case 575:
+		{ /* '575' */
 			return 43959
 		}
 	case 58:
@@ -5605,10 +5623,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 571:
 		{ /* '571' */
-			return "ABB - reserved"
+			return "Fredon Digital Buildings"
 		}
 	case 572:
 		{ /* '572' */
+			return "Helukabel (Thailand) Co.,Ltd."
+		}
+	case 573:
+		{ /* '573' */
+			return "ACE Technology"
+		}
+	case 574:
+		{ /* '574' */
+			return "ABB - reserved"
+		}
+	case 575:
+		{ /* '575' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 58:
@@ -6863,8 +6893,14 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 570:
 		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
 	case 571:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
 	case 572:
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+	case 573:
+		return KnxManufacturer_M_ACE_TECHNOLOGY
+	case 574:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 575:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 58:
 		return KnxManufacturer_M_DAETWYLER
@@ -8014,6 +8050,12 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_ORAS
 	case "M_VIEGA_GMBH_AND_CO__KG":
 		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+	case "M_FREDON_DIGITAL_BUILDINGS":
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+	case "M_HELUKABEL_THAILAND_CO__LTD_":
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+	case "M_ACE_TECHNOLOGY":
+		return KnxManufacturer_M_ACE_TECHNOLOGY
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9196,6 +9238,12 @@ func (e KnxManufacturer) name() string {
 		return "M_ORAS"
 	case KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG:
 		return "M_VIEGA_GMBH_AND_CO__KG"
+	case KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS:
+		return "M_FREDON_DIGITAL_BUILDINGS"
+	case KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_:
+		return "M_HELUKABEL_THAILAND_CO__LTD_"
+	case KnxManufacturer_M_ACE_TECHNOLOGY:
+		return "M_ACE_TECHNOLOGY"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

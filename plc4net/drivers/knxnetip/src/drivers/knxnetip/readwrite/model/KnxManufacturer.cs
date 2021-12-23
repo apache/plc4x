@@ -595,8 +595,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_CannX = 568,
         M_EGI___EARTH_GOODNESS = 569,
         M_VIEGA_GMBH_AND_CO__KG = 570,
-        M_ABB___RESERVED = 571,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 572,
+        M_FREDON_DIGITAL_BUILDINGS = 571,
+        M_HELUKABEL_THAILAND_CO__LTD_ = 572,
+        M_ACE_TECHNOLOGY = 573,
+        M_ABB___RESERVED = 574,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 575,
     }
 
     public static class KnxManufacturerInfo
@@ -2181,10 +2184,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VIEGA_GMBH_AND_CO__KG: { /* '570' */
                     return 628;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '571' */
+                case KnxManufacturer.M_FREDON_DIGITAL_BUILDINGS: { /* '571' */
+                    return 629;
+                }
+                case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '572' */
+                    return 630;
+                }
+                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '573' */
+                    return 631;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '574' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '572' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '575' */
                     return 43959;
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
@@ -3910,10 +3922,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_VIEGA_GMBH_AND_CO__KG: { /* '570' */
                     return "Viega GmbH & Co. KG";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '571' */
+                case KnxManufacturer.M_FREDON_DIGITAL_BUILDINGS: { /* '571' */
+                    return "Fredon Digital Buildings";
+                }
+                case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '572' */
+                    return "Helukabel (Thailand) Co.,Ltd.";
+                }
+                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '573' */
+                    return "ACE Technology";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '574' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '572' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '575' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
