@@ -152,7 +152,7 @@
     <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <junit.platform.version>1.7.2</junit.platform.version>
     <log4j.version>2.17.0</log4j.version>
-    <logback.version>1.2.5</logback.version>
+    <logback.version>1.2.9</logback.version>
     <milo.version>0.6.3</milo.version>
     <mockito.version>3.12.4</mockito.version>
     <netty.version>4.1.67.Final</netty.version>
@@ -1367,7 +1367,7 @@
           </reportSet>
         </reportSets>
       </plugin-->
-     </plugins>
+    </plugins>
   </reporting>
 
   <!-- Make Snapshots of Apache projects available -->
@@ -1402,8 +1402,7 @@
     <!-- Allows skipping of the pre-flight-check as needed when deploying on jenkins -->
     <profile>
       <id>skip-prerequisite-check</id>
-      <activation>
-      </activation>
+      <activation></activation>
       <build>
         <plugins>
           <!-- Make some additional properties available to simplify keeping some content up to date -->
