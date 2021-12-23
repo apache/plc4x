@@ -165,8 +165,9 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             }
             // TODO: improve output
             if (!Arrays.equals(testcase.getRaw(), data)) {
+                int numBytes = Math.min(data.length, testcase.getRaw().length);
                 int i;
-                for (i = 0; i < data.length; i++) {
+                for (i = 0; i < numBytes; i++) {
                     if (data[i] != testcase.getRaw()[i]) {
                         break;
                     }
