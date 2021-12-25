@@ -47,7 +47,7 @@
       <plugin>
         <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-nar-maven-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.3.3</version>
         <extensions>true</extensions>
       </plugin>
       <!-- Makes buildRevision and buildBranch available to the NAR Plugin so they can be populated in the MANIFEST -->
@@ -80,47 +80,13 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi</artifactId>
-        <version>${nifi.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-api</artifactId>
-        <version>${nifi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi-utils</artifactId>
         <version>${nifi.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-mock</artifactId>
         <version>${nifi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.nifi</groupId>
-        <artifactId>nifi-nar-bundles</artifactId>
-        <version>${nifi.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-        <version>5.3.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib</artifactId>
-        <version>1.4.10</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib-common</artifactId>
-        <version>1.4.10</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>

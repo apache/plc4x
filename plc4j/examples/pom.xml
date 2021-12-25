@@ -125,6 +125,7 @@
     </pluginManagement>
   </build>
 
+  <!-- Change the default scope to "compile" to include logback in all examples -->
   <dependencyManagement>
     <dependencies>
       <dependency>

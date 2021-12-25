@@ -215,11 +215,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.1.0</version>
-      </plugin>
-
       <!-- Build a fat jar containing all dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
