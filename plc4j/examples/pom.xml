@@ -39,7 +39,6 @@
   </properties>
 
   <modules>
-    <!--module>dummy-driver</module-->
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-connectivity-kafka</module>
@@ -66,6 +65,14 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <configuration>
+          <!-- Don't fail the examples on CVSS errors -->
+          <failBuildOnCVSS>11</failBuildOnCVSS>
         </configuration>
       </plugin>
       <!-- Build a fat jar containing all dependencies -->

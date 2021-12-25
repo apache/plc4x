@@ -267,13 +267,6 @@
       <version>0.10.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-
-    <!--dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>connect-runtime</artifactId>
-      <version>${kafka.version}</version>
-      <scope>provided</scope>
-    </dependency-->
   </dependencies>
 
 </project>

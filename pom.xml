@@ -212,23 +212,10 @@
 
       <dependency>
         <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
+        <artifactId>netty-bom</artifactId>
         <version>${netty.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${netty.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec</artifactId>
-        <version>${netty.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <dependency>
@@ -847,7 +834,7 @@
         Check the referenced dependencies for known vulnerabilities
         and fail the build if there are critical ones in our classpath
       -->
-      <!--plugin>
+      <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <executions>
@@ -858,14 +845,21 @@
           </execution>
         </executions>
         <configuration>
-          <suppressionFiles>
-            <suppressionFile>owasp-suppressions.xml</suppressionFile>
-          </suppressionFiles>
-          <failBuildOnCVSS>8</failBuildOnCVSS>
+          <!-- Fail the build on any CVE, which is not considered minor -->
+          <failBuildOnCVSS>4</failBuildOnCVSS>
           <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
           <failOnError>true</failOnError>
+          <excludes>
+            <!-- For some reason the plugin detects our ADS driver as TwinCAT for which CVEs exist. -->
+            <exclude>org.apache.plc4x:plc4j-driver-ads</exclude>
+            <!--
+              CVE-2020-13955 affects Apache Calcite till version 1.26 (excluding)
+              We're using at least 1.26, so this is a false positive.
+            -->
+            <exclude>org.apache.calcite.avatica:avatica-core</exclude>
+          </excludes>
         </configuration>
-      </plugin-->
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

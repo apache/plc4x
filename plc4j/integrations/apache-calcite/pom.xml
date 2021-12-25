@@ -159,6 +159,27 @@
         <artifactId>error_prone_annotations</artifactId>
         <version>2.9.0</version>
       </dependency>
+      <!-- CVE related tweaks -->
+      <dependency>
+        <groupId>com.google.uzaygezen</groupId>
+        <artifactId>uzaygezen-core</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>net.minidev</groupId>
+        <artifactId>json-smart</artifactId>
+        <version>2.4.7</version>
+      </dependency>
+      <dependency>
+        <groupId>net.minidev</groupId>
+        <artifactId>accessors-smart</artifactId>
+        <version>2.4.7</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
