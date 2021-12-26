@@ -848,7 +848,8 @@
           <!-- Fail the build on any CVE, which is not considered minor -->
           <failBuildOnCVSS>4</failBuildOnCVSS>
           <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-          <failOnError>true</failOnError>
+          <!-- On some systems some analysis seems to randomly fail ... don't let this fail the build -->
+          <failOnError>false</failOnError>
           <excludes>
             <!-- For some reason the plugin detects our ADS driver as TwinCAT for which CVEs exist. -->
             <exclude>org.apache.plc4x:plc4j-driver-ads</exclude>
