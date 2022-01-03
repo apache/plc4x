@@ -21,12 +21,8 @@ package org.apache.plc4x.java.opcua.connection;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- */
 public class OpcuaTcpPlcConnectionTest {
 
     private final String[] validTCPOPC = {
@@ -43,15 +39,6 @@ public class OpcuaTcpPlcConnectionTest {
     private final String[] nDiscoveryParams = {
         "discovery=false"
     };
-
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
 
     @Test
     public void testConectionStringPattern() {

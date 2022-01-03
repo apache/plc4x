@@ -208,8 +208,10 @@ public class SecureChannel {
                     .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
                     .onTimeout(onTimeout)
                     .onError(error)
-                    .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
-                    .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+                    .unwrap(encryptionHandler::decodeMessage)
+                    .unwrap(OpcuaAPU::getMessage)
+                    .check(OpcuaMessageResponse.class::isInstance)
+                    .unwrap(OpcuaMessageResponse.class::cast)
                     .check(p -> {
                         if (p.getRequestId() == transactionId) {
                             try {

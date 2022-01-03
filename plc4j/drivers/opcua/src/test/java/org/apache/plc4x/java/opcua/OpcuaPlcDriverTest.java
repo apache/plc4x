@@ -27,27 +27,32 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- */
 public class OpcuaPlcDriverTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
+    @BeforeAll
+    static void setUp() {
+        assumeTrue(() -> {
+            String osArch= System.getProperty("os.arch");
+            // TODO: somehow opcua doesn't run properly on aarch64
+            return !"aarch64".equals(osArch);
+        }, "somehow opcua doesn't run properly on aarch64");
+    }
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -149,14 +154,13 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionNoParams(){
-
-        connectionStringValidSet.forEach(connectionAddress -> {
-                String connectionString = connectionAddress;
+        connectionStringValidSet.forEach(connectionString -> {
                 try {
                     PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
-                    assert opcuaConnection.isConnected();
+                    Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                    assertThat(opcuaConnection).is(is_connected);
                     opcuaConnection.close();
-                    assert !opcuaConnection.isConnected();
+                    assertThat(opcuaConnection).isNot(is_connected);
                 } catch (PlcConnectionException e) {
                     fail("Exception during connectionNoParams while connecting Test EXCEPTION: " + e.getMessage());
                 } catch (Exception e) {
@@ -172,9 +176,10 @@ public class OpcuaPlcDriverTest {
                 String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
                 try {
                     PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
-                    assert opcuaConnection.isConnected();
+                    Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                    assertThat(opcuaConnection).is(is_connected);
                     opcuaConnection.close();
-                    assert !opcuaConnection.isConnected();
+                    assertThat(opcuaConnection).isNot(is_connected);
                 } catch (PlcConnectionException e) {
                     fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
                 } catch (Exception e) {
@@ -188,7 +193,8 @@ public class OpcuaPlcDriverTest {
     public void readVariables() {
         try {
             PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
-            assert opcuaConnection.isConnected();
+            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+            assertThat(opcuaConnection).is(is_connected);
 
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
             builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE);
@@ -224,35 +230,35 @@ public class OpcuaPlcDriverTest {
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
-            assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("String").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Byte")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Double")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Float")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int16")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int32")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int64")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Integer")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("SByte")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt16")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt32")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt64")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInteger")).isEqualTo(PlcResponseCode.OK);
 
-            assert response.getResponseCode("BoolArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("ByteArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("DoubleArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("FloatArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int16Array").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int32Array").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("Int64Array").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("SByteArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("StringArray").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt16Array").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt32Array").equals(PlcResponseCode.OK);
-            assert response.getResponseCode("UInt64Array").equals(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("BoolArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("ByteArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("DoubleArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("FloatArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int16Array")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int32Array")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("Int64Array")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("SByteArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("StringArray")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt16Array")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt32Array")).isEqualTo(PlcResponseCode.OK);
+            assertThat(response.getResponseCode("UInt64Array")).isEqualTo(PlcResponseCode.OK);
 
-            assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
+            assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
@@ -264,7 +270,8 @@ public class OpcuaPlcDriverTest {
     @Test
     public void writeVariables() throws Exception {
         PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
-        assert opcuaConnection.isConnected();
+        Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+        assertThat(opcuaConnection).is(is_connected);
 
         PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
         builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
@@ -302,36 +309,36 @@ public class OpcuaPlcDriverTest {
         PlcWriteRequest request = builder.build();
         PlcWriteResponse response = request.execute().get();
 
-        assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
-        //assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("String").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Byte")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Double")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Float")).isEqualTo(PlcResponseCode.OK);
+       //assertThat(response.getResponseCode("Int16")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Int32")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Int64")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Integer")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("SByte")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt16")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt32")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt64")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInteger")).isEqualTo(PlcResponseCode.OK);
 
-        assert response.getResponseCode("BooleanArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("ByteArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("DoubleArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("FloatArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int16Array").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int32Array").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int64Array").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("IntegerArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("SByteArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("StringArray").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt16Array").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt32Array").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("UInt64Array").equals(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("BooleanArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("ByteArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("DoubleArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("FloatArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Int16Array")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Int32Array")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("Int64Array")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("IntegerArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("SByteArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("StringArray")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt16Array")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt32Array")).isEqualTo(PlcResponseCode.OK);
+       assertThat(response.getResponseCode("UInt64Array")).isEqualTo(PlcResponseCode.OK);
 
-        assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
+       assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
 
         opcuaConnection.close();
         assert !opcuaConnection.isConnected();

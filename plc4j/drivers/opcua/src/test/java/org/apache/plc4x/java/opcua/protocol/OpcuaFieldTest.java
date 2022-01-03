@@ -18,26 +18,13 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
 import static org.apache.plc4x.java.opcua.field.OpcuaField.ADDRESS_PATTERN;
 
-/**
- */
 public class OpcuaFieldTest {
-
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
 
     @Test
     public void testOpcuaAddressPattern() {

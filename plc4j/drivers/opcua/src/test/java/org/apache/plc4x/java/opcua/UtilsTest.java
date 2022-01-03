@@ -20,20 +20,14 @@ package org.apache.plc4x.java.opcua;
 
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- */
 public class UtilsTest {
     public static void assertMatching(Pattern pattern, String match) {
-        if (!pattern.matcher(match).matches()) {
-            fail(pattern + "doesn't match " + match);
-        }
+        assertThat(match).matches(pattern);
     }
 
     public static void assertNoMatching(Pattern pattern, String match) {
-        if (pattern.matcher(match).matches()) {
-            fail(pattern + "does match " + match + " but should not");
-        }
+        assertThat(match).doesNotMatch(pattern);
     }
 }
