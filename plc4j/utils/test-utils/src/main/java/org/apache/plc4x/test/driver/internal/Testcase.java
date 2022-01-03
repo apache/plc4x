@@ -106,6 +106,11 @@ public class Testcase implements LocationAware {
             }
             LOGGER.info("Finished teardown steps");
         }
-        LOGGER.info(String.format("Finished testcase: %s", driverTestsuite.getName()));
+        try {
+            plcConnection.close();
+        } catch (Exception e) {
+            LOGGER.warn("Error closing connection", e);
+        }
+        LOGGER.info("Finished testcase: {}", driverTestsuite.getName());
     }
 }
