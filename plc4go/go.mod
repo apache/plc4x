@@ -32,6 +32,7 @@ require (
 	github.com/snksoft/crc v1.1.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/sys v0.0.0-20211102192858-4dd72447c267 // indirect
 	golang.org/x/tools v0.1.8 // indirect
 	gotest.tools/gotestsum v1.7.0 // indirect
