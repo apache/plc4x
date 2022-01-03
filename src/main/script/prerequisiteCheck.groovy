@@ -498,8 +498,6 @@ for (def activeProfile : activeProfiles) {
     } else if (activeProfile == "with-docker") {
         dockerEnabled = true
     } else if (activeProfile == "with-dotnet") {
-        goEnabled = true
-    } else if (activeProfile == "with-go") {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
         goEnabled = true
