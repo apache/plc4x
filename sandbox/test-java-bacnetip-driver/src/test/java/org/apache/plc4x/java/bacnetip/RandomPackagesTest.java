@@ -57,7 +57,7 @@ public class RandomPackagesTest {
     @BeforeAll
     static void setUp() {
         // TODO: for mac only don't commit
-        System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
+        //System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
         assumeTrue(() -> {
             try {
                 String version = Pcaps.libVersion();
