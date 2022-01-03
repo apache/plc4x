@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opcua.connection;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,18 +44,18 @@ public class OpcuaTcpPlcConnectionTest {
     public void testConectionStringPattern() {
 
         for (String address : validTCPOPC) {
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=true");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=True");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=TRUE");
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?Discovery=True");
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=true").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=True").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?discovery=TRUE").matches(URI_PATTERN);
+            assertThat("opcua:tcp://127.0.0.1:555?Discovery=True").matches(URI_PATTERN);
             //No Port Specified
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=True");
+            assertThat("opcua:tcp://127.0.0.1?discovery=True").matches(URI_PATTERN);
             //No Transport Specified
-            assertMatching(URI_PATTERN, "opcua://127.0.0.1:647?discovery=True");
+            assertThat("opcua://127.0.0.1:647?discovery=True").matches(URI_PATTERN);
             //No Params Specified
-            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:111");
+            assertThat("opcua:tcp://127.0.0.1:111").matches(URI_PATTERN);
             //No Transport and Params Specified
-            assertMatching(URI_PATTERN, "opcua://127.0.0.1:754");
+            assertThat("opcua://127.0.0.1:754").matches(URI_PATTERN);
         }
     }
 }

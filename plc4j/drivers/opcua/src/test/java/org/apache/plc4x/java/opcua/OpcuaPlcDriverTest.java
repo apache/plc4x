@@ -33,7 +33,6 @@ import org.junit.jupiter.api.*;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -347,27 +346,27 @@ public class OpcuaPlcDriverTest {
     @Test
     public void testOpcuaAddressPattern() {
 
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://localhost");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://localhost:3131");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://www.google.de");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://www.google.de:443");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://127.0.0.1");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://127.0.0.1:251");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://254.254.254.254:1337");
-        assertMatching(INET_ADDRESS_PATTERN, ":tcp://254.254.254.254");
+        assertThat(":tcp://localhost").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://localhost:3131").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://www.google.de").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://www.google.de:443").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://127.0.0.1").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://127.0.0.1:251").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://254.254.254.254:1337").matches(INET_ADDRESS_PATTERN);
+        assertThat(":tcp://254.254.254.254").matches(INET_ADDRESS_PATTERN);
 
 
-        assertMatching(URI_PATTERN, "opcua:tcp://localhost");
-        assertMatching(URI_PATTERN, "opcua:tcp://localhost:3131");
-        assertMatching(URI_PATTERN, "opcua:tcp://www.google.de");
-        assertMatching(URI_PATTERN, "opcua:tcp://www.google.de:443");
-        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1");
-        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:251");
-        assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
-        assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254");
+        assertThat("opcua:tcp://localhost").matches(URI_PATTERN);
+        assertThat("opcua:tcp://localhost:3131").matches(URI_PATTERN);
+        assertThat("opcua:tcp://www.google.de").matches(URI_PATTERN);
+        assertThat("opcua:tcp://www.google.de:443").matches(URI_PATTERN);
+        assertThat("opcua:tcp://127.0.0.1").matches(URI_PATTERN);
+        assertThat("opcua:tcp://127.0.0.1:251").matches(URI_PATTERN);
+        assertThat("opcua:tcp://254.254.254.254:1337").matches(URI_PATTERN);
+        assertThat("opcua:tcp://254.254.254.254").matches(URI_PATTERN);
 
-        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=false");
-        assertMatching(URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false");
+        assertThat("opcua:tcp://127.0.0.1?discovery=false").matches(URI_PATTERN);
+        assertThat("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false").matches(URI_PATTERN);
 
     }
 
