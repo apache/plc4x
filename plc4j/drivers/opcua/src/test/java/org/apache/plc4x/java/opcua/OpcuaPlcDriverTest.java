@@ -41,6 +41,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 
 public class OpcuaPlcDriverTest {
 
@@ -368,6 +369,85 @@ public class OpcuaPlcDriverTest {
         assertThat("opcua:tcp://127.0.0.1?discovery=false").matches(URI_PATTERN);
         assertThat("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false").matches(URI_PATTERN);
 
+    }
+
+    /*
+        Test added to test the syncronized Trnasactionhandler.
+        The test originally failed one out of every 5 or so.
+     */
+    @Test
+    public void multipleThreads() {
+        class ReadWorker extends Thread {
+            private PlcConnection connection;
+
+            public ReadWorker(PlcConnection opcuaConnection) {
+                this.connection = opcuaConnection;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    PlcReadRequest.Builder read_builder = connection.readRequestBuilder();
+                    read_builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE);
+                    PlcReadRequest read_request = read_builder.build();
+
+                    for (int i = 0; i < 100; i ++) {
+                        PlcReadResponse read_response = read_request.execute().get();
+                        assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
+                    }
+                } catch (ExecutionException executionException) {
+                    executionException.printStackTrace();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+        }
+
+        class WriteWorker extends Thread {
+            private PlcConnection connection;
+
+            public WriteWorker(PlcConnection opcuaConnection) {
+                this.connection = opcuaConnection;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    PlcWriteRequest.Builder write_builder = connection.writeRequestBuilder();
+                    write_builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+                    PlcWriteRequest write_request = write_builder.build();
+
+                    for (int i = 0; i < 100; i ++) {
+                        PlcWriteResponse write_response = write_request.execute().get();
+                        assertThat(write_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
+                    }
+                } catch (ExecutionException executionException) {
+                    executionException.printStackTrace();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+        }
+
+
+        try {
+            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+            assertThat(opcuaConnection).is(is_connected);
+
+            ReadWorker read_worker = new ReadWorker(opcuaConnection);
+            WriteWorker write_worker = new WriteWorker(opcuaConnection);
+            read_worker.start();
+            write_worker.start();
+
+            read_worker.join();
+            write_worker.join();
+
+            opcuaConnection.close();
+            assert !opcuaConnection.isConnected();
+        } catch (Exception e) {
+            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+        }
     }
 
 }
