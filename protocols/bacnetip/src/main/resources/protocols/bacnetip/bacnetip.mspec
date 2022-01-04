@@ -354,7 +354,9 @@
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            // TODO: here comes data always starting with a BACnetContextTag number 3, value 6, then the data depending on the type and then a termination by BACnetContextTag number 3, value 7
+            [optional       BACnetContextTag('3', 'BACnetDataType.NULL') openingTag ]
+            [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
+            [optional       BACnetContextTag('7', 'BACnetDataType.NULL') closingTag ]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -502,7 +504,10 @@
     [typeSwitch tagClass, tagNumber
         ['APPLICATION_TAGS','0x0' BACnetTagApplicationNull
         ]
-        ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean
+        ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean(uint 32 actualLength)
+            [virtual bit value   'actualLength == 1'    ]
+            [virtual bit isTrue  'value'                ]
+            [virtual bit isFalse '!value'               ]
         ]
         ['APPLICATION_TAGS','0x2' BACnetTagApplicationUnsignedInteger(uint 32 actualLength)
             [virtual    bit     isUint8     'actualLength == 1' ]
@@ -587,8 +592,8 @@
             [simple BACnetObjectType    objectType] // TODO: map to enum
             [simple uint 22             instanceNumber]
         ]
-        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext (uint 4 tagNumber, uint 8 extTagNumber, uint 3 lengthValueType, uint 8 extLength)
-            [array int 8 data length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext
+            // A Context tag here can be ignored as we are missing context here
         ]
     ]
 ]
@@ -606,7 +611,10 @@
     [typeSwitch dataType
         ['NULL' BACnetContextTagNull
         ]
-        ['BOOLEAN' BACnetContextTagBoolean
+        ['BOOLEAN' BACnetContextTagBoolean(uint 32 actualLength)
+            [virtual bit value   'actualLength == 1'    ]
+            [virtual bit isTrue  'value'                ]
+            [virtual bit isFalse '!value'               ]
         ]
         ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(uint 32 actualLength)
             [virtual    bit     isUint8     'actualLength == 1' ]
@@ -696,6 +704,8 @@
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(uint 32 actualLength)
             [manual  BACnetPropertyIdentifier   value   'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, value)' '_value.actualLength']
+            [manual  uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, value, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, value, proprietaryValue)' '_value.actualLength']
+            [virtual bit                        isProprietary      'value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
         ]
         ['BACNET_DEVICE_STATE' BACnetContextTagDeviceState
             [simple BACnetDeviceState   state]

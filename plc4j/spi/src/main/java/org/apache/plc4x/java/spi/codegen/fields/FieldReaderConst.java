@@ -32,7 +32,7 @@ public class FieldReaderConst<T> implements FieldCommons {
     public T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         T constValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(constValue, expectedValue)) {
-            throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue);
+            throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue + ". Byte position: " + dataReader.getPos());
         }
         return constValue;
     }
