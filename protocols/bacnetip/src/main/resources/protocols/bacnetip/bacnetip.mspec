@@ -223,10 +223,10 @@
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier                                                                    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier                                                                  ]
             // TODO: check if this is the right identifier type and size
-            [optional uint 32                                                                              arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            // TODO: possible revert again
+            [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
+             // TODO: possible revert again
             [simple   BACnetPropertyValue('propertyIdentifier.value')                                      propertyValue                                                                       ]
-            [optional BACnetTag                                                                            priority                  'curPos < (len - 1)'                                      ]
+            [optional BACnetTag priority                  'curPos < (len - 1)'            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
         ]
@@ -423,6 +423,27 @@
     ]
 ]
 
+[discriminatedType BACnetPropertyValue(BACnetPropertyIdentifier identifier)
+    // TODO: this is a tag but there is currently no way to validate (e.h. validate expression)
+    [const    uint 8    openingTag                0x3E                          ]
+    [typeSwitch identifier
+        ['OBJECT_TYPE'       BACnetPropertyValueObjectType
+            [simple BACnetApplicationTagObjectIdentifier identifier]
+        ]
+        ['PRIORITY_ARRAY'       BACnetPropertyValuePriorityValue
+            [array byte values count '16']
+        ]
+        ['PRESENT_VALUE'        BACnetPropertyValuePresentValue
+            [simple BACnetTag value]
+        ]
+        ['RELINQUISH_DEFAULT'   BACnetPropertyValueRelinquishDefault
+            [simple BACnetApplicationTagReal value]
+        ]
+    ]
+    // TODO: this is a tag but there is currently no way to validate (e.h. validate expression)
+    [const    uint 8    closingTag                0x3F                          ]
+]
+
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
@@ -507,7 +528,7 @@
     [typeSwitch tagClass, tagNumber
         ['APPLICATION_TAGS','0x0' BACnetApplicationTagNull
         ]
-        ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean(uint 32 actualLength)
+        ['APPLICATION_TAGS','0x1' BACnetApplicationTagBoolean(uint 32 actualLength)
             [virtual bit value   'actualLength == 1'    ]
             [virtual bit isTrue  'value'                ]
             [virtual bit isFalse '!value'               ]
