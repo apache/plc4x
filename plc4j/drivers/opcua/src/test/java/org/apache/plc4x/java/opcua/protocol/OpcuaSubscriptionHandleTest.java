@@ -42,7 +42,7 @@ public class OpcuaSubscriptionHandleTest {
     private static ExampleServer exampleServer;
 
     // Address of local milo server
-    private static String miloLocalAddress = "127.0.0.1:12686/milo";
+    private static String miloLocalAddress = "127.0.0.1:12687/milo";
     //Tcp pattern of OPC UA
     private static String opcPattern = "opcua:tcp://";
 
