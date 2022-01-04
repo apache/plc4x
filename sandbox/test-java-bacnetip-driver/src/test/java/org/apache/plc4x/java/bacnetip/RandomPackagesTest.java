@@ -38,6 +38,8 @@ import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UdpPacket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -55,6 +57,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 // Tests from http://kargs.net/captures
 public class RandomPackagesTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
+
     @BeforeAll
     static void setUp() {
         // TODO: for mac only don't commit
@@ -62,7 +66,7 @@ public class RandomPackagesTest {
         assumeTrue(() -> {
             try {
                 String version = Pcaps.libVersion();
-                System.out.println("Pcap version: " + version);
+                LOGGER.info("Pcap version: " + version);
                 String libpcap_version_string = StringUtils.removeStart(version, "libpcap version ");
                 // Remove any trailing extra info
                 libpcap_version_string = StringUtils.split(libpcap_version_string, " ")[0];
@@ -71,7 +75,7 @@ public class RandomPackagesTest {
                     Semver minimumVersion = new Semver("1.10.1");
 
                     if (libpcap_version.isLowerThan(minimumVersion)) {
-                        System.err.println("pcap with at least " + minimumVersion + " required.");
+                        LOGGER.info("pcap with at least " + minimumVersion + " required.");
                         return false;
                     }
                 }
@@ -88,7 +92,7 @@ public class RandomPackagesTest {
     @AfterEach
     void closeStuff() {
         for (Closeable closeable = toBeClosed.poll(); closeable != null; closeable = toBeClosed.poll()) {
-            System.err.println("Closing closeable " + closeable);
+            LOGGER.info("Closing closeable " + closeable);
             IOUtils.closeQuietly(closeable);
         }
     }
@@ -468,7 +472,8 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
-                    // TODO: here the array is missing
+                    BACnetPropertyValuePriorityValue baCnetPropertyValuePriorityValue = (BACnetPropertyValuePriorityValue) baCnetServiceAckReadProperty.getPropertyValue();
+                    assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
                 }),
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
@@ -489,11 +494,193 @@ public class RandomPackagesTest {
                     BVLCResult bvlcResult = (BVLCResult) bvlc;
                     assertEquals(BVLCResultCode.SUCCESSFUL_COMPLETION, bvlcResult.getCode());
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Skip Unconfirmed-REQ who-Is/I-Am",
                 () -> {
-                    // TODO: implement next package...
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipPackages(5);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 present-value",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
+                }),
+            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 present-value",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetServiceAck baCnetServiceAck = apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAck);
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
+                    BACnetPropertyValuePresentValue baCnetPropertyValuePresentValue = (BACnetPropertyValuePresentValue) baCnetServiceAckReadProperty.getPropertyValue();
+                    assertEquals(0, ((BACnetApplicationTagReal) baCnetPropertyValuePresentValue.getValue()).getValue());
+                }),
+            DynamicTest.dynamicTest("Skip Misc packages",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipPackages(8);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 relinquish-default",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
+                }),
+            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 relinquish-default",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetServiceAck baCnetServiceAck = apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAck);
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
+                    BACnetPropertyValueRelinquishDefault baCnetPropertyValueRelinquishDefault = (BACnetPropertyValueRelinquishDefault) baCnetServiceAckReadProperty.getPropertyValue();
+                    assertEquals(0, baCnetPropertyValueRelinquishDefault.getValue().getValue());
+                }),
+            DynamicTest.dynamicTest("Skip Misc packages",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipPackages(48);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 priority-array",
+                () -> {
+                    // This package is broken as from the spec it requires 16 values // TODO: validate that
+                    pcapEvaluator.skipPackages(1);
+                }),
+            DynamicTest.dynamicTest("Error writeProperty[ 1]",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x28), baCnetErrorWriteProperty.getErrorCode().getData());
+                }),
+            DynamicTest.dynamicTest("Skip Misc packages",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipPackages(8);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
+                    BACnetPropertyValuePresentValue baCnetPropertyValuePresentValue = (BACnetPropertyValuePresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue();
+                    assertEquals(123.449997f, ((BACnetApplicationTagReal) baCnetPropertyValuePresentValue.getValue()).getValue());
+                    // TODO: stricter type here
+                    BACnetTagContext priority = (BACnetTagContext) baCnetConfirmedServiceRequestWriteProperty.getPriority();
+                    assertEquals(Arrays.asList((byte) 0x0a), priority.getData());
+                }),
+            DynamicTest.dynamicTest("Error writeProperty[ 1]",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
+                    // TODO: change to enum
+                    assertEquals(Arrays.asList((byte) 0x25), baCnetErrorWriteProperty.getErrorCode().getData());
+                }),
+            DynamicTest.dynamicTest("Skip Misc packages",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipTo(143);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestWriteProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestWriteProperty.getPropertyIdentifier().getValue());
+                    BACnetPropertyValuePresentValue baCnetPropertyValuePresentValue = (BACnetPropertyValuePresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue();
+                    assertNotNull(((BACnetApplicationTagNull) baCnetPropertyValuePresentValue.getValue()));
+                    // TODO: stricter type here
+                    BACnetTagContext priority = (BACnetTagContext) baCnetConfirmedServiceRequestWriteProperty.getPriority();
+                    assertEquals(Arrays.asList((byte) 0x01), priority.getData());
+                }),
+            DynamicTest.dynamicTest("Simple-ACK writeProperty[ 1]", () -> {
+                BVLC bvlc = pcapEvaluator.nextBVLC();
+                dump(bvlc);
+                BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                assertEquals(15, apduSimpleAck.getServiceChoice());
+            }),
+            DynamicTest.dynamicTest("Skip Misc packages",
+                () -> {
+                    // this is a repeat from the package above
+                    pcapEvaluator.skipTo(201);
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ readProperty[  1] device,12345 object-identifier",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestReadProperty baCnetConfirmedServiceRequestReadProperty = (BACnetConfirmedServiceRequestReadProperty) serviceRequest;
+                    assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(12345, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
+                }),
+            DynamicTest.dynamicTest("Complex-ACK   readProperty[  1] device,12345 object-identifier device,12345",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetServiceAck baCnetServiceAck = apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAck);
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) baCnetServiceAck;
+                    assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
+                    assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
+                    BACnetPropertyValueRelinquishDefault baCnetPropertyValueRelinquishDefault = (BACnetPropertyValueRelinquishDefault) baCnetServiceAckReadProperty.getPropertyValue();
+                    assertEquals(0, baCnetPropertyValueRelinquishDefault.getValue().getValue());
                 })
-            );
+        );
     }
 
     @TestFactory
@@ -623,10 +810,10 @@ public class RandomPackagesTest {
                     BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
                     assertNotNull(serviceRequest);
                     BACnetConfirmedServiceRequestWriteProperty baCnetConfirmedServiceRequestWriteProperty = (BACnetConfirmedServiceRequestWriteProperty) serviceRequest;
-                    BACnetTag value = baCnetConfirmedServiceRequestWriteProperty.getValue();
-                    assertNotNull(value);
-                    BACnetTagApplicationReal baCnetTagApplicationReal = (BACnetTagApplicationReal) value;
-                    assertEquals(123.0f, baCnetTagApplicationReal.getValue());
+                    BACnetPropertyValuePresentValue baCnetPropertyValuePresentValue = (BACnetPropertyValuePresentValue) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue();
+                    assertNotNull(baCnetPropertyValuePresentValue);
+                    BACnetApplicationTagReal BACnetApplicationTagReal = (BACnetApplicationTagReal) baCnetPropertyValuePresentValue.getValue();
+                    assertEquals(123.0f, BACnetApplicationTagReal.getValue());
                 }),
             DynamicTest.dynamicTest("Abort",
                 () -> {
@@ -6249,8 +6436,7 @@ public class RandomPackagesTest {
     private void dump(Serializable serializable) throws SerializationException {
         WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased();
         serializable.serialize(writeBuffer);
-        System.out.println(serializable.getClass().getName());
-        System.out.println(writeBuffer.getBox());
+        LOGGER.info("{}\n{}", serializable.getClass().getName(), writeBuffer.getBox());
     }
 
     private PCAPEvaluator pcapEvaluator(String pcapFile) throws IOException, PcapNativeException {
@@ -6260,38 +6446,48 @@ public class RandomPackagesTest {
     }
 
     private static class PCAPEvaluator implements Closeable {
+        private int currentPackage = 0;
         private final String pcapFile;
         private final PcapHandle pcapHandle;
 
         public PCAPEvaluator(String pcapFile) throws IOException, PcapNativeException {
             this.pcapFile = pcapFile;
             String toParse = DownloadAndCache(pcapFile);
-            System.out.println("Reading " + toParse);
+            LOGGER.info("Reading " + toParse);
             pcapHandle = getHandle(toParse);
+        }
+
+        public void skipTo(int packageNumber) {
+            if (packageNumber <= currentPackage) {
+                throw new IllegalArgumentException("Package number must be bigger than " + currentPackage);
+            }
+            LOGGER.info("Skipping to package number {}", packageNumber);
+            skipPackages(packageNumber - currentPackage - 1);
         }
 
         public void skipPackages(int numberOfPackages) {
             IntStream.rangeClosed(1, numberOfPackages).forEach(i -> {
-                System.out.println("Skipping package " + i);
+                LOGGER.info("Skipping package " + (currentPackage + i));
                 try {
                     pcapHandle.getNextPacket();
                 } catch (NotOpenException e) {
                     e.printStackTrace();
                 }
             });
+            currentPackage += numberOfPackages;
         }
 
         private BVLC nextBVLC() throws NotOpenException, ParseException {
+            currentPackage += 1;
             Packet packet = pcapHandle.getNextPacket();
-            System.err.println("Next packet:");
-            System.err.println(packet);
+            LOGGER.info("({})Next packet:\n{}", currentPackage, packet);
+
+
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");
-            System.err.println("Handling UDP");
-            System.err.println(udpPacket);
+            LOGGER.info("Handling UDP\n{}", udpPacket);
             byte[] rawData = udpPacket.getPayload().getRawData();
-            System.err.println("Reading BVLC from:");
-            System.err.println(Hex.dump(rawData));
+            LOGGER.info("Reading BVLC from:\n{}", Hex.dump(rawData));
             return BVLCIO.staticParse(new ReadBufferByteBased(rawData));
         }
 
@@ -6305,7 +6501,7 @@ public class RandomPackagesTest {
             FileUtils.createParentDirectories(pcapFile);
             if (!pcapFile.exists()) {
                 URL source = new URL("http://kargs.net/captures/" + file);
-                System.err.println("Downloading " + source);
+                LOGGER.info("Downloading {}", source);
                 FileUtils.copyURLToFile(source, pcapFile);
             }
             return pcapFile.getAbsolutePath();
