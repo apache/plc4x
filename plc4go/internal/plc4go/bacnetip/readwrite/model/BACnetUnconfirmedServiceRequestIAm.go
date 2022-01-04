@@ -29,10 +29,10 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIAm struct {
 	*BACnetUnconfirmedServiceRequest
-	DeviceIdentifier                *BACnetTagApplicationObjectIdentifier
-	MaximumApduLengthAcceptedLength *BACnetTagApplicationUnsignedInteger
-	SegmentationSupported           *BACnetTagApplicationEnumerated
-	VendorId                        *BACnetTagApplicationUnsignedInteger
+	DeviceIdentifier                *BACnetApplicationTagObjectIdentifier
+	MaximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger
+	SegmentationSupported           *BACnetApplicationTagEnumerated
+	VendorId                        *BACnetApplicationTagUnsignedInteger
 }
 
 // The corresponding interface
@@ -52,7 +52,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
 func (m *BACnetUnconfirmedServiceRequestIAm) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetTagApplicationObjectIdentifier, maximumApduLengthAcceptedLength *BACnetTagApplicationUnsignedInteger, segmentationSupported *BACnetTagApplicationEnumerated, vendorId *BACnetTagApplicationUnsignedInteger) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetApplicationTagEnumerated, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
@@ -126,7 +126,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
-	deviceIdentifier := CastBACnetTagApplicationObjectIdentifier(_deviceIdentifier)
+	deviceIdentifier := CastBACnetApplicationTagObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -139,7 +139,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
-	maximumApduLengthAcceptedLength := CastBACnetTagApplicationUnsignedInteger(_maximumApduLengthAcceptedLength)
+	maximumApduLengthAcceptedLength := CastBACnetApplicationTagUnsignedInteger(_maximumApduLengthAcceptedLength)
 	if closeErr := readBuffer.CloseContext("maximumApduLengthAcceptedLength"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -152,7 +152,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
-	segmentationSupported := CastBACnetTagApplicationEnumerated(_segmentationSupported)
+	segmentationSupported := CastBACnetApplicationTagEnumerated(_segmentationSupported)
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -165,7 +165,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
-	vendorId := CastBACnetTagApplicationUnsignedInteger(_vendorId)
+	vendorId := CastBACnetApplicationTagUnsignedInteger(_vendorId)
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -176,10 +176,10 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIAm{
-		DeviceIdentifier:                CastBACnetTagApplicationObjectIdentifier(deviceIdentifier),
-		MaximumApduLengthAcceptedLength: CastBACnetTagApplicationUnsignedInteger(maximumApduLengthAcceptedLength),
-		SegmentationSupported:           CastBACnetTagApplicationEnumerated(segmentationSupported),
-		VendorId:                        CastBACnetTagApplicationUnsignedInteger(vendorId),
+		DeviceIdentifier:                CastBACnetApplicationTagObjectIdentifier(deviceIdentifier),
+		MaximumApduLengthAcceptedLength: CastBACnetApplicationTagUnsignedInteger(maximumApduLengthAcceptedLength),
+		SegmentationSupported:           CastBACnetApplicationTagEnumerated(segmentationSupported),
+		VendorId:                        CastBACnetApplicationTagUnsignedInteger(vendorId),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child

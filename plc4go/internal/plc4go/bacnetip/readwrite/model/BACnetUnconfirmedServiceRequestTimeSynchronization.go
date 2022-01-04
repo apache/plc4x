@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 	*BACnetUnconfirmedServiceRequest
-	SynchronizedDate *BACnetTagApplicationDate
-	SynchronizedTime *BACnetTagApplicationTime
+	SynchronizedDate *BACnetApplicationTagDate
+	SynchronizedTime *BACnetApplicationTagTime
 }
 
 // The corresponding interface
@@ -50,7 +50,7 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) ServiceChoice() uin
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetTagApplicationDate, synchronizedTime *BACnetTagApplicationTime) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate *BACnetApplicationTagDate, synchronizedTime *BACnetApplicationTagTime) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestTimeSynchronization{
 		SynchronizedDate:                synchronizedDate,
 		SynchronizedTime:                synchronizedTime,
@@ -116,7 +116,7 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if _synchronizedDateErr != nil {
 		return nil, errors.Wrap(_synchronizedDateErr, "Error parsing 'synchronizedDate' field")
 	}
-	synchronizedDate := CastBACnetTagApplicationDate(_synchronizedDate)
+	synchronizedDate := CastBACnetApplicationTagDate(_synchronizedDate)
 	if closeErr := readBuffer.CloseContext("synchronizedDate"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -129,7 +129,7 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if _synchronizedTimeErr != nil {
 		return nil, errors.Wrap(_synchronizedTimeErr, "Error parsing 'synchronizedTime' field")
 	}
-	synchronizedTime := CastBACnetTagApplicationTime(_synchronizedTime)
+	synchronizedTime := CastBACnetApplicationTagTime(_synchronizedTime)
 	if closeErr := readBuffer.CloseContext("synchronizedTime"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,8 +140,8 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestTimeSynchronization{
-		SynchronizedDate:                CastBACnetTagApplicationDate(synchronizedDate),
-		SynchronizedTime:                CastBACnetTagApplicationTime(synchronizedTime),
+		SynchronizedDate:                CastBACnetApplicationTagDate(synchronizedDate),
+		SynchronizedTime:                CastBACnetApplicationTagTime(synchronizedTime),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child

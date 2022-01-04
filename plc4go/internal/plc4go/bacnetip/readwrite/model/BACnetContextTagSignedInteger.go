@@ -238,7 +238,7 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 		if pushErr := writeBuffer.PushContext("BACnetContextTagSignedInteger"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _isInt8Err := writeBuffer.WriteVirtual("isInt8", m.IsInt8); _isInt8Err != nil {
 			return errors.Wrap(_isInt8Err, "Error serializing 'isInt8' field")
 		}
@@ -252,7 +252,7 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt8Err, "Error serializing 'valueInt8' field")
 			}
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _isInt16Err := writeBuffer.WriteVirtual("isInt16", m.IsInt16); _isInt16Err != nil {
 			return errors.Wrap(_isInt16Err, "Error serializing 'isInt16' field")
 		}
@@ -266,7 +266,7 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt16Err, "Error serializing 'valueInt16' field")
 			}
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _isInt32Err := writeBuffer.WriteVirtual("isInt32", m.IsInt32); _isInt32Err != nil {
 			return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
 		}
@@ -280,7 +280,7 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt32Err, "Error serializing 'valueInt32' field")
 			}
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _isInt64Err := writeBuffer.WriteVirtual("isInt64", m.IsInt64); _isInt64Err != nil {
 			return errors.Wrap(_isInt64Err, "Error serializing 'isInt64' field")
 		}
@@ -294,7 +294,7 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 				return errors.Wrap(_valueInt64Err, "Error serializing 'valueInt64' field")
 			}
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

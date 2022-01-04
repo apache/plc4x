@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetErrorConfirmedEventNotification struct {
 	*BACnetError
-	ErrorClass *BACnetTagApplicationEnumerated
-	ErrorCode  *BACnetTagApplicationEnumerated
+	ErrorClass *BACnetApplicationTagEnumerated
+	ErrorCode  *BACnetApplicationTagEnumerated
 }
 
 // The corresponding interface
@@ -50,7 +50,7 @@ func (m *BACnetErrorConfirmedEventNotification) ServiceChoice() uint8 {
 func (m *BACnetErrorConfirmedEventNotification) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetTagApplicationEnumerated, errorCode *BACnetTagApplicationEnumerated) *BACnetError {
+func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedEventNotification{
 		ErrorClass:  errorClass,
 		ErrorCode:   errorCode,
@@ -116,7 +116,7 @@ func BACnetErrorConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*B
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
-	errorClass := CastBACnetTagApplicationEnumerated(_errorClass)
+	errorClass := CastBACnetApplicationTagEnumerated(_errorClass)
 	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -129,7 +129,7 @@ func BACnetErrorConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*B
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
-	errorCode := CastBACnetTagApplicationEnumerated(_errorCode)
+	errorCode := CastBACnetApplicationTagEnumerated(_errorCode)
 	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,8 +140,8 @@ func BACnetErrorConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*B
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorConfirmedEventNotification{
-		ErrorClass:  CastBACnetTagApplicationEnumerated(errorClass),
-		ErrorCode:   CastBACnetTagApplicationEnumerated(errorCode),
+		ErrorClass:  CastBACnetApplicationTagEnumerated(errorClass),
+		ErrorCode:   CastBACnetApplicationTagEnumerated(errorCode),
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child

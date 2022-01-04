@@ -172,7 +172,7 @@ func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) err
 		if pushErr := writeBuffer.PushContext("BACnetContextTagBitString"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
 			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 		}

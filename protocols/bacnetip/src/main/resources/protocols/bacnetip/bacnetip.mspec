@@ -353,9 +353,7 @@
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            [optional       BACnetContextTag('3', 'BACnetDataType.NULL') openingTag ]
-            [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
-            [optional       BACnetContextTag('7', 'BACnetDataType.NULL') closingTag ]
+            [optional EnclosedTags('3', '7') enclosedTags]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -423,12 +421,18 @@
     ]
 ]
 
+[type EnclosedTags(uint 4 openingTagNumber, uint 4 closingTagNumber)
+    [optional       BACnetContextTag('openingTagNumber', 'BACnetDataType.NULL') openingTag]
+    [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
+    [optional       BACnetContextTag('closingTagNumber', 'BACnetDataType.NULL') closingTag]
+]
+
 [discriminatedType BACnetPropertyValue(BACnetPropertyIdentifier identifier)
     // TODO: this is a tag but there is currently no way to validate (e.h. validate expression)
     [const    uint 8    openingTag                0x3E                          ]
     [typeSwitch identifier
         ['OBJECT_TYPE'       BACnetPropertyValueObjectType
-            [simple BACnetApplicationTagObjectIdentifier identifier]
+            [simple BACnetApplicationTagObjectIdentifier objectIdentifier]
         ]
         ['PRIORITY_ARRAY'       BACnetPropertyValuePriorityValue
             [array byte values count '16']
@@ -616,7 +620,7 @@
             [simple BACnetObjectType    objectType] // TODO: map to enum
             [simple uint 22             instanceNumber]
         ]
-        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext
+        ['CONTEXT_SPECIFIC_TAGS' BACnetContextTagWithoutContext
             // A Context tag here can be ignored as we are missing context here
         ]
     ]

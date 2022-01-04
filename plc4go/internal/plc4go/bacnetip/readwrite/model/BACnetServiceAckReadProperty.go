@@ -32,6 +32,7 @@ type BACnetServiceAckReadProperty struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
+	EnclosedTags       *EnclosedTags
 }
 
 // The corresponding interface
@@ -51,11 +52,12 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32) *BACnetServiceAck {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, enclosedTags *EnclosedTags) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
+		EnclosedTags:       enclosedTags,
 		BACnetServiceAck:   NewBACnetServiceAck(),
 	}
 	child.Child = child
@@ -101,6 +103,11 @@ func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) ui
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
 		lengthInBits += 32
+	}
+
+	// Optional Field (enclosedTags)
+	if m.EnclosedTags != nil {
+		lengthInBits += (*m.EnclosedTags).LengthInBits()
 	}
 
 	return lengthInBits
@@ -151,6 +158,27 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		arrayIndex = &_val
 	}
 
+	// Optional Field (enclosedTags) (Can be skipped, if a given expression evaluates to false)
+	var enclosedTags *EnclosedTags = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("enclosedTags"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := EnclosedTagsParse(readBuffer, uint8(3), uint8(7))
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'enclosedTags' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			enclosedTags = CastEnclosedTags(_val)
+			if closeErr := readBuffer.CloseContext("enclosedTags"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadProperty"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -160,6 +188,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		ObjectIdentifier:   CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier: CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:         arrayIndex,
+		EnclosedTags:       CastEnclosedTags(enclosedTags),
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
@@ -203,6 +232,22 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 			_arrayIndexErr := writeBuffer.WriteUint32("arrayIndex", 32, *(arrayIndex))
 			if _arrayIndexErr != nil {
 				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
+			}
+		}
+
+		// Optional Field (enclosedTags) (Can be skipped, if the value is null)
+		var enclosedTags *EnclosedTags = nil
+		if m.EnclosedTags != nil {
+			if pushErr := writeBuffer.PushContext("enclosedTags"); pushErr != nil {
+				return pushErr
+			}
+			enclosedTags = m.EnclosedTags
+			_enclosedTagsErr := enclosedTags.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("enclosedTags"); popErr != nil {
+				return popErr
+			}
+			if _enclosedTagsErr != nil {
+				return errors.Wrap(_enclosedTagsErr, "Error serializing 'enclosedTags' field")
 			}
 		}
 

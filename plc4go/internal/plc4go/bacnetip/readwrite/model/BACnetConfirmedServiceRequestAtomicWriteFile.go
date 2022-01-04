@@ -29,10 +29,10 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	*BACnetConfirmedServiceRequest
-	DeviceIdentifier  *BACnetTagApplicationObjectIdentifier
+	DeviceIdentifier  *BACnetApplicationTagObjectIdentifier
 	OpeningTag        *BACnetContextTagNull
-	FileStartPosition *BACnetTagApplicationSignedInteger
-	FileData          *BACnetTagApplicationOctetString
+	FileStartPosition *BACnetApplicationTagSignedInteger
+	FileData          *BACnetApplicationTagOctetString
 	ClosingTag        *BACnetContextTagNull
 }
 
@@ -53,7 +53,7 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) ServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetTagApplicationObjectIdentifier, openingTag *BACnetContextTagNull, fileStartPosition *BACnetTagApplicationSignedInteger, fileData *BACnetTagApplicationOctetString, closingTag *BACnetContextTagNull) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetContextTagNull, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetContextTagNull) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAtomicWriteFile{
 		DeviceIdentifier:              deviceIdentifier,
 		OpeningTag:                    openingTag,
@@ -135,7 +135,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
-	deviceIdentifier := CastBACnetTagApplicationObjectIdentifier(_deviceIdentifier)
+	deviceIdentifier := CastBACnetApplicationTagObjectIdentifier(_deviceIdentifier)
 	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -169,7 +169,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
 	}
-	fileStartPosition := CastBACnetTagApplicationSignedInteger(_fileStartPosition)
+	fileStartPosition := CastBACnetApplicationTagSignedInteger(_fileStartPosition)
 	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -182,7 +182,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if _fileDataErr != nil {
 		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field")
 	}
-	fileData := CastBACnetTagApplicationOctetString(_fileData)
+	fileData := CastBACnetApplicationTagOctetString(_fileData)
 	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -214,10 +214,10 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAtomicWriteFile{
-		DeviceIdentifier:              CastBACnetTagApplicationObjectIdentifier(deviceIdentifier),
+		DeviceIdentifier:              CastBACnetApplicationTagObjectIdentifier(deviceIdentifier),
 		OpeningTag:                    CastBACnetContextTagNull(openingTag),
-		FileStartPosition:             CastBACnetTagApplicationSignedInteger(fileStartPosition),
-		FileData:                      CastBACnetTagApplicationOctetString(fileData),
+		FileStartPosition:             CastBACnetApplicationTagSignedInteger(fileStartPosition),
+		FileData:                      CastBACnetApplicationTagOctetString(fileData),
 		ClosingTag:                    CastBACnetContextTagNull(closingTag),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}

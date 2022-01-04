@@ -221,34 +221,34 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	var _parent *BACnetTag
 	var typeSwitchError error
 	switch {
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x0: // BACnetTagApplicationNull
-		_parent, typeSwitchError = BACnetTagApplicationNullParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x1: // BACnetTagApplicationBoolean
-		_parent, typeSwitchError = BACnetTagApplicationBooleanParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x2: // BACnetTagApplicationUnsignedInteger
-		_parent, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x3: // BACnetTagApplicationSignedInteger
-		_parent, typeSwitchError = BACnetTagApplicationSignedIntegerParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x4: // BACnetTagApplicationReal
-		_parent, typeSwitchError = BACnetTagApplicationRealParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x5: // BACnetTagApplicationDouble
-		_parent, typeSwitchError = BACnetTagApplicationDoubleParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x6: // BACnetTagApplicationOctetString
-		_parent, typeSwitchError = BACnetTagApplicationOctetStringParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x7: // BACnetTagApplicationCharacterString
-		_parent, typeSwitchError = BACnetTagApplicationCharacterStringParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x8: // BACnetTagApplicationBitString
-		_parent, typeSwitchError = BACnetTagApplicationBitStringParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x9: // BACnetTagApplicationEnumerated
-		_parent, typeSwitchError = BACnetTagApplicationEnumeratedParse(readBuffer, actualLength)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xA: // BACnetTagApplicationDate
-		_parent, typeSwitchError = BACnetTagApplicationDateParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xB: // BACnetTagApplicationTime
-		_parent, typeSwitchError = BACnetTagApplicationTimeParse(readBuffer)
-	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xC: // BACnetTagApplicationObjectIdentifier
-		_parent, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(readBuffer)
-	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS: // BACnetTagContext
-		_parent, typeSwitchError = BACnetTagContextParse(readBuffer, tagNumber, *extTagNumber, lengthValueType, *extLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x0: // BACnetApplicationTagNull
+		_parent, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x1: // BACnetApplicationTagBoolean
+		_parent, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
+		_parent, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x3: // BACnetApplicationTagSignedInteger
+		_parent, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x4: // BACnetApplicationTagReal
+		_parent, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x5: // BACnetApplicationTagDouble
+		_parent, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x6: // BACnetApplicationTagOctetString
+		_parent, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x7: // BACnetApplicationTagCharacterString
+		_parent, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x8: // BACnetApplicationTagBitString
+		_parent, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0x9: // BACnetApplicationTagEnumerated
+		_parent, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, actualLength)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xA: // BACnetApplicationTagDate
+		_parent, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xB: // BACnetApplicationTagTime
+		_parent, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
+	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
+		_parent, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
+	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS: // BACnetContextTagWithoutContext
+		_parent, typeSwitchError = BACnetContextTagWithoutContextParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -306,11 +306,11 @@ func (m *BACnetTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnet
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
 	}
-	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	// Virtual field
 	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
-	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	// Virtual field
 	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.IsPrimitiveAndNotBoolean); _isPrimitiveAndNotBooleanErr != nil {
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
@@ -344,7 +344,7 @@ func (m *BACnetTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnet
 			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
 		}
 	}
-	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	// Virtual field
 	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}

@@ -214,7 +214,7 @@ func (m *BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagTime"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.Wildcard); _wildcardErr != nil {
 			return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 		}
@@ -225,7 +225,7 @@ func (m *BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _hourErr != nil {
 			return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _hourIsWildcardErr := writeBuffer.WriteVirtual("hourIsWildcard", m.HourIsWildcard); _hourIsWildcardErr != nil {
 			return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 		}
@@ -236,7 +236,7 @@ func (m *BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _minuteErr != nil {
 			return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _minuteIsWildcardErr := writeBuffer.WriteVirtual("minuteIsWildcard", m.MinuteIsWildcard); _minuteIsWildcardErr != nil {
 			return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
 		}
@@ -247,7 +247,7 @@ func (m *BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _secondErr != nil {
 			return errors.Wrap(_secondErr, "Error serializing 'second' field")
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _secondIsWildcardErr := writeBuffer.WriteVirtual("secondIsWildcard", m.SecondIsWildcard); _secondIsWildcardErr != nil {
 			return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
 		}
@@ -258,7 +258,7 @@ func (m *BACnetContextTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		if _fractionalErr != nil {
 			return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
 		}
-		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		// Virtual field
 		if _fractionalIsWildcardErr := writeBuffer.WriteVirtual("fractionalIsWildcard", m.FractionalIsWildcard); _fractionalIsWildcardErr != nil {
 			return errors.Wrap(_fractionalIsWildcardErr, "Error serializing 'fractionalIsWildcard' field")
 		}
