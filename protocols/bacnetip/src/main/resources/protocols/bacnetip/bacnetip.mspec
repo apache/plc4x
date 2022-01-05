@@ -225,7 +225,7 @@
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
              // TODO: possible revert again
-            [simple   BACnetPropertyValue('propertyIdentifier.value')                                      propertyValue                                                                       ]
+            [simple   ConstructedData('propertyIdentifier.value')                                      propertyValue                                                                       ]
             [optional BACnetTag priority                  'curPos < (len - 1)'            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
@@ -353,7 +353,7 @@
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            [optional EnclosedTags('3', '7') enclosedTags]
+            [optional ConstructedData('propertyIdentifier.value') constructedData]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -421,33 +421,6 @@
     ]
 ]
 
-[type EnclosedTags(uint 4 openingTagNumber, uint 4 closingTagNumber)
-    [optional       BACnetContextTag('openingTagNumber', 'BACnetDataType.NULL') openingTag]
-    [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
-    [optional       BACnetContextTag('closingTagNumber', 'BACnetDataType.NULL') closingTag]
-]
-
-[discriminatedType BACnetPropertyValue(BACnetPropertyIdentifier identifier)
-    // TODO: this is a tag but there is currently no way to validate (e.h. validate expression)
-    [const    uint 8    openingTag                0x3E                          ]
-    [typeSwitch identifier
-        ['OBJECT_TYPE'       BACnetPropertyValueObjectType
-            [simple BACnetApplicationTagObjectIdentifier objectIdentifier]
-        ]
-        ['PRIORITY_ARRAY'       BACnetPropertyValuePriorityValue
-            [array byte values count '16']
-        ]
-        ['PRESENT_VALUE'        BACnetPropertyValuePresentValue
-            [simple BACnetTag value]
-        ]
-        ['RELINQUISH_DEFAULT'   BACnetPropertyValueRelinquishDefault
-            [simple BACnetApplicationTagReal value]
-        ]
-    ]
-    // TODO: this is a tag but there is currently no way to validate (e.h. validate expression)
-    [const    uint 8    closingTag                0x3F                          ]
-]
-
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
@@ -506,6 +479,7 @@
     [simple uint 16 port]
 ]
 
+// TODO: remove this
 [type BACnetTagWithContent
     [simple        uint 4    tagNumber       ]
     [simple        TagClass  tagClass        ]
@@ -524,7 +498,9 @@
     [simple        uint 3   lengthValueType                                             ]
     [optional      uint 8   extTagNumber    'tagNumber == 15'                           ]
     [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber' ]
-    [virtual       bit      isPrimitiveAndNotBoolean '!(tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6) && tagNumber != 1']
+    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS']
+    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6']
+    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean']
     [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
     [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
     [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
@@ -617,11 +593,40 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard']
         ]
         ['APPLICATION_TAGS','0xC' BACnetApplicationTagObjectIdentifier
-            [simple BACnetObjectType    objectType] // TODO: map to enum
+            [simple BACnetObjectType    objectType]
             [simple uint 22             instanceNumber]
         ]
-        ['CONTEXT_SPECIFIC_TAGS' BACnetContextTagWithoutContext
-            // A Context tag here can be ignored as we are missing context here
+        ['CONTEXT_SPECIFIC_TAGS' BACnetContextTagWithoutContext(uint 32 actualLength)
+            //[simple BACnetPropertyValue('identifier', 'actualLength') content]
+            // TODO: we might just use the identifier we have supplied
+            [array int 8 data length 'actualLength']
+        ]
+    ]
+]
+
+[type ConstructedData(BACnetPropertyIdentifier identifier)
+    [optional       BACnetContextTag('3', 'BACnetDataType.NULL') openingTag]
+    // TODO: BACnetTag is not yet smart enough and looses type information
+    [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
+    [optional       BACnetContextTag('3', 'BACnetDataType.NULL') closingTag]
+]
+
+[discriminatedType BACnetPropertyValue(BACnetPropertyIdentifier identifier, uint 32 actualLength)
+    [typeSwitch identifier
+        ['OBJECT_TYPE'       BACnetPropertyValueObjectType
+            [simple BACnetApplicationTagObjectIdentifier objectIdentifier]
+        ]
+        ['PRIORITY_ARRAY'       BACnetPropertyValuePriorityValue
+            [array byte values count '16']
+        ]
+        ['PRESENT_VALUE'        BACnetPropertyValuePresentValue
+            [simple BACnetTag value]
+        ]
+        ['RELINQUISH_DEFAULT'   BACnetPropertyValueRelinquishDefault
+            [simple BACnetApplicationTagReal value]
+        ]
+        [BACnetPropertyValueDefault
+            [array int 8 data length 'actualLength']
         ]
     ]
 ]
