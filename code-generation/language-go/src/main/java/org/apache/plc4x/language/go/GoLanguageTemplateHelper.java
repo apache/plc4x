@@ -483,6 +483,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return tracer + toTypedParseExpression(field, resultType, term, parserArguments);
     }
 
+    public String toParseExpression(Field field, TypeReference resultType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
+        Tracer tracer = Tracer.start("toParseExpression");
+        return tracer + toTypedParseExpression(field, resultType, term, parserArguments, suppressPointerAccess);
+    }
+
     public String toSerializationExpression(Field field, TypeReference resultType, Term term, List<Argument> serializerArguments) {
         Tracer tracer = Tracer.start("toSerializationExpression");
         return tracer + toTypedSerializationExpression(field, resultType, term, serializerArguments);
@@ -513,6 +518,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return tracer + toExpression(field, fieldType, term, parserArguments, null, false, fieldType != null && fieldType.isComplexTypeReference());
     }
 
+    public String toTypedParseExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, boolean suppressPointerAccess) {
+        Tracer tracer = Tracer.start("toTypedParseExpression");
+        return tracer + toExpression(field, fieldType, term, parserArguments, null, false, suppressPointerAccess);
+    }
+
     public String toTypedSerializationExpression(Field field, TypeReference fieldType, Term term, List<Argument> serializerArguments) {
         Tracer tracer = Tracer.start("toTypedSerializationExpression");
         return tracer + toExpression(field, fieldType, term, null, serializerArguments, true, false);
@@ -530,7 +540,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     private String toExpression(Field field, TypeReference fieldType, Term term, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess) {
-        Tracer tracer = Tracer.start("toExpression");
+        Tracer tracer = Tracer.start("toExpression(suppressPointerAccess="+suppressPointerAccess+")");
         if (term == null) {
             return "";
         }

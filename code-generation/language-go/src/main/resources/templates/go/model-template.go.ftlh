@@ -784,7 +784,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
 	_${manualArrayField.name}List := make([]<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
-	for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)})); {
+	for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
 		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->

@@ -120,7 +120,7 @@ func EnclosedTagsParse(readBuffer utils.ReadBuffer, openingTagNumber uint8, clos
 	// Manual Array Field (data)
 	// Terminated array
 	_dataList := make([]*BACnetTag, 0)
-	for !((bool)(OpeningClosingTerminate(readBuffer, (*openingTag)))) {
+	for !((bool)(OpeningClosingTerminate(readBuffer, (openingTag)))) {
 		_dataList = append(_dataList, ((*BACnetTag)(ParseTags(readBuffer))))
 
 	}
