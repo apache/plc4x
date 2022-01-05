@@ -98,7 +98,7 @@ func (m *BACnetPropertyValueRelinquishDefault) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetPropertyValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, identifier BACnetPropertyIdentifier) (*BACnetPropertyValue, error) {
+func BACnetPropertyValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, identifier BACnetPropertyIdentifier, actualLength uint32) (*BACnetPropertyValue, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValueRelinquishDefault"); pullErr != nil {
 		return nil, pullErr
 	}

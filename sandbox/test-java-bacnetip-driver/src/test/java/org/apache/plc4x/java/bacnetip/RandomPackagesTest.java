@@ -739,27 +739,54 @@ public class RandomPackagesTest {
         );
     }
 
+    @Disabled("This needs more work")
     @TestFactory
     @DisplayName("COV_AWF_ARF")
     Collection<DynamicTest> COV_AWF_ARF() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("COV_AWF_ARF.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ   subscribeCOV[ 10] binary-input,0",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestSubscribeCOV baCnetConfirmedServiceRequestSubscribeCOV = (BACnetConfirmedServiceRequestSubscribeCOV) serviceRequest;
+                    assertEquals((short) 123, baCnetConfirmedServiceRequestSubscribeCOV.getSubscriberProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.BINARY_INPUT, baCnetConfirmedServiceRequestSubscribeCOV.getMonitoredObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestSubscribeCOV.getMonitoredObjectIdentifier().getInstanceNumber());
+                    assertTrue(baCnetConfirmedServiceRequestSubscribeCOV.getIssueConfirmed().getIsFalse());
+                    assertEquals(10, baCnetConfirmedServiceRequestSubscribeCOV.getLifetimeInSeconds().getActualValue() / 60);
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Simple-ACK      subscribeCOV[ 10]",
                 () -> {
                     BVLC bvlc;
                     bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    assertEquals((short) 5,apduSimpleAck.getServiceChoice());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
+                () -> {
+                    BVLC bvlc;
+                    bvlc = pcapEvaluator.nextBVLC();
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestSubscribeCOV baCnetConfirmedServiceRequestSubscribeCOV = (BACnetConfirmedServiceRequestSubscribeCOV) serviceRequest;
+                    assertEquals((short) 123, baCnetConfirmedServiceRequestSubscribeCOV.getSubscriberProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.BINARY_INPUT, baCnetConfirmedServiceRequestSubscribeCOV.getMonitoredObjectIdentifier().getObjectType());
+                    assertEquals(0, baCnetConfirmedServiceRequestSubscribeCOV.getMonitoredObjectIdentifier().getInstanceNumber());
+                    assertTrue(baCnetConfirmedServiceRequestSubscribeCOV.getIssueConfirmed().getIsFalse());
+                    assertEquals(10, baCnetConfirmedServiceRequestSubscribeCOV.getLifetimeInSeconds().getActualValue() / 60);
                 })
+            // TODO: finish me
         );
     }
 

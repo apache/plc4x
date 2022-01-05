@@ -57,16 +57,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.NLMParse(io, apduLength)
-	case "EnclosedTags":
-		openingTagNumber, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		closingTagNumber, err := utils.StrToUint8(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.EnclosedTagsParse(io, openingTagNumber, closingTagNumber)
 	case "BACnetConfirmedServiceRequest":
 		len, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -77,7 +67,18 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetAddressParse(io)
 	case "BACnetPropertyValue":
 		var identifier model.BACnetPropertyIdentifier
-		return model.BACnetPropertyValueParse(io, identifier)
+		actualLength, err := utils.StrToUint32(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetPropertyValueParse(io, identifier, actualLength)
+	case "BACnetConstructedData":
+		tagNumberArgument, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		var identifier model.BACnetPropertyIdentifier
+		return model.BACnetConstructedDataParse(io, tagNumberArgument, identifier)
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(io)
 	case "BACnetUnconfirmedServiceRequest":

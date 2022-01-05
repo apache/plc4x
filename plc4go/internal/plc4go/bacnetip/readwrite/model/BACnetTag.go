@@ -35,6 +35,8 @@ type BACnetTag struct {
 	ExtExtLength             *uint16
 	ExtExtExtLength          *uint32
 	ActualTagNumber          uint8
+	IsBoolean                bool
+	IsConstructed            bool
 	IsPrimitiveAndNotBoolean bool
 	ActualLength             uint32
 	Child                    IBACnetTagChild
@@ -55,7 +57,7 @@ type IBACnetTagParent interface {
 
 type IBACnetTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32)
+	InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32)
 	GetTypeName() string
 	IBACnetTag
 }
@@ -104,6 +106,10 @@ func (m *BACnetTag) ParentLengthInBits() uint16 {
 	if m.ExtTagNumber != nil {
 		lengthInBits += 8
 	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -174,7 +180,15 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	actualTagNumber := uint8(_actualTagNumber)
 
 	// Virtual field
-	_isPrimitiveAndNotBoolean := bool(!(bool(bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))))) && bool(bool((tagNumber) != (1)))
+	_isBoolean := bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS)))
+	isBoolean := bool(_isBoolean)
+
+	// Virtual field
+	_isConstructed := bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))
+	isConstructed := bool(_isConstructed)
+
+	// Virtual field
+	_isPrimitiveAndNotBoolean := bool(!(isConstructed)) && bool(!(isBoolean))
 	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
@@ -248,7 +262,7 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
 		_parent, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
 	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS: // BACnetContextTagWithoutContext
-		_parent, typeSwitchError = BACnetContextTagWithoutContextParse(readBuffer)
+		_parent, typeSwitchError = BACnetContextTagWithoutContextParse(readBuffer, actualLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -262,7 +276,7 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isPrimitiveAndNotBoolean, actualLength)
+	_parent.Child.InitializeParent(_parent, tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength)
 	return _parent, nil
 }
 
@@ -309,6 +323,14 @@ func (m *BACnetTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnet
 	// Virtual field
 	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
+	}
+	// Virtual field
+	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.IsBoolean); _isBooleanErr != nil {
+		return errors.Wrap(_isBooleanErr, "Error serializing 'isBoolean' field")
+	}
+	// Virtual field
+	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.IsConstructed); _isConstructedErr != nil {
+		return errors.Wrap(_isConstructedErr, "Error serializing 'isConstructed' field")
 	}
 	// Virtual field
 	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.IsPrimitiveAndNotBoolean); _isPrimitiveAndNotBooleanErr != nil {

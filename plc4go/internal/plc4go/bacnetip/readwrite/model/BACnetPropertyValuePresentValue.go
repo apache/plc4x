@@ -98,7 +98,7 @@ func (m *BACnetPropertyValuePresentValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetPropertyValuePresentValueParse(readBuffer utils.ReadBuffer, identifier BACnetPropertyIdentifier) (*BACnetPropertyValue, error) {
+func BACnetPropertyValuePresentValueParse(readBuffer utils.ReadBuffer, identifier BACnetPropertyIdentifier, actualLength uint32) (*BACnetPropertyValue, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValuePresentValue"); pullErr != nil {
 		return nil, pullErr
 	}

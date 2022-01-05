@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type BACnetContextTagBoolean struct {
 	*BACnetContextTag
-	Value   bool
+	Value   uint8
 	IsTrue  bool
 	IsFalse bool
 }
@@ -58,8 +58,9 @@ func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, tag
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagBoolean(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagBoolean(value uint8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
 	child := &BACnetContextTagBoolean{
+		Value:            value,
 		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Child = child
@@ -96,7 +97,8 @@ func (m *BACnetContextTagBoolean) LengthInBits() uint16 {
 func (m *BACnetContextTagBoolean) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
+	// Simple field (value)
+	lengthInBits += 8
 
 	// A virtual field doesn't have any in- or output.
 
@@ -109,21 +111,24 @@ func (m *BACnetContextTagBoolean) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
 
-	// Virtual field
-	_value := bool((actualLength) == (1))
-	value := bool(_value)
+	// Simple Field (value)
+	_value, _valueErr := readBuffer.ReadUint8("value", 8)
+	if _valueErr != nil {
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+	value := _value
 
 	// Virtual field
-	_isTrue := value
+	_isTrue := bool((value) == (1))
 	isTrue := bool(_isTrue)
 
 	// Virtual field
-	_isFalse := !(value)
+	_isFalse := bool((value) == (0))
 	isFalse := bool(_isFalse)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagBoolean"); closeErr != nil {
@@ -146,8 +151,11 @@ func (m *BACnetContextTagBoolean) Serialize(writeBuffer utils.WriteBuffer) error
 		if pushErr := writeBuffer.PushContext("BACnetContextTagBoolean"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field
-		if _valueErr := writeBuffer.WriteVirtual("value", m.Value); _valueErr != nil {
+
+		// Simple Field (value)
+		value := uint8(m.Value)
+		_valueErr := writeBuffer.WriteUint8("value", 8, (value))
+		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 		// Virtual field

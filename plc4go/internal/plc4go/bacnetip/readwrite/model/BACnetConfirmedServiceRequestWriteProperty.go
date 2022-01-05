@@ -32,7 +32,7 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
-	PropertyValue      *BACnetPropertyValue
+	PropertyValue      *BACnetConstructedData
 	Priority           *BACnetTag
 }
 
@@ -53,7 +53,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) ServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, propertyValue *BACnetPropertyValue, priority *BACnetTag) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, propertyValue *BACnetConstructedData, priority *BACnetTag) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWriteProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -169,11 +169,11 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValue, _propertyValueErr := BACnetPropertyValueParse(readBuffer, propertyIdentifier.Value)
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(3), propertyIdentifier.Value)
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
 	}
-	propertyValue := CastBACnetPropertyValue(_propertyValue)
+	propertyValue := CastBACnetConstructedData(_propertyValue)
 	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -209,7 +209,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:                    arrayIndex,
-		PropertyValue:                 CastBACnetPropertyValue(propertyValue),
+		PropertyValue:                 CastBACnetConstructedData(propertyValue),
 		Priority:                      CastBACnetTag(priority),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}

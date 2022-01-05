@@ -146,13 +146,15 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
                 (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
 
-            long deviceIdentifier = valueChange.getMonitoredObjectInstanceNumber();
-            int objectType = valueChange.getIssueConfirmedNotificationsType();
-            long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
+            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            int objectType = valueChange.getMonitoredObjectIdentifier().getObjectType().getValue();
+            long objectInstance = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
-            for (BACnetTagWithContent notification : valueChange.getNotifications()) {
+            for (BACnetTag notification1 : valueChange.getListOfValues().getData()) {
+                // TODO: fixme
+                BACnetTagWithContent notification=null;
                 // These are value change notifications. Ignore the rest.
                 if (notification.getPropertyIdentifier().get(0) == (short) 0x55) {
                     final BACnetTag baCnetTag = notification.getValue();

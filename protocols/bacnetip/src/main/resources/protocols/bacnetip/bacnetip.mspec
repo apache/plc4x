@@ -158,20 +158,11 @@
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
         ]
         ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
-            [const  uint 8               subscriberProcessIdentifierHeader         0x09                 ]
-            [simple uint 8               subscriberProcessIdentifier                                      ]
-            [const  uint 8               monitoredObjectIdentifierHeader           0x1C                 ]
-            [simple uint 10              monitoredObjectType                                              ]
-            [simple uint 22              monitoredObjectInstanceNumber                                    ]
-            [const  uint 8               issueConfirmedNotificationsHeader         0x2C                 ]
-            [simple uint 10              issueConfirmedNotificationsType                                  ]
-            [simple uint 22              issueConfirmedNotificationsInstanceNumber                        ]
-            [const  uint 5               lifetimeHeader                            0x07                 ]
-            [simple uint 3               lifetimeLength                                                   ]
-            [array  int  8               lifetimeSeconds                           count  'lifetimeLength']
-            [const  uint 8               listOfValuesOpeningTag                    0x4E                 ]
-            [array  BACnetTagWithContent notifications                             length 'len - 18'      ]
-            [const  uint 8               listOfValuesClosingTag                    0x4F                 ]
+            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+            [simple BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
+            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
+            [optional BACnetConstructedData('4', 'BACnetPropertyIdentifier.ALL') listOfValues                                    ]
         ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification
         ]
@@ -179,17 +170,10 @@
         ['0x04' BACnetConfirmedServiceRequestGetEnrollmentSummary
         ]
         ['0x05' BACnetConfirmedServiceRequestSubscribeCOV
-            [const  uint 8  subscriberProcessIdentifierHeader   0x09                ]
-            [simple uint 8  subscriberProcessIdentifier                               ]
-            [const  uint 8  monitoredObjectIdentifierHeader     0x1C                ]
-            [simple uint 10 monitoredObjectType                                       ]
-            [simple uint 22 monitoredObjectInstanceNumber                             ]
-            [const  uint 8  issueConfirmedNotificationsHeader   0x29                ]
-            [const  uint 7  issueConfirmedNotificationsSkipBits 0x00                ]
-            [simple bit     issueConfirmedNotifications                               ]
-            [const  uint 5  lifetimeHeader                      0x07                ]
-            [simple uint 3  lifetimeLength                                            ]
-            [array  int 8   lifetimeSeconds                     count 'lifetimeLength']
+            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+            [simple BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
+            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
         ]
 
         ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
@@ -223,9 +207,9 @@
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier                                                                    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier                                                                  ]
             // TODO: check if this is the right identifier type and size
+            // TODO: replace with proper tag
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-             // TODO: possible revert again
-            [simple   ConstructedData('propertyIdentifier.value')                                      propertyValue                                                                       ]
+            [simple   BACnetConstructedData('3', 'propertyIdentifier.value')                                      propertyValue                                                                       ]
             [optional BACnetTag priority                  'curPos < (len - 1)'            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
@@ -288,6 +272,11 @@
             [simple BACnetApplicationTagCharacterString     objectName          ]
         ]
         ['0x02' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')  monitoredDeviceIdentifier  ]
+            [simple BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetime                    ]
+            [optional BACnetConstructedData('4', 'BACnetPropertyIdentifier.ALL') listOfValues                                    ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
@@ -352,8 +341,9 @@
             [simple BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier   ]
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
+            // TODO: replace with proper tag
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            [optional ConstructedData('propertyIdentifier.value') constructedData]
+            [optional BACnetConstructedData('3','propertyIdentifier.value') constructedData]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -604,11 +594,11 @@
     ]
 ]
 
-[type ConstructedData(BACnetPropertyIdentifier identifier)
-    [optional       BACnetContextTag('3', 'BACnetDataType.NULL') openingTag]
+[type BACnetConstructedData(uint 4 tagNumberArgument, BACnetPropertyIdentifier identifier)
+    [optional       BACnetContextTag('tagNumberArgument', 'BACnetDataType.NULL') openingTag]
     // TODO: BACnetTag is not yet smart enough and looses type information
     [manualArray    BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", readBuffer, openingTag)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
-    [optional       BACnetContextTag('3', 'BACnetDataType.NULL') closingTag]
+    [optional       BACnetContextTag('tagNumberArgument', 'BACnetDataType.NULL') closingTag]
 ]
 
 [discriminatedType BACnetPropertyValue(BACnetPropertyIdentifier identifier, uint 32 actualLength)
@@ -625,9 +615,9 @@
         ['RELINQUISH_DEFAULT'   BACnetPropertyValueRelinquishDefault
             [simple BACnetApplicationTagReal value]
         ]
-        [BACnetPropertyValueDefault
+        /*[BACnetPropertyValueDefault
             [array int 8 data length 'actualLength']
-        ]
+        ]*/
     ]
 ]
 
@@ -644,10 +634,10 @@
     [typeSwitch dataType
         ['NULL' BACnetContextTagNull
         ]
-        ['BOOLEAN' BACnetContextTagBoolean(uint 32 actualLength)
-            [virtual bit value   'actualLength == 1'    ]
-            [virtual bit isTrue  'value'                ]
-            [virtual bit isFalse '!value'               ]
+        ['BOOLEAN' BACnetContextTagBoolean
+            [simple  uint 8 value                          ]
+            [virtual bit    isTrue  'value == 1'           ]
+            [virtual bit    isFalse 'value == 0'           ]
         ]
         ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(uint 32 actualLength)
             [virtual    bit     isUint8     'actualLength == 1' ]

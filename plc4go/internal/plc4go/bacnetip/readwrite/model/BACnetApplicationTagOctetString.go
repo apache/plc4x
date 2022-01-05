@@ -47,7 +47,7 @@ func (m *BACnetApplicationTagOctetString) TagClass() TagClass {
 	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetApplicationTagOctetString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+func (m *BACnetApplicationTagOctetString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
 	m.TagNumber = tagNumber
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber

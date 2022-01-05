@@ -32,7 +32,7 @@ type BACnetServiceAckReadProperty struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
-	EnclosedTags       *EnclosedTags
+	ConstructedData    *BACnetConstructedData
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, enclosedTags *EnclosedTags) *BACnetServiceAck {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, constructedData *BACnetConstructedData) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
-		EnclosedTags:       enclosedTags,
+		ConstructedData:    constructedData,
 		BACnetServiceAck:   NewBACnetServiceAck(),
 	}
 	child.Child = child
@@ -105,9 +105,9 @@ func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) ui
 		lengthInBits += 32
 	}
 
-	// Optional Field (enclosedTags)
-	if m.EnclosedTags != nil {
-		lengthInBits += (*m.EnclosedTags).LengthInBits()
+	// Optional Field (constructedData)
+	if m.ConstructedData != nil {
+		lengthInBits += (*m.ConstructedData).LengthInBits()
 	}
 
 	return lengthInBits
@@ -158,22 +158,22 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		arrayIndex = &_val
 	}
 
-	// Optional Field (enclosedTags) (Can be skipped, if a given expression evaluates to false)
-	var enclosedTags *EnclosedTags = nil
+	// Optional Field (constructedData) (Can be skipped, if a given expression evaluates to false)
+	var constructedData *BACnetConstructedData = nil
 	{
 		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("enclosedTags"); pullErr != nil {
+		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := EnclosedTagsParse(readBuffer, uint8(3), uint8(7))
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), propertyIdentifier.Value)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'enclosedTags' field")
+			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
 		case _err == utils.ParseAssertError:
 			readBuffer.SetPos(currentPos)
 		default:
-			enclosedTags = CastEnclosedTags(_val)
-			if closeErr := readBuffer.CloseContext("enclosedTags"); closeErr != nil {
+			constructedData = CastBACnetConstructedData(_val)
+			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {
 				return nil, closeErr
 			}
 		}
@@ -188,7 +188,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		ObjectIdentifier:   CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier: CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:         arrayIndex,
-		EnclosedTags:       CastEnclosedTags(enclosedTags),
+		ConstructedData:    CastBACnetConstructedData(constructedData),
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
@@ -235,19 +235,19 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 			}
 		}
 
-		// Optional Field (enclosedTags) (Can be skipped, if the value is null)
-		var enclosedTags *EnclosedTags = nil
-		if m.EnclosedTags != nil {
-			if pushErr := writeBuffer.PushContext("enclosedTags"); pushErr != nil {
+		// Optional Field (constructedData) (Can be skipped, if the value is null)
+		var constructedData *BACnetConstructedData = nil
+		if m.ConstructedData != nil {
+			if pushErr := writeBuffer.PushContext("constructedData"); pushErr != nil {
 				return pushErr
 			}
-			enclosedTags = m.EnclosedTags
-			_enclosedTagsErr := enclosedTags.Serialize(writeBuffer)
-			if popErr := writeBuffer.PopContext("enclosedTags"); popErr != nil {
+			constructedData = m.ConstructedData
+			_constructedDataErr := constructedData.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
 				return popErr
 			}
-			if _enclosedTagsErr != nil {
-				return errors.Wrap(_enclosedTagsErr, "Error serializing 'enclosedTags' field")
+			if _constructedDataErr != nil {
+				return errors.Wrap(_constructedDataErr, "Error serializing 'constructedData' field")
 			}
 		}
 
