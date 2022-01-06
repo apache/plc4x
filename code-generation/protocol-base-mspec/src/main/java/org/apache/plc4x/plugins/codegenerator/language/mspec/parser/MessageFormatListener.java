@@ -371,6 +371,15 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterValidationField(MSpecParser.ValidationFieldContext ctx) {
+        Term validationExpression = getExpressionTerm(ctx.validationExpression);
+        Field field = new DefaultValidationField(validationExpression, ctx.description.getText());
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterCaseStatement(MSpecParser.CaseStatementContext ctx) {
         List<Field> parserContext = new LinkedList<>();
         parserContexts.push(parserContext);

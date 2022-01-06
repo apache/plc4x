@@ -64,6 +64,7 @@ field
  | typeSwitchField
  | unknownField
  | virtualField
+ | validationField
  ;
 
 abstractField
@@ -132,6 +133,10 @@ unknownField
 
 virtualField
  : 'virtual' type=typeReference name=idExpression valueExpression=expression
+ ;
+
+validationField
+ : 'validation' validationExpression=expression (description=STRING_LITERAL)?
  ;
 
 enumValueDefinition

@@ -366,6 +366,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            Objects.requireNonNull(typeDefinition, "No type found for " + typeReference);
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();

@@ -378,10 +378,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      **********************************************************************************/
 
     public boolean hasFieldOfType(String fieldTypeName) {
+        Objects.requireNonNull(fieldTypeName);
         if (thisType instanceof ComplexTypeDefinition) {
             ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
             return complexTypeDefinition.getFields().stream()
-                .anyMatch(field -> field.getTypeName().equals(fieldTypeName));
+                .anyMatch(field -> fieldTypeName.equals(field.getTypeName()));
         }
         return false;
     }

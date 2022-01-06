@@ -282,6 +282,13 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
 
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field(${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
+    <#case "validation">
+        <#assign validationField = field.asValidationField().orElseThrow()>
+        // Validation
+        if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
+            throw new RuntimeException(${validationField.getDescription().orElse("Validation failed")});
+        }
+        <#break>
 </#switch>
 </#list>
 
