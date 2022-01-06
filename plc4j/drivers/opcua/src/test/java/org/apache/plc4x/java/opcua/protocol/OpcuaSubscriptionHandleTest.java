@@ -24,7 +24,9 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
+import org.apache.plc4x.java.opcuaserver.OPCUAServer;
 import org.eclipse.milo.examples.server.ExampleServer;
+import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -39,10 +43,10 @@ public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
-    private static ExampleServer exampleServer;
+    private static OpcUaServer exampleServer;
 
     // Address of local milo server
-    private static String miloLocalAddress = "127.0.0.1:12687/milo";
+    private static String miloLocalAddress = "127.0.0.1:12687/plc4x";
     //Tcp pattern of OPC UA
     private static String opcPattern = "opcua:tcp://";
 
@@ -85,18 +89,27 @@ public class OpcuaSubscriptionHandleTest {
             // When switching JDK versions from a newer to an older version,
             // this can cause the server to not start correctly.
             // Deleting the directory makes sure the key-store is initialized correctly.
-            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            Path baseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server-subscription");
             try {
-                Files.delete(securityBaseDir);
+                Files.delete(baseDir);
             } catch (Exception e) {
                 // Ignore this ...
             }
 
-            exampleServer = new ExampleServer();
-            exampleServer.startup().get();
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+            Files.copy(Path.of("src/test/resources/config.yml"), baseDir, StandardCopyOption.REPLACE_EXISTING);
+
+            String[] args = {"", "-c", baseDir + "/config.yml", "-t"};
+            OPCUAServer serverInit = new OPCUAServer(args);
+            exampleServer = serverInit.getServer();
+            serverInit.getServer().startup().get();
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            future.get();
+
             //Connect
             opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -27,8 +27,10 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.opcuaserver.OPCUAServer;
 import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
+import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.junit.jupiter.api.*;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
@@ -41,6 +43,8 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
 
 public class OpcuaPlcDriverTest {
 
@@ -91,7 +95,7 @@ public class OpcuaPlcDriverTest {
     private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
 
     // Address of local milo server
-    private String miloLocalAddress = "127.0.0.1:12686/milo";
+    private String miloLocalAddress = "127.0.0.1:12686/plc4x";
     //Tcp pattern of OPC UA
     private String opcPattern = "opcua:tcp://";
 
@@ -111,7 +115,7 @@ public class OpcuaPlcDriverTest {
     List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
 
-    private static ExampleServer exampleServer;
+    private static OpcUaServer exampleServer;
 
     @BeforeAll
     public static void setup() {
@@ -119,15 +123,22 @@ public class OpcuaPlcDriverTest {
             // When switching JDK versions from a newer to an older version,
             // this can cause the server to not start correctly.
             // Deleting the directory makes sure the key-store is initialized correctly.
-            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            Path baseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server");
             try {
-                Files.delete(securityBaseDir);
+                Files.delete(baseDir);
             } catch (Exception e) {
                 // Ignore this ...
             }
 
-            exampleServer = new ExampleServer();
-            exampleServer.startup().get();
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+            Files.copy(Path.of("src/test/resources/config.yml"), baseDir, StandardCopyOption.REPLACE_EXISTING);
+
+            String[] args = {"", "-c", baseDir + "/config.yml", "-t"};
+            OPCUAServer serverInit = new OPCUAServer(args);
+            exampleServer = serverInit.getServer();
+            serverInit.getServer().startup().get();
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            future.get();
         } catch (Exception e) {
             e.printStackTrace();
         }
