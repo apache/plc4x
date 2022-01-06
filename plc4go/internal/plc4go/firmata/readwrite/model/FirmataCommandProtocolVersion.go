@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type FirmataCommandProtocolVersion struct {
+	*FirmataCommand
 	MajorVersion uint8
 	MinorVersion uint8
-	Parent       *FirmataCommand
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand)
 
 func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *FirmataCommand {
 	child := &FirmataCommandProtocolVersion{
-		MajorVersion: majorVersion,
-		MinorVersion: minorVersion,
-		Parent:       NewFirmataCommand(),
+		MajorVersion:   majorVersion,
+		MinorVersion:   minorVersion,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandProtocolVersion(structType interface{}) *FirmataCommandProtocolVersion {
@@ -88,7 +88,7 @@ func (m *FirmataCommandProtocolVersion) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandProtocolVersion) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -103,22 +103,24 @@ func (m *FirmataCommandProtocolVersion) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (majorVersion)
-	majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
+	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
 	}
+	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
+	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
 	}
+	minorVersion := _minorVersion
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandProtocolVersion"); closeErr != nil {
 		return nil, closeErr
@@ -126,12 +128,12 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer) (*FirmataCo
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandProtocolVersion{
-		MajorVersion: majorVersion,
-		MinorVersion: minorVersion,
-		Parent:       &FirmataCommand{},
+		MajorVersion:   majorVersion,
+		MinorVersion:   minorVersion,
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,7 +161,7 @@ func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandProtocolVersion) String() string {

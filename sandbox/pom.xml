@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -88,14 +88,6 @@
       <id>with-cpp</id>
       <modules>
         <module>plc4cpp</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the .Net modules -->
-    <profile>
-      <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
       </modules>
     </profile>
 

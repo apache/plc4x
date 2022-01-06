@@ -20,10 +20,7 @@ package org.apache.plc4x.test.driver.internal.handlers;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.internal.DriverTestsuiteConfiguration;
 import org.apache.plc4x.test.migration.MessageResolver;
@@ -46,27 +43,27 @@ public class IncomingPlcMessageHandler {
         this.parserArguments = parserArguments;
     }
 
-    public void executeIncomingPlcMessage(Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) {
+    public void executeIncomingPlcMessage(Plc4xEmbeddedChannel embeddedChannel, ByteOrder byteOrder) {
         // Get a byte representation of the incoming message.
-        final byte[] data = getBytesFromXml(payload, bigEndian);
+        final byte[] data = getBytesFromXml(payload, byteOrder);
         // Send the bytes to the channel.
         embeddedChannel.writeInbound(Unpooled.wrappedBuffer(data));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public byte[] getBytesFromXml(Element referenceXml, boolean bigEndian) throws DriverTestsuiteException {
-        final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, !bigEndian);
-        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
+    public byte[] getBytesFromXml(Element referenceXml, ByteOrder byteOrder) throws DriverTestsuiteException {
+        final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, byteOrder);
+        MessageInput messageInput = MessageResolver.getMessageInput(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
         // Get Message and Validate
-        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
+        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageInput, referenceXml, parserArguments);
 
         // Get Bytes
         try {
-            messageIO.serialize(writeBuffer, message);
+            message.serialize(writeBuffer);
             final byte[] data = new byte[message.getLengthInBytes()];
             System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
             return data;
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new DriverTestsuiteException("Error serializing message", e);
         }
     }

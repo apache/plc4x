@@ -29,10 +29,10 @@ import (
 
 // The data-structure of this message
 type APDUAbort struct {
+	*APDU
 	Server           bool
 	OriginalInvokeId uint8
 	AbortReason      uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -57,10 +57,10 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) *APDU 
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUAbort(structType interface{}) *APDUAbort {
@@ -91,7 +91,7 @@ func (m *APDUAbort) LengthInBits() uint16 {
 }
 
 func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -112,7 +112,7 @@ func (m *APDUAbort) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUAbortParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -132,22 +132,25 @@ func APDUAbortParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (server)
-	server, _serverErr := readBuffer.ReadBit("server")
+	_server, _serverErr := readBuffer.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
+	server := _server
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (abortReason)
-	abortReason, _abortReasonErr := readBuffer.ReadUint8("abortReason", 8)
+	_abortReason, _abortReasonErr := readBuffer.ReadUint8("abortReason", 8)
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
+	abortReason := _abortReason
 
 	if closeErr := readBuffer.CloseContext("APDUAbort"); closeErr != nil {
 		return nil, closeErr
@@ -158,10 +161,10 @@ func APDUAbortParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -204,7 +207,7 @@ func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUAbort) String() string {

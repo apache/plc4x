@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type MResetInd struct {
-	Parent *CEMI
+	*CEMI
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *MResetInd) InitializeParent(parent *CEMI) {
 
 func NewMResetInd() *CEMI {
 	child := &MResetInd{
-		Parent: NewCEMI(),
+		CEMI: NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMResetInd(structType interface{}) *MResetInd {
@@ -83,7 +83,7 @@ func (m *MResetInd) LengthInBits() uint16 {
 }
 
 func (m *MResetInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *MResetInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MResetIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MResetInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func MResetIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &MResetInd{
-		Parent: &CEMI{},
+		CEMI: &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MResetInd) String() string {

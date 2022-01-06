@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.canopen.listener;
 
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 
 public interface Callback {
     void receive(CANOpenFrame frame);

@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKCreateObject struct {
-	Parent *BACnetConfirmedServiceACK
+	*BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetC
 
 func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKCreateObject{
-		Parent: NewBACnetConfirmedServiceACK(),
+		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceACK
 }
 
 func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) *BACnetConfirmedServiceACKCreateObject {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceACKCreateObject) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceACKCreateObjectParse(readBuffer utils.ReadBuffer) (*B
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKCreateObject{
-		Parent: &BACnetConfirmedServiceACK{},
+		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceACK.Child = _child
+	return _child.BACnetConfirmedServiceACK, nil
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceACKCreateObject) Serialize(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) String() string {

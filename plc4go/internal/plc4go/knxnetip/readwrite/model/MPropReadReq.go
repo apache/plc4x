@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type MPropReadReq struct {
+	*CEMI
 	InterfaceObjectType uint16
 	ObjectInstance      uint8
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
-	Parent              *CEMI
 }
 
 // The corresponding interface
@@ -60,10 +60,10 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Parent:              NewCEMI(),
+		CEMI:                NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastMPropReadReq(structType interface{}) *MPropReadReq {
@@ -94,7 +94,7 @@ func (m *MPropReadReq) LengthInBits() uint16 {
 }
 
 func (m *MPropReadReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -118,40 +118,45 @@ func (m *MPropReadReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropReadReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MPropReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (interfaceObjectType)
-	interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
+	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
+	interfaceObjectType := _interfaceObjectType
 
 	// Simple Field (objectInstance)
-	objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
+	_objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
+	objectInstance := _objectInstance
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
+	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
+	numberOfElements := _numberOfElements
 
 	// Simple Field (startIndex)
-	startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
+	_startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
+	startIndex := _startIndex
 
 	if closeErr := readBuffer.CloseContext("MPropReadReq"); closeErr != nil {
 		return nil, closeErr
@@ -164,10 +169,10 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Parent:              &CEMI{},
+		CEMI:                &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,7 +221,7 @@ func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *MPropReadReq) String() string {

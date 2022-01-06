@@ -20,10 +20,8 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExpressionStringListener extends ExpressionBaseListener {
 
@@ -59,27 +57,33 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void exitNullExpression(ExpressionParser.NullExpressionContext ctx) {
-        parserContexts.peek().add(new NullLiteral());
+        parserContexts.peek().add(new DefaultNullLiteral());
     }
 
     @Override
     public void exitBoolExpression(ExpressionParser.BoolExpressionContext ctx) {
-        parserContexts.peek().add(new BooleanLiteral(Boolean.parseBoolean(ctx.getText())));
+        parserContexts.peek().add(new DefaultBooleanLiteral(Boolean.parseBoolean(ctx.getText())));
     }
 
     @Override
     public void exitNumberExpression(ExpressionParser.NumberExpressionContext ctx) {
         String strValue = ctx.Number().getText();
         if (strValue.contains(".")) {
-            parserContexts.peek().add(new NumericLiteral(Double.valueOf(strValue)));
+            parserContexts.peek().add(new DefaultNumericLiteral(Double.valueOf(strValue)));
         } else {
-            parserContexts.peek().add(new NumericLiteral(Long.valueOf(strValue)));
+            parserContexts.peek().add(new DefaultNumericLiteral(Long.valueOf(strValue)));
         }
     }
 
     @Override
+    public void exitHexExpression(ExpressionParser.HexExpressionContext ctx) {
+        String hexValue = ctx.HexExpression().getText();
+        parserContexts.peek().add(new DefaultHexadecimalLiteral(hexValue));
+    }
+
+    @Override
     public void exitStringExpression(ExpressionParser.StringExpressionContext ctx) {
-        parserContexts.peek().add(new StringLiteral(ctx.getText()));
+        parserContexts.peek().add(new DefaultStringLiteral(ctx.getText().substring(1, ctx.getText().length() - 1)));
     }
 
     @Override
@@ -113,7 +117,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         if (restContext != null) {
             rest = restContext.getFirst();
         }
-        parserContexts.peek().add(new VariableLiteral(name, argsContext, index, rest));
+        parserContexts.peek().add(new DefaultVariableLiteral(name, argsContext, index, rest));
     }
 
     @Override
@@ -135,7 +139,8 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitIdentifierSegmentIndexes(ExpressionParser.IdentifierSegmentIndexesContext ctx) {
         List<Term> args = parserContexts.pop();
-        parserContexts.peek().add(new IndexContext(args));
+        List<NumericLiteral> numericLiterals = args.stream().map(NumericLiteral.class::cast).collect(Collectors.toList());
+        parserContexts.peek().add(new IndexContext(numericLiterals));
     }
 
     @Override
@@ -146,7 +151,8 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitIdentifierSegmentRest(ExpressionParser.IdentifierSegmentRestContext ctx) {
         List<Term> args = parserContexts.pop();
-        parserContexts.peek().add(new RestContext(args));
+        List<VariableLiteral> variableLiterals = args.stream().map(VariableLiteral.class::cast).collect(Collectors.toList());
+        parserContexts.peek().add(new RestContext(variableLiterals));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +330,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             throw new RuntimeException(op + " should be a unary operation");
         }
         Term a = terms.get(0);
-        return new UnaryTerm(a, op);
+        return new DefaultUnaryTerm(a, op);
     }
 
     private BinaryTerm getBinaryTerm(String op, List<Term> terms) {
@@ -333,7 +339,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
         Term a = terms.get(0);
         Term b = terms.get(1);
-        return new BinaryTerm(a, b, op);
+        return new DefaultBinaryTerm(a, b, op);
     }
 
     private TernaryTerm getTernaryTerm(String op, List<Term> terms) {
@@ -343,39 +349,54 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         Term a = terms.get(0);
         Term b = terms.get(1);
         Term c = terms.get(2);
-        return new TernaryTerm(a, b, c, op);
+        return new DefaultTernaryTerm(a, b, c, op);
     }
 
     static class ArgsContext extends LinkedList<Term> implements Term {
-        ArgsContext(Collection c) {
+        ArgsContext(Collection<Term> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 
     static class IndexContext extends LinkedList<NumericLiteral> implements Term {
-        IndexContext(Collection c) {
+        IndexContext(Collection<NumericLiteral> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 
     static class RestContext extends LinkedList<VariableLiteral> implements Term {
-        RestContext(Collection c) {
+        RestContext(Collection<VariableLiteral> c) {
             super(c);
         }
 
         @Override
         public boolean contains(String str) {
             return false;
+        }
+
+        @Override
+        public String stringRepresentation() {
+            return "";
         }
     }
 

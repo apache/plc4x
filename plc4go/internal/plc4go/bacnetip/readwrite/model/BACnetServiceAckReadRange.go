@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetServiceAckReadRange struct {
-	Parent *BACnetServiceAck
+	*BACnetServiceAck
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetServiceAckReadRange) InitializeParent(parent *BACnetServiceAck) {
 
 func NewBACnetServiceAckReadRange() *BACnetServiceAck {
 	child := &BACnetServiceAckReadRange{
-		Parent: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckReadRange(structType interface{}) *BACnetServiceAckReadRange {
@@ -83,7 +83,7 @@ func (m *BACnetServiceAckReadRange) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckReadRange) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetService
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadRange{
-		Parent: &BACnetServiceAck{},
+		BACnetServiceAck: &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckReadRange) String() string {

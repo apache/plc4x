@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusRequest struct {
-	Parent *ModbusPDU
+	*ModbusPDU
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusPDUReadExceptionStatusRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadExceptionStatusRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU) {
@@ -57,10 +57,10 @@ func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU
 
 func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
 	child := &ModbusPDUReadExceptionStatusRequest{
-		Parent: NewModbusPDU(),
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadExceptionStatusRequest(structType interface{}) *ModbusPDUReadExceptionStatusRequest {
@@ -91,7 +91,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -100,7 +100,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -111,10 +111,10 @@ func ModbusPDUReadExceptionStatusRequestParse(readBuffer utils.ReadBuffer) (*Mod
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusRequest{
-		Parent: &ModbusPDU{},
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -128,7 +128,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) String() string {

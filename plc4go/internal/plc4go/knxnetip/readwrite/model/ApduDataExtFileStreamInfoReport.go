@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtFileStreamInfoReport struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtFileStreamInfoReport) InitializeParent(parent *ApduDataExt) 
 
 func NewApduDataExtFileStreamInfoReport() *ApduDataExt {
 	child := &ApduDataExtFileStreamInfoReport{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtFileStreamInfoReport(structType interface{}) *ApduDataExtFileStreamInfoReport {
@@ -83,7 +83,7 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtFileStreamInfoReport) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer) (*ApduDat
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtFileStreamInfoReport{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtFileStreamInfoReport) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtFileStreamInfoReport) String() string {

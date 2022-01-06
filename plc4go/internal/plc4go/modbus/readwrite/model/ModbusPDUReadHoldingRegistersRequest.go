@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadHoldingRegistersRequest struct {
+	*ModbusPDU
 	StartingAddress uint16
 	Quantity        uint16
-	Parent          *ModbusPDU
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IModbusPDUReadHoldingRegistersRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadHoldingRegistersRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {
@@ -62,10 +62,10 @@ func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity ui
 	child := &ModbusPDUReadHoldingRegistersRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
-		Parent:          NewModbusPDU(),
+		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReadHoldingRegistersRequest(structType interface{}) *ModbusPDUReadHoldingRegistersRequest {
@@ -96,7 +96,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -111,22 +111,24 @@ func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadHoldingRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
+	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
+	quantity := _quantity
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadHoldingRegistersRequest"); closeErr != nil {
 		return nil, closeErr
@@ -136,10 +138,10 @@ func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer) (*Mo
 	_child := &ModbusPDUReadHoldingRegistersRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
-		Parent:          &ModbusPDU{},
+		ModbusPDU:       &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,7 +169,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) String() string {

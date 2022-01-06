@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type AdsReadRequest struct {
+	*AdsData
 	IndexGroup  uint32
 	IndexOffset uint32
 	Length      uint32
-	Parent      *AdsData
 }
 
 // The corresponding interface
@@ -49,7 +49,7 @@ func (m *AdsReadRequest) CommandId() CommandId {
 }
 
 func (m *AdsReadRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsReadRequest) InitializeParent(parent *AdsData) {
@@ -60,10 +60,10 @@ func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *Ad
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
-		Parent:      NewAdsData(),
+		AdsData:     NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsReadRequest(structType interface{}) *AdsReadRequest {
@@ -94,7 +94,7 @@ func (m *AdsReadRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -112,28 +112,31 @@ func (m *AdsReadRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
+	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
+	indexOffset := _indexOffset
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	if closeErr := readBuffer.CloseContext("AdsReadRequest"); closeErr != nil {
 		return nil, closeErr
@@ -144,10 +147,10 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
-		Parent:      &AdsData{},
+		AdsData:     &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -182,7 +185,7 @@ func (m *AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsReadRequest) String() string {

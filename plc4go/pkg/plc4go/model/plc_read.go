@@ -27,10 +27,10 @@ type PlcReadRequestBuilder interface {
 	Build() (PlcReadRequest, error)
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+type PlcReadRequestResult interface {
+	GetRequest() PlcReadRequest
+	GetResponse() PlcReadResponse
+	GetErr() error
 }
 
 type PlcReadRequest interface {

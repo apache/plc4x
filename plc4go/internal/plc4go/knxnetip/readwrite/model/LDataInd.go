@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type LDataInd struct {
+	*CEMI
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
-	Parent                      *CEMI
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEM
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		Parent:                      NewCEMI(),
+		CEMI:                        NewCEMI(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CEMI
 }
 
 func CastLDataInd(structType interface{}) *LDataInd {
@@ -90,7 +90,7 @@ func (m *LDataInd) LengthInBits() uint16 {
 }
 
 func (m *LDataInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -112,16 +112,17 @@ func (m *LDataInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (additionalInformationLength)
-	additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
+	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
+	additionalInformationLength := _additionalInformationLength
 
 	// Array field (additionalInformation)
 	if pullErr := readBuffer.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
@@ -129,28 +130,30 @@ func LDataIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
-	_additionalInformationLength := additionalInformationLength
-	_additionalInformationEndPos := readBuffer.GetPos() + uint16(_additionalInformationLength)
-	for readBuffer.GetPos() < _additionalInformationEndPos {
-		_item, _err := CEMIAdditionalInformationParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+	{
+		_additionalInformationLength := additionalInformationLength
+		_additionalInformationEndPos := readBuffer.GetPos() + uint16(_additionalInformationLength)
+		for readBuffer.GetPos() < _additionalInformationEndPos {
+			_item, _err := CEMIAdditionalInformationParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
+			}
+			additionalInformation = append(additionalInformation, _item)
 		}
-		additionalInformation = append(additionalInformation, _item)
 	}
 	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (dataFrame)
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (dataFrame)
-	dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+	dataFrame := CastLDataFrame(_dataFrame)
 	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -163,11 +166,11 @@ func LDataIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 	_child := &LDataInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-		Parent:                      &CEMI{},
+		DataFrame:                   CastLDataFrame(dataFrame),
+		CEMI:                        &CEMI{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CEMI.Child = _child
+	return _child.CEMI, nil
 }
 
 func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,7 +219,7 @@ func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *LDataInd) String() string {

@@ -46,6 +46,28 @@ func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandl
 	return connection
 }
 
+func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	log.Trace().Msg("Connecting")
+	ch := make(chan plc4go.PlcConnectionConnectResult)
+	go func() {
+		connectionConnectResult := <-c.DefaultConnection.Connect()
+		go func() {
+			for c.IsConnected() {
+				log.Debug().Msg("Polling data")
+				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+				select {
+				case message := <-incomingMessageChannel:
+					// TODO: implement mapping to subscribers
+					log.Info().Msgf("Received \n%v", message)
+				}
+			}
+			log.Info().Msg("Ending incoming message transfer")
+		}()
+		ch <- connectionConnectResult
+	}()
+	return ch
+}
+
 func (c *Connection) GetConnection() plc4go.PlcConnection {
 	return c
 }
@@ -59,17 +81,17 @@ func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBu
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("Not implementec yet. (at least as a default)")
+	panic("Not implemented yet. (at least as a default)")
 }
 
-func (m *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range m.subscribers {
+func (c *Connection) addSubscriber(subscriber *Subscriber) {
+	for _, sub := range c.subscribers {
 		if sub == subscriber {
 			log.Debug().Msgf("Subscriber %v already added", subscriber)
 			return
 		}
 	}
-	m.subscribers = append(m.subscribers, subscriber)
+	c.subscribers = append(c.subscribers, subscriber)
 }
 
 func (c *Connection) String() string {

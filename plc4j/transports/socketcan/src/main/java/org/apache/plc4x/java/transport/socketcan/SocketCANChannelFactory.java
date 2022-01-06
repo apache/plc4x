@@ -25,6 +25,7 @@ import io.netty.channel.ThreadPerChannelEventLoop;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.transport.can.CANTransportConfiguration;
 import org.apache.plc4x.java.transport.socketcan.netty.SocketCANChannel;
 import org.apache.plc4x.java.transport.socketcan.netty.address.SocketCANAddress;
 import org.slf4j.Logger;

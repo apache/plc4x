@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -44,7 +44,7 @@ public class ResponseItem<T> implements Serializable {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("ResponseItem");
         String codeName = code.name();
         writeBuffer.writeString("result", codeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), codeName);

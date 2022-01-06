@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type SearchRequest struct {
+	*KnxNetIpMessage
 	HpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint
-	Parent                 *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *SearchRequest) InitializeParent(parent *KnxNetIpMessage) {
 func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *KnxNetIpMessage {
 	child := &SearchRequest{
 		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
-		Parent:                 NewKnxNetIpMessage(),
+		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastSearchRequest(structType interface{}) *SearchRequest {
@@ -86,7 +86,7 @@ func (m *SearchRequest) LengthInBits() uint16 {
 }
 
 func (m *SearchRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (hpaiIDiscoveryEndpoint)
 	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
@@ -103,15 +103,15 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (hpaiIDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hpaiIDiscoveryEndpoint)
-	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
+	hpaiIDiscoveryEndpoint := CastHPAIDiscoveryEndpoint(_hpaiIDiscoveryEndpoint)
 	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -122,11 +122,11 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Create a partially initialized instance
 	_child := &SearchRequest{
-		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
-		Parent:                 &KnxNetIpMessage{},
+		HpaiIDiscoveryEndpoint: CastHPAIDiscoveryEndpoint(hpaiIDiscoveryEndpoint),
+		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SearchRequest) String() string {

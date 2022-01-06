@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
-                bigEndian="true">
+                byteOrder="BIG_ENDIAN">
 
   <name>Beckhoff ADS/AMS Discovery</name>
 

@@ -23,24 +23,8 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.go.GoLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
-<#-- Declare the name and type of variables declared locally inside the template -->
-<#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
-<#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
-<#-- @ftlvariable name="constField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ConstField" -->
-<#-- @ftlvariable name="discriminatorField" type="org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField" -->
-<#-- @ftlvariable name="enumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.EnumField" -->
-<#-- @ftlvariable name="implicitField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField" -->
-<#-- @ftlvariable name="manualArrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField" -->
-<#-- @ftlvariable name="manualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualField" -->
-<#-- @ftlvariable name="optionalField" type="org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField" -->
-<#-- @ftlvariable name="paddingField" type="org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField" -->
-<#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
-<#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
-<#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
-<#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
-<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
-<#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/ParserHelper.go
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -78,8 +62,8 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 	switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
 	case "${typeDefinition.name}":
-	<#if typeDefinition.parserArguments?has_content>
-		<#list typeDefinition.parserArguments as parserArgument>
+	<#if typeDefinition.parserArguments.isPresent()>
+		<#list typeDefinition.parserArguments.orElseThrow() as parserArgument>
 			<#if helper.isSimpleTypeReference(parserArgument.type)>
 		${parserArgument.name}, err := utils.StrTo${helper.getLanguageTypeNameForTypeReference(parserArgument.type)?cap_first}(arguments[${parserArgument?index}])
 		if err != nil {
@@ -90,7 +74,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument><#if helper.isComplexTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

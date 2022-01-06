@@ -29,10 +29,10 @@ import (
 
 // The data-structure of this message
 type S7ParameterSetupCommunication struct {
+	*S7Parameter
 	MaxAmqCaller uint16
 	MaxAmqCallee uint16
 	PduLength    uint16
-	Parent       *S7Parameter
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
-		Parent:       NewS7Parameter(),
+		S7Parameter:  NewS7Parameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Parameter
 }
 
 func CastS7ParameterSetupCommunication(structType interface{}) *S7ParameterSetupCommunication {
@@ -95,7 +95,7 @@ func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
 }
 
 func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -116,7 +116,7 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -136,22 +136,25 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer) (*S7Paramet
 	}
 
 	// Simple Field (maxAmqCaller)
-	maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
+	_maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
 		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
 	}
+	maxAmqCaller := _maxAmqCaller
 
 	// Simple Field (maxAmqCallee)
-	maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
+	_maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
 		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
 	}
+	maxAmqCallee := _maxAmqCallee
 
 	// Simple Field (pduLength)
-	pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
+	_pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
+	pduLength := _pduLength
 
 	if closeErr := readBuffer.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
 		return nil, closeErr
@@ -162,10 +165,10 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer) (*S7Paramet
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
-		Parent:       &S7Parameter{},
+		S7Parameter:  &S7Parameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Parameter.Child = _child
+	return _child.S7Parameter, nil
 }
 
 func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -208,7 +211,7 @@ func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7ParameterSetupCommunication) String() string {

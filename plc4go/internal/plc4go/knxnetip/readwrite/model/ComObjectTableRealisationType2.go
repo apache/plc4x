@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type ComObjectTableRealisationType2 struct {
+	*ComObjectTable
 	NumEntries           uint8
 	RamFlagsTablePointer uint8
 	ComObjectDescriptors []*GroupObjectDescriptorRealisationType2
-	Parent               *ComObjectTable
 }
 
 // The corresponding interface
@@ -56,10 +56,10 @@ func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer ui
 		NumEntries:           numEntries,
 		RamFlagsTablePointer: ramFlagsTablePointer,
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               NewComObjectTable(),
+		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ComObjectTable
 }
 
 func CastComObjectTableRealisationType2(structType interface{}) *ComObjectTableRealisationType2 {
@@ -90,7 +90,7 @@ func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
 }
 
 func (m *ComObjectTableRealisationType2) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -113,22 +113,24 @@ func (m *ComObjectTableRealisationType2) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType2"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (numEntries)
-	numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
+	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
 		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
 	}
+	numEntries := _numEntries
 
 	// Simple Field (ramFlagsTablePointer)
-	ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
+	_ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
+	ramFlagsTablePointer := _ramFlagsTablePointer
 
 	// Array field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors", utils.WithRenderAsList(true)); pullErr != nil {
@@ -136,12 +138,14 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer) (*ComObjec
 	}
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType2, numEntries)
-	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
-		_item, _err := GroupObjectDescriptorRealisationType2Parse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
+	{
+		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
+			_item, _err := GroupObjectDescriptorRealisationType2Parse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
+			}
+			comObjectDescriptors[curItem] = _item
 		}
-		comObjectDescriptors[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -156,10 +160,10 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer) (*ComObjec
 		NumEntries:           numEntries,
 		RamFlagsTablePointer: ramFlagsTablePointer,
 		ComObjectDescriptors: comObjectDescriptors,
-		Parent:               &ComObjectTable{},
+		ComObjectTable:       &ComObjectTable{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ComObjectTable.Child = _child
+	return _child.ComObjectTable, nil
 }
 
 func (m *ComObjectTableRealisationType2) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -203,7 +207,7 @@ func (m *ComObjectTableRealisationType2) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ComObjectTableRealisationType2) String() string {

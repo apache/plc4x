@@ -37,9 +37,9 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
-    <xsl:param name="osType"></xsl:param>
+    <xsl:param name="osType"/>
 
-    <xsl:param name="servicesEnum"></xsl:param>
+    <xsl:param name="servicesEnum"/>
 
     <!-- Intermediate, to reformat the url on windows systems -->
     <xsl:param name="servicesEnumUrl">
@@ -57,7 +57,7 @@
 
     <xsl:template name="servicesEnumParsing" >
         <xsl:variable name="tokenizedLine" select="tokenize($servicesEnumFile, '\r\n|\r|\n')" />
-[enum int 32 'OpcuaNodeIdServices'<xsl:text>
+[enum int 32 OpcuaNodeIdServices<xsl:text>
     </xsl:text>
         <xsl:for-each select="$tokenizedLine">
             <xsl:variable select="tokenize(., ',')" name="values" />

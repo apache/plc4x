@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReadRange struct {
-	Parent *BACnetConfirmedServiceRequest
+	*BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceRequestReadRange) InitializeParent(parent *BACnet
 
 func NewBACnetConfirmedServiceRequestReadRange() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReadRange{
-		Parent: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) *BACnetConfirmedServiceRequestReadRange {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestReadRange) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer) (*
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadRange{
-		Parent: &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestReadRange) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) Serialize(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestReadRange) String() string {

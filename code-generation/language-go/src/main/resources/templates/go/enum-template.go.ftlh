@@ -24,8 +24,8 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.go.GoLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.go
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -69,7 +69,7 @@ type I${type.name} interface {
 
 const(
 <#list type.enumValues as enumValue>
-	${type.name}_${enumValue.name} ${type.name} = <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>
+	${type.name}_${enumValue.name} ${type.name} = <#if type.type.isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>
 </#list>
 )
 
@@ -98,12 +98,12 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 		case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */
 		    <#if helper.isComplexTypeReference(type.getConstantType(constantName))>
 		        <#if helper.isEnumTypeReference(type.getConstantType(constantName))>
-			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName)) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}</#if>
+			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if>
 			    <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}
+            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
                 </#if>
             <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}
+            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
             </#if>
 		}
 		</#list>
@@ -126,11 +126,11 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 func ${type.name}ByValue(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>) ${type.name} {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
-		case <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>:
+		case <#if type.type.isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
 			return ${type.name}_${enumValue.name}
 </#list>
 	}
-	return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
 func ${type.name}ByName(value string) ${type.name} {
@@ -140,7 +140,7 @@ func ${type.name}ByName(value string) ${type.name} {
 		return ${type.name}_${enumValue.name}
 	</#list>
 	}
-	return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
 func Cast${type.name}(structType interface{}) ${type.name} {
@@ -148,14 +148,14 @@ func Cast${type.name}(structType interface{}) ${type.name} {
 		if s${type.name}, ok := typ.(${type.name}); ok {
 			return s${type.name}
 		}
-		return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+		return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 	}
 	return castFunc(structType)
 }
 
 func (m ${type.name}) LengthInBits() uint16 {
-	<#assign simpleTypeReference = type.type>
-	return <#if helper.isStringTypeReference(type.type)>0<#else>${simpleTypeReference.sizeInBits}</#if>
+	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
+	return <#if type.type.isStringTypeReference()>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
 func (m ${type.name}) LengthInBytes() uint16 {
@@ -163,18 +163,18 @@ func (m ${type.name}) LengthInBytes() uint16 {
 }
 
 <#if type.type?has_content && helper.isSimpleTypeReference(type.type)>
-	<#assign simpleTypeReference = type.type>
+	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
-	val, err := ${helper.getReadBufferReadMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference))}
+	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type, null)}
 	if err != nil {
-		return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>, nil
+		return <#if type.type.isStringTypeReference() || type.type.isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil
 	}
 	return ${type.name}ByValue(val), nil
 }
 
 func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
-	return ${helper.getWriteBufferWriteMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference), helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(type.typeReference)) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
+	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type, helper.getLanguageTypeNameForTypeReference(type.type) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
 }
 	</#if>
 </#if>

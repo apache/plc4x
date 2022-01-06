@@ -50,6 +50,7 @@ expression
  | expression '|' expression                            #bitOrExpression
  | expression '?' expression ':' expression             #ifExpression
  | Number                                               #numberExpression
+ | HexExpression                                        #hexExpression
  | Bool                                                 #boolExpression
  | Null                                                 #nullExpression
  | identifierSegment                                    #identifierExpression
@@ -113,3 +114,15 @@ fragment Int
 fragment Digit
  : [0-9]
  ;
+
+HexExpression
+  : '0' [xX] HexCharacters
+  ;
+
+fragment HexCharacters
+  : HexCharacter+
+  ;
+
+fragment HexCharacter
+  : [0-9a-fA-F]
+  ;

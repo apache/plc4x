@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ApduDataExtAuthorizeResponse struct {
-	Level  uint8
-	Parent *ApduDataExt
+	*ApduDataExt
+	Level uint8
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *ApduDataExtAuthorizeResponse) InitializeParent(parent *ApduDataExt) {
 
 func NewApduDataExtAuthorizeResponse(level uint8) *ApduDataExt {
 	child := &ApduDataExtAuthorizeResponse{
-		Level:  level,
-		Parent: NewApduDataExt(),
+		Level:       level,
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtAuthorizeResponse(structType interface{}) *ApduDataExtAuthorizeResponse {
@@ -86,7 +86,7 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -98,16 +98,17 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (level)
-	level, _levelErr := readBuffer.ReadUint8("level", 8)
+	_level, _levelErr := readBuffer.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
+	level := _level
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtAuthorizeResponse"); closeErr != nil {
 		return nil, closeErr
@@ -115,11 +116,11 @@ func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer) (*ApduDataEx
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeResponse{
-		Level:  level,
-		Parent: &ApduDataExt{},
+		Level:       level,
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -140,7 +141,7 @@ func (m *ApduDataExtAuthorizeResponse) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtAuthorizeResponse) String() string {

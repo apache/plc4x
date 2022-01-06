@@ -19,40 +19,22 @@
 
 package plc4go
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+import (
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+)
 
-type PlcConnectionConnectResult struct {
-	Connection PlcConnection
-	Err        error
+type PlcConnectionConnectResult interface {
+	GetConnection() PlcConnection
+	GetErr() error
 }
 
-func NewPlcConnectionConnectResult(connection PlcConnection, err error) PlcConnectionConnectResult {
-	return PlcConnectionConnectResult{
-		Connection: connection,
-		Err:        err,
-	}
+type PlcConnectionCloseResult interface {
+	GetConnection() PlcConnection
+	GetErr() error
 }
 
-type PlcConnectionCloseResult struct {
-	Connection PlcConnection
-	Err        error
-}
-
-func NewPlcConnectionCloseResult(connection PlcConnection, err error) PlcConnectionCloseResult {
-	return PlcConnectionCloseResult{
-		Connection: connection,
-		Err:        err,
-	}
-}
-
-type PlcConnectionPingResult struct {
-	Err error
-}
-
-func NewPlcConnectionPingResult(err error) PlcConnectionPingResult {
-	return PlcConnectionPingResult{
-		Err: err,
-	}
+type PlcConnectionPingResult interface {
+	GetErr() error
 }
 
 type PlcConnection interface {

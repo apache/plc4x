@@ -56,7 +56,7 @@ func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionReque
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 		}
 
-		result <- apiModel.PlcSubscriptionRequestResult{
+		result <- &internalModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
 			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
 			Err:      nil,
@@ -77,10 +77,10 @@ func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptio
 /*
  * Callback for incoming value change events from the KNX bus
  */
-func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8, changed bool) {
+func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	garb := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(destinationAddress))
+	garb := utils.NewReadBufferByteBased(destinationAddress)
 	groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
@@ -92,7 +92,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 		types := map[string]internalModel.SubscriptionType{}
 		intervals := map[string]time.Duration{}
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		addresses := map[string][]int8{}
+		addresses := map[string][]byte{}
 		plcValues := map[string]values.PlcValue{}
 
 		// Check if this datagram matches any address in this subscription request
@@ -110,7 +110,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 				if groupAddressField.matches(groupAddress) {
 					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
 					if subscriptionType == internalModel.SubscriptionChangeOfState && changed {
-						rb := utils.NewReadBufferByteBased(utils.Int8ArrayToByteArray(payload))
+						rb := utils.NewReadBufferByteBased(payload)
 						if groupAddressField.GetFieldType() == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
 							plcValues[fieldName] = nil

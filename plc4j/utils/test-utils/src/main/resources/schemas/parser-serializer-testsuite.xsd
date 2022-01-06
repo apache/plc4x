@@ -70,7 +70,7 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="bigEndian" type="xs:boolean"/>
+            <xs:attribute name="byteOrder" type="byteOrder"/>
         </xs:complexType>
     </xs:element>
 
@@ -86,5 +86,12 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:simpleType name="byteOrder" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="BIG_ENDIAN"/>
+            <xs:enumeration value="LITTLE_ENDIAN"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 </xs:schema>

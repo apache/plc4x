@@ -65,7 +65,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding eip ansi for field %s", fieldName),
@@ -141,30 +141,30 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						multipleServiceResponse := readWriteModel.CastMultipleServiceResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse.Parent, readRequest)
+						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse.CipService, readRequest)
 
 						if err != nil {
-							result <- model.PlcReadRequestResult{
+							result <- &plc4goModel.DefaultPlcReadRequestResult{
 								Request: readRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request:  readRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),
@@ -221,30 +221,30 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						cipReadResponse := readWriteModel.CastCipReadResponse(cipRRData.Exchange.Service)
 						// Convert the eip response into a PLC4X response
 						log.Trace().Msg("convert response to PLC4X response")
-						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse.Parent, readRequest)
+						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse.CipService, readRequest)
 
 						if err != nil {
-							result <- model.PlcReadRequestResult{
+							result <- &plc4goModel.DefaultPlcReadRequestResult{
 								Request: readRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request:  readRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),
@@ -284,7 +284,7 @@ func getRequestSize(tag string) int8 {
 	return requestPathSize
 }
 
-func toAnsi(tag string) ([]int8, error) {
+func toAnsi(tag string) ([]byte, error) {
 	arrayIndex := byte(0)
 	isArray := false
 	isStruct := false
@@ -357,12 +357,12 @@ func toAnsi(tag string) ([]int8, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = buffer.WriteByteArray("", utils.Int8ArrayToByteArray(ansi))
+		err = buffer.WriteByteArray("", ansi)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return utils.Uint8ArrayToInt8Array(buffer.GetBytes()), nil
+	return buffer.GetBytes(), nil
 }
 
 func (m *Reader) ToPlc4xReadResponse(response *readWriteModel.CipService, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
@@ -376,7 +376,7 @@ func (m *Reader) ToPlc4xReadResponse(response *readWriteModel.CipService, readRe
 		code := decodeResponseCode(cipReadResponse.Status)
 		var plcValue values.PlcValue
 		_type := cipReadResponse.DataType
-		data := utils.NewLittleEndianReadBufferByteBased(utils.Int8ArrayToByteArray(cipReadResponse.Data))
+		data := utils.NewLittleEndianReadBufferByteBased(cipReadResponse.Data)
 		if code == model.PlcResponseCode_OK {
 			var err error
 			plcValue, err = parsePlcValue(field, data, _type)
@@ -390,7 +390,7 @@ func (m *Reader) ToPlc4xReadResponse(response *readWriteModel.CipService, readRe
 		multipleServiceResponse := response.Child.(*readWriteModel.MultipleServiceResponse)
 		nb := multipleServiceResponse.ServiceNb
 		arr := make([]*readWriteModel.CipService, nb)
-		read := utils.NewLittleEndianReadBufferByteBased(utils.Int8ArrayToByteArray(multipleServiceResponse.ServicesData))
+		read := utils.NewLittleEndianReadBufferByteBased(multipleServiceResponse.ServicesData)
 		total := read.GetTotalBytes()
 		for i := uint16(0); i < nb; i++ {
 			length := uint16(0)
@@ -413,7 +413,7 @@ func (m *Reader) ToPlc4xReadResponse(response *readWriteModel.CipService, readRe
 			if cipReadResponse, ok := services.Services[i].Child.(*readWriteModel.CipReadResponse); ok {
 				code := decodeResponseCode(cipReadResponse.Status)
 				_type := cipReadResponse.DataType
-				data := utils.NewLittleEndianReadBufferByteBased(utils.Int8ArrayToByteArray(cipReadResponse.Data))
+				data := utils.NewLittleEndianReadBufferByteBased(cipReadResponse.Data)
 				var plcValue values.PlcValue
 				if code == model.PlcResponseCode_OK {
 					var err error
@@ -466,7 +466,7 @@ func parsePlcValue(field EIPPlcField, data utils.ReadBufferByteBased, _type read
 				if _type.Size()*8 != 64 {
 					panic("Unexpected size")
 				}
-				readFloat64, err := data.ReadFloat64("", true, 11, 52)
+				readFloat64, err := data.ReadFloat64("", 64)
 				if err != nil {
 					return nil, err
 				}
@@ -506,7 +506,7 @@ func parsePlcValue(field EIPPlcField, data utils.ReadBufferByteBased, _type read
 			if _type.Size()*8 != 64 {
 				panic("Unexpected size")
 			}
-			readFloat32, err := data.ReadFloat32("", true, 11, 52)
+			readFloat32, err := data.ReadFloat32("", 64)
 			if err != nil {
 				return nil, err
 			}

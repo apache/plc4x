@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type ModbusPDUReadFileRecordResponseItem struct {
 	ReferenceType uint8
-	Data          []int8
+	Data          []byte
 }
 
 // The corresponding interface
@@ -39,7 +39,7 @@ type IModbusPDUReadFileRecordResponseItem interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) *ModbusPDUReadFileRecordResponseItem {
+func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *ModbusPDUReadFileRecordResponseItem {
 	return &ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
 }
 
@@ -98,28 +98,16 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Length array
-	data := make([]int8, 0)
-	_dataLength := uint16(dataLength) - uint16(uint16(1))
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data = append(data, _item)
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	referenceType := _referenceType
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(dataLength) - uint16(uint16(1)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordResponseItem"); closeErr != nil {
@@ -151,17 +139,10 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteB
 
 	// Array Field (data)
 	if m.Data != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Data {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (data)
+		_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 		}
 	}
 

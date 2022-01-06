@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTOpen struct {
-	Parent *BACnetConfirmedServiceRequest
+	*BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceRequestVTOpen) InitializeParent(parent *BACnetCon
 
 func NewBACnetConfirmedServiceRequestVTOpen() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestVTOpen{
-		Parent: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestVTOpen(structType interface{}) *BACnetConfirmedServiceRequestVTOpen {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestVTOpen) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer) (*BAC
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestVTOpen{
-		Parent: &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestVTOpen) String() string {

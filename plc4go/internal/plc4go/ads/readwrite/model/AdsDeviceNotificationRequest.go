@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type AdsDeviceNotificationRequest struct {
+	*AdsData
 	Length          uint32
 	Stamps          uint32
 	AdsStampHeaders []*AdsStampHeader
-	Parent          *AdsData
 }
 
 // The corresponding interface
@@ -49,7 +49,7 @@ func (m *AdsDeviceNotificationRequest) CommandId() CommandId {
 }
 
 func (m *AdsDeviceNotificationRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {
@@ -60,10 +60,10 @@ func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeade
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		Parent:          NewAdsData(),
+		AdsData:         NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsDeviceNotificationRequest(structType interface{}) *AdsDeviceNotificationRequest {
@@ -94,7 +94,7 @@ func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
 }
 
 func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -117,22 +117,24 @@ func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	length := _length
 
 	// Simple Field (stamps)
-	stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
+	_stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
 		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
 	}
+	stamps := _stamps
 
 	// Array field (adsStampHeaders)
 	if pullErr := readBuffer.PullContext("adsStampHeaders", utils.WithRenderAsList(true)); pullErr != nil {
@@ -140,12 +142,14 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData, e
 	}
 	// Count array
 	adsStampHeaders := make([]*AdsStampHeader, stamps)
-	for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
-		_item, _err := AdsStampHeaderParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")
+	{
+		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
+			_item, _err := AdsStampHeaderParse(readBuffer)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")
+			}
+			adsStampHeaders[curItem] = _item
 		}
-		adsStampHeaders[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("adsStampHeaders", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -160,10 +164,10 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData, e
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
-		Parent:          &AdsData{},
+		AdsData:         &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -207,7 +211,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsDeviceNotificationRequest) String() string {

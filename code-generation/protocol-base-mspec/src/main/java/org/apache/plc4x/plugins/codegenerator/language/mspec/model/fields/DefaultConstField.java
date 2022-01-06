@@ -20,19 +20,22 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultConstField extends DefaultTaggedField implements ConstField {
+import java.util.*;
+
+public class DefaultConstField extends DefaultField implements ConstField {
 
     private final TypeReference type;
     private final String name;
-    private final Object referenceValue;
+    private final Literal referenceValue;
 
-    public DefaultConstField(String[] tags, TypeReference type, String name, Object referenceValue) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.referenceValue = referenceValue;
+    public DefaultConstField(Map<String, Term> attributes, TypeReference type, String name, Literal referenceValue) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.referenceValue = Objects.requireNonNull(referenceValue);
     }
 
     public TypeReference getType() {
@@ -43,12 +46,8 @@ public class DefaultConstField extends DefaultTaggedField implements ConstField 
         return name;
     }
 
-    public Object getReferenceValue() {
+    public Literal getReferenceValue() {
         return referenceValue;
-    }
-
-    public Term[] getParams() {
-        return new Term[0];
     }
 
 }

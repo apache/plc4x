@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUError struct {
+	*APDU
 	OriginalInvokeId uint8
 	Error            *BACnetError
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
 	child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            error,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUError(structType interface{}) *APDUError {
@@ -89,7 +89,7 @@ func (m *APDUError) LengthInBits() uint16 {
 }
 
 func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -107,7 +107,7 @@ func (m *APDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -127,20 +127,21 @@ func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
+	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (error)
-	error, _errorErr := BACnetErrorParse(readBuffer)
+	_error, _errorErr := BACnetErrorParse(readBuffer)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
 	}
+	error := CastBACnetError(_error)
 	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -152,11 +153,11 @@ func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	// Create a partially initialized instance
 	_child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
-		Error:            error,
-		Parent:           &APDU{},
+		Error:            CastBACnetError(error),
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -197,7 +198,7 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUError) String() string {

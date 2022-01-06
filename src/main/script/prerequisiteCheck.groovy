@@ -109,7 +109,28 @@ def checkDotnet() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "4.5.2")
+        if (!result) {
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+def checkGo() {
+    print "Detecting Go version:      "
+    def output
+    try {
+        output = "go version".execute().text
+    } catch (IOException e) {
+        output = ""
+    }
+    Matcher matcher = extractVersion(output)
+    if (matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
         }
@@ -303,7 +324,7 @@ def checkPython() {
                 allConditionsMet = false
             }
         } else {
-            println "missing"
+            println "missing (Please install at least version 3.6.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
@@ -331,10 +352,6 @@ def checkSetupTools() {
         println "missing"
         allConditionsMet = false
     }
-}
-
-def checkGo() {
-    //TODO: (On windows) ensure the "go" executable is in the path, or there are failures when running the tests.
 }
 
 /*
@@ -409,6 +426,24 @@ def checkDocker() {
         allConditionsMet = false
     }
     // TODO: Implement the actual check ...
+}
+
+def checkLibPcap(String minVersion) {
+    print "Detecting LibPcap version: "
+    try {
+        output = org.pcap4j.core.Pcaps.libVersion()
+        String version = output - ~/^libpcap version /
+        def result =  checkVersionAtLeast(version, minVersion)
+        if (!result) {
+            // TODO: only on mac we need the minimum version so we need to refine this
+            // allConditionsMet = false
+            println "This will probably a problem on mac"
+        }
+    } catch (Error e) {
+        output = ""
+        println "missing"
+        allConditionsMet = false
+    }
 }
 
 /**
@@ -493,8 +528,15 @@ if (os == "win") {
 // profiles.
 /////////////////////////////////////////////////////
 
+// Codegen requires at least java 9
+checkJavaVersion("9", null)
+
 if (dotnetEnabled) {
     checkDotnet()
+}
+
+if (goEnabled) {
+    checkGo()
 }
 
 if (cppEnabled) {
@@ -542,10 +584,6 @@ if (cppEnabled || cEnabled) {
     checkMavenVersion("3.6.0", null)
 }
 
-if (goEnabled) {
-    checkGo()
-}
-
 if (apacheReleaseEnabled) {
     // TODO: Check libpcap is installed
 }
@@ -553,6 +591,11 @@ if (apacheReleaseEnabled) {
 if (cppEnabled && (os == "win")) {
     print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
     allConditionsMet = false
+}
+
+if (os == "mac") {
+    // The current system version from mac crashes so we assert for a version coming with brew
+    checkLibPcap("1.10.1")
 }
 
 if (!allConditionsMet) {

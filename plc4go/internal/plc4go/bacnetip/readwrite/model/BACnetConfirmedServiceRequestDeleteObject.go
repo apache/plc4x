@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestDeleteObject struct {
-	Parent *BACnetConfirmedServiceRequest
+	*BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) InitializeParent(parent *BAC
 
 func NewBACnetConfirmedServiceRequestDeleteObject() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestDeleteObject{
-		Parent: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) *BACnetConfirmedServiceRequestDeleteObject {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer)
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeleteObject{
-		Parent: &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) Serialize(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) String() string {

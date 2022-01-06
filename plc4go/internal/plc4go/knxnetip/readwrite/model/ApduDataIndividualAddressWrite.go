@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataIndividualAddressWrite struct {
-	Parent *ApduData
+	*ApduData
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataIndividualAddressWrite) InitializeParent(parent *ApduData) {
 
 func NewApduDataIndividualAddressWrite() *ApduData {
 	child := &ApduDataIndividualAddressWrite{
-		Parent: NewApduData(),
+		ApduData: NewApduData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduData
 }
 
 func CastApduDataIndividualAddressWrite(structType interface{}) *ApduDataIndividualAddressWrite {
@@ -83,7 +83,7 @@ func (m *ApduDataIndividualAddressWrite) LengthInBits() uint16 {
 }
 
 func (m *ApduDataIndividualAddressWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataIndividualAddressWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataIndividualAddressWriteParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataIndividualAddressWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressWrite"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataIndividualAddressWriteParse(readBuffer utils.ReadBuffer) (*ApduData
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressWrite{
-		Parent: &ApduData{},
+		ApduData: &ApduData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduData.Child = _child
+	return _child.ApduData, nil
 }
 
 func (m *ApduDataIndividualAddressWrite) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataIndividualAddressWrite) Serialize(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataIndividualAddressWrite) String() string {

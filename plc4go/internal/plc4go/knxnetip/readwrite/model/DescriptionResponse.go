@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type DescriptionResponse struct {
+	*KnxNetIpMessage
 	DibDeviceInfo      *DIBDeviceInfo
 	DibSuppSvcFamilies *DIBSuppSvcFamilies
-	Parent             *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -54,10 +54,10 @@ func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DI
 	child := &DescriptionResponse{
 		DibDeviceInfo:      dibDeviceInfo,
 		DibSuppSvcFamilies: dibSuppSvcFamilies,
-		Parent:             NewKnxNetIpMessage(),
+		KnxNetIpMessage:    NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastDescriptionResponse(structType interface{}) *DescriptionResponse {
@@ -88,7 +88,7 @@ func (m *DescriptionResponse) LengthInBits() uint16 {
 }
 
 func (m *DescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (dibDeviceInfo)
 	lengthInBits += m.DibDeviceInfo.LengthInBits()
@@ -108,28 +108,28 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 		return nil, pullErr
 	}
 
+	// Simple Field (dibDeviceInfo)
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (dibDeviceInfo)
-	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
+	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(readBuffer)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
+	dibDeviceInfo := CastDIBDeviceInfo(_dibDeviceInfo)
 	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (dibSuppSvcFamilies)
 	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (dibSuppSvcFamilies)
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
+	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(readBuffer)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	dibSuppSvcFamilies := CastDIBSuppSvcFamilies(_dibSuppSvcFamilies)
 	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -140,12 +140,12 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 
 	// Create a partially initialized instance
 	_child := &DescriptionResponse{
-		DibDeviceInfo:      dibDeviceInfo,
-		DibSuppSvcFamilies: dibSuppSvcFamilies,
-		Parent:             &KnxNetIpMessage{},
+		DibDeviceInfo:      CastDIBDeviceInfo(dibDeviceInfo),
+		DibSuppSvcFamilies: CastDIBSuppSvcFamilies(dibSuppSvcFamilies),
+		KnxNetIpMessage:    &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -183,7 +183,7 @@ func (m *DescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DescriptionResponse) String() string {

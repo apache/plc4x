@@ -21,8 +21,12 @@ package org.apache.plc4x.java.spi.connection;
 import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
+import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.api.listener.ConnectionStateListener;
+import org.apache.plc4x.java.api.listener.EventListener;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
@@ -31,11 +35,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
-public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection {
+public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection, EventPlcConnection {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
@@ -45,12 +52,13 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
-    protected Configuration configuration;
+    protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final boolean awaitSessionDiscoverComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
+    protected final List<EventListener> listeners = new CopyOnWriteArrayList<>();
     protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
     protected Channel channel;
@@ -59,7 +67,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
                                      PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+                                     boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete,
+                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
         super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
@@ -157,6 +166,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             sessionDisconnectCompleteFuture.complete(null);
         }
 
+        // Shutdown the Worker Group
+        channelFactory.closeEventLoopForChannel(channel);
+
         channel = null;
         connected = false;
     }
@@ -190,10 +202,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                        Stream<ConnectionStateListener> eventListeners = listeners.stream().filter(ConnectionStateListener.class::isInstance)
+                            .map(ConnectionStateListener.class::cast);
                         if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
+                            eventListeners.forEach(ConnectionStateListener::connected);
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
+                            eventListeners.forEach(ConnectionStateListener::disconnected);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         } else {
@@ -213,6 +229,16 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+    }
+
+    @Override
+    public void addEventListener(EventListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeEventListener(EventListener listener) {
+        listeners.remove(listener);
     }
 
 }

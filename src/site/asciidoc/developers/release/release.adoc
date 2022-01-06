@@ -21,7 +21,7 @@
 
 === TL/DR
 
-IMPORTANT: Please be sure to execute the release with a Java version between 1.8 and 11 or the Karaf feature tests will not run.
+IMPORTANT: Please be sure to execute the release with a Java version 11 or the Karaf feature tests will not run.
 
 [%interactive]
 * [ ] Update the `RELEASE_NOTES`
@@ -29,20 +29,20 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
 * [ ] Prepare the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:prepare -P with-boost,with-c,with-docker,with-dotnet,with-go,with-python,with-sandbox
+   mvn release:prepare -P with-c,with-dotnet,with-go,with-python,with-sandbox
 ----
 [%interactive]
 * [ ] Perform the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:perform -DreleaseProfiles=apache-release
+   mvn clean release:perform
 ----
 [%interactive]
 * [ ] Close the staging repo on `Nexus`
@@ -152,14 +152,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{minor-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -224,9 +224,9 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-boost,with-c,with-docker,with-dotnet,with-go,with-python,with-sandbox
+   mvn release:prepare -P with-c,with-dotnet,with-go,with-python,with-sandbox
 
-(The `-P with-boost,with-c,with-docker,with-dotnet,with-go,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
+(The `-P with-c,with-dotnet,with-go,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
@@ -274,9 +274,11 @@ NOTE: If the commit history doesn't look like this, something went wrong.
 
 If something goes wrong, you can always execute:
 
-   mvn release:rollback
+   mvn release:rollback -P with-c,with-dotnet,with-go,with-python,with-sandbox
 
 It will change the versions back and commit and push things.
+
+Also, should you check if you have any uncommitted changes (as our code-generation can make git think they are "dirty")
 
 However, it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
 
@@ -284,14 +286,16 @@ However, it will not delete the tag in GIT (locally and remotely). So you have t
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform -DreleaseProfiles=apache-release
+   mvn clean release:perform
+
+NOTE: The clean is only for making sure there is no artifacts in `target` directly, but only in `target/checkout/target`.
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare`-goal prepared.
 
 The first step is that the `perform`-goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache-release
+   mvn deploy -P apache-release
 
 As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
@@ -448,6 +452,34 @@ This is done by moving them inside the Apache SVN.
 This will make the release artifacts available and will trigger them being copied to mirror sites.
 
 This is also the reason why you should wait at least 24 hours before sending out the release notification emails.
+
+=== Going back for a new release candidate
+
+If however for some reason it is needed to prepare a new RC for the release. Please follow these steps:
+
+- Set the versions of the release branch to the previous version by using the `versions:set` plugin:
+
+    mvn versions:set -DprocessAllModules=true -P with-c,with-dotnet,with-go,with-python,with-sandbox
+
+- Delete the tag locally:
+
+    git tag -d v{current-full-version}
+
+- Delete the tag remotely:
+
+    git push --delete origin v{current-full-version}
+
+- Commit all changes
+
+- Drop the staging repo at https://repository.apache.org
+
+- Delete the previous RC in SVN
+
+   svn rm https://dist.apache.org/repos/dist/dev/plc4x/0.9.0/rc1 -m"Removed rc1 of PLC4x 0.9.0"
+
+- Reply to the `VOTE` and the `DISCUSS` announcing the vote has been cancelled and explain why and that you're going to start a new RC soon. Ideally prefix the title of the Emails with `[CANCELLED]`
+
+After this you should be ready to start a new RC.
 
 === Cleaning up older release versions
 

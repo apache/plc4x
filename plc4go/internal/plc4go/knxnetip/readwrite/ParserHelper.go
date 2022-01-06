@@ -61,7 +61,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(io)
 	case "CEMI":
-		size, err := utils.StrToUint8(arguments[0])
+		size, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
@@ -78,7 +78,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
 		var firmwareType model.FirmwareType
-		return model.ComObjectTableParse(io, &firmwareType)
+		return model.ComObjectTableParse(io, firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)
 	case "ConnectionResponseDataBlock":

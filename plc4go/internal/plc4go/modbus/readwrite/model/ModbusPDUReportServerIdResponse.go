@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReportServerIdResponse struct {
-	Value  []int8
-	Parent *ModbusPDU
+	*ModbusPDU
+	Value []byte
 }
 
 // The corresponding interface
@@ -43,7 +43,7 @@ type IModbusPDUReportServerIdResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReportServerIdResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
@@ -51,19 +51,19 @@ func (m *ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReportServerIdResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReportServerIdResponse(value []int8) *ModbusPDU {
+func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReportServerIdResponse{
-		Value:  value,
-		Parent: NewModbusPDU(),
+		Value:     value,
+		ModbusPDU: NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUReportServerIdResponse(structType interface{}) *ModbusPDUReportServerIdResponse {
@@ -94,7 +94,7 @@ func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUReportServerIdResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -111,7 +111,7 @@ func (m *ModbusPDUReportServerIdResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,22 +122,11 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
-
-	// Array field (value)
-	if pullErr := readBuffer.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	value := make([]int8, byteCount)
-	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'value' field")
-		}
-		value[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (value)
+	numberOfBytesvalue := int(byteCount)
+	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReportServerIdResponse"); closeErr != nil {
@@ -146,11 +135,11 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdResponse{
-		Value:  value,
-		Parent: &ModbusPDU{},
+		Value:     value,
+		ModbusPDU: &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -168,17 +157,10 @@ func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffe
 
 		// Array Field (value)
 		if m.Value != nil {
-			if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Value {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'value' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (value)
+			_writeArrayErr := writeBuffer.WriteByteArray("value", m.Value)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
 			}
 		}
 
@@ -187,7 +169,7 @@ func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUReportServerIdResponse) String() string {

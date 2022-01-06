@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type KnxGroupAddress2Level struct {
+	*KnxGroupAddress
 	MainGroup uint8
 	SubGroup  uint16
-	Parent    *KnxGroupAddress
 }
 
 // The corresponding interface
@@ -44,7 +44,7 @@ type IKnxGroupAddress2Level interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *KnxGroupAddress2Level) NumLevels() uint8 {
-	return 2
+	return uint8(2)
 }
 
 func (m *KnxGroupAddress2Level) InitializeParent(parent *KnxGroupAddress) {
@@ -52,12 +52,12 @@ func (m *KnxGroupAddress2Level) InitializeParent(parent *KnxGroupAddress) {
 
 func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *KnxGroupAddress {
 	child := &KnxGroupAddress2Level{
-		MainGroup: mainGroup,
-		SubGroup:  subGroup,
-		Parent:    NewKnxGroupAddress(),
+		MainGroup:       mainGroup,
+		SubGroup:        subGroup,
+		KnxGroupAddress: NewKnxGroupAddress(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxGroupAddress
 }
 
 func CastKnxGroupAddress2Level(structType interface{}) *KnxGroupAddress2Level {
@@ -88,7 +88,7 @@ func (m *KnxGroupAddress2Level) LengthInBits() uint16 {
 }
 
 func (m *KnxGroupAddress2Level) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -103,22 +103,24 @@ func (m *KnxGroupAddress2Level) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
 	if pullErr := readBuffer.PullContext("KnxGroupAddress2Level"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
+	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
+	mainGroup := _mainGroup
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := readBuffer.ReadUint16("subGroup", 11)
+	_subGroup, _subGroupErr := readBuffer.ReadUint16("subGroup", 11)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress2Level"); closeErr != nil {
 		return nil, closeErr
@@ -126,12 +128,12 @@ func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer) (*KnxGroupAddress, 
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress2Level{
-		MainGroup: mainGroup,
-		SubGroup:  subGroup,
-		Parent:    &KnxGroupAddress{},
+		MainGroup:       mainGroup,
+		SubGroup:        subGroup,
+		KnxGroupAddress: &KnxGroupAddress{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxGroupAddress.Child = _child
+	return _child.KnxGroupAddress, nil
 }
 
 func (m *KnxGroupAddress2Level) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -159,7 +161,7 @@ func (m *KnxGroupAddress2Level) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *KnxGroupAddress2Level) String() string {

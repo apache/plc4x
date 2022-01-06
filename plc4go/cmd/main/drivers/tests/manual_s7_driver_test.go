@@ -23,8 +23,8 @@ import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	"testing"
 )
 
@@ -69,7 +69,7 @@ func TestManualS7(t *testing.T) {
 	connectionString := "s7://192.168.23.30"
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(s7.NewDriver())
-	driverManager.RegisterTransport(tcp.NewTransport())
+	transports.RegisterTcpTransport(driverManager)
 	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 
 	test.AddTestCase("%DB4:0.0:BOOL", true)

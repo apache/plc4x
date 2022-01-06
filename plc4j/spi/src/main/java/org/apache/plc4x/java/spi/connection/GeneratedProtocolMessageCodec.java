@@ -32,12 +32,12 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
 
     public GeneratedProtocolMessageCodec(
         Class<BASE_PACKET_CLASS> basePacketClass,
-        MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> messageIO,
-        boolean bigEndian,
+        MessageInput<BASE_PACKET_CLASS> messageIO,
+        ByteOrder byteOrder,
         Object[] parserArgs,
         ToIntFunction<ByteBuf> packetSizeEstimator,
         Consumer<ByteBuf> corruptPackageRemover) {
-        super(messageIO, basePacketClass, bigEndian, parserArgs);
+        super(messageIO, basePacketClass, byteOrder, parserArgs);
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPackageRemover = corruptPackageRemover;
     }

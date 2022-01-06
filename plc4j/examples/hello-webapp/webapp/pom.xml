@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-webapp</artifactId>
@@ -108,12 +108,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.10.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-logging</artifactId>
@@ -228,7 +228,7 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-client</artifactId>
-      <version>5.15.12</version>
+      <version>5.16.3</version>
     </dependency>
 
     <dependency>
@@ -244,19 +244,8 @@
       <dependency>
         <groupId>org.apache.plc4x.examples</groupId>
         <artifactId>plc4j-hello-webapp-client</artifactId>
-        <version>0.9.0-SNAPSHOT</version>
+        <version>0.10.0-SNAPSHOT</version>
         <type>war</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.plc4x</groupId>
-        <artifactId>plc4j-driver-opcua</artifactId>
-        <exclusions>
-          <exclusion>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>jakarta.activation</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>

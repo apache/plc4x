@@ -136,7 +136,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
             // Cast byte and create response item
             PlcValue responseItem = null;
-            short[] data = ((DF1UnprotectedReadResponse)command).getData();
+            byte[] data = ((DF1UnprotectedReadResponse)command).getData();
             switch (field.getDataType()) {
                 case BIT:
                     break;

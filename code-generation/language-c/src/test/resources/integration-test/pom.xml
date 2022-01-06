@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>@project.version@</version>
     <relativePath>../../../../pom.xml</relativePath>
   </parent>
 
   <artifactId>plc4j-c-mspec-test</artifactId>
 
-  <name>PLC4J: Driver: C Mpsec Test</name>
+  <name>PLC4J: Driver: C Mspec Test</name>
   <description></description>
 
   <properties>
@@ -320,48 +320,8 @@
 <dependencies>
   <dependency>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-api</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-spi</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-transport-tcp</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-  </dependency>
-
-  <dependency>
-    <groupId>io.netty</groupId>
-    <artifactId>netty-buffer</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-annotations</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-utils-test-utils</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-    <scope>test</scope>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-language-c</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>@project.version@</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>
   </dependency>
@@ -369,7 +329,7 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>@project.version@</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>
   </dependency>
@@ -377,7 +337,7 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>@project.version@</version>
     <classifier>tests</classifier>
     <type>test-jar</type>
     <scope>test</scope>

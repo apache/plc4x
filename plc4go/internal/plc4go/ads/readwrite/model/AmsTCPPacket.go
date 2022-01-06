@@ -109,15 +109,15 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (*AmsTCPPacket, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
+	// Simple Field (userdata)
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (userdata)
-	userdata, _userdataErr := AmsPacketParse(readBuffer)
+	_userdata, _userdataErr := AmsPacketParse(readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+	userdata := CastAmsPacket(_userdata)
 	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
 		return nil, closeErr
 	}

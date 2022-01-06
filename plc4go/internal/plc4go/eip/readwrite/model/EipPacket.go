@@ -132,16 +132,18 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	}
 
 	// Simple Field (sessionHandle)
-	sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
+	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
 	if _sessionHandleErr != nil {
 		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field")
 	}
+	sessionHandle := _sessionHandle
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint32("status", 32)
+	_status, _statusErr := readBuffer.ReadUint32("status", 32)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Array field (senderContext)
 	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
@@ -149,22 +151,25 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	}
 	// Count array
 	senderContext := make([]uint8, uint16(8))
-	for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'senderContext' field")
+	{
+		for curItem := uint16(0); curItem < uint16(uint16(8)); curItem++ {
+			_item, _err := readBuffer.ReadUint8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field")
+			}
+			senderContext[curItem] = _item
 		}
-		senderContext[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (options)
-	options, _optionsErr := readBuffer.ReadUint32("options", 32)
+	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
 	if _optionsErr != nil {
 		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field")
 	}
+	options := _options
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *EipPacket
@@ -255,8 +260,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

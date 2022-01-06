@@ -21,17 +21,17 @@ package knxnetip
 
 import (
 	"fmt"
-	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"math"
 	"net"
 	"strconv"
 	"sync/atomic"
 	"time"
+
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ func (m *Connection) interceptIncomingMessage(interface{}) {
 }
 
 func (m *Connection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
-	return driverModel.NewIPAddress(utils.ByteArrayToInt8Array(ip)[len(ip)-4:])
+	return driverModel.NewIPAddress(ip[len(ip)-4:])
 }
 
 func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
@@ -56,7 +56,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverMode
 		if lDataInd == nil {
 			return
 		}
-		var destinationAddress []int8
+		var destinationAddress []byte
 		switch lDataInd.DataFrame.Child.(type) {
 		case *driverModel.LDataExtended:
 			dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
@@ -70,8 +70,8 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverMode
 					if destinationAddress == nil {
 						return
 					}
-					var payload []int8
-					payload = append(payload, groupValueWrite.DataFirstByte)
+					var payload []byte
+					payload = append(payload, byte(groupValueWrite.DataFirstByte))
 					payload = append(payload, groupValueWrite.Data...)
 
 					m.handleValueCacheUpdate(destinationAddress, payload)
@@ -80,7 +80,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverMode
 						return
 					}
 					// If this is an individual address and it is targeted at us, we need to ack that.
-					targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+					targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
 					if *targetAddress == *m.ClientKnxAddress {
 						log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
@@ -91,7 +91,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverMode
 					return
 				}
 				// If this is an individual address and it is targeted at us, we need to ack that.
-				targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+				targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
 				if *targetAddress == *m.ClientKnxAddress {
 					log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
@@ -103,7 +103,7 @@ func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverMode
 	}()
 }
 
-func (m *Connection) handleValueCacheUpdate(destinationAddress []int8, payload []int8) {
+func (m *Connection) handleValueCacheUpdate(destinationAddress []byte, payload []byte) {
 	addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
 
 	m.valueCacheMutex.RLock()
@@ -136,7 +136,12 @@ func (m *Connection) handleTimeout() {
 
 func (m *Connection) resetTimeout() {
 	if m.connectionTimeoutTimer != nil {
-		m.connectionTimeoutTimer.Stop()
+		if !m.connectionTimeoutTimer.Stop() {
+			select {
+			case <-m.connectionTimeoutTimer.C:
+			default:
+			}
+		}
 		m.connectionTimeoutTimer = nil
 	}
 }
@@ -175,7 +180,7 @@ func (m *Connection) removeSubscriber(subscriber *Subscriber) {
 }
 
 // TODO: we can replace this with reflect.DeepEqual()
-func (m *Connection) sliceEqual(a, b []int8) bool {
+func (m *Connection) sliceEqual(a, b []byte) bool {
 	if len(a) != len(b) {
 		return false
 	}

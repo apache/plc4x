@@ -152,7 +152,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
 		_parent, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(readBuffer)
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
-		_parent, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer)
+		_parent, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer, bvlcLength)
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
 		_parent, typeSwitchError = BVLCOriginalUnicastNPDUParse(readBuffer, bvlcLength)
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
@@ -207,8 +207,7 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

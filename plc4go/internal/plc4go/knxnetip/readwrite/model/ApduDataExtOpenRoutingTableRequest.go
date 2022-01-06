@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtOpenRoutingTableRequest struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtOpenRoutingTableRequest) InitializeParent(parent *ApduDataEx
 
 func NewApduDataExtOpenRoutingTableRequest() *ApduDataExt {
 	child := &ApduDataExtOpenRoutingTableRequest{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtOpenRoutingTableRequest(structType interface{}) *ApduDataExtOpenRoutingTableRequest {
@@ -83,7 +83,7 @@ func (m *ApduDataExtOpenRoutingTableRequest) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtOpenRoutingTableRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtOpenRoutingTableRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer) (*Apdu
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtOpenRoutingTableRequest{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtOpenRoutingTableRequest) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) String() string {

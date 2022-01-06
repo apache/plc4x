@@ -21,15 +21,16 @@ package knxnetip
 
 import (
 	"errors"
+	"strconv"
+	"strings"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Reader struct {
@@ -104,9 +105,13 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 				case DevicePropertyAddressPlcField:
 					propertyField := field.(DevicePropertyAddressPlcField)
 
+					timeout := time.NewTimer(m.connection.defaultTtl)
 					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
 					case result := <-results:
+						if !timeout.Stop() {
+							<-timeout.C
+						}
 						if result.err == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
@@ -114,15 +119,20 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
-					case <-time.After(m.connection.defaultTtl):
+					case <-timeout.C:
+						timeout.Stop()
 						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[fieldName] = nil
 					}
 				case DeviceMemoryAddressPlcField:
+					timeout := time.NewTimer(m.connection.defaultTtl)
 					memoryField := field.(DeviceMemoryAddressPlcField)
 					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
 					select {
 					case result := <-results:
+						if !timeout.Stop() {
+							<-timeout.C
+						}
 						if result.err == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
@@ -130,7 +140,8 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
-					case <-time.After(m.connection.defaultTtl):
+					case <-timeout.C:
+						timeout.Stop()
 						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[fieldName] = nil
 					}
@@ -147,7 +158,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 
 		// Assemble the results
 		result := internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- apiModel.PlcReadRequestResult{
+		resultChan <- &internalModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: result,
 			Err:      nil,
@@ -179,7 +190,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		// If nothing was found in the cache, try to execute a group address read,
 		// Otherwise respond with values from the cache.
 		if !ok {
-			addr := []int8{int8(numericAddress >> 8), int8(numericAddress & 0xFF)}
+			addr := []byte{byte(numericAddress >> 8), byte(numericAddress & 0xFF)}
 			rrc := m.connection.ReadGroupAddress(addr, field.GetFieldType())
 			select {
 			case readResult := <-rrc:
@@ -200,10 +211,10 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		} else {
 			// If we don't have any field-type information, add the raw data
 			if field.GetTypeName() == "" {
-				values[stringAddress] = internalValues.NewPlcByteArray(utils.Int8ArrayToByteArray(int8s))
+				values[stringAddress] = internalValues.NewPlcByteArray(int8s)
 			} else {
 				// Decode the data according to the fields type
-				rb := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(int8s))
+				rb := utils.NewReadBufferByteBased(int8s)
 				if field.GetFieldType() == nil {
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
 				}

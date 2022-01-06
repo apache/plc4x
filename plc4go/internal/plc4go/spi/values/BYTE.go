@@ -24,11 +24,11 @@ import (
 )
 
 type PlcBYTE struct {
-	value uint8
+	value byte
 	PlcSimpleValueAdapter
 }
 
-func NewPlcBYTE(value uint8) PlcBYTE {
+func NewPlcBYTE(value byte) PlcBYTE {
 	return PlcBYTE{
 		value: value,
 	}
@@ -58,6 +58,21 @@ func (m PlcBYTE) GetBoolArray() []bool {
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
 		m.value>>6&1 == 1, m.value>>7&1 == 1}
+}
+
+func (m PlcBYTE) IsByte() bool {
+	return true
+}
+
+func (m PlcBYTE) GetByte() byte {
+	return m.value
+}
+
+func (m PlcBYTE) IsUint8() bool {
+	return true
+}
+func (m PlcBYTE) GetUint8() uint8 {
+	return m.value
 }
 
 func (m PlcBYTE) IsString() bool {

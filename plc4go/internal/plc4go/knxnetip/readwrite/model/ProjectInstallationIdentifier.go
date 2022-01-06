@@ -86,16 +86,18 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectIn
 	}
 
 	// Simple Field (projectNumber)
-	projectNumber, _projectNumberErr := readBuffer.ReadUint8("projectNumber", 8)
+	_projectNumber, _projectNumberErr := readBuffer.ReadUint8("projectNumber", 8)
 	if _projectNumberErr != nil {
 		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field")
 	}
+	projectNumber := _projectNumber
 
 	// Simple Field (installationNumber)
-	installationNumber, _installationNumberErr := readBuffer.ReadUint8("installationNumber", 8)
+	_installationNumber, _installationNumberErr := readBuffer.ReadUint8("installationNumber", 8)
 	if _installationNumberErr != nil {
 		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
 	}
+	installationNumber := _installationNumber
 
 	if closeErr := readBuffer.CloseContext("ProjectInstallationIdentifier"); closeErr != nil {
 		return nil, closeErr

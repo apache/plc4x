@@ -29,11 +29,11 @@ import (
 
 // The data-structure of this message
 type CipReadResponse struct {
+	*CipService
 	Status    uint8
 	ExtStatus uint8
 	DataType  CIPDataTypeCode
-	Data      []int8
-	Parent    *CipService
+	Data      []byte
 }
 
 // The corresponding interface
@@ -53,16 +53,16 @@ func (m *CipReadResponse) Service() uint8 {
 func (m *CipReadResponse) InitializeParent(parent *CipService) {
 }
 
-func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []int8) *CipService {
+func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte) *CipService {
 	child := &CipReadResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		DataType:  dataType,
-		Data:      data,
-		Parent:    NewCipService(),
+		Status:     status,
+		ExtStatus:  extStatus,
+		DataType:   dataType,
+		Data:       data,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipReadResponse(structType interface{}) *CipReadResponse {
@@ -93,7 +93,7 @@ func (m *CipReadResponse) LengthInBits() uint16 {
 }
 
 func (m *CipReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -104,7 +104,7 @@ func (m *CipReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (extStatus)
 	lengthInBits += 8
 
-	// Enum Field (dataType)
+	// Simple field (dataType)
 	lengthInBits += 16
 
 	// Array field
@@ -139,44 +139,36 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (extStatus)
-	extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
 	}
+	extStatus := _extStatus
 
+	// Simple Field (dataType)
 	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (dataType)
-	dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
+	_dataType, _dataTypeErr := CIPDataTypeCodeParse(readBuffer)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field")
 	}
+	dataType := _dataType
 	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]int8, uint16(serviceLen)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(serviceLen)-uint16(uint16(6))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (data)
+	numberOfBytesdata := int(uint16(serviceLen) - uint16(uint16(6)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipReadResponse"); closeErr != nil {
@@ -185,14 +177,14 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 
 	// Create a partially initialized instance
 	_child := &CipReadResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		DataType:  dataType,
-		Data:      data,
-		Parent:    &CipService{},
+		Status:     status,
+		ExtStatus:  extStatus,
+		DataType:   dataType,
+		Data:       data,
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -223,32 +215,24 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}
 
+		// Simple Field (dataType)
 		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (dataType)
-		dataType := CastCIPDataTypeCode(m.DataType)
-		_dataTypeErr := dataType.Serialize(writeBuffer)
-		if _dataTypeErr != nil {
-			return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
-		}
+		_dataTypeErr := m.DataType.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
 			return popErr
+		}
+		if _dataTypeErr != nil {
+			return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
 		}
 
@@ -257,7 +241,7 @@ func (m *CipReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipReadResponse) String() string {

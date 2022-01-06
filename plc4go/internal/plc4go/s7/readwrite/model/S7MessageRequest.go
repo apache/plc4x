@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type S7MessageRequest struct {
-	Parent *S7Message
+	*S7Message
 }
 
 // The corresponding interface
@@ -45,17 +45,17 @@ func (m *S7MessageRequest) MessageType() uint8 {
 }
 
 func (m *S7MessageRequest) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
-	m.Parent.TpduReference = tpduReference
-	m.Parent.Parameter = parameter
-	m.Parent.Payload = payload
+	m.TpduReference = tpduReference
+	m.Parameter = parameter
+	m.Payload = payload
 }
 
 func NewS7MessageRequest(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageRequest{
-		Parent: NewS7Message(tpduReference, parameter, payload),
+		S7Message: NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.S7Message
 }
 
 func CastS7MessageRequest(structType interface{}) *S7MessageRequest {
@@ -86,7 +86,7 @@ func (m *S7MessageRequest) LengthInBits() uint16 {
 }
 
 func (m *S7MessageRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -106,10 +106,10 @@ func S7MessageRequestParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 
 	// Create a partially initialized instance
 	_child := &S7MessageRequest{
-		Parent: &S7Message{},
+		S7Message: &S7Message{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.S7Message.Child = _child
+	return _child.S7Message, nil
 }
 
 func (m *S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -123,7 +123,7 @@ func (m *S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *S7MessageRequest) String() string {

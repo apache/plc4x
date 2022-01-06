@@ -187,20 +187,16 @@ public class LittleEndianEncoder {
     }
 
     private static Stream<byte[]> encodeBigInteger(AdsDataType adsDataType, Stream<BigInteger> bigIntegerStream) {
-        // TODO: add boundchecks and add optional extension
         return bigIntegerStream
+            .peek(value -> {
+                if (value.longValue() < adsDataType.getLowerBound().longValue() || value.longValue() > adsDataType.getUpperBound().longValue())
+                    throw new PlcRuntimeException(value + " not within bounds of " + adsDataType);
+            })
             .map(bigIntValue -> {
                 byte[] bytes = bigIntValue.toByteArray();
-                if (bytes.length > 1 && bytes[0] == 0x0) {
-                    byte[] subArray = Arrays.copyOf(ArrayUtils.subarray(bytes, 1, bytes.length), adsDataType.getTargetByteSize());
-                    ArrayUtils.reverse(subArray);
-                    return subArray;
-                } else {
-                    ArrayUtils.reverse(Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
-                    return bytes;
-                }
-            })
-            .map(bytes -> Arrays.copyOf(bytes, adsDataType.getTargetByteSize()));
+                ArrayUtils.reverse(bytes); /* reverse first, so we don't truncate the wrong end */
+                return Arrays.copyOf(bytes, adsDataType.getTargetByteSize());
+            });
     }
 
     private static Stream<byte[]> encodeLocalTime(AdsDataType adsDataType, Stream<LocalTime> localTimeStream) {

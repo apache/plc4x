@@ -29,6 +29,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtPropertyDescriptionResponse struct {
+	*ApduDataExt
 	ObjectIndex      uint8
 	PropertyId       uint8
 	Index            uint8
@@ -37,7 +38,6 @@ type ApduDataExtPropertyDescriptionResponse struct {
 	MaxNrOfElements  uint16
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
-	Parent           *ApduDataExt
 }
 
 // The corresponding interface
@@ -67,10 +67,10 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		Parent:           NewApduDataExt(),
+		ApduDataExt:      NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtPropertyDescriptionResponse(structType interface{}) *ApduDataExtPropertyDescriptionResponse {
@@ -101,7 +101,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -140,34 +140,38 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
+	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
+	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
+	propertyId := _propertyId
 
 	// Simple Field (index)
-	index, _indexErr := readBuffer.ReadUint8("index", 8)
+	_index, _indexErr := readBuffer.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
+	index := _index
 
 	// Simple Field (writeEnabled)
-	writeEnabled, _writeEnabledErr := readBuffer.ReadBit("writeEnabled")
+	_writeEnabled, _writeEnabledErr := readBuffer.ReadBit("writeEnabled")
 	if _writeEnabledErr != nil {
 		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field")
 	}
+	writeEnabled := _writeEnabled
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -183,15 +187,15 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 		}
 	}
 
+	// Simple Field (propertyDataType)
 	if pullErr := readBuffer.PullContext("propertyDataType"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (propertyDataType)
-	propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
+	_propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
 	if _propertyDataTypeErr != nil {
 		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
 	}
+	propertyDataType := _propertyDataType
 	if closeErr := readBuffer.CloseContext("propertyDataType"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -211,33 +215,34 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 	}
 
 	// Simple Field (maxNrOfElements)
-	maxNrOfElements, _maxNrOfElementsErr := readBuffer.ReadUint16("maxNrOfElements", 12)
+	_maxNrOfElements, _maxNrOfElementsErr := readBuffer.ReadUint16("maxNrOfElements", 12)
 	if _maxNrOfElementsErr != nil {
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
+	maxNrOfElements := _maxNrOfElements
 
+	// Simple Field (readLevel)
 	if pullErr := readBuffer.PullContext("readLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (readLevel)
-	readLevel, _readLevelErr := AccessLevelParse(readBuffer)
+	_readLevel, _readLevelErr := AccessLevelParse(readBuffer)
 	if _readLevelErr != nil {
 		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
 	}
+	readLevel := _readLevel
 	if closeErr := readBuffer.CloseContext("readLevel"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (writeLevel)
 	if pullErr := readBuffer.PullContext("writeLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (writeLevel)
-	writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
+	_writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
+	writeLevel := _writeLevel
 	if closeErr := readBuffer.CloseContext("writeLevel"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,10 +261,10 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 		MaxNrOfElements:  maxNrOfElements,
 		ReadLevel:        readLevel,
 		WriteLevel:       writeLevel,
-		Parent:           &ApduDataExt{},
+		ApduDataExt:      &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -360,7 +365,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) String() string {

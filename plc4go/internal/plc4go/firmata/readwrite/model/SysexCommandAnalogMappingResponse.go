@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type SysexCommandAnalogMappingResponse struct {
-	Parent *SysexCommand
+	*SysexCommand
 }
 
 // The corresponding interface
@@ -53,10 +53,10 @@ func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexComman
 
 func NewSysexCommandAnalogMappingResponse() *SysexCommand {
 	child := &SysexCommandAnalogMappingResponse{
-		Parent: NewSysexCommand(),
+		SysexCommand: NewSysexCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.SysexCommand
 }
 
 func CastSysexCommandAnalogMappingResponse(structType interface{}) *SysexCommandAnalogMappingResponse {
@@ -87,7 +87,7 @@ func (m *SysexCommandAnalogMappingResponse) LengthInBits() uint16 {
 }
 
 func (m *SysexCommandAnalogMappingResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -96,7 +96,7 @@ func (m *SysexCommandAnalogMappingResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,10 +107,10 @@ func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer) (*Sysex
 
 	// Create a partially initialized instance
 	_child := &SysexCommandAnalogMappingResponse{
-		Parent: &SysexCommand{},
+		SysexCommand: &SysexCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.SysexCommand.Child = _child
+	return _child.SysexCommand, nil
 }
 
 func (m *SysexCommandAnalogMappingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *SysexCommandAnalogMappingResponse) Serialize(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *SysexCommandAnalogMappingResponse) String() string {

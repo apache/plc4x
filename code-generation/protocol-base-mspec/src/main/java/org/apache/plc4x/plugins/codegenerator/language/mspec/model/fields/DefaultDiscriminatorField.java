@@ -22,15 +22,17 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultDiscriminatorField extends DefaultTaggedField implements DiscriminatorField {
+import java.util.*;
+
+public class DefaultDiscriminatorField extends DefaultField implements DiscriminatorField {
 
     private final TypeReference type;
     private final String name;
 
-    public DefaultDiscriminatorField(String[] tags, TypeReference type, String name) {
-        super(tags);
-        this.type = type;
-        this.name = name;
+    public DefaultDiscriminatorField(Map<String, Term> attributes, TypeReference type, String name) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
     }
 
     public TypeReference getType() {
@@ -39,10 +41,6 @@ public class DefaultDiscriminatorField extends DefaultTaggedField implements Dis
 
     public String getName() {
         return name;
-    }
-
-    public Term[] getParams() {
-        return new Term[0];
     }
 
 }

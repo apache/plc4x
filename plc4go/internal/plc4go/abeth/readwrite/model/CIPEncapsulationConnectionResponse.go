@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type CIPEncapsulationConnectionResponse struct {
-	Parent *CIPEncapsulationPacket
+	*CIPEncapsulationPacket
 }
 
 // The corresponding interface
@@ -45,18 +45,18 @@ func (m *CIPEncapsulationConnectionResponse) CommandType() uint16 {
 }
 
 func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.Parent.SessionHandle = sessionHandle
-	m.Parent.Status = status
-	m.Parent.SenderContext = senderContext
-	m.Parent.Options = options
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationConnectionResponse{
-		Parent: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CIPEncapsulationPacket
 }
 
 func CastCIPEncapsulationConnectionResponse(structType interface{}) *CIPEncapsulationConnectionResponse {
@@ -87,7 +87,7 @@ func (m *CIPEncapsulationConnectionResponse) LengthInBits() uint16 {
 }
 
 func (m *CIPEncapsulationConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -107,10 +107,10 @@ func CIPEncapsulationConnectionResponseParse(readBuffer utils.ReadBuffer) (*CIPE
 
 	// Create a partially initialized instance
 	_child := &CIPEncapsulationConnectionResponse{
-		Parent: &CIPEncapsulationPacket{},
+		CIPEncapsulationPacket: &CIPEncapsulationPacket{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CIPEncapsulationPacket.Child = _child
+	return _child.CIPEncapsulationPacket, nil
 }
 
 func (m *CIPEncapsulationConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *CIPEncapsulationConnectionResponse) Serialize(writeBuffer utils.WriteBu
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CIPEncapsulationConnectionResponse) String() string {

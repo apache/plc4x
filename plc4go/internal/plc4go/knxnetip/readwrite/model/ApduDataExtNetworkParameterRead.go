@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtNetworkParameterRead struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtNetworkParameterRead) InitializeParent(parent *ApduDataExt) 
 
 func NewApduDataExtNetworkParameterRead() *ApduDataExt {
 	child := &ApduDataExtNetworkParameterRead{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtNetworkParameterRead(structType interface{}) *ApduDataExtNetworkParameterRead {
@@ -83,7 +83,7 @@ func (m *ApduDataExtNetworkParameterRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtNetworkParameterRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtNetworkParameterRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer) (*ApduDat
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterRead{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtNetworkParameterRead) String() string {

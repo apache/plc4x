@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type TunnelingResponse struct {
+	*KnxNetIpMessage
 	TunnelingResponseDataBlock *TunnelingResponseDataBlock
-	Parent                     *KnxNetIpMessage
 }
 
 // The corresponding interface
@@ -52,10 +52,10 @@ func (m *TunnelingResponse) InitializeParent(parent *KnxNetIpMessage) {
 func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
 	child := &TunnelingResponse{
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
-		Parent:                     NewKnxNetIpMessage(),
+		KnxNetIpMessage:            NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastTunnelingResponse(structType interface{}) *TunnelingResponse {
@@ -86,7 +86,7 @@ func (m *TunnelingResponse) LengthInBits() uint16 {
 }
 
 func (m *TunnelingResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
@@ -103,15 +103,15 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		return nil, pullErr
 	}
 
+	// Simple Field (tunnelingResponseDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (tunnelingResponseDataBlock)
-	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
+	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
+	tunnelingResponseDataBlock := CastTunnelingResponseDataBlock(_tunnelingResponseDataBlock)
 	if closeErr := readBuffer.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -122,11 +122,11 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 
 	// Create a partially initialized instance
 	_child := &TunnelingResponse{
-		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
-		Parent:                     &KnxNetIpMessage{},
+		TunnelingResponseDataBlock: CastTunnelingResponseDataBlock(tunnelingResponseDataBlock),
+		KnxNetIpMessage:            &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -152,7 +152,7 @@ func (m *TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *TunnelingResponse) String() string {

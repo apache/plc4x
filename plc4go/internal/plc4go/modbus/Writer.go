@@ -51,7 +51,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 	go func() {
 		// If we are requesting only one field, use a
 		if len(writeRequest.GetFieldNames()) != 1 {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("modbus only supports single-item requests"),
@@ -64,7 +64,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		field := writeRequest.GetField(fieldName)
 		modbusField, err := CastToModbusFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -76,14 +76,14 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewWriteBufferByteBased()
 		if err := readWriteModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error serializing value"),
 			}
 			return
 		}
-		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
+		data := io.GetBytes()
 
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))
@@ -101,14 +101,14 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				numWords,
 				data)
 		case ExtendedRegister:
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("modbus currently doesn't support extended register requests"),
 			}
 			return
 		default:
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("unsupported field type"),
@@ -145,12 +145,12 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
 
 				if err != nil {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 				} else {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: readResponse,
 					}
@@ -158,7 +158,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				return nil
 			},
 			func(err error) error {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
 					Err:     errors.New("got timeout while waiting for response"),
 				}

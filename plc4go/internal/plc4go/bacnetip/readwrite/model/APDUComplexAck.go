@@ -29,13 +29,13 @@ import (
 
 // The data-structure of this message
 type APDUComplexAck struct {
+	*APDU
 	SegmentedMessage   bool
 	MoreFollows        bool
 	OriginalInvokeId   uint8
 	SequenceNumber     *uint8
 	ProposedWindowSize *uint8
 	ServiceAck         *BACnetServiceAck
-	Parent             *APDU
 }
 
 // The corresponding interface
@@ -63,10 +63,10 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
 		ServiceAck:         serviceAck,
-		Parent:             NewAPDU(),
+		APDU:               NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUComplexAck(structType interface{}) *APDUComplexAck {
@@ -97,7 +97,7 @@ func (m *APDUComplexAck) LengthInBits() uint16 {
 }
 
 func (m *APDUComplexAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -131,22 +131,24 @@ func (m *APDUComplexAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (segmentedMessage)
-	segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
+	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
+	segmentedMessage := _segmentedMessage
 
 	// Simple Field (moreFollows)
-	moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
+	_moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
+	moreFollows := _moreFollows
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -163,10 +165,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
@@ -188,15 +191,15 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		proposedWindowSize = &_val
 	}
 
+	// Simple Field (serviceAck)
 	if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (serviceAck)
-	serviceAck, _serviceAckErr := BACnetServiceAckParse(readBuffer)
+	_serviceAck, _serviceAckErr := BACnetServiceAckParse(readBuffer)
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")
 	}
+	serviceAck := CastBACnetServiceAck(_serviceAck)
 	if closeErr := readBuffer.CloseContext("serviceAck"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -212,11 +215,11 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		ServiceAck:         serviceAck,
-		Parent:             &APDU{},
+		ServiceAck:         CastBACnetServiceAck(serviceAck),
+		APDU:               &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -291,7 +294,7 @@ func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUComplexAck) String() string {

@@ -69,10 +69,10 @@ func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
 func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Enum Field (returnCode)
+	// Simple field (returnCode)
 	lengthInBits += 8
 
-	// Enum Field (transportSize)
+	// Simple field (transportSize)
 	lengthInBits += 8
 
 	// Implicit Field (dataLength)
@@ -84,7 +84,7 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
+	_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -96,31 +96,33 @@ func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
+func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (returnCode)
-	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (transportSize)
-	transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -132,8 +134,8 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(utils.InlineIf(transportSize.SizeInBits(), func() interface{} { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() interface{} { return uint16(dataLength) }).(uint16))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
@@ -143,7 +145,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
 			return nil, pullErr
 		}
-		_timesPadding := (utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(data))) % uint8(uint8(2))) }))
+		_timesPadding := (int32(int32(len(data))) % int32(int32(2)))
 		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
 			_, _err := readBuffer.ReadUint8("", 8)
@@ -164,41 +166,39 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem bool) error {
+func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("S7VarPayloadDataItem"); pushErr != nil {
 		return pushErr
 	}
 
+	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	_returnCodeErr := returnCode.Serialize(writeBuffer)
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
-	}
+	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return popErr
 	}
+	if _returnCodeErr != nil {
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	}
 
+	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (transportSize)
-	transportSize := CastDataTransportSize(m.TransportSize)
-	_transportSizeErr := transportSize.Serialize(writeBuffer)
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-	}
+	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 		return popErr
 	}
+	if _transportSizeErr != nil {
+		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
-		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
-	}))))
+	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() interface{} { return uint16(uint16(1)) }, func() interface{} {
+		return uint16(uint16(utils.InlineIf(m.TransportSize.SizeInBits(), func() interface{} { return uint16(uint16(8)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
+	}).(uint16))))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -218,9 +218,9 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
+		_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
-			_paddingValue := uint8(uint8(0))
+			_paddingValue := uint8(0x00)
 			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
@@ -235,4 +235,13 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem
 		return popErr
 	}
 	return nil
+}
+
+func (m *S7VarPayloadDataItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
 }

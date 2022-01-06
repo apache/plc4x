@@ -90,13 +90,13 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	go func() {
 		err := m.messageCodec.Connect()
 		if err != nil {
-			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 		}
 
 		// Only on active connections we do a connection
 		if m.driverContext.PassiveMode {
 			log.Info().Msg("S7 Driver running in PASSIVE mode.")
-			ch <- plc4go.NewPlcConnectionConnectResult(m, nil)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
 			return
 		}
 
@@ -106,7 +106,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
 			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
-			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 			m.SetConnected(true)
 			return
 		}
@@ -172,18 +172,18 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 				if cotpPacketData == nil {
 					return false
 				}
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
 				if messageResponseData == nil {
 					return false
 				}
-				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
 				return parameterSetupCommunication != nil
 			},
 			func(message interface{}) error {
 				tpktPacket := readWriteModel.CastTPKTPacket(message)
 				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
-				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Payload)
+				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parameter)
 				s7ConnectionResult <- setupCommunication
 				return nil
 			},
@@ -239,17 +239,17 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 					if cotpPacketData == nil {
 						return false
 					}
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
 					if messageUserData == nil {
 						return false
 					}
-					return readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload) != nil
+					return readWriteModel.CastS7PayloadUserData(messageUserData.Payload) != nil
 				},
 				func(message interface{}) error {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
-					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload)
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Payload)
+					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Payload)
 					return nil
 				},
 				func(err error) error {
@@ -282,7 +282,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 
 func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
 	if m.driverContext.awaitSetupComplete {
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
 		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
 	}
@@ -290,7 +290,7 @@ func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 
 func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
 	if m.driverContext.awaitSetupComplete {
-		ch <- plc4go.NewPlcConnectionConnectResult(m, nil)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
 	} else {
 		log.Info().Msg("Successfully connected")
 	}
@@ -358,14 +358,14 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 		readWriteModel.NewS7PayloadUserData(
 			[]*readWriteModel.S7PayloadUserDataItem{
 				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
 					readWriteModel.NewSzlId(
 						readWriteModel.SzlModuleTypeClass_CPU,
 						0x00,
 						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
 					),
 					0x0000,
+					readWriteModel.DataTransportErrorCode_OK,
+					readWriteModel.DataTransportSize_OCTET_STRING,
 				),
 			},
 		),
@@ -375,7 +375,7 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 }
 
 func (m *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse *readWriteModel.COTPPacketConnectionResponse) *readWriteModel.TPKTPacket {
-	for _, parameter := range cotpPacketConnectionResponse.Parent.Parameters {
+	for _, parameter := range cotpPacketConnectionResponse.Parameters {
 		switch parameter.Child.(type) {
 		case *readWriteModel.COTPParameterCalledTsap:
 			cotpParameterCalledTsap := parameter.Child.(*readWriteModel.COTPParameterCalledTsap)

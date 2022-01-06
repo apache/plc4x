@@ -24,8 +24,9 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/${type.name}.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.java
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,7 +45,7 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * specific language governing permissions and limitations
  * under the License.
  */
-package ${helper.packageName(protocolName, languageName, outputFlavor)}.types;
+package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ import java.util.Map;
 public enum ${type.name} {
 
 <#list type.enumValues as enumValue>
-    ${enumValue.name}(<#if type.type?has_content>(${helper.getLanguageTypeNameForTypeReference(type.type, true)}) <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#elseif helper.isComplexTypeReference(type.type)><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type, true)}.${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if></#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName><#if helper.isComplexTypeReference(type.getConstantType(constantName))><#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName)) == 'null'>null<#elseif helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}</#if><#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}</#if><#sep>, </#sep></#list></#if>)<#sep>,
+    ${enumValue.name}(<#if type.type?has_content>(${helper.getLanguageTypeNameForTypeReference(type.type, true)}) <#if helper.isComplexTypeReference(type.type)><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type, true)}.${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if></#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName><#if helper.isComplexTypeReference(type.getConstantType(constantName))><#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElse(null)) == 'null'>null<#elseif helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if><#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if><#sep>, </#sep></#list></#if>)<#sep>,
 </#sep></#list>;
 
 <#if type.type?has_content>

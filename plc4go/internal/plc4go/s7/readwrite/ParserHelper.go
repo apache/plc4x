@@ -34,16 +34,51 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 	switch typeName {
 	case "SzlId":
 		return model.SzlIdParse(io)
-	case "S7Message":
-		return model.S7MessageParse(io)
-	case "S7VarPayloadStatusItem":
-		return model.S7VarPayloadStatusItemParse(io)
+	case "AlarmMessageObjectAckType":
+		return model.AlarmMessageObjectAckTypeParse(io)
 	case "S7Parameter":
 		messageType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.S7ParameterParse(io, messageType)
+	case "S7DataAlarmMessage":
+		cpuFunctionType, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.S7DataAlarmMessageParse(io, cpuFunctionType)
+	case "S7PayloadUserDataItem":
+		cpuFunctionType, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		cpuSubfunction, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.S7PayloadUserDataItemParse(io, cpuFunctionType, cpuSubfunction)
+	case "AlarmMessageObjectPushType":
+		return model.AlarmMessageObjectPushTypeParse(io)
+	case "AlarmMessagePushType":
+		return model.AlarmMessagePushTypeParse(io)
+	case "AlarmMessageAckObjectPushType":
+		return model.AlarmMessageAckObjectPushTypeParse(io)
+	case "S7Payload":
+		messageType, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		var parameter model.S7Parameter
+		return model.S7PayloadParse(io, messageType, &parameter)
+	case "S7Address":
+		return model.S7AddressParse(io)
+	case "AlarmMessageAckPushType":
+		return model.AlarmMessageAckPushTypeParse(io)
+	case "S7Message":
+		return model.S7MessageParse(io)
+	case "S7VarPayloadStatusItem":
+		return model.S7VarPayloadStatusItemParse(io)
 	case "SzlDataTreeItem":
 		return model.SzlDataTreeItemParse(io)
 	case "COTPPacket":
@@ -52,37 +87,32 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.COTPPacketParse(io, cotpLen)
-	case "S7PayloadUserDataItem":
-		cpuFunctionType, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.S7PayloadUserDataItemParse(io, cpuFunctionType)
+	case "DateAndTime":
+		return model.DateAndTimeParse(io)
 	case "COTPParameter":
 		rest, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.COTPParameterParse(io, rest)
+	case "State":
+		return model.StateParse(io)
 	case "TPKTPacket":
 		return model.TPKTPacketParse(io)
-	case "S7Payload":
-		messageType, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		var parameter model.S7Parameter
-		return model.S7PayloadParse(io, messageType, &parameter)
+	case "AlarmMessageAckType":
+		return model.AlarmMessageAckTypeParse(io)
+	case "AssociatedValueType":
+		return model.AssociatedValueTypeParse(io)
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(io)
 	case "S7VarPayloadDataItem":
-		lastItem, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.S7VarPayloadDataItemParse(io, lastItem)
-	case "S7Address":
-		return model.S7AddressParse(io)
+		return model.S7VarPayloadDataItemParse(io)
+	case "AlarmMessageQueryType":
+		return model.AlarmMessageQueryTypeParse(io)
+	case "AlarmMessageAckResponseType":
+		return model.AlarmMessageAckResponseTypeParse(io)
+	case "AlarmMessageObjectQueryType":
+		return model.AlarmMessageObjectQueryTypeParse(io)
 	case "S7ParameterUserDataItem":
 		return model.S7ParameterUserDataItemParse(io)
 	}

@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedRequestKey struct {
-	Parent *BACnetConfirmedServiceRequest
+	*BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) InitializeParent(parent
 
 func NewBACnetConfirmedServiceRequestRemovedRequestKey() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestRemovedRequestKey{
-		Parent: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestRemovedRequestKey(structType interface{}) *BACnetConfirmedServiceRequestRemovedRequestKey {
@@ -83,7 +83,7 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedRequestKey"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemovedRequestKey{
-		Parent: &BACnetConfirmedServiceRequest{},
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(writeBuffer u
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) String() string {

@@ -23,15 +23,17 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"net"
 	"net/url"
 	"time"
+
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type Discoverer struct {
@@ -42,7 +44,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -51,9 +53,27 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 		return err
 	}
 
-	interfaces, err := net.Interfaces()
+	allInterfaces, err := net.Interfaces()
 	if err != nil {
 		return err
+	}
+
+	// If no device is explicitly selected via option, simply use all of them
+	// However if a discovery option is present to select a device by name, only
+	// add those devices matching any of the given names.
+	var interfaces []net.Interface
+	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
+	if len(deviceNames) > 0 {
+		for _, curInterface := range allInterfaces {
+			for _, deviceNameOption := range deviceNames {
+				if curInterface.Name == deviceNameOption.GetDeviceName() {
+					interfaces = append(interfaces, curInterface)
+					break
+				}
+			}
+		}
+	} else {
+		interfaces = allInterfaces
 	}
 
 	var tranportInstances []transports.TransportInstance
@@ -112,7 +132,7 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 				return errors.New("couldn't cast transport instance to UDP transport instance")
 			}
 			localAddress := udpTransportInstance.LocalAddress
-			localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
+			localAddr := driverModel.NewIPAddress(localAddress.IP)
 
 			// Prepare the discovery packet data
 			discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
@@ -123,10 +143,16 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 			go func() {
 				// Keep on reading responses till the timeout is done.
 				// TODO: Make this configurable
+				timeout := time.NewTimer(time.Second * 1)
+				timeout.Stop()
 				for start := time.Now(); time.Since(start) < time.Second*5; {
+					timeout.Reset(time.Second * 1)
 					select {
 					case message := <-codec.GetDefaultIncomingMessageChannel():
 						{
+							if !timeout.Stop() {
+								<-timeout.C
+							}
 							searchResponse := driverModel.CastSearchResponse(message)
 							if searchResponse != nil {
 								addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
@@ -135,17 +161,22 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 								if err != nil {
 									continue
 								}
-								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
-									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-								discoveryEvent := model.NewPlcDiscoveryEvent(
-									"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
+								deviceName := string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
+								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+									ProtocolCode:  "knxnet-ip",
+									TransportCode: "udp",
+									TransportUrl:  *remoteUrl,
+									Options:       nil,
+									Name:          deviceName,
+								}
 								// Pass the event back to the callback
 								callback(discoveryEvent)
 							}
 							continue
 						}
-					case <-time.After(time.Second * 1):
+					case <-timeout.C:
 						{
+							timeout.Stop()
 							continue
 						}
 					}

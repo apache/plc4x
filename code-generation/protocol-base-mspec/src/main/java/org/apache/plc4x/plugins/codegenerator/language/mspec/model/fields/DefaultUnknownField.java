@@ -22,21 +22,19 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultUnknownField extends DefaultTaggedField implements UnknownField {
+import java.util.*;
+
+public class DefaultUnknownField extends DefaultField implements UnknownField {
 
     private final TypeReference type;
 
-    public DefaultUnknownField(String[] tags, TypeReference type) {
-        super(tags);
-        this.type = type;
+    public DefaultUnknownField(Map<String, Term> attributes, TypeReference type) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
     }
 
     public TypeReference getType() {
         return type;
-    }
-
-    public Term[] getParams() {
-        return new Term[0];
     }
 
 }

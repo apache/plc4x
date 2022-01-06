@@ -35,7 +35,7 @@ type MessageCodec struct {
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(codec.handleCustomMessage))
 	return codec
 }
 
@@ -73,8 +73,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		//Second byte for the size and then add the header size 24
-		packetSize := uint32((uint16(data[3]) << 8) + uint16(data[2]))
+		packetSize := uint32((uint16(data[2]) << 8) + uint16(data[3]))
 		if num < packetSize {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
@@ -99,4 +98,10 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 	}
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
+}
+
+func (m *MessageCodec) handleCustomMessage(_ *_default.DefaultCodecRequirements, message interface{}) bool {
+	// For now, we just put them in the incoming channel
+	m.GetDefaultIncomingMessageChannel() <- message
+	return true
 }

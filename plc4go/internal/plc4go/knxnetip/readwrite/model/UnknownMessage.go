@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type UnknownMessage struct {
-	UnknownData []int8
-	Parent      *KnxNetIpMessage
+	*KnxNetIpMessage
+	UnknownData []byte
 }
 
 // The corresponding interface
@@ -49,13 +49,13 @@ func (m *UnknownMessage) MsgType() uint16 {
 func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {
 }
 
-func NewUnknownMessage(unknownData []int8) *KnxNetIpMessage {
+func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
 	child := &UnknownMessage{
-		UnknownData: unknownData,
-		Parent:      NewKnxNetIpMessage(),
+		UnknownData:     unknownData,
+		KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.KnxNetIpMessage
 }
 
 func CastUnknownMessage(structType interface{}) *UnknownMessage {
@@ -86,7 +86,7 @@ func (m *UnknownMessage) LengthInBits() uint16 {
 }
 
 func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -104,22 +104,11 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Array field (unknownData)
-	if pullErr := readBuffer.PullContext("unknownData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
-		}
-		unknownData[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("unknownData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (unknownData)
+	numberOfBytesunknownData := int(uint16(totalLength) - uint16(uint16(6)))
+	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytesunknownData)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownData' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("UnknownMessage"); closeErr != nil {
@@ -128,11 +117,11 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{
-		UnknownData: unknownData,
-		Parent:      &KnxNetIpMessage{},
+		UnknownData:     unknownData,
+		KnxNetIpMessage: &KnxNetIpMessage{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.KnxNetIpMessage.Child = _child
+	return _child.KnxNetIpMessage, nil
 }
 
 func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -143,17 +132,10 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
-			if pushErr := writeBuffer.PushContext("unknownData", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.UnknownData {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("unknownData", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (unknownData)
+			_writeArrayErr := writeBuffer.WriteByteArray("unknownData", m.UnknownData)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownData' field")
 			}
 		}
 
@@ -162,7 +144,7 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *UnknownMessage) String() string {

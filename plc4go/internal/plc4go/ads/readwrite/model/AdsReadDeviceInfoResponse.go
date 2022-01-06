@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type AdsReadDeviceInfoResponse struct {
+	*AdsData
 	Result       ReturnCode
 	MajorVersion uint8
 	MinorVersion uint8
 	Version      uint16
-	Device       []int8
-	Parent       *AdsData
+	Device       []byte
 }
 
 // The corresponding interface
@@ -51,23 +51,23 @@ func (m *AdsReadDeviceInfoResponse) CommandId() CommandId {
 }
 
 func (m *AdsReadDeviceInfoResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {
 }
 
-func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []int8) *AdsData {
+func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
 	child := &AdsReadDeviceInfoResponse{
 		Result:       result,
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
 		Version:      version,
 		Device:       device,
-		Parent:       NewAdsData(),
+		AdsData:      NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsReadDeviceInfoResponse(structType interface{}) *AdsReadDeviceInfoResponse {
@@ -98,7 +98,7 @@ func (m *AdsReadDeviceInfoResponse) LengthInBits() uint16 {
 }
 
 func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -124,57 +124,49 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (result)
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (majorVersion)
-	majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
+	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
 	}
+	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
+	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
 	}
+	minorVersion := _minorVersion
 
 	// Simple Field (version)
-	version, _versionErr := readBuffer.ReadUint16("version", 16)
+	_version, _versionErr := readBuffer.ReadUint16("version", 16)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
-
-	// Array field (device)
-	if pullErr := readBuffer.PullContext("device", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	device := make([]int8, uint16(16))
-	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'device' field")
-		}
-		device[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("device", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	version := _version
+	// Byte Array field (device)
+	numberOfBytesdevice := int(uint16(16))
+	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytesdevice)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {
@@ -188,10 +180,10 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer) (*AdsData, erro
 		MinorVersion: minorVersion,
 		Version:      version,
 		Device:       device,
-		Parent:       &AdsData{},
+		AdsData:      &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -235,17 +227,10 @@ func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Array Field (device)
 		if m.Device != nil {
-			if pushErr := writeBuffer.PushContext("device", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Device {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'device' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("device", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (device)
+			_writeArrayErr := writeBuffer.WriteByteArray("device", m.Device)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'device' field")
 			}
 		}
 
@@ -254,7 +239,7 @@ func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsReadDeviceInfoResponse) String() string {

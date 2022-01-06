@@ -18,5 +18,26 @@
  */
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
+import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
+import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+
 public interface FreemarkerLanguageTemplateHelper {
+    String getLanguageTypeNameForField(Field field);
+
+    String getLanguageTypeNameForTypeReference(TypeReference typeReference);
+
+    @Deprecated
+    default String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+        return getReadBufferReadMethodCall(simpleTypeReference, null, null);
+    }
+
+    @Deprecated
+    String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
+
+    @Deprecated
+    String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field);
+
+    String getNullValueForTypeReference(TypeReference typeReference);
 }

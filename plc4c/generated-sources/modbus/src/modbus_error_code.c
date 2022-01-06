@@ -30,6 +30,29 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
   return plc4c_modbus_read_write_modbus_error_code_null_const;
 }
 
+// Parse function.
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_error_code** _message) {
+    plc4c_return_code _res = OK;
+
+    // Allocate enough memory to contain this data structure.
+    (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_error_code));
+    if(*_message == NULL) {
+        return NO_MEMORY;
+    }
+
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) *_message);
+
+    return _res;
+}
+
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* _message) {
+    plc4c_return_code _res = OK;
+
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
+
+    return _res;
+}
+
 plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_value_of(char* value_string) {
     if(strcmp(value_string, "ILLEGAL_FUNCTION") == 0) {
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_FUNCTION;
@@ -104,4 +127,12 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
         return -1;
       }
     }
+}
+
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bytes(plc4c_modbus_read_write_modbus_error_code* _message) {
+    return plc4c_modbus_read_write_modbus_error_code_length_in_bits(_message) / 8;
+}
+
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bits(plc4c_modbus_read_write_modbus_error_code* _message) {
+    return 8;
 }

@@ -21,20 +21,21 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+
+import java.util.*;
 
 public abstract class DefaultTypeDefinition {
 
-    private final String name;
-    private final Argument[] parserArguments;
-    private final String[] tags;
-    private TypeDefinition parentType;
+    protected final String name;
+    private final Map<String, Term> attributes;
+    protected final List<Argument> parserArguments;
+    protected TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags) {
-        this.name = name;
+    public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments) {
+        this.name = Objects.requireNonNull(name);
+        this.attributes = attributes;
         this.parserArguments = parserArguments;
-        this.tags = tags;
         this.parentType = null;
     }
 
@@ -42,12 +43,27 @@ public abstract class DefaultTypeDefinition {
         return name;
     }
 
-    public Argument[] getParserArguments() {
-        return parserArguments;
+    public Optional<Term> getAttribute(String attributeName) {
+        if (attributes.containsKey(attributeName)) {
+            return Optional.of(attributes.get(attributeName));
+        }
+        return Optional.empty();
     }
 
-    public String[] getTags() {
-        return tags;
+    public Optional<List<Argument>> getParserArguments() {
+        return Optional.ofNullable(parserArguments);
+    }
+
+    public Optional<List<Argument>> getAllParserArguments() {
+        List<Argument> allArguments = new ArrayList<>();
+        if(getParentType() != null) {
+            final TypeDefinition parentType = getParentType();
+            allArguments.addAll(parentType.getParserArguments().orElse(Collections.emptyList()));
+        }
+        if(parserArguments != null) {
+            allArguments.addAll(parserArguments);
+        }
+        return Optional.of(allArguments);
     }
 
     public TypeDefinition getParentType() {
@@ -56,10 +72,6 @@ public abstract class DefaultTypeDefinition {
 
     public void setParentType(TypeDefinition parentType) {
         this.parentType = parentType;
-    }
-
-    public TypeReference getTypeReference() {
-        return new DefaultComplexTypeReference(getName());
     }
 
 }

@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type FirmataCommandSetPinMode struct {
-	Pin    uint8
-	Mode   PinMode
-	Parent *FirmataCommand
+	*FirmataCommand
+	Pin  uint8
+	Mode PinMode
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *FirmataCommandSetPinMode) InitializeParent(parent *FirmataCommand) {
 
 func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *FirmataCommand {
 	child := &FirmataCommandSetPinMode{
-		Pin:    pin,
-		Mode:   mode,
-		Parent: NewFirmataCommand(),
+		Pin:            pin,
+		Mode:           mode,
+		FirmataCommand: NewFirmataCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.FirmataCommand
 }
 
 func CastFirmataCommandSetPinMode(structType interface{}) *FirmataCommandSetPinMode {
@@ -88,12 +88,12 @@ func (m *FirmataCommandSetPinMode) LengthInBits() uint16 {
 }
 
 func (m *FirmataCommandSetPinMode) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
 
-	// Enum Field (mode)
+	// Simple field (mode)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -103,25 +103,27 @@ func (m *FirmataCommandSetPinMode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (pin)
-	pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
+	pin := _pin
 
+	// Simple Field (mode)
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (mode)
-	mode, _modeErr := PinModeParse(readBuffer)
+	_mode, _modeErr := PinModeParse(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field")
 	}
+	mode := _mode
 	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -132,12 +134,12 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer) (*FirmataCommand
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSetPinMode{
-		Pin:    pin,
-		Mode:   mode,
-		Parent: &FirmataCommand{},
+		Pin:            pin,
+		Mode:           mode,
+		FirmataCommand: &FirmataCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.FirmataCommand.Child = _child
+	return _child.FirmataCommand, nil
 }
 
 func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -153,17 +155,16 @@ func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
 
+		// Simple Field (mode)
 		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (mode)
-		mode := CastPinMode(m.Mode)
-		_modeErr := mode.Serialize(writeBuffer)
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
-		}
+		_modeErr := m.Mode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
 			return popErr
+		}
+		if _modeErr != nil {
+			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetPinMode"); popErr != nil {
@@ -171,7 +172,7 @@ func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *FirmataCommandSetPinMode) String() string {

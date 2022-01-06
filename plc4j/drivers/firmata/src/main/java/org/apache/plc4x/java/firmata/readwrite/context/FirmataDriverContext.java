@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.firmata.readwrite.*;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldAnalog;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldDigital;
-import org.apache.plc4x.java.firmata.readwrite.types.PinMode;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.util.*;

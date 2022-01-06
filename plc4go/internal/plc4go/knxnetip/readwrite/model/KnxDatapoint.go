@@ -157,7 +157,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_REAL: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -166,7 +166,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_LREAL: // LREAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", true, 11, 52)
+		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1000,7 +1000,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((8)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(8))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1009,7 +1009,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((8)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(8))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1343,7 +1343,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1352,7 +1352,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1361,7 +1361,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1370,7 +1370,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1379,7 +1379,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1388,7 +1388,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1397,7 +1397,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1406,7 +1406,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1415,7 +1415,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1424,7 +1424,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1433,7 +1433,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1442,7 +1442,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1451,7 +1451,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1460,7 +1460,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1469,7 +1469,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1478,7 +1478,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Power: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1487,7 +1487,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1496,7 +1496,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1505,7 +1505,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1514,7 +1514,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1523,7 +1523,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1532,7 +1532,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1785,7 +1785,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1794,7 +1794,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1803,7 +1803,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1812,7 +1812,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1821,7 +1821,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1830,7 +1830,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1839,7 +1839,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1848,7 +1848,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1857,7 +1857,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1866,7 +1866,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1875,7 +1875,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1884,7 +1884,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1893,7 +1893,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1902,7 +1902,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1911,7 +1911,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1920,7 +1920,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1929,7 +1929,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1938,7 +1938,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1947,7 +1947,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1956,7 +1956,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1965,7 +1965,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1974,7 +1974,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1983,7 +1983,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -1992,7 +1992,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2001,7 +2001,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2010,7 +2010,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2019,7 +2019,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2028,7 +2028,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2037,7 +2037,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2046,7 +2046,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2055,7 +2055,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2064,7 +2064,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2073,7 +2073,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2082,7 +2082,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2091,7 +2091,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2100,7 +2100,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2109,7 +2109,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2118,7 +2118,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2127,7 +2127,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2136,7 +2136,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2145,7 +2145,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2154,7 +2154,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2163,7 +2163,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2172,7 +2172,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2181,7 +2181,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2190,7 +2190,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2199,7 +2199,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2208,7 +2208,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2217,7 +2217,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2226,7 +2226,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2235,7 +2235,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2244,7 +2244,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2253,7 +2253,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2262,7 +2262,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2271,7 +2271,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2280,7 +2280,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2289,7 +2289,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2298,7 +2298,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2307,7 +2307,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2316,7 +2316,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2325,7 +2325,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2334,7 +2334,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2343,7 +2343,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2352,7 +2352,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2361,7 +2361,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2370,7 +2370,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2379,7 +2379,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2388,7 +2388,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2397,7 +2397,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2406,7 +2406,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2415,7 +2415,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2424,7 +2424,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2433,7 +2433,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2442,7 +2442,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2451,7 +2451,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2460,7 +2460,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2469,7 +2469,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2478,7 +2478,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2487,7 +2487,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2496,7 +2496,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2505,7 +2505,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2514,7 +2514,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 4, 11)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2604,7 +2604,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((112)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(112))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -2613,7 +2613,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((112)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(112))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -5039,21 +5039,21 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpcomf)
-		tempsetpcomf, _tempsetpcomfErr := readBuffer.ReadFloat32("tempsetpcomf", true, 4, 11)
+		tempsetpcomf, _tempsetpcomfErr := readBuffer.ReadFloat32("tempsetpcomf", 16)
 		if _tempsetpcomfErr != nil {
 			return nil, errors.Wrap(_tempsetpcomfErr, "Error parsing 'tempsetpcomf' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpcomf)
 
 		// Simple Field (tempsetpstdby)
-		tempsetpstdby, _tempsetpstdbyErr := readBuffer.ReadFloat32("tempsetpstdby", true, 4, 11)
+		tempsetpstdby, _tempsetpstdbyErr := readBuffer.ReadFloat32("tempsetpstdby", 16)
 		if _tempsetpstdbyErr != nil {
 			return nil, errors.Wrap(_tempsetpstdbyErr, "Error parsing 'tempsetpstdby' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpstdby)
 
 		// Simple Field (tempsetpeco)
-		tempsetpeco, _tempsetpecoErr := readBuffer.ReadFloat32("tempsetpeco", true, 4, 11)
+		tempsetpeco, _tempsetpecoErr := readBuffer.ReadFloat32("tempsetpeco", 16)
 		if _tempsetpecoErr != nil {
 			return nil, errors.Wrap(_tempsetpecoErr, "Error parsing 'tempsetpeco' field")
 		}
@@ -5064,21 +5064,21 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpshiftcomf)
-		tempsetpshiftcomf, _tempsetpshiftcomfErr := readBuffer.ReadFloat32("tempsetpshiftcomf", true, 4, 11)
+		tempsetpshiftcomf, _tempsetpshiftcomfErr := readBuffer.ReadFloat32("tempsetpshiftcomf", 16)
 		if _tempsetpshiftcomfErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftcomfErr, "Error parsing 'tempsetpshiftcomf' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpshiftcomf)
 
 		// Simple Field (tempsetpshiftstdby)
-		tempsetpshiftstdby, _tempsetpshiftstdbyErr := readBuffer.ReadFloat32("tempsetpshiftstdby", true, 4, 11)
+		tempsetpshiftstdby, _tempsetpshiftstdbyErr := readBuffer.ReadFloat32("tempsetpshiftstdby", 16)
 		if _tempsetpshiftstdbyErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftstdbyErr, "Error parsing 'tempsetpshiftstdby' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpshiftstdby)
 
 		// Simple Field (tempsetpshifteco)
-		tempsetpshifteco, _tempsetpshiftecoErr := readBuffer.ReadFloat32("tempsetpshifteco", true, 4, 11)
+		tempsetpshifteco, _tempsetpshiftecoErr := readBuffer.ReadFloat32("tempsetpshifteco", 16)
 		if _tempsetpshiftecoErr != nil {
 			return nil, errors.Wrap(_tempsetpshiftecoErr, "Error parsing 'tempsetpshifteco' field")
 		}
@@ -5239,7 +5239,7 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((16)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(16))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -6103,14 +6103,14 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (longitude)
-		longitude, _longitudeErr := readBuffer.ReadFloat32("longitude", true, 8, 23)
+		longitude, _longitudeErr := readBuffer.ReadFloat32("longitude", 32)
 		if _longitudeErr != nil {
 			return nil, errors.Wrap(_longitudeErr, "Error parsing 'longitude' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(longitude)
 
 		// Simple Field (latitude)
-		latitude, _latitudeErr := readBuffer.ReadFloat32("latitude", true, 8, 23)
+		latitude, _latitudeErr := readBuffer.ReadFloat32("latitude", 32)
 		if _latitudeErr != nil {
 			return nil, errors.Wrap(_latitudeErr, "Error parsing 'latitude' field")
 		}
@@ -6121,28 +6121,28 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointComfort)
-		roomTemperatureSetpointComfort, _roomTemperatureSetpointComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointComfort", true, 4, 11)
+		roomTemperatureSetpointComfort, _roomTemperatureSetpointComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointComfort", 16)
 		if _roomTemperatureSetpointComfortErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointComfortErr, "Error parsing 'roomTemperatureSetpointComfort' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointComfort)
 
 		// Simple Field (roomTemperatureSetpointStandby)
-		roomTemperatureSetpointStandby, _roomTemperatureSetpointStandbyErr := readBuffer.ReadFloat32("roomTemperatureSetpointStandby", true, 4, 11)
+		roomTemperatureSetpointStandby, _roomTemperatureSetpointStandbyErr := readBuffer.ReadFloat32("roomTemperatureSetpointStandby", 16)
 		if _roomTemperatureSetpointStandbyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointStandbyErr, "Error parsing 'roomTemperatureSetpointStandby' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointStandby)
 
 		// Simple Field (roomTemperatureSetpointEconomy)
-		roomTemperatureSetpointEconomy, _roomTemperatureSetpointEconomyErr := readBuffer.ReadFloat32("roomTemperatureSetpointEconomy", true, 4, 11)
+		roomTemperatureSetpointEconomy, _roomTemperatureSetpointEconomyErr := readBuffer.ReadFloat32("roomTemperatureSetpointEconomy", 16)
 		if _roomTemperatureSetpointEconomyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointEconomyErr, "Error parsing 'roomTemperatureSetpointEconomy' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointEconomy)
 
 		// Simple Field (roomTemperatureSetpointBuildingProtection)
-		roomTemperatureSetpointBuildingProtection, _roomTemperatureSetpointBuildingProtectionErr := readBuffer.ReadFloat32("roomTemperatureSetpointBuildingProtection", true, 4, 11)
+		roomTemperatureSetpointBuildingProtection, _roomTemperatureSetpointBuildingProtectionErr := readBuffer.ReadFloat32("roomTemperatureSetpointBuildingProtection", 16)
 		if _roomTemperatureSetpointBuildingProtectionErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointBuildingProtectionErr, "Error parsing 'roomTemperatureSetpointBuildingProtection' field")
 		}
@@ -6153,28 +6153,28 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
-		roomTemperatureSetpointShiftComfort, _roomTemperatureSetpointShiftComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftComfort", true, 4, 11)
+		roomTemperatureSetpointShiftComfort, _roomTemperatureSetpointShiftComfortErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftComfort", 16)
 		if _roomTemperatureSetpointShiftComfortErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftComfortErr, "Error parsing 'roomTemperatureSetpointShiftComfort' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointShiftComfort)
 
 		// Simple Field (roomTemperatureSetpointShiftStandby)
-		roomTemperatureSetpointShiftStandby, _roomTemperatureSetpointShiftStandbyErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftStandby", true, 4, 11)
+		roomTemperatureSetpointShiftStandby, _roomTemperatureSetpointShiftStandbyErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftStandby", 16)
 		if _roomTemperatureSetpointShiftStandbyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftStandbyErr, "Error parsing 'roomTemperatureSetpointShiftStandby' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointShiftStandby)
 
 		// Simple Field (roomTemperatureSetpointShiftEconomy)
-		roomTemperatureSetpointShiftEconomy, _roomTemperatureSetpointShiftEconomyErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftEconomy", true, 4, 11)
+		roomTemperatureSetpointShiftEconomy, _roomTemperatureSetpointShiftEconomyErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftEconomy", 16)
 		if _roomTemperatureSetpointShiftEconomyErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftEconomyErr, "Error parsing 'roomTemperatureSetpointShiftEconomy' field")
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointShiftEconomy)
 
 		// Simple Field (roomTemperatureSetpointShiftBuildingProtection)
-		roomTemperatureSetpointShiftBuildingProtection, _roomTemperatureSetpointShiftBuildingProtectionErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftBuildingProtection", true, 4, 11)
+		roomTemperatureSetpointShiftBuildingProtection, _roomTemperatureSetpointShiftBuildingProtectionErr := readBuffer.ReadFloat32("roomTemperatureSetpointShiftBuildingProtection", 16)
 		if _roomTemperatureSetpointShiftBuildingProtectionErr != nil {
 			return nil, errors.Wrap(_roomTemperatureSetpointShiftBuildingProtectionErr, "Error parsing 'roomTemperatureSetpointShiftBuildingProtection' field")
 		}
@@ -6899,13 +6899,13 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((8)), "ASCII", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((8)), "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
@@ -7978,13 +7978,13 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((112)), "ASCII", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(112), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((112)), "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(112), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
@@ -9808,7 +9808,7 @@ func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, da
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((16)), "ASCII", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct

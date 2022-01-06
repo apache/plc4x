@@ -22,7 +22,7 @@
   <skin>
     <groupId>org.apache.plc4x.plugins</groupId>
     <artifactId>plc4x-site-skin</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
@@ -55,6 +55,7 @@
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="Using SNAPSHOTS" href="users/getting-started/using-snapshots.html"/>
         <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
       </item>

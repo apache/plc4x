@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type AdsInvalidResponse struct {
-	Parent *AdsData
+	*AdsData
 }
 
 // The corresponding interface
@@ -45,7 +45,7 @@ func (m *AdsInvalidResponse) CommandId() CommandId {
 }
 
 func (m *AdsInvalidResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsInvalidResponse) InitializeParent(parent *AdsData) {
@@ -53,10 +53,10 @@ func (m *AdsInvalidResponse) InitializeParent(parent *AdsData) {
 
 func NewAdsInvalidResponse() *AdsData {
 	child := &AdsInvalidResponse{
-		Parent: NewAdsData(),
+		AdsData: NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsInvalidResponse(structType interface{}) *AdsInvalidResponse {
@@ -87,7 +87,7 @@ func (m *AdsInvalidResponse) LengthInBits() uint16 {
 }
 
 func (m *AdsInvalidResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -96,7 +96,7 @@ func (m *AdsInvalidResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsInvalidResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsInvalidResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsInvalidResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,10 +107,10 @@ func AdsInvalidResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 
 	// Create a partially initialized instance
 	_child := &AdsInvalidResponse{
-		Parent: &AdsData{},
+		AdsData: &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsInvalidResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -124,7 +124,7 @@ func (m *AdsInvalidResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsInvalidResponse) String() string {

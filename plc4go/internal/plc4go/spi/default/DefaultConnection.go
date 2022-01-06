@@ -20,13 +20,15 @@
 package _default
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -48,20 +50,20 @@ type DefaultConnection interface {
 }
 
 // NewDefaultConnection is the factory for a DefaultConnection
-func NewDefaultConnection(requirements DefaultConnectionRequirements, options ...WithOption) DefaultConnection {
+func NewDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	return buildDefaultConnection(requirements, options...)
 }
 
 // WithDefaultTtl ttl is time.Second * 10 by default
-func WithDefaultTtl(defaultTtl time.Duration) WithOption {
+func WithDefaultTtl(defaultTtl time.Duration) options.WithOption {
 	return withDefaultTtl{defaultTtl: defaultTtl}
 }
 
-func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) WithOption {
+func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) options.WithOption {
 	return withPlcFieldHandler{plcFieldHandler: plcFieldHandler}
 }
 
-func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) WithOption {
+func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption {
 	return withPlcValueHandler{plcValueHandler: plcValueHandler}
 }
 
@@ -74,6 +76,38 @@ type DefaultConnectionMetadata struct {
 	ProvidesBrowsing     bool
 }
 
+type DefaultPlcConnectionConnectResult interface {
+	plc4go.PlcConnectionConnectResult
+}
+
+func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err error) DefaultPlcConnectionConnectResult {
+	return &plcConnectionConnectResult{
+		connection: connection,
+		err:        err,
+	}
+}
+
+type DefaultPlcConnectionCloseResult interface {
+	plc4go.PlcConnectionCloseResult
+}
+
+func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err error) plc4go.PlcConnectionCloseResult {
+	return &plcConnectionCloseResult{
+		connection: connection,
+		err:        err,
+	}
+}
+
+type DefaultPlcConnectionPingResult interface {
+	plc4go.PlcConnectionPingResult
+}
+
+func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult {
+	return &plcConnectionPingResult{
+		err: err,
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -81,18 +115,18 @@ type DefaultConnectionMetadata struct {
 //
 
 type withDefaultTtl struct {
-	option
+	options.Option
 	// defaultTtl the time to live after a close
 	defaultTtl time.Duration
 }
 
 type withPlcFieldHandler struct {
-	option
+	options.Option
 	plcFieldHandler spi.PlcFieldHandler
 }
 
 type withPlcValueHandler struct {
-	option
+	options.Option
 	plcValueHandler spi.PlcValueHandler
 }
 
@@ -106,15 +140,12 @@ type defaultConnection struct {
 	valueHandler spi.PlcValueHandler
 }
 
-func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...WithOption) DefaultConnection {
+func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	defaultTtl := time.Second * 10
 	var fieldHandler spi.PlcFieldHandler
 	var valueHandler spi.PlcValueHandler
 
 	for _, option := range options {
-		if !option.isOption() {
-			panic("not a option")
-		}
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl
@@ -134,6 +165,40 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 	}
 }
 
+type plcConnectionConnectResult struct {
+	connection plc4go.PlcConnection
+	err        error
+}
+
+func (d *plcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionConnectResult) GetErr() error {
+	return d.err
+}
+
+type plcConnectionCloseResult struct {
+	connection plc4go.PlcConnection
+	err        error
+}
+
+func (d *plcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionCloseResult) GetErr() error {
+	return d.err
+}
+
+type plcConnectionPingResult struct {
+	err error
+}
+
+func (d *plcConnectionPingResult) GetErr() error {
+	return d.err
+}
+
 //
 // Internal section
 //
@@ -151,7 +216,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		err := d.GetMessageCodec().Connect()
 		d.SetConnected(true)
 		connection := d.GetConnection()
-		ch <- plc4go.NewPlcConnectionConnectResult(connection, err)
+		ch <- NewDefaultPlcConnectionConnectResult(connection, err)
 	}()
 	return ch
 }
@@ -159,11 +224,16 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (d *defaultConnection) BlockingClose() {
 	log.Trace().Msg("blocking close connection")
 	closeResults := d.GetConnection().Close()
+	timeout := time.NewTimer(d.GetTtl())
 	d.SetConnected(false)
 	select {
 	case <-closeResults:
+		if !timeout.Stop() {
+			<-timeout.C
+		}
 		return
-	case <-time.After(d.GetTtl()):
+	case <-timeout.C:
+		timeout.Stop()
 		return
 	}
 }
@@ -173,12 +243,13 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
-		ch <- plc4go.NewPlcConnectionCloseResult(d.GetConnection(), nil)
+		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), nil)
 	}()
 	return ch
 }
 
 func (d *defaultConnection) IsConnected() bool {
+	// TODO: should we check here if the transport is connected?
 	return d.connected
 }
 
@@ -186,9 +257,9 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
 		if d.GetConnection().IsConnected() {
-			ch <- plc4go.NewPlcConnectionPingResult(nil)
+			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {
-			ch <- plc4go.NewPlcConnectionPingResult(errors.New("not connected"))
+			ch <- NewDefaultPlcConnectionPingResult(errors.New("not connected"))
 		}
 	}()
 	return ch

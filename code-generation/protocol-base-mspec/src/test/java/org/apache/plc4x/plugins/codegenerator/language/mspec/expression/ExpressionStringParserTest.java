@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -161,14 +162,14 @@ class ExpressionStringParserTest {
         assertThat(variableLiteral.getName(), is(name));
         assertThat(variableLiteral.getIndex(), is(index));
         if (argsAsserter != null) {
-            argsAsserter.accept(variableLiteral.getArgs());
+            argsAsserter.accept(variableLiteral.getArgs().orElseThrow(RuntimeException::new));
         } else {
-            assertThat(variableLiteral.getArgs(), nullValue());
+            assertThat(variableLiteral.getArgs().orElse(null), nullValue());
         }
         if (childAsserter != null) {
-            childAsserter.accept(variableLiteral.getChild());
+            childAsserter.accept(variableLiteral.getChild().orElseThrow(RuntimeException::new));
         } else {
-            assertThat(variableLiteral.getChild(), nullValue());
+            assertThat(variableLiteral.getChild().orElse(null), nullValue());
         }
     }
 

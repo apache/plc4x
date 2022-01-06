@@ -105,7 +105,12 @@ func (j *jsonWriteBuffer) WriteByte(logicalName string, value byte, writerArgs .
 }
 
 func (j *jsonWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
-	return j.encodeNode(logicalName, fmt.Sprintf("%#x", data), j.generateAttr(logicalName, rwByteKey, uint(len(data)*8), writerArgs...))
+	hexString := fmt.Sprintf("%#x", data)
+	if hexString == "00" {
+		// golang does mess up the formatting on empty arrays
+		hexString = "0x"
+	}
+	return j.encodeNode(logicalName, hexString, j.generateAttr(logicalName, rwByteKey, uint(len(data)*8), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
@@ -156,10 +161,15 @@ func (j *jsonWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, val
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwFloatKey, uint(bitLength), writerArgs...))
 }
 
-func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
+func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := j.generateAttr(logicalName, rwStringKey, uint(bitLength), writerArgs...)
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwEncodingKey)] = encoding
 	return j.encodeNode(logicalName, value, attr)
+}
+
+func (j *jsonWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+	// NO-OP
+	return nil
 }
 
 func (j *jsonWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

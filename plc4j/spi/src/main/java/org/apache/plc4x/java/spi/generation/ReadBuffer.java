@@ -18,11 +18,15 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface ReadBuffer {
+public interface ReadBuffer extends ByteOrderAware {
     int getPos();
+
+    void reset(int pos);
 
     boolean hasMore(int numBits);
 

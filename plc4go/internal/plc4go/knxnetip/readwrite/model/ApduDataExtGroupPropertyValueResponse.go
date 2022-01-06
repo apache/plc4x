@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueResponse struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtGroupPropertyValueResponse) InitializeParent(parent *ApduDat
 
 func NewApduDataExtGroupPropertyValueResponse() *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueResponse{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtGroupPropertyValueResponse(structType interface{}) *ApduDataExtGroupPropertyValueResponse {
@@ -83,7 +83,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer) (*A
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtGroupPropertyValueResponse{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) Serialize(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) String() string {

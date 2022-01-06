@@ -135,16 +135,18 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	}
 
 	// Simple Field (destinationAddress)
-	destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
+	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
 		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field")
 	}
+	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
-	sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
+	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	sourceAddress := _sourceAddress
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -167,16 +169,18 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (transactionCounter)
-	transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
+	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
 	if _transactionCounterErr != nil {
 		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field")
 	}
+	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *DF1ResponseMessage
@@ -263,8 +267,7 @@ func (m *DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

@@ -55,7 +55,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			plcValue := writeRequest.GetValue(fieldName)
 			s7Address, err := encodeS7Address(field)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
@@ -65,7 +65,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(field, plcValue)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding value for field %s", fieldName),
@@ -110,7 +110,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					if cotpPacketData == nil {
 						return false
 					}
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					if payload == nil {
 						return false
 					}
@@ -121,33 +121,33 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					log.Trace().Msg("convert response to ")
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					payload := cotpPacketData.Parent.Payload
+					payload := cotpPacketData.Payload
 					// Convert the s7 response into a PLC4X response
 					log.Trace().Msg("convert response to PLC4X response")
 					readResponse, err := m.ToPlc4xWriteResponse(*payload, writeRequest)
 
 					if err != nil {
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request: writeRequest,
 							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
 					}
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: readResponse,
 					}
 					return transaction.EndRequest()
 				},
 				func(err error) error {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.New("got timeout while waiting for response"),
 					}
 					return transaction.EndRequest()
 				},
 				time.Second*1); err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),

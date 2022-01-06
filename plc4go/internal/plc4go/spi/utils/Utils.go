@@ -19,11 +19,15 @@
 
 package utils
 
+import "github.com/pkg/errors"
+
 // InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a func() uint16, b func() uint16) uint16 {
+func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{} {
 	if test {
 		return a()
 	} else {
 		return b()
 	}
 }
+
+var ParseAssertError = errors.New("Wrong assertion")

@@ -134,17 +134,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	var typeSwitchError error
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_parent, typeSwitchError = COTPPacketDataParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -160,15 +160,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)
-	_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
-	_parametersEndPos := readBuffer.GetPos() + uint16(_parametersLength)
-	for readBuffer.GetPos() < _parametersEndPos {
-		_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
+	{
+		_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
+		_parametersEndPos := readBuffer.GetPos() + uint16(_parametersLength)
+		for readBuffer.GetPos() < _parametersEndPos {
+			_item, _err := COTPParameterParse(readBuffer, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
+			}
+			parameters = append(parameters, _item)
+			curPos = readBuffer.GetPos() - startPos
 		}
-		parameters = append(parameters, _item)
-		curPos = readBuffer.GetPos() - startPos
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -178,11 +180,22 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	var payload *S7Message = nil
 	if bool((curPos) < (cotpLen)) {
-		_val, _err := S7MessageParse(readBuffer)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+			return nil, pullErr
 		}
-		payload = _val
+		_val, _err := S7MessageParse(readBuffer)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			payload = CastS7Message(_val)
+			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacket"); closeErr != nil {
@@ -204,7 +217,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint8(0)) })))+uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() interface{} { return uint8(m.Payload.LengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
 	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
@@ -219,8 +232,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
@@ -243,8 +255,14 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *S7Message = nil
 	if m.Payload != nil {
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
 		payload = m.Payload
 		_payloadErr := payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}

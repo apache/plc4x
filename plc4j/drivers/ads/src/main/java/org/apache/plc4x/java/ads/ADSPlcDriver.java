@@ -64,6 +64,11 @@ public class ADSPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
     protected Class<? extends Configuration> getConfigurationType() {
         return AdsConfiguration.class;
     }

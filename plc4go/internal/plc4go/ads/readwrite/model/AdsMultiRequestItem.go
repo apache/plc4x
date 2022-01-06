@@ -99,12 +99,12 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	var _parent *AdsMultiRequestItem
 	var typeSwitchError error
 	switch {
-	case indexGroup == 61568: // AdsMultiRequestItemRead
-		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer)
-	case indexGroup == 61569: // AdsMultiRequestItemWrite
-		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer)
-	case indexGroup == 61570: // AdsMultiRequestItemReadWrite
-		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer)
+	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
+		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
+	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
+		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
+	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
+		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -132,8 +132,7 @@ func (m *AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

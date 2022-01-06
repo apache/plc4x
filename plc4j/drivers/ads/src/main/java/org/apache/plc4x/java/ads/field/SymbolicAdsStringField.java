@@ -18,15 +18,12 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
+import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,7 +78,7 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String symbolicAddress = getSymbolicAddress();

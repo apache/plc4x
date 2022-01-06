@@ -43,27 +43,27 @@ func init() {
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "CipService":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		serviceLen := uint16(parsedUint)
+		serviceLen := uint16(parsedUint0)
 		return model.CipServiceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
 	case "EipPacket":
 		return model.EipPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Services":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		servicesLen := uint16(parsedUint)
+		servicesLen := uint16(parsedUint0)
 		return model.ServicesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
 	case "CipExchange":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		exchangeLen := uint16(parsedUint)
+		exchangeLen := uint16(parsedUint0)
 		return model.CipExchangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

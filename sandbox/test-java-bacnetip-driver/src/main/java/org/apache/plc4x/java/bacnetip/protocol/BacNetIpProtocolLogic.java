@@ -135,6 +135,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         } else {
             LOGGER.debug(String.format("Unexpected NPDU type: %s", npdu.getClass().getName()));
         }
+
+        System.err.println(npdu);
     }
 
     private void decodeConfirmedRequest(APDUConfirmedRequest apduConfirmedRequest) {
@@ -144,15 +146,17 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
                 (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
 
-            long deviceIdentifier = valueChange.getMonitoredObjectInstanceNumber();
-            int objectType = valueChange.getIssueConfirmedNotificationsType();
-            long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
+            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            int objectType = valueChange.getMonitoredObjectIdentifier().getObjectType().getValue();
+            long objectInstance = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
-            // The actual value change is in the notifications ... iterate throught them to get it.
-            for (BACnetTagWithContent notification : valueChange.getNotifications()) {
+            // The actual value change is in the notifications ... iterate through them to get it.
+            for (BACnetTag notification1 : valueChange.getListOfValues().getData()) {
+                // TODO: fixme
+                BACnetTagWithContent notification=null;
                 // These are value change notifications. Ignore the rest.
-                if (notification.getPropertyIdentifier()[0] == (short) 0x55) {
+                if (notification.getPropertyIdentifier().get(0) == (short) 0x55) {
                     final BACnetTag baCnetTag = notification.getValue();
 
                     // Initialize an enriched version of the PlcStruct.
@@ -163,18 +167,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.of(baCnetTag.getTypeOrTagNumber()));
-                    enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getLengthValueType()));
-                    if (baCnetTag.getExtTagNumber() != null) {
-                        enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.of(baCnetTag.getExtTagNumber()));
-                    } else {
-                        enrichedPlcValue.put("extTagNumber", new PlcNull());
-                    }
-                    if (baCnetTag.getExtLength() != null) {
-                        enrichedPlcValue.put("extLength", IEC61131ValueHandler.of(baCnetTag.getExtLength()));
-                    } else {
-                        enrichedPlcValue.put("extLength", new PlcNull());
-                    }
+                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(baCnetTag.getActualTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
@@ -245,7 +239,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
     protected void publishEvent(BacNetIpField field, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("event", new ResponseItem(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("event", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Send the subscription event to all listeners.
         for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {

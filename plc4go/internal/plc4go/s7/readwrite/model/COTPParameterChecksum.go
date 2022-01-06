@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type COTPParameterChecksum struct {
-	Crc    uint8
-	Parent *COTPParameter
+	*COTPParameter
+	Crc uint8
 }
 
 // The corresponding interface
@@ -51,11 +51,11 @@ func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {
 
 func NewCOTPParameterChecksum(crc uint8) *COTPParameter {
 	child := &COTPParameterChecksum{
-		Crc:    crc,
-		Parent: NewCOTPParameter(),
+		Crc:           crc,
+		COTPParameter: NewCOTPParameter(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.COTPParameter
 }
 
 func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {
@@ -86,7 +86,7 @@ func (m *COTPParameterChecksum) LengthInBits() uint16 {
 }
 
 func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -98,16 +98,17 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}
 
 	// Simple Field (crc)
-	crc, _crcErr := readBuffer.ReadUint8("crc", 8)
+	_crc, _crcErr := readBuffer.ReadUint8("crc", 8)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
+	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("COTPParameterChecksum"); closeErr != nil {
 		return nil, closeErr
@@ -115,11 +116,11 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer) (*COTPParameter, er
 
 	// Create a partially initialized instance
 	_child := &COTPParameterChecksum{
-		Crc:    crc,
-		Parent: &COTPParameter{},
+		Crc:           crc,
+		COTPParameter: &COTPParameter{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.COTPParameter.Child = _child
+	return _child.COTPParameter, nil
 }
 
 func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -140,7 +141,7 @@ func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *COTPParameterChecksum) String() string {

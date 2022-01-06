@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
-	Parent *BACnetUnconfirmedServiceRequest
+	*BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Initialize
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
-		Parent: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetUnconfirmedServiceRequest
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
@@ -83,7 +83,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBi
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBy
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(readBuffer
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
-		Parent: &BACnetUnconfirmedServiceRequest{},
+		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetUnconfirmedServiceRequest.Child = _child
+	return _child.BACnetUnconfirmedServiceRequest, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) String() string {

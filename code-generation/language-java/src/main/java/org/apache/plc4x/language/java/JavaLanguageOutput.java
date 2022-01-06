@@ -18,15 +18,27 @@
  */
 package org.apache.plc4x.language.java;
 
-import freemarker.template.*;
+import com.google.googlejavaformat.java.Formatter;
+import com.google.googlejavaformat.java.FormatterException;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaLanguageOutput.class);
+
+    private final Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
@@ -44,15 +56,14 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.java.ftlh"));
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) {
+        return Collections.emptyList();
     }
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/java/pojo-template.java.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/java/model-template.java.ftlh"),
             freemarkerConfiguration.getTemplate("templates/java/io-template.java.ftlh"));
     }
 
@@ -70,8 +81,22 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-        Map<String, String> options) {
+                                                         Map<String, String> options) {
         return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
+    @Override
+    protected void postProcessTemplateOutput(File outputFile) {
+        try {
+            FileUtils.writeStringToFile(
+                outputFile,
+                formatter.formatSourceAndFixImports(
+                    FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8)
+                ),
+                StandardCharsets.UTF_8
+            );
+        } catch (IOException | FormatterException e) {
+            LOGGER.error("Error formatting {}", outputFile, e);
+        }
+    }
 }

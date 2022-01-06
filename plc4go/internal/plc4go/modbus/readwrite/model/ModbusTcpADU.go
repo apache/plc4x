@@ -100,10 +100,11 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 	}
 
 	// Simple Field (transactionIdentifier)
-	transactionIdentifier, _transactionIdentifierErr := readBuffer.ReadUint16("transactionIdentifier", 16)
+	_transactionIdentifier, _transactionIdentifierErr := readBuffer.ReadUint16("transactionIdentifier", 16)
 	if _transactionIdentifierErr != nil {
 		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field")
 	}
+	transactionIdentifier := _transactionIdentifier
 
 	// Const Field (protocolIdentifier)
 	protocolIdentifier, _protocolIdentifierErr := readBuffer.ReadUint16("protocolIdentifier", 16)
@@ -122,20 +123,21 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 	}
 
 	// Simple Field (unitIdentifier)
-	unitIdentifier, _unitIdentifierErr := readBuffer.ReadUint8("unitIdentifier", 8)
+	_unitIdentifier, _unitIdentifierErr := readBuffer.ReadUint8("unitIdentifier", 8)
 	if _unitIdentifierErr != nil {
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
+	unitIdentifier := _unitIdentifier
 
+	// Simple Field (pdu)
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (pdu)
-	pdu, _pduErr := ModbusPDUParse(readBuffer, response)
+	_pdu, _pduErr := ModbusPDUParse(readBuffer, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	pdu := CastModbusPDU(_pdu)
 	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
 		return nil, closeErr
 	}

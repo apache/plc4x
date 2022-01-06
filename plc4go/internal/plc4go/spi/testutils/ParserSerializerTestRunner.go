@@ -20,6 +20,7 @@
 package testutils
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	abethModel "github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite"
@@ -71,7 +72,12 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 	if node.Name != "testsuite" {
 		t.Error("Invalid document structure")
 	}
-	littleEndian := node.GetAttributeValue("bigEndian") != "true"
+	var byteOrder binary.ByteOrder
+	if node.GetAttributeValue("byteOrder") != "LITTLE_ENDIAN" {
+		byteOrder = binary.BigEndian
+	} else {
+		byteOrder = binary.LittleEndian
+	}
 	var (
 		testsuiteName string
 		protocolName  string
@@ -117,7 +123,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					return
 				}
 				var readBuffer utils.ReadBuffer
-				if littleEndian {
+				if byteOrder == binary.LittleEndian {
 					readBuffer = utils.NewLittleEndianReadBufferByteBased(rawInput)
 				} else {
 					readBuffer = utils.NewReadBufferByteBased(rawInput)
@@ -202,7 +208,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					return
 				}
 				var writeBuffer utils.WriteBufferByteBased
-				if littleEndian {
+				if byteOrder == binary.LittleEndian {
 					writeBuffer = utils.NewLittleEndianWriteBufferByteBased()
 				} else {
 					writeBuffer = utils.NewWriteBufferByteBased()

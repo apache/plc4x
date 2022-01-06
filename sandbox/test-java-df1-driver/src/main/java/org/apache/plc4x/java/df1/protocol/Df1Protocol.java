@@ -61,8 +61,8 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         DF1SymbolMessageFrame frame = new DF1SymbolMessageFrame(remoteAddr, localAddr, msg);
 
         // Serialize the message
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes(), false);
-        DF1SymbolIO.staticSerialize(writeBuffer, frame);
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes());
+        frame.serialize(writeBuffer);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
@@ -139,7 +139,7 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         // Parse the message received from the DF1 device
         byte[] data = new byte[in.readableBytes()];
         in.readBytes(data);
-        ReadBuffer readBuffer = new ReadBufferByteBased(data, false);
+        ReadBuffer readBuffer = new ReadBufferByteBased(data);
 
         resp = DF1SymbolIO.staticParse(readBuffer);
 

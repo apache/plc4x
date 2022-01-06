@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.spi.utils;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public interface Serializable {
-    void serialize(WriteBuffer writeBuffer) throws ParseException;
+    void serialize(WriteBuffer writeBuffer) throws SerializationException;
 }

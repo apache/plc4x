@@ -33,10 +33,10 @@ type DIBDeviceInfo struct {
 	DeviceStatus                   *DeviceStatus
 	KnxAddress                     *KnxAddress
 	ProjectInstallationIdentifier  *ProjectInstallationIdentifier
-	KnxNetIpDeviceSerialNumber     []int8
+	KnxNetIpDeviceSerialNumber     []byte
 	KnxNetIpDeviceMulticastAddress *IPAddress
 	KnxNetIpDeviceMacAddress       *MACAddress
-	DeviceFriendlyName             []int8
+	DeviceFriendlyName             []byte
 }
 
 // The corresponding interface
@@ -46,7 +46,7 @@ type IDIBDeviceInfo interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []byte) *DIBDeviceInfo {
 	return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
@@ -128,121 +128,100 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
+	_descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
+	descriptionType := _descriptionType
 
+	// Simple Field (knxMedium)
 	if pullErr := readBuffer.PullContext("knxMedium"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxMedium)
-	knxMedium, _knxMediumErr := KnxMediumParse(readBuffer)
+	_knxMedium, _knxMediumErr := KnxMediumParse(readBuffer)
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field")
 	}
+	knxMedium := _knxMedium
 	if closeErr := readBuffer.CloseContext("knxMedium"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (deviceStatus)
 	if pullErr := readBuffer.PullContext("deviceStatus"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (deviceStatus)
-	deviceStatus, _deviceStatusErr := DeviceStatusParse(readBuffer)
+	_deviceStatus, _deviceStatusErr := DeviceStatusParse(readBuffer)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field")
 	}
+	deviceStatus := CastDeviceStatus(_deviceStatus)
 	if closeErr := readBuffer.CloseContext("deviceStatus"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (knxAddress)
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxAddress)
-	knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	knxAddress := CastKnxAddress(_knxAddress)
 	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (projectInstallationIdentifier)
 	if pullErr := readBuffer.PullContext("projectInstallationIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (projectInstallationIdentifier)
-	projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(readBuffer)
+	_projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(readBuffer)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
+	projectInstallationIdentifier := CastProjectInstallationIdentifier(_projectInstallationIdentifier)
 	if closeErr := readBuffer.CloseContext("projectInstallationIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (knxNetIpDeviceSerialNumber)
-	if pullErr := readBuffer.PullContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
-	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'knxNetIpDeviceSerialNumber' field")
-		}
-		knxNetIpDeviceSerialNumber[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
-	}
-
-	if pullErr := readBuffer.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
-		return nil, pullErr
+	// Byte Array field (knxNetIpDeviceSerialNumber)
+	numberOfBytesknxNetIpDeviceSerialNumber := int(uint16(6))
+	knxNetIpDeviceSerialNumber, _readArrayErr := readBuffer.ReadByteArray("knxNetIpDeviceSerialNumber", numberOfBytesknxNetIpDeviceSerialNumber)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'knxNetIpDeviceSerialNumber' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
-	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(readBuffer)
+	if pullErr := readBuffer.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
+		return nil, pullErr
+	}
+	_knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(readBuffer)
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field")
 	}
+	knxNetIpDeviceMulticastAddress := CastIPAddress(_knxNetIpDeviceMulticastAddress)
 	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMulticastAddress"); closeErr != nil {
 		return nil, closeErr
 	}
 
+	// Simple Field (knxNetIpDeviceMacAddress)
 	if pullErr := readBuffer.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxNetIpDeviceMacAddress)
-	knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readBuffer)
+	_knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readBuffer)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
+	knxNetIpDeviceMacAddress := CastMACAddress(_knxNetIpDeviceMacAddress)
 	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (deviceFriendlyName)
-	if pullErr := readBuffer.PullContext("deviceFriendlyName", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	deviceFriendlyName := make([]int8, uint16(30))
-	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'deviceFriendlyName' field")
-		}
-		deviceFriendlyName[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("deviceFriendlyName", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (deviceFriendlyName)
+	numberOfBytesdeviceFriendlyName := int(uint16(30))
+	deviceFriendlyName, _readArrayErr := readBuffer.ReadByteArray("deviceFriendlyName", numberOfBytesdeviceFriendlyName)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'deviceFriendlyName' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("DIBDeviceInfo"); closeErr != nil {
@@ -322,17 +301,10 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
-		if pushErr := writeBuffer.PushContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.KnxNetIpDeviceSerialNumber {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (knxNetIpDeviceSerialNumber)
+		_writeArrayErr := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 		}
 	}
 
@@ -362,17 +334,10 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
-		if pushErr := writeBuffer.PushContext("deviceFriendlyName", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.DeviceFriendlyName {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'deviceFriendlyName' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("deviceFriendlyName", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (deviceFriendlyName)
+		_writeArrayErr := writeBuffer.WriteByteArray("deviceFriendlyName", m.DeviceFriendlyName)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'deviceFriendlyName' field")
 		}
 	}
 

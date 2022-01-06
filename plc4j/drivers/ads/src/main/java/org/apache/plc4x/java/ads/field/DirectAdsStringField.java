@@ -18,12 +18,10 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
+import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -105,7 +103,7 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());

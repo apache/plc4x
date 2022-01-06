@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_write_s7_var_request_parameter_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_var_request_parameter_item_address */
-   .itemType = 0x12}
+   .itemType = 0x12 }
 
 };
 
@@ -48,7 +48,6 @@ plc4c_s7_read_write_s7_var_request_parameter_item plc4c_s7_read_write_s7_var_req
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_request_parameter_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

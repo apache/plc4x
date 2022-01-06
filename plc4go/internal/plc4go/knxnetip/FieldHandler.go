@@ -29,21 +29,6 @@ import (
 	"strconv"
 )
 
-type FieldType uint8
-
-const (
-	FieldCoil FieldType = 0x00
-)
-
-func (m FieldType) GetName() string {
-	switch m {
-	case FieldCoil:
-		// TODO: these looked like copy paste from modbus before change this name might be therefore completly wrong
-		return "KNXNETIPFIELDCOIL"
-	}
-	return ""
-}
-
 type FieldHandler struct {
 	groupAddress3Level             *regexp.Regexp
 	groupAddress2Level             *regexp.Regexp

@@ -19,21 +19,23 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.AbstractField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultAbstractField extends DefaultTaggedField implements AbstractField {
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+public class DefaultAbstractField extends DefaultField implements AbstractField {
 
     private final TypeReference type;
     private final String name;
-    private final Term[] params;
 
-    public DefaultAbstractField(String[] tags, TypeReference type, String name, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.params = params;
+    public DefaultAbstractField(Map<String, Term> attributes, TypeReference type, String name) {
+        super(attributes);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
     }
 
     public TypeReference getType() {
@@ -42,10 +44,6 @@ public class DefaultAbstractField extends DefaultTaggedField implements Abstract
 
     public String getName() {
         return name;
-    }
-
-    public Term[] getParams() {
-        return params;
     }
 
 }

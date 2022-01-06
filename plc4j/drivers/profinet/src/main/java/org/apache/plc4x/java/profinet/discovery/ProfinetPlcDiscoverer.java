@@ -27,11 +27,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
-import org.apache.plc4x.java.profinet.readwrite.types.VirtualLanPriority;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
@@ -178,7 +174,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         // Construct and send the search request.
                         Ethernet_Frame identificationRequest = new Ethernet_Frame(
                             // Pre-Defined PROFINET discovery MAC address
-                            new MacAddress(new short[]{0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00}),
+                            new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00}),
                             toPlc4xMacAddress(macAddress),
                             new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
                                 new Ethernet_FramePayload_PnDcp(
@@ -186,17 +182,17 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                         new PnDcp_ServiceType(false, false),
                                         1,
                                         256,
-                                        new PnDcp_Block[]{
+                                        Collections.singletonList(
                                             new PnDcp_Block_ALLSelector()
-                                        }))));
+                                        )))));
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
-                        Ethernet_FrameIO.staticSerialize(buffer, identificationRequest);
+                        identificationRequest.serialize(buffer);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
                         handle.sendPacket(packet);
                     }
                 }
             }
-        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | ParseException e) {
+        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | SerializationException e) {
             logger.error("Got an exception while processing raw socket data", e);
             future.completeExceptionally(new PlcException("Got an internal error while performing discovery"));
             for (PcapHandle openHandle : openHandles) {
@@ -223,7 +219,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
         byte[] address = pcap4jMacAddress.getAddress();
-        return new MacAddress(new short[]{address[0], address[1], address[2], address[3], address[4], address[5]});
+        return new MacAddress(new byte[]{address[0], address[1], address[2], address[3], address[4], address[5]});
     }
 
     private static class Task implements Runnable {

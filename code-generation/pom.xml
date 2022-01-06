@@ -17,20 +17,21 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-code-generation</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4X: Code-Generation</name>
+  <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
   <modules>
@@ -42,22 +43,27 @@
   </modules>
 
   <profiles>
-  <!-- Build PLC4X including the C modules -->
-  <profile>
-    <id>with-c</id>
-    <modules>
-      <module>language-c</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>language-c</module>
+      </modules>
+    </profile>
 
-  <profile>
-    <id>with-go</id>
-    <modules>
-      <module>language-go</module>
-    </modules>
-  </profile>
+    <profile>
+      <id>with-dotnet</id>
+      <modules>
+        <module>language-cs</module>
+      </modules>
+    </profile>
 
-</profiles>
+    <profile>
+      <id>with-go</id>
+      <modules>
+        <module>language-go</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencies>
     <!-- JUnit 5 Support -->

@@ -73,6 +73,10 @@ func (x *xmlReadBuffer) GetPos() uint16 {
 	return uint16(x.pos / 8)
 }
 
+func (x *xmlReadBuffer) SetPos(pos uint16) {
+	x.pos = uint(pos * 8)
+}
+
 func (x *xmlReadBuffer) HasMore(bitLength uint8) bool {
 	// TODO: work with x.InputOffset() and check if we are at EOF
 	return true
@@ -230,11 +234,7 @@ func (x *xmlReadBuffer) ReadBigInt(logicalName string, bitLength uint64, readerA
 	return &value, nil
 }
 
-func (x *xmlReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float32, error) {
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
+func (x *xmlReadBuffer) ReadFloat32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float32, error) {
 	var value float32
 	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
@@ -244,11 +244,7 @@ func (x *xmlReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBit
 	return value, nil
 }
 
-func (x *xmlReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float64, error) {
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
+func (x *xmlReadBuffer) ReadFloat64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float64, error) {
 	var value float64
 	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
@@ -258,11 +254,7 @@ func (x *xmlReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBit
 	return value, nil
 }
 
-func (x *xmlReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error) {
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
+func (x *xmlReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error) {
 	var value big.Float
 	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {

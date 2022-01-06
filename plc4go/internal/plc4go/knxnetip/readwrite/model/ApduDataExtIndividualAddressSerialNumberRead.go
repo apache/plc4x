@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type ApduDataExtIndividualAddressSerialNumberRead struct {
-	Parent *ApduDataExt
+	*ApduDataExt
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) InitializeParent(parent *
 
 func NewApduDataExtIndividualAddressSerialNumberRead() *ApduDataExt {
 	child := &ApduDataExtIndividualAddressSerialNumberRead{
-		Parent: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ApduDataExt
 }
 
 func CastApduDataExtIndividualAddressSerialNumberRead(structType interface{}) *ApduDataExtIndividualAddressSerialNumberRead {
@@ -83,7 +83,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) LengthInBits() uint16 {
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -92,7 +92,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberReadParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtIndividualAddressSerialNumberReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -103,10 +103,10 @@ func ApduDataExtIndividualAddressSerialNumberReadParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberRead{
-		Parent: &ApduDataExt{},
+		ApduDataExt: &ApduDataExt{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ApduDataExt.Child = _child
+	return _child.ApduDataExt, nil
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) Serialize(writeBuffer uti
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberRead) String() string {

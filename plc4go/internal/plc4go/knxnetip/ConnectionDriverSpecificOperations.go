@@ -20,15 +20,16 @@
 package knxnetip
 
 import (
+	"math"
+	"strconv"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"strconv"
-	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,17 +43,22 @@ import (
 // They expect the called private functions to handle timeouts, so these will not.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
+func (m *Connection) ReadGroupAddress(groupAddress []byte, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -63,12 +69,13 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 			return
 		}
 
-		var payload []int8
-		payload = append(payload, groupAddressReadResponse.DataFirstByte)
+		var payload []byte
+		// TODO: maybe groupAddressReadResponse.DataFirstByte can be written as uint 6 so the we wouldn't need to cast
+		payload = append(payload, byte(groupAddressReadResponse.DataFirstByte))
 		payload = append(payload, groupAddressReadResponse.Data...)
 
 		// Parse the response data.
-		rb := utils.NewReadBufferByteBased(utils.Int8ArrayToByteArray(payload))
+		rb := utils.NewReadBufferByteBased(payload)
 		// If the size of the field is greater than 6, we have to skip the first byte
 		if datapointType.DatapointMainType().SizeInBits() > 6 {
 			_, _ = rb.ReadUint8("datapointType", 8)
@@ -96,12 +103,17 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 	result := make(chan KnxDeviceConnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceConnectResult{
 			connection: connection,
 			err:        err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -182,12 +194,17 @@ func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-ch
 	result := make(chan KnxDeviceDisconnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceDisconnectResult{
 			connection: connection,
 			err:        err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -211,11 +228,16 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 	result := make(chan KnxDeviceAuthenticateResult)
 
 	sendResponse := func(err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -259,13 +281,18 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -334,13 +361,18 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -389,13 +421,18 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		case <-time.After(time.Millisecond * 10):
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 

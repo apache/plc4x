@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetServiceAckVTOpen struct {
-	Parent *BACnetServiceAck
+	*BACnetServiceAck
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BACnetServiceAckVTOpen) InitializeParent(parent *BACnetServiceAck) {
 
 func NewBACnetServiceAckVTOpen() *BACnetServiceAck {
 	child := &BACnetServiceAckVTOpen{
-		Parent: NewBACnetServiceAck(),
+		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckVTOpen(structType interface{}) *BACnetServiceAckVTOpen {
@@ -83,7 +83,7 @@ func (m *BACnetServiceAckVTOpen) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckVTOpen) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BACnetServiceAckVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTOpen{
-		Parent: &BACnetServiceAck{},
+		BACnetServiceAck: &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BACnetServiceAckVTOpen) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckVTOpen) String() string {

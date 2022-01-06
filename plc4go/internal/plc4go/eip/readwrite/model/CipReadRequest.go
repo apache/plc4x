@@ -28,10 +28,10 @@ import (
 
 // The data-structure of this message
 type CipReadRequest struct {
+	*CipService
 	RequestPathSize int8
-	Tag             []int8
+	Tag             []byte
 	ElementNb       uint16
-	Parent          *CipService
 }
 
 // The corresponding interface
@@ -51,15 +51,15 @@ func (m *CipReadRequest) Service() uint8 {
 func (m *CipReadRequest) InitializeParent(parent *CipService) {
 }
 
-func NewCipReadRequest(RequestPathSize int8, tag []int8, elementNb uint16) *CipService {
+func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16) *CipService {
 	child := &CipReadRequest{
-		RequestPathSize: RequestPathSize,
+		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
-		Parent:          NewCipService(),
+		CipService:      NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipReadRequest(structType interface{}) *CipReadRequest {
@@ -90,9 +90,9 @@ func (m *CipReadRequest) LengthInBits() uint16 {
 }
 
 func (m *CipReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Simple field (RequestPathSize)
+	// Simple field (requestPathSize)
 	lengthInBits += 8
 
 	// Array field
@@ -110,41 +110,30 @@ func (m *CipReadRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipReadRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
 
-	// Simple Field (RequestPathSize)
-	RequestPathSize, _RequestPathSizeErr := readBuffer.ReadInt8("RequestPathSize", 8)
-	if _RequestPathSizeErr != nil {
-		return nil, errors.Wrap(_RequestPathSizeErr, "Error parsing 'RequestPathSize' field")
+	// Simple Field (requestPathSize)
+	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	if _requestPathSizeErr != nil {
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
 	}
-
-	// Array field (tag)
-	if pullErr := readBuffer.PullContext("tag", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Length array
-	tag := make([]int8, 0)
-	_tagLength := uint16(uint16(RequestPathSize) * uint16(uint16(2)))
-	_tagEndPos := readBuffer.GetPos() + uint16(_tagLength)
-	for readBuffer.GetPos() < _tagEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'tag' field")
-		}
-		tag = append(tag, _item)
-	}
-	if closeErr := readBuffer.CloseContext("tag", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	requestPathSize := _requestPathSize
+	// Byte Array field (tag)
+	numberOfBytestag := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
+	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field")
 	}
 
 	// Simple Field (elementNb)
-	elementNb, _elementNbErr := readBuffer.ReadUint16("elementNb", 16)
+	_elementNb, _elementNbErr := readBuffer.ReadUint16("elementNb", 16)
 	if _elementNbErr != nil {
 		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field")
 	}
+	elementNb := _elementNb
 
 	if closeErr := readBuffer.CloseContext("CipReadRequest"); closeErr != nil {
 		return nil, closeErr
@@ -152,13 +141,13 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
 
 	// Create a partially initialized instance
 	_child := &CipReadRequest{
-		RequestPathSize: RequestPathSize,
+		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
-		Parent:          &CipService{},
+		CipService:      &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -167,26 +156,19 @@ func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 			return pushErr
 		}
 
-		// Simple Field (RequestPathSize)
-		RequestPathSize := int8(m.RequestPathSize)
-		_RequestPathSizeErr := writeBuffer.WriteInt8("RequestPathSize", 8, (RequestPathSize))
-		if _RequestPathSizeErr != nil {
-			return errors.Wrap(_RequestPathSizeErr, "Error serializing 'RequestPathSize' field")
+		// Simple Field (requestPathSize)
+		requestPathSize := int8(m.RequestPathSize)
+		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		if _requestPathSizeErr != nil {
+			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
 		// Array Field (tag)
 		if m.Tag != nil {
-			if pushErr := writeBuffer.PushContext("tag", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Tag {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'tag' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("tag", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (tag)
+			_writeArrayErr := writeBuffer.WriteByteArray("tag", m.Tag)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'tag' field")
 			}
 		}
 
@@ -202,7 +184,7 @@ func (m *CipReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipReadRequest) String() string {

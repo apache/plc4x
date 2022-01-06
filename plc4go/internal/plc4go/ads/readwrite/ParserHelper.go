@@ -54,7 +54,7 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.AdsDataParse(io, &commandId, response)
+		return model.AdsDataParse(io, commandId, response)
 	case "AmsNetId":
 		return model.AmsNetIdParse(io)
 	case "AdsStampHeader":

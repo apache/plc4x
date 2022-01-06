@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BVLCSecureBVLL struct {
-	Parent *BVLC
+	*BVLC
 }
 
 // The corresponding interface
@@ -49,10 +49,10 @@ func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {
 
 func NewBVLCSecureBVLL() *BVLC {
 	child := &BVLCSecureBVLL{
-		Parent: NewBVLC(),
+		BVLC: NewBVLC(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BVLC
 }
 
 func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {
@@ -83,7 +83,7 @@ func (m *BVLCSecureBVLL) LengthInBits() uint16 {
 }
 
 func (m *BVLCSecureBVLL) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -103,10 +103,10 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 
 	// Create a partially initialized instance
 	_child := &BVLCSecureBVLL{
-		Parent: &BVLC{},
+		BVLC: &BVLC{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BVLC.Child = _child
+	return _child.BVLC, nil
 }
 
 func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -120,7 +120,7 @@ func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BVLCSecureBVLL) String() string {

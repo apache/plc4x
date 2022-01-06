@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminators[] = {
   {/* plc4c_s7_read_write_s7_address_any */
-   .addressType = 0x10}
+   .addressType = 0x10 }
 
 };
 
@@ -48,7 +48,6 @@ plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address_null() {
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_address** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
@@ -103,13 +102,13 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* re
 
 
                     
-    // Enum field (area)
-    plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &area);
+    // Simple Field (area)
+    plc4c_s7_read_write_memory_area* area;
+    _res = plc4c_s7_read_write_memory_area_parse(readBuffer, (void*) &area);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_address_any_area = area;
+    (*_message)->s7_address_any_area = *area;
 
 
                     
@@ -178,8 +177,8 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
         return _res;
       }
 
-      // Enum field (area)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_address_any_area);
+      // Simple Field (area)
+      _res = plc4c_s7_read_write_memory_area_serialize(writeBuffer, &_message->s7_address_any_area);
       if(_res != OK) {
         return _res;
       }
@@ -235,8 +234,8 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_ad
       lengthInBits += 16;
 
 
-      // Enum Field (area)
-      lengthInBits += 8;
+      // Simple field (area)
+      lengthInBits += plc4c_s7_read_write_memory_area_length_in_bits(&_message->s7_address_any_area);
 
 
       // Reserved Field (reserved)

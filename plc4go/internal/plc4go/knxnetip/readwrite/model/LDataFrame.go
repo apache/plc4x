@@ -99,7 +99,7 @@ func (m *LDataFrame) ParentLengthInBits() uint16 {
 	// Discriminator Field (notAckFrame)
 	lengthInBits += 1
 
-	// Enum Field (priority)
+	// Simple field (priority)
 	lengthInBits += 2
 
 	// Simple field (acknowledgeRequested)
@@ -121,10 +121,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (frameType)
-	frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
+	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
 	if _frameTypeErr != nil {
 		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field")
 	}
+	frameType := _frameType
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling, _pollingErr := readBuffer.ReadBit("polling")
@@ -133,10 +134,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (notRepeated)
-	notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
+	_notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
 		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field")
 	}
+	notRepeated := _notRepeated
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame, _notAckFrameErr := readBuffer.ReadBit("notAckFrame")
@@ -144,39 +146,42 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
 
+	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (priority)
-	priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	priority := _priority
 	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
+	_acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
 		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field")
 	}
+	acknowledgeRequested := _acknowledgeRequested
 
 	// Simple Field (errorFlag)
-	errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
+	_errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
+	errorFlag := _errorFlag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *LDataFrame
 	var typeSwitchError error
 	switch {
-	case notAckFrame == true && polling == false: // LDataExtended
+	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
 		_parent, typeSwitchError = LDataExtendedParse(readBuffer)
-	case notAckFrame == true && polling == true: // LPollData
+	case notAckFrame == bool(true) && polling == bool(true): // LPollData
 		_parent, typeSwitchError = LPollDataParse(readBuffer)
-	case notAckFrame == false: // LDataFrameACK
+	case notAckFrame == bool(false): // LDataFrameACK
 		_parent, typeSwitchError = LDataFrameACKParse(readBuffer)
 	default:
 		// TODO: return actual type
@@ -234,17 +239,16 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
 	}
 
+	// Simple Field (priority)
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (priority)
-	priority := CastCEMIPriority(m.Priority)
-	_priorityErr := priority.Serialize(writeBuffer)
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
-	}
+	_priorityErr := m.Priority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return popErr
+	}
+	if _priorityErr != nil {
+		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (acknowledgeRequested)
@@ -262,8 +266,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 

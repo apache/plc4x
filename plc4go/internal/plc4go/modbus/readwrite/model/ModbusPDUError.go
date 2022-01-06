@@ -28,8 +28,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUError struct {
+	*ModbusPDU
 	ExceptionCode ModbusErrorCode
-	Parent        *ModbusPDU
 }
 
 // The corresponding interface
@@ -43,7 +43,7 @@ type IModbusPDUError interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUError) ErrorFlag() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUError) FunctionFlag() uint8 {
@@ -60,10 +60,10 @@ func (m *ModbusPDUError) InitializeParent(parent *ModbusPDU) {
 func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDU {
 	child := &ModbusPDUError{
 		ExceptionCode: exceptionCode,
-		Parent:        NewModbusPDU(),
+		ModbusPDU:     NewModbusPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.ModbusPDU
 }
 
 func CastModbusPDUError(structType interface{}) *ModbusPDUError {
@@ -94,9 +94,9 @@ func (m *ModbusPDUError) LengthInBits() uint16 {
 }
 
 func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Enum Field (exceptionCode)
+	// Simple field (exceptionCode)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -106,19 +106,20 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (exceptionCode)
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (exceptionCode)
-	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
+	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
+	exceptionCode := _exceptionCode
 	if closeErr := readBuffer.CloseContext("exceptionCode"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -130,10 +131,10 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
 	// Create a partially initialized instance
 	_child := &ModbusPDUError{
 		ExceptionCode: exceptionCode,
-		Parent:        &ModbusPDU{},
+		ModbusPDU:     &ModbusPDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.ModbusPDU.Child = _child
+	return _child.ModbusPDU, nil
 }
 
 func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -142,17 +143,16 @@ func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 			return pushErr
 		}
 
+		// Simple Field (exceptionCode)
 		if pushErr := writeBuffer.PushContext("exceptionCode"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (exceptionCode)
-		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
-		_exceptionCodeErr := exceptionCode.Serialize(writeBuffer)
-		if _exceptionCodeErr != nil {
-			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
-		}
+		_exceptionCodeErr := m.ExceptionCode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("exceptionCode"); popErr != nil {
 			return popErr
+		}
+		if _exceptionCodeErr != nil {
+			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUError"); popErr != nil {
@@ -160,7 +160,7 @@ func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *ModbusPDUError) String() string {

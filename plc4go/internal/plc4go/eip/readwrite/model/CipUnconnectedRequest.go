@@ -33,10 +33,10 @@ const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
 // The data-structure of this message
 type CipUnconnectedRequest struct {
+	*CipService
 	UnconnectedService *CipService
 	BackPlane          int8
 	Slot               int8
-	Parent             *CipService
 }
 
 // The corresponding interface
@@ -61,10 +61,10 @@ func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, sl
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		Parent:             NewCipService(),
+		CipService:         NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipUnconnectedRequest(structType interface{}) *CipUnconnectedRequest {
@@ -95,7 +95,7 @@ func (m *CipUnconnectedRequest) LengthInBits() uint16 {
 }
 
 func (m *CipUnconnectedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -137,7 +137,7 @@ func (m *CipUnconnectedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -233,15 +233,15 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error
 		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field")
 	}
 
+	// Simple Field (unconnectedService)
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (unconnectedService)
-	unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
+	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")
 	}
+	unconnectedService := CastCipService(_unconnectedService)
 	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -256,16 +256,18 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error
 	}
 
 	// Simple Field (backPlane)
-	backPlane, _backPlaneErr := readBuffer.ReadInt8("backPlane", 8)
+	_backPlane, _backPlaneErr := readBuffer.ReadInt8("backPlane", 8)
 	if _backPlaneErr != nil {
 		return nil, errors.Wrap(_backPlaneErr, "Error parsing 'backPlane' field")
 	}
+	backPlane := _backPlane
 
 	// Simple Field (slot)
-	slot, _slotErr := readBuffer.ReadInt8("slot", 8)
+	_slot, _slotErr := readBuffer.ReadInt8("slot", 8)
 	if _slotErr != nil {
 		return nil, errors.Wrap(_slotErr, "Error parsing 'slot' field")
 	}
+	slot := _slot
 
 	if closeErr := readBuffer.CloseContext("CipUnconnectedRequest"); closeErr != nil {
 		return nil, closeErr
@@ -273,13 +275,13 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error
 
 	// Create a partially initialized instance
 	_child := &CipUnconnectedRequest{
-		UnconnectedService: unconnectedService,
+		UnconnectedService: CastCipService(unconnectedService),
 		BackPlane:          backPlane,
 		Slot:               slot,
-		Parent:             &CipService{},
+		CipService:         &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -380,7 +382,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipUnconnectedRequest) String() string {

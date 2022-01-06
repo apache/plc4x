@@ -28,12 +28,12 @@ import (
 
 // The data-structure of this message
 type DF1RequestProtectedTypedLogicalRead struct {
+	*DF1RequestCommand
 	ByteSize         uint8
 	FileNumber       uint8
 	FileType         uint8
 	ElementNumber    uint8
 	SubElementNumber uint8
-	Parent           *DF1RequestCommand
 }
 
 // The corresponding interface
@@ -55,15 +55,15 @@ func (m *DF1RequestProtectedTypedLogicalRead) InitializeParent(parent *DF1Reques
 
 func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestCommand {
 	child := &DF1RequestProtectedTypedLogicalRead{
-		ByteSize:         byteSize,
-		FileNumber:       fileNumber,
-		FileType:         fileType,
-		ElementNumber:    elementNumber,
-		SubElementNumber: subElementNumber,
-		Parent:           NewDF1RequestCommand(),
+		ByteSize:          byteSize,
+		FileNumber:        fileNumber,
+		FileType:          fileType,
+		ElementNumber:     elementNumber,
+		SubElementNumber:  subElementNumber,
+		DF1RequestCommand: NewDF1RequestCommand(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.DF1RequestCommand
 }
 
 func CastDF1RequestProtectedTypedLogicalRead(structType interface{}) *DF1RequestProtectedTypedLogicalRead {
@@ -94,7 +94,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) LengthInBits() uint16 {
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (byteSize)
 	lengthInBits += 8
@@ -124,34 +124,39 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 	}
 
 	// Simple Field (byteSize)
-	byteSize, _byteSizeErr := readBuffer.ReadUint8("byteSize", 8)
+	_byteSize, _byteSizeErr := readBuffer.ReadUint8("byteSize", 8)
 	if _byteSizeErr != nil {
 		return nil, errors.Wrap(_byteSizeErr, "Error parsing 'byteSize' field")
 	}
+	byteSize := _byteSize
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := readBuffer.ReadUint8("fileNumber", 8)
+	_fileNumber, _fileNumberErr := readBuffer.ReadUint8("fileNumber", 8)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
+	fileNumber := _fileNumber
 
 	// Simple Field (fileType)
-	fileType, _fileTypeErr := readBuffer.ReadUint8("fileType", 8)
+	_fileType, _fileTypeErr := readBuffer.ReadUint8("fileType", 8)
 	if _fileTypeErr != nil {
 		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field")
 	}
+	fileType := _fileType
 
 	// Simple Field (elementNumber)
-	elementNumber, _elementNumberErr := readBuffer.ReadUint8("elementNumber", 8)
+	_elementNumber, _elementNumberErr := readBuffer.ReadUint8("elementNumber", 8)
 	if _elementNumberErr != nil {
 		return nil, errors.Wrap(_elementNumberErr, "Error parsing 'elementNumber' field")
 	}
+	elementNumber := _elementNumber
 
 	// Simple Field (subElementNumber)
-	subElementNumber, _subElementNumberErr := readBuffer.ReadUint8("subElementNumber", 8)
+	_subElementNumber, _subElementNumberErr := readBuffer.ReadUint8("subElementNumber", 8)
 	if _subElementNumberErr != nil {
 		return nil, errors.Wrap(_subElementNumberErr, "Error parsing 'subElementNumber' field")
 	}
+	subElementNumber := _subElementNumber
 
 	if closeErr := readBuffer.CloseContext("DF1RequestProtectedTypedLogicalRead"); closeErr != nil {
 		return nil, closeErr
@@ -159,15 +164,15 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 
 	// Create a partially initialized instance
 	_child := &DF1RequestProtectedTypedLogicalRead{
-		ByteSize:         byteSize,
-		FileNumber:       fileNumber,
-		FileType:         fileType,
-		ElementNumber:    elementNumber,
-		SubElementNumber: subElementNumber,
-		Parent:           &DF1RequestCommand{},
+		ByteSize:          byteSize,
+		FileNumber:        fileNumber,
+		FileType:          fileType,
+		ElementNumber:     elementNumber,
+		SubElementNumber:  subElementNumber,
+		DF1RequestCommand: &DF1RequestCommand{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.DF1RequestCommand.Child = _child
+	return _child.DF1RequestCommand, nil
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -216,7 +221,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) String() string {

@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type APDUSimpleAck struct {
+	*APDU
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
-	Parent           *APDU
 }
 
 // The corresponding interface
@@ -55,10 +55,10 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) *APDU {
 	child := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		Parent:           NewAPDU(),
+		APDU:             NewAPDU(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.APDU
 }
 
 func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {
@@ -89,7 +89,7 @@ func (m *APDUSimpleAck) LengthInBits() uint16 {
 }
 
 func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -107,7 +107,7 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -127,16 +127,18 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
+	originalInvokeId := _originalInvokeId
 
 	// Simple Field (serviceChoice)
-	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
+	_serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
+	serviceChoice := _serviceChoice
 
 	if closeErr := readBuffer.CloseContext("APDUSimpleAck"); closeErr != nil {
 		return nil, closeErr
@@ -146,10 +148,10 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	_child := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
-		Parent:           &APDU{},
+		APDU:             &APDU{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.APDU.Child = _child
+	return _child.APDU, nil
 }
 
 func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +187,7 @@ func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *APDUSimpleAck) String() string {

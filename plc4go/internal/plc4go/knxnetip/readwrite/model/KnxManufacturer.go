@@ -597,9 +597,21 @@ const (
 	KnxManufacturer_M_TERMINUS_GROUP                                     KnxManufacturer = 559
 	KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY                          KnxManufacturer = 560
 	KnxManufacturer_M_QBICTECHNOLOGY                                     KnxManufacturer = 561
-	KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER   KnxManufacturer = 562
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 563
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 564
+	KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED     KnxManufacturer = 562
+	KnxManufacturer_M_ONEWORK                                            KnxManufacturer = 563
+	KnxManufacturer_M_PL_LINK                                            KnxManufacturer = 564
+	KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK                              KnxManufacturer = 565
+	KnxManufacturer_M_GOLDENHOME_SMART                                   KnxManufacturer = 566
+	KnxManufacturer_M_GOLDMEDAL                                          KnxManufacturer = 567
+	KnxManufacturer_M_CannX                                              KnxManufacturer = 568
+	KnxManufacturer_M_EGI___EARTH_GOODNESS                               KnxManufacturer = 569
+	KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG                              KnxManufacturer = 570
+	KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS                           KnxManufacturer = 571
+	KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_                        KnxManufacturer = 572
+	KnxManufacturer_M_ACE_TECHNOLOGY                                     KnxManufacturer = 573
+	KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD          KnxManufacturer = 574
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 575
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 576
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1169,7 +1181,19 @@ func init() {
 		KnxManufacturer_M_TERMINUS_GROUP,
 		KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY,
 		KnxManufacturer_M_QBICTECHNOLOGY,
-		KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER,
+		KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED,
+		KnxManufacturer_M_ONEWORK,
+		KnxManufacturer_M_PL_LINK,
+		KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK,
+		KnxManufacturer_M_GOLDENHOME_SMART,
+		KnxManufacturer_M_GOLDMEDAL,
+		KnxManufacturer_M_CannX,
+		KnxManufacturer_M_EGI___EARTH_GOODNESS,
+		KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG,
+		KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS,
+		KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_,
+		KnxManufacturer_M_ACE_TECHNOLOGY,
+		KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3243,15 +3267,63 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 563:
 		{ /* '563' */
-			return 43954
+			return 620
 		}
 	case 564:
 		{ /* '564' */
-			return 43959
+			return 621
+		}
+	case 565:
+		{ /* '565' */
+			return 622
+		}
+	case 566:
+		{ /* '566' */
+			return 623
+		}
+	case 567:
+		{ /* '567' */
+			return 624
+		}
+	case 568:
+		{ /* '568' */
+			return 625
+		}
+	case 569:
+		{ /* '569' */
+			return 627
 		}
 	case 57:
 		{ /* '57' */
 			return 95
+		}
+	case 570:
+		{ /* '570' */
+			return 628
+		}
+	case 571:
+		{ /* '571' */
+			return 629
+		}
+	case 572:
+		{ /* '572' */
+			return 630
+		}
+	case 573:
+		{ /* '573' */
+			return 631
+		}
+	case 574:
+		{ /* '574' */
+			return 632
+		}
+	case 575:
+		{ /* '575' */
+			return 43954
+		}
+	case 576:
+		{ /* '576' */
+			return 43959
 		}
 	case 58:
 		{ /* '58' */
@@ -5517,19 +5589,67 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 562:
 		{ /* '562' */
-			return "Embedded Automation Equipment (Shanghai) Kessinger"
+			return "Embedded Automation Equipment (Shanghai) Limited"
 		}
 	case 563:
 		{ /* '563' */
-			return "ABB - reserved"
+			return "onework"
 		}
 	case 564:
 		{ /* '564' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "PL LINK"
+		}
+	case 565:
+		{ /* '565' */
+			return "Fasel GmbH Elektronik"
+		}
+	case 566:
+		{ /* '566' */
+			return "GoldenHome Smart"
+		}
+	case 567:
+		{ /* '567' */
+			return "Goldmedal"
+		}
+	case 568:
+		{ /* '568' */
+			return "Can'nX"
+		}
+	case 569:
+		{ /* '569' */
+			return "EGI - Earth Goodness"
 		}
 	case 57:
 		{ /* '57' */
 			return "ORAS"
+		}
+	case 570:
+		{ /* '570' */
+			return "Viega GmbH & Co. KG"
+		}
+	case 571:
+		{ /* '571' */
+			return "Fredon Digital Buildings"
+		}
+	case 572:
+		{ /* '572' */
+			return "Helukabel (Thailand) Co.,Ltd."
+		}
+	case 573:
+		{ /* '573' */
+			return "ACE Technology"
+		}
+	case 574:
+		{ /* '574' */
+			return "MEX Electric Technology (Shanghai) Co., Ltd"
+		}
+	case 575:
+		{ /* '575' */
+			return "ABB - reserved"
+		}
+	case 576:
+		{ /* '576' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 58:
 		{ /* '58' */
@@ -6763,13 +6883,37 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 561:
 		return KnxManufacturer_M_QBICTECHNOLOGY
 	case 562:
-		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
 	case 563:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_ONEWORK
 	case 564:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		return KnxManufacturer_M_PL_LINK
+	case 565:
+		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
+	case 566:
+		return KnxManufacturer_M_GOLDENHOME_SMART
+	case 567:
+		return KnxManufacturer_M_GOLDMEDAL
+	case 568:
+		return KnxManufacturer_M_CannX
+	case 569:
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS
 	case 57:
 		return KnxManufacturer_M_ORAS
+	case 570:
+		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+	case 571:
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+	case 572:
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+	case 573:
+		return KnxManufacturer_M_ACE_TECHNOLOGY
+	case 574:
+		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
+	case 575:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 576:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 58:
 		return KnxManufacturer_M_DAETWYLER
 	case 59:
@@ -7898,14 +8042,38 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
 	case "M_QBICTECHNOLOGY":
 		return KnxManufacturer_M_QBICTECHNOLOGY
-	case "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER":
-		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER
+	case "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED":
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED
+	case "M_ONEWORK":
+		return KnxManufacturer_M_ONEWORK
+	case "M_PL_LINK":
+		return KnxManufacturer_M_PL_LINK
+	case "M_FASEL_GMBH_ELEKTRONIK":
+		return KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK
+	case "M_GOLDENHOME_SMART":
+		return KnxManufacturer_M_GOLDENHOME_SMART
+	case "M_GOLDMEDAL":
+		return KnxManufacturer_M_GOLDMEDAL
+	case "M_CannX":
+		return KnxManufacturer_M_CannX
+	case "M_EGI___EARTH_GOODNESS":
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS
+	case "M_ORAS":
+		return KnxManufacturer_M_ORAS
+	case "M_VIEGA_GMBH_AND_CO__KG":
+		return KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG
+	case "M_FREDON_DIGITAL_BUILDINGS":
+		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS
+	case "M_HELUKABEL_THAILAND_CO__LTD_":
+		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_
+	case "M_ACE_TECHNOLOGY":
+		return KnxManufacturer_M_ACE_TECHNOLOGY
+	case "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD":
+		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
-	case "M_ORAS":
-		return KnxManufacturer_M_ORAS
 	case "M_DAETWYLER":
 		return KnxManufacturer_M_DAETWYLER
 	case "M_ELECTRAK":
@@ -9064,14 +9232,38 @@ func (e KnxManufacturer) name() string {
 		return "M_WONDERFUL_CITY_TECHNOLOGY"
 	case KnxManufacturer_M_QBICTECHNOLOGY:
 		return "M_QBICTECHNOLOGY"
-	case KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER:
-		return "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER"
+	case KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED:
+		return "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_LIMITED"
+	case KnxManufacturer_M_ONEWORK:
+		return "M_ONEWORK"
+	case KnxManufacturer_M_PL_LINK:
+		return "M_PL_LINK"
+	case KnxManufacturer_M_FASEL_GMBH_ELEKTRONIK:
+		return "M_FASEL_GMBH_ELEKTRONIK"
+	case KnxManufacturer_M_GOLDENHOME_SMART:
+		return "M_GOLDENHOME_SMART"
+	case KnxManufacturer_M_GOLDMEDAL:
+		return "M_GOLDMEDAL"
+	case KnxManufacturer_M_CannX:
+		return "M_CannX"
+	case KnxManufacturer_M_EGI___EARTH_GOODNESS:
+		return "M_EGI___EARTH_GOODNESS"
+	case KnxManufacturer_M_ORAS:
+		return "M_ORAS"
+	case KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG:
+		return "M_VIEGA_GMBH_AND_CO__KG"
+	case KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS:
+		return "M_FREDON_DIGITAL_BUILDINGS"
+	case KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_:
+		return "M_HELUKABEL_THAILAND_CO__LTD_"
+	case KnxManufacturer_M_ACE_TECHNOLOGY:
+		return "M_ACE_TECHNOLOGY"
+	case KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD:
+		return "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_ORAS:
-		return "M_ORAS"
 	case KnxManufacturer_M_DAETWYLER:
 		return "M_DAETWYLER"
 	case KnxManufacturer_M_ELECTRAK:

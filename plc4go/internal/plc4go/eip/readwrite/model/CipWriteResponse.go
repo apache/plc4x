@@ -29,9 +29,9 @@ import (
 
 // The data-structure of this message
 type CipWriteResponse struct {
+	*CipService
 	Status    uint8
 	ExtStatus uint8
-	Parent    *CipService
 }
 
 // The corresponding interface
@@ -53,12 +53,12 @@ func (m *CipWriteResponse) InitializeParent(parent *CipService) {
 
 func NewCipWriteResponse(status uint8, extStatus uint8) *CipService {
 	child := &CipWriteResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		Parent:    NewCipService(),
+		Status:     status,
+		ExtStatus:  extStatus,
+		CipService: NewCipService(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.CipService
 }
 
 func CastCipWriteResponse(structType interface{}) *CipWriteResponse {
@@ -89,7 +89,7 @@ func (m *CipWriteResponse) LengthInBits() uint16 {
 }
 
 func (m *CipWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -107,7 +107,7 @@ func (m *CipWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipWriteResponseParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -127,16 +127,18 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer) (*CipService, error) {
 	}
 
 	// Simple Field (status)
-	status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	status := _status
 
 	// Simple Field (extStatus)
-	extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field")
 	}
+	extStatus := _extStatus
 
 	if closeErr := readBuffer.CloseContext("CipWriteResponse"); closeErr != nil {
 		return nil, closeErr
@@ -144,12 +146,12 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer) (*CipService, error) {
 
 	// Create a partially initialized instance
 	_child := &CipWriteResponse{
-		Status:    status,
-		ExtStatus: extStatus,
-		Parent:    &CipService{},
+		Status:     status,
+		ExtStatus:  extStatus,
+		CipService: &CipService{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.CipService.Child = _child
+	return _child.CipService, nil
 }
 
 func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -185,7 +187,7 @@ func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *CipWriteResponse) String() string {

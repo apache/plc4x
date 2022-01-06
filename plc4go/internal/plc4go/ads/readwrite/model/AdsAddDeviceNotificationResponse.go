@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type AdsAddDeviceNotificationResponse struct {
+	*AdsData
 	Result             ReturnCode
 	NotificationHandle uint32
-	Parent             *AdsData
 }
 
 // The corresponding interface
@@ -48,7 +48,7 @@ func (m *AdsAddDeviceNotificationResponse) CommandId() CommandId {
 }
 
 func (m *AdsAddDeviceNotificationResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsAddDeviceNotificationResponse) InitializeParent(parent *AdsData) {
@@ -58,10 +58,10 @@ func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle u
 	child := &AdsAddDeviceNotificationResponse{
 		Result:             result,
 		NotificationHandle: notificationHandle,
-		Parent:             NewAdsData(),
+		AdsData:            NewAdsData(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.AdsData
 }
 
 func CastAdsAddDeviceNotificationResponse(structType interface{}) *AdsAddDeviceNotificationResponse {
@@ -92,7 +92,7 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBits() uint16 {
 }
 
 func (m *AdsAddDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -107,29 +107,30 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
 
+	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (result)
-	result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	result := _result
 	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationResponse"); closeErr != nil {
 		return nil, closeErr
@@ -139,10 +140,10 @@ func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (*AdsDat
 	_child := &AdsAddDeviceNotificationResponse{
 		Result:             result,
 		NotificationHandle: notificationHandle,
-		Parent:             &AdsData{},
+		AdsData:            &AdsData{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.AdsData.Child = _child
+	return _child.AdsData, nil
 }
 
 func (m *AdsAddDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -175,7 +176,7 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuff
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *AdsAddDeviceNotificationResponse) String() string {

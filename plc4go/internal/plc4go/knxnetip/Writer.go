@@ -23,6 +23,7 @@ import (
 	"errors"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
@@ -47,7 +48,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		field := writeRequest.GetField(fieldName)
 		knxNetIpField, err := CastToFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("invalid field item type"),
@@ -60,7 +61,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		io := utils.NewWriteBufferByteBased()
 		fieldType := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
 		if err := readWriteModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
-			result <- model.PlcWriteRequestResult{
+			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
 				Err:      errors.New("error serializing value: " + err.Error()),

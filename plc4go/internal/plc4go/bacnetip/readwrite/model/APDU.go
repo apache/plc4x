@@ -112,17 +112,17 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	case apduType == 0x1: // APDUUnconfirmedRequest
 		_parent, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
 	case apduType == 0x2: // APDUSimpleAck
-		_parent, typeSwitchError = APDUSimpleAckParse(readBuffer)
+		_parent, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
 	case apduType == 0x3: // APDUComplexAck
-		_parent, typeSwitchError = APDUComplexAckParse(readBuffer)
+		_parent, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
 	case apduType == 0x4: // APDUSegmentAck
-		_parent, typeSwitchError = APDUSegmentAckParse(readBuffer)
+		_parent, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
 	case apduType == 0x5: // APDUError
-		_parent, typeSwitchError = APDUErrorParse(readBuffer)
+		_parent, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
 	case apduType == 0x6: // APDUReject
-		_parent, typeSwitchError = APDURejectParse(readBuffer)
+		_parent, typeSwitchError = APDURejectParse(readBuffer, apduLength)
 	case apduType == 0x7: // APDUAbort
-		_parent, typeSwitchError = APDUAbortParse(readBuffer)
+		_parent, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -158,8 +158,7 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := serializeChildFunction()
-	if _typeSwitchErr != nil {
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
