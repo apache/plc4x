@@ -47,7 +47,7 @@ pipeline {
     }
 
     options {
-        // Kill this job after one hour.
+        // Kill this job after one day.
         timeout(time: 24, unit: 'HOURS')
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
