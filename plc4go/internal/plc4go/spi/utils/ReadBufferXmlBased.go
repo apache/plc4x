@@ -73,7 +73,7 @@ func (x *xmlReadBuffer) GetPos() uint16 {
 	return uint16(x.pos / 8)
 }
 
-func (x *xmlReadBuffer) SetPos(pos uint16) {
+func (x *xmlReadBuffer) Reset(pos uint16) {
 	x.pos = uint(pos * 8)
 }
 

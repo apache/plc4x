@@ -124,7 +124,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			deviceInstanceRangeLowLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
@@ -145,7 +145,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			deviceInstanceRangeHighLimit = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {

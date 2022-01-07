@@ -784,13 +784,17 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
 	_${manualArrayField.name}List := make([]<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
-	for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
+	{
+		_values := &_${manualArrayField.name}List
+		_ = _values
+		for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
 		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
-		curPos = readBuffer.GetPos() - startPos
+			curPos = readBuffer.GetPos() - startPos
 						</#if>
+		}
 	}
 					</#if>
 				<#--
@@ -879,7 +883,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
@@ -1102,10 +1106,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Create a partially initialized instance
 	_child := &${type.name}{
 		<#list type.propertyFields as field>
-		${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>)</#if>,
+		${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>)</#if>,
 		</#list>
         <#list type.virtualFields as field>
-            ${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>)</#if>,
+            ${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>)</#if>,
         </#list>
         ${type.parentType.name}: &${type.parentType.name}{},
 	}

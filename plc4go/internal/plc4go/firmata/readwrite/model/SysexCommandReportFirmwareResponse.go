@@ -137,9 +137,13 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	// Manual Array Field (fileName)
 	// Terminated array
 	_fileNameList := make([]byte, 0)
-	for !((bool)(IsSysexEnd(readBuffer))) {
-		_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(readBuffer))))
+	{
+		_values := &_fileNameList
+		_ = _values
+		for !((bool)(IsSysexEnd(readBuffer))) {
+			_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(readBuffer))))
 
+		}
 	}
 	fileName := make([]byte, len(_fileNameList))
 	for i := 0; i < len(_fileNameList); i++ {

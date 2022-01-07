@@ -135,7 +135,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'password' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			password = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {

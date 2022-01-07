@@ -32,7 +32,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	SubscriberProcessIdentifier *BACnetContextTagUnsignedInteger
 	MonitoredDeviceIdentifier   *BACnetContextTagObjectIdentifier
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
-	Lifetime                    *BACnetContextTagUnsignedInteger
+	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
 	ListOfValues                *BACnetConstructedData
 }
 
@@ -53,12 +53,12 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoic
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetime *BACnetContextTagUnsignedInteger, listOfValues *BACnetConstructedData) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetConstructedData) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
 		SubscriberProcessIdentifier:     subscriberProcessIdentifier,
 		MonitoredDeviceIdentifier:       monitoredDeviceIdentifier,
 		MonitoredObjectIdentifier:       monitoredObjectIdentifier,
-		Lifetime:                        lifetime,
+		LifetimeInSeconds:               lifetimeInSeconds,
 		ListOfValues:                    listOfValues,
 		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
 	}
@@ -105,8 +105,8 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBits
 	// Simple field (monitoredObjectIdentifier)
 	lengthInBits += m.MonitoredObjectIdentifier.LengthInBits()
 
-	// Simple field (lifetime)
-	lengthInBits += m.Lifetime.LengthInBits()
+	// Simple field (lifetimeInSeconds)
+	lengthInBits += m.LifetimeInSeconds.LengthInBits()
 
 	// Optional Field (listOfValues)
 	if m.ListOfValues != nil {
@@ -164,16 +164,16 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		return nil, closeErr
 	}
 
-	// Simple Field (lifetime)
-	if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
+	// Simple Field (lifetimeInSeconds)
+	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 		return nil, pullErr
 	}
-	_lifetime, _lifetimeErr := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-	if _lifetimeErr != nil {
-		return nil, errors.Wrap(_lifetimeErr, "Error parsing 'lifetime' field")
+	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+	if _lifetimeInSecondsErr != nil {
+		return nil, errors.Wrap(_lifetimeInSecondsErr, "Error parsing 'lifetimeInSeconds' field")
 	}
-	lifetime := CastBACnetContextTagUnsignedInteger(_lifetime)
-	if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
+	lifetimeInSeconds := CastBACnetContextTagUnsignedInteger(_lifetimeInSeconds)
+	if closeErr := readBuffer.CloseContext("lifetimeInSeconds"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -184,12 +184,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), BACnetPropertyIdentifier_ALL)
+		_val, _err := BACnetTagParse(readBuffer)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			listOfValues = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
@@ -207,7 +207,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		SubscriberProcessIdentifier:     CastBACnetContextTagUnsignedInteger(subscriberProcessIdentifier),
 		MonitoredDeviceIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredDeviceIdentifier),
 		MonitoredObjectIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredObjectIdentifier),
-		Lifetime:                        CastBACnetContextTagUnsignedInteger(lifetime),
+		LifetimeInSeconds:               CastBACnetContextTagUnsignedInteger(lifetimeInSeconds),
 		ListOfValues:                    CastBACnetConstructedData(listOfValues),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
@@ -257,16 +257,16 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(wr
 			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		// Simple Field (lifetime)
-		if pushErr := writeBuffer.PushContext("lifetime"); pushErr != nil {
+		// Simple Field (lifetimeInSeconds)
+		if pushErr := writeBuffer.PushContext("lifetimeInSeconds"); pushErr != nil {
 			return pushErr
 		}
-		_lifetimeErr := m.Lifetime.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
+		_lifetimeInSecondsErr := m.LifetimeInSeconds.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
 			return popErr
 		}
-		if _lifetimeErr != nil {
-			return errors.Wrap(_lifetimeErr, "Error serializing 'lifetime' field")
+		if _lifetimeInSecondsErr != nil {
+			return errors.Wrap(_lifetimeInSecondsErr, "Error serializing 'lifetimeInSeconds' field")
 		}
 
 		// Optional Field (listOfValues) (Can be skipped, if the value is null)

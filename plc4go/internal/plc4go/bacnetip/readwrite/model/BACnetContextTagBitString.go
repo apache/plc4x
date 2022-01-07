@@ -29,9 +29,8 @@ import (
 // The data-structure of this message
 type BACnetContextTagBitString struct {
 	*BACnetContextTag
-	UnusedBits        uint8
-	Data              []int8
-	ActualLengthInBit uint16
+	UnusedBits uint8
+	Data       []bool
 }
 
 // The corresponding interface
@@ -58,7 +57,7 @@ func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, t
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagBitString(unusedBits uint8, data []int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagBitString(unusedBits uint8, data []bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
 	child := &BACnetContextTagBitString{
 		UnusedBits:       unusedBits,
 		Data:             data,
@@ -98,14 +97,12 @@ func (m *BACnetContextTagBitString) LengthInBits() uint16 {
 func (m *BACnetContextTagBitString) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (unusedBits)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 1 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -120,10 +117,6 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 		return nil, pullErr
 	}
 
-	// Virtual field
-	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
-	actualLengthInBit := uint16(_actualLengthInBit)
-
 	// Simple Field (unusedBits)
 	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
@@ -135,17 +128,15 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
-	// Length array
-	data := make([]int8, 0)
+	// Count array
+	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
 	{
-		_dataLength := actualLengthInBit
-		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-		for readBuffer.GetPos() < _dataEndPos {
-			_item, _err := readBuffer.ReadInt8("", 8)
+		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
+			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
-			data = append(data, _item)
+			data[curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
@@ -158,10 +149,9 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagBitString{
-		UnusedBits:        unusedBits,
-		Data:              data,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  &BACnetContextTag{},
+		UnusedBits:       unusedBits,
+		Data:             data,
+		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
 	return _child.BACnetContextTag, nil
@@ -171,10 +161,6 @@ func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) err
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetContextTagBitString"); pushErr != nil {
 			return pushErr
-		}
-		// Virtual field
-		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
-			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 		}
 
 		// Simple Field (unusedBits)
@@ -190,7 +176,7 @@ func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) err
 				return pushErr
 			}
 			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
+				_elementErr := writeBuffer.WriteBit("", _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

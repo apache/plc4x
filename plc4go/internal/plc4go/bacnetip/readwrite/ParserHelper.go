@@ -47,8 +47,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.APDUParse(io, apduLength)
 	case "BACnetTag":
 		return model.BACnetTagParse(io)
-	case "BACnetTagWithContent":
-		return model.BACnetTagWithContentParse(io)
 	case "BACnetError":
 		return model.BACnetErrorParse(io)
 	case "NLM":
@@ -65,20 +63,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestParse(io, len)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(io)
-	case "BACnetPropertyValue":
-		var identifier model.BACnetPropertyIdentifier
-		actualLength, err := utils.StrToUint32(arguments[1])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.BACnetPropertyValueParse(io, identifier, actualLength)
-	case "BACnetConstructedData":
-		tagNumberArgument, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		var identifier model.BACnetPropertyIdentifier
-		return model.BACnetConstructedDataParse(io, tagNumberArgument, identifier)
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(io)
 	case "BACnetUnconfirmedServiceRequest":

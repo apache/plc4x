@@ -110,9 +110,13 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 	// Manual Array Field (data)
 	// Terminated array
 	_dataList := make([]byte, 0)
-	for !((bool)(DataTerminate(readBuffer))) {
-		_dataList = append(_dataList, ((byte)(ReadData(readBuffer))))
+	{
+		_values := &_dataList
+		_ = _values
+		for !((bool)(DataTerminate(readBuffer))) {
+			_dataList = append(_dataList, ((byte)(ReadData(readBuffer))))
 
+		}
 	}
 	data := make([]byte, len(_dataList))
 	for i := 0; i < len(_dataList); i++ {

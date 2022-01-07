@@ -1785,9 +1785,13 @@ func TestReadBuffer_Reset(t *testing.T) {
 		pos       uint64
 		byteOrder binary.ByteOrder
 	}
+	type args struct {
+		pos uint16
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 	}{
 		// TODO: Add test cases.
 	}
@@ -1799,7 +1803,7 @@ func TestReadBuffer_Reset(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			rb.Reset()
+			rb.Reset(tt.args.pos)
 		})
 	}
 }

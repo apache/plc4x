@@ -74,5 +74,5 @@ func (m RawPlcValue) RawHasMore() bool {
 }
 
 func (m RawPlcValue) RawReset() {
-	m.readBuffer.(utils.ReadBufferByteBased).Reset()
+	m.readBuffer.(utils.ReadBufferByteBased).Reset(0)
 }

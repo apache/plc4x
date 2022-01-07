@@ -33,7 +33,7 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
 	PropertyValue      *BACnetConstructedData
-	Priority           *BACnetTag
+	Priority           *BACnetContextTagUnsignedInteger
 }
 
 // The corresponding interface
@@ -53,7 +53,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) ServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, propertyValue *BACnetConstructedData, priority *BACnetTag) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWriteProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -126,8 +126,6 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {
 		return nil, pullErr
 	}
-	var startPos = readBuffer.GetPos()
-	var curPos uint16
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
@@ -169,7 +167,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(3), propertyIdentifier.Value)
+	_propertyValue, _propertyValueErr := BACnetTagParse(readBuffer)
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field")
 	}
@@ -179,21 +177,20 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	}
 
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
-	curPos = readBuffer.GetPos() - startPos
-	var priority *BACnetTag = nil
-	if bool((curPos) < ((len) - (1))) {
+	var priority *BACnetContextTagUnsignedInteger = nil
+	{
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetTagParse(readBuffer)
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
-			priority = CastBACnetTag(_val)
+			priority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
 				return nil, closeErr
 			}
@@ -210,7 +207,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:                    arrayIndex,
 		PropertyValue:                 CastBACnetConstructedData(propertyValue),
-		Priority:                      CastBACnetTag(priority),
+		Priority:                      CastBACnetContextTagUnsignedInteger(priority),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
@@ -270,7 +267,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils
 		}
 
 		// Optional Field (priority) (Can be skipped, if the value is null)
-		var priority *BACnetTag = nil
+		var priority *BACnetContextTagUnsignedInteger = nil
 		if m.Priority != nil {
 			if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 				return pushErr

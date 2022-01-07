@@ -32,7 +32,7 @@ type BACnetServiceAckReadProperty struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
-	ConstructedData    *BACnetConstructedData
+	Values             *BACnetConstructedData
 }
 
 // The corresponding interface
@@ -52,12 +52,12 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, constructedData *BACnetConstructedData) *BACnetServiceAck {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, values *BACnetConstructedData) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
-		ConstructedData:    constructedData,
+		Values:             values,
 		BACnetServiceAck:   NewBACnetServiceAck(),
 	}
 	child.Child = child
@@ -105,9 +105,9 @@ func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) ui
 		lengthInBits += 32
 	}
 
-	// Optional Field (constructedData)
-	if m.ConstructedData != nil {
-		lengthInBits += (*m.ConstructedData).LengthInBits()
+	// Optional Field (values)
+	if m.Values != nil {
+		lengthInBits += (*m.Values).LengthInBits()
 	}
 
 	return lengthInBits
@@ -158,22 +158,22 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		arrayIndex = &_val
 	}
 
-	// Optional Field (constructedData) (Can be skipped, if a given expression evaluates to false)
-	var constructedData *BACnetConstructedData = nil
+	// Optional Field (values) (Can be skipped, if a given expression evaluates to false)
+	var values *BACnetConstructedData = nil
 	{
 		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
+		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), propertyIdentifier.Value)
+		_val, _err := BACnetTagParse(readBuffer)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
+			return nil, errors.Wrap(_err, "Error parsing 'values' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
-			constructedData = CastBACnetConstructedData(_val)
-			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {
+			values = CastBACnetConstructedData(_val)
+			if closeErr := readBuffer.CloseContext("values"); closeErr != nil {
 				return nil, closeErr
 			}
 		}
@@ -188,7 +188,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		ObjectIdentifier:   CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier: CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:         arrayIndex,
-		ConstructedData:    CastBACnetConstructedData(constructedData),
+		Values:             CastBACnetConstructedData(values),
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
@@ -235,19 +235,19 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 			}
 		}
 
-		// Optional Field (constructedData) (Can be skipped, if the value is null)
-		var constructedData *BACnetConstructedData = nil
-		if m.ConstructedData != nil {
-			if pushErr := writeBuffer.PushContext("constructedData"); pushErr != nil {
+		// Optional Field (values) (Can be skipped, if the value is null)
+		var values *BACnetConstructedData = nil
+		if m.Values != nil {
+			if pushErr := writeBuffer.PushContext("values"); pushErr != nil {
 				return pushErr
 			}
-			constructedData = m.ConstructedData
-			_constructedDataErr := constructedData.Serialize(writeBuffer)
-			if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
+			values = m.Values
+			_valuesErr := values.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("values"); popErr != nil {
 				return popErr
 			}
-			if _constructedDataErr != nil {
-				return errors.Wrap(_constructedDataErr, "Error serializing 'constructedData' field")
+			if _valuesErr != nil {
+				return errors.Wrap(_valuesErr, "Error serializing 'values' field")
 			}
 		}
 

@@ -224,9 +224,7 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	// Virtual field
 	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() interface{} { return uint32((*extExtExtLength)) }, func() interface{} {
 		return uint32(uint32(utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() interface{} { return uint32((*extExtLength)) }, func() interface{} {
-			return uint32(uint32(utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} {
-				return uint32(uint32(utils.InlineIf(isPrimitiveAndNotBoolean, func() interface{} { return uint32(lengthValueType) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
-			}).(uint32)))
+			return uint32(uint32(utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} { return uint32(lengthValueType) }).(uint32)))
 		}).(uint32)))
 	}).(uint32)
 	actualLength := uint32(_actualLength)
@@ -261,8 +259,10 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 		_parent, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
 	case tagClass == TagClass_APPLICATION_TAGS && tagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
 		_parent, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
-	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS: // BACnetContextTagWithoutContext
-		_parent, typeSwitchError = BACnetContextTagWithoutContextParse(readBuffer, actualLength)
+	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS && tagNumber == 0x0: // BACnetConstructedDataElement
+		_parent, typeSwitchError = BACnetConstructedDataElementParse(readBuffer, actualLength)
+	case tagClass == TagClass_CONTEXT_SPECIFIC_TAGS: // BACnetConstructedData
+		_parent, typeSwitchError = BACnetConstructedDataParse(readBuffer, tagNumber, actualLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

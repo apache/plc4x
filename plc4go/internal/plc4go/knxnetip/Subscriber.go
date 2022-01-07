@@ -136,7 +136,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 							if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
 								// If this is an unknown 1 byte payload, we need the first byte.
 								if !rb.HasMore(1) {
-									rb.Reset()
+									rb.Reset(0)
 								}
 								plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
 								plcValueList = append(plcValueList, plcValue)

@@ -80,7 +80,7 @@ func (j *jsonReadBuffer) GetPos() uint16 {
 	return uint16(j.pos / 8)
 }
 
-func (j *jsonReadBuffer) SetPos(pos uint16) {
+func (j *jsonReadBuffer) Reset(pos uint16) {
 	j.pos = uint(pos * 8)
 }
 

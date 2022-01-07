@@ -40,7 +40,7 @@ public class FieldReaderOptional<T> implements FieldCommons {
         int curPos = dataReader.getPos();
         try {
             T field = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
-            LOGGER.debug("done reading field {}.{}", logicalName, field);
+            LOGGER.debug("done reading field {}. Value: {}", logicalName, field);
             return field;
         } catch (ParseAssertException e) {
             LOGGER.debug("Assertion doesn't match for field {}. Resetting read position to {}", logicalName, curPos, e);

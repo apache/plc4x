@@ -152,7 +152,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			openingTag = CastBACnetContextTagNull(_val)
 			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -199,7 +199,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			closingTag = CastBACnetContextTagNull(_val)
 			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

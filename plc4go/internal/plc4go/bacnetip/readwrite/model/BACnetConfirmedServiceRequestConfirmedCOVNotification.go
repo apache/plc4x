@@ -184,12 +184,12 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), BACnetPropertyIdentifier_ALL)
+		_val, _err := BACnetTagParse(readBuffer)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			listOfValues = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {

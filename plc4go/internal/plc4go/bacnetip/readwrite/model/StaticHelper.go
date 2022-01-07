@@ -88,20 +88,33 @@ func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnet
 		return 0, nil
 	}
 	// We need to reset our reader to the position we read before
-	readBuffer.SetPos(readBuffer.GetPos() - uint16(actualLength))
+	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
 	bitsToRead := (uint8)(actualLength * 8)
 	return readBuffer.ReadUint32("proprietaryPropertyIdentifier", bitsToRead)
 }
 
-func OpeningClosingTerminate(readBuffer utils.ReadBuffer, openingTag *BACnetContextTag) bool {
-	if openingTag == nil {
-		// If we don't have an opening tag at all we can terminate here
+func OpeningClosingTerminate(instantTerminate bool, readBuffer utils.ReadBuffer, expectedTagNumber byte) bool {
+	if instantTerminate {
 		return true
 	}
 	oldPos := readBuffer.GetPos()
-	aByte, _ := readBuffer.ReadByte("")
-	readBuffer.SetPos(oldPos)
-	return aByte == 0x3F
+	// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
+	tagNumber, err := readBuffer.ReadUint8("", 4)
+	if err != nil {
+		return true
+	}
+	isContextTag, err := readBuffer.ReadBit("")
+	if err != nil {
+		return true
+	}
+	tagValue, err := readBuffer.ReadUint8("", 3)
+	if err != nil {
+		return true
+	}
+
+	foundOurClosingTag := isContextTag && tagNumber == expectedTagNumber && tagValue == 0x7
+	readBuffer.Reset(oldPos)
+	return foundOurClosingTag
 }
 
 func ParseTags(readBuffer utils.ReadBuffer) *BACnetTag {

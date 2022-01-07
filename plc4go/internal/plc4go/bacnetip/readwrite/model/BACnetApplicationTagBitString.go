@@ -30,7 +30,7 @@ import (
 type BACnetApplicationTagBitString struct {
 	*BACnetTag
 	UnusedBits uint8
-	Data       []int8
+	Data       []bool
 }
 
 // The corresponding interface
@@ -56,7 +56,7 @@ func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetTag, tagN
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagBitString(unusedBits uint8, data []int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagBitString(unusedBits uint8, data []bool, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetApplicationTagBitString{
 		UnusedBits: unusedBits,
 		Data:       data,
@@ -101,7 +101,7 @@ func (m *BACnetApplicationTagBitString) LengthInBitsConditional(lastItem bool) u
 
 	// Array field
 	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+		lengthInBits += 1 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -127,17 +127,15 @@ func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, actualLengt
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
-	// Length array
-	data := make([]int8, 0)
+	// Count array
+	data := make([]bool, uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits))
 	{
-		_dataLength := actualLength
-		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-		for readBuffer.GetPos() < _dataEndPos {
-			_item, _err := readBuffer.ReadInt8("", 8)
+		for curItem := uint16(0); curItem < uint16(uint16(uint16(uint16(uint16(uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits)); curItem++ {
+			_item, _err := readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
-			data = append(data, _item)
+			data[curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
@@ -177,7 +175,7 @@ func (m *BACnetApplicationTagBitString) Serialize(writeBuffer utils.WriteBuffer)
 				return pushErr
 			}
 			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
+				_elementErr := writeBuffer.WriteBit("", _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

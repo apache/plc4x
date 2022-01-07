@@ -30,7 +30,6 @@ import (
 
 type ReadBufferByteBased interface {
 	ReadBuffer
-	Reset()
 	GetBytes() []byte
 	GetTotalBytes() uint64
 	PeekByte(offset byte) byte
@@ -77,11 +76,6 @@ type byteReadBuffer struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (rb *byteReadBuffer) Reset() {
-	rb.pos = uint64(0)
-	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
-}
-
 func (rb *byteReadBuffer) SetByteOrder(byteOrder binary.ByteOrder) {
 	rb.byteOrder = byteOrder
 }
@@ -94,8 +88,9 @@ func (rb *byteReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
 
-func (rb *byteReadBuffer) SetPos(pos uint16) {
-	rb.Reset()
+func (rb *byteReadBuffer) Reset(pos uint16) {
+	rb.pos = uint64(0)
+	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
 	bytesToSkip := make([]byte, pos)
 	_, err := rb.reader.Read(bytesToSkip)
 	if err != nil {

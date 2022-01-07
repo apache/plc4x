@@ -332,7 +332,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			nlm = CastNLM(_val)
 			if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
@@ -353,7 +353,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		case _err == utils.ParseAssertError:
-			readBuffer.SetPos(currentPos)
+			readBuffer.Reset(currentPos)
 		default:
 			apdu = CastAPDU(_val)
 			if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetContextTag;
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier;
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetTag;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BACnetTagIO;
@@ -26,6 +25,8 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -33,9 +34,11 @@ import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAddi
 
 public class StaticHelper {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(StaticHelper.class);
+
     public static BACnetPropertyIdentifier readPropertyIdentifier(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
-        long readUnsignedLong = readBuffer.readUnsignedLong("propertyIdentifier",bitsToRead);
+        long readUnsignedLong = readBuffer.readUnsignedLong("propertyIdentifier", bitsToRead);
         BACnetPropertyIdentifier baCnetPropertyIdentifier = BACnetPropertyIdentifier.enumForValue(readUnsignedLong);
         if (baCnetPropertyIdentifier == null) {
             return BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
@@ -44,7 +47,7 @@ public class StaticHelper {
     }
 
     public static void writePropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier value) throws SerializationException {
-        if (value == null || value ==  BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
+        if (value == null || value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
             return;
         }
         int bitsToWrite;
@@ -62,7 +65,7 @@ public class StaticHelper {
     }
 
     public static void writeProprietaryPropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier baCnetPropertyIdentifier, long value) throws SerializationException {
-        if (baCnetPropertyIdentifier != null && baCnetPropertyIdentifier !=  BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
+        if (baCnetPropertyIdentifier != null && baCnetPropertyIdentifier != BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
             return;
         }
         int bitsToWrite;
@@ -79,32 +82,39 @@ public class StaticHelper {
     }
 
     public static Long readProprietaryPropertyIdentifier(ReadBuffer readBuffer, BACnetPropertyIdentifier value, Long actualLength) throws ParseException {
-        if (value!=null&& value !=  BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
+        if (value != null && value != BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE) {
             return 0L;
         }
         // We need to reset our reader to the position we read before
-        readBuffer.reset((int) (readBuffer.getPos()-actualLength));
+        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
         int bitsToRead = (int) (actualLength * 8);
-        return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier",bitsToRead);
+        return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier", bitsToRead);
     }
 
-    public static boolean openingClosingTerminate(ReadBuffer readBuffer, BACnetContextTag openingTag) {
-        if (openingTag == null) {
-            // If we don't have an opening tag at all we can terminate here
+    public static boolean openingClosingTerminate(boolean instantTerminate, ReadBuffer readBuffer, short expectedTagNumber) {
+        if (instantTerminate) {
+            LOGGER.debug("it is a instant terminate");
             return true;
         }
         int oldPos = readBuffer.getPos();
-        byte aByte;
         try {
-            aByte = readBuffer.readByte();
-        } catch (ArrayIndexOutOfBoundsException ignore) {
+            // TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
+            int tagNumber = readBuffer.readUnsignedInt(4);
+            boolean isContextTag = readBuffer.readBit();
+            int tagValue = readBuffer.readUnsignedInt(3);
+
+            boolean foundOurClosingTag = isContextTag && tagNumber == expectedTagNumber && tagValue == 0x7;
+            LOGGER.debug("Checking at pos pos:{}: tagNumber:{}, isContextTag:{}, tagValue:{}, expectedTagNumber:{}. foundOurClosingTag:{}", oldPos, tagNumber, isContextTag, tagValue, expectedTagNumber, foundOurClosingTag);
+            return foundOurClosingTag;
+        } catch (ParseException e) {
+            LOGGER.warn("Error reading termination bit", e);
             return true;
-        } catch (ParseException ignore) {
-            // TODO: we should rethrow the exception here
-            return false;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            LOGGER.debug("Reached EOF at {}", oldPos, e);
+            return true;
+        } finally {
+            readBuffer.reset(oldPos);
         }
-        readBuffer.reset(oldPos);
-        return aByte == 0x3F;
     }
 
     public static BACnetTag parseTags(ReadBuffer readBuffer) throws ParseException {

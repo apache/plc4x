@@ -26,8 +26,8 @@ import (
 type ReadBuffer interface {
 	// GetPos return the current byte position
 	GetPos() uint16
-	// SetPos sets the position to the supplied byte position
-	SetPos(pos uint16)
+	// Reset sets the position to the supplied byte position
+	Reset(pos uint16)
 	// HasMore returns true if there are bitLength bits available
 	HasMore(bitLength uint8) bool
 	// PullContext signals that we expect now a context with the supplied logical name
