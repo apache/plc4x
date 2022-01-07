@@ -18,15 +18,19 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FieldWriterOptionalEnum<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldWriterOptionalEnum.class);
+
     public void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        LOGGER.debug("write field {}", logicalName);
         dataWriter.pushContext(logicalName);
         if(value != null) {
             switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));

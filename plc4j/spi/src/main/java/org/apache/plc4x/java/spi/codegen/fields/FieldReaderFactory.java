@@ -25,10 +25,12 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FieldReaderFactory {
 
+    @SuppressWarnings("unused")
     public static <T> T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderAbstract<T>().readAbstractField(logicalName, dataReader, readerArgs);
     }
@@ -93,11 +95,11 @@ public class FieldReaderFactory {
         return new FieldReaderOptional<T>().readOptionalField(logicalName, dataReader, condition, readerArgs);
     }
 
-    public static byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<Byte> parse, WithReaderArgs... readerArgs) throws ParseException {
+    public static byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Function<byte[], Boolean> termination, ParseSupplier<Byte> parse, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderManualArray<Byte>().readManualByteArrayField(logicalName, readBuffer, termination, parse, readerArgs);
     }
 
-    public static <T> List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+    public static <T> List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Function<List<T>, Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderManualArray<T>().readManualArrayField(logicalName, readBuffer, termination, parse, readerArgs);
     }
 
@@ -121,8 +123,8 @@ public class FieldReaderFactory {
         return new FieldReaderUnknown<T>().readUnknownField(logicalName, dataReader, readerArgs);
     }
 
-    public static <T> T readVirtualField(Class<T> type, Object valueExpression, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderVirtual<T>().readVirtualField(type, valueExpression, readerArgs);
+    public static <T> T readVirtualField(String logicalName, Class<T> type, Object valueExpression, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderVirtual<T>().readVirtualField(logicalName, type, valueExpression, readerArgs);
     }
 
 }

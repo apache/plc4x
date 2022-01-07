@@ -31,32 +31,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FieldReaderManualArray<T> implements FieldCommons {
 
-    public byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderManualArray.class);
+
+    public byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Function<byte[],Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         readBuffer.pullContext(logicalName, readerArgs);
         List<Byte> result = new ArrayList<>();
-        while (!termination.get()) {
-            result.add((Byte) parse.get());
+        while (!termination.apply(ArrayUtils.toPrimitive(result.toArray(new Byte[0])))) {
+            //TODO: maybe switch to iterator here
+            Byte element = (Byte) parse.get();
+            LOGGER.debug("Adding element {}", element);
+            result.add(element);
         }
         readBuffer.closeContext(logicalName, readerArgs);
+        LOGGER.debug("done reading field {}", logicalName);
         return ArrayUtils.toPrimitive(result.toArray(new Byte[0]));
     }
 
-    public List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+    public List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Function<List<T>,Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         readBuffer.pullContext(logicalName, readerArgs);
         List<T> result = new ArrayList<>();
-        while (!termination.get()) {
-            result.add(parse.get());
+        while (!termination.apply(Collections.unmodifiableList(result))) {
+            //TODO: maybe switch to iterator here
+            T element = parse.get();
+            LOGGER.debug("Adding element {}", element);
+            result.add(element);
         }
         readBuffer.closeContext(logicalName, readerArgs);
+        LOGGER.debug("done reading field {}", logicalName);
         return result;
     }
 

@@ -22,10 +22,15 @@ import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FieldWriterManual<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldWriterManual.class);
+
     public void writeManualField(String logicalName, RunSerializeWrapped consumer, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        LOGGER.debug("write field {}", logicalName);
         switchSerializeByteOrderIfNecessary(consumer, writeBuffer, extractByteOder(writerArgs).orElse(null));
     }
 

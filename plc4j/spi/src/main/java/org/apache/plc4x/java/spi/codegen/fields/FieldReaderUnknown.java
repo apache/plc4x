@@ -30,6 +30,7 @@ public class FieldReaderUnknown<T> implements FieldCommons {
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderUnknown.class);
 
     public T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         T unknownValue = dataReader.read(logicalName, readerArgs);
         LOGGER.debug("Read unknown value {}", unknownValue);
         return unknownValue;

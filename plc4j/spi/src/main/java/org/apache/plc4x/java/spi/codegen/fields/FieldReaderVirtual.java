@@ -29,8 +29,11 @@ import java.math.BigInteger;
 
 public class FieldReaderVirtual<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderVirtual.class);
+
     @SuppressWarnings({"unused", "unchecked"})
-    public T readVirtualField(Class<T> type, Object valueExpression, WithReaderArgs... readerArgs) throws ParseException {
+    public T readVirtualField(String logicalName, Class<T> type, Object valueExpression, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         if (type.isPrimitive()) {
             // for primitives, we need to cast to the primitive as this does autoboxing
             if (type == boolean.class) {

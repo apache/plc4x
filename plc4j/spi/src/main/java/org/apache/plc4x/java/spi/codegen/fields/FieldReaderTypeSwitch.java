@@ -27,7 +27,10 @@ import org.slf4j.LoggerFactory;
 
 public class FieldReaderTypeSwitch<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderTypeSwitch.class);
+
     public T readTypeSwitchField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
     }
 

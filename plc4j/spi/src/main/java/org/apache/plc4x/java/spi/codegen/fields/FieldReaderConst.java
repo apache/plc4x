@@ -29,7 +29,10 @@ import java.util.Objects;
 
 public class FieldReaderConst<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderConst.class);
+
     public T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         T constValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(constValue, expectedValue)) {
             throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue + ". Byte position: " + dataReader.getPos());

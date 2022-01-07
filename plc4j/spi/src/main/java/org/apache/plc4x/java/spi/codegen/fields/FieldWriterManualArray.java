@@ -18,16 +18,19 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
-import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class FieldWriterManualArray<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldWriterManualArray.class);
+
     public void writeManualArrayField(String logicalName, List<T> values, ConsumeSerializeWrapped<T> consumer, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        LOGGER.debug("write field {}", logicalName);
         switchSerializeByteOrderIfNecessary(() -> {
             if (values != null) {
                 writeBuffer.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));

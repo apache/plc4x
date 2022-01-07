@@ -32,6 +32,7 @@ public class FieldReaderReserved<T> implements FieldCommons {
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderReserved.class);
 
     public T readReservedField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         T reserved = dataReader.read(logicalName, readerArgs);
         if (!Objects.equals(reserved, referenceValue)) {
             LOGGER.info("Expected constant value {} but got {} for reserved field.", referenceValue, reserved);

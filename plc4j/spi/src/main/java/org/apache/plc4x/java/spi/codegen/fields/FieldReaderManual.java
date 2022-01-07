@@ -29,7 +29,10 @@ import org.slf4j.LoggerFactory;
 
 public class FieldReaderManual<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderManual.class);
+
     public T readManualField(String logicalName, ReadBuffer readBuffer, ParseSupplier<T> parseFunction, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         readBuffer.pullContext(logicalName);
         T value = switchParseByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOder(readerArgs).orElse(null));
         readBuffer.closeContext(logicalName);

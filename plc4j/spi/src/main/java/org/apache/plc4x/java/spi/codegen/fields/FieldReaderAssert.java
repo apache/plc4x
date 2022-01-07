@@ -30,15 +30,18 @@ import java.util.Objects;
 
 public class FieldReaderAssert<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAssert.class);
+
     public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         T assertValue;
         try {
             assertValue = dataReader.read(logicalName, readerArgs);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new ParseAssertException("Not enough data", e);
+            throw new ParseAssertException("Field: " + logicalName + ": Not enough data", e);
         }
         if (!Objects.equals(assertValue, expectedValue)) {
-            throw new ParseAssertException("Actual value " + assertValue + " doesn't match expected " + expectedValue);
+            throw new ParseAssertException("Field: " + logicalName + ": Actual value " + assertValue + " doesn't match expected " + expectedValue);
         }
         return assertValue;
     }

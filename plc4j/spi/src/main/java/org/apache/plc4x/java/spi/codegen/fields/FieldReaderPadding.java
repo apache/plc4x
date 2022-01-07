@@ -28,7 +28,10 @@ import org.slf4j.LoggerFactory;
 
 public class FieldReaderPadding<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderPadding.class);
+
     public void readPaddingField(DataReader<T> dataReader, int timesPadding, WithReaderArgs... readerArgs) {
+        LOGGER.debug("reading field padding");
         dataReader.pullContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         while (timesPadding-- > 0) {
             // Just read the padding data and ignore it

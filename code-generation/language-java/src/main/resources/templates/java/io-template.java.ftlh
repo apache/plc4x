@@ -194,9 +194,9 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign namedField = field.asNamedField().orElseThrow()>
 
         <#if manualArrayField.type.isByteBased()>
-        byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, (byte[] _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         <#else>
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, (List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         </#if>
         <#break>
     <#case "manual">
@@ -280,7 +280,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field(${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "validation">
         <#assign validationField = field.asValidationField().orElseThrow()>

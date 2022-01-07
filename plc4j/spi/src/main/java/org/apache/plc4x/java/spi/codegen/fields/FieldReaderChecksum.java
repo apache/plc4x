@@ -29,7 +29,10 @@ import java.util.Objects;
 
 public class FieldReaderChecksum<T> implements FieldCommons {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderChecksum.class);
+
     public T readChecksumField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
+        LOGGER.debug("reading field {}", logicalName);
         T checksumValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(checksumValue, referenceValue)) {
             throw new ParseException("Checksum value '" + checksumValue + "' doesn't match expected '" + referenceValue + "'");

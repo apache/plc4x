@@ -20,21 +20,17 @@ package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This reader should actually never be used as an abstract field never gets read, it only makes sure
  * abstract accessor methods are generated in the abstract parent type.
+ *
  * @param <T>
  */
 public class FieldReaderAbstract<T> implements FieldCommons {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAbstract.class);
-
-    public T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+    public T readAbstractField(String ignored1, DataReader<T> ignored2, WithReaderArgs... ignored3) {
         return null;
     }
 
