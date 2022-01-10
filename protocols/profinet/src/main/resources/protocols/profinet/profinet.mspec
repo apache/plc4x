@@ -61,7 +61,8 @@
             [simple   uint 8              timeToLive                                                 ]
             // Protocol: UDP
             [const    uint 8              protocol                        0x11                       ]
-            // TODO: Change this to checksum one day ...
+            // It seems that modern NICs mess this up as they take care of the validation in dedicated hardware.
+            // This results in the wrong values being read. Using a 'checksum' field would fail most incoming packets.
             [implicit uint 16             headerChecksum                 'STATIC_CALL("calculateIPv4Checksum", totalLength, identification, timeToLive, sourceAddress, destinationAddress)']
             [simple   IpAddress           sourceAddress                                              ]
             [simple   IpAddress           destinationAddress                                         ]
