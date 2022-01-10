@@ -23,7 +23,9 @@ import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultChannelConfig;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.Packet;
+import org.pcap4j.util.MacAddress;
 
 import java.net.SocketAddress;
 import java.util.Map;
@@ -117,12 +119,32 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         return packetHandler;
     }
 
-    public String getFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
+    public String getMacBasedFilterString(MacAddress localMacAddress, MacAddress remoteMacAddress) {
+        StringBuilder sb = new StringBuilder();
+        if (getProtocolId() != ALL_PROTOCOLS) {
+            sb.append(" and (ether proto ").append(getProtocolId()).append(")");
+        }
+        // Add a filter for TCP or UDP port.
+        if (getPort() != ALL_PORTS) {
+            sb.append(" and (port ").append(getPort()).append(")");
+        }
+        // Add a filter for source or target address.
+        if(localMacAddress != null) {
+            sb.append(" and (ether dst ").append(Pcaps.toBpfString(localMacAddress)).append(")");
+        }
+        // Add a filter for source or target address.
+        if(remoteMacAddress != null) {
+            sb.append(" and (ether src ").append(Pcaps.toBpfString(remoteMacAddress)).append(")");
+        }
+        return (sb.length() > 0) ? sb.substring(" and ".length()) : "";
+    }
+
+    public String getMacBasedFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
         StringBuilder sb = new StringBuilder();
         if (isSupportVlans()) {
             final PcapChannelConfig clone = this.clone();
             clone.supportVlans = false;
-            String subFilterString = clone.getFilterString(localAddress, remoteAddress);
+            String subFilterString = clone.getMacBasedFilterString(localAddress, remoteAddress);
             if (subFilterString.isEmpty()) {
                 sb.append(" and (vlan)");
             } else {

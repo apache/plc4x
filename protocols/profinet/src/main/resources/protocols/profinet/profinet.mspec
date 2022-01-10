@@ -48,20 +48,21 @@
     [discriminator uint 16 packetType]
     [typeSwitch packetType
         ['0x0800' Ethernet_FramePayload_IPv4
-            [const    uint 4              version                         0x4                      ]
-            [const    uint 4              headerLength                    0x5                      ]
-            [const    uint 6              differentiatedServicesCodepoint 0x00                     ]
-            [const    uint 2              explicitCongestionNotification  0x0                      ]
+            [const    uint 4              version                         0x4                        ]
+            // 5 = 5 x 32bit = 5 x 4byte = 20byte
+            [const    uint 4              headerLength                    0x5                        ]
+            [const    uint 6              differentiatedServicesCodepoint 0x00                       ]
+            [const    uint 2              explicitCongestionNotification  0x0                        ]
+            // Length of the header + payload
             [implicit uint 16             totalLength                     '20 + packet.lengthInBytes']
-            [simple   uint 15             identification                                             ]
-            [const    uint 3              flags                           0x00                     ]
-            [const    uint 13             fragmentOffset                  0x00                     ]
-            // Time to live: 64
-            [const    uint 8              timeToLive                      0x40                     ]
+            [simple   uint 16             identification                                             ]
+            [const    uint 3              flags                           0x00                       ]
+            [const    uint 13             fragmentOffset                  0x00                       ]
+            [simple   uint 8              timeToLive                                                 ]
             // Protocol: UDP
-            [const    uint 8              protocol                        0x11                     ]
-            // TODO: Implement ...
-            //[checksum uint 16           'headerChecksum'                ''                         ]
+            [const    uint 8              protocol                        0x11                       ]
+            // TODO: Change this to checksum one day ...
+            [implicit uint 16             headerChecksum                 'STATIC_CALL("calculateIPv4Checksum", totalLength, identification, timeToLive, sourceAddress, destinationAddress)']
             [simple   IpAddress           sourceAddress                                              ]
             [simple   IpAddress           destinationAddress                                         ]
             [simple   Udp_Packet          packet                                                     ]

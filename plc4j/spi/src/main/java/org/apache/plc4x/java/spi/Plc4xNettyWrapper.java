@@ -161,7 +161,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                         instance = unwrap.apply(instance);
                     } else {
                         Predicate predicate = either.get();
-                        if (predicate.test(instance) == false) {
+                        if (!predicate.test(instance)) {
                             // We do not match -> cannot handle
                             logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
                                 t.getClass().getSimpleName(), instance.getClass().getSimpleName());

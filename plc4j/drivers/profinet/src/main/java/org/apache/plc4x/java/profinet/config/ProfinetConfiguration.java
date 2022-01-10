@@ -31,7 +31,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     @Override
     public int getDefaultPort() {
-        return RawSocketTransportConfiguration.super.getDefaultPort();
+        return 34964;
     }
 
     @Override

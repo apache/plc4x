@@ -45,13 +45,14 @@ public class ProfinetPoc {
                 Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
+                        // Local MAC Address
                         new MacAddress(Hex.decodeHex("806d970ff777")),
                         new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
                         false, false, false,
                         false, PnIoCm_CompanionArType.SINGLE_AR, false,
                         true, false, PnIoCm_State.ACTIVE,
                         600, 0x8892,
-                        /*"plc4x-pn-master"*/"profinetxadriver4933"),
+                        "plc4x-pn-master"),
                     new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
                         0x0001, 0x8892, false, false,
                         false, false, PnIoCm_RtClass.RT_CLASS_2, 40,

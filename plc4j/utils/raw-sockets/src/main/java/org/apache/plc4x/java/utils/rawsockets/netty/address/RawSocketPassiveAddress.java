@@ -20,13 +20,13 @@ package org.apache.plc4x.java.utils.rawsockets.netty.address;
 
 import org.apache.plc4x.java.utils.pcap.netty.address.PcapSocketAddress;
 
-public class RawSocketAddress extends PcapSocketAddress {
+public class RawSocketPassiveAddress extends PcapSocketAddress {
 
     private static final long serialVersionUID = 1L;
 
     private final String deviceName;
 
-    public RawSocketAddress(String deviceName) {
+    public RawSocketPassiveAddress(String deviceName) {
         this.deviceName = deviceName;
     }
 

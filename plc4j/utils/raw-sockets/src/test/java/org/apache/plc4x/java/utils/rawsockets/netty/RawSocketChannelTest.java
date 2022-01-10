@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
-import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 import org.apache.plc4x.test.RequirePcap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ public class RawSocketChannelTest {
             PcapNetworkInterface loopbackDevice = Pcaps.findAllDevs().stream().filter(
                 PcapNetworkInterface::isLoopBack).findFirst().orElse(null);
             assertNotNull(loopbackDevice);
-            final ChannelFuture f = bootstrap.connect(new RawSocketAddress(loopbackDevice.getName()));
+            final ChannelFuture f = bootstrap.connect(new RawSocketPassiveAddress(loopbackDevice.getName()));
             // Wait for sync
             f.sync();
             // Wait till the session is finished initializing.

@@ -598,8 +598,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_FREDON_DIGITAL_BUILDINGS = 571,
         M_HELUKABEL_THAILAND_CO__LTD_ = 572,
         M_ACE_TECHNOLOGY = 573,
-        M_ABB___RESERVED = 574,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 575,
+        M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD = 574,
+        M_ABB___RESERVED = 575,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 576,
     }
 
     public static class KnxManufacturerInfo
@@ -2193,10 +2194,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '573' */
                     return 631;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '574' */
+                case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '574' */
+                    return 632;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '575' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '575' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '576' */
                     return 43959;
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
@@ -3931,10 +3935,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '573' */
                     return "ACE Technology";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '574' */
+                case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '574' */
+                    return "MEX Electric Technology (Shanghai) Co., Ltd";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '575' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '575' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '576' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */

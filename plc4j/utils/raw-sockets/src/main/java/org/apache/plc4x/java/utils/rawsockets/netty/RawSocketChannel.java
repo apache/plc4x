@@ -25,19 +25,24 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.net.util.SubnetUtils;
 import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
-import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.config.RawSocketChannelConfig;
+import org.apache.plc4x.java.utils.rawsockets.netty.utils.ArpLookup;
 import org.pcap4j.core.*;
+import org.pcap4j.packet.EthernetPacket;
+import org.pcap4j.packet.IllegalRawDataException;
 import org.pcap4j.packet.Packet;
+import org.pcap4j.util.MacAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
+import java.net.*;
+import java.util.Objects;
 
 /**
  * TODO write comment
@@ -51,9 +56,12 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     private final RawSocketChannelConfig config;
 
-    private RawSocketAddress remoteRawSocketAddress;
+    private MacAddress remoteMacAddress;
+    private SocketAddress remoteAddress;
+    private MacAddress localMacAddress;
     private SocketAddress localAddress;
-    private PcapHandle handle;
+    private PcapHandle receiveHandle;
+    private PcapHandle sendHandle;
     private Thread loopThread;
 
     public RawSocketChannel() {
@@ -73,35 +81,87 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     @Override
     protected void doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
-        if(!(remoteAddress instanceof RawSocketAddress)) {
-            logger.error("Expecting remote address of type RawSocketAddress");
+        if(!((remoteAddress instanceof RawSocketPassiveAddress) || (remoteAddress instanceof InetSocketAddress))) {
+            logger.error("Expecting remote address of type RawSocketPassiveAddress or InetSocketAddress");
             pipeline().fireExceptionCaught(
-                new PcapException("Expecting remote address of type RawSocketAddress"));
+                new PcapException("Expecting remote address of type RawSocketPassiveAddress or InetSocketAddress"));
             return;
         }
         this.localAddress = localAddress;
-        remoteRawSocketAddress = (RawSocketAddress) remoteAddress;
+        this.remoteAddress = remoteAddress;
 
+        PcapNetworkInterface nif = null;
         // Try to get the device name of the network interface that we want to open.
-        String deviceName = getDeviceName(remoteRawSocketAddress);
-        if(deviceName == null) {
-            logger.error("Network device not specified and couldn't detect it automatically");
+        if(remoteAddress instanceof RawSocketPassiveAddress) {
+            RawSocketPassiveAddress rawSocketPassiveAddress = (RawSocketPassiveAddress) remoteAddress;
+            String deviceName = getDeviceName(rawSocketPassiveAddress);
+            if(deviceName == null) {
+                logger.error("Network device not specified and couldn't detect it automatically");
+                pipeline().fireExceptionCaught(
+                    new PcapException("Network device not specified and couldn't detect it automatically"));
+                return;
+            }
+
+            // Get a handle to the network-device and open it.
+            nif = Pcaps.getDevByName(deviceName);
+        } else {
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) remoteAddress;
+            InetAddress address = inetSocketAddress.getAddress();
+            deviceLoop:
+            for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
+                // We're only interested in real running network interfaces, skip the rest.
+                if (dev.isLoopBack()) {
+                    continue;
+                }
+
+                // Go through all configured addresses and subnets and if we find a matching
+                // device, use that as nif.
+                for (PcapAddress curAddress : dev.getAddresses()) {
+                    if((curAddress.getAddress() == null) || (curAddress.getNetmask() == null)) {
+                        continue;
+                    }
+                    if((address instanceof Inet4Address) && !(curAddress instanceof PcapIpV4Address)) {
+                        continue;
+                    }
+                    if((address instanceof Inet6Address) && !(curAddress instanceof PcapIpV6Address)) {
+                        continue;
+                    }
+                    final SubnetUtils.SubnetInfo subnetInfo = new SubnetUtils(curAddress.getAddress().getHostAddress(), curAddress.getNetmask().getHostAddress()).getInfo();
+                    if(subnetInfo.isInRange(address.getHostAddress())) {
+                        nif = dev;
+                        // Update the local address
+                        this.localAddress = new InetSocketAddress(curAddress.getAddress(), 0);
+                        this.localMacAddress = dev.getLinkLayerAddresses().stream()
+                            .filter(linkLayerAddress -> linkLayerAddress instanceof MacAddress).map(linkLayerAddress -> (MacAddress) linkLayerAddress)
+                            .findFirst().orElse(null);
+                        break deviceLoop;
+                    }
+                }
+            }
+        }
+
+        if (nif == null) {
+            logger.error(String.format("Couldn't find network device for %s", remoteAddress));
             pipeline().fireExceptionCaught(
-                new PcapException("Network device not specified and couldn't detect it automatically"));
+                new PcapException(String.format("Couldn't find network device for %s", remoteAddress)));
             return;
         }
 
-        // Get a handle to the network-device and open it.
-        PcapNetworkInterface nif = Pcaps.getDevByName(deviceName);
-        handle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
-        if(logger.isDebugEnabled()) {
-            logger.debug(String.format("Listening on device %s", deviceName));
+        // Try to get the mac address of the remote station by sending an ARP request.
+        if((this.remoteMacAddress == null) && (this.remoteAddress instanceof InetSocketAddress)) {
+            this.remoteMacAddress = ArpLookup.resolveMacAddress(nif, (InetSocketAddress) this.remoteAddress,
+                (InetSocketAddress) this.localAddress, localMacAddress).orElse(null);
         }
 
-        // If the address allows fine tuning which packets to process, set a filter to reduce the load.
-        String filter = config.getFilterString(localAddress, remoteAddress);
+        receiveHandle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
+        if(logger.isDebugEnabled()) {
+            logger.debug(String.format("Listening on device %s", nif.getName()));
+        }
+
+        // If the address allows fine-tuning which packets to process, set a filter to reduce the load.
+        String filter = config.getMacBasedFilterString(this.localMacAddress, this.remoteMacAddress);
         if(filter.length() > 0) {
-            handle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
+            receiveHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
 
         // Create a buffer where the raw socket worker can send data to.
@@ -111,7 +171,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // forwards the bytes read to the buffer.
         loopThread = new Thread(() -> {
             try {
-                handle.loop(-1, new PacketListener() {
+                receiveHandle.loop(-1, new PacketListener() {
                     @Override
                     public void gotPacket(Packet packet) {
                         buffer.writeBytes(config.getPacketHandler().getData(packet));
@@ -128,13 +188,18 @@ public class RawSocketChannel extends OioByteStreamChannel {
         });
         loopThread.start();
 
-        // Right now we're using an output stream that simply discards everything.
-        // This is ok while implementing passive drivers for protocols, however as
-        // soon as we start implementing ethernet layer protocols, we'll have to also
-        // be able to actually send data. The PcapInputStream simply acts as a
-        // breaking point if no packets are coming in and the read operation would
-        // simply block indefinitely.
-        activate(new PcapInputStream(buffer), new DiscardingOutputStream());
+        if(remoteAddress instanceof RawSocketPassiveAddress) {
+            // Right now we're using an output stream that simply discards everything.
+            // This is ok while implementing passive drivers for protocols, however as
+            // soon as we start implementing ethernet layer protocols, we'll have to also
+            // be able to actually send data. The PcapInputStream simply acts as a
+            // breaking point if no packets are coming in and the read operation would
+            // simply block indefinitely.
+            activate(new PcapInputStream(buffer), new DiscardingOutputStream());
+        } else {
+            sendHandle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
+            activate(new PcapInputStream(buffer), new PcapOutputStream(sendHandle));
+        }
     }
 
     @Override
@@ -144,7 +209,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     @Override
     protected SocketAddress remoteAddress0() {
-        return remoteRawSocketAddress;
+        return remoteAddress;
     }
 
     @Override
@@ -155,14 +220,14 @@ public class RawSocketChannel extends OioByteStreamChannel {
     @Override
     protected void doDisconnect() {
         this.loopThread.interrupt();
-        if (this.handle != null) {
-            this.handle.close();
+        if (this.receiveHandle != null) {
+            this.receiveHandle.close();
         }
     }
 
     @Override
     protected int doReadBytes(ByteBuf buf) throws Exception {
-        if (handle == null || !handle.isOpen()) {
+        if (receiveHandle == null || !receiveHandle.isOpen()) {
             return -1;
         }
         try {
@@ -187,7 +252,23 @@ public class RawSocketChannel extends OioByteStreamChannel {
         return new RawSocketUnsafe();
     }
 
-    private String getDeviceName(RawSocketAddress rawSocketAddress) {
+    public SocketAddress getRemoteAddress() {
+        return remoteAddress;
+    }
+
+    public MacAddress getRemoteMacAddress() {
+        return remoteMacAddress;
+    }
+
+    public SocketAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    public MacAddress getLocalMacAddress() {
+        return localMacAddress;
+    }
+
+    private String getDeviceName(RawSocketPassiveAddress rawSocketAddress) {
         // If the device name is provided, simply use this.
         if(rawSocketAddress.getDeviceName() != null) {
             return rawSocketAddress.getDeviceName();
@@ -210,6 +291,35 @@ public class RawSocketChannel extends OioByteStreamChannel {
         @Override
         public void write(byte[] b, int off, int len) {
             logger.debug("Discarding {}", b);
+        }
+    }
+
+    private static class PcapOutputStream extends OutputStream {
+
+        private final PcapHandle sendHandle;
+
+        public PcapOutputStream(PcapHandle sendHandle) {
+            this.sendHandle = sendHandle;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            // This should actually not be called, as in contrast to TCP, Raw sockets are not a stream
+            // messages which should be sent should be processed in total by the write(byte[]) method.
+            throw new RuntimeException("write(byte) should never be called in a RawSocketChannel");
+        }
+
+        @Override
+        public void write(byte[] packetBytes, int offset, int len) throws IOException {
+            Objects.checkFromIndexSize(offset, len, packetBytes.length);
+            try {
+                // Create a new EthernetPacket with the raw content of the packet bytes.
+                Packet rawPacket = EthernetPacket.newPacket(packetBytes, offset, len);
+                // Send the packet.
+                sendHandle.sendPacket(rawPacket);
+            } catch (IllegalRawDataException | NotOpenException | PcapNativeException e) {
+                throw new IOException("Error sending packet", e);
+            }
         }
     }
 
