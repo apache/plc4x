@@ -57,8 +57,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		apduLength := uint16(parsedUint0)
 		return model.APDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
-	case "BACnetTag":
-		return model.BACnetTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetError":
 		return model.BACnetErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":
@@ -77,6 +75,17 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetApplicationTag":
+		return model.BACnetApplicationTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetConstructedDataElement":
+		return model.BACnetConstructedDataElementParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetConstructedData":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 4)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetConstructedDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetUnconfirmedServiceRequest":

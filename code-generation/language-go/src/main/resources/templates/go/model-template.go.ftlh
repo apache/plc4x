@@ -161,18 +161,44 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}<#if type
 }
 </#if>
 
-func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list><#if type.parentType?has_content><#if type.getPropertyFields()?has_content && type.parentPropertyFields?has_content>, </#if><#list type.parentPropertyFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list></#if>) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+<@compress single_line=true>
+func New${type.name}(
+	<#list type.propertyFields as field>
+		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
+		<#sep>, </#sep>
+	</#list>
+	<#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if>
+	<#list type.virtualFields as field>
+		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
+	</#list>
+	<#if type.parentType?has_content>
+		<#if (type.propertyFields?has_content || type.virtualFields?has_content ) && type.parentPropertyFields?has_content>, </#if>
+		<#list type.parentPropertyFields as parentField>
+			${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+			<#sep>, </#sep>
+		</#list>
+        <#if (type.propertyFields?has_content || type.virtualFields?has_content || type.parentPropertyFields?has_content) && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if>
+        <#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>
+            ${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+            <#sep>, </#sep>
+        </#list>
+	</#if>
+	) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+</@compress>
 <#if type.parentType?has_content>
 	child := &${type.name}{
-	<#list type.getPropertyFields() as field>
+	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list>),
+	<#list type.virtualFields as field>
+		${field.name?cap_first}: ${field.name},
+	</#list>
+    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if type.parentPropertyFields?has_content && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if><#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>${parentField.name}<#sep>, </#list>),
 	}
 	child.Child = child
 	return child.${type.parentType.name}
 <#else>
-	return &${type.name}{<#list type.getPropertyFields() as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
+	return &${type.name}{<#list type.propertyFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list><#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
 </#if>
 }
 
@@ -1060,6 +1086,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 							</#list>
 						<#else>
 							<#assign defaultCaseOutput=true>
+							case true
 						</#if>: // ${case.name}
                     </@compress>
 

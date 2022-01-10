@@ -112,7 +112,7 @@ func BACnetErrorReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, er
 	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	_errorClass, _errorClassErr := BACnetTagParse(readBuffer)
+	_errorClass, _errorClassErr := BACnetApplicationTagParse(readBuffer)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
@@ -125,7 +125,7 @@ func BACnetErrorReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, er
 	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	_errorCode, _errorCodeErr := BACnetTagParse(readBuffer)
+	_errorCode, _errorCodeErr := BACnetApplicationTagParse(readBuffer)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}

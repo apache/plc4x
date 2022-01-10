@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagUnsignedInteger struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	ValueUint8  *uint8
 	ValueUint16 *uint16
 	ValueUint32 *uint32
@@ -48,12 +48,12 @@ type IBACnetApplicationTagUnsignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagUnsignedInteger) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagUnsignedInteger) TagNumber() uint8 {
+	return 0x2
 }
 
-func (m *BACnetApplicationTagUnsignedInteger) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagUnsignedInteger) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -61,15 +61,19 @@ func (m *BACnetApplicationTagUnsignedInteger) InitializeParent(parent *BACnetTag
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, isUint8 bool, isUint16 bool, isUint32 bool, actualValue uint32, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagUnsignedInteger{
-		ValueUint8:  valueUint8,
-		ValueUint16: valueUint16,
-		ValueUint32: valueUint32,
-		BACnetTag:   NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		ValueUint8:           valueUint8,
+		ValueUint16:          valueUint16,
+		ValueUint32:          valueUint32,
+		IsUint8:              isUint8,
+		IsUint16:             isUint16,
+		IsUint32:             isUint32,
+		ActualValue:          actualValue,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagUnsignedInteger(structType interface{}) *BACnetApplicationTagUnsignedInteger {
@@ -80,10 +84,10 @@ func CastBACnetApplicationTagUnsignedInteger(structType interface{}) *BACnetAppl
 		if casted, ok := typ.(*BACnetApplicationTagUnsignedInteger); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagUnsignedInteger(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagUnsignedInteger(casted.Child)
 		}
 		return nil
@@ -132,7 +136,7 @@ func (m *BACnetApplicationTagUnsignedInteger) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
+func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagUnsignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -193,17 +197,17 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagUnsignedInteger{
-		ValueUint8:  valueUint8,
-		ValueUint16: valueUint16,
-		ValueUint32: valueUint32,
-		IsUint8:     isUint8,
-		IsUint16:    isUint16,
-		IsUint32:    isUint32,
-		ActualValue: actualValue,
-		BACnetTag:   &BACnetTag{},
+		ValueUint8:           valueUint8,
+		ValueUint16:          valueUint16,
+		ValueUint32:          valueUint32,
+		IsUint8:              isUint8,
+		IsUint16:             isUint16,
+		IsUint32:             isUint32,
+		ActualValue:          actualValue,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {

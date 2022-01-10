@@ -60,8 +60,8 @@ type IBACnetContextTagChild interface {
 	IBACnetContextTag
 }
 
-func NewBACnetContextTag(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
-	return &BACnetContextTag{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
+func NewBACnetContextTag(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+	return &BACnetContextTag{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength, ActualTagNumber: actualTagNumber, ActualLength: actualLength}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
@@ -212,8 +212,6 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	var _parent *BACnetContextTag
 	var typeSwitchError error
 	switch {
-	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		_parent, typeSwitchError = BACnetContextTagNullParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
 		_parent, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
@@ -242,6 +240,12 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		_parent, typeSwitchError = BACnetContextTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetContextTagDeviceState
 		_parent, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType)
+	case dataType == BACnetDataType_OPENING_TAG: // BACnetOpeningTag
+		_parent, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag
+		_parent, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+	case true: // BACnetContextTagEmpty
+		_parent, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

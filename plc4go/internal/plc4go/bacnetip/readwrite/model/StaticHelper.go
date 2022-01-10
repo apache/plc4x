@@ -93,10 +93,7 @@ func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnet
 	return readBuffer.ReadUint32("proprietaryPropertyIdentifier", bitsToRead)
 }
 
-func OpeningClosingTerminate(instantTerminate bool, readBuffer utils.ReadBuffer, expectedTagNumber byte) bool {
-	if instantTerminate {
-		return true
-	}
+func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, expectedTagNumber byte) bool {
 	oldPos := readBuffer.GetPos()
 	// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
 	tagNumber, err := readBuffer.ReadUint8("", 4)
@@ -117,22 +114,46 @@ func OpeningClosingTerminate(instantTerminate bool, readBuffer utils.ReadBuffer,
 	return foundOurClosingTag
 }
 
-func ParseTags(readBuffer utils.ReadBuffer) *BACnetTag {
-	tag, err := BACnetTagParse(readBuffer)
+func IsApplicationTag(peekedByte byte) bool {
+	return (peekedByte & (0b0000_1000)) == 0
+}
+
+func IsContextTag(peekedByte byte) bool {
+	return !IsApplicationTag(peekedByte)
+}
+
+func IsConstructedData(peekedByte byte) bool {
+	return IsOpeningTag(peekedByte)
+}
+
+func IsOpeningTag(peekedByte byte) bool {
+	return IsContextTag(peekedByte) && HasTagValue(peekedByte, 0x6)
+}
+
+func IsClosingTag(peekedByte byte) bool {
+	return IsContextTag(peekedByte) && HasTagValue(peekedByte, 0x7)
+}
+
+func HasTagValue(peekedByte byte, tagValue byte) bool {
+	return (peekedByte & 0b0000_0111) == tagValue
+}
+
+func Noop() error {
+	// NO-OP
+	return nil
+}
+
+func PeekByte(readBuffer utils.ReadBuffer) (byte, error) {
+	oldPos := readBuffer.GetPos()
+	aByte, err := readBuffer.ReadByte("")
+	readBuffer.Reset(oldPos)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
-	return tag
+	return aByte, nil
 }
 
-func WriteTags(writeBuffer utils.WriteBuffer, value *BACnetTag) error {
-	return value.Serialize(writeBuffer)
-}
-
-func TagsLength(tags []*BACnetTag) uint16 {
-	var length uint16
-	for _, tag := range tags {
-		length += tag.LengthInBytes()
-	}
-	return length
+func GuessDataType() BACnetDataType {
+	// TODO: implement me
+	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }

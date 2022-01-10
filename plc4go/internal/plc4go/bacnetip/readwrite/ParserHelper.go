@@ -45,8 +45,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.APDUParse(io, apduLength)
-	case "BACnetTag":
-		return model.BACnetTagParse(io)
 	case "BACnetError":
 		return model.BACnetErrorParse(io)
 	case "NLM":
@@ -63,6 +61,16 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetConfirmedServiceRequestParse(io, len)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(io)
+	case "BACnetApplicationTag":
+		return model.BACnetApplicationTagParse(io)
+	case "BACnetConstructedDataElement":
+		return model.BACnetConstructedDataElementParse(io)
+	case "BACnetConstructedData":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetConstructedDataParse(io, tagNumber)
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(io)
 	case "BACnetUnconfirmedServiceRequest":

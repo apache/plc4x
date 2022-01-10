@@ -64,13 +64,18 @@ func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, tagNum
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagTime(hour int8, minute int8, second int8, fractional int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagTime{
-		Hour:             hour,
-		Minute:           minute,
-		Second:           second,
-		Fractional:       fractional,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Hour:                 hour,
+		Minute:               minute,
+		Second:               second,
+		Fractional:           fractional,
+		Wildcard:             wildcard,
+		HourIsWildcard:       hourIsWildcard,
+		MinuteIsWildcard:     minuteIsWildcard,
+		SecondIsWildcard:     secondIsWildcard,
+		FractionalIsWildcard: fractionalIsWildcard,
+		BACnetContextTag:     NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

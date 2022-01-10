@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagObjectIdentifier struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	ObjectType     BACnetObjectType
 	InstanceNumber uint32
 }
@@ -43,12 +43,12 @@ type IBACnetApplicationTagObjectIdentifier interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagObjectIdentifier) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagObjectIdentifier) TagNumber() uint8 {
+	return 0xC
 }
 
-func (m *BACnetApplicationTagObjectIdentifier) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagObjectIdentifier) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -56,14 +56,14 @@ func (m *BACnetApplicationTagObjectIdentifier) InitializeParent(parent *BACnetTa
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagObjectIdentifier(objectType BACnetObjectType, instanceNumber uint32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagObjectIdentifier(objectType BACnetObjectType, instanceNumber uint32, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagObjectIdentifier{
-		ObjectType:     objectType,
-		InstanceNumber: instanceNumber,
-		BACnetTag:      NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		ObjectType:           objectType,
+		InstanceNumber:       instanceNumber,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagObjectIdentifier(structType interface{}) *BACnetApplicationTagObjectIdentifier {
@@ -74,10 +74,10 @@ func CastBACnetApplicationTagObjectIdentifier(structType interface{}) *BACnetApp
 		if casted, ok := typ.(*BACnetApplicationTagObjectIdentifier); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagObjectIdentifier(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagObjectIdentifier(casted.Child)
 		}
 		return nil
@@ -109,7 +109,7 @@ func (m *BACnetApplicationTagObjectIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -140,12 +140,12 @@ func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BA
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagObjectIdentifier{
-		ObjectType:     objectType,
-		InstanceNumber: instanceNumber,
-		BACnetTag:      &BACnetTag{},
+		ObjectType:           objectType,
+		InstanceNumber:       instanceNumber,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

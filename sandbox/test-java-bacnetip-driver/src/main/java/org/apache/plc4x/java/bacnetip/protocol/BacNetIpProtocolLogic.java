@@ -152,9 +152,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
-            for (BACnetTag notification1 : valueChange.getListOfValues().getData()) {
-                // TODO: fixme
-                /*BACnetTagWithContent notification=null;
+            // TODO: fixme
+                /*for (BACnetTag notification1 : valueChange.getListOfValues().getData()) {
+                BACnetTagWithContent notification=null;
                 // These are value change notifications. Ignore the rest.
                 if (notification.getPropertyIdentifier().get(0) == (short) 0x55) {
                     final BACnetTag baCnetTag = notification.getValue();
@@ -180,8 +180,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     }
                     // Send out the enriched event.
                     publishEvent(curField, new PlcStruct(enrichedPlcValue));
-                }*/
-            }
+                }
+            }*/
         }
         // Someone read a value.
         else if (serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) {

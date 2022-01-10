@@ -56,10 +56,10 @@ func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag,
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagDeviceState(state BACnetDeviceState, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagDeviceState(state BACnetDeviceState, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagDeviceState{
 		State:            state,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagDouble struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	Value float64
 }
 
@@ -42,12 +42,12 @@ type IBACnetApplicationTagDouble interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagDouble) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagDouble) TagNumber() uint8 {
+	return 0x5
 }
 
-func (m *BACnetApplicationTagDouble) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagDouble) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -55,13 +55,13 @@ func (m *BACnetApplicationTagDouble) InitializeParent(parent *BACnetTag, tagNumb
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagDouble(value float64, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagDouble(value float64, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagDouble{
-		Value:     value,
-		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:                value,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagDouble(structType interface{}) *BACnetApplicationTagDouble {
@@ -72,10 +72,10 @@ func CastBACnetApplicationTagDouble(structType interface{}) *BACnetApplicationTa
 		if casted, ok := typ.(*BACnetApplicationTagDouble); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagDouble(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagDouble(casted.Child)
 		}
 		return nil
@@ -104,7 +104,7 @@ func (m *BACnetApplicationTagDouble) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagDouble"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,11 +122,11 @@ func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTag, e
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagDouble{
-		Value:     value,
-		BACnetTag: &BACnetTag{},
+		Value:                value,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagDouble) Serialize(writeBuffer utils.WriteBuffer) error {

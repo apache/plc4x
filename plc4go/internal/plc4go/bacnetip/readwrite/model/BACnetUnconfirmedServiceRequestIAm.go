@@ -122,7 +122,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field")
 	}
@@ -135,7 +135,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("maximumApduLengthAcceptedLength"); pullErr != nil {
 		return nil, pullErr
 	}
-	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetTagParse(readBuffer)
+	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetApplicationTagParse(readBuffer)
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
@@ -148,7 +148,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
 		return nil, pullErr
 	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetTagParse(readBuffer)
+	_segmentationSupported, _segmentationSupportedErr := BACnetApplicationTagParse(readBuffer)
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
@@ -161,7 +161,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetTagParse(readBuffer)
+	_vendorId, _vendorIdErr := BACnetApplicationTagParse(readBuffer)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}

@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagSignedInteger struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	ValueInt8   *int8
 	ValueInt16  *int16
 	ValueInt32  *int32
@@ -50,12 +50,12 @@ type IBACnetApplicationTagSignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagSignedInteger) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagSignedInteger) TagNumber() uint8 {
+	return 0x3
 }
 
-func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -63,16 +63,21 @@ func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetTag, 
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt32 *int32, valueInt64 *int64, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt32 *int32, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt32 bool, isInt64 bool, actualValue uint64, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagSignedInteger{
-		ValueInt8:  valueInt8,
-		ValueInt16: valueInt16,
-		ValueInt32: valueInt32,
-		ValueInt64: valueInt64,
-		BACnetTag:  NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		ValueInt8:            valueInt8,
+		ValueInt16:           valueInt16,
+		ValueInt32:           valueInt32,
+		ValueInt64:           valueInt64,
+		IsInt8:               isInt8,
+		IsInt16:              isInt16,
+		IsInt32:              isInt32,
+		IsInt64:              isInt64,
+		ActualValue:          actualValue,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagSignedInteger(structType interface{}) *BACnetApplicationTagSignedInteger {
@@ -83,10 +88,10 @@ func CastBACnetApplicationTagSignedInteger(structType interface{}) *BACnetApplic
 		if casted, ok := typ.(*BACnetApplicationTagSignedInteger); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagSignedInteger(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagSignedInteger(casted.Child)
 		}
 		return nil
@@ -142,7 +147,7 @@ func (m *BACnetApplicationTagSignedInteger) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
+func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagSignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -217,19 +222,19 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagSignedInteger{
-		ValueInt8:   valueInt8,
-		ValueInt16:  valueInt16,
-		ValueInt32:  valueInt32,
-		ValueInt64:  valueInt64,
-		IsInt8:      isInt8,
-		IsInt16:     isInt16,
-		IsInt32:     isInt32,
-		IsInt64:     isInt64,
-		ActualValue: actualValue,
-		BACnetTag:   &BACnetTag{},
+		ValueInt8:            valueInt8,
+		ValueInt16:           valueInt16,
+		ValueInt32:           valueInt32,
+		ValueInt64:           valueInt64,
+		IsInt8:               isInt8,
+		IsInt16:              isInt16,
+		IsInt32:              isInt32,
+		IsInt64:              isInt64,
+		ActualValue:          actualValue,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {

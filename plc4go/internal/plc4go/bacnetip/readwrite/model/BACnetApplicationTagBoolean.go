@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagBoolean struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	Value   bool
 	IsTrue  bool
 	IsFalse bool
@@ -44,12 +44,12 @@ type IBACnetApplicationTagBoolean interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagBoolean) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagBoolean) TagNumber() uint8 {
+	return 0x1
 }
 
-func (m *BACnetApplicationTagBoolean) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagBoolean) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -57,12 +57,15 @@ func (m *BACnetApplicationTagBoolean) InitializeParent(parent *BACnetTag, tagNum
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagBoolean(tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagBoolean(value bool, isTrue bool, isFalse bool, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagBoolean{
-		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:                value,
+		IsTrue:               isTrue,
+		IsFalse:              isFalse,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagBoolean(structType interface{}) *BACnetApplicationTagBoolean {
@@ -73,10 +76,10 @@ func CastBACnetApplicationTagBoolean(structType interface{}) *BACnetApplicationT
 		if casted, ok := typ.(*BACnetApplicationTagBoolean); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagBoolean(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagBoolean(casted.Child)
 		}
 		return nil
@@ -108,7 +111,7 @@ func (m *BACnetApplicationTagBoolean) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
+func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -131,13 +134,13 @@ func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, actualLength 
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagBoolean{
-		Value:     value,
-		IsTrue:    isTrue,
-		IsFalse:   isFalse,
-		BACnetTag: &BACnetTag{},
+		Value:                value,
+		IsTrue:               isTrue,
+		IsFalse:              isFalse,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagBoolean) Serialize(writeBuffer utils.WriteBuffer) error {

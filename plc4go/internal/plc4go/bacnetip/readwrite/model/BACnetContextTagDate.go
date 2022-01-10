@@ -69,13 +69,23 @@ func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, tagNum
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagDate{
-		YearMinus1900:    yearMinus1900,
-		Month:            month,
-		DayOfMonth:       dayOfMonth,
-		DayOfWeek:        dayOfWeek,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		YearMinus1900:          yearMinus1900,
+		Month:                  month,
+		DayOfMonth:             dayOfMonth,
+		DayOfWeek:              dayOfWeek,
+		Wildcard:               wildcard,
+		YearIsWildcard:         yearIsWildcard,
+		MonthIsWildcard:        monthIsWildcard,
+		OddMonthWildcard:       oddMonthWildcard,
+		EvenMonthWildcard:      evenMonthWildcard,
+		DayOfMonthIsWildcard:   dayOfMonthIsWildcard,
+		LastDayOfMonthWildcard: lastDayOfMonthWildcard,
+		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
+		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
+		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
+		BACnetContextTag:       NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

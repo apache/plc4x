@@ -58,11 +58,12 @@ func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContext
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagCharacterString{
-		Encoding:         encoding,
-		Value:            value,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Encoding:          encoding,
+		Value:             value,
+		ActualLengthInBit: actualLengthInBit,
+		BACnetContextTag:  NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

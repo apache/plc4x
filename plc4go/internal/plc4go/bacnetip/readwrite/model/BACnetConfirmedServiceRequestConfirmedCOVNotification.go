@@ -108,10 +108,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBitsCond
 	// Simple field (lifetimeInSeconds)
 	lengthInBits += m.LifetimeInSeconds.LengthInBits()
 
-	// Optional Field (listOfValues)
-	if m.ListOfValues != nil {
-		lengthInBits += (*m.ListOfValues).LengthInBits()
-	}
+	// Simple field (listOfValues)
+	lengthInBits += m.ListOfValues.LengthInBits()
 
 	return lengthInBits
 }
@@ -177,25 +175,17 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		return nil, closeErr
 	}
 
-	// Optional Field (listOfValues) (Can be skipped, if a given expression evaluates to false)
-	var listOfValues *BACnetConstructedData = nil
-	{
-		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetTagParse(readBuffer)
-		switch {
-		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field")
-		case _err == utils.ParseAssertError:
-			readBuffer.Reset(currentPos)
-		default:
-			listOfValues = CastBACnetConstructedData(_val)
-			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
+	// Simple Field (listOfValues)
+	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
+		return nil, pullErr
+	}
+	_listOfValues, _listOfValuesErr := BACnetConstructedDataParse(readBuffer, uint8(4))
+	if _listOfValuesErr != nil {
+		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
+	}
+	listOfValues := CastBACnetConstructedData(_listOfValues)
+	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); closeErr != nil {
@@ -269,20 +259,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(writeB
 			return errors.Wrap(_lifetimeInSecondsErr, "Error serializing 'lifetimeInSeconds' field")
 		}
 
-		// Optional Field (listOfValues) (Can be skipped, if the value is null)
-		var listOfValues *BACnetConstructedData = nil
-		if m.ListOfValues != nil {
-			if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-				return pushErr
-			}
-			listOfValues = m.ListOfValues
-			_listOfValuesErr := listOfValues.Serialize(writeBuffer)
-			if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-				return popErr
-			}
-			if _listOfValuesErr != nil {
-				return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
-			}
+		// Simple Field (listOfValues)
+		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
+			return pushErr
+		}
+		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
+			return popErr
+		}
+		if _listOfValuesErr != nil {
+			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); popErr != nil {

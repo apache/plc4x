@@ -58,11 +58,12 @@ func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetCont
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagPropertyIdentifier(value BACnetPropertyIdentifier, proprietaryValue uint32, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagPropertyIdentifier(value BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagPropertyIdentifier{
 		Value:            value,
 		ProprietaryValue: proprietaryValue,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		IsProprietary:    isProprietary,
+		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

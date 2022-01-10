@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagDate struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	YearMinus1900          int8
 	Month                  int8
 	DayOfMonth             int8
@@ -56,12 +56,12 @@ type IBACnetApplicationTagDate interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagDate) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagDate) TagNumber() uint8 {
+	return 0xA
 }
 
-func (m *BACnetApplicationTagDate) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagDate) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -69,16 +69,27 @@ func (m *BACnetApplicationTagDate) InitializeParent(parent *BACnetTag, tagNumber
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, year int16, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagDate{
-		YearMinus1900: yearMinus1900,
-		Month:         month,
-		DayOfMonth:    dayOfMonth,
-		DayOfWeek:     dayOfWeek,
-		BACnetTag:     NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		YearMinus1900:          yearMinus1900,
+		Month:                  month,
+		DayOfMonth:             dayOfMonth,
+		DayOfWeek:              dayOfWeek,
+		Wildcard:               wildcard,
+		YearIsWildcard:         yearIsWildcard,
+		Year:                   year,
+		MonthIsWildcard:        monthIsWildcard,
+		OddMonthWildcard:       oddMonthWildcard,
+		EvenMonthWildcard:      evenMonthWildcard,
+		DayOfMonthIsWildcard:   dayOfMonthIsWildcard,
+		LastDayOfMonthWildcard: lastDayOfMonthWildcard,
+		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
+		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
+		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
+		BACnetApplicationTag:   NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagDate(structType interface{}) *BACnetApplicationTagDate {
@@ -89,10 +100,10 @@ func CastBACnetApplicationTagDate(structType interface{}) *BACnetApplicationTagD
 		if casted, ok := typ.(*BACnetApplicationTagDate); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagDate(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagDate(casted.Child)
 		}
 		return nil
@@ -152,7 +163,7 @@ func (m *BACnetApplicationTagDate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagDate"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -250,10 +261,10 @@ func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
 		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
 		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
-		BACnetTag:              &BACnetTag{},
+		BACnetApplicationTag:   &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagDate) Serialize(writeBuffer utils.WriteBuffer) error {

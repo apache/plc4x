@@ -18,17 +18,14 @@
  */
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
+import org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType;
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier;
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetTag;
-import org.apache.plc4x.java.bacnetip.readwrite.io.BACnetTagIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -91,11 +88,7 @@ public class StaticHelper {
         return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier", bitsToRead);
     }
 
-    public static boolean openingClosingTerminate(boolean instantTerminate, ReadBuffer readBuffer, short expectedTagNumber) {
-        if (instantTerminate) {
-            LOGGER.debug("it is a instant terminate");
-            return true;
-        }
+    public static boolean isBACnetConstructedDataClosingTag(ReadBuffer readBuffer, int expectedTagNumber) {
         int oldPos = readBuffer.getPos();
         try {
             // TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
@@ -117,16 +110,46 @@ public class StaticHelper {
         }
     }
 
-    public static BACnetTag parseTags(ReadBuffer readBuffer) throws ParseException {
-        return BACnetTagIO.staticParse(readBuffer);
+    public static boolean isApplicationTag(byte peekedByte) {
+        return (peekedByte & (0b0000_1000)) == 0;
     }
 
-    public static void writeTags(WriteBuffer writeBuffer, BACnetTag value) throws SerializationException {
-        value.serialize(writeBuffer);
+    public static boolean isContextTag(byte peekedByte) {
+        return !isApplicationTag(peekedByte);
     }
 
-    public static int tagsLength(List<BACnetTag> data) {
-        return data.stream()
-            .map(BACnetTag::getLengthInBytes).mapToInt(Integer::intValue).sum();
+    public static boolean isConstructedData(byte peekedByte) {
+        return isOpeningTag(peekedByte);
+    }
+
+    public static boolean isOpeningTag(byte peekedByte) {
+        return isContextTag(peekedByte) && hasTagValue(peekedByte, 0x6);
+    }
+
+    public static boolean isClosingTag(byte peekedByte) {
+        return isContextTag(peekedByte) && hasTagValue(peekedByte, 0x7);
+    }
+
+    private static boolean hasTagValue(byte peekedByte, int tagValue) {
+        return (peekedByte & 0b0000_0111) == tagValue;
+    }
+
+    public static void noop() {
+        // NO-OP
+    }
+
+    public static byte peekByte(ReadBuffer readBuffer) throws ParseException {
+        int oldPos = readBuffer.getPos();
+        LOGGER.debug("peeking at {}", oldPos);
+        try {
+            return readBuffer.readByte();
+        } finally {
+            readBuffer.reset(oldPos);
+        }
+    }
+
+    public static BACnetDataType guessDataType() {
+        // TODO: implement me
+        return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
     }
 }

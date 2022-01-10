@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagCharacterString struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	Encoding          BACnetCharacterEncoding
 	Value             string
 	ActualLengthInBit uint16
@@ -44,12 +44,12 @@ type IBACnetApplicationTagCharacterString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagCharacterString) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagCharacterString) TagNumber() uint8 {
+	return 0x7
 }
 
-func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -57,14 +57,15 @@ func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetTag
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagCharacterString(encoding BACnetCharacterEncoding, value string, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagCharacterString{
-		Encoding:  encoding,
-		Value:     value,
-		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Encoding:             encoding,
+		Value:                value,
+		ActualLengthInBit:    actualLengthInBit,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagCharacterString(structType interface{}) *BACnetApplicationTagCharacterString {
@@ -75,10 +76,10 @@ func CastBACnetApplicationTagCharacterString(structType interface{}) *BACnetAppl
 		if casted, ok := typ.(*BACnetApplicationTagCharacterString); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagCharacterString(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagCharacterString(casted.Child)
 		}
 		return nil
@@ -112,7 +113,7 @@ func (m *BACnetApplicationTagCharacterString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
+func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -147,13 +148,13 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, actua
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagCharacterString{
-		Encoding:          encoding,
-		Value:             value,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetTag:         &BACnetTag{},
+		Encoding:             encoding,
+		Value:                value,
+		ActualLengthInBit:    actualLengthInBit,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagTime struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	Hour                 int8
 	Minute               int8
 	Second               int8
@@ -50,12 +50,12 @@ type IBACnetApplicationTagTime interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagTime) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagTime) TagNumber() uint8 {
+	return 0xB
 }
 
-func (m *BACnetApplicationTagTime) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagTime) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -63,16 +63,21 @@ func (m *BACnetApplicationTagTime) InitializeParent(parent *BACnetTag, tagNumber
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagTime(hour int8, minute int8, second int8, fractional int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagTime{
-		Hour:       hour,
-		Minute:     minute,
-		Second:     second,
-		Fractional: fractional,
-		BACnetTag:  NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Hour:                 hour,
+		Minute:               minute,
+		Second:               second,
+		Fractional:           fractional,
+		Wildcard:             wildcard,
+		HourIsWildcard:       hourIsWildcard,
+		MinuteIsWildcard:     minuteIsWildcard,
+		SecondIsWildcard:     secondIsWildcard,
+		FractionalIsWildcard: fractionalIsWildcard,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagTime(structType interface{}) *BACnetApplicationTagTime {
@@ -83,10 +88,10 @@ func CastBACnetApplicationTagTime(structType interface{}) *BACnetApplicationTagT
 		if casted, ok := typ.(*BACnetApplicationTagTime); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagTime(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagTime(casted.Child)
 		}
 		return nil
@@ -134,7 +139,7 @@ func (m *BACnetApplicationTagTime) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -202,10 +207,10 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 		MinuteIsWildcard:     minuteIsWildcard,
 		SecondIsWildcard:     secondIsWildcard,
 		FractionalIsWildcard: fractionalIsWildcard,
-		BACnetTag:            &BACnetTag{},
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagTime) Serialize(writeBuffer utils.WriteBuffer) error {

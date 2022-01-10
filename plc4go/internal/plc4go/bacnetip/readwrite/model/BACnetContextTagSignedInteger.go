@@ -64,13 +64,18 @@ func (m *BACnetContextTagSignedInteger) InitializeParent(parent *BACnetContextTa
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt32 *int32, valueInt64 *int64, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt32 *int32, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt32 bool, isInt64 bool, actualValue uint64, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagSignedInteger{
 		ValueInt8:        valueInt8,
 		ValueInt16:       valueInt16,
 		ValueInt32:       valueInt32,
 		ValueInt64:       valueInt64,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		IsInt8:           isInt8,
+		IsInt16:          isInt16,
+		IsInt32:          isInt32,
+		IsInt64:          isInt64,
+		ActualValue:      actualValue,
+		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

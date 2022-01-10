@@ -58,10 +58,12 @@ func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, tag
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagBoolean(value uint8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagBoolean{
 		Value:            value,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		IsTrue:           isTrue,
+		IsFalse:          isFalse,
+		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

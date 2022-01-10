@@ -57,10 +57,11 @@ func (m *BACnetContextTagOctetString) InitializeParent(parent *BACnetContextTag,
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagOctetString(value string, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
+func NewBACnetContextTagOctetString(value string, actualLengthInBit uint16, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagOctetString{
-		Value:            value,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Value:             value,
+		ActualLengthInBit: actualLengthInBit,
+		BACnetContextTag:  NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

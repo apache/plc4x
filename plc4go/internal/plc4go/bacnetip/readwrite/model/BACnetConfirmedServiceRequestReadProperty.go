@@ -31,7 +31,7 @@ type BACnetConfirmedServiceRequestReadProperty struct {
 	*BACnetConfirmedServiceRequest
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
-	ArrayIndex         *uint32
+	ArrayIndex         *BACnetContextTagUnsignedInteger
 }
 
 // The corresponding interface
@@ -51,7 +51,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) ServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceRequestReadProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReadProperty{
 		ObjectIdentifier:              objectIdentifier,
 		PropertyIdentifier:            propertyIdentifier,
@@ -100,7 +100,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBitsConditional(last
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += 32
+		lengthInBits += (*m.ArrayIndex).LengthInBits()
 	}
 
 	return lengthInBits
@@ -142,13 +142,24 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	}
 
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var arrayIndex *uint32 = nil
-	if bool((propertyIdentifier.Value) == (BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY)) {
-		_val, _err := readBuffer.ReadUint32("arrayIndex", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
+	var arrayIndex *BACnetContextTagUnsignedInteger = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
+			return nil, pullErr
 		}
-		arrayIndex = &_val
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.Reset(currentPos)
+		default:
+			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
+			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadProperty"); closeErr != nil {
@@ -159,7 +170,7 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	_child := &BACnetConfirmedServiceRequestReadProperty{
 		ObjectIdentifier:              CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier:            CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
-		ArrayIndex:                    arrayIndex,
+		ArrayIndex:                    CastBACnetContextTagUnsignedInteger(arrayIndex),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
@@ -197,10 +208,16 @@ func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(writeBuffer utils.
 		}
 
 		// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-		var arrayIndex *uint32 = nil
+		var arrayIndex *BACnetContextTagUnsignedInteger = nil
 		if m.ArrayIndex != nil {
+			if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
+				return pushErr
+			}
 			arrayIndex = m.ArrayIndex
-			_arrayIndexErr := writeBuffer.WriteUint32("arrayIndex", 32, *(arrayIndex))
+			_arrayIndexErr := arrayIndex.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
+				return popErr
+			}
 			if _arrayIndexErr != nil {
 				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
 			}

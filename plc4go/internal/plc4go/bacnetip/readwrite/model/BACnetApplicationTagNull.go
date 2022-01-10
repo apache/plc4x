@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagNull struct {
-	*BACnetTag
+	*BACnetApplicationTag
 }
 
 // The corresponding interface
@@ -40,12 +40,12 @@ type IBACnetApplicationTagNull interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagNull) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagNull) TagNumber() uint8 {
+	return 0x0
 }
 
-func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -53,12 +53,12 @@ func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetTag, tagNumber
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagNull(tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagNull(tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagNull{
-		BACnetTag: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagNull(structType interface{}) *BACnetApplicationTagNull {
@@ -69,10 +69,10 @@ func CastBACnetApplicationTagNull(structType interface{}) *BACnetApplicationTagN
 		if casted, ok := typ.(*BACnetApplicationTagNull); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagNull(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagNull(casted.Child)
 		}
 		return nil
@@ -98,7 +98,7 @@ func (m *BACnetApplicationTagNull) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -109,10 +109,10 @@ func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetTag, err
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagNull{
-		BACnetTag: &BACnetTag{},
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagNull) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -28,9 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTagBitString struct {
-	*BACnetTag
+	*BACnetApplicationTag
 	UnusedBits uint8
 	Data       []bool
+	Unused     []bool
 }
 
 // The corresponding interface
@@ -43,12 +44,12 @@ type IBACnetApplicationTagBitString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagBitString) TagClass() TagClass {
-	return TagClass_APPLICATION_TAGS
+func (m *BACnetApplicationTagBitString) TagNumber() uint8 {
+	return 0x8
 }
 
-func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagNumber = tagNumber
+func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.TagClass = tagClass
 	m.LengthValueType = lengthValueType
 	m.ExtTagNumber = extTagNumber
 	m.ExtLength = extLength
@@ -56,14 +57,15 @@ func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetTag, tagN
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagBitString(unusedBits uint8, data []bool, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
+func NewBACnetApplicationTagBitString(unusedBits uint8, data []bool, unused []bool, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagBitString{
-		UnusedBits: unusedBits,
-		Data:       data,
-		BACnetTag:  NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		UnusedBits:           unusedBits,
+		Data:                 data,
+		Unused:               unused,
+		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
 	}
 	child.Child = child
-	return child.BACnetTag
+	return child.BACnetApplicationTag
 }
 
 func CastBACnetApplicationTagBitString(structType interface{}) *BACnetApplicationTagBitString {
@@ -74,10 +76,10 @@ func CastBACnetApplicationTagBitString(structType interface{}) *BACnetApplicatio
 		if casted, ok := typ.(*BACnetApplicationTagBitString); ok {
 			return casted
 		}
-		if casted, ok := typ.(BACnetTag); ok {
+		if casted, ok := typ.(BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagBitString(casted.Child)
 		}
-		if casted, ok := typ.(*BACnetTag); ok {
+		if casted, ok := typ.(*BACnetApplicationTag); ok {
 			return CastBACnetApplicationTagBitString(casted.Child)
 		}
 		return nil
@@ -104,6 +106,11 @@ func (m *BACnetApplicationTagBitString) LengthInBitsConditional(lastItem bool) u
 		lengthInBits += 1 * uint16(len(m.Data))
 	}
 
+	// Array field
+	if len(m.Unused) > 0 {
+		lengthInBits += 1 * uint16(len(m.Unused))
+	}
+
 	return lengthInBits
 }
 
@@ -111,7 +118,7 @@ func (m *BACnetApplicationTagBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTag, error) {
+func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -142,18 +149,38 @@ func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, actualLengt
 		return nil, closeErr
 	}
 
+	// Array field (unused)
+	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
+	// Count array
+	unused := make([]bool, unusedBits)
+	{
+		for curItem := uint16(0); curItem < uint16(unusedBits); curItem++ {
+			_item, _err := readBuffer.ReadBit("")
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'unused' field")
+			}
+			unused[curItem] = _item
+		}
+	}
+	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagBitString"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagBitString{
-		UnusedBits: unusedBits,
-		Data:       data,
-		BACnetTag:  &BACnetTag{},
+		UnusedBits:           unusedBits,
+		Data:                 data,
+		Unused:               unused,
+		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
-	_child.BACnetTag.Child = _child
-	return _child.BACnetTag, nil
+	_child.BACnetApplicationTag.Child = _child
+	return _child.BACnetApplicationTag, nil
 }
 
 func (m *BACnetApplicationTagBitString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -181,6 +208,22 @@ func (m *BACnetApplicationTagBitString) Serialize(writeBuffer utils.WriteBuffer)
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
+		}
+
+		// Array Field (unused)
+		if m.Unused != nil {
+			if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
+			for _, _element := range m.Unused {
+				_elementErr := writeBuffer.WriteBit("", _element)
+				if _elementErr != nil {
+					return errors.Wrap(_elementErr, "Error serializing 'unused' field")
+				}
+			}
+			if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
 			}
 		}

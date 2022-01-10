@@ -162,8 +162,7 @@
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
             [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [optional BACnetConstructedData                                                            listOfValues                ]
-            [validation 'listOfValues == null || listOfValues.tagNumber == 4' "we expect a tag number 4 here"                      ]
+            [simple   BACnetConstructedData('4')                                                       listOfValues                ]
         ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification
         ]
@@ -180,11 +179,11 @@
         ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
         ]
         ['0x07' BACnetConfirmedServiceRequestAtomicWriteFile
-            [simple BACnetApplicationTagObjectIdentifier                deviceIdentifier    ]
-            [optional BACnetContextTagNull('0', 'BACnetDataType.NULL')  openingTag          ]
-            [simple BACnetApplicationTagSignedInteger                   fileStartPosition   ]
-            [simple BACnetApplicationTagOctetString                     fileData            ]
-            [optional BACnetContextTagNull('0', 'BACnetDataType.NULL')  closingTag          ]
+            [simple BACnetApplicationTagObjectIdentifier                  deviceIdentifier    ]
+            [optional BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG') openingTag          ]
+            [simple BACnetApplicationTagSignedInteger                     fileStartPosition   ]
+            [simple BACnetApplicationTagOctetString                       fileData            ]
+            [optional BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG') closingTag          ]
         ]
 
         ['0x08' BACnetConfirmedServiceRequestAddListElement
@@ -196,23 +195,18 @@
         ['0x0B' BACnetConfirmedServiceRequestDeleteObject
         ]
         ['0x0C' BACnetConfirmedServiceRequestReadProperty
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier                                                                    ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier                                                                  ]
-            // TODO: check if this is the right identifier type and size
-            [optional uint 32                                                                              arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            // TODO: check if values are missing here?
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier     ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier   ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex           ]
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
-            // TODO: check if this is the right identifier type and size
-            // TODO: replace with proper tag
-            [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY'             ]
-            [simple   BACnetConstructedData                                      propertyValue                                 ]
-            [validation 'propertyValue == null || propertyValue.tagNumber == 3' "we expect a tag number 3 here"                ]
-            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')                         priority ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
+            [simple   BACnetConstructedData('3')                                                           propertyValue       ]
+            [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
         ]
@@ -278,8 +272,7 @@
             [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
             [simple BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [optional BACnetConstructedData                                                          listOfValues                ]
-            [validation 'listOfValues == null || listOfValues.tagNumber == 4' "we expect a tag number 4 here"                    ]
+            [simple BACnetConstructedData('4')                                                       listOfValues                ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
@@ -343,11 +336,8 @@
         ['0x0C' BACnetServiceAckReadProperty
             [simple BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier   ]
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
-            // TODO: check if this is the right identifier type and size
-            // TODO: replace with proper
-            [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
-            [optional BACnetConstructedData                                          values]
-            [validation 'values == null || values.tagNumber == 3' "we expect a tag number 3 here"]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')            arrayIndex         ]
+            [optional BACnetConstructedData('3')                                                         values             ]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -473,28 +463,28 @@
     [simple uint 16 port]
 ]
 
-[discriminatedType BACnetTag
-    [simple        uint 4   tagNumber                                                   ]
-    [discriminator TagClass tagClass                                                    ]
-    [simple        uint 3   lengthValueType                                             ]
-    [optional      uint 8   extTagNumber    'tagNumber == 15'                           ]
-    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber' ]
-    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS']
-    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6']
-    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean']
-    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
-    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
-    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
-    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType)))']
-    [typeSwitch tagClass, tagNumber
-        ['APPLICATION_TAGS','0x0' BACnetApplicationTagNull
+[discriminatedType BACnetApplicationTag
+    [discriminator uint 4   tagNumber                                                                                 ]
+    [assert        TagClass tagClass        'TagClass.APPLICATION_TAGS'                                               ]
+    [simple        uint 3   lengthValueType                                                                           ]
+    [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
+    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                               ]
+    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                 ]
+    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'      ]
+    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                   ]
+    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                        ]
+    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'    ]
+    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'    ]
+    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [typeSwitch tagNumber
+        ['0x0' BACnetApplicationTagNull
         ]
-        ['APPLICATION_TAGS','0x1' BACnetApplicationTagBoolean(uint 32 actualLength)
+        ['0x1' BACnetApplicationTagBoolean(uint 32 actualLength)
             [virtual bit value   'actualLength == 1'    ]
             [virtual bit isTrue  'value'                ]
             [virtual bit isFalse '!value'               ]
         ]
-        ['APPLICATION_TAGS','0x2' BACnetApplicationTagUnsignedInteger(uint 32 actualLength)
+        ['0x2' BACnetApplicationTagUnsignedInteger(uint 32 actualLength)
             [virtual    bit     isUint8     'actualLength == 1' ]
             [optional   uint  8 valueUint8  'isUint8'           ]
             [virtual    bit     isUint16    'actualLength == 2' ]
@@ -509,7 +499,7 @@
             [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
             */
         ]
-        ['APPLICATION_TAGS','0x3' BACnetApplicationTagSignedInteger(uint 32 actualLength)
+        ['0x3' BACnetApplicationTagSignedInteger(uint 32 actualLength)
             [virtual    bit     isInt8     'actualLength == 1'  ]
             [optional   int 8   valueInt8  'isInt8'             ]
             [virtual    bit     isInt16    'actualLength == 2'  ]
@@ -520,78 +510,63 @@
             [optional   int 64  valueInt64 'isInt64'            ]
             [virtual    uint 64 actualValue 'isInt8?valueInt8:(isInt16?valueInt16:(isInt64?valueInt64:0))']
         ]
-        ['APPLICATION_TAGS','0x4' BACnetApplicationTagReal
+        ['0x4' BACnetApplicationTagReal
             [simple float 32 value]
         ]
-        ['APPLICATION_TAGS','0x5' BACnetApplicationTagDouble
+        ['0x5' BACnetApplicationTagDouble
             [simple float 64 value]
         ]
-        ['APPLICATION_TAGS','0x6' BACnetApplicationTagOctetString(uint 32 actualLength)
+        ['0x6' BACnetApplicationTagOctetString(uint 32 actualLength)
             // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
             [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
             [simple     vstring 'actualLengthInBit'  value encoding='"ASCII"']
         ]
-        ['APPLICATION_TAGS','0x7' BACnetApplicationTagCharacterString(uint 32 actualLength)
+        ['0x7' BACnetApplicationTagCharacterString(uint 32 actualLength)
             [simple     BACnetCharacterEncoding      encoding]
             // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
             [virtual    uint     16                  actualLengthInBit 'actualLength * 8 - 8']
             // TODO: call to string on encoding or add type conversion so we can use the enum above
             [simple     vstring 'actualLengthInBit'  value encoding='"UTF-8"']
         ]
-        ['APPLICATION_TAGS','0x8' BACnetApplicationTagBitString(uint 32 actualLength)
+        ['0x8' BACnetApplicationTagBitString(uint 32 actualLength)
             [simple     uint 8      unusedBits                                           ]
             [array      bit         data count '((actualLength - 1) * 8) - unusedBits'   ]
+            [array      bit         unused count 'unusedBits'                            ]
         ]
-        ['APPLICATION_TAGS','0x9' BACnetApplicationTagEnumerated(uint 32 actualLength)
+        ['0x9' BACnetApplicationTagEnumerated(uint 32 actualLength)
             [array int 8 data length 'actualLength']
         ]
-        ['APPLICATION_TAGS','0xA' BACnetApplicationTagDate
-            [virtual int  8 wildcard '0xFF']
-            [simple  int  8 yearMinus1900]
-            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard']
-            [virtual int 16 year 'yearMinus1900 + 1900']
-            [simple  int  8 month]
-            [virtual bit    monthIsWildcard 'month == wildcard']
-            [virtual bit    oddMonthWildcard 'month == 13']
-            [virtual bit    evenMonthWildcard 'month == 14']
-            [simple  int  8 dayOfMonth]
-            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard']
-            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32']
-            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33']
-            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34']
-            [simple  int  8 dayOfWeek]
-            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard']
+        ['0xA' BACnetApplicationTagDate
+            [virtual int  8 wildcard '0xFF'                                 ]
+            [simple  int  8 yearMinus1900                                   ]
+            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard'      ]
+            [virtual int 16 year 'yearMinus1900 + 1900'                     ]
+            [simple  int  8 month                                           ]
+            [virtual bit    monthIsWildcard 'month == wildcard'             ]
+            [virtual bit    oddMonthWildcard 'month == 13'                  ]
+            [virtual bit    evenMonthWildcard 'month == 14'                 ]
+            [simple  int  8 dayOfMonth                                      ]
+            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard'   ]
+            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32'       ]
+            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33'        ]
+            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34'       ]
+            [simple  int  8 dayOfWeek                                       ]
+            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard'     ]
         ]
-        ['APPLICATION_TAGS','0xB' BACnetApplicationTagTime
-            [virtual int  8 wildcard '0xFF']
-            [simple  int  8 hour]
-            [virtual bit    hourIsWildcard 'hour == wildcard']
-            [simple  int  8 minute]
-            [virtual bit    minuteIsWildcard 'minute == wildcard']
-            [simple  int  8 second]
-            [virtual bit    secondIsWildcard 'second == wildcard']
-            [simple  int  8 fractional]
-            [virtual bit    fractionalIsWildcard 'fractional == wildcard']
+        ['0xB' BACnetApplicationTagTime
+            [virtual int  8 wildcard '0xFF'                                 ]
+            [simple  int  8 hour                                            ]
+            [virtual bit    hourIsWildcard 'hour == wildcard'               ]
+            [simple  int  8 minute                                          ]
+            [virtual bit    minuteIsWildcard 'minute == wildcard'           ]
+            [simple  int  8 second                                          ]
+            [virtual bit    secondIsWildcard 'second == wildcard'           ]
+            [simple  int  8 fractional                                      ]
+            [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
-        ['APPLICATION_TAGS','0xC' BACnetApplicationTagObjectIdentifier
-            [simple BACnetObjectType    objectType]
-            [simple uint 22             instanceNumber]
-        ]
-        ['CONTEXT_SPECIFIC_TAGS','0x0' BACnetConstructedDataElement(uint 32 actualLength)
-            [manual  BACnetPropertyIdentifier       identifier         'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, identifier)' '_value.actualLength'                                                        ]
-            [manual  uint 32                        proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, identifier, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, identifier, proprietaryValue)' '_value.actualLength'    ]
-            [virtual bit                            isProprietary      'identifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE'                                                                                                                                                ]
-            [simple  BACnetTag        value                                                                                                                                                                                                                               ]
-        ]
-        ['CONTEXT_SPECIFIC_TAGS' BACnetConstructedData(uint 4 tagNumber, uint 32 actualLength)
-            [virtual     bit iAmOpeningTag         'actualLength == 6']
-            // TODO: we might need to add a extra closing tag element
-            [virtual     bit iAmClosingTag         'actualLength == 7']
-            [manualArray BACnetTag data terminated 'STATIC_CALL("openingClosingTerminate", iAmClosingTag, readBuffer, tagNumber)' 'STATIC_CALL("parseTags", readBuffer)' 'STATIC_CALL("writeTags", writeBuffer, _value)' 'STATIC_CALL("tagsLength", data)']
-            [optional    BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier '!iAmClosingTag && COUNT(data) == 0']
-            [optional    BACnetTag content '!iAmClosingTag && COUNT(data) == 0']
-            [optional    BACnetContextTag('tagNumber', 'BACnetDataType.NULL') closingTag 'iAmOpeningTag']
-            [array int 8 rawData length '!(iAmOpeningTag || iAmClosingTag)?actualLength:0']
+        ['0xC' BACnetApplicationTagObjectIdentifier
+            [simple BACnetObjectType    objectType          ]
+            [simple uint 22             instanceNumber      ]
         ]
     ]
 ]
@@ -606,9 +581,7 @@
     [optional      uint 16          extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
     [optional      uint 32          extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
     [virtual       uint 32          actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
-    [typeSwitch dataType
-        ['NULL' BACnetContextTagNull
-        ]
+    [typeSwitch dataType, lengthValueType
         ['BOOLEAN' BACnetContextTagBoolean
             [simple  uint 8 value                          ]
             [virtual bit    isTrue  'value == 1'           ]
@@ -668,31 +641,31 @@
             [array       int 8      data length 'actualLengthInBit']
         ]
         ['DATE' BACnetContextTagDate
-            [virtual int  8 wildcard '0xFF']
-            [simple  int  8 yearMinus1900]
-            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard']
-            [simple  int  8 month]
-            [virtual bit    monthIsWildcard 'month == wildcard']
-            [virtual bit    oddMonthWildcard 'month == 13']
-            [virtual bit    evenMonthWildcard 'month == 14']
-            [simple  int  8 dayOfMonth]
-            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard']
-            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32']
-            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33']
-            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34']
-            [simple  int  8 dayOfWeek]
-            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard']
+            [virtual int  8 wildcard '0xFF'                                 ]
+            [simple  int  8 yearMinus1900                                   ]
+            [virtual bit    yearIsWildcard 'yearMinus1900 == wildcard'      ]
+            [simple  int  8 month                                           ]
+            [virtual bit    monthIsWildcard 'month == wildcard'             ]
+            [virtual bit    oddMonthWildcard 'month == 13'                  ]
+            [virtual bit    evenMonthWildcard 'month == 14'                 ]
+            [simple  int  8 dayOfMonth                                      ]
+            [virtual bit    dayOfMonthIsWildcard 'dayOfMonth == wildcard'   ]
+            [virtual bit    lastDayOfMonthWildcard 'dayOfMonth == 32'       ]
+            [virtual bit    oddDayOfMonthWildcard 'dayOfMonth == 33'        ]
+            [virtual bit    evenDayOfMonthWildcard 'dayOfMonth == 34'       ]
+            [simple  int  8 dayOfWeek                                       ]
+            [virtual bit    dayOfWeekIsWildcard 'dayOfWeek == wildcard'     ]
         ]
         ['TIME' BACnetContextTagTime
-            [virtual int  8 wildcard '0xFF']
-            [simple  int  8 hour]
-            [virtual bit    hourIsWildcard 'hour == wildcard']
-            [simple  int  8 minute]
-            [virtual bit    minuteIsWildcard 'minute == wildcard']
-            [simple  int  8 second]
-            [virtual bit    secondIsWildcard 'second == wildcard']
-            [simple  int  8 fractional]
-            [virtual bit    fractionalIsWildcard 'fractional == wildcard']
+            [virtual int  8 wildcard '0xFF'                                 ]
+            [simple  int  8 hour                                            ]
+            [virtual bit    hourIsWildcard 'hour == wildcard'               ]
+            [simple  int  8 minute                                          ]
+            [virtual bit    minuteIsWildcard 'minute == wildcard'           ]
+            [simple  int  8 second                                          ]
+            [virtual bit    secondIsWildcard 'second == wildcard'           ]
+            [simple  int  8 fractional                                      ]
+            [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier
             [simple BACnetObjectType    objectType      ]
@@ -706,105 +679,151 @@
         ['BACNET_DEVICE_STATE' BACnetContextTagDeviceState
             [simple BACnetDeviceState   state]
         ]
+        ['OPENING_TAG' BACnetOpeningTag(uint 3 lengthValueType)
+            [validation 'lengthValueType == 6' "opening tag should habe a value of 6"]
+        ]
+        ['CLOSING_TAG' BACnetClosingTag(uint 3 lengthValueType)
+            [validation 'lengthValueType == 7' "closing tag should habe a value of 7"]
+        ]
+        [BACnetContextTagEmpty
+        ]
     ]
 ]
 
+[type BACnetConstructedData(uint 4 tagNumber)
+    [optional       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                    openingTag
+    ]
+    [array          BACnetConstructedDataElement
+                    data
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, tagNumber)'
+    ]
+    [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier
+
+                    'COUNT(data) == 0'
+    ]
+    [optional       BACnetApplicationTag
+                    content 'COUNT(data) == 0'
+    ]
+    [optional       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                    closingTag
+    ]
+]
+
+[type BACnetConstructedDataElement
+    [manual     byte   peekedByte          'STATIC_CALL("peekByte", readBuffer)' 'STATIC_CALL("noop")' '0' ]
+    [virtual    bit    isApplicationTag    'STATIC_CALL("isApplicationTag", peekedByte)'                   ]
+    [virtual    bit    isConstructedData   'STATIC_CALL("isConstructedData", peekedByte)'                  ]
+    [virtual    bit    isContextTag        '!isConstructedData && STATIC_CALL("isContextTag", peekedByte)' ]
+    [optional   BACnetApplicationTag
+                       applicationTag      'isApplicationTag'                                              ]
+    [optional   BACnetContextTag('(peekedByte & 0xF0) >> 4', 'STATIC_CALL("guessDataType")')
+                       contextTag          'isContextTag'                                                  ]
+    [optional   BACnetConstructedData('(peekedByte & 0xF0) >> 4')
+                       constructedData     'isConstructedData'                                             ]
+]
+
 [enum uint 16 BVLCResultCode
-    ['0x0000' SUCCESSFUL_COMPLETION]
-    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK]
-    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK]
-    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK]
-    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK]
-    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK]
-    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK]
+    ['0x0000' SUCCESSFUL_COMPLETION                     ]
+    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK    ]
+    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK     ]
+    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK               ]
+    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK             ]
+    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK     ]
+    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK       ]
 ]
 
 [enum uint 1 TagClass
-    ['0x0' APPLICATION_TAGS]
-    ['0x1' CONTEXT_SPECIFIC_TAGS]
+    ['0x0' APPLICATION_TAGS         ]
+    ['0x1' CONTEXT_SPECIFIC_TAGS    ]
 ]
 
-[enum int 4 BACnetDataType
-    ['0x0' NULL]
-    ['0x1' BOOLEAN]
-    ['0x2' UNSIGNED_INTEGER]
-    ['0x3' SIGNED_INTEGER]
-    ['0x4' REAL]
-    ['0x5' DOUBLE]
-    ['0x6' OCTET_STRING]
-    ['0x7' CHARACTER_STRING]
-    ['0x8' BIT_STRING]
-    ['0x9' ENUMERATED]
-    ['0xA' DATE]
-    ['0xB' TIME]
-    ['0xC' BACNET_OBJECT_IDENTIFIER]
-    ['0xD' BACNET_PROPERTY_IDENTIFIER]
-    ['0xE' BACNET_DEVICE_STATE]
+[enum uint 8 BACnetDataType
+    ['0' NULL                           ]
+    ['1' BOOLEAN                        ]
+    ['2' UNSIGNED_INTEGER               ]
+    ['3' SIGNED_INTEGER                 ]
+    ['4' REAL                           ]
+    ['5' DOUBLE                         ]
+    ['6' OCTET_STRING                   ]
+    ['7' CHARACTER_STRING               ]
+    ['8' BIT_STRING                     ]
+    ['9' ENUMERATED                     ]
+    ['10' DATE                          ]
+    ['11' TIME                          ]
+    ['12' BACNET_OBJECT_IDENTIFIER      ]
+    // Custom plc4x helper values below here
+    ['16' BACNET_PROPERTY_IDENTIFIER    ]
+    ['17' BACNET_DEVICE_STATE           ]
+    ['20' OPENING_TAG                   ]
+    ['21' CLOSING_TAG                   ]
 ]
 
 [enum byte BACnetCharacterEncoding
-    ['0x0' ISO_10646] // UTF-8
-    ['0x1' IBM_Microsoft_DBCS]
-    ['0x2' JIS_X_0208]
-    ['0x3' ISO_10646_4] // (UCS-4)
-    ['0x4' ISO_10646_2] //(UCS-2)
-    ['0x5' ISO_8859_1]
+    ['0x0' ISO_10646            ] // UTF-8
+    ['0x1' IBM_Microsoft_DBCS   ]
+    ['0x2' JIS_X_0208           ]
+    ['0x3' ISO_10646_4          ] // (UCS-4)
+    ['0x4' ISO_10646_2          ] //(UCS-2)
+    ['0x5' ISO_8859_1           ]
 ]
 
 [enum uint 4 BACnetNetworkType
-    ['0x0' ETHERNET]
-    ['0x1' ARCNET]
-    ['0x2' MSTP]
-    ['0x3' PTP]
-    ['0x4' LONTALK]
-    ['0x5' IPV4]
-    ['0x6' ZIGBEE]
-    ['0x7' VIRTUAL]
-    ['0x8' REMOVED_NON_BACNET]
-    ['0x9' IPV6]
-    ['0xA' SERIAL]
+    ['0x0' ETHERNET             ]
+    ['0x1' ARCNET               ]
+    ['0x2' MSTP                 ]
+    ['0x3' PTP                  ]
+    ['0x4' LONTALK              ]
+    ['0x5' IPV4                 ]
+    ['0x6' ZIGBEE               ]
+    ['0x7' VIRTUAL              ]
+    ['0x8' REMOVED_NON_BACNET   ]
+    ['0x9' IPV6                 ]
+    ['0xA' SERIAL               ]
 ]
 
 [enum uint 8 BACnetDeviceState
-    ['0x0' COLDSTART]
-    ['0x1' WARMSTART]
-    ['0x2' ACTIVATE_CHANGES]
-    ['0x3' STARTBACKUP]
-    ['0x4' ENDBACKUP]
-    ['0x5' STARTRESTORE]
-    ['0x6' ENDRESTORE]
-    ['0x7' ABORTRESTORE]
+    ['0x0' COLDSTART        ]
+    ['0x1' WARMSTART        ]
+    ['0x2' ACTIVATE_CHANGES ]
+    ['0x3' STARTBACKUP      ]
+    ['0x4' ENDBACKUP        ]
+    ['0x5' STARTRESTORE     ]
+    ['0x6' ENDRESTORE       ]
+    ['0x7' ABORTRESTORE     ]
 ]
 
 [enum uint 8 BACnetNodeType
-    ['0x00' UNKNOWN]
-    ['0x01' SYSTEM]
-    ['0x02' NETWORK]
-    ['0x03' DEVICE]
-    ['0x04' ORGANIZATIONAL]
-    ['0x05' AREA]
-    ['0x06' EQUIPMENT]
-    ['0x07' POINT]
-    ['0x08' COLLECTION]
-    ['0x09' PROPERTY]
-    ['0x0A' FUNCTIONAL]
-    ['0x0B' OTHER]
-    ['0x0C' SUBSYSTEM]
-    ['0x0D' BUILDING]
-    ['0x0E' FLOOR]
-    ['0x0F' SECTION]
-    ['0x10' MODULE]
-    ['0x11' TREE]
-    ['0x12' MEMBER]
-    ['0x13' PROTOCOL]
-    ['0x14' ROOM]
-    ['0x15' ZONE]
+    ['0x00' UNKNOWN         ]
+    ['0x01' SYSTEM          ]
+    ['0x02' NETWORK         ]
+    ['0x03' DEVICE          ]
+    ['0x04' ORGANIZATIONAL  ]
+    ['0x05' AREA            ]
+    ['0x06' EQUIPMENT       ]
+    ['0x07' POINT           ]
+    ['0x08' COLLECTION      ]
+    ['0x09' PROPERTY        ]
+    ['0x0A' FUNCTIONAL      ]
+    ['0x0B' OTHER           ]
+    ['0x0C' SUBSYSTEM       ]
+    ['0x0D' BUILDING        ]
+    ['0x0E' FLOOR           ]
+    ['0x0F' SECTION         ]
+    ['0x10' MODULE          ]
+    ['0x11' TREE            ]
+    ['0x12' MEMBER          ]
+    ['0x13' PROTOCOL        ]
+    ['0x14' ROOM            ]
+    ['0x15' ZONE            ]
 ]
 
 [enum uint 4 BACnetNotifyType
-    ['0x0' ALARM]
-    ['0x1' EVENT]
-    ['0x2' ACK_NOTIFICATION]
+    ['0x0' ALARM            ]
+    ['0x1' EVENT            ]
+    ['0x2' ACK_NOTIFICATION ]
 ]
 
 [enum uint 10 BACnetObjectType
@@ -816,28 +835,28 @@
     ['36' ACCESS_ZONE]
     ['23' ACCUMULATOR]
     ['52' ALERT_ENROLLMENT]
-    ['0' ANALOG_INPUT]
-    ['1' ANALOG_OUTPUT]
-    ['2' ANALOG_VALUE]
+    ['0'  ANALOG_INPUT]
+    ['1'  ANALOG_OUTPUT]
+    ['2'  ANALOG_VALUE]
     ['18' AVERAGING]
-    ['3' BINARY_INPUT]
+    ['3'  BINARY_INPUT]
     ['55' BINARY_LIGHTING_OUTPUT]
-    ['4' BINARY_OUTPUT]
-    ['5' BINARY_VALUE]
+    ['4'  BINARY_OUTPUT]
+    ['5'  BINARY_VALUE]
     ['39' BITSTRING_VALUE]
-    ['6' CALENDAR]
+    ['6'  CALENDAR]
     ['53' CHANNEL]
     ['40' CHARACTERSTRING_VALUE]
-    ['7' COMMAND]
+    ['7'  COMMAND]
     ['37' CREDENTIAL_DATA_INPUT]
     ['41' DATEPATTERN_VALUE]
     ['42' DATE_VALUE]
     ['43' DATETIMEPATTERN_VALUE]
     ['44' DATETIME_VALUE]
-    ['8' DEVICE]
+    ['8'  DEVICE]
     ['57' ELEVATOR_GROUP]
     ['58' ESCALATOR]
-    ['9' EVENT_ENROLLMENT]
+    ['9'  EVENT_ENROLLMENT]
     ['25' EVENT_LOG]
     ['10' FILE]
     ['26' GLOBAL_GROUP]
