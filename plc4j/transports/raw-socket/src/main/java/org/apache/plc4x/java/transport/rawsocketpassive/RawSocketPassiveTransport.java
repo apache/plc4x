@@ -16,16 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.transport.rawsocket;
+package org.apache.plc4x.java.transport.rawsocketpassive;
 
-import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 
-public interface RawSocketTransportConfiguration extends PcapTransportConfiguration {
+public class RawSocketPassiveTransport implements Transport {
 
-    int NO_DEFAULT_PORT = -1;
+    public static final String TRANSPORT_CODE = "raw-passive";
 
-    default int getDefaultPort() {
-        return NO_DEFAULT_PORT;
+    @Override
+    public String getTransportCode() {
+        return TRANSPORT_CODE;
+    }
+
+    @Override
+    public String getTransportName() {
+        return "Passive Raw Ethernet Transport";
+    }
+
+    @Override
+    public ChannelFactory createChannelFactory(String transportConfig) {
+        RawSocketPassiveAddress address = new RawSocketPassiveAddress(transportConfig);
+        return new RawSocketPassiveChannelFactory(address);
     }
 
 }

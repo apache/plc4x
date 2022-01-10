@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.transport.rawsocket;
+package org.apache.plc4x.java.transport.rawsocketpassive;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -32,18 +32,18 @@ import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 
-public class RawSocketChannelFactory extends NettyChannelFactory implements HasConfiguration<RawSocketTransportConfiguration> {
+public class RawSocketPassiveChannelFactory extends NettyChannelFactory implements HasConfiguration<RawSocketPassiveTransportConfiguration> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(RawSocketPassiveChannelFactory.class);
 
-    private RawSocketTransportConfiguration configuration;
+    private RawSocketPassiveTransportConfiguration configuration;
 
-    public RawSocketChannelFactory(SocketAddress address) {
+    public RawSocketPassiveChannelFactory(SocketAddress address) {
         super(address);
     }
 
     @Override
-    public void setConfiguration(RawSocketTransportConfiguration configuration) {
+    public void setConfiguration(RawSocketPassiveTransportConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -54,7 +54,7 @@ public class RawSocketChannelFactory extends NettyChannelFactory implements HasC
 
     @Override
     public boolean isPassive() {
-        return false;
+        return true;
     }
 
     @Override
