@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
-import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
@@ -41,7 +40,6 @@ import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

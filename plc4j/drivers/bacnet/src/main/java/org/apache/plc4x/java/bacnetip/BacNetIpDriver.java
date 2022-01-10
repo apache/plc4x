@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;

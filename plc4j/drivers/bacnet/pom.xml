@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.sandbox</groupId>
-    <artifactId>plc4x-sandbox</artifactId>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-drivers</artifactId>
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-bacnetip-driver</artifactId>
+  <artifactId>plc4j-bacnet-driver</artifactId>
 
-  <name>Sandbox: Test BACNet/IP Driver</name>
+  <name>PLC4J: Driver: BACNet/IP Driver</name>
 
   <build>
     <plugins>
@@ -59,6 +59,11 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -73,6 +78,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-pcap-shared</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-pcap-replay</artifactId>
       <version>0.10.0-SNAPSHOT</version>
       <optional>true</optional>
@@ -81,6 +92,26 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
     </dependency>
 
     <!--dependency>
