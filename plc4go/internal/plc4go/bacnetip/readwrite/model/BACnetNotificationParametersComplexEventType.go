@@ -42,17 +42,20 @@ type IBACnetNotificationParametersComplexEventType interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersComplexEventType) PeekedTagNumber() uint8 {
+	return uint8(6)
+}
 
-func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropertyValues, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParameters {
+func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropertyValues, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersComplexEventType{
 		ListOfValues:                 listOfValues,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagNumber, closingTag),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetNotificationParameters

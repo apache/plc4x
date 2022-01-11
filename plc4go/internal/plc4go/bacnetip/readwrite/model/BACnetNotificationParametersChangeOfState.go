@@ -45,20 +45,23 @@ type IBACnetNotificationParametersChangeOfState interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfState) PeekedTagNumber() uint8 {
+	return uint8(1)
+}
 
-func (m *BACnetNotificationParametersChangeOfState) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetNotificationParametersChangeOfState) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetNotificationParametersChangeOfState(innerOpeningTag *BACnetOpeningTag, changeOfState *BACnetPropertyStates, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParameters {
+func NewBACnetNotificationParametersChangeOfState(innerOpeningTag *BACnetOpeningTag, changeOfState *BACnetPropertyStates, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersChangeOfState{
 		InnerOpeningTag:              innerOpeningTag,
 		ChangeOfState:                changeOfState,
 		StatusFlags:                  statusFlags,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagNumber, closingTag),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetNotificationParameters

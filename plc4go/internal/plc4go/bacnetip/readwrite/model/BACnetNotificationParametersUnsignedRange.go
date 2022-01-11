@@ -46,21 +46,24 @@ type IBACnetNotificationParametersUnsignedRange interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersUnsignedRange) PeekedTagNumber() uint8 {
+	return uint8(11)
+}
 
-func (m *BACnetNotificationParametersUnsignedRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetNotificationParametersUnsignedRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag *BACnetOpeningTag, sequenceNumber *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlags, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParameters {
+func NewBACnetNotificationParametersUnsignedRange(innerOpeningTag *BACnetOpeningTag, sequenceNumber *BACnetContextTagUnsignedInteger, statusFlags *BACnetStatusFlags, exceededLimit *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersUnsignedRange{
 		InnerOpeningTag:              innerOpeningTag,
 		SequenceNumber:               sequenceNumber,
 		StatusFlags:                  statusFlags,
 		ExceededLimit:                exceededLimit,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagNumber, closingTag),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetNotificationParameters

@@ -298,13 +298,6 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = get${namedField.name?cap_first}();
                         writeBuffer.writeVirtual("${namedField.name}", ${namedField.name});
                         <#break>
-                    <#case "validation">
-                        <#assign validationField = field.asValidationField().orElseThrow()>
-                        // Validation
-                        if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
-                            throw new RuntimeException(${validationField.getDescription().orElse("Validation failed")});
-                        }
-                        <#break>
                 </#switch>
             </#list>
 

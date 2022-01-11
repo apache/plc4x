@@ -42,17 +42,20 @@ type IBACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) PeekedTagNumber() uint8 {
+	return uint8(1)
+}
 
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue *BACnetContextTagReal, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParametersChangeOfValueNewValue {
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue *BACnetContextTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
 	child := &BACnetNotificationParametersChangeOfValueNewValueChangedValue{
 		ChangedValue: changedValue,
-		BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagNumber, closingTag),
+		BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetNotificationParametersChangeOfValueNewValue

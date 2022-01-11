@@ -135,6 +135,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetPropertyValuesParse(io, tagNumber)
+	case "BACnetTagHeader":
+		return model.BACnetTagHeaderParse(io)
 	case "BACnetPropertyValue":
 		return model.BACnetPropertyValueParse(io)
 	case "BACnetServiceAck":

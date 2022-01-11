@@ -42,17 +42,20 @@ type IBACnetTimeStampSequence interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetTimeStampSequence) PeekedTagNumber() uint8 {
+	return uint8(1)
+}
 
-func (m *BACnetTimeStampSequence) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetTimeStampSequence) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetTimeStamp {
+func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
 	child := &BACnetTimeStampSequence{
 		SequenceNumber:  sequenceNumber,
-		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagNumber, closingTag),
+		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetTimeStamp

@@ -46,6 +46,10 @@ public class FieldReaderOptional<T> implements FieldCommons {
             LOGGER.debug("Assertion doesn't match for field {}. Resetting read position to {}", logicalName, curPos, e);
             dataReader.setPos(curPos);
             return null;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            LOGGER.debug("Not enough bytes for {}. Resetting read position to {}", logicalName, curPos, e);
+            dataReader.setPos(curPos);
+            return null;
         }
     }
 }

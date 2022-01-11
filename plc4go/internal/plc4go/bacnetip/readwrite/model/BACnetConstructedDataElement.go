@@ -28,10 +28,11 @@ import (
 
 // The data-structure of this message
 type BACnetConstructedDataElement struct {
-	PeekedByte        byte
+	PeekedTagHeader   *BACnetTagHeader
 	ApplicationTag    *BACnetApplicationTag
 	ContextTag        *BACnetContextTag
 	ConstructedData   *BACnetConstructedData
+	PeekedTagNumber   uint8
 	IsApplicationTag  bool
 	IsConstructedData bool
 	IsContextTag      bool
@@ -44,8 +45,8 @@ type IBACnetConstructedDataElement interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetConstructedDataElement(peekedByte byte, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, isApplicationTag bool, isConstructedData bool, isContextTag bool) *BACnetConstructedDataElement {
-	return &BACnetConstructedDataElement{PeekedByte: peekedByte, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, IsApplicationTag: isApplicationTag, IsConstructedData: isConstructedData, IsContextTag: isContextTag}
+func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, peekedTagNumber uint8, isApplicationTag bool, isConstructedData bool, isContextTag bool) *BACnetConstructedDataElement {
+	return &BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, PeekedTagNumber: peekedTagNumber, IsApplicationTag: isApplicationTag, IsConstructedData: isConstructedData, IsContextTag: isContextTag}
 }
 
 func CastBACnetConstructedDataElement(structType interface{}) *BACnetConstructedDataElement {
@@ -71,6 +72,8 @@ func (m *BACnetConstructedDataElement) LengthInBits() uint16 {
 
 func (m *BACnetConstructedDataElement) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -105,24 +108,28 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		return nil, pullErr
 	}
 
-	// Peek Field (peekedByte)
+	// Peek Field (peekedTagHeader)
 	currentPos := readBuffer.GetPos()
-	peekedByte, _err := readBuffer.ReadByte("peekedByte")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field")
+	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
+		return nil, pullErr
 	}
+	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_isApplicationTag := IsApplicationTag(peekedByte)
+	_peekedTagNumber := peekedTagHeader.ActualTagNumber
+	peekedTagNumber := uint8(_peekedTagNumber)
+
+	// Virtual field
+	_isApplicationTag := bool((peekedTagHeader.TagClass) == (TagClass_APPLICATION_TAGS))
 	isApplicationTag := bool(_isApplicationTag)
 
 	// Virtual field
-	_isConstructedData := IsConstructedData(peekedByte)
+	_isConstructedData := bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.ActualLength) == (0x6)))
 	isConstructedData := bool(_isConstructedData)
 
 	// Virtual field
-	_isContextTag := bool(!(isConstructedData)) && bool(IsContextTag(peekedByte))
+	_isContextTag := bool(!(isConstructedData)) && bool(!(isApplicationTag))
 	isContextTag := bool(_isContextTag)
 
 	// Optional Field (applicationTag) (Can be skipped, if a given expression evaluates to false)
@@ -153,7 +160,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(uint8(uint8(peekedByte)&uint8(0xF0)))>>uint8(uint8(4)), GuessDataType())
+		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType())
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field")
@@ -174,7 +181,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(uint8(uint8(peekedByte)&uint8(0xF0)))>>uint8(uint8(4)))
+		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
@@ -193,12 +200,16 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 	}
 
 	// Create the instance
-	return NewBACnetConstructedDataElement(peekedByte, applicationTag, contextTag, constructedData, isApplicationTag, isConstructedData, isContextTag), nil
+	return NewBACnetConstructedDataElement(peekedTagHeader, applicationTag, contextTag, constructedData, peekedTagNumber, isApplicationTag, isConstructedData, isContextTag), nil
 }
 
 func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {
 		return pushErr
+	}
+	// Virtual field
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.PeekedTagNumber); _peekedTagNumberErr != nil {
+		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
 	if _isApplicationTagErr := writeBuffer.WriteVirtual("isApplicationTag", m.IsApplicationTag); _isApplicationTagErr != nil {

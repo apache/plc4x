@@ -42,17 +42,20 @@ type IBACnetPropertyStatesBoolean interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+func (m *BACnetPropertyStatesBoolean) PeekedTagNumber() uint8 {
+	return uint8(0)
+}
 
-func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) {
+func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.OpeningTag = openingTag
-	m.PeekedTagNumber = peekedTagNumber
+	m.PeekedTagHeader = peekedTagHeader
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetPropertyStates {
+func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
 	child := &BACnetPropertyStatesBoolean{
 		BooleanValue:         booleanValue,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagNumber, closingTag),
+		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
 	}
 	child.Child = child
 	return child.BACnetPropertyStates

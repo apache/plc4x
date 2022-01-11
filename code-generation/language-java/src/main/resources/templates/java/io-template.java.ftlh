@@ -285,7 +285,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign validationField = field.asValidationField().orElseThrow()>
         // Validation
         if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
-            throw new RuntimeException(${validationField.getDescription().orElse("Validation failed")});
+            throw new ParseAssertException(${validationField.getDescription().orElse("Validation failed")});
         }
         <#break>
     <#case "peek">

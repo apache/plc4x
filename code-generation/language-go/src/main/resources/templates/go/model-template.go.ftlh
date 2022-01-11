@@ -1191,21 +1191,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                 </#list>
                             </#if>
                         </#assign>
-				${peekField.name}, _err := ${typeName}Parse(readBuffer${refParams})
+				${peekField.name}, _ := ${typeName}Parse(readBuffer${refParams})
                     </@compress>
-
-				switch {
-					case _err != nil && _err != utils.ParseAssertError:
-						return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
-					case _err == utils.ParseAssertError:
-						readBuffer.Reset(currentPos)
-					default:
-						${peekField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
-						if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
-							return nil, closeErr
-						}
-				}
                 </#if>
+
 				readBuffer.Reset(currentPos)
                 <#break>
 		</#switch>

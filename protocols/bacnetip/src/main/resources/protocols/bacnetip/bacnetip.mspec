@@ -491,13 +491,16 @@
     ]
 ]
 
-[type BACnetNotificationParameters(uint 4 tagNumber)
+[type BACnetNotificationParameters(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                openingTag
+                            openingTag
     ]
-    [peek    uint 4  peekedTagNumber]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [typeSwitch peekedTagNumber
-        ['0' BACnetNotificationParametersChangeOfBitString(uint 4 peekedTagNumber)
+        ['0' BACnetNotificationParametersChangeOfBitString(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -511,7 +514,7 @@
                     innerClosingTag
             ]
         ]
-        ['1' BACnetNotificationParametersChangeOfState(uint 4 peekedTagNumber)
+        ['1' BACnetNotificationParametersChangeOfState(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -525,7 +528,7 @@
                     innerClosingTag
             ]
         ]
-        ['2' BACnetNotificationParametersChangeOfValue(uint 4 peekedTagNumber)
+        ['2' BACnetNotificationParametersChangeOfValue(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -540,13 +543,13 @@
             ]
         ]
         // TODO: implement other cases
-        ['6' BACnetNotificationParametersComplexEventType(uint 4 peekedTagNumber)
+        ['6' BACnetNotificationParametersComplexEventType(uint 8 peekedTagNumber)
             [simple     BACnetPropertyValues('peekedTagNumber')
                         listOfValues
             ]
         ]
         // TODO: implement other cases
-        ['9' BACnetNotificationParametersExtended(uint 4 peekedTagNumber)
+        ['9' BACnetNotificationParametersExtended(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -563,7 +566,7 @@
                     innerClosingTag
             ]
         ]
-        ['10' BACnetNotificationParametersBufferReady(uint 4 peekedTagNumber)
+        ['10' BACnetNotificationParametersBufferReady(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -580,7 +583,7 @@
                     innerClosingTag
             ]
         ]
-        ['11' BACnetNotificationParametersUnsignedRange(uint 4 peekedTagNumber)
+        ['11' BACnetNotificationParametersUnsignedRange(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
             ]
@@ -605,18 +608,21 @@
 ]
 
 // TODO: this could be inlined once we can support nested types
-[type BACnetNotificationParametersChangeOfValueNewValue(uint 4 tagNumber)
+[type BACnetNotificationParametersChangeOfValueNewValue(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
-    [peek       uint 4  peekedTagNumber]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [typeSwitch peekedTagNumber
-        ['0' BACnetNotificationParametersChangeOfValueNewValueChangedBits(uint 4 peekedTagNumber)
+        ['0' BACnetNotificationParametersChangeOfValueNewValueChangedBits(uint 8 peekedTagNumber)
             [simple BACnetContextTagBitString('0', 'BACnetDataType.BIT_STRING')
                     changedBits
             ]
         ]
-        ['1' BACnetNotificationParametersChangeOfValueNewValueChangedValue(uint 4 peekedTagNumber)
+        ['1' BACnetNotificationParametersChangeOfValueNewValueChangedValue(uint 8 peekedTagNumber)
             [simple BACnetContextTagReal('0', 'BACnetDataType.REAL')
                     changedValue
             ]
@@ -628,7 +634,7 @@
 ]
 
 // TODO: this could be inlined once we can support nested types
-[type BACnetNotificationParametersExtendedParameters(uint 4 tagNumber)
+[type BACnetNotificationParametersExtendedParameters(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
@@ -665,7 +671,7 @@
     ]
 ]
 
-[type BACnetPropertyValues(uint 4 tagNumber)
+[type BACnetPropertyValues(uint 8 tagNumber)
     [simple BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
             innerOpeningTag
     ]
@@ -686,7 +692,7 @@
     [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
 ]
 
-[type BACnetDeviceObjectPropertyReference(uint 4 tagNumber)
+[type BACnetDeviceObjectPropertyReference(uint 8 tagNumber)
     [simple   BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
               openingTag
     ]
@@ -699,7 +705,7 @@
     ]
 ]
 
-[type BACnetStatusFlags(uint 4 tagNumber)
+[type BACnetStatusFlags(uint 8 tagNumber)
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
         rawBits
     ]
@@ -709,28 +715,30 @@
     [virtual    bit outOfService    'rawBits.data[3]']
 ]
 
-[type BACnetAction(uint 4 tagNumber)
+[type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isDirect         'rawData.data[0] == 0']
-    [virtual    bit isReverse        'rawData.data[1] == 1']
+    [virtual    bit isDirect         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
+    [virtual    bit isReverse        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
 ]
 
-[type BACnetPropertyStates(uint 4 tagNumber)
+[type BACnetPropertyStates(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
-    //TODO: implement tag numbers >15
-    [peek       uint 4  peekedTagNumber]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [typeSwitch peekedTagNumber
-        ['0' BACnetPropertyStatesBoolean(uint 4 peekedTagNumber)
+        ['0' BACnetPropertyStatesBoolean(uint 8 peekedTagNumber)
             [optional   BACnetContextTagBoolean('peekedTagNumber', 'BACnetDataType.BOOLEAN')
                         booleanValue
             ]
         ]
         // TODO: add missing type
-        ['16' BACnetPropertyStatesAction(uint 4 peekedTagNumber)
+        ['16' BACnetPropertyStatesAction(uint 8 peekedTagNumber)
             [optional   BACnetAction('peekedTagNumber')
                         action
             ]
@@ -742,11 +750,14 @@
     ]
 ]
 
-[type BACnetTimeStamp(uint 4 tagNumber)
+[type BACnetTimeStamp(uint 8 tagNumber)
     [simple         BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                     openingTag
     ]
-    [peek       uint 4  peekedTagNumber]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [typeSwitch peekedTagNumber
         ['0' BACnetTimeStampTime
             [simple BACnetContextTagTime('0', 'BACnetDataType.TIME')
@@ -769,7 +780,7 @@
     ]
 ]
 
-[type BACnetDateTime(uint 4 tagNumber)
+[type BACnetDateTime(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
@@ -787,6 +798,21 @@
 [type BACnetAddress
     [array  uint 8 address count '4']
     [simple uint 16 port]
+]
+
+[discriminatedType BACnetTagHeader
+    [simple        uint 4  tagNumber                                                                                  ]
+    [simple        TagClass tagClass                                                                                  ]
+    [simple        uint 3   lengthValueType                                                                           ]
+    [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
+    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                               ]
+    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                 ]
+    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'      ]
+    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                   ]
+    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                        ]
+    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'    ]
+    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'    ]
+    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
 ]
 
 [discriminatedType BACnetApplicationTag
@@ -905,8 +931,8 @@
     ]
 ]
 
-[discriminatedType BACnetContextTag(uint 4 tagNumberArgument, BACnetDataType dataType)
-    [assert        uint 4           tagNumber           'tagNumberArgument'                                           ]
+[discriminatedType BACnetContextTag(uint 8 tagNumberArgument, BACnetDataType dataType)
+    [simple        uint 4           tagNumber                                                                         ]
     [assert        TagClass         tagClass            'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
     [simple        uint 3           lengthValueType                                                                   ]
     [optional      uint 8           extTagNumber        'tagNumber == 15'                                             ]
@@ -915,6 +941,7 @@
     [optional      uint 16          extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
     [optional      uint 32          extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
     [virtual       uint 32          actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [validation                                         'actualTagNumber == tagNumberArgument'    "tagnumber doesn't match" ]
     [typeSwitch dataType, lengthValueType
         ['BOOLEAN' BACnetContextTagBoolean
             [simple  uint 8 value                          ]
@@ -979,9 +1006,7 @@
             [array      bit         unused count 'unusedBits'                            ]
         ]
         ['ENUMERATED' BACnetContextTagEnumerated(uint 32 actualLength)
-            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
-            [virtual    uint 16     actualLengthInBit 'actualLength * 8']
-            [array       int 8      data length 'actualLengthInBit']
+            [array int 8 data length 'actualLength']
         ]
         ['DATE' BACnetContextTagDate
             [virtual int  8 wildcard '0xFF'                                 ]
@@ -1046,7 +1071,7 @@
     ]
 ]
 
-[type BACnetConstructedData(uint 4 tagNumber)
+[type BACnetConstructedData(uint 8 tagNumber)
     [optional       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                     openingTag
     ]
@@ -1069,16 +1094,18 @@
 ]
 
 [type BACnetConstructedDataElement
-    [peek       byte   peekedByte                                                                          ]
-    // TODO: maybe peek bits with a offset
-    [virtual    bit    isApplicationTag    'STATIC_CALL("isApplicationTag", peekedByte)'                   ]
-    [virtual    bit    isConstructedData   'STATIC_CALL("isConstructedData", peekedByte)'                  ]
-    [virtual    bit    isContextTag        '!isConstructedData && STATIC_CALL("isContextTag", peekedByte)' ]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [virtual    bit    isApplicationTag    'peekedTagHeader.tagClass == TagClass.APPLICATION_TAGS'         ]
+    [virtual    bit    isConstructedData   '!isApplicationTag && peekedTagHeader.actualLength == 0x6'      ]
+    [virtual    bit    isContextTag        '!isConstructedData && !isApplicationTag'                       ]
     [optional   BACnetApplicationTag
                        applicationTag      'isApplicationTag'                                              ]
-    [optional   BACnetContextTag('(peekedByte & 0xF0) >> 4', 'STATIC_CALL("guessDataType")')
+    [optional   BACnetContextTag('peekedTagNumber', 'STATIC_CALL("guessDataType")')
                        contextTag          'isContextTag'                                                  ]
-    [optional   BACnetConstructedData('(peekedByte & 0xF0) >> 4')
+    [optional   BACnetConstructedData('peekedTagNumber')
                        constructedData     'isConstructedData'                                             ]
 ]
 

@@ -111,11 +111,11 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 	}
 
 	// Virtual field
-	_isDirect := bool(((*rawData).Data[0]) == (0))
+	_isDirect := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (0)))
 	isDirect := bool(_isDirect)
 
 	// Virtual field
-	_isReverse := bool(((*rawData).Data[1]) == (1))
+	_isReverse := bool(bool(bool((rawData) != (nil))) && bool(bool((len((*rawData).Data)) == (1)))) && bool(bool(((*rawData).Data[0]) == (1)))
 	isReverse := bool(_isReverse)
 
 	if closeErr := readBuffer.CloseContext("BACnetAction"); closeErr != nil {

@@ -92,6 +92,9 @@ func (m *BACnetContextTag) LengthInBitsConditional(lastItem bool) uint16 {
 func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
+	// Simple field (tagNumber)
+	lengthInBits += 4
+
 	// Simple field (lengthValueType)
 	lengthInBits += 3
 
@@ -131,14 +134,12 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, pullErr
 	}
 
-	// Assert Field (tagNumber) (Can be skipped, if a given expression evaluates to false)
-	tagNumber, _err := readBuffer.ReadUint8("tagNumber", 4)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'tagNumber' field")
+	// Simple Field (tagNumber)
+	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
+	if _tagNumberErr != nil {
+		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
 	}
-	if tagNumber != tagNumberArgument {
-		return nil, utils.ParseAssertError
-	}
+	tagNumber := _tagNumber
 
 	// Assert Field (tagClass) (Can be skipped, if a given expression evaluates to false)
 	tagClass, _err := TagClassParse(readBuffer)
@@ -276,6 +277,13 @@ func (m *BACnetContextTag) Serialize(writeBuffer utils.WriteBuffer) error {
 func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetContextTag, serializeChildFunction func() error) error {
 	if pushErr := writeBuffer.PushContext("BACnetContextTag"); pushErr != nil {
 		return pushErr
+	}
+
+	// Simple Field (tagNumber)
+	tagNumber := uint8(m.TagNumber)
+	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, (tagNumber))
+	if _tagNumberErr != nil {
+		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 
 	// Simple Field (lengthValueType)
