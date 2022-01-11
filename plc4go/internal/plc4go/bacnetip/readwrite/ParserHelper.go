@@ -129,6 +129,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetDeviceObjectPropertyReferenceParse(io, tagNumber)
 	case "BACnetConstructedDataElement":
 		return model.BACnetConstructedDataElementParse(io)
+	case "BACnetPropertyValues":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetPropertyValuesParse(io, tagNumber)
 	case "BACnetPropertyValue":
 		return model.BACnetPropertyValueParse(io)
 	case "BACnetServiceAck":

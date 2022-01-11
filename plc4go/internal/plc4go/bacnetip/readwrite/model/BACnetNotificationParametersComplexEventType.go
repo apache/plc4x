@@ -29,9 +29,7 @@ import (
 // The data-structure of this message
 type BACnetNotificationParametersComplexEventType struct {
 	*BACnetNotificationParameters
-	InnerOpeningTag *BACnetOpeningTag
-	Data            []*BACnetPropertyValue
-	InnerClosingTag *BACnetClosingTag
+	ListOfValues *BACnetPropertyValues
 }
 
 // The corresponding interface
@@ -51,11 +49,9 @@ func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetNotificationParametersComplexEventType(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParameters {
+func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropertyValues, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersComplexEventType{
-		InnerOpeningTag:              innerOpeningTag,
-		Data:                         data,
-		InnerClosingTag:              innerClosingTag,
+		ListOfValues:                 listOfValues,
 		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagNumber, closingTag),
 	}
 	child.Child = child
@@ -92,18 +88,8 @@ func (m *BACnetNotificationParametersComplexEventType) LengthInBits() uint16 {
 func (m *BACnetNotificationParametersComplexEventType) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
-
-	// Array field
-	if len(m.Data) > 0 {
-		for _, element := range m.Data {
-			lengthInBits += element.LengthInBits()
-		}
-	}
-
-	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	// Simple field (listOfValues)
+	lengthInBits += m.ListOfValues.LengthInBits()
 
 	return lengthInBits
 }
@@ -117,49 +103,16 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 		return nil, pullErr
 	}
 
-	// Simple Field (innerOpeningTag)
-	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
+	// Simple Field (listOfValues)
+	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_OPENING_TAG)
-	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, peekedTagNumber)
+	if _listOfValuesErr != nil {
+		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}
-	innerOpeningTag := CastBACnetOpeningTag(_innerOpeningTag)
-	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, closeErr
-	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Terminated array
-	data := make([]*BACnetPropertyValue, 0)
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, peekedTagNumber)) {
-			_item, _err := BACnetPropertyValueParse(readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
-			}
-			data = append(data, _item)
-
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
-	}
-
-	// Simple Field (innerClosingTag)
-	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, pullErr
-	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_CLOSING_TAG)
-	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
-	}
-	innerClosingTag := CastBACnetClosingTag(_innerClosingTag)
-	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
+	listOfValues := CastBACnetPropertyValues(_listOfValues)
+	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -169,9 +122,7 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 
 	// Create a partially initialized instance
 	_child := &BACnetNotificationParametersComplexEventType{
-		InnerOpeningTag:              CastBACnetOpeningTag(innerOpeningTag),
-		Data:                         data,
-		InnerClosingTag:              CastBACnetClosingTag(innerClosingTag),
+		ListOfValues:                 CastBACnetPropertyValues(listOfValues),
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
@@ -184,44 +135,16 @@ func (m *BACnetNotificationParametersComplexEventType) Serialize(writeBuffer uti
 			return pushErr
 		}
 
-		// Simple Field (innerOpeningTag)
-		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
+		// Simple Field (listOfValues)
+		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
 			return pushErr
 		}
-		_innerOpeningTagErr := m.InnerOpeningTag.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
+		_listOfValuesErr := m.ListOfValues.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 			return popErr
 		}
-		if _innerOpeningTagErr != nil {
-			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
-		}
-
-		// Array Field (data)
-		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := _element.Serialize(writeBuffer)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
-		}
-
-		// Simple Field (innerClosingTag)
-		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return pushErr
-		}
-		_innerClosingTagErr := m.InnerClosingTag.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return popErr
-		}
-		if _innerClosingTagErr != nil {
-			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+		if _listOfValuesErr != nil {
+			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersComplexEventType"); popErr != nil {

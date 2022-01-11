@@ -33,7 +33,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
 	IssueConfirmed              *BACnetContextTagBoolean
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
-	ListOfValues                *BACnetConstructedData
+	ListOfValues                *BACnetPropertyValues
 }
 
 // The corresponding interface
@@ -53,7 +53,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) ServiceChoice() 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetConstructedData) *BACnetConfirmedServiceRequest {
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
 		MonitoredObjectIdentifier:     monitoredObjectIdentifier,
@@ -179,11 +179,11 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetConstructedDataParse(readBuffer, uint8(4))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(4))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}
-	listOfValues := CastBACnetConstructedData(_listOfValues)
+	listOfValues := CastBACnetPropertyValues(_listOfValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -198,7 +198,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(readBuffer utils
 		MonitoredObjectIdentifier:     CastBACnetContextTagObjectIdentifier(monitoredObjectIdentifier),
 		IssueConfirmed:                CastBACnetContextTagBoolean(issueConfirmed),
 		LifetimeInSeconds:             CastBACnetContextTagUnsignedInteger(lifetimeInSeconds),
-		ListOfValues:                  CastBACnetConstructedData(listOfValues),
+		ListOfValues:                  CastBACnetPropertyValues(listOfValues),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child

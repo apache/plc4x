@@ -18,12 +18,14 @@
  */
 
 [discriminatedType BVLC byteOrder='BIG_ENDIAN'
-    [const         uint 8  bacnetType   0x81       ]
-    [discriminator uint 8  bvlcFunction              ]
-    [implicit      uint 16 bvlcLength 'lengthInBytes']
+    [const         uint 8   bacnetType   0x81         ]
+    [discriminator uint 8   bvlcFunction              ]
+    [implicit      uint 16  bvlcLength 'lengthInBytes']
     [typeSwitch bvlcFunction
         ['0x00' BVLCResult
-            [simple BVLCResultCode code]
+            [simple BVLCResultCode
+                            code
+            ]
         ]
         ['0x01' BVLCWideBroadcastDistributionTable
         ]
@@ -34,7 +36,9 @@
         ['0x04' BVLCForwardedNPDU(uint 16 bvlcLength)
             [array  uint 8  ip    count '4'         ]
             [simple uint 16 port                    ]
-            [simple NPDU('bvlcLength - 10') npdu   ]
+            [simple NPDU('bvlcLength - 10')
+                            npdu
+            ]
         ]
         ['0x05' BVLCRegisterForeignDevice
             [simple uint 16 ttl]
@@ -46,13 +50,19 @@
         ['0x08' BVLCDeleteForeignDeviceTableEntry
         ]
         ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4') npdu]
+            [simple NPDU('bvlcLength - 4')
+                            npdu
+            ]
         ]
         ['0x0A' BVLCOriginalUnicastNPDU(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4') npdu]
+            [simple NPDU('bvlcLength - 4')
+                            npdu
+            ]
         ]
         ['0x0B' BVLCOriginalBroadcastNPDU(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4') npdu]
+            [simple NPDU('bvlcLength - 4')
+                            npdu
+            ]
         ]
         ['0x0C' BVLCSecureBVLL
         ]
@@ -75,8 +85,12 @@
     [optional uint 8        sourceLength              'sourceSpecified']
     [array    uint 8        sourceAddress count       'sourceSpecified ? sourceLength : 0']
     [optional uint 8        hopCount                  'destinationSpecified']
-    [optional NLM('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')           nlm                       'messageTypeFieldPresent'  ]
-    [optional APDU('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')          apdu                      '!messageTypeFieldPresent' ]
+    [optional NLM('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')
+                            nlm                       'messageTypeFieldPresent'
+    ]
+    [optional APDU('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')
+                            apdu                      '!messageTypeFieldPresent'
+    ]
 ]
 
 [discriminatedType NLM(uint 16 apduLength)
@@ -96,58 +110,64 @@
     [discriminator uint 4 apduType]
     [typeSwitch apduType
         ['0x0' APDUConfirmedRequest
-            [simple   bit    segmentedMessage                       ]
-            [simple   bit    moreFollows                            ]
-            [simple   bit    segmentedResponseAccepted              ]
-            [reserved uint 2 '0'                                      ]
-            [simple   uint 3 maxSegmentsAccepted                    ]
-            [simple   uint 4 maxApduLengthAccepted                  ]
-            [simple   uint 8 invokeId                               ]
-            [optional uint 8 sequenceNumber       'segmentedMessage']
-            [optional uint 8 proposedWindowSize   'segmentedMessage']
+            [simple   bit       segmentedMessage                       ]
+            [simple   bit       moreFollows                            ]
+            [simple   bit       segmentedResponseAccepted              ]
+            [reserved uint 2    '0'                                    ]
+            [simple   uint 3    maxSegmentsAccepted                    ]
+            [simple   uint 4    maxApduLengthAccepted                  ]
+            [simple   uint 8    invokeId                               ]
+            [optional uint 8    sequenceNumber       'segmentedMessage']
+            [optional uint 8    proposedWindowSize   'segmentedMessage']
             [simple   BACnetConfirmedServiceRequest('apduLength - (3 + (segmentedMessage ? 2 : 0))') serviceRequest]
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'             ]
-            [simple   BACnetUnconfirmedServiceRequest('apduLength - 1') serviceRequest]
+            [simple   BACnetUnconfirmedServiceRequest('apduLength - 1')
+                                serviceRequest
+            ]
         ]
         ['0x2' APDUSimpleAck
-            [reserved uint 4 '0'               ]
-            [simple   uint 8 originalInvokeId]
-            [simple   uint 8 serviceChoice   ]
+            [reserved uint 4    '0'               ]
+            [simple   uint 8    originalInvokeId]
+            [simple   uint 8    serviceChoice   ]
         ]
         ['0x3' APDUComplexAck
-            [simple   bit               segmentedMessage                     ]
-            [simple   bit               moreFollows                          ]
-            [reserved uint 2            '0'                                    ]
-            [simple   uint 8            originalInvokeId                     ]
-            [optional uint 8            sequenceNumber     'segmentedMessage']
-            [optional uint 8            proposedWindowSize 'segmentedMessage']
-            [simple   BACnetServiceAck  serviceAck                           ]
+            [simple   bit       segmentedMessage                     ]
+            [simple   bit       moreFollows                          ]
+            [reserved uint 2    '0'                                  ]
+            [simple   uint 8    originalInvokeId                     ]
+            [optional uint 8    sequenceNumber     'segmentedMessage']
+            [optional uint 8    proposedWindowSize 'segmentedMessage']
+            [simple   BACnetServiceAck
+                                serviceAck
+            ]
         ]
         ['0x4' APDUSegmentAck
-            [reserved uint 2 '0x00'              ]
-            [simple   bit    negativeAck       ]
-            [simple   bit    server            ]
-            [simple   uint 8 originalInvokeId  ]
-            [simple   uint 8 sequenceNumber    ]
-            [simple   uint 8 proposedWindowSize]
+            [reserved uint 2    '0x00'              ]
+            [simple   bit       negativeAck         ]
+            [simple   bit       server              ]
+            [simple   uint 8    originalInvokeId    ]
+            [simple   uint 8    sequenceNumber      ]
+            [simple   uint 8    proposedWindowSize  ]
         ]
         ['0x5' APDUError
-            [reserved uint 4      '0x00'            ]
-            [simple   uint 8      originalInvokeId]
-            [simple   BACnetError error           ]
+            [reserved uint 4    '0x00'              ]
+            [simple   uint 8    originalInvokeId]
+            [simple   BACnetError
+                                error
+            ]
         ]
         ['0x6' APDUReject
-            [reserved uint 4 '0x00'            ]
-            [simple   uint 8 originalInvokeId]
-            [simple   uint 8 rejectReason    ]
+            [reserved uint 4    '0x00'              ]
+            [simple   uint 8    originalInvokeId    ]
+            [simple   uint 8    rejectReason        ]
         ]
         ['0x7' APDUAbort
-            [reserved uint 3 '0x00'            ]
-            [simple   bit    server          ]
-            [simple   uint 8 originalInvokeId]
-            [simple   uint 8 abortReason     ]
+            [reserved uint 3 '0x00'                 ]
+            [simple   bit    server                 ]
+            [simple   uint 8 originalInvokeId       ]
+            [simple   uint 8 abortReason            ]
         ]
     ]
 ]
@@ -162,7 +182,7 @@
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
             [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple   BACnetConstructedData('4')                                                       listOfValues                ]
+            [simple   BACnetPropertyValues('4')                                                        listOfValues                ]
         ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
@@ -285,7 +305,7 @@
             [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
             [simple BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple BACnetConstructedData('4')                                                       listOfValues                ]
+            [simple BACnetPropertyValues('4')                                                        listOfValues                ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
@@ -521,16 +541,8 @@
         ]
         // TODO: implement other cases
         ['6' BACnetNotificationParametersComplexEventType(uint 4 peekedTagNumber)
-            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
-                    innerOpeningTag
-            ]
-            [array  BACnetPropertyValue
-                    data
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, peekedTagNumber)'
-            ]
-            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
-                    innerClosingTag
+            [simple     BACnetPropertyValues('peekedTagNumber')
+                        listOfValues
             ]
         ]
         // TODO: implement other cases
@@ -650,6 +662,20 @@
                 reference]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
+    ]
+]
+
+[type BACnetPropertyValues(uint 4 tagNumber)
+    [simple BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+            innerOpeningTag
+    ]
+    [array  BACnetPropertyValue
+            data
+            terminated
+            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, tagNumber)'
+    ]
+    [simple BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+            innerClosingTag
     ]
 ]
 

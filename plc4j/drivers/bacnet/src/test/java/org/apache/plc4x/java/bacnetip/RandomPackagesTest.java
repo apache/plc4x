@@ -975,19 +975,19 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getInstanceNumber());
                     assertEquals(9, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getLifetimeInSeconds().getActualValue() / 60);
                     {
-                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = (BACnetContextTagPropertyIdentifier) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getContextTag();
+                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getPropertyIdentifier();
                         assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetContextTagPropertyIdentifier.getValue());
                     }
                     {
-                        BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getConstructedData().getData().get(0).getApplicationTag();
+                        BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                         assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
                     }
                     {
-                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = (BACnetContextTagPropertyIdentifier) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(2).getContextTag();
+                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getPropertyIdentifier();
                         assertEquals(BACnetPropertyIdentifier.STATUS_FLAGS, baCnetContextTagPropertyIdentifier.getValue());
                     }
                     {
-                        BACnetApplicationTagBitString baCnetApplicationTagBitString = (BACnetApplicationTagBitString) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(3).getConstructedData().getData().get(0).getApplicationTag();
+                        BACnetApplicationTagBitString baCnetApplicationTagBitString = (BACnetApplicationTagBitString) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                         assertEquals(Arrays.asList(false, false, false, false), baCnetApplicationTagBitString.getData());
                     }
                 }),
@@ -1223,67 +1223,67 @@ public class RandomPackagesTest {
                     {
                         BACnetNotificationParametersComplexEventType baCnetNotificationParametersComplexEventType = (BACnetNotificationParametersComplexEventType) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(0);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(0);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2200, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals("StockingNAE", baCnetApplicationTagCharacterString.getValue());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(1);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(1);
                             assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals("StockingNAE/N2-1.NAE4-N2A-DX1.OA-T", baCnetApplicationTagCharacterString.getValue());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(2);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(2);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2201, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 85), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(3);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(3);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2202, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(35.093750, baCnetApplicationTagReal.getValue());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(4);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(4);
                             assertEquals(BACnetPropertyIdentifier.RELIABILITY, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(5);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(5);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(661, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 5), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(6);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(6);
                             assertEquals(BACnetPropertyIdentifier.UNITS, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 64), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(7);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(7);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(1659, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(8);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(8);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             assertEquals(2203, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
                             BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
                         }
                         {
-                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(9);
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getListOfValues().getData().get(9);
                             assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetPropertyValue.getPropertyIdentifier().getValue());
                             BACnetApplicationTagUnsignedInteger baCnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
                             assertEquals(5, baCnetApplicationTagUnsignedInteger.getActualValue());

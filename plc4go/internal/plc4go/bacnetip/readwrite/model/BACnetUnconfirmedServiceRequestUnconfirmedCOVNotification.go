@@ -33,7 +33,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	MonitoredDeviceIdentifier   *BACnetContextTagObjectIdentifier
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
-	ListOfValues                *BACnetConstructedData
+	ListOfValues                *BACnetPropertyValues
 }
 
 // The corresponding interface
@@ -53,7 +53,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoic
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetConstructedData) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
 		SubscriberProcessIdentifier:     subscriberProcessIdentifier,
 		MonitoredDeviceIdentifier:       monitoredDeviceIdentifier,
@@ -179,11 +179,11 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetConstructedDataParse(readBuffer, uint8(4))
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(4))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}
-	listOfValues := CastBACnetConstructedData(_listOfValues)
+	listOfValues := CastBACnetPropertyValues(_listOfValues)
 	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -198,7 +198,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		MonitoredDeviceIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredDeviceIdentifier),
 		MonitoredObjectIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredObjectIdentifier),
 		LifetimeInSeconds:               CastBACnetContextTagUnsignedInteger(lifetimeInSeconds),
-		ListOfValues:                    CastBACnetConstructedData(listOfValues),
+		ListOfValues:                    CastBACnetPropertyValues(listOfValues),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
