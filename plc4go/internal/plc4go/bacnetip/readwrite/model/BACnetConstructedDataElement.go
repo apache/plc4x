@@ -72,9 +72,6 @@ func (m *BACnetConstructedDataElement) LengthInBits() uint16 {
 func (m *BACnetConstructedDataElement) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Manual Field (peekedByte)
-	lengthInBits += uint16(int32(0) * 8)
-
 	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
@@ -108,11 +105,13 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		return nil, pullErr
 	}
 
-	// Manual Field (peekedByte)
-	peekedByte, _peekedByteErr := PeekByte(readBuffer)
-	if _peekedByteErr != nil {
-		return nil, errors.Wrap(_peekedByteErr, "Error parsing 'peekedByte' field")
+	// Peek Field (peekedByte)
+	currentPos := readBuffer.GetPos()
+	peekedByte, _err := readBuffer.ReadByte("peekedByte")
+	if _err != nil {
+		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field")
 	}
+	readBuffer.Reset(currentPos)
 
 	// Virtual field
 	_isApplicationTag := IsApplicationTag(peekedByte)
@@ -200,12 +199,6 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 func (m *BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {
 		return pushErr
-	}
-
-	// Manual Field (peekedByte)
-	_peekedByteErr := Noop()
-	if _peekedByteErr != nil {
-		return errors.Wrap(_peekedByteErr, "Error serializing 'peekedByte' field")
 	}
 	// Virtual field
 	if _isApplicationTagErr := writeBuffer.WriteVirtual("isApplicationTag", m.IsApplicationTag); _isApplicationTagErr != nil {

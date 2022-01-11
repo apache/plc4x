@@ -31,6 +31,7 @@ type BACnetContextTagBitString struct {
 	*BACnetContextTag
 	UnusedBits uint8
 	Data       []bool
+	Unused     []bool
 }
 
 // The corresponding interface
@@ -57,10 +58,11 @@ func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, t
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagBitString(unusedBits uint8, data []bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagBitString{
 		UnusedBits:       unusedBits,
 		Data:             data,
+		Unused:           unused,
 		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
@@ -105,6 +107,11 @@ func (m *BACnetContextTagBitString) LengthInBitsConditional(lastItem bool) uint1
 		lengthInBits += 1 * uint16(len(m.Data))
 	}
 
+	// Array field
+	if len(m.Unused) > 0 {
+		lengthInBits += 1 * uint16(len(m.Unused))
+	}
+
 	return lengthInBits
 }
 
@@ -143,6 +150,25 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 		return nil, closeErr
 	}
 
+	// Array field (unused)
+	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
+	// Count array
+	unused := make([]bool, unusedBits)
+	{
+		for curItem := uint16(0); curItem < uint16(unusedBits); curItem++ {
+			_item, _err := readBuffer.ReadBit("")
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'unused' field")
+			}
+			unused[curItem] = _item
+		}
+	}
+	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetContextTagBitString"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -151,6 +177,7 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	_child := &BACnetContextTagBitString{
 		UnusedBits:       unusedBits,
 		Data:             data,
+		Unused:           unused,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -182,6 +209,22 @@ func (m *BACnetContextTagBitString) Serialize(writeBuffer utils.WriteBuffer) err
 				}
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
+		}
+
+		// Array Field (unused)
+		if m.Unused != nil {
+			if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
+			for _, _element := range m.Unused {
+				_elementErr := writeBuffer.WriteBit("", _element)
+				if _elementErr != nil {
+					return errors.Wrap(_elementErr, "Error serializing 'unused' field")
+				}
+			}
+			if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
 			}
 		}

@@ -31,11 +31,19 @@ type BACnetApplicationTagSignedInteger struct {
 	*BACnetApplicationTag
 	ValueInt8   *int8
 	ValueInt16  *int16
+	ValueInt24  *int32
 	ValueInt32  *int32
+	ValueInt40  *int64
+	ValueInt48  *int64
+	ValueInt56  *int64
 	ValueInt64  *int64
 	IsInt8      bool
 	IsInt16     bool
+	IsInt24     bool
 	IsInt32     bool
+	IsInt40     bool
+	IsInt48     bool
+	IsInt56     bool
 	IsInt64     bool
 	ActualValue uint64
 }
@@ -63,15 +71,23 @@ func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetAppli
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt32 *int32, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt32 bool, isInt64 bool, actualValue uint64, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagSignedInteger{
 		ValueInt8:            valueInt8,
 		ValueInt16:           valueInt16,
+		ValueInt24:           valueInt24,
 		ValueInt32:           valueInt32,
+		ValueInt40:           valueInt40,
+		ValueInt48:           valueInt48,
+		ValueInt56:           valueInt56,
 		ValueInt64:           valueInt64,
 		IsInt8:               isInt8,
 		IsInt16:              isInt16,
+		IsInt24:              isInt24,
 		IsInt32:              isInt32,
+		IsInt40:              isInt40,
+		IsInt48:              isInt48,
+		IsInt56:              isInt56,
 		IsInt64:              isInt64,
 		ActualValue:          actualValue,
 		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
@@ -126,9 +142,37 @@ func (m *BACnetApplicationTagSignedInteger) LengthInBitsConditional(lastItem boo
 
 	// A virtual field doesn't have any in- or output.
 
+	// Optional Field (valueInt24)
+	if m.ValueInt24 != nil {
+		lengthInBits += 24
+	}
+
+	// A virtual field doesn't have any in- or output.
+
 	// Optional Field (valueInt32)
 	if m.ValueInt32 != nil {
 		lengthInBits += 32
+	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueInt40)
+	if m.ValueInt40 != nil {
+		lengthInBits += 40
+	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueInt48)
+	if m.ValueInt48 != nil {
+		lengthInBits += 48
+	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueInt56)
+	if m.ValueInt56 != nil {
+		lengthInBits += 56
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -181,7 +225,21 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	_isInt32 := bool((actualLength) == (3))
+	_isInt24 := bool((actualLength) == (3))
+	isInt24 := bool(_isInt24)
+
+	// Optional Field (valueInt24) (Can be skipped, if a given expression evaluates to false)
+	var valueInt24 *int32 = nil
+	if isInt24 {
+		_val, _err := readBuffer.ReadInt32("valueInt24", 24)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt24' field")
+		}
+		valueInt24 = &_val
+	}
+
+	// Virtual field
+	_isInt32 := bool((actualLength) == (4))
 	isInt32 := bool(_isInt32)
 
 	// Optional Field (valueInt32) (Can be skipped, if a given expression evaluates to false)
@@ -195,7 +253,49 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	}
 
 	// Virtual field
-	_isInt64 := bool((actualLength) == (4))
+	_isInt40 := bool((actualLength) == (5))
+	isInt40 := bool(_isInt40)
+
+	// Optional Field (valueInt40) (Can be skipped, if a given expression evaluates to false)
+	var valueInt40 *int64 = nil
+	if isInt40 {
+		_val, _err := readBuffer.ReadInt64("valueInt40", 40)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt40' field")
+		}
+		valueInt40 = &_val
+	}
+
+	// Virtual field
+	_isInt48 := bool((actualLength) == (6))
+	isInt48 := bool(_isInt48)
+
+	// Optional Field (valueInt48) (Can be skipped, if a given expression evaluates to false)
+	var valueInt48 *int64 = nil
+	if isInt48 {
+		_val, _err := readBuffer.ReadInt64("valueInt48", 48)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt48' field")
+		}
+		valueInt48 = &_val
+	}
+
+	// Virtual field
+	_isInt56 := bool((actualLength) == (7))
+	isInt56 := bool(_isInt56)
+
+	// Optional Field (valueInt56) (Can be skipped, if a given expression evaluates to false)
+	var valueInt56 *int64 = nil
+	if isInt56 {
+		_val, _err := readBuffer.ReadInt64("valueInt56", 56)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueInt56' field")
+		}
+		valueInt56 = &_val
+	}
+
+	// Virtual field
+	_isInt64 := bool((actualLength) == (8))
 	isInt64 := bool(_isInt64)
 
 	// Optional Field (valueInt64) (Can be skipped, if a given expression evaluates to false)
@@ -211,7 +311,17 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	// Virtual field
 	_actualValue := utils.InlineIf(isInt8, func() interface{} { return uint64((*valueInt8)) }, func() interface{} {
 		return uint64(uint64(utils.InlineIf(isInt16, func() interface{} { return uint64((*valueInt16)) }, func() interface{} {
-			return uint64(uint64(utils.InlineIf(isInt64, func() interface{} { return uint64((*valueInt64)) }, func() interface{} { return uint64(uint64(0)) }).(uint64)))
+			return uint64(uint64(utils.InlineIf(isInt24, func() interface{} { return uint64((*valueInt24)) }, func() interface{} {
+				return uint64(uint64(utils.InlineIf(isInt32, func() interface{} { return uint64((*valueInt32)) }, func() interface{} {
+					return uint64(uint64(utils.InlineIf(isInt40, func() interface{} { return uint64((*valueInt40)) }, func() interface{} {
+						return uint64(uint64(utils.InlineIf(isInt48, func() interface{} { return uint64((*valueInt48)) }, func() interface{} {
+							return uint64(uint64(utils.InlineIf(isInt56, func() interface{} { return uint64((*valueInt56)) }, func() interface{} {
+								return uint64(uint64(utils.InlineIf(isInt64, func() interface{} { return uint64((*valueInt64)) }, func() interface{} { return uint64(uint64(0)) }).(uint64)))
+							}).(uint64)))
+						}).(uint64)))
+					}).(uint64)))
+				}).(uint64)))
+			}).(uint64)))
 		}).(uint64)))
 	}).(uint64)
 	actualValue := uint64(_actualValue)
@@ -224,11 +334,19 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, actualL
 	_child := &BACnetApplicationTagSignedInteger{
 		ValueInt8:            valueInt8,
 		ValueInt16:           valueInt16,
+		ValueInt24:           valueInt24,
 		ValueInt32:           valueInt32,
+		ValueInt40:           valueInt40,
+		ValueInt48:           valueInt48,
+		ValueInt56:           valueInt56,
 		ValueInt64:           valueInt64,
 		IsInt8:               isInt8,
 		IsInt16:              isInt16,
+		IsInt24:              isInt24,
 		IsInt32:              isInt32,
+		IsInt40:              isInt40,
+		IsInt48:              isInt48,
+		IsInt56:              isInt56,
 		IsInt64:              isInt64,
 		ActualValue:          actualValue,
 		BACnetApplicationTag: &BACnetApplicationTag{},
@@ -271,6 +389,20 @@ func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuf
 			}
 		}
 		// Virtual field
+		if _isInt24Err := writeBuffer.WriteVirtual("isInt24", m.IsInt24); _isInt24Err != nil {
+			return errors.Wrap(_isInt24Err, "Error serializing 'isInt24' field")
+		}
+
+		// Optional Field (valueInt24) (Can be skipped, if the value is null)
+		var valueInt24 *int32 = nil
+		if m.ValueInt24 != nil {
+			valueInt24 = m.ValueInt24
+			_valueInt24Err := writeBuffer.WriteInt32("valueInt24", 24, *(valueInt24))
+			if _valueInt24Err != nil {
+				return errors.Wrap(_valueInt24Err, "Error serializing 'valueInt24' field")
+			}
+		}
+		// Virtual field
 		if _isInt32Err := writeBuffer.WriteVirtual("isInt32", m.IsInt32); _isInt32Err != nil {
 			return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
 		}
@@ -282,6 +414,48 @@ func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuf
 			_valueInt32Err := writeBuffer.WriteInt32("valueInt32", 32, *(valueInt32))
 			if _valueInt32Err != nil {
 				return errors.Wrap(_valueInt32Err, "Error serializing 'valueInt32' field")
+			}
+		}
+		// Virtual field
+		if _isInt40Err := writeBuffer.WriteVirtual("isInt40", m.IsInt40); _isInt40Err != nil {
+			return errors.Wrap(_isInt40Err, "Error serializing 'isInt40' field")
+		}
+
+		// Optional Field (valueInt40) (Can be skipped, if the value is null)
+		var valueInt40 *int64 = nil
+		if m.ValueInt40 != nil {
+			valueInt40 = m.ValueInt40
+			_valueInt40Err := writeBuffer.WriteInt64("valueInt40", 40, *(valueInt40))
+			if _valueInt40Err != nil {
+				return errors.Wrap(_valueInt40Err, "Error serializing 'valueInt40' field")
+			}
+		}
+		// Virtual field
+		if _isInt48Err := writeBuffer.WriteVirtual("isInt48", m.IsInt48); _isInt48Err != nil {
+			return errors.Wrap(_isInt48Err, "Error serializing 'isInt48' field")
+		}
+
+		// Optional Field (valueInt48) (Can be skipped, if the value is null)
+		var valueInt48 *int64 = nil
+		if m.ValueInt48 != nil {
+			valueInt48 = m.ValueInt48
+			_valueInt48Err := writeBuffer.WriteInt64("valueInt48", 48, *(valueInt48))
+			if _valueInt48Err != nil {
+				return errors.Wrap(_valueInt48Err, "Error serializing 'valueInt48' field")
+			}
+		}
+		// Virtual field
+		if _isInt56Err := writeBuffer.WriteVirtual("isInt56", m.IsInt56); _isInt56Err != nil {
+			return errors.Wrap(_isInt56Err, "Error serializing 'isInt56' field")
+		}
+
+		// Optional Field (valueInt56) (Can be skipped, if the value is null)
+		var valueInt56 *int64 = nil
+		if m.ValueInt56 != nil {
+			valueInt56 = m.ValueInt56
+			_valueInt56Err := writeBuffer.WriteInt64("valueInt56", 56, *(valueInt56))
+			if _valueInt56Err != nil {
+				return errors.Wrap(_valueInt56Err, "Error serializing 'valueInt56' field")
 			}
 		}
 		// Virtual field

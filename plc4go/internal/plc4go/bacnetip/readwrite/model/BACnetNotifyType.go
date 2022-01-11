@@ -84,7 +84,7 @@ func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
 }
 
 func (m BACnetNotifyType) LengthInBits() uint16 {
-	return 4
+	return 8
 }
 
 func (m BACnetNotifyType) LengthInBytes() uint16 {
@@ -92,7 +92,7 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 }
 
 func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
-	val, err := readBuffer.ReadUint8("BACnetNotifyType", 4)
+	val, err := readBuffer.ReadUint8("BACnetNotifyType", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -100,7 +100,7 @@ func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error
 }
 
 func (e BACnetNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNotifyType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+	return writeBuffer.WriteUint8("BACnetNotifyType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
 func (e BACnetNotifyType) name() string {

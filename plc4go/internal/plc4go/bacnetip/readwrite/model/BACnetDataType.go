@@ -50,6 +50,9 @@ const (
 	BACnetDataType_BACNET_DEVICE_STATE        BACnetDataType = 17
 	BACnetDataType_OPENING_TAG                BACnetDataType = 20
 	BACnetDataType_CLOSING_TAG                BACnetDataType = 21
+	BACnetDataType_EVENT_TYPE                 BACnetDataType = 30
+	BACnetDataType_EVENT_STATE                BACnetDataType = 31
+	BACnetDataType_NOTIFY_TYPE                BACnetDataType = 32
 )
 
 var BACnetDataTypeValues []BACnetDataType
@@ -74,6 +77,9 @@ func init() {
 		BACnetDataType_BACNET_DEVICE_STATE,
 		BACnetDataType_OPENING_TAG,
 		BACnetDataType_CLOSING_TAG,
+		BACnetDataType_EVENT_TYPE,
+		BACnetDataType_EVENT_STATE,
+		BACnetDataType_NOTIFY_TYPE,
 	}
 }
 
@@ -101,6 +107,12 @@ func BACnetDataTypeByValue(value uint8) BACnetDataType {
 		return BACnetDataType_CLOSING_TAG
 	case 3:
 		return BACnetDataType_SIGNED_INTEGER
+	case 30:
+		return BACnetDataType_EVENT_TYPE
+	case 31:
+		return BACnetDataType_EVENT_STATE
+	case 32:
+		return BACnetDataType_NOTIFY_TYPE
 	case 4:
 		return BACnetDataType_REAL
 	case 5:
@@ -141,6 +153,12 @@ func BACnetDataTypeByName(value string) BACnetDataType {
 		return BACnetDataType_CLOSING_TAG
 	case "SIGNED_INTEGER":
 		return BACnetDataType_SIGNED_INTEGER
+	case "EVENT_TYPE":
+		return BACnetDataType_EVENT_TYPE
+	case "EVENT_STATE":
+		return BACnetDataType_EVENT_STATE
+	case "NOTIFY_TYPE":
+		return BACnetDataType_NOTIFY_TYPE
 	case "REAL":
 		return BACnetDataType_REAL
 	case "DOUBLE":
@@ -211,6 +229,12 @@ func (e BACnetDataType) name() string {
 		return "CLOSING_TAG"
 	case BACnetDataType_SIGNED_INTEGER:
 		return "SIGNED_INTEGER"
+	case BACnetDataType_EVENT_TYPE:
+		return "EVENT_TYPE"
+	case BACnetDataType_EVENT_STATE:
+		return "EVENT_STATE"
+	case BACnetDataType_NOTIFY_TYPE:
+		return "NOTIFY_TYPE"
 	case BACnetDataType_REAL:
 		return "REAL"
 	case BACnetDataType_DOUBLE:

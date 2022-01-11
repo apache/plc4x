@@ -99,117 +99,117 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("BACnet-BBMD-on-same-subnet")
-    Collection<DynamicTest> BACnet_BBMD_on_same_subnet() throws Exception {
+    Collection<DynamicNode> BACnet_BBMD_on_same_subnet() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnet-BBMD-on-same-subnet.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed whoIs",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Results",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -219,21 +219,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("BACnet-MSTP-SNAP-Mixed")
-    Collection<DynamicTest> BACnet_MSTP_SNAP_Mixed() throws Exception {
+    Collection<DynamicNode> BACnet_MSTP_SNAP_Mixed() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -243,21 +243,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("BACnetARRAY-element-0")
-    Collection<DynamicTest> BACnetARRAY_element_0() throws Exception {
+    Collection<DynamicNode> BACnetARRAY_element_0() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-element-0.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -267,21 +267,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("BACnetARRAY-elements")
-    Collection<DynamicTest> BACnetARRAY_elements() throws Exception {
+    Collection<DynamicNode> BACnetARRAY_elements() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-elements.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -291,13 +291,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("BACnetDeviceObjectReference")
-    Collection<DynamicTest> BACnetDeviceObjectReference() throws Exception {
+    Collection<DynamicNode> BACnetDeviceObjectReference() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnetDeviceObjectReference.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[  0] life-safety-zone,1 zone-members",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -310,8 +310,8 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[  0] life-safety-zone,1 zone-members life-safety-zone,3 life-safety-zone,4 life-safety-zone,5 life-safety-zone,6 life-safety-zone,7 life-safety-zone,8 life-safety-zone,9 life-safety-zone,16 life-safety-zone,494 life-safety-zone,255 life-safety-zone,231 life-safety-zone,4193620 life-safety-zone,222 life-safety-zone,300 life-safety-zone,166",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -326,62 +326,31 @@ public class RandomPackagesTest {
         );
     }
 
+    @Disabled("mostly llc so we don't use that here for now")
     @TestFactory
     @DisplayName("BACnetIP-MSTP-Mix")
-    Collection<DynamicTest> BACnet_MSTP_Mix() throws Exception {
+    Collection<DynamicNode> BACnet_MSTP_Mix() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return null;
     }
 
+    @Disabled("mostly llc so we don't use that here for now")
     @TestFactory
     @DisplayName("BBMD_Results")
-    Collection<DynamicTest> BBMD_Results() throws Exception {
+    Collection<DynamicNode> BBMD_Results() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BBMD_Results.pcap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return null;
     }
 
     @TestFactory
     @DisplayName("BBMD_readproperty")
-    Collection<DynamicTest> BBMD_readProperty() throws Exception {
+    Collection<DynamicNode> BBMD_readProperty() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("BBMD_readproperty.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCDistributeBroadcastToNetwork bvlcDistributeBroadcastToNetwork = (BVLCDistributeBroadcastToNetwork) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcDistributeBroadcastToNetwork.getNpdu().getApdu();
@@ -394,6 +363,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -406,6 +376,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -416,12 +387,13 @@ public class RandomPackagesTest {
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
@@ -434,6 +406,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
@@ -446,6 +419,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCForwardedNPDU bvlcForwardedNPDU = (BVLCForwardedNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcForwardedNPDU.getNpdu().getApdu();
@@ -456,12 +430,13 @@ public class RandomPackagesTest {
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -475,6 +450,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 priority-array",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -492,6 +468,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCRegisterForeignDevice bvlcRegisterForeignDevice = (BVLCRegisterForeignDevice) bvlc;
                     assertEquals(60000, bvlcRegisterForeignDevice.getTtl());
@@ -504,6 +481,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Result",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCResult bvlcResult = (BVLCResult) bvlc;
                     assertEquals(BVLCResultCode.SUCCESSFUL_COMPLETION, bvlcResult.getCode());
@@ -516,6 +494,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -529,6 +508,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -549,6 +529,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 relinquish-default",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -562,6 +543,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 relinquish-default",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -589,14 +571,15 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Error writeProperty[ 1]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
+                    assertEquals(List.of((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x28), baCnetErrorWriteProperty.getErrorCode().getData());
+                    assertEquals(List.of((byte) 0x28), baCnetErrorWriteProperty.getErrorCode().getData());
                 }),
             DynamicTest.dynamicTest("Skip Misc 8 packages",
                 () -> {
@@ -606,6 +589,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -624,14 +608,15 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Error writeProperty[ 1]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
+                    assertEquals(List.of((byte) 0x02), baCnetErrorWriteProperty.getErrorClass().getData());
                     // TODO: change to enum
-                    assertEquals(Arrays.asList((byte) 0x25), baCnetErrorWriteProperty.getErrorCode().getData());
+                    assertEquals(List.of((byte) 0x25), baCnetErrorWriteProperty.getErrorCode().getData());
                 }),
             DynamicTest.dynamicTest("Skip Misc packages",
                 () -> {
@@ -641,6 +626,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -670,6 +656,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ readProperty[  1] device,12345 object-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -683,6 +670,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK   readProperty[  1] device,12345 object-identifier device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -695,43 +683,198 @@ public class RandomPackagesTest {
                     BACnetApplicationTagObjectIdentifier objectIdentifier = (BACnetApplicationTagObjectIdentifier) baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
-                })
+                }),
+            parseEmAll(pcapEvaluator, 202, 337)
         );
     }
 
     @TestFactory
     @DisplayName("CEN_9_11")
-    Collection<DynamicTest> CEN_9_11() throws Exception {
+    Collection<DynamicNode> CEN_9_11() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CEN_9_11.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[119] event-enrollment,11 analog-input,1",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 111, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.EVENT_ENROLLMENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(11, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.ANALOG_INPUT, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampSequence timestamp = (BACnetTimeStampSequence) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp();
+                        assertEquals(2, timestamp.getSequenceNumber().getActualValue());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getActualValue());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getActualValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.UNSIGNED_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
+                    }
+                    {
+                        assertEquals("My Message", baCnetConfirmedServiceRequestConfirmedEventNotification.getMessageText().getValue());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getIsFalse());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
+                    }
+                    {
+                        BACnetNotificationParametersUnsignedRange baCnetNotificationParametersUnsignedRange = (BACnetNotificationParametersUnsignedRange) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        assertEquals(50, baCnetNotificationParametersUnsignedRange.getSequenceNumber().getActualValue());
+                        assertTrue(baCnetNotificationParametersUnsignedRange.getStatusFlags().getInAlarm());
+                        assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getFault());
+                        assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getOverriden());
+                        assertFalse(baCnetNotificationParametersUnsignedRange.getStatusFlags().getOutOfService());
+                        assertEquals(40, baCnetNotificationParametersUnsignedRange.getExceededLimit().getActualValue());
+                    }
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Simple-ACK      confirmedEventNotification[119]",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    assertEquals(119, apduSimpleAck.getOriginalInvokeId());
+                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                }),
+            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[120] event-enrollment,11 analog-input,1",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 111, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.EVENT_ENROLLMENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(11, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.ANALOG_INPUT, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampSequence timestamp = (BACnetTimeStampSequence) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp();
+                        assertEquals(2, timestamp.getSequenceNumber().getActualValue());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getActualValue());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getActualValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.EXTENDED, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
+                    }
+                    {
+                        assertEquals("My Message", baCnetConfirmedServiceRequestConfirmedEventNotification.getMessageText().getValue());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getIsFalse());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.OFFNORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
+                    }
+                    {
+                        BACnetNotificationParametersExtended baCnetNotificationParametersExtended = (BACnetNotificationParametersExtended) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        assertEquals(24, baCnetNotificationParametersExtended.getVendorId().getActualValue());
+                        assertEquals(33, baCnetNotificationParametersExtended.getExtendedEventType().getActualValue());
+                    }
+                }),
+            DynamicTest.dynamicTest("Simple-ACK      confirmedEventNotification[120]",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    assertEquals(120, apduSimpleAck.getOriginalInvokeId());
+                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 140 140",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    NPDU npdu = ((BVLCOriginalBroadcastNPDU) bvlc).getNpdu();
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 140 140",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    NPDU npdu = ((BVLCOriginalBroadcastNPDU) bvlc).getNpdu();
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 871 871",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    NPDU npdu = ((BVLCOriginalBroadcastNPDU) bvlc).getNpdu();
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
+                }),
+            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 871 871",
+                () -> {
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
+                    dump(bvlc);
+                    BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
+                    NPDU npdu = ((BVLCOriginalBroadcastNPDU) bvlc).getNpdu();
+                    APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
+                    BACnetUnconfirmedServiceRequestWhoIs baCnetUnconfirmedServiceRequestWhoIs = (BACnetUnconfirmedServiceRequestWhoIs) apduUnconfirmedRequest.getServiceRequest();
+                    assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
+                    assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 })
         );
     }
 
     @TestFactory
     @DisplayName("CEN_10")
-    Collection<DynamicTest> CEN_10() throws Exception {
+    Collection<DynamicNode> CEN_10() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CEN_10.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -741,13 +884,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("COV_AWF_ARF")
-    Collection<DynamicTest> COV_AWF_ARF() throws Exception {
+    Collection<DynamicNode> COV_AWF_ARF() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("COV_AWF_ARF.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   subscribeCOV[ 10] binary-input,0",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -762,8 +905,8 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("Simple-ACK      subscribeCOV[ 10]",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -771,8 +914,8 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -783,28 +926,53 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.BINARY_INPUT, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getInstanceNumber());
                     assertEquals(9, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getLifetimeInSeconds().getActualValue() / 60);
-                })
-            // TODO: finish me
+                    {
+                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = (BACnetContextTagPropertyIdentifier) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(0).getContextTag();
+                        assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetContextTagPropertyIdentifier.getValue());
+                    }
+                    {
+                        BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(1).getConstructedData().getData().get(0).getApplicationTag();
+                        assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
+                    }
+                    {
+                        BACnetContextTagPropertyIdentifier baCnetContextTagPropertyIdentifier = (BACnetContextTagPropertyIdentifier) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(2).getContextTag();
+                        assertEquals(BACnetPropertyIdentifier.STATUS_FLAGS, baCnetContextTagPropertyIdentifier.getValue());
+                    }
+                    {
+                        BACnetApplicationTagBitString baCnetApplicationTagBitString = (BACnetApplicationTagBitString) baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getListOfValues().getData().get(3).getConstructedData().getData().get(0).getApplicationTag();
+                        assertEquals(Arrays.asList(false, false, false, false), baCnetApplicationTagBitString.getData());
+                    }
+                }),
+            parseEmAll(pcapEvaluator, 3, 1351)
         );
+    }
+
+    private DynamicContainer parseEmAll(PCAPEvaluator pcapEvaluator, int startInclusive, int endExclusive) {
+        return DynamicContainer.dynamicContainer("Parse em all (from " + startInclusive + " to " + endExclusive + ")", () -> IntStream.range(startInclusive, endExclusive).mapToObj((i) -> DynamicTest.dynamicTest("test n." + i, () -> {
+            assumeTrue(i > pcapEvaluator.getCurrentPackageNumber(), "package nr." + i + " already parsed");
+            BVLC bvlc = pcapEvaluator.nextBVLC();
+            assumeTrue(bvlc != null, "No more package left");
+            dump(bvlc);
+        })).map(DynamicNode.class::cast).iterator());
     }
 
     @TestFactory
     @DisplayName("ContextTagAbove14Sample_1")
-    Collection<DynamicTest> ContextTagAbove14Sample_1() throws Exception {
+    Collection<DynamicNode> ContextTagAbove14Sample_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("ContextTagAbove14Sample_1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -814,21 +982,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("CriticalRoom55-1")
-    Collection<DynamicTest> CriticalRoom55_1() throws Exception {
+    Collection<DynamicNode> CriticalRoom55_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-1.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -838,13 +1006,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("CriticalRoom55-2")
-    Collection<DynamicTest> CriticalRoom55_2() throws Exception {
+    Collection<DynamicNode> CriticalRoom55_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ writeProperty[113] analog-value,1 present-value",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -858,8 +1026,8 @@ public class RandomPackagesTest {
                 () -> {
                     // TODO: package is malformed
                     assumeTrue(false);
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -869,21 +1037,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("DRI%20CAVE%20log%20udp-0168-20081216-1117-03")
-    Collection<DynamicTest> DRI_CAVE_log_udp_0168_20081216_1117_03() throws Exception {
+    Collection<DynamicNode> DRI_CAVE_log_udp_0168_20081216_1117_03() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("DRI%20CAVE%20log%20udp-0168-20081216-1117-03.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -893,21 +1061,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("I-Am-Router-To-Network")
-    Collection<DynamicTest> I_Am_Router_To_Network() throws Exception {
+    Collection<DynamicNode> I_Am_Router_To_Network() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("I-Am-Router-To-Network.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -917,13 +1085,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Ethereal-Misinterpreted-Packet")
-    Collection<DynamicTest> Ethereal_Misinterpreted_Packet() throws Exception {
+    Collection<DynamicNode> Ethereal_Misinterpreted_Packet() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Ethereal-Misinterpreted-Packet.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -933,21 +1101,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("MSTP_Malformed_Packets")
-    Collection<DynamicTest> MSTP_Malformed_Packets() throws Exception {
+    Collection<DynamicNode> MSTP_Malformed_Packets() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("MSTP_Malformed_Packets.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -957,21 +1125,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("NPDU")
-    Collection<DynamicTest> NPDU() throws Exception {
+    Collection<DynamicNode> NPDU() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("NPDU.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -981,21 +1149,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("PrivateTransferError-octetstring")
-    Collection<DynamicTest> PrivateTransferError_octetstring() throws Exception {
+    Collection<DynamicNode> PrivateTransferError_octetstring() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError-octetstring.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1005,13 +1173,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("PrivateTransferError")
-    Collection<DynamicTest> PrivateTransferError() throws Exception {
+    Collection<DynamicNode> PrivateTransferError() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1021,21 +1189,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("RPM_ALL_Allobjecttypes1")
-    Collection<DynamicTest> RPM_ALL_Allobjecttypes1() throws Exception {
+    Collection<DynamicNode> RPM_ALL_Allobjecttypes1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("RPM_ALL_Allobjecttypes1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1045,21 +1213,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("ReadPropertyMultiple")
-    Collection<DynamicTest> ReadPropertyMultiple() throws Exception {
+    Collection<DynamicNode> ReadPropertyMultiple() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("ReadPropertyMultiple.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1069,21 +1237,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("ReadPropertyMultipleDeviceAll")
-    Collection<DynamicTest> ReadPropertyMultipleDeviceAll() throws Exception {
+    Collection<DynamicNode> ReadPropertyMultipleDeviceAll() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("ReadPropertyMultipleDeviceAll.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1093,21 +1261,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Subordinate List")
-    Collection<DynamicTest> Subordinate_List() throws Exception {
+    Collection<DynamicNode> Subordinate_List() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Subordinate%20List.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ readProperty[152] structured-view,1 subordinate-list",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[152] structured-view,1 subordinate-list device,128 analog-input,1 device,128 analog-input,3 device,128 analog-output,1 device,128 analog-output,3",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1117,37 +1285,37 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Subordinate List2")
-    Collection<DynamicTest> Subordinate_List2() throws Exception {
+    Collection<DynamicNode> Subordinate_List2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Subordinate%20List2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[143] structured-view,1 subordinate-list",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[143] structured-view,1 subordinate-list device,4000 analog-input,1 analog-value,1 binary-input,1 binary-value,1",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[144] structured-view,1 subordinate-annotations",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[144] structured-view,1 subordinate-annotations",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1157,21 +1325,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("SubordinateListDecodeSample")
-    Collection<DynamicTest> SubordinateListDecodeSample() throws Exception {
+    Collection<DynamicNode> SubordinateListDecodeSample() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("SubordinateListDecodeSample.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1181,21 +1349,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("SynergyBlinkWarn")
-    Collection<DynamicTest> SynergyBlinkWarn() throws Exception {
+    Collection<DynamicNode> SynergyBlinkWarn() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("SynergyBlinkWarn.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1205,21 +1373,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("SynergyReadProperties")
-    Collection<DynamicTest> SynergyReadProperties() throws Exception {
+    Collection<DynamicNode> SynergyReadProperties() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("SynergyReadProperties.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1229,21 +1397,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("SynergyWriteProperty")
-    Collection<DynamicTest> SynergyWriteProperty() throws Exception {
+    Collection<DynamicNode> SynergyWriteProperty() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("SynergyWriteProperty.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1253,21 +1421,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Sysco-1")
-    Collection<DynamicTest> Sysco_1() throws Exception {
+    Collection<DynamicNode> Sysco_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Sysco-1.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1277,21 +1445,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Sysco-2")
-    Collection<DynamicTest> Sysco_2() throws Exception {
+    Collection<DynamicNode> Sysco_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Sysco-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1301,21 +1469,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Sysco-3")
-    Collection<DynamicTest> Sysco_3() throws Exception {
+    Collection<DynamicNode> Sysco_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Sysco-3.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1325,21 +1493,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TA02 MST")
-    Collection<DynamicTest> TA02_MST() throws Exception {
+    Collection<DynamicNode> TA02_MST() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TA02%20MST.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1349,21 +1517,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TAO2 TES.39A")
-    Collection<DynamicTest> TAO2_TES_39_A() throws Exception {
+    Collection<DynamicNode> TAO2_TES_39_A() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TAO2%20TES.39A.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1373,21 +1541,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TC51103_BTL-9.21.1.X3_bool_ext_3")
-    Collection<DynamicTest> TC51103_BTL_9_21_1_X3_bool_ext_3() throws Exception {
+    Collection<DynamicNode> TC51103_BTL_9_21_1_X3_bool_ext_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_bool_ext_3.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1397,21 +1565,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TC51103_BTL-9.21.1.X3_int_ext_1")
-    Collection<DynamicTest> TC51103_BTL_9_21_1_X3_int_ext_1() throws Exception {
+    Collection<DynamicNode> TC51103_BTL_9_21_1_X3_int_ext_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_int_ext_1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1421,21 +1589,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun4 - Internal side of Router")
-    Collection<DynamicTest> TestRun4___Internal_side_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun4___Internal_side_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Internal%20side%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1445,21 +1613,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun4 - Outside of Router")
-    Collection<DynamicTest> TestRun4___Outside_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun4___Outside_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Outside%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1469,21 +1637,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun5 - Internal side of Router")
-    Collection<DynamicTest> TestRun5___Internal_side_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun5___Internal_side_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Internal%20side%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1493,21 +1661,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun5 - Outside of Router")
-    Collection<DynamicTest> TestRun5___Outside_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun5___Outside_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Outside%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1517,21 +1685,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun8 - Internal side of Router")
-    Collection<DynamicTest> TestRun8___Internal_side_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun8___Internal_side_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun8%20-%20Internal%20side%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1541,21 +1709,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TestRun8 - Outside of Router")
-    Collection<DynamicTest> TestRun8___Outside_of_Router() throws Exception {
+    Collection<DynamicNode> TestRun8___Outside_of_Router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TestRun8%20-%20Outside%20of%20Router.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1565,13 +1733,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TimeSync_Decode_Noon")
-    Collection<DynamicTest> TimeSync_Decode_Noon() throws Exception {
+    Collection<DynamicNode> TimeSync_Decode_Noon() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TimeSync_Decode_Noon.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1581,21 +1749,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("Tower333 lighting 5min IP")
-    Collection<DynamicTest> Tower333_lighting_5min_IP() throws Exception {
+    Collection<DynamicNode> Tower333_lighting_5min_IP() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1605,21 +1773,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange")
-    Collection<DynamicTest> TrendLogMultipleReadRange() throws Exception {
+    Collection<DynamicNode> TrendLogMultipleReadRange() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1629,21 +1797,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange2")
-    Collection<DynamicTest> TrendLogMultipleReadRange2() throws Exception {
+    Collection<DynamicNode> TrendLogMultipleReadRange2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1653,21 +1821,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange3")
-    Collection<DynamicTest> TrendLogMultipleReadRange3() throws Exception {
+    Collection<DynamicNode> TrendLogMultipleReadRange3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange3.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1677,21 +1845,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRangeSimple")
-    Collection<DynamicTest> TrendLogMultipleReadRangeSimple() throws Exception {
+    Collection<DynamicNode> TrendLogMultipleReadRangeSimple() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRangeSimple.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1701,21 +1869,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("TrendLogMultipleUsage")
-    Collection<DynamicTest> TrendLogMultipleUsage() throws Exception {
+    Collection<DynamicNode> TrendLogMultipleUsage() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleUsage.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1725,21 +1893,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WhoIsRouterToNetwork-test")
-    Collection<DynamicTest> WhoIsRouterToNetwork_test() throws Exception {
+    Collection<DynamicNode> WhoIsRouterToNetwork_test() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WhoIsRouterToNetwork-test.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1749,21 +1917,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WhoIsRouterToNetwork")
-    Collection<DynamicTest> WhoIsRouterToNetwork() throws Exception {
+    Collection<DynamicNode> WhoIsRouterToNetwork() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WhoIsRouterToNetwork.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1773,21 +1941,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WhoIs_I-Am_Epics")
-    Collection<DynamicTest> WhoIs_I_Am_Epics() throws Exception {
+    Collection<DynamicNode> WhoIs_I_Am_Epics() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WhoIs_I-Am_Epics.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1797,21 +1965,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WireSharkError_ArrayIndex")
-    Collection<DynamicTest> WireSharkError_ArrayIndex() throws Exception {
+    Collection<DynamicNode> WireSharkError_ArrayIndex() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WireSharkError_ArrayIndex.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 74] schedule,1 exception-schedule",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 74] schedule,1 exception-schedule",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1821,13 +1989,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WireSharkError_BufferReadyNotification")
-    Collection<DynamicTest> WireSharkError_BufferReadyNotification() throws Exception {
+    Collection<DynamicNode> WireSharkError_BufferReadyNotification() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WireSharkError_BufferReadyNotification.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1837,21 +2005,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WireSharkOfNewObjects")
-    Collection<DynamicTest> WireSharkOfNewObjects() throws Exception {
+    Collection<DynamicNode> WireSharkOfNewObjects() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1861,21 +2029,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("WriteProperty_BinaryOutput")
-    Collection<DynamicTest> WriteProperty_BinaryOutput() throws Exception {
+    Collection<DynamicNode> WriteProperty_BinaryOutput() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("WriteProperty_BinaryOutput.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1885,13 +2053,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("action-list")
-    Collection<DynamicTest> action_list() throws Exception {
+    Collection<DynamicNode> action_list() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("action-list.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[107] command,1 action",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1908,21 +2076,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("aha_220_to_20_lost_b")
-    Collection<DynamicTest> aha_220_to_20_lost_b() throws Exception {
+    Collection<DynamicNode> aha_220_to_20_lost_b() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("aha_220_to_20_lost_b.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1932,13 +2100,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("alerton-plugfest-2")
-    Collection<DynamicTest> alerton_plugfest_2() throws Exception {
+    Collection<DynamicNode> alerton_plugfest_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-version",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
 
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
@@ -1952,8 +2120,8 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1963,21 +2131,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("alerton-plugfest-3")
-    Collection<DynamicTest> alerton_plugfest_3() throws Exception {
+    Collection<DynamicNode> alerton_plugfest_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -1987,21 +2155,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("alerton-plugfest")
-    Collection<DynamicTest> alerton_plugfest() throws Exception {
+    Collection<DynamicNode> alerton_plugfest() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2011,21 +2179,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("arf-empty-file")
-    Collection<DynamicTest> arf_empty_file() throws Exception {
+    Collection<DynamicNode> arf_empty_file() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("arf-empty-file.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2035,21 +2203,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-empty-file")
-    Collection<DynamicTest> atomic_empty_file() throws Exception {
+    Collection<DynamicNode> atomic_empty_file() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-empty-file.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2059,21 +2227,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-read-file-50")
-    Collection<DynamicTest> atomic_read_file_50() throws Exception {
+    Collection<DynamicNode> atomic_read_file_50() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-50.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2083,21 +2251,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-read-file-50x1500k")
-    Collection<DynamicTest> atomic_read_file_50x1500k() throws Exception {
+    Collection<DynamicNode> atomic_read_file_50x1500k() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-50x1500k.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2107,21 +2275,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-read-file-480")
-    Collection<DynamicTest> atomic_read_file_480() throws Exception {
+    Collection<DynamicNode> atomic_read_file_480() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-480.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2131,21 +2299,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-read-file-1470")
-    Collection<DynamicTest> atomic_read_file_1470() throws Exception {
+    Collection<DynamicNode> atomic_read_file_1470() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-1470.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2155,21 +2323,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-read-file")
-    Collection<DynamicTest> atomic_read_file() throws Exception {
+    Collection<DynamicNode> atomic_read_file() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2179,21 +2347,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file-2")
-    Collection<DynamicTest> atomic_write_file_2() throws Exception {
+    Collection<DynamicNode> atomic_write_file_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2203,21 +2371,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file-3")
-    Collection<DynamicTest> atomic_write_file_3() throws Exception {
+    Collection<DynamicNode> atomic_write_file_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-3.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2227,21 +2395,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file-50x1k")
-    Collection<DynamicTest> atomic_write_file_50x1k() throws Exception {
+    Collection<DynamicNode> atomic_write_file_50x1k() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-50x1k.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2251,21 +2419,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file-480")
-    Collection<DynamicTest> atomic_write_file_480() throws Exception {
+    Collection<DynamicNode> atomic_write_file_480() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-480.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2275,21 +2443,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file-seg")
-    Collection<DynamicTest> atomic_write_file_seg() throws Exception {
+    Collection<DynamicNode> atomic_write_file_seg() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-seg.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2299,21 +2467,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic-write-file")
-    Collection<DynamicTest> atomic_write_file() throws Exception {
+    Collection<DynamicNode> atomic_write_file() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2323,21 +2491,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("atomic_write_file_bad_ack")
-    Collection<DynamicTest> atomic_write_file_bad_ack() throws Exception {
+    Collection<DynamicNode> atomic_write_file_bad_ack() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("atomic_write_file_bad_ack.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2347,21 +2515,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacapp-malform")
-    Collection<DynamicTest> bacapp_malform() throws Exception {
+    Collection<DynamicNode> bacapp_malform() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacapp-malform.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2371,21 +2539,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-arcnet")
-    Collection<DynamicTest> bacnet_arcnet() throws Exception {
+    Collection<DynamicNode> bacnet_arcnet() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-arcnet.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2395,21 +2563,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-ethernet-device")
-    Collection<DynamicTest> bacnet_ethernet_device() throws Exception {
+    Collection<DynamicNode> bacnet_ethernet_device() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet-device.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2419,21 +2587,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-ethernet")
-    Collection<DynamicTest> bacnet_ethernet() throws Exception {
+    Collection<DynamicNode> bacnet_ethernet() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2443,21 +2611,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-ip")
-    Collection<DynamicTest> bacnet_ip() throws Exception {
+    Collection<DynamicNode> bacnet_ip() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-ip.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2467,21 +2635,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-properties")
-    Collection<DynamicTest> bacnet_properties() throws Exception {
+    Collection<DynamicNode> bacnet_properties() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-properties.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2491,21 +2659,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-services")
-    Collection<DynamicTest> bacnet_services() throws Exception {
+    Collection<DynamicNode> bacnet_services() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2515,21 +2683,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacnet-stack-services")
-    Collection<DynamicTest> bacnet_stack_services() throws Exception {
+    Collection<DynamicNode> bacnet_stack_services() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2539,21 +2707,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bacrpm-test")
-    Collection<DynamicTest> bacrpm_test() throws Exception {
+    Collection<DynamicNode> bacrpm_test() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bacrpm-test.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2563,21 +2731,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bad_hub_restart")
-    Collection<DynamicTest> bad_hub_restart() throws Exception {
+    Collection<DynamicNode> bad_hub_restart() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bad_hub_restart.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2587,21 +2755,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bip-discover")
-    Collection<DynamicTest> bip_discover() throws Exception {
+    Collection<DynamicNode> bip_discover() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bip-discover.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2611,21 +2779,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bip-readprop-2")
-    Collection<DynamicTest> bip_readprop_2() throws Exception {
+    Collection<DynamicNode> bip_readprop_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bip-readprop-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2635,21 +2803,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bip-readprop")
-    Collection<DynamicTest> bip_readprop() throws Exception {
+    Collection<DynamicNode> bip_readprop() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bip-readprop.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2659,21 +2827,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bip-readwrite-test")
-    Collection<DynamicTest> bip_readwrite_test() throws Exception {
+    Collection<DynamicNode> bip_readwrite_test() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bip-readwrite-test.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2683,13 +2851,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bo_command_failure")
-    Collection<DynamicTest> bo_command_failure() throws Exception {
+    Collection<DynamicNode> bo_command_failure() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2699,7 +2867,7 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bo_command_failure_original")
-    Collection<DynamicTest> bo_command_failure_original() throws Exception {
+    Collection<DynamicNode> bo_command_failure_original() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure_original.pcap");
         // TODO: we should set a filter for bacnet
         // Pcap starts with 20 non bacnet packages
@@ -2707,64 +2875,64 @@ public class RandomPackagesTest {
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,21 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,21 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-output,1 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedEventNotification device,1 binary-output,1",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2774,21 +2942,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("btl-plugfest")
-    Collection<DynamicTest> btl_plugfest() throws Exception {
+    Collection<DynamicNode> btl_plugfest() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("btl-plugfest.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2798,21 +2966,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bvlc-bac4-rp")
-    Collection<DynamicTest> bvlc_bac4_rp() throws Exception {
+    Collection<DynamicNode> bvlc_bac4_rp() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc-bac4-rp.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2822,21 +2990,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bvlc-bac4")
-    Collection<DynamicTest> bvlc_bac4() throws Exception {
+    Collection<DynamicNode> bvlc_bac4() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc-bac4.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2846,21 +3014,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bvlc-fdreg-readprop-47809")
-    Collection<DynamicTest> bvlc_fdreg_readprop_47809() throws Exception {
+    Collection<DynamicNode> bvlc_fdreg_readprop_47809() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc-fdreg-readprop-47809.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2870,21 +3038,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bvlc-loop")
-    Collection<DynamicTest> bvlc_loop() throws Exception {
+    Collection<DynamicNode> bvlc_loop() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc-loop.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2894,14 +3062,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("bvlc")
-    Collection<DynamicTest>
+    Collection<DynamicNode>
     bvlc() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("bvlc.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2911,21 +3079,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("cimetrics_mstp")
-    Collection<DynamicTest> cimetrics_mstp() throws Exception {
+    Collection<DynamicNode> cimetrics_mstp() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("cimetrics_mstp.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2935,21 +3103,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("config-tool-discover")
-    Collection<DynamicTest> config_tool_discover() throws Exception {
+    Collection<DynamicNode> config_tool_discover() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("config-tool-discover.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2959,21 +3127,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("confirmedEventNotification")
-    Collection<DynamicTest> confirmedEventNotification() throws Exception {
+    Collection<DynamicNode> confirmedEventNotification() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("confirmedEventNotification.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ confirmedEventNotification[103] device,1041000 analog-input,3000016 present-value",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -2983,21 +3151,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("cov-testing-1")
-    Collection<DynamicTest> cov_testing_1() throws Exception {
+    Collection<DynamicNode> cov_testing_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("cov-testing-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3007,21 +3175,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("cov-testing-2")
-    Collection<DynamicTest> cov_testing_2() throws Exception {
+    Collection<DynamicNode> cov_testing_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("cov-testing-2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3031,21 +3199,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("cov-testing-3")
-    Collection<DynamicTest> cov_testing_3() throws Exception {
+    Collection<DynamicNode> cov_testing_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("cov-testing-3.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3055,21 +3223,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("device-address-binding")
-    Collection<DynamicTest> device_address_binding() throws Exception {
+    Collection<DynamicNode> device_address_binding() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("device-address-binding.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3079,21 +3247,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("epics-1")
-    Collection<DynamicTest> epics_1() throws Exception {
+    Collection<DynamicNode> epics_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("epics-1.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3103,21 +3271,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("epics-2")
-    Collection<DynamicTest> epics_2() throws Exception {
+    Collection<DynamicNode> epics_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("epics-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3127,21 +3295,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("eventLog_ReadRange")
-    Collection<DynamicTest> eventLog_ReadRange() throws Exception {
+    Collection<DynamicNode> eventLog_ReadRange() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("eventLog_ReadRange.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3151,21 +3319,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("eventLog_rpm")
-    Collection<DynamicTest> eventLog_rpm() throws Exception {
+    Collection<DynamicNode> eventLog_rpm() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("eventLog_rpm.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3175,21 +3343,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("eventTimeStamp_rp")
-    Collection<DynamicTest> eventTimeStamp_rp() throws Exception {
+    Collection<DynamicNode> eventTimeStamp_rp() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("eventTimeStamp_rp.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[148] load-control,1 event-time-stamp",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[148] load-control,1 event-time-stamp",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3199,21 +3367,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("eventTimeStamp_rpm")
-    Collection<DynamicTest> eventTimeStamp_rpm() throws Exception {
+    Collection<DynamicNode> eventTimeStamp_rpm() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("eventTimeStamp_rpm.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3224,21 +3392,21 @@ public class RandomPackagesTest {
     @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("foreign-device-npdu")
-    Collection<DynamicTest> foreign_device_npdu() throws Exception {
+    Collection<DynamicNode> foreign_device_npdu() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("foreign-device-npdu.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3248,21 +3416,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("getEventInformation")
-    Collection<DynamicTest> getEventInformation() throws Exception {
+    Collection<DynamicNode> getEventInformation() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3272,21 +3440,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("i-am-vendor-id-over-255")
-    Collection<DynamicTest> i_am_vendor_id_over_255() throws Exception {
+    Collection<DynamicNode> i_am_vendor_id_over_255() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("i-am-vendor-id-over-255.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3296,21 +3464,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("lmbc-300-bootload")
-    Collection<DynamicTest> lmbc_300_bootload() throws Exception {
+    Collection<DynamicNode> lmbc_300_bootload() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("lmbc-300-bootload.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3320,21 +3488,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("load-control-properties")
-    Collection<DynamicTest> load_control_properties() throws Exception {
+    Collection<DynamicNode> load_control_properties() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("load-control-properties.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3344,21 +3512,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("load-control")
-    Collection<DynamicTest> load_control() throws Exception {
+    Collection<DynamicNode> load_control() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("load-control.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3368,21 +3536,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("log-buffer_readRange")
-    Collection<DynamicTest> log_buffer_readRange() throws Exception {
+    Collection<DynamicNode> log_buffer_readRange() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("log-buffer_readRange.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3392,21 +3560,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("loop2")
-    Collection<DynamicTest> loop2() throws Exception {
+    Collection<DynamicNode> loop2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("loop2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3416,21 +3584,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp-cimetrics")
-    Collection<DynamicTest> mstp_cimetrics() throws Exception {
+    Collection<DynamicNode> mstp_cimetrics() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp-cimetrics.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3440,21 +3608,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp-test-4")
-    Collection<DynamicTest> mstp_test_4() throws Exception {
+    Collection<DynamicNode> mstp_test_4() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp-test-4.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3464,21 +3632,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp-whois-basrt-mix")
-    Collection<DynamicTest> mstp_whois_basrt_mix() throws Exception {
+    Collection<DynamicNode> mstp_whois_basrt_mix() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3488,21 +3656,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp-whois-basrt-mix2")
-    Collection<DynamicTest> mstp_whois_basrt_mix2() throws Exception {
+    Collection<DynamicNode> mstp_whois_basrt_mix2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3512,21 +3680,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp-whois-iam")
-    Collection<DynamicTest> mstp_whois_iam() throws Exception {
+    Collection<DynamicNode> mstp_whois_iam() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-iam.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3536,21 +3704,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20090227094623")
-    Collection<DynamicTest> mstp_20090227094623() throws Exception {
+    Collection<DynamicNode> mstp_20090227094623() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20090227094623.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3560,21 +3728,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20090304105820")
-    Collection<DynamicTest> mstp_20090304105820() throws Exception {
+    Collection<DynamicNode> mstp_20090304105820() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304105820.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3584,21 +3752,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20090304110410")
-    Collection<DynamicTest> mstp_20090304110410() throws Exception {
+    Collection<DynamicNode> mstp_20090304110410() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304110410.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3608,21 +3776,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20090807145500")
-    Collection<DynamicTest> mstp_20090807145500() throws Exception {
+    Collection<DynamicNode> mstp_20090807145500() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20090807145500.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3632,21 +3800,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013121352")
-    Collection<DynamicTest> mstp_20091013121352() throws Exception {
+    Collection<DynamicNode> mstp_20091013121352() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121352.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3656,21 +3824,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013121410")
-    Collection<DynamicTest> mstp_20091013121410() throws Exception {
+    Collection<DynamicNode> mstp_20091013121410() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121410.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3680,21 +3848,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013122053")
-    Collection<DynamicTest> mstp_20091013122053() throws Exception {
+    Collection<DynamicNode> mstp_20091013122053() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122053.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3704,21 +3872,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013122451")
-    Collection<DynamicTest> mstp_20091013122451() throws Exception {
+    Collection<DynamicNode> mstp_20091013122451() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122451.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3728,21 +3896,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013123108")
-    Collection<DynamicTest> mstp_20091013123108() throws Exception {
+    Collection<DynamicNode> mstp_20091013123108() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013123108.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3752,21 +3920,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013124218")
-    Collection<DynamicTest> mstp_20091013124218() throws Exception {
+    Collection<DynamicNode> mstp_20091013124218() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013124218.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3776,21 +3944,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013130259")
-    Collection<DynamicTest> mstp_20091013130259() throws Exception {
+    Collection<DynamicNode> mstp_20091013130259() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013130259.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3800,21 +3968,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091013162906")
-    Collection<DynamicTest> mstp_20091013162906() throws Exception {
+    Collection<DynamicNode> mstp_20091013162906() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013162906.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3824,21 +3992,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091014093519")
-    Collection<DynamicTest> mstp_20091014093519() throws Exception {
+    Collection<DynamicNode> mstp_20091014093519() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014093519.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3848,21 +4016,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20091014112427")
-    Collection<DynamicTest> mstp_20091014112427() throws Exception {
+    Collection<DynamicNode> mstp_20091014112427() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014112427.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3872,21 +4040,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_20140225214217")
-    Collection<DynamicTest> mstp_20140225214217() throws Exception {
+    Collection<DynamicNode> mstp_20140225214217() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_20140225214217.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3896,21 +4064,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_mix_basrt_V124")
-    Collection<DynamicTest> mstp_mix_basrt_V124() throws Exception {
+    Collection<DynamicNode> mstp_mix_basrt_V124() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3920,21 +4088,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_mix_basrt_V124_bad")
-    Collection<DynamicTest> mstp_mix_basrt_V124_bad() throws Exception {
+    Collection<DynamicNode> mstp_mix_basrt_V124_bad() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124_bad.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3944,21 +4112,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("mstp_wtap")
-    Collection<DynamicTest> mstp_wtap() throws Exception {
+    Collection<DynamicNode> mstp_wtap() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("mstp_wtap.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3968,21 +4136,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("nb-binary-output")
-    Collection<DynamicTest> nb_binary_output() throws Exception {
+    Collection<DynamicNode> nb_binary_output() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("nb-binary-output.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -3992,21 +4160,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-delta-1")
-    Collection<DynamicTest> plugfest_2011_delta_1() throws Exception {
+    Collection<DynamicNode> plugfest_2011_delta_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4016,21 +4184,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-delta-2")
-    Collection<DynamicTest> plugfest_2011_delta_2() throws Exception {
+    Collection<DynamicNode> plugfest_2011_delta_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4040,21 +4208,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-delta-3")
-    Collection<DynamicTest> plugfest_2011_delta_3() throws Exception {
+    Collection<DynamicNode> plugfest_2011_delta_3() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-3.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4064,21 +4232,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-mstp-roundtable")
-    Collection<DynamicTest> plugfest_2011_mstp_roundtable() throws Exception {
+    Collection<DynamicNode> plugfest_2011_mstp_roundtable() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-mstp-roundtable.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4088,21 +4256,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-sauter-1")
-    Collection<DynamicTest> plugfest_2011_sauter_1() throws Exception {
+    Collection<DynamicNode> plugfest_2011_sauter_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-sauter-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4112,21 +4280,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-siemens-1")
-    Collection<DynamicTest> plugfest_2011_siemens_1() throws Exception {
+    Collection<DynamicNode> plugfest_2011_siemens_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4136,13 +4304,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-2011-trane-1")
-    Collection<DynamicTest> plugfest_2011_trane_1() throws Exception {
+    Collection<DynamicNode> plugfest_2011_trane_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed REQ who-Is",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -4152,8 +4320,8 @@ public class RandomPackagesTest {
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4163,21 +4331,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-delta-2")
-    Collection<DynamicTest> plugfest_delta_2() throws Exception {
+    Collection<DynamicNode> plugfest_delta_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4187,21 +4355,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-delta-2b")
-    Collection<DynamicTest> plugfest_delta_2b() throws Exception {
+    Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4211,21 +4379,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-tridium-1")
-    Collection<DynamicTest> plugfest_tridium_1() throws Exception {
+    Collection<DynamicNode> plugfest_tridium_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4235,21 +4403,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("plugfest-tridium-2")
-    Collection<DynamicTest> plugfest_tridium_2() throws Exception {
+    Collection<DynamicNode> plugfest_tridium_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4259,14 +4427,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("polarsoft-free-range-router-init-routing-table")
-    Collection<DynamicTest> polarsoft_free_range_router_init_routing_table() throws Exception {
+    Collection<DynamicNode> polarsoft_free_range_router_init_routing_table() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router-init-routing-table.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4274,8 +4442,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4285,21 +4453,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("polarsoft-free-range-router")
-    Collection<DynamicTest> polarsoft_free_range_router() throws Exception {
+    Collection<DynamicNode> polarsoft_free_range_router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4309,21 +4477,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("properties")
-    Collection<DynamicTest> properties() throws Exception {
+    Collection<DynamicNode> properties() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("properties.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4333,21 +4501,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-file")
-    Collection<DynamicTest> read_file() throws Exception {
+    Collection<DynamicNode> read_file() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-file.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -4357,13 +4525,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-properties")
-    Collection<DynamicTest> read_properties() throws Exception {
+    Collection<DynamicNode> read_properties() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-properties.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,111",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -4371,13 +4539,13 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(111, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(50, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
-                    assertEquals(Arrays.asList((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) 0x03), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -4390,8 +4558,8 @@ public class RandomPackagesTest {
             ),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,201",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -4399,7 +4567,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(201, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(1476, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
-                    assertEquals(Arrays.asList((byte) 0x00), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) 0x00), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicTest.dynamicTest("skip 1 packages",
@@ -4409,8 +4577,8 @@ public class RandomPackagesTest {
             ),
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,201",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -4418,12 +4586,13 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(61, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
-                    assertEquals(Arrays.asList((byte) 0x00), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) 0x00), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 29] device,201 object-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4437,6 +4606,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 29] device,201 object-identifier device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4450,6 +4620,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 30] device,201 object-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4463,6 +4634,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 30] device,201 object-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4479,6 +4651,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 31] device,201 object-type",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4492,6 +4665,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 31] device,201 object-type device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4505,6 +4679,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 32] device,201 system-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4518,6 +4693,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 32] device,201 system-status device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4529,11 +4705,12 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
-                    assertEquals(Arrays.asList((byte) 0x0), baCnetApplicationTagEnumerated.getData());
+                    assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 33] device,201 vendor-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4547,6 +4724,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 33] device,201 vendor-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4563,6 +4741,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 34] device,201 vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4576,6 +4755,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 34] device,201 vendor-identifier device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4589,6 +4769,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 35] device,201 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4602,6 +4783,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 35] device,201 model-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4618,6 +4800,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 36] device,201 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4631,6 +4814,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 36] device,201 model-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4647,6 +4831,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 37] device,201 application-software-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4660,6 +4845,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 37] device,201 application-software-version device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4676,6 +4862,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 38] device,201 protocol-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4689,6 +4876,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 38] device,201 protocol-version device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4705,6 +4893,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 39] device,201 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4718,6 +4907,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 39] device,201 protocol-conformance-class device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4734,6 +4924,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 40] device,201 protocol-services-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4747,6 +4938,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 40] device,201 protocol-services-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4763,6 +4955,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 41] device,201 protocol-object-types-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4776,6 +4969,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 41] device,201 protocol-object-types-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4792,6 +4986,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 42] device,201 max-apdu-length-accepted",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4805,6 +5000,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 42] device,201 max-apdu-length-accepted device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4821,6 +5017,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 43] device,201 segmentation-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4834,6 +5031,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 43] device,201 segmentation-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4845,11 +5043,12 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
-                    assertEquals(Arrays.asList((byte) 0), BACnetApplicationTagEnumerated.getData());
+                    assertEquals(List.of((byte) 0), BACnetApplicationTagEnumerated.getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 44] device,201 local-time",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4863,6 +5062,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 44] device,201 local-time device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4881,6 +5081,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 45] device,201 local-date",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4894,6 +5095,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 45] device,201 local-date device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4913,6 +5115,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 46] device,201 utc-offset",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4926,6 +5129,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 46] device,201 utc-offset device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4942,6 +5146,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 47] device,201 daylights-savings-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4955,6 +5160,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 47] device,201 daylights-savings-status device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4971,6 +5177,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 48] device,201 apdu-segment-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -4984,6 +5191,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 48] device,201 apdu-segment-timeout device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5000,6 +5208,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 49] device,201 apdu-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5013,6 +5222,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 49] device,201 apdu-timeout device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5029,6 +5239,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 50] device,201 number-of-APDU-retries",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5042,6 +5253,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 50] device,201 number-of-APDU-retries device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5058,6 +5270,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 51] device,201 time-synchronization-recipients",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5071,16 +5284,18 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("ERROR           readProperty[ 51] device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
                     // TODO: use proper enums
-                    assertEquals(Arrays.asList((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
+                    assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 52] device,201 max-master",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5094,6 +5309,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 52] device,201 max-master device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5110,6 +5326,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 53] device,201 max-info-frames",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5123,6 +5340,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 53] device,201 max-info-frames device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5139,6 +5357,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 54] device,201 device-address-binding",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5152,6 +5371,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 54] device,201 device-address-binding device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5165,6 +5385,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 55] device,201 (514) Vendor Proprietary Value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5178,6 +5399,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 55] device,201 (514) Vendor Proprietary Value device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5194,6 +5416,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 56] device,201 (515) Vendor Proprietary Value device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5207,16 +5430,18 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 56] device,201 Error",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
                     // TODO: use proper enums
-                    assertEquals(Arrays.asList((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
+                    assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5230,6 +5455,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 57] object-identifier device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5247,6 +5473,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 58] device,61 object-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5260,6 +5487,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 58] object-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5276,6 +5504,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 59] device,61 object-type",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5289,6 +5518,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 59] object-type device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5300,11 +5530,12 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
-                    assertEquals(Arrays.asList((byte) 8), baCnetApplicationTagEnumerated.getData());
+                    assertEquals(List.of((byte) 8), baCnetApplicationTagEnumerated.getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 60] device,61 system-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5318,6 +5549,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 60] device,61 system-status device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5329,11 +5561,12 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
-                    assertEquals(Arrays.asList((byte) 0x0), baCnetApplicationTagEnumerated.getData());
+                    assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 61] device,61 vendor-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5347,6 +5580,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 61] device,61 vendor-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5363,6 +5597,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 62] device,61 vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5376,6 +5611,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 62] device,61 vendor-identifier device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5389,6 +5625,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 63] device,61 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5402,6 +5639,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 63] device,61 model-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5418,6 +5656,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 64] device,61 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5431,6 +5670,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 64] device,61 model-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5447,6 +5687,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 65] device,61 application-software-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5460,6 +5701,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 65] device,61 application-software-version device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5476,6 +5718,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 66] device,61 protocol-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5489,6 +5732,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 66] device,61 protocol-version device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5505,6 +5749,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 67] device,61 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5518,6 +5763,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 67] device,61 protocol-conformance-class device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5534,6 +5780,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 68] device,61 protocol-services-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5547,6 +5794,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 68] device,61 protocol-services-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5563,6 +5811,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 69] device,61 protocol-object-types-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5576,6 +5825,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 69] device,61 protocol-object-types-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5592,6 +5842,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 70] device,61 max-apdu-length-accepted",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5605,6 +5856,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 70] device,61 max-apdu-length-accepted device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5621,6 +5873,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 71] device,61 segmentation-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5634,6 +5887,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 71] device,61 segmentation-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5645,11 +5899,12 @@ public class RandomPackagesTest {
                     assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetServiceAckReadProperty.getPropertyIdentifier().getValue());
                     BACnetApplicationTag value = baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
-                    assertEquals(Arrays.asList((byte) 0), BACnetApplicationTagEnumerated.getData());
+                    assertEquals(List.of((byte) 0), BACnetApplicationTagEnumerated.getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 72] device,61 local-time",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5663,6 +5918,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 72] device,61 local-time device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5681,6 +5937,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 73] device,61 local-date",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5694,6 +5951,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 73] device,61 local-date device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5713,6 +5971,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 74] device,61 utc-offset",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5726,6 +5985,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 74] device,61 utc-offset device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5742,6 +6002,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 75] device,61 daylights-savings-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5755,6 +6016,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 75] device,61 daylights-savings-status device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5771,6 +6033,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 76] device,61 apdu-segment-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5784,6 +6047,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 76] device,61 apdu-segment-timeout device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5800,6 +6064,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 77] device,61 apdu-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5813,6 +6078,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 77] device,61 apdu-timeout device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5829,6 +6095,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 78] device,61 number-of-APDU-retries",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5842,6 +6109,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 78] device,61 number-of-APDU-retries device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5858,6 +6126,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 79] device,61 time-synchronization-recipients",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5871,16 +6140,18 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("ERROR           readProperty[ 79] device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUError apduError = (APDUError) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                     BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
                     // TODO: use proper enums
-                    assertEquals(Arrays.asList((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
+                    assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 80] device,61 max-master",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5894,6 +6165,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 80] device,61 max-master device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5910,6 +6182,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 81] device,61 max-info-frames",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5923,6 +6196,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 81] device,61 max-info-frames device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5939,6 +6213,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 82] device,61 device-address-binding",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5952,6 +6227,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 82] device,61 device-address-binding device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5965,6 +6241,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 83] device,61 (514) Vendor Proprietary Value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5978,6 +6255,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 83] device,61 (514) Vendor Proprietary Value device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -5996,6 +6274,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 84] device,61 (515) Vendor Proprietary Value device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -6009,6 +6288,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Complex-ACK     readProperty[ 84] device,61 Error",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUComplexAck apduComplexAck = (APDUComplexAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -6029,21 +6309,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-property-bad")
-    Collection<DynamicTest> read_property_bad() throws Exception {
+    Collection<DynamicNode> read_property_bad() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-property-bad.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6053,21 +6333,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-property-epics")
-    Collection<DynamicTest> read_property_epics() throws Exception {
+    Collection<DynamicNode> read_property_epics() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-property-epics.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6077,21 +6357,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-property-synergy")
-    Collection<DynamicTest> read_property_synergy() throws Exception {
+    Collection<DynamicNode> read_property_synergy() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-property-synergy.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6101,21 +6381,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("read-property")
-    Collection<DynamicTest> read_property() throws Exception {
+    Collection<DynamicNode> read_property() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("read-property.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6125,21 +6405,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("readfile")
-    Collection<DynamicTest> readfile() throws Exception {
+    Collection<DynamicNode> readfile() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("readfile.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6149,13 +6429,13 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("readrange_malformed")
-    Collection<DynamicTest> readrange_malformed() throws Exception {
+    Collection<DynamicNode> readrange_malformed() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("readrange_malformed.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6165,21 +6445,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("reinit-device")
-    Collection<DynamicTest> reinit_device() throws Exception {
+    Collection<DynamicNode> reinit_device() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("reinit-device.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6189,21 +6469,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("router")
-    Collection<DynamicTest> router() throws Exception {
+    Collection<DynamicNode> router() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("router.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6213,14 +6493,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("routers")
-    Collection<DynamicTest> routers() throws Exception {
+    Collection<DynamicNode> routers() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("routers.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6228,8 +6508,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6239,21 +6519,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rp-device")
-    Collection<DynamicTest> rp_device() throws Exception {
+    Collection<DynamicNode> rp_device() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rp-device.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6263,21 +6543,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rp-shed-level")
-    Collection<DynamicTest> rp_shed_level() throws Exception {
+    Collection<DynamicNode> rp_shed_level() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rp-shed-level.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("Confirmed-REQ   readProperty[  1] load-control,0 expected-shed-level",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("Complex-ACK     readProperty[  1] load-control,0 expected-shed-level",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6287,21 +6567,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rp")
-    Collection<DynamicTest> rp() throws Exception {
+    Collection<DynamicNode> rp() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rp.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6311,21 +6591,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rpm-error")
-    Collection<DynamicTest> rpm_error() throws Exception {
+    Collection<DynamicNode> rpm_error() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rpm-error.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6335,21 +6615,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rpm")
-    Collection<DynamicTest> rpm() throws Exception {
+    Collection<DynamicNode> rpm() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rpm.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6359,21 +6639,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("rpm_multiple_scheduler_bug")
-    Collection<DynamicTest> rpm_multiple_scheduler_bug() throws Exception {
+    Collection<DynamicNode> rpm_multiple_scheduler_bug() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("rpm_multiple_scheduler_bug.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6383,21 +6663,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("schedule-rpm-foreign")
-    Collection<DynamicTest> schedule_rpm_foreign() throws Exception {
+    Collection<DynamicNode> schedule_rpm_foreign() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("schedule-rpm-foreign.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6407,21 +6687,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("signed_value_negative")
-    Collection<DynamicTest> signed_value_negative() throws Exception {
+    Collection<DynamicNode> signed_value_negative() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("signed_value_negative.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6431,21 +6711,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("single-RPM")
-    Collection<DynamicTest> single_RPM() throws Exception {
+    Collection<DynamicNode> single_RPM() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("single-RPM.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6455,21 +6735,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("softdel-BTL")
-    Collection<DynamicTest> softdel_BTL() throws Exception {
+    Collection<DynamicNode> softdel_BTL() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("softdel-BTL.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6480,21 +6760,21 @@ public class RandomPackagesTest {
     @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("special-events")
-    Collection<DynamicTest> special_events() throws Exception {
+    Collection<DynamicNode> special_events() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("special-events.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6504,21 +6784,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("startup-exchange")
-    Collection<DynamicTest> startup_exchange() throws Exception {
+    Collection<DynamicNode> startup_exchange() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("startup-exchange.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6528,21 +6808,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("state_text")
-    Collection<DynamicTest> state_text() throws Exception {
+    Collection<DynamicNode> state_text() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("state_text.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6552,21 +6832,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("state_text_good")
-    Collection<DynamicTest> state_text_good() throws Exception {
+    Collection<DynamicNode> state_text_good() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("state_text_good.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6576,21 +6856,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("subordinatelist_rpm")
-    Collection<DynamicTest> subordinatelist_rpm() throws Exception {
+    Collection<DynamicNode> subordinatelist_rpm() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("subordinatelist_rpm.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6600,21 +6880,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("synergy-binding-2x63y")
-    Collection<DynamicTest> synergy_binding_2x63y() throws Exception {
+    Collection<DynamicNode> synergy_binding_2x63y() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("synergy-binding-2x63y.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6624,21 +6904,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("synergy-broken-rpm")
-    Collection<DynamicTest> synergy_broken_rpm() throws Exception {
+    Collection<DynamicNode> synergy_broken_rpm() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("synergy-broken-rpm.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6648,21 +6928,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("synergy-device")
-    Collection<DynamicTest> synergy_device() throws Exception {
+    Collection<DynamicNode> synergy_device() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("synergy-device.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6672,21 +6952,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("time-sync")
-    Collection<DynamicTest> time_sync() throws Exception {
+    Collection<DynamicNode> time_sync() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("time-sync.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6697,21 +6977,21 @@ public class RandomPackagesTest {
     @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("tridium jace2")
-    Collection<DynamicTest> tridium_jace2() throws Exception {
+    Collection<DynamicNode> tridium_jace2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("tridium%20jace2.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6721,21 +7001,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("u+4_MSTP")
-    Collection<DynamicTest> u_4_MSTP() throws Exception {
+    Collection<DynamicNode> u_4_MSTP() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("u+4_MSTP.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6745,21 +7025,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("weekend")
-    Collection<DynamicTest> weekend() throws Exception {
+    Collection<DynamicNode> weekend() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("weekend.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6769,21 +7049,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("who-has-I-have")
-    Collection<DynamicTest> who_has_I_have() throws Exception {
+    Collection<DynamicNode> who_has_I_have() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6799,6 +7079,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 133 133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6809,6 +7090,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6825,6 +7107,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ I-Am 133 133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6833,7 +7116,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getActualValue());
                     // TODO: we should use a enum here
-                    assertEquals(Arrays.asList((Byte) (byte) 0x0), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
+                    assertEquals(List.of((byte) (byte) 0x0), baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getData());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
             DynamicContainer.dynamicContainer("Confirmed-REQ atomicWriteFile 1-30", () -> {
@@ -6863,6 +7146,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6877,6 +7161,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6890,6 +7175,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -6903,6 +7189,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6917,6 +7204,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalBroadcastNPDU bvlcOriginalBroadcastNPDU = (BVLCOriginalBroadcastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalBroadcastNPDU.getNpdu().getApdu();
@@ -6930,6 +7218,7 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
@@ -6945,21 +7234,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("who-is-i-am")
-    Collection<DynamicTest> who_is_i_am() throws Exception {
+    Collection<DynamicNode> who_is_i_am() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("who-is-i-am.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6969,21 +7258,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("whois-basrtp-b-1")
-    Collection<DynamicTest> whois_basrtp_b_1() throws Exception {
+    Collection<DynamicNode> whois_basrtp_b_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-1.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -6993,21 +7282,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("whois-basrtp-b-2")
-    Collection<DynamicTest> whois_basrtp_b_2() throws Exception {
+    Collection<DynamicNode> whois_basrtp_b_2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7017,21 +7306,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("whois-iam")
-    Collection<DynamicTest> whois_iam() throws Exception {
+    Collection<DynamicNode> whois_iam() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("whois-iam.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7041,21 +7330,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wireshark_BBMDError")
-    Collection<DynamicTest> wireshark_BBMDError() throws Exception {
+    Collection<DynamicNode> wireshark_BBMDError() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wireshark_BBMDError.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7065,21 +7354,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wireshark_CEN_9_11")
-    Collection<DynamicTest> wireshark_CEN_9_11() throws Exception {
+    Collection<DynamicNode> wireshark_CEN_9_11() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wireshark_CEN_9_11.pcap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7089,21 +7378,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wp-rp-index")
-    Collection<DynamicTest> wp_rp_index() throws Exception {
+    Collection<DynamicNode> wp_rp_index() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wp-rp-index.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7113,14 +7402,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wp-weekly-schedule-index")
-    Collection<DynamicTest> wp_weekly_schedule_index() throws Exception {
+    Collection<DynamicNode> wp_weekly_schedule_index() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-index.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7128,8 +7417,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7139,14 +7428,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wp-weekly-schedule-test")
-    Collection<DynamicTest> wp_weekly_schedule_test() throws Exception {
+    Collection<DynamicNode> wp_weekly_schedule_test() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-test.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7154,8 +7443,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7165,14 +7454,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("wp_weekly_schedule")
-    Collection<DynamicTest> wp_weekly_schedule() throws Exception {
+    Collection<DynamicNode> wp_weekly_schedule() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("wp_weekly_schedule.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7180,8 +7469,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7191,21 +7480,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("write-property-array")
-    Collection<DynamicTest> write_property_array() throws Exception {
+    Collection<DynamicNode> write_property_array() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("write-property-array.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7215,21 +7504,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("write-property-multiple")
-    Collection<DynamicTest> write_property_multiple() throws Exception {
+    Collection<DynamicNode> write_property_multiple() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("write-property-multiple.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7239,21 +7528,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("write-property-wattstopper-panel")
-    Collection<DynamicTest> write_property_wattstopper_panel() throws Exception {
+    Collection<DynamicNode> write_property_wattstopper_panel() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("write-property-wattstopper-panel.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7263,14 +7552,14 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("write-property")
-    Collection<DynamicTest> write_property() throws Exception {
+    Collection<DynamicNode> write_property() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("write-property.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7278,8 +7567,8 @@ public class RandomPackagesTest {
             DynamicTest.dynamicTest("TODO",
                 () -> {
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7289,21 +7578,21 @@ public class RandomPackagesTest {
 
     @TestFactory
     @DisplayName("write-property2")
-    Collection<DynamicTest> write_property2() throws Exception {
+    Collection<DynamicNode> write_property2() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("write-property2.cap");
         return Arrays.asList(
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
             DynamicTest.dynamicTest("TODO",
                 () -> {
-                    BVLC bvlc;
-                    bvlc = pcapEvaluator.nextBVLC();
+                    BVLC bvlc = pcapEvaluator.nextBVLC();
+                    assertNotNull(bvlc);
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
@@ -7313,7 +7602,7 @@ public class RandomPackagesTest {
 
 
     private void dump(Serializable serializable) throws SerializationException {
-        WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(true, false);
+        WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(true, true);
         serializable.serialize(writeBuffer);
         LOGGER.info("{}\n{}", serializable.getClass().getName(), writeBuffer.getBox());
     }
@@ -7356,11 +7645,17 @@ public class RandomPackagesTest {
             currentPackage += numberOfPackages;
         }
 
+        private int getCurrentPackageNumber() {
+            return currentPackage;
+        }
+
         private BVLC nextBVLC() throws NotOpenException, ParseException {
             currentPackage += 1;
             Packet packet = pcapHandle.getNextPacket();
             LOGGER.info("({})Next packet:\n{}", currentPackage, packet);
-
+            if (packet == null) {
+                return null;
+            }
 
             UdpPacket udpPacket = packet.get(UdpPacket.class);
             assumeTrue(udpPacket != null, "nextBVLC assumes a UDP Packet. If non is there it might by LLC");

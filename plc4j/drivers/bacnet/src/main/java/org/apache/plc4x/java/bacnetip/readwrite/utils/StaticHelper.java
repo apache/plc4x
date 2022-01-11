@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType;
+import org.apache.plc4x.java.bacnetip.readwrite.BACnetEventState;
+import org.apache.plc4x.java.bacnetip.readwrite.BACnetEventType;
 import org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -86,6 +88,114 @@ public class StaticHelper {
         readBuffer.reset((int) (readBuffer.getPos() - actualLength));
         int bitsToRead = (int) (actualLength * 8);
         return readBuffer.readUnsignedLong("proprietaryPropertyIdentifier", bitsToRead);
+    }
+
+    public static BACnetEventType readEventType(ReadBuffer readBuffer, Long actualLength) throws ParseException {
+        int bitsToRead = (int) (actualLength * 8);
+        int readUnsignedLong = readBuffer.readUnsignedInt("eventType", bitsToRead);
+        BACnetEventType baCnetEventType = BACnetEventType.enumForValue(readUnsignedLong);
+        if (baCnetEventType == null) {
+            return BACnetEventType.VENDOR_PROPRIETARY_VALUE;
+        }
+        return baCnetEventType;
+    }
+
+    public static void writeEventType(WriteBuffer writeBuffer, BACnetEventType value) throws SerializationException {
+        if (value == null || value == BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        int bitsToWrite;
+        long valueValue = value.getValue();
+        if (valueValue <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (valueValue <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (valueValue <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("eventType", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
+    }
+
+    public static Long readProprietaryEventType(ReadBuffer readBuffer, BACnetEventType value, Long actualLength) throws ParseException {
+        if (value != null && value != BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
+            return 0L;
+        }
+        // We need to reset our reader to the position we read before
+        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
+        int bitsToRead = (int) (actualLength * 8);
+        return readBuffer.readUnsignedLong("proprietaryEventType", bitsToRead);
+    }
+
+    public static void writeProprietaryEventType(WriteBuffer writeBuffer, BACnetEventType eventType, long value) throws SerializationException {
+        if (eventType != null && eventType != BACnetEventType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        int bitsToWrite;
+        if (value <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (value <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (value <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("proprietaryEventType", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventType.VENDOR_PROPRIETARY_VALUE.name()));
+    }  public static BACnetEventState readEventState(ReadBuffer readBuffer, Long actualLength) throws ParseException {
+        int bitsToRead = (int) (actualLength * 8);
+        int readUnsignedLong = readBuffer.readUnsignedInt("eventState", bitsToRead);
+        BACnetEventState baCnetEventState = BACnetEventState.enumForValue(readUnsignedLong);
+        if (baCnetEventState == null) {
+            return BACnetEventState.VENDOR_PROPRIETARY_VALUE;
+        }
+        return baCnetEventState;
+    }
+
+    public static void writeEventState(WriteBuffer writeBuffer, BACnetEventState value) throws SerializationException {
+        if (value == null || value == BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        int bitsToWrite;
+        long valueValue = value.getValue();
+        if (valueValue <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (valueValue <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (valueValue <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("eventState", bitsToWrite, valueValue, WithAdditionalStringRepresentation(value.name()));
+    }
+
+    public static Long readProprietaryEventState(ReadBuffer readBuffer, BACnetEventState value, Long actualLength) throws ParseException {
+        if (value != null && value != BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
+            return 0L;
+        }
+        // We need to reset our reader to the position we read before
+        readBuffer.reset((int) (readBuffer.getPos() - actualLength));
+        int bitsToRead = (int) (actualLength * 8);
+        return readBuffer.readUnsignedLong("proprietaryEventState", bitsToRead);
+    }
+
+    public static void writeProprietaryEventState(WriteBuffer writeBuffer, BACnetEventState eventState, long value) throws SerializationException {
+        if (eventState != null && eventState != BACnetEventState.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        int bitsToWrite;
+        if (value <= 0xffL) {
+            bitsToWrite = 8;
+        } else if (value <= 0xffffL) {
+            bitsToWrite = 16;
+        } else if (value <= 0xffffffffL) {
+            bitsToWrite = 32;
+        } else {
+            bitsToWrite = 32;
+        }
+        writeBuffer.writeUnsignedLong("proprietaryEventState", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventState.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
     public static boolean isBACnetConstructedDataClosingTag(ReadBuffer readBuffer, int expectedTagNumber) {
