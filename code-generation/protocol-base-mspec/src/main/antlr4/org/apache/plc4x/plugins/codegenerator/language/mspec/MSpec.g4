@@ -65,6 +65,7 @@ field
  | unknownField
  | virtualField
  | validationField
+ | peekField
  ;
 
 abstractField
@@ -137,6 +138,10 @@ virtualField
 
 validationField
  : 'validation' validationExpression=expression (description=STRING_LITERAL)?
+ ;
+
+peekField
+ : 'peek' type=typeReference name=idExpression (offset=expression)?
  ;
 
 enumValueDefinition

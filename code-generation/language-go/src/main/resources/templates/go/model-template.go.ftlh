@@ -1118,6 +1118,69 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 				<#break>
+            <#case "peek">
+                <#assign peekField = field.asPeekField().orElseThrow()>
+
+				// Peek Field (${peekField.name})
+                <#if helper.isSimpleTypeReference(peekField.type)>
+				currentPos := readBuffer.GetPos()
+				${peekField.name}, _err := ${helper.getReadBufferReadMethodCall(peekField.name, peekField.type.asSimpleTypeReference().orElseThrow(), peekField)}
+				if _err != nil {
+					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				}
+                <#elseif helper.isEnumField(field)>
+				currentPos := readBuffer.GetPos()
+				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
+					return nil, pullErr
+				}
+				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+				if _err != nil {
+					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				}
+				if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
+					return nil, closeErr
+				}
+                <#else>
+				currentPos := readBuffer.GetPos()
+				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
+					return nil, pullErr
+				}
+                    <@compress single_line=true>
+                        <#assign complexTypeReference=peekField.type.asComplexTypeReference().orElseThrow()>
+                        <#assign typeName=complexTypeReference.name>
+                        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                        <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+                        <#-- Usually you don't use child directly unless they are parameterized #-->
+                            <#assign typeName=typeDefinition.parentType.name>
+                            <#assign typeDefinition=typeDefinition.parentType>
+                        </#if>
+                        <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                        <#assign refParams>
+                            <#if hasRefParams>
+								,
+                                <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                    ${helper.toTypedParseExpression(peekField, helper.getArgumentType(peekField.type, parserArgument?index), parserArgument, parserArguments)}
+                                    <#sep>, </#sep>
+                                </#list>
+                            </#if>
+                        </#assign>
+				${peekField.name}, _err := ${typeName}Parse(readBuffer${refParams})
+                    </@compress>
+
+				switch {
+					case _err != nil && _err != utils.ParseAssertError:
+						return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
+					case _err == utils.ParseAssertError:
+						readBuffer.Reset(currentPos)
+					default:
+						${peekField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
+						if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
+							return nil, closeErr
+						}
+				}
+                </#if>
+				readBuffer.Reset(currentPos)
+                <#break>
 		</#switch>
 	</#list>
 

@@ -279,7 +279,6 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign virtualField = field.asVirtualField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
-
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "validation">
@@ -288,6 +287,13 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
             throw new RuntimeException(${validationField.getDescription().orElse("Validation failed")});
         }
+        <#break>
+    <#case "peek">
+        <#assign peekField = field.asPeekField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
+
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}</#if>${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
 </#switch>
 </#list>

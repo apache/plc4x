@@ -127,4 +127,12 @@ public class FieldReaderFactory {
         return new FieldReaderVirtual<T>().readVirtualField(logicalName, type, valueExpression, readerArgs);
     }
 
+    public static <T> T readPeekField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderPeek<T>().readPeekField(logicalName, dataReader, 0, readerArgs);
+    }
+
+    public static <T> T readPeekField(String logicalName, DataReader<T> dataReader, int offset, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderPeek<T>().readPeekField(logicalName, dataReader, offset, readerArgs);
+    }
+
 }

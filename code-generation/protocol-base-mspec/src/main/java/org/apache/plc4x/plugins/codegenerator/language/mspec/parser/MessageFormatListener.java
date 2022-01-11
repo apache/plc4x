@@ -308,6 +308,20 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterPeekField(MSpecParser.PeekFieldContext ctx) {
+        TypeReference type = getTypeReference(ctx.type);
+        String name = getIdString(ctx.name);
+        Term offsetExpression = null;
+        if (ctx.offset != null) {
+            offsetExpression = getExpressionTerm(ctx.offset);
+        }
+        Field field = new DefaultPeekField(getAttributes(ctx), type, name, offsetExpression);
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterPaddingField(MSpecParser.PaddingFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = getIdString(ctx.name);
