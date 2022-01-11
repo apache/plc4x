@@ -25,6 +25,8 @@ import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
+import java.net.DatagramSocket;
+
 public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {
 
     private DceRpc_ActivityUuid dceRpc_activityUuid;
@@ -34,6 +36,9 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
     private MacAddress remoteMacAddress;
     private IpAddress remoteIpAddress;
     private int remoteUdpPort;
+    private int sessionKey;
+
+    private DatagramSocket udpSocket;
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
@@ -94,5 +99,21 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
 
     public void setRemoteUdpPort(int remoteUdpPort) {
         this.remoteUdpPort = remoteUdpPort;
+    }
+
+    public int getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(int sessionKey) {
+        this.sessionKey = sessionKey;
+    }
+
+    public DatagramSocket getUdpSocket() {
+        return udpSocket;
+    }
+
+    public void setUdpSocket(DatagramSocket udpSocket) {
+        this.udpSocket = udpSocket;
     }
 }

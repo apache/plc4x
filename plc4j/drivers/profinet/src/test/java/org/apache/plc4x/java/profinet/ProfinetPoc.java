@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.profinet;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
@@ -41,7 +40,7 @@ public class ProfinetPoc {
             new DceRpc_ObjectUuid(0x0001, 0x0904, 0x002A),
             new DceRpc_InterfaceUuid_DeviceInterface(), generateActivityUuid(),
             0, 0, DceRpc_Operation.CONNECT,
-            new PnIoCm_Packet_Req(404, 404, 0, 404,
+            new PnIoCm_Packet_Req(404, 404, 404, 0, 404,
                 Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
@@ -128,7 +127,7 @@ public class ProfinetPoc {
                     new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
                         PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
                         0x0000, 200, 0xC000, 0xA000)
-                ), 404)
+                ))
         );
 
         // Serialize the message

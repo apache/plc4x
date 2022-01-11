@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.readwrite.io.DceRpc_PacketIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -37,20 +38,21 @@ import org.pcap4j.core.Pcaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.io.IOException;
+import java.net.*;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+
+    private static AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
 
@@ -73,18 +75,31 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
         RawSocketChannel rawSocketChannel = (RawSocketChannel) channel;
 
+        // Create an udp socket
+        DatagramSocket udpSocket;
+        try {
+            udpSocket = new DatagramSocket();
+        } catch (SocketException e) {
+            logger.warn("Unable to create udp socket " + e.getMessage());
+            context.getChannel().close();
+            return;
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Initialize some important datastructures, that will be used a lot.
 
         // Generate a new Activity Id, which will be used throughout the connection.
         profinetDriverContext.setDceRpcActivityUuid(generateActivityUuid());
 
+        // TODO: Possibly we can remove the ARP lookup and simply use the mac address in the connection-response.
+
         // Local connectivity attributes
         profinetDriverContext.setLocalMacAddress(new MacAddress(rawSocketChannel.getLocalMacAddress().getAddress()));
         final InetSocketAddress localAddress = (InetSocketAddress) rawSocketChannel.getLocalAddress();
         Inet4Address localIpAddress = (Inet4Address) localAddress.getAddress();
         profinetDriverContext.setLocalIpAddress(new IpAddress(localIpAddress.getAddress()));
-        profinetDriverContext.setLocalUdpPort(localAddress.getPort());
+        // Use the port of the udp socket
+        profinetDriverContext.setLocalUdpPort(udpSocket.getPort());
 
         // Remote connectivity attributes
         profinetDriverContext.setRemoteMacAddress(new MacAddress(rawSocketChannel.getRemoteMacAddress().getAddress()));
@@ -93,21 +108,44 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         profinetDriverContext.setRemoteIpAddress(new IpAddress(remoteIpAddress.getAddress()));
         profinetDriverContext.setRemoteUdpPort(remoteAddress.getPort());
 
+        // Generate a new session key.
+        profinetDriverContext.setSessionKey(sessionKeyGenerator.getAndIncrement());
+        // Reset the session key as soon as it reaches the max for a 16 bit uint
+        if(sessionKeyGenerator.get() == 0xFFFF) {
+            sessionKeyGenerator.set(1);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Create the connection request.
         try {
-            final Ethernet_Frame profinetConnectionRequest = createProfinetConnectionRequest();
+            // Create the packet
+            final DceRpc_Packet profinetConnectionRequest = createProfinetConnectionRequest();
+            // Serialize it to a byte-payload
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(profinetConnectionRequest.getLengthInBytes());
+            profinetConnectionRequest.serialize(writeBuffer);
+            // Create a udp packet.
+            DatagramPacket connectRequestPacket = new DatagramPacket(writeBuffer.getData(), writeBuffer.getData().length);
+            connectRequestPacket.setAddress(remoteAddress.getAddress());
+            connectRequestPacket.setPort(remoteAddress.getPort());
+            // Send it.
+            udpSocket.send(connectRequestPacket);
 
-            context.sendRequest(profinetConnectionRequest)
-                .onTimeout(e -> {
-                    logger.warn("Timeout during Connection establishing, closing channel...");
-                    context.getChannel().close();
-                })
-                .expectResponse(Ethernet_Frame.class, REQUEST_TIMEOUT)
-                .handle(ethernet_frame -> {
-                    System.out.println(ethernet_frame);
-                });
+            // Receive the response.
+            byte[] resultBuffer = new byte[profinetConnectionRequest.getLengthInBytes()];
+            DatagramPacket connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
+            udpSocket.receive(connectResponsePacket);
+            ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
+            final DceRpc_Packet dceRpc_packet = DceRpc_PacketIO.staticParse(readBuffer);
+            if(dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE) {
+                System.out.println(dceRpc_packet);
+            }
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (PlcException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
@@ -133,6 +171,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         return future;
     }
 
+    @Override
+    protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
+        super.decode(context, msg);
+    }
+
+
+
     private Optional<PcapNetworkInterface> getNetworkInterfaceForConnection(InetAddress address) {
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
@@ -151,33 +196,32 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         return Optional.empty();
     }
 
-    private Ethernet_Frame createProfinetConnectionRequest() throws PlcException {
+    private DceRpc_Packet createProfinetConnectionRequest() throws PlcException {
         try {
-            DceRpc_Packet dceRpcConnectionRequest = new DceRpc_Packet(
+            return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
                 new DceRpc_ObjectUuid(0x0001, 0x0904, 0x002A),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 profinetDriverContext.getDceRpcActivityUuid(),
                 0, 0, DceRpc_Operation.CONNECT,
-                new PnIoCm_Packet_Req(404, 404, 0, 404,
+                new PnIoCm_Packet_Req(404, 404, 404,0, 404,
                     Arrays.asList(
                         new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                             new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")),
-                            // TODO: "Session Key" needs to be dynamic
-                            2,
+                            profinetDriverContext.getSessionKey(),
                             profinetDriverContext.getLocalMacAddress(),
                             new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
                             false, false, false,
                             false, PnIoCm_CompanionArType.SINGLE_AR, false,
                             true, false, PnIoCm_State.ACTIVE,
                             600,
-                            // TODO: The cmInitiatorUdpPort should be set to the port number used in the connection string.
+                            // This actually needs to be set to this value and not the real port number.
                             0x8892,
-                            "plc4x-pn-master"),
+                            // It seems that it must be set to this value, or it won't work.
+                            "profinetxadriver4933"),
                         new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.INPUT_CR,
                             0x0001,
-                            // TODO: The LT should be set to the port number used in the connection string.
                             0x8892,
                             false, false,
                             false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
@@ -253,15 +297,15 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
                         new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
                             PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
                             0x0000, 200, 0xC000, 0xA000)
-                    ), 404)
+                    ))
             );
 
-            // Build the UDP/IP/EthernetFrame to transport the package.
+            /*// Build the UDP/IP/EthernetFrame to transport the package.
             return new Ethernet_Frame(profinetDriverContext.getRemoteMacAddress(), profinetDriverContext.getLocalMacAddress(),
                 new Ethernet_FramePayload_IPv4(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE), (short) 64,
                     profinetDriverContext.getLocalIpAddress(), profinetDriverContext.getRemoteIpAddress(),
                     new Udp_Packet(profinetDriverContext.getLocalUdpPort(), profinetDriverContext.getRemoteUdpPort(),
-                        dceRpcConnectionRequest)));
+                        dceRpcConnectionRequest)));*/
         } catch (DecoderException e) {
             throw new PlcException("Error creating connection request", e);
         }
