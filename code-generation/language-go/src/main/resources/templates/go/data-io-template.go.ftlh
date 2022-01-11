@@ -72,9 +72,36 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.cases as case>
-        <#if case.discriminatorValueTerms?has_content>case <#list case.discriminatorValueTerms as discriminatorValueTerm>${helper.toParseExpression(null, null, type.switchField.discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} == <#if helper.isComplexTypeReference(parserArguments[discriminatorValueTerm?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValueTerm?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValueTerm?index].type)}_${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}<#else>${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}</#if><#else>${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}</#if><#sep> && </#list> <#else>default</#if>: // ${case.name}
+		<@compress single_line=true>
+        <#if case.discriminatorValueTerms?has_content>
+			case
+			<#list case.discriminatorValueTerms as discriminatorValueTerm>
+				${helper.toParseExpression(null, null, type.switchField.discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} ==
+				<#if helper.isComplexTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+					<#if helper.isEnumTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+                        <#assign enumType=helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+                        <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+                        <#assign enumTypeTraces=tracer.extractTraces(enumType)>
+                        <#assign enumValue=helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)>
+                        <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+                        <#assign enumValueTraces=tracer.extractTraces(enumValue)>
+                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+					<#else>
+						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
+					</#if>
+				<#else>
+					${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
+				</#if>
+				<#sep> && </#sep>
+			</#list>
+		<#else>
+			default
+		</#if>: // ${case.name}
+		</@compress>
 		<#assign valueDefined=false>
 		<#if case.name == "Struct">
+
+			// Struct
 			_map := map[string]api.PlcValue{}
 			<#assign valueDefined=true>
 		</#if>
@@ -181,7 +208,32 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 	switch {
 	<#assign defaultSet=false>
 	<#list type.switchField.cases as case>
-        <#if case.discriminatorValueTerms?has_content>case <#list case.discriminatorValueTerms as discriminatorValueTerm>${helper.toParseExpression(null, null, type.switchField.discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} == <#if helper.isComplexTypeReference(parserArguments[discriminatorValueTerm?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValueTerm?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValueTerm?index].type)}_${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}<#else>${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}</#if><#else>${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}</#if><#sep> && </#list> <#else>default<#assign defaultSet=true></#if>: // ${case.name}
+		<@compress single_line=true>
+        <#if case.discriminatorValueTerms?has_content>
+			case
+			<#list case.discriminatorValueTerms as discriminatorValueTerm>
+				${helper.toParseExpression(null, null, type.switchField.discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} ==
+				<#if helper.isComplexTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+					<#if helper.isEnumTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+                        <#assign enumType=helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+                        <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+                        <#assign enumTypeTraces=tracer.extractTraces(enumType)>
+                        <#assign enumValue=helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)>
+                        <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+                        <#assign enumValueTraces=tracer.extractTraces(enumValue)>
+                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+					<#else>
+						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
+					</#if>
+				<#else>
+					${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
+				</#if>
+				<#sep> && </#sep>
+			</#list>
+		<#else>
+			default<#assign defaultSet=true>
+		</#if>: // ${case.name}
+		</@compress>
 		<#list case.fields as field>
 			<#switch field.typeName>
 				<#case "array">

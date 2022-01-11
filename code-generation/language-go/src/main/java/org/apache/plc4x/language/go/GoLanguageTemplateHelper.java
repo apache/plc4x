@@ -780,7 +780,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             tracer = tracer.dive("serialization argument");
             return tracer + variableLiteral.getName() +
                 variableLiteral.getChild()
-                    .map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess))
+                    .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess)))
                     .orElse("");
         }
         String indexCall = "";
@@ -967,7 +967,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
         return tracer + "(" + (suppressPointerAccess ? "" : "*") + variableLiteral.getName() + ")" +
-            variableLiteral.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess)).orElse("");
+            variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess))).orElse("");
     }
 
     private String toConstantVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {

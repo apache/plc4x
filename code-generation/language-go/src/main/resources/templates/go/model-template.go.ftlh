@@ -125,7 +125,28 @@ type I${type.name} interface {
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
-	return <#if discriminatorTerm??><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}_${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}<#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
+			<@compress single_line=true>
+	return
+				<#if discriminatorTerm??>
+					<#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+						<#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+                            <#assign enumType=helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+                            <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+                            <#assign enumTypeTraces=tracer.extractTraces(enumType)>
+                            <#assign enumValue=helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)>
+                            <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+                            <#assign enumValueTraces=tracer.extractTraces(enumValue)>
+                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+						<#else>
+							${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}
+						</#if>
+					<#else>
+						${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}
+					</#if>
+				<#else>
+					${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}
+				</#if>
+			</@compress>
 }
 
 		</#if>
@@ -1075,7 +1096,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 								<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
 								<#elseif helper.isComplexTypeReference(discriminatorType)>
 									<#if helper.isEnumTypeReference(discriminatorType)>
-										${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
+										<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
+										<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+										<#assign enumTypeTraces=tracer.extractTraces(enumType)>
+										<#assign enumValue=helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)>
+										<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+										<#assign enumValueTraces=tracer.extractTraces(enumValue)>
+										${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
 									<#else>
 										${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 									</#if>
