@@ -32,7 +32,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 	readBuffer.PullContext("DataItem")
 	switch {
 	case dataType == "BOOL" && numberOfValues == uint16(1): // BOOL
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadBit("value")
 		if _valueErr != nil {
@@ -41,7 +40,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case dataType == "BOOL": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -54,7 +52,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -63,7 +60,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBYTE(value), nil
 	case dataType == "BYTE": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -76,7 +72,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -85,7 +80,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWORD(value), nil
 	case dataType == "WORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -98,7 +92,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -107,7 +100,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDWORD(value), nil
 	case dataType == "DWORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -120,7 +112,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -129,7 +120,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLWORD(value), nil
 	case dataType == "LWORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -142,7 +132,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -151,7 +140,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case dataType == "SINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -164,7 +152,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -173,7 +160,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case dataType == "INT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -186,7 +172,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -195,7 +180,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case dataType == "DINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -208,7 +192,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -217,7 +200,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case dataType == "LINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -230,7 +212,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -239,7 +220,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case dataType == "USINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -252,7 +232,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -261,7 +240,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case dataType == "UINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -274,7 +252,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -283,7 +260,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case dataType == "UDINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -296,7 +272,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -305,7 +280,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case dataType == "ULINT": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -318,7 +292,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "REAL" && numberOfValues == uint16(1): // REAL
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -327,7 +300,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case dataType == "REAL": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -340,7 +312,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LREAL" && numberOfValues == uint16(1): // LREAL
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
@@ -349,7 +320,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataType == "LREAL": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -362,7 +332,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -371,7 +340,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataType == "CHAR": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -384,7 +352,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -393,7 +360,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case dataType == "WCHAR": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
@@ -406,7 +372,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "STRING": // STRING
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(255))
 		if _valueErr != nil {
@@ -415,7 +380,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case dataType == "WSTRING": // STRING
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadString("value", uint32(255))
 		if _valueErr != nil {
@@ -432,13 +396,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 	writeBuffer.PushContext("DataItem")
 	switch {
 	case dataType == "BOOL" && numberOfValues == uint16(1): // BOOL
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "BOOL": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
@@ -447,13 +409,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "BYTE": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
@@ -462,13 +422,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
@@ -477,13 +435,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DWORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
@@ -492,13 +448,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LWORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
@@ -507,13 +461,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "SINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteInt8("", 8, value.GetIndex(i).GetInt8())
@@ -522,13 +474,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "INT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteInt16("", 16, value.GetIndex(i).GetInt16())
@@ -537,13 +487,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteInt32("", 32, value.GetIndex(i).GetInt32())
@@ -552,13 +500,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteInt64("", 64, value.GetIndex(i).GetInt64())
@@ -567,13 +513,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "USINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
@@ -582,13 +526,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
@@ -597,13 +539,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UDINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
@@ -612,13 +552,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "ULINT": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
@@ -627,13 +565,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "REAL" && numberOfValues == uint16(1): // REAL
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "REAL": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteFloat32("", 32, value.GetIndex(i).GetFloat32())
@@ -642,13 +578,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "LREAL" && numberOfValues == uint16(1): // LREAL
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LREAL": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteFloat64("", 64, value.GetIndex(i).GetFloat64())
@@ -657,13 +591,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "CHAR": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
@@ -672,13 +604,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WCHAR": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32(numberOfValues); i++ {
 			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
@@ -687,13 +617,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == "STRING": // STRING
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WSTRING": // STRING
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")

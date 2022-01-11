@@ -28,8 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetPropertyStates struct {
-	OpeningTag *BACnetOpeningTag
-	ClosingTag *BACnetClosingTag
+	OpeningTag      *BACnetOpeningTag
+	PeekedTagNumber uint8
+	ClosingTag      *BACnetClosingTag
+	Child           IBACnetPropertyStatesChild
 }
 
 // The corresponding interface
@@ -39,8 +41,20 @@ type IBACnetPropertyStates interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetPropertyStates {
-	return &BACnetPropertyStates{OpeningTag: openingTag, ClosingTag: closingTag}
+type IBACnetPropertyStatesParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetPropertyStates, serializeChildFunction func() error) error
+	GetTypeName() string
+}
+
+type IBACnetPropertyStatesChild interface {
+	Serialize(writeBuffer utils.WriteBuffer) error
+	InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag)
+	GetTypeName() string
+	IBACnetPropertyStates
+}
+
+func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, peekedTagNumber uint8, closingTag *BACnetClosingTag) *BACnetPropertyStates {
+	return &BACnetPropertyStates{OpeningTag: openingTag, PeekedTagNumber: peekedTagNumber, ClosingTag: closingTag}
 }
 
 func CastBACnetPropertyStates(structType interface{}) *BACnetPropertyStates {
@@ -65,6 +79,10 @@ func (m *BACnetPropertyStates) LengthInBits() uint16 {
 }
 
 func (m *BACnetPropertyStates) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetPropertyStates) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
@@ -98,6 +116,30 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		return nil, closeErr
 	}
 
+	// Peek Field (peekedTagNumber)
+	currentPos := readBuffer.GetPos()
+	peekedTagNumber, _err := readBuffer.ReadUint8("peekedTagNumber", 4)
+	if _err != nil {
+		return nil, errors.Wrap(_err, "Error parsing 'peekedTagNumber' field")
+	}
+	readBuffer.Reset(currentPos)
+
+	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+	var _parent *BACnetPropertyStates
+	var typeSwitchError error
+	switch {
+	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
+		_parent, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
+	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
+		_parent, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
+	}
+	if typeSwitchError != nil {
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
 	// Simple Field (closingTag)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
@@ -115,11 +157,16 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 		return nil, closeErr
 	}
 
-	// Create the instance
-	return NewBACnetPropertyStates(openingTag, closingTag), nil
+	// Finish initializing
+	_parent.Child.InitializeParent(_parent, openingTag, peekedTagNumber, closingTag)
+	return _parent, nil
 }
 
 func (m *BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {
+	return m.Child.Serialize(writeBuffer)
+}
+
+func (m *BACnetPropertyStates) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetPropertyStates, serializeChildFunction func() error) error {
 	if pushErr := writeBuffer.PushContext("BACnetPropertyStates"); pushErr != nil {
 		return pushErr
 	}
@@ -134,6 +181,11 @@ func (m *BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	}
+
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	// Simple Field (closingTag)

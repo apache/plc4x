@@ -871,13 +871,61 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CEN_10() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("CEN_10.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[  7] device,151 trend-log,1 trend-log,1 log-buffer device,151",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     assertNotNull(bvlc);
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 0, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(151, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.TREND_LOG, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampDateTime timestamp = (BACnetTimeStampDateTime) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp();
+                        assertEquals(2008, timestamp.getDateTimeValue().getDateValue().getYear());
+                        assertEquals(5, timestamp.getDateTimeValue().getDateValue().getMonth());
+                        assertEquals(2, timestamp.getDateTimeValue().getDateValue().getDayOfMonth());
+                        assertEquals(5, timestamp.getDateTimeValue().getDateValue().getDayOfWeek());
+                        assertEquals(11, timestamp.getDateTimeValue().getTimeValue().getHour());
+                        assertEquals(11, timestamp.getDateTimeValue().getTimeValue().getMinute());
+                        assertEquals(30, timestamp.getDateTimeValue().getTimeValue().getSecond());
+                        assertEquals(0, timestamp.getDateTimeValue().getTimeValue().getFractional());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getActualValue());
+                    }
+                    {
+                        assertEquals(15, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getActualValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.BUFFER_READY, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getIsTrue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
+                    }
+                    {
+                        BACnetNotificationParametersBufferReady baCnetNotificationParametersBufferReady = (BACnetNotificationParametersBufferReady) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        assertEquals(BACnetObjectType.TREND_LOG, baCnetNotificationParametersBufferReady.getBufferProperty().getObjectIdentifier().getObjectType());
+                        assertEquals(BACnetPropertyIdentifier.LOG_BUFFER, baCnetNotificationParametersBufferReady.getBufferProperty().getPropertyIdentifier().getValue());
+                        assertEquals(BACnetObjectType.DEVICE, baCnetNotificationParametersBufferReady.getBufferProperty().getDeviceIdentifier().getObjectType());
+                        assertEquals(1640, baCnetNotificationParametersBufferReady.getPreviousNotification().getActualValue());
+                        assertEquals(1653, baCnetNotificationParametersBufferReady.getCurrentNotification().getActualValue());
+                    }
                 })
         );
     }
@@ -956,26 +1004,63 @@ public class RandomPackagesTest {
         })).map(DynamicNode.class::cast).iterator());
     }
 
+    @Disabled("not working because of tag numbers > 15")
     @TestFactory
     @DisplayName("ContextTagAbove14Sample_1")
     Collection<DynamicNode> ContextTagAbove14Sample_1() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("ContextTagAbove14Sample_1.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("skipLLC",
                 () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    assertNotNull(bvlc);
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    pcapEvaluator.skipPackages(1);
                 }),
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[138] device,1 event-enrollment,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     assertNotNull(bvlc);
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 1, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.EVENT_ENROLLMENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampSequence timestamp = (BACnetTimeStampSequence) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp();
+                        assertEquals(1, timestamp.getSequenceNumber().getActualValue());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getActualValue());
+                    }
+                    {
+                        assertEquals(111, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getActualValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.CHANGE_OF_STATE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.EVENT, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getIsFalse());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
+                    }
+                    {
+                        BACnetNotificationParametersChangeOfState baCnetNotificationParametersChangeOfState = (BACnetNotificationParametersChangeOfState) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        assertEquals(true, baCnetNotificationParametersChangeOfState.getStatusFlags().getInAlarm());
+                        assertEquals(false, baCnetNotificationParametersChangeOfState.getStatusFlags().getFault());
+                        assertEquals(false, baCnetNotificationParametersChangeOfState.getStatusFlags().getOverriden());
+                        assertEquals(false, baCnetNotificationParametersChangeOfState.getStatusFlags().getOutOfService());
+                    }
                 })
         );
     }
@@ -1088,13 +1173,122 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Ethereal_Misinterpreted_Packet() throws Exception {
         PCAPEvaluator pcapEvaluator = pcapEvaluator("Ethereal-Misinterpreted-Packet.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
+            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[ 10] device,1041000 analog-input,3000016 (2200) Vendor Proprietary Value object-name (2201) Vendor Proprietary Value (2202) Vendor Proprietary Value reliability (661) VendorProprietary Value units (1659) Vendor Proprietary Value (2203) Vendor Proprietary Value vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     assertNotNull(bvlc);
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 0, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getValueUint8());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(1041000, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.ANALOG_INPUT, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(3000016, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampDateTime timestamp = (BACnetTimeStampDateTime) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp();
+                        assertEquals(2005, timestamp.getDateTimeValue().getDateValue().getYear());
+                        assertEquals(12, timestamp.getDateTimeValue().getDateValue().getMonth());
+                        assertEquals(8, timestamp.getDateTimeValue().getDateValue().getDayOfMonth());
+                        assertEquals(4, timestamp.getDateTimeValue().getDateValue().getDayOfWeek());
+                        assertEquals(14, timestamp.getDateTimeValue().getTimeValue().getHour());
+                        assertEquals(12, timestamp.getDateTimeValue().getTimeValue().getMinute());
+                        assertEquals(49, timestamp.getDateTimeValue().getTimeValue().getSecond());
+                        assertEquals(0, timestamp.getDateTimeValue().getTimeValue().getFractional());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getActualValue());
+                    }
+                    {
+                        assertEquals(200, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getActualValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.OUT_OF_RANGE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getValue());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.ALARM, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertTrue(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getIsTrue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getValue());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getValue());
+                    }
+                    {
+                        BACnetNotificationParametersComplexEventType baCnetNotificationParametersComplexEventType = (BACnetNotificationParametersComplexEventType) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(0);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(2200, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals("StockingNAE", baCnetApplicationTagCharacterString.getValue());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(1);
+                            assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals("StockingNAE/N2-1.NAE4-N2A-DX1.OA-T", baCnetApplicationTagCharacterString.getValue());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(2);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(2201, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 85), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(3);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(2202, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(35.093750, baCnetApplicationTagReal.getValue());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(4);
+                            assertEquals(BACnetPropertyIdentifier.RELIABILITY, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(5);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(661, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 5), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(6);
+                            assertEquals(BACnetPropertyIdentifier.UNITS, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 64), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(7);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(1659, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(8);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            assertEquals(2203, baCnetPropertyValue.getPropertyIdentifier().getProprietaryValue());
+                            BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(List.of((byte) 0), baCnetApplicationTagEnumerated.getData());
+                        }
+                        {
+                            BACnetPropertyValue baCnetPropertyValue = baCnetNotificationParametersComplexEventType.getData().get(9);
+                            assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetPropertyValue.getPropertyIdentifier().getValue());
+                            BACnetApplicationTagUnsignedInteger baCnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                            assertEquals(5, baCnetApplicationTagUnsignedInteger.getActualValue());
+                        }
+                    }
                 })
         );
     }

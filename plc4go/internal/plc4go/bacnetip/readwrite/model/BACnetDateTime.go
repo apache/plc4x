@@ -29,8 +29,8 @@ import (
 // The data-structure of this message
 type BACnetDateTime struct {
 	OpeningTag *BACnetOpeningTag
-	DateValue  *BACnetApplicationTagTime
-	TimeValue  *BACnetApplicationTagDate
+	DateValue  *BACnetApplicationTagDate
+	TimeValue  *BACnetApplicationTagTime
 	ClosingTag *BACnetClosingTag
 }
 
@@ -41,7 +41,7 @@ type IBACnetDateTime interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagTime, timeValue *BACnetApplicationTagDate, closingTag *BACnetClosingTag) *BACnetDateTime {
+func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag) *BACnetDateTime {
 	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag}
 }
 
@@ -114,7 +114,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field")
 	}
-	dateValue := CastBACnetApplicationTagTime(_dateValue)
+	dateValue := CastBACnetApplicationTagDate(_dateValue)
 	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -127,7 +127,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
 	}
-	timeValue := CastBACnetApplicationTagDate(_timeValue)
+	timeValue := CastBACnetApplicationTagTime(_timeValue)
 	if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
 		return nil, closeErr
 	}

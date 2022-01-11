@@ -505,6 +505,34 @@
                     innerClosingTag
             ]
         ]
+        ['2' BACnetNotificationParametersChangeOfValue(uint 4 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                    innerOpeningTag
+            ]
+            [simple BACnetNotificationParametersChangeOfValueNewValue('0')
+                    newValue
+            ]
+            [simple BACnetStatusFlags('1')
+                    statusFlags
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
+        // TODO: implement other cases
+        ['6' BACnetNotificationParametersComplexEventType(uint 4 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                    innerOpeningTag
+            ]
+            [array  BACnetPropertyValue
+                    data
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, peekedTagNumber)'
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
         // TODO: implement other cases
         ['9' BACnetNotificationParametersExtended(uint 4 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
@@ -523,7 +551,23 @@
                     innerClosingTag
             ]
         ]
-        // TODO: implement other cases
+        ['10' BACnetNotificationParametersBufferReady(uint 4 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                    innerOpeningTag
+            ]
+            [simple BACnetDeviceObjectPropertyReference('0')
+                    bufferProperty
+            ]
+            [simple BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                    previousNotification
+            ]
+            [simple BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                    currentNotification
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
         ['11' BACnetNotificationParametersUnsignedRange(uint 4 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                     innerOpeningTag
@@ -542,6 +586,29 @@
             ]
         ]
         // TODO: implement other cases
+    ]
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                closingTag
+    ]
+]
+
+// TODO: this could be inlined once we can support nested types
+[type BACnetNotificationParametersChangeOfValueNewValue(uint 4 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                openingTag
+    ]
+    [peek       uint 4  peekedTagNumber]
+    [typeSwitch peekedTagNumber
+        ['0' BACnetNotificationParametersChangeOfValueNewValueChangedBits(uint 4 peekedTagNumber)
+            [simple BACnetContextTagBitString('0', 'BACnetDataType.BIT_STRING')
+                    changedBits
+            ]
+        ]
+        ['1' BACnetNotificationParametersChangeOfValueNewValueChangedValue(uint 4 peekedTagNumber)
+            [simple BACnetContextTagReal('0', 'BACnetDataType.REAL')
+                    changedValue
+            ]
+        ]
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
@@ -576,14 +643,21 @@
     [optional   BACnetApplicationTagDate
                 dateValue]
     [optional   BACnetApplicationTagTime
-                timeValue
+                timeValue]
     [optional   BACnetApplicationTagObjectIdentifier
-                objectIdentifier
+                objectIdentifier]
     [optional   BACnetDeviceObjectPropertyReference('0')
                 reference]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
     ]
+]
+
+[type BACnetPropertyValue
+    [simple   BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+    [optional BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+    [optional BACnetConstructedDataElement                                                         propertyValue       ]
+    [optional BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
 ]
 
 [type BACnetDeviceObjectPropertyReference(uint 4 tagNumber)
@@ -609,11 +683,34 @@
     [virtual    bit outOfService    'rawBits.data[3]']
 ]
 
+[type BACnetAction(uint 4 tagNumber)
+    [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
+                rawData
+    ]
+    [virtual    bit isDirect         'rawData.data[0] == 0']
+    [virtual    bit isReverse        'rawData.data[1] == 1']
+]
+
 [type BACnetPropertyStates(uint 4 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
-    // TODO implement me
+    //TODO: implement tag numbers >15
+    [peek       uint 4  peekedTagNumber]
+    [typeSwitch peekedTagNumber
+        ['0' BACnetPropertyStatesBoolean(uint 4 peekedTagNumber)
+            [optional   BACnetContextTagBoolean('peekedTagNumber', 'BACnetDataType.BOOLEAN')
+                        booleanValue
+            ]
+        ]
+        // TODO: add missing type
+        ['16' BACnetPropertyStatesAction(uint 4 peekedTagNumber)
+            [optional   BACnetAction('peekedTagNumber')
+                        action
+            ]
+        ]
+        // TODO: add missing type
+    ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
     ]
@@ -647,17 +744,17 @@
 ]
 
 [type BACnetDateTime(uint 4 tagNumber)
-    [simple         BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                    openingTag
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                openingTag
     ]
-    [simple         BACnetApplicationTagTime
-                    dateValue
+    [simple     BACnetApplicationTagDate
+                dateValue
     ]
-    [simple         BACnetApplicationTagDate
-                    timeValue
+    [simple     BACnetApplicationTagTime
+                timeValue
     ]
-    [simple         BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
-                    closingTag
+    [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+                closingTag
     ]
 ]
 

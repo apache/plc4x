@@ -33,7 +33,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 	readBuffer.PullContext("DataItem")
 	switch {
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
-
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
@@ -47,7 +46,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case dataProtocolId == "IEC61131_BYTE": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((8)); i++ {
@@ -60,7 +58,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataProtocolId == "IEC61131_WORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((16)); i++ {
@@ -73,7 +70,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataProtocolId == "IEC61131_DWORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((32)); i++ {
@@ -86,7 +82,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataProtocolId == "IEC61131_LWORD": // List
-
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((64)); i++ {
@@ -99,7 +94,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataProtocolId == "IEC61131_SINT": // SINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -108,7 +102,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case dataProtocolId == "IEC61131_USINT": // USINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -117,7 +110,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case dataProtocolId == "IEC61131_INT": // INT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
@@ -126,7 +118,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case dataProtocolId == "IEC61131_UINT": // UINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -135,7 +126,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case dataProtocolId == "IEC61131_DINT": // DINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
@@ -144,7 +134,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case dataProtocolId == "IEC61131_UDINT": // UDINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -153,7 +142,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case dataProtocolId == "IEC61131_LINT": // LINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
 		if _valueErr != nil {
@@ -162,7 +150,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case dataProtocolId == "IEC61131_ULINT": // ULINT
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -171,7 +158,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case dataProtocolId == "IEC61131_REAL": // REAL
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
@@ -180,7 +166,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case dataProtocolId == "IEC61131_LREAL": // LREAL
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
@@ -189,7 +174,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-
 		// Manual Field (value)
 		value, _valueErr := ParseS7Char(readBuffer, "UTF-8")
 		if _valueErr != nil {
@@ -198,7 +182,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-
 		// Manual Field (value)
 		value, _valueErr := ParseS7Char(readBuffer, "UTF-16")
 		if _valueErr != nil {
@@ -207,7 +190,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_STRING": // STRING
-
 		// Manual Field (value)
 		value, _valueErr := ParseS7String(readBuffer, stringLength, "UTF-8")
 		if _valueErr != nil {
@@ -216,7 +198,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
-
 		// Manual Field (value)
 		value, _valueErr := ParseS7String(readBuffer, stringLength, "UTF-16")
 		if _valueErr != nil {
@@ -225,7 +206,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_TIME": // TIME
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -234,7 +214,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcTIME(value), nil
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
 		if _valueErr != nil {
@@ -243,7 +222,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIME(value), nil
 	case dataProtocolId == "IEC61131_DATE": // DATE
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -252,7 +230,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDATE(value), nil
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
-
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
@@ -261,7 +238,6 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcTIME_OF_DAY(value), nil
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
-
 		// Simple Field (year)
 		year, _yearErr := readBuffer.ReadUint16("year", 16)
 		if _yearErr != nil {
@@ -321,7 +297,6 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 	writeBuffer.PushContext("DataItem")
 	switch {
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
-
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
@@ -332,7 +307,6 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_BYTE": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
@@ -341,7 +315,6 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			}
 		}
 	case dataProtocolId == "IEC61131_WORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
@@ -350,7 +323,6 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			}
 		}
 	case dataProtocolId == "IEC61131_DWORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32((32)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
@@ -359,7 +331,6 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			}
 		}
 	case dataProtocolId == "IEC61131_LWORD": // List
-
 		// Array Field (value)
 		for i := uint32(0); i < uint32((64)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
@@ -368,119 +339,100 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 			}
 		}
 	case dataProtocolId == "IEC61131_SINT": // SINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_USINT": // USINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_INT": // INT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UINT": // UINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DINT": // DINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UDINT": // UDINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LINT": // LINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_ULINT": // ULINT
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_REAL": // REAL
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LREAL": // LREAL
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
-
 		// Manual Field (value)
 		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
-
 		// Manual Field (value)
 		_valueErr := SerializeS7Char(writeBuffer, value, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
-
 		// Manual Field (value)
 		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
-
 		// Manual Field (value)
 		_valueErr := SerializeS7String(writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_TIME": // TIME
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DATE": // DATE
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
-
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
-
 		// Simple Field (year)
 		if _err := writeBuffer.WriteUint16("year", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
