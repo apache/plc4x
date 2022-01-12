@@ -44,12 +44,14 @@ func (m *BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
 	return 0x0E
 }
 
-func (m *BACnetErrorReadPropertyMultiple) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorReadPropertyMultiple) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorReadPropertyMultiple() *BACnetError {
+func NewBACnetErrorReadPropertyMultiple(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorReadPropertyMultiple{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError

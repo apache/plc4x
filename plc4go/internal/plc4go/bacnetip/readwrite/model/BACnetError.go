@@ -28,7 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetError struct {
-	Child IBACnetErrorChild
+	ErrorClass *BACnetApplicationTagEnumerated
+	ErrorCode  *BACnetApplicationTagEnumerated
+	Child      IBACnetErrorChild
 }
 
 // The corresponding interface
@@ -46,13 +48,13 @@ type IBACnetErrorParent interface {
 
 type IBACnetErrorChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetError)
+	InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated)
 	GetTypeName() string
 	IBACnetError
 }
 
-func NewBACnetError() *BACnetError {
-	return &BACnetError{}
+func NewBACnetError(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
+	return &BACnetError{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 
 func CastBACnetError(structType interface{}) *BACnetError {
@@ -85,6 +87,12 @@ func (m *BACnetError) ParentLengthInBits() uint16 {
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
+	// Simple field (errorClass)
+	lengthInBits += m.ErrorClass.LengthInBits()
+
+	// Simple field (errorCode)
+	lengthInBits += m.ErrorCode.LengthInBits()
+
 	return lengthInBits
 }
 
@@ -115,6 +123,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		_parent, typeSwitchError = BACnetErrorConfirmedEventNotificationParse(readBuffer)
 	case serviceChoice == 0x04: // BACnetErrorGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(readBuffer)
+	case serviceChoice == 0x05: // BACnetErrorDeviceCommunicationProtocol
+		_parent, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
 	case serviceChoice == 0x1D: // BACnetErrorGetEventInformation
 		_parent, typeSwitchError = BACnetErrorGetEventInformationParse(readBuffer)
 	case serviceChoice == 0x06: // BACnetErrorAtomicReadFile
@@ -143,6 +153,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		_parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(readBuffer)
 	case serviceChoice == 0x0D: // BACnetErrorRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(readBuffer)
+	case true: // BACnetErrorUnknown
+		_parent, typeSwitchError = BACnetErrorUnknownParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -151,12 +163,38 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
+	// Simple Field (errorClass)
+	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
+		return nil, pullErr
+	}
+	_errorClass, _errorClassErr := BACnetApplicationTagParse(readBuffer)
+	if _errorClassErr != nil {
+		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
+	}
+	errorClass := CastBACnetApplicationTagEnumerated(_errorClass)
+	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	// Simple Field (errorCode)
+	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
+		return nil, pullErr
+	}
+	_errorCode, _errorCodeErr := BACnetApplicationTagParse(readBuffer)
+	if _errorCodeErr != nil {
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
+	}
+	errorCode := CastBACnetApplicationTagEnumerated(_errorCode)
+	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetError"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
+	_parent.Child.InitializeParent(_parent, errorClass, errorCode)
 	return _parent, nil
 }
 
@@ -180,6 +218,30 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
+	}
+
+	// Simple Field (errorClass)
+	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
+		return pushErr
+	}
+	_errorClassErr := m.ErrorClass.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
+		return popErr
+	}
+	if _errorClassErr != nil {
+		return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
+	}
+
+	// Simple Field (errorCode)
+	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
+		return pushErr
+	}
+	_errorCodeErr := m.ErrorCode.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
+		return popErr
+	}
+	if _errorCodeErr != nil {
+		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetError"); popErr != nil {

@@ -44,12 +44,14 @@ func (m *BACnetErrorAtomicWriteFile) ServiceChoice() uint8 {
 	return 0x07
 }
 
-func (m *BACnetErrorAtomicWriteFile) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorAtomicWriteFile) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorAtomicWriteFile() *BACnetError {
+func NewBACnetErrorAtomicWriteFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorAtomicWriteFile{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError

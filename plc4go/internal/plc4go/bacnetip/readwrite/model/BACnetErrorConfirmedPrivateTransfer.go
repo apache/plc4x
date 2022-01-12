@@ -44,12 +44,14 @@ func (m *BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
 	return 0x12
 }
 
-func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorConfirmedPrivateTransfer() *BACnetError {
+func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedPrivateTransfer{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError

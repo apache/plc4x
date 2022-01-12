@@ -44,12 +44,14 @@ func (m *BACnetErrorRemovedReadPropertyConditional) ServiceChoice() uint8 {
 	return 0x0D
 }
 
-func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorRemovedReadPropertyConditional() *BACnetError {
+func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorRemovedReadPropertyConditional{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError

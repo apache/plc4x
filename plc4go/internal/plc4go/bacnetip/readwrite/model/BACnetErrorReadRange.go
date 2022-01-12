@@ -44,12 +44,14 @@ func (m *BACnetErrorReadRange) ServiceChoice() uint8 {
 	return 0x1A
 }
 
-func (m *BACnetErrorReadRange) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorReadRange) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorReadRange() *BACnetError {
+func NewBACnetErrorReadRange(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorReadRange{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError

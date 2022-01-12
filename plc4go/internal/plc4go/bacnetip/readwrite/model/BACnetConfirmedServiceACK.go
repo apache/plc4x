@@ -117,6 +117,8 @@ func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirm
 		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer)
 	case serviceChoice == 0x07: // BACnetConfirmedServiceACKAtomicWriteFile
 		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer)
+	case serviceChoice == 0x08: // BACnetConfirmedServiceAddListElement
+		_parent, typeSwitchError = BACnetConfirmedServiceAddListElementParse(readBuffer)
 	case serviceChoice == 0x0A: // BACnetConfirmedServiceACKCreateObject
 		_parent, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(readBuffer)
 	case serviceChoice == 0x0C: // BACnetConfirmedServiceACKReadProperty

@@ -466,6 +466,9 @@
         ['0x07' BACnetConfirmedServiceACKAtomicWriteFile
         ]
 
+        ['0x08' BACnetConfirmedServiceAddListElement
+        ]
+
         ['0x0A' BACnetConfirmedServiceACKCreateObject
         ]
         ['0x0C' BACnetConfirmedServiceACKReadProperty
@@ -494,57 +497,48 @@
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetErrorAcknowledgeAlarm
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x03' BACnetErrorGetAlarmSummary
         ]
         ['0x02' BACnetErrorConfirmedEventNotification
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x04' BACnetErrorGetEnrollmentSummary
         ]
+        ['0x05' BACnetErrorDeviceCommunicationProtocol
+        ]
         ['0x1D' BACnetErrorGetEventInformation
         ]
-
         ['0x06' BACnetErrorAtomicReadFile
         ]
         ['0x07' BACnetErrorAtomicWriteFile
         ]
-
         ['0x0A' BACnetErrorCreateObject
         ]
         ['0x0C' BACnetErrorReadProperty
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x0E' BACnetErrorReadPropertyMultiple
         ]
         ['0x0F' BACnetErrorWriteProperty
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x1A' BACnetErrorReadRange
         ]
-
         ['0x12' BACnetErrorConfirmedPrivateTransfer
         ]
         ['0x14' BACnetErrorPasswordFailure
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
-
         ['0x15' BACnetErrorVTOpen
         ]
         ['0x17' BACnetErrorVTData
         ]
-
         ['0x18' BACnetErrorRemovedAuthenticate
         ]
         ['0x0D' BACnetErrorRemovedReadPropertyConditional
         ]
+        [BACnetErrorUnknown
+        ]
     ]
+    [simple BACnetApplicationTagEnumerated errorClass]
+    [simple BACnetApplicationTagEnumerated errorCode]
 ]
 
 [type BACnetNotificationParameters(uint 8 tagNumber)

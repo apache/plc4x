@@ -44,12 +44,14 @@ func (m *BACnetErrorGetAlarmSummary) ServiceChoice() uint8 {
 	return 0x03
 }
 
-func (m *BACnetErrorGetAlarmSummary) InitializeParent(parent *BACnetError) {
+func (m *BACnetErrorGetAlarmSummary) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
+	m.ErrorClass = errorClass
+	m.ErrorCode = errorCode
 }
 
-func NewBACnetErrorGetAlarmSummary() *BACnetError {
+func NewBACnetErrorGetAlarmSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorGetAlarmSummary{
-		BACnetError: NewBACnetError(),
+		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
 	child.Child = child
 	return child.BACnetError
