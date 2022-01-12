@@ -4785,12 +4785,14 @@ public class RandomPackagesTest {
             int packageNumber = 0;
             if (filter != null) {
                 // In case of filtering we need to read all packages
+                intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
                 LOGGER.info("Building timestamp number map");
                 timestampToNumberMap = new HashMap<>();
                 while (intermediateHandle.getNextPacket() != null) {
                     timestampToNumberMap.put(intermediateHandle.getTimestamp().getTime(), ++packageNumber);
                 }
                 intermediateHandle.close();
+                // We need a new handle as we consumed the old
                 intermediateHandle = getHandle(toParse);
                 intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
             } else {
