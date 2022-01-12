@@ -211,6 +211,9 @@
             [simple   uint 8 originalInvokeId       ]
             [simple   uint 8 abortReason            ]
         ]
+        [APDUUnknown
+            // TODO: find a way to slurp all remaining bytes for analysis
+        ]
     ]
 ]
 
