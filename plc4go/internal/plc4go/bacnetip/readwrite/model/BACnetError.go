@@ -107,6 +107,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	var _parent *BACnetError
 	var typeSwitchError error
 	switch {
+	case serviceChoice == 0x00: // BACnetErrorAcknowledgeAlarm
+		_parent, typeSwitchError = BACnetErrorAcknowledgeAlarmParse(readBuffer)
 	case serviceChoice == 0x03: // BACnetErrorGetAlarmSummary
 		_parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(readBuffer)
 	case serviceChoice == 0x02: // BACnetErrorConfirmedEventNotification

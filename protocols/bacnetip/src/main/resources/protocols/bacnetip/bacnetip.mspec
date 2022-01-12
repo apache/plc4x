@@ -337,33 +337,29 @@
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetUnconfirmedServiceRequestIAm
-            [simple BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
-            [simple BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
-            [simple BACnetApplicationTagEnumerated          segmentationSupported ] // TODO: map to enum
-            [simple BACnetApplicationTagUnsignedInteger     vendorId ] // TODO: vendor list?
+            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
+            [simple     BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
+            [simple     BACnetSegmentation                      segmentationSupported ] // TODO: map to enum
+            [simple     BACnetApplicationTagUnsignedInteger     vendorId ] // TODO: vendor list?
         ]
         ['0x01' BACnetUnconfirmedServiceRequestIHave
-            [simple BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
-            [simple BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
-            [simple BACnetApplicationTagCharacterString     objectName          ]
+            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
+            [simple     BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
+            [simple     BACnetApplicationTagCharacterString     objectName          ]
         ]
         ['0x02' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
-            [simple BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
-            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple BACnetPropertyValues('4')                                                        listOfValues                ]
+            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
+            [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+            [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
+            [simple     BACnetPropertyValues('4')                                                        listOfValues                ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
         ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-            [const uint 8 vendorIdHeader 0x09]
-            [simple uint 8 vendorId]
-            [const uint 8 serviceNumberHeader 0x1A]
-            [simple uint 16 serviceNumber]
-            [const uint 8 listOfValuesOpeningTag 0x2E]
-            [array int 8 values length 'len - 8']
-            [const uint 8 listOfValuesClosingTag 0x2F]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
+            [optional   BACnetPropertyValues('2')                                                        serviceParameters           ]
         ]
         ['0x05' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
         ]
@@ -388,6 +384,15 @@
         ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         ]
     ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum
+[type BACnetSegmentation
+    [simple BACnetApplicationTagEnumerated          rawData ]
+    [virtual    bit isSegmentedBoth           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
+    [virtual    bit isSegmentedTransmit       'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isSegmentedReceive        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 3']
+    [virtual    bit isNoSegmentation          'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 4']
 ]
 
 [discriminatedType BACnetServiceAck
@@ -488,6 +493,10 @@
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
+        ['0x00' BACnetErrorAcknowledgeAlarm
+            [simple BACnetApplicationTagEnumerated errorClass]
+            [simple BACnetApplicationTagEnumerated errorCode]
+        ]
         ['0x03' BACnetErrorGetAlarmSummary
         ]
         ['0x02' BACnetErrorConfirmedEventNotification
@@ -762,6 +771,7 @@
     [virtual    bit outOfService    'rawBits.data[3]']
 ]
 
+// TODO: this is a enum so we should build a static call which maps a enum
 [type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
@@ -888,10 +898,12 @@
             [optional   uint  8 valueUint8  'isUint8'           ]
             [virtual    bit     isUint16    'actualLength == 2' ]
             [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint32    'actualLength == 3' ]
+            [virtual    bit     isUint24    'actualLength == 3' ]
+            [optional   uint 24 valueUint24 'isUint24'          ]
+            [virtual    bit     isUint32    'actualLength == 4' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
             // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
             /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]
@@ -1000,10 +1012,12 @@
             [optional   uint  8 valueUint8  'isUint8'           ]
             [virtual    bit     isUint16    'actualLength == 2' ]
             [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint32    'actualLength == 3' ]
+            [virtual    bit     isUint24    'actualLength == 3' ]
+            [optional   uint 24 valueUint24 'isUint24'          ]
+            [virtual    bit     isUint32    'actualLength == 4' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
             // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
             /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]

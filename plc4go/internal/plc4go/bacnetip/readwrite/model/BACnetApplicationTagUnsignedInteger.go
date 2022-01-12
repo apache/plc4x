@@ -31,9 +31,11 @@ type BACnetApplicationTagUnsignedInteger struct {
 	*BACnetApplicationTag
 	ValueUint8  *uint8
 	ValueUint16 *uint16
+	ValueUint24 *uint32
 	ValueUint32 *uint32
 	IsUint8     bool
 	IsUint16    bool
+	IsUint24    bool
 	IsUint32    bool
 	ActualValue uint32
 }
@@ -61,13 +63,15 @@ func (m *BACnetApplicationTagUnsignedInteger) InitializeParent(parent *BACnetApp
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetApplicationTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, isUint8 bool, isUint16 bool, isUint32 bool, actualValue uint32, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, isUint8 bool, isUint16 bool, isUint24 bool, isUint32 bool, actualValue uint32, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagUnsignedInteger{
 		ValueUint8:           valueUint8,
 		ValueUint16:          valueUint16,
+		ValueUint24:          valueUint24,
 		ValueUint32:          valueUint32,
 		IsUint8:              isUint8,
 		IsUint16:             isUint16,
+		IsUint24:             isUint24,
 		IsUint32:             isUint32,
 		ActualValue:          actualValue,
 		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
@@ -122,6 +126,13 @@ func (m *BACnetApplicationTagUnsignedInteger) LengthInBitsConditional(lastItem b
 
 	// A virtual field doesn't have any in- or output.
 
+	// Optional Field (valueUint24)
+	if m.ValueUint24 != nil {
+		lengthInBits += 24
+	}
+
+	// A virtual field doesn't have any in- or output.
+
 	// Optional Field (valueUint32)
 	if m.ValueUint32 != nil {
 		lengthInBits += 32
@@ -170,7 +181,21 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	}
 
 	// Virtual field
-	_isUint32 := bool((actualLength) == (3))
+	_isUint24 := bool((actualLength) == (3))
+	isUint24 := bool(_isUint24)
+
+	// Optional Field (valueUint24) (Can be skipped, if a given expression evaluates to false)
+	var valueUint24 *uint32 = nil
+	if isUint24 {
+		_val, _err := readBuffer.ReadUint32("valueUint24", 24)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueUint24' field")
+		}
+		valueUint24 = &_val
+	}
+
+	// Virtual field
+	_isUint32 := bool((actualLength) == (4))
 	isUint32 := bool(_isUint32)
 
 	// Optional Field (valueUint32) (Can be skipped, if a given expression evaluates to false)
@@ -186,7 +211,9 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	// Virtual field
 	_actualValue := utils.InlineIf(isUint8, func() interface{} { return uint32((*valueUint8)) }, func() interface{} {
 		return uint32(uint32(utils.InlineIf(isUint16, func() interface{} { return uint32((*valueUint16)) }, func() interface{} {
-			return uint32(uint32(utils.InlineIf(isUint32, func() interface{} { return uint32((*valueUint32)) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
+			return uint32(uint32(utils.InlineIf(isUint24, func() interface{} { return uint32((*valueUint24)) }, func() interface{} {
+				return uint32(uint32(utils.InlineIf(isUint32, func() interface{} { return uint32((*valueUint32)) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
+			}).(uint32)))
 		}).(uint32)))
 	}).(uint32)
 	actualValue := uint32(_actualValue)
@@ -199,9 +226,11 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, actua
 	_child := &BACnetApplicationTagUnsignedInteger{
 		ValueUint8:           valueUint8,
 		ValueUint16:          valueUint16,
+		ValueUint24:          valueUint24,
 		ValueUint32:          valueUint32,
 		IsUint8:              isUint8,
 		IsUint16:             isUint16,
+		IsUint24:             isUint24,
 		IsUint32:             isUint32,
 		ActualValue:          actualValue,
 		BACnetApplicationTag: &BACnetApplicationTag{},
@@ -241,6 +270,20 @@ func (m *BACnetApplicationTagUnsignedInteger) Serialize(writeBuffer utils.WriteB
 			_valueUint16Err := writeBuffer.WriteUint16("valueUint16", 16, *(valueUint16))
 			if _valueUint16Err != nil {
 				return errors.Wrap(_valueUint16Err, "Error serializing 'valueUint16' field")
+			}
+		}
+		// Virtual field
+		if _isUint24Err := writeBuffer.WriteVirtual("isUint24", m.IsUint24); _isUint24Err != nil {
+			return errors.Wrap(_isUint24Err, "Error serializing 'isUint24' field")
+		}
+
+		// Optional Field (valueUint24) (Can be skipped, if the value is null)
+		var valueUint24 *uint32 = nil
+		if m.ValueUint24 != nil {
+			valueUint24 = m.ValueUint24
+			_valueUint24Err := writeBuffer.WriteUint32("valueUint24", 24, *(valueUint24))
+			if _valueUint24Err != nil {
+				return errors.Wrap(_valueUint24Err, "Error serializing 'valueUint24' field")
 			}
 		}
 		// Virtual field

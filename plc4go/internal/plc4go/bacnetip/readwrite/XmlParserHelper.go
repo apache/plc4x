@@ -92,6 +92,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		tagNumber := uint8(parsedUint0)
 		return model.BACnetConstructedDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
+	case "BACnetSegmentation":
+		return model.BACnetSegmentationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetUnconfirmedServiceRequest":
@@ -164,6 +166,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetTagHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetPropertyValue":
 		return model.BACnetPropertyValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NLMInitalizeRoutingTablePortMapping":
+		return model.NLMInitalizeRoutingTablePortMappingParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetServiceAck":
 		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAction":

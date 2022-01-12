@@ -31,7 +31,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	*BACnetUnconfirmedServiceRequest
 	DeviceIdentifier                *BACnetApplicationTagObjectIdentifier
 	MaximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger
-	SegmentationSupported           *BACnetApplicationTagEnumerated
+	SegmentationSupported           *BACnetSegmentation
 	VendorId                        *BACnetApplicationTagUnsignedInteger
 }
 
@@ -52,7 +52,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
 func (m *BACnetUnconfirmedServiceRequestIAm) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetApplicationTagEnumerated, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
@@ -148,11 +148,11 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
 		return nil, pullErr
 	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetApplicationTagParse(readBuffer)
+	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationParse(readBuffer)
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
-	segmentationSupported := CastBACnetApplicationTagEnumerated(_segmentationSupported)
+	segmentationSupported := CastBACnetSegmentation(_segmentationSupported)
 	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -178,7 +178,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	_child := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                CastBACnetApplicationTagObjectIdentifier(deviceIdentifier),
 		MaximumApduLengthAcceptedLength: CastBACnetApplicationTagUnsignedInteger(maximumApduLengthAcceptedLength),
-		SegmentationSupported:           CastBACnetApplicationTagEnumerated(segmentationSupported),
+		SegmentationSupported:           CastBACnetSegmentation(segmentationSupported),
 		VendorId:                        CastBACnetApplicationTagUnsignedInteger(vendorId),
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
