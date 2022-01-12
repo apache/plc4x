@@ -128,7 +128,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
         return SingleProtocolStackConfigurer.builder(Ethernet_Frame.class, Ethernet_FrameIO.class)
             .withProtocol(ProfinetProtocolLogic.class)
             .withDriverContext(ProfinetDriverContext.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.
             .withParserArgs(true)
             .build();
