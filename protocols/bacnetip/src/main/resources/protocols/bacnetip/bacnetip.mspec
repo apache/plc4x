@@ -97,13 +97,55 @@
     [discriminator uint 8  messageType]
     [optional      uint 16 vendorId '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch messageType
-        ['0x0' NLMWhoIsRouterToNetwork(uint 8 messageType)
-            [array uint 16 destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x00' NLMWhoIsRouterToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
-        ['0x1' NLMIAmRouterToNetwork(uint 8 messageType)
-            [array uint 16 destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x01' NLMIAmRouterToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x02' NLMICouldBeRouterToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
+            [simple     uint 8      performanceIndex            ]
+        ]
+        ['0x03' NLMRejectRouterToNetwork(uint 8 messageType)
+            [simple     uint 8      rejectReason                ] // TODO: introduce enum
+            [simple     uint 16     destinationNetworkAddress   ]
+        ]
+        ['0x04' NLMRouterBusyToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x05' NLMRouterAvailableToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x06' NLMInitalizeRoutingTable(uint 8 messageType)
+            [simple     uint 8      numberOfPorts                   ]
+            [array      NLMInitalizeRoutingTablePortMapping
+                                    portMappings
+                        count 'numberOfPorts'
+            ]
+        ]
+        ['0x07' NLMInitalizeRoutingTableAck(uint 8 messageType)
+            [simple     uint 8      numberOfPorts                   ]
+            [array      NLMInitalizeRoutingTablePortMapping
+                                    portMappings
+                        count 'numberOfPorts'
+            ]
+        ]
+        ['0x08' NLMEstablishConnectionToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
+            [simple     uint 8      terminationTime             ]
+        ]
+        ['0x09' NLMDisconnectConnectionToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
         ]
     ]
+]
+
+[type NLMInitalizeRoutingTablePortMapping
+    [simple     uint 16     destinationNetworkAddress       ]
+    [simple     uint 8      portId                          ]
+    [simple     uint 8      portInfoLength                  ]
+    [array      byte        portInfo count 'portInfoLength' ]
 ]
 
 [discriminatedType APDU(uint 16 apduLength)

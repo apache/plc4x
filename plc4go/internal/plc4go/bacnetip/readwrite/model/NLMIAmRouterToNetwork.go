@@ -43,7 +43,7 @@ type INLMIAmRouterToNetwork interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *NLMIAmRouterToNetwork) MessageType() uint8 {
-	return 0x1
+	return 0x01
 }
 
 func (m *NLMIAmRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
