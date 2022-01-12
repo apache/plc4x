@@ -254,7 +254,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BACnet_MSTP_SNAP_Mixed() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap");
         return List.of(
-            pcapEvaluator.parseEmAll(2327)
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -262,14 +262,14 @@ public class RandomPackagesTest {
     @DisplayName("BACnetARRAY-element-0")
     Collection<DynamicNode> BACnetARRAY_element_0() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-element-0.cap");
-        return List.of(pcapEvaluator.parseEmAll(7));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("BACnetARRAY-elements")
     Collection<DynamicNode> BACnetARRAY_elements() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetARRAY-elements.cap");
-        return List.of(pcapEvaluator.parseEmAll(41));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -645,7 +645,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
                 }),
-            pcapEvaluator.parseEmAll(338 - 202)
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -940,7 +940,7 @@ public class RandomPackagesTest {
                         assertEquals(Arrays.asList(false, false, false, false), baCnetApplicationTagBitString.getData());
                     }
                 }),
-            pcapEvaluator.parseEmAll(1352 - 3)
+            pcapEvaluator.parseTill(1352 - 3)
         );
     }
 
@@ -1007,7 +1007,7 @@ public class RandomPackagesTest {
     @DisplayName("CriticalRoom55-1")
     Collection<DynamicNode> CriticalRoom55_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-1.cap");
-        return List.of(pcapEvaluator.parseEmAll(26));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1027,7 +1027,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetConfirmedServiceRequestWriteProperty.getPropertyValue().getData().get(0).getApplicationTag();
                     assertEquals(123.0f, baCnetApplicationTagReal.getValue());
                 }),
-            pcapEvaluator.parseEmAll(279)
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -1035,14 +1035,14 @@ public class RandomPackagesTest {
     @DisplayName("DRI%20CAVE%20log%20udp-0168-20081216-1117-03")
     Collection<DynamicNode> DRI_CAVE_log_udp_0168_20081216_1117_03() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("DRI%20CAVE%20log%20udp-0168-20081216-1117-03.cap");
-        return List.of(pcapEvaluator.parseEmAll(247));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("I-Am-Router-To-Network")
     Collection<DynamicNode> I_Am_Router_To_Network() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("I-Am-Router-To-Network.cap");
-        return List.of(pcapEvaluator.parseEmAll(11));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1174,49 +1174,49 @@ public class RandomPackagesTest {
     @DisplayName("MSTP_Malformed_Packets")
     Collection<DynamicNode> MSTP_Malformed_Packets() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("MSTP_Malformed_Packets.pcap");
-        return List.of(pcapEvaluator.parseEmAll(111));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("NPDU")
     Collection<DynamicNode> NPDU() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("NPDU.cap");
-        return List.of(pcapEvaluator.parseEmAll(37));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("PrivateTransferError-octetstring")
     Collection<DynamicNode> PrivateTransferError_octetstring() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError-octetstring.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("PrivateTransferError")
     Collection<DynamicNode> PrivateTransferError() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError.cap");
-        return List.of(pcapEvaluator.parseEmAll(2));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("RPM_ALL_Allobjecttypes1")
     Collection<DynamicNode> RPM_ALL_Allobjecttypes1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("RPM_ALL_Allobjecttypes1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(65));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("ReadPropertyMultiple")
     Collection<DynamicNode> ReadPropertyMultiple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("ReadPropertyMultiple.cap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("ReadPropertyMultipleDeviceAll")
     Collection<DynamicNode> ReadPropertyMultipleDeviceAll() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("ReadPropertyMultipleDeviceAll.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1281,28 +1281,28 @@ public class RandomPackagesTest {
     @DisplayName("SubordinateListDecodeSample")
     Collection<DynamicNode> SubordinateListDecodeSample() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SubordinateListDecodeSample.pcap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("SynergyBlinkWarn")
     Collection<DynamicNode> SynergyBlinkWarn() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyBlinkWarn.cap");
-        return List.of(pcapEvaluator.parseEmAll(45));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("SynergyReadProperties")
     Collection<DynamicNode> SynergyReadProperties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyReadProperties.cap");
-        return List.of(pcapEvaluator.parseEmAll(57));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("SynergyWriteProperty")
     Collection<DynamicNode> SynergyWriteProperty() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("SynergyWriteProperty.cap");
-        return List.of(pcapEvaluator.parseEmAll(45));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1317,14 +1317,14 @@ public class RandomPackagesTest {
     @DisplayName("Sysco-2")
     Collection<DynamicNode> Sysco_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-2.cap");
-        return List.of(pcapEvaluator.parseEmAll(77));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("Sysco-3")
     Collection<DynamicNode> Sysco_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-3.cap");
-        return List.of(pcapEvaluator.parseEmAll(64));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1347,14 +1347,14 @@ public class RandomPackagesTest {
     @DisplayName("TC51103_BTL-9.21.1.X3_bool_ext_3")
     Collection<DynamicNode> TC51103_BTL_9_21_1_X3_bool_ext_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_bool_ext_3.pcap");
-        return List.of(pcapEvaluator.parseEmAll(15));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TC51103_BTL-9.21.1.X3_int_ext_1")
     Collection<DynamicNode> TC51103_BTL_9_21_1_X3_int_ext_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TC51103_BTL-9.21.1.X3_int_ext_1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(18));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non ip")
@@ -1377,7 +1377,7 @@ public class RandomPackagesTest {
     @DisplayName("TestRun5 - Internal side of Router")
     Collection<DynamicNode> TestRun5___Internal_side_of_Router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Internal%20side%20of%20Router.pcap");
-        return List.of(pcapEvaluator.parseEmAll(134));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1423,21 +1423,21 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleReadRange")
     Collection<DynamicNode> TrendLogMultipleReadRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(6));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange2")
     Collection<DynamicNode> TrendLogMultipleReadRange2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange2.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("TrendLogMultipleReadRange3")
     Collection<DynamicNode> TrendLogMultipleReadRange3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRange3.pcap");
-        return List.of(pcapEvaluator.parseEmAll(16));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     //TODO: fixme
@@ -1446,7 +1446,7 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleReadRangeSimple")
     Collection<DynamicNode> TrendLogMultipleReadRangeSimple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRangeSimple.pcap");
-        return List.of(pcapEvaluator.parseEmAll(807));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     //TODO: fixme
@@ -1455,21 +1455,21 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleUsage")
     Collection<DynamicNode> TrendLogMultipleUsage() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleUsage.pcap");
-        return List.of(pcapEvaluator.parseEmAll(72));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("WhoIsRouterToNetwork-test")
     Collection<DynamicNode> WhoIsRouterToNetwork_test() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WhoIsRouterToNetwork-test.cap");
-        return List.of(pcapEvaluator.parseEmAll(11));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("WhoIsRouterToNetwork")
     Collection<DynamicNode> WhoIsRouterToNetwork() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WhoIsRouterToNetwork.cap");
-        return List.of(pcapEvaluator.parseEmAll(11));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1477,7 +1477,7 @@ public class RandomPackagesTest {
     @DisplayName("WhoIs_I-Am_Epics")
     Collection<DynamicNode> WhoIs_I_Am_Epics() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WhoIs_I-Am_Epics.cap");
-        return List.of(pcapEvaluator.parseEmAll(114));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1521,14 +1521,14 @@ public class RandomPackagesTest {
     @DisplayName("WireSharkOfNewObjects")
     Collection<DynamicNode> WireSharkOfNewObjects() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap", "udp port 47808");
-        return List.of(pcapEvaluator.parseEmAll(164));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("WriteProperty_BinaryOutput")
     Collection<DynamicNode> WriteProperty_BinaryOutput() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WriteProperty_BinaryOutput.cap");
-        return List.of(pcapEvaluator.parseEmAll(45));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1595,7 +1595,7 @@ public class RandomPackagesTest {
     @DisplayName("alerton-plugfest-3")
     Collection<DynamicNode> alerton_plugfest_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap");
-        return List.of(pcapEvaluator.parseEmAll(2627));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1610,21 +1610,21 @@ public class RandomPackagesTest {
     @DisplayName("arf-empty-file")
     Collection<DynamicNode> arf_empty_file() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("arf-empty-file.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("atomic-empty-file")
     Collection<DynamicNode> atomic_empty_file() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-empty-file.cap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("atomic-read-file-50")
     Collection<DynamicNode> atomic_read_file_50() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-50.cap");
-        return List.of(pcapEvaluator.parseEmAll(863));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1638,21 +1638,21 @@ public class RandomPackagesTest {
     @DisplayName("atomic-read-file-480")
     Collection<DynamicNode> atomic_read_file_480() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-480.cap");
-        return List.of(pcapEvaluator.parseEmAll(62));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("atomic-read-file-1470")
     Collection<DynamicNode> atomic_read_file_1470() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file-1470.cap");
-        return List.of(pcapEvaluator.parseEmAll(125));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("atomic-read-file")
     Collection<DynamicNode> atomic_read_file() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-read-file.cap");
-        return List.of(pcapEvaluator.parseEmAll(129));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1666,7 +1666,7 @@ public class RandomPackagesTest {
     @DisplayName("atomic-write-file-3")
     Collection<DynamicNode> atomic_write_file_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-3.cap");
-        return List.of(pcapEvaluator.parseEmAll(74));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1681,7 +1681,7 @@ public class RandomPackagesTest {
     @DisplayName("atomic-write-file-480")
     Collection<DynamicNode> atomic_write_file_480() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-480.cap");
-        return List.of(pcapEvaluator.parseEmAll(117));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1703,14 +1703,14 @@ public class RandomPackagesTest {
     @DisplayName("atomic_write_file_bad_ack")
     Collection<DynamicNode> atomic_write_file_bad_ack() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic_write_file_bad_ack.cap");
-        return List.of(pcapEvaluator.parseEmAll(9));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("bacapp-malform")
     Collection<DynamicNode> bacapp_malform() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacapp-malform.cap");
-        return List.of(pcapEvaluator.parseEmAll(1683));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1718,7 +1718,7 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-arcnet")
     Collection<DynamicNode> bacnet_arcnet() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-arcnet.cap");
-        return List.of(pcapEvaluator.parseEmAll(565));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1726,7 +1726,7 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-ethernet-device")
     Collection<DynamicNode> bacnet_ethernet_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet-device.cap");
-        return List.of(pcapEvaluator.parseEmAll(159));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1734,7 +1734,7 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-ethernet")
     Collection<DynamicNode> bacnet_ethernet() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet.cap");
-        return List.of(pcapEvaluator.parseEmAll(849));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1749,7 +1749,7 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-properties")
     Collection<DynamicNode> bacnet_properties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-properties.cap");
-        return List.of(pcapEvaluator.parseEmAll(4120));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1764,14 +1764,14 @@ public class RandomPackagesTest {
     @DisplayName("bacnet-stack-services")
     Collection<DynamicNode> bacnet_stack_services() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap");
-        return List.of(pcapEvaluator.parseEmAll(114));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("bacrpm-test")
     Collection<DynamicNode> bacrpm_test() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacrpm-test.cap");
-        return List.of(pcapEvaluator.parseEmAll(113));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("needs filtering")
@@ -1897,14 +1897,14 @@ public class RandomPackagesTest {
     @DisplayName("bvlc-bac4-rp")
     Collection<DynamicNode> bvlc_bac4_rp() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-bac4-rp.cap");
-        return List.of(pcapEvaluator.parseEmAll(127));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("bvlc-bac4")
     Collection<DynamicNode> bvlc_bac4() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-bac4.cap");
-        return List.of(pcapEvaluator.parseEmAll(63));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1919,7 +1919,7 @@ public class RandomPackagesTest {
     @DisplayName("bvlc-loop")
     Collection<DynamicNode> bvlc_loop() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-loop.cap");
-        return List.of(pcapEvaluator.parseEmAll(100));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1943,7 +1943,7 @@ public class RandomPackagesTest {
     @DisplayName("cimetrics_mstp")
     Collection<DynamicNode> cimetrics_mstp() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("cimetrics_mstp.pcap");
-        return List.of(pcapEvaluator.parseEmAll(1916));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1980,56 +1980,56 @@ public class RandomPackagesTest {
     @DisplayName("cov-testing-1")
     Collection<DynamicNode> cov_testing_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("cov-testing-1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(4));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("cov-testing-2")
     Collection<DynamicNode> cov_testing_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("cov-testing-2.pcap");
-        return List.of(pcapEvaluator.parseEmAll(104));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("cov-testing-3")
     Collection<DynamicNode> cov_testing_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("cov-testing-3.pcap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("device-address-binding")
     Collection<DynamicNode> device_address_binding() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("device-address-binding.pcap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("epics-1")
     Collection<DynamicNode> epics_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("epics-1.cap");
-        return List.of(pcapEvaluator.parseEmAll(498));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("epics-2")
     Collection<DynamicNode> epics_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("epics-2.cap");
-        return List.of(pcapEvaluator.parseEmAll(1978));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("eventLog_ReadRange")
     Collection<DynamicNode> eventLog_ReadRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("eventLog_ReadRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(2));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("eventLog_rpm")
     Collection<DynamicNode> eventLog_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("eventLog_rpm.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2058,7 +2058,7 @@ public class RandomPackagesTest {
     @DisplayName("eventTimeStamp_rpm")
     Collection<DynamicNode> eventTimeStamp_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("eventTimeStamp_rpm.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("Needs filtering")
@@ -2073,14 +2073,14 @@ public class RandomPackagesTest {
     @DisplayName("getEventInformation")
     Collection<DynamicNode> getEventInformation() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap", "udp port 47808");
-        return List.of(pcapEvaluator.parseEmAll(4));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("i-am-vendor-id-over-255")
     Collection<DynamicNode> i_am_vendor_id_over_255() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("i-am-vendor-id-over-255.cap");
-        return List.of(pcapEvaluator.parseEmAll(12));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2095,28 +2095,28 @@ public class RandomPackagesTest {
     @DisplayName("load-control-properties")
     Collection<DynamicNode> load_control_properties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("load-control-properties.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("load-control")
     Collection<DynamicNode> load_control() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("load-control.cap");
-        return List.of(pcapEvaluator.parseEmAll(7));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("log-buffer_readRange")
     Collection<DynamicNode> log_buffer_readRange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("log-buffer_readRange.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("loop2")
     Collection<DynamicNode> loop2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("loop2.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2124,7 +2124,7 @@ public class RandomPackagesTest {
     @DisplayName("mstp-cimetrics")
     Collection<DynamicNode> mstp_cimetrics() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-cimetrics.cap");
-        return List.of(pcapEvaluator.parseEmAll(1916));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2139,7 +2139,7 @@ public class RandomPackagesTest {
     @DisplayName("mstp-whois-basrt-mix")
     Collection<DynamicNode> mstp_whois_basrt_mix() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap", "udp port 47808");
-        return List.of(pcapEvaluator.parseEmAll(23));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2154,7 +2154,7 @@ public class RandomPackagesTest {
     @DisplayName("mstp-whois-iam")
     Collection<DynamicNode> mstp_whois_iam() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-iam.cap");
-        return List.of(pcapEvaluator.parseEmAll(39));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("Only non udp packages")
@@ -2162,7 +2162,7 @@ public class RandomPackagesTest {
     @DisplayName("mstp_20090227094623")
     Collection<DynamicNode> mstp_20090227094623() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090227094623.cap");
-        return List.of(pcapEvaluator.parseEmAll(667));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2305,7 +2305,7 @@ public class RandomPackagesTest {
     @DisplayName("nb-binary-output")
     Collection<DynamicNode> nb_binary_output() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("nb-binary-output.cap");
-        return List.of(pcapEvaluator.parseEmAll(245));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -2336,14 +2336,14 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-2011-mstp-roundtable")
     Collection<DynamicNode> plugfest_2011_mstp_roundtable() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-mstp-roundtable.pcap");
-        return List.of(pcapEvaluator.parseEmAll(1170));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-2011-sauter-1")
     Collection<DynamicNode> plugfest_2011_sauter_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-sauter-1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(1360));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("needs filtering")
@@ -2351,7 +2351,7 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-2011-siemens-1")
     Collection<DynamicNode> plugfest_2011_siemens_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap");
-        return List.of(pcapEvaluator.parseEmAll(4000));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2384,7 +2384,7 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", "udp port 47808");
-        return List.of(pcapEvaluator.parseEmAll(10628));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2398,7 +2398,7 @@ public class RandomPackagesTest {
     @DisplayName("plugfest-tridium-2")
     Collection<DynamicNode> plugfest_tridium_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap");
-        return List.of(pcapEvaluator.parseEmAll(645));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -2438,14 +2438,14 @@ public class RandomPackagesTest {
     @DisplayName("properties")
     Collection<DynamicNode> properties() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("properties.cap");
-        return List.of(pcapEvaluator.parseEmAll(749));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("read-file")
     Collection<DynamicNode> read_file() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-file.cap");
-        return List.of(pcapEvaluator.parseEmAll(1328));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4121,7 +4121,7 @@ public class RandomPackagesTest {
     @DisplayName("read-property-bad")
     Collection<DynamicNode> read_property_bad() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-bad.cap");
-        return List.of(pcapEvaluator.parseEmAll(1897));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4151,7 +4151,7 @@ public class RandomPackagesTest {
     @DisplayName("readfile")
     Collection<DynamicNode> readfile() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("readfile.cap");
-        return List.of(pcapEvaluator.parseEmAll(353));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4181,7 +4181,7 @@ public class RandomPackagesTest {
     @DisplayName("router")
     Collection<DynamicNode> router() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("router.cap");
-        return List.of(pcapEvaluator.parseEmAll(27));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4212,7 +4212,7 @@ public class RandomPackagesTest {
     @DisplayName("rp-device")
     Collection<DynamicNode> rp_device() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp-device.cap");
-        return List.of(pcapEvaluator.parseEmAll(91));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4242,49 +4242,49 @@ public class RandomPackagesTest {
     @DisplayName("rp")
     Collection<DynamicNode> rp() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp.cap");
-        return List.of(pcapEvaluator.parseEmAll(111));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("rpm-error")
     Collection<DynamicNode> rpm_error() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rpm-error.cap");
-        return List.of(pcapEvaluator.parseEmAll(88));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("rpm")
     Collection<DynamicNode> rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rpm.cap");
-        return List.of(pcapEvaluator.parseEmAll(5));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("rpm_multiple_scheduler_bug")
     Collection<DynamicNode> rpm_multiple_scheduler_bug() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rpm_multiple_scheduler_bug.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("schedule-rpm-foreign")
     Collection<DynamicNode> schedule_rpm_foreign() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("schedule-rpm-foreign.pcap");
-        return List.of(pcapEvaluator.parseEmAll(31));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("signed_value_negative")
     Collection<DynamicNode> signed_value_negative() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("signed_value_negative.cap");
-        return List.of(pcapEvaluator.parseEmAll(2));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("single-RPM")
     Collection<DynamicNode> single_RPM() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("single-RPM.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -4307,42 +4307,42 @@ public class RandomPackagesTest {
     @DisplayName("startup-exchange")
     Collection<DynamicNode> startup_exchange() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("startup-exchange.cap");
-        return List.of(pcapEvaluator.parseEmAll(15));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("state_text")
     Collection<DynamicNode> state_text() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("state_text.cap");
-        return List.of(pcapEvaluator.parseEmAll(29));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("state_text_good")
     Collection<DynamicNode> state_text_good() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("state_text_good.cap");
-        return List.of(pcapEvaluator.parseEmAll(125));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("subordinatelist_rpm")
     Collection<DynamicNode> subordinatelist_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("subordinatelist_rpm.pcap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("synergy-binding-2x63y")
     Collection<DynamicNode> synergy_binding_2x63y() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-binding-2x63y.cap");
-        return List.of(pcapEvaluator.parseEmAll(48));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("synergy-broken-rpm")
     Collection<DynamicNode> synergy_broken_rpm() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("synergy-broken-rpm.cap");
-        return List.of(pcapEvaluator.parseEmAll(62));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4356,7 +4356,7 @@ public class RandomPackagesTest {
     @DisplayName("time-sync")
     Collection<DynamicNode> time_sync() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("time-sync.cap");
-        return List.of(pcapEvaluator.parseEmAll(3));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("Needs filtering")
@@ -4372,7 +4372,7 @@ public class RandomPackagesTest {
     @DisplayName("u+4_MSTP")
     Collection<DynamicNode> u_4_MSTP() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("u+4_MSTP.pcap");
-        return List.of(pcapEvaluator.parseEmAll(30));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -4387,7 +4387,7 @@ public class RandomPackagesTest {
     @DisplayName("who-has-I-have")
     Collection<DynamicNode> who_has_I_have() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap");
-        return List.of(pcapEvaluator.parseEmAll(4));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4547,7 +4547,7 @@ public class RandomPackagesTest {
     @DisplayName("who-is-i-am")
     Collection<DynamicNode> who_is_i_am() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-is-i-am.cap");
-        return List.of(pcapEvaluator.parseEmAll(24));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non ip")
@@ -4570,21 +4570,21 @@ public class RandomPackagesTest {
     @DisplayName("whois-iam")
     Collection<DynamicNode> whois_iam() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("whois-iam.cap");
-        return List.of(pcapEvaluator.parseEmAll(7));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("wireshark_BBMDError")
     Collection<DynamicNode> wireshark_BBMDError() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wireshark_BBMDError.pcap");
-        return List.of(pcapEvaluator.parseEmAll(9));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("wireshark_CEN_9_11")
     Collection<DynamicNode> wireshark_CEN_9_11() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wireshark_CEN_9_11.pcap");
-        return List.of(pcapEvaluator.parseEmAll(9));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -4671,21 +4671,21 @@ public class RandomPackagesTest {
     @DisplayName("write-property-array")
     Collection<DynamicNode> write_property_array() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property-array.cap");
-        return List.of(pcapEvaluator.parseEmAll(51));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("write-property-multiple")
     Collection<DynamicNode> write_property_multiple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property-multiple.cap");
-        return List.of(pcapEvaluator.parseEmAll(7));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("write-property-wattstopper-panel")
     Collection<DynamicNode> write_property_wattstopper_panel() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property-wattstopper-panel.cap");
-        return List.of(pcapEvaluator.parseEmAll(31));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4716,7 +4716,7 @@ public class RandomPackagesTest {
     @DisplayName("write-property2")
     Collection<DynamicNode> write_property2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property2.cap");
-        return List.of(pcapEvaluator.parseEmAll(22));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     private static void dump(Serializable serializable) throws SerializationException {
@@ -4751,11 +4751,10 @@ public class RandomPackagesTest {
         }
 
         public DynamicContainer parseEmAll() {
-            //FIXME: replace with a package counter so we only create tests for the packages
-            return parseEmAll(1000);
+            return parseTill(maxPackages);
         }
 
-        public DynamicContainer parseEmAll(int numberOfPackages) {
+        public DynamicContainer parseTill(int numberOfPackages) {
             return DynamicContainer.dynamicContainer("Parse em all (" + numberOfPackages + ")", () -> IntStream.range(1, numberOfPackages + 1).mapToObj((i) -> DynamicTest.dynamicTest("test n." + i, () -> {
                 BVLC bvlc = nextBVLC();
                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
@@ -4772,6 +4771,7 @@ public class RandomPackagesTest {
         protected final String pcapFile;
         protected final PcapHandle pcapHandle;
         protected final Map<Long, Integer> timestampToNumberMap;
+        protected final int maxPackages;
 
         public PCAPEvaluator(String pcapFile) throws IOException, PcapNativeException, NotOpenException {
             this(pcapFile, null);
@@ -4782,11 +4782,11 @@ public class RandomPackagesTest {
             String toParse = DownloadAndCache(pcapFile);
             LOGGER.info("Reading {}", toParse);
             PcapHandle intermediateHandle = getHandle(toParse);
+            int packageNumber = 0;
             if (filter != null) {
                 // In case of filtering we need to read all packages
                 LOGGER.info("Building timestamp number map");
                 timestampToNumberMap = new HashMap<>();
-                int packageNumber = 0;
                 while (intermediateHandle.getNextPacket() != null) {
                     timestampToNumberMap.put(intermediateHandle.getTimestamp().getTime(), ++packageNumber);
                 }
@@ -4795,8 +4795,14 @@ public class RandomPackagesTest {
                 intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
             } else {
                 timestampToNumberMap = null;
+                while (intermediateHandle.getNextPacket() != null) {
+                    packageNumber++;
+                }
+                intermediateHandle.close();
+                intermediateHandle = getHandle(toParse);
             }
             pcapHandle = intermediateHandle;
+            maxPackages = packageNumber;
         }
 
         public void skipTo(int targetReadPackages) throws NotOpenException {
