@@ -328,6 +328,8 @@
         ]
         ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         ]
+        ['0x7F' BACnetConfirmedServiceRequestConfirmedUnknown
+        ]
     ]
 ]
 

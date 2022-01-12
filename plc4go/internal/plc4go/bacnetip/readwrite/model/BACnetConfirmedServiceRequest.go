@@ -169,6 +169,8 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint16)
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer, len)
 	case serviceChoice == 0x1F: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuffer, len)
+	case serviceChoice == 0x7F: // BACnetConfirmedServiceRequestConfirmedUnknown
+		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
