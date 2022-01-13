@@ -318,12 +318,11 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly llc so we don't use that here for now")
     @TestFactory
     @DisplayName("BBMD_Results")
     Collection<DynamicNode> BBMD_Results() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BBMD_Results.pcap");
-        return null;
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BBMD_Results.pcap", BACNET_BPF_FILTER);
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory

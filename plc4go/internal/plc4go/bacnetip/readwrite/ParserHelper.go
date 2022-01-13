@@ -157,6 +157,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.NPDUParse(io, npduLength)
+	case "BVLCWriteBroadcastDistributionTableEntry":
+		return model.BVLCWriteBroadcastDistributionTableEntryParse(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

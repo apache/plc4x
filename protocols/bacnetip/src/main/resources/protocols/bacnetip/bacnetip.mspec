@@ -18,25 +18,29 @@
  */
 
 [discriminatedType BVLC byteOrder='BIG_ENDIAN'
-    [const         uint 8   bacnetType   0x81         ]
-    [discriminator uint 8   bvlcFunction              ]
-    [implicit      uint 16  bvlcLength 'lengthInBytes']
+    [const         uint 8   bacnetType   0x81                   ]
+    [discriminator uint 8   bvlcFunction                        ]
+    [implicit      uint 16  bvlcLength          'lengthInBytes' ]
+    [virtual       uint 16  bvlcPayloadLength   'bvlcLength-4'  ]
     [typeSwitch bvlcFunction
         ['0x00' BVLCResult
             [simple BVLCResultCode
                             code
             ]
         ]
-        ['0x01' BVLCWideBroadcastDistributionTable
+        ['0x01' BVLCWriteBroadcastDistributionTable(uint 16 bvlcPayloadLength)
+            [array  BVLCWriteBroadcastDistributionTableEntry
+                            table
+                            length 'bvlcPayloadLength'         ]
         ]
         ['0x02' BVLCReadBroadcastDistributionTable
         ]
         ['0x03' BVLCReadBroadcastDistributionTableAck
         ]
-        ['0x04' BVLCForwardedNPDU(uint 16 bvlcLength)
+        ['0x04' BVLCForwardedNPDU(uint 16 bvlcPayloadLength)
             [array  uint 8  ip    count '4'         ]
             [simple uint 16 port                    ]
-            [simple NPDU('bvlcLength - 10')
+            [simple NPDU('bvlcPayloadLength - 6')
                             npdu
             ]
         ]
@@ -49,24 +53,30 @@
         ]
         ['0x08' BVLCDeleteForeignDeviceTableEntry
         ]
-        ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4')
+        ['0x09' BVLCDistributeBroadcastToNetwork(uint 16 bvlcPayloadLength)
+            [simple NPDU('bvlcPayloadLength')
                             npdu
             ]
         ]
-        ['0x0A' BVLCOriginalUnicastNPDU(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4')
+        ['0x0A' BVLCOriginalUnicastNPDU(uint 16 bvlcPayloadLength)
+            [simple NPDU('bvlcPayloadLength')
                             npdu
             ]
         ]
-        ['0x0B' BVLCOriginalBroadcastNPDU(uint 16 bvlcLength)
-            [simple NPDU('bvlcLength - 4')
+        ['0x0B' BVLCOriginalBroadcastNPDU(uint 16 bvlcPayloadLength)
+            [simple NPDU('bvlcPayloadLength')
                             npdu
             ]
         ]
         ['0x0C' BVLCSecureBVLL
         ]
     ]
+]
+
+[type BVLCWriteBroadcastDistributionTableEntry
+    [array  uint 8      ip                          count '4'       ]
+    [simple uint 16     port                                        ]
+    [array  uint 8      broadcastDistributionMap    count '4'       ]
 ]
 
 [type NPDU(uint 16 npduLength)
