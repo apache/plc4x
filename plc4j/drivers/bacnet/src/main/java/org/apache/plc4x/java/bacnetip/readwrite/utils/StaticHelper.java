@@ -35,11 +35,10 @@ public class StaticHelper {
     public static BACnetPropertyIdentifier readPropertyIdentifier(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         long readUnsignedLong = readBuffer.readUnsignedLong("propertyIdentifier", bitsToRead);
-        BACnetPropertyIdentifier baCnetPropertyIdentifier = BACnetPropertyIdentifier.enumForValue(readUnsignedLong);
-        if (baCnetPropertyIdentifier == null) {
+        if (!BACnetPropertyIdentifier.isDefined(readUnsignedLong)) {
             return BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE;
         }
-        return baCnetPropertyIdentifier;
+        return BACnetPropertyIdentifier.enumForValue(readUnsignedLong);
     }
 
     public static void writePropertyIdentifier(WriteBuffer writeBuffer, BACnetPropertyIdentifier value) throws SerializationException {
@@ -90,11 +89,10 @@ public class StaticHelper {
     public static BACnetEventType readEventType(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         int readUnsignedLong = readBuffer.readUnsignedInt("eventType", bitsToRead);
-        BACnetEventType baCnetEventType = BACnetEventType.enumForValue(readUnsignedLong);
-        if (baCnetEventType == null) {
+        if (!BACnetEventType.isDefined(readUnsignedLong)) {
             return BACnetEventType.VENDOR_PROPRIETARY_VALUE;
         }
-        return baCnetEventType;
+        return BACnetEventType.enumForValue(readUnsignedLong);
     }
 
     public static void writeEventType(WriteBuffer writeBuffer, BACnetEventType value) throws SerializationException {
@@ -143,11 +141,10 @@ public class StaticHelper {
     }  public static BACnetEventState readEventState(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         int readUnsignedLong = readBuffer.readUnsignedInt("eventState", bitsToRead);
-        BACnetEventState baCnetEventState = BACnetEventState.enumForValue(readUnsignedLong);
-        if (baCnetEventState == null) {
+        if (!BACnetEventState.isDefined(readUnsignedLong)) {
             return BACnetEventState.VENDOR_PROPRIETARY_VALUE;
         }
-        return baCnetEventState;
+        return BACnetEventState.enumForValue(readUnsignedLong);
     }
 
     public static void writeEventState(WriteBuffer writeBuffer, BACnetEventState value) throws SerializationException {
@@ -215,44 +212,6 @@ public class StaticHelper {
         } catch (ArrayIndexOutOfBoundsException e) {
             LOGGER.debug("Reached EOF at {}", oldPos, e);
             return true;
-        } finally {
-            readBuffer.reset(oldPos);
-        }
-    }
-
-    public static boolean isApplicationTag(byte peekedByte) {
-        return (peekedByte & (0b0000_1000)) == 0;
-    }
-
-    public static boolean isContextTag(byte peekedByte) {
-        return !isApplicationTag(peekedByte);
-    }
-
-    public static boolean isConstructedData(byte peekedByte) {
-        return isOpeningTag(peekedByte);
-    }
-
-    public static boolean isOpeningTag(byte peekedByte) {
-        return isContextTag(peekedByte) && hasTagValue(peekedByte, 0x6);
-    }
-
-    public static boolean isClosingTag(byte peekedByte) {
-        return isContextTag(peekedByte) && hasTagValue(peekedByte, 0x7);
-    }
-
-    private static boolean hasTagValue(byte peekedByte, int tagValue) {
-        return (peekedByte & 0b0000_0111) == tagValue;
-    }
-
-    public static void noop() {
-        // NO-OP
-    }
-
-    public static byte peekByte(ReadBuffer readBuffer) throws ParseException {
-        int oldPos = readBuffer.getPos();
-        LOGGER.debug("peeking at {}", oldPos);
-        try {
-            return readBuffer.readByte();
         } finally {
             readBuffer.reset(oldPos);
         }
