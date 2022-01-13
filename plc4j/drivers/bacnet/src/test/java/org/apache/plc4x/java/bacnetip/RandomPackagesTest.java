@@ -4763,7 +4763,7 @@ public class RandomPackagesTest {
         }
 
         public DynamicContainer parseTill(int startPackageNumber, int packageNumber) {
-            return DynamicContainer.dynamicContainer("Parse em all (No. " + startPackageNumber + "-" + packageNumber + ")", () -> IntStream.range(startPackageNumber, packageNumber + 1).mapToObj((i) -> DynamicTest.dynamicTest("No. " + (packageNumbers == null ? String.valueOf(i) : packageNumbers.get(i)) + " - Test nr." + i, () -> {
+            return DynamicContainer.dynamicContainer("Parse em all (No. " + startPackageNumber + "-" + packageNumber + ")", () -> IntStream.range(startPackageNumber, packageNumber + 1).mapToObj((i) -> DynamicTest.dynamicTest("No. " + (packageNumbers == null ? String.valueOf(i) : packageNumbers.get(i - 1)) + " - Test nr." + i, () -> {
                 BVLC bvlc = nextBVLC();
                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                 assumeTrue(bvlc != null, "No more package left");
