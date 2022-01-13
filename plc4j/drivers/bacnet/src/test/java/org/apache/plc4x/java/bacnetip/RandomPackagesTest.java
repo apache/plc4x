@@ -328,7 +328,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BBMD_readProperty() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BBMD_readproperty.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+            DynamicTest.dynamicTest("No. 1 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -340,7 +340,7 @@ public class RandomPackagesTest {
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+            DynamicTest.dynamicTest("No. 2 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -352,7 +352,7 @@ public class RandomPackagesTest {
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
+            DynamicTest.dynamicTest("No. 3 - Unconfirmed-REQ i-Am device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -368,7 +368,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+            DynamicTest.dynamicTest("No. 4 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -380,7 +380,7 @@ public class RandomPackagesTest {
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+            DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -392,7 +392,7 @@ public class RandomPackagesTest {
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(12345L, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,12345",
+            DynamicTest.dynamicTest("No. 6 - Unconfirmed-REQ i-Am device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -408,7 +408,7 @@ public class RandomPackagesTest {
                     assertEquals(true, baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
+            DynamicTest.dynamicTest("No. 7 - Confirmed-REQ readProperty[ 1] analog-output,0 priority-array",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -421,7 +421,7 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
-            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 priority-array",
+            DynamicTest.dynamicTest("No. 8 - Complex-ACK readProperty[ 1] analog-output,0 priority-array",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -438,31 +438,31 @@ public class RandomPackagesTest {
                     assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
                      */
                 }),
-            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
+            DynamicTest.dynamicTest("No. 9 - BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     BVLCRegisterForeignDevice bvlcRegisterForeignDevice = (BVLCRegisterForeignDevice) bvlc;
                     assertEquals(60000, bvlcRegisterForeignDevice.getTtl());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 12345 12345",
+            DynamicTest.dynamicTest("No. 10 - Unconfirmed-REQ who-Is 12345 12345",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipPackages(1);
                 }),
-            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Result",
+            DynamicTest.dynamicTest("No. 11 - BACnet Virtual Link Control BVLC Function BVLC-Result",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     BVLCResult bvlcResult = (BVLCResult) bvlc;
                     assertEquals(BVLCResultCode.SUCCESSFUL_COMPLETION, bvlcResult.getCode());
                 }),
-            DynamicTest.dynamicTest("Skip Unconfirmed-REQ who-Is/I-Am",
+            DynamicTest.dynamicTest("No. 12-16 - Skip Unconfirmed-REQ who-Is/I-Am",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipPackages(5);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 present-value",
+            DynamicTest.dynamicTest("No. 17 - Confirmed-REQ readProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -475,7 +475,7 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRESENT_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
-            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 present-value",
+            DynamicTest.dynamicTest("No. 18 - Complex-ACK readProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -490,12 +490,12 @@ public class RandomPackagesTest {
                     BACnetApplicationTagReal baCnetApplicationTagReal = (BACnetApplicationTagReal) baCnetServiceAckReadProperty.getValues().getData().get(0).getApplicationTag();
                     assertEquals(0, baCnetApplicationTagReal.getValue());
                 }),
-            DynamicTest.dynamicTest("Skip Misc 8 packages",
+            DynamicTest.dynamicTest("No. 19-26 - Skip Misc 8 packages",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipPackages(8);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ readProperty[ 1] analog-output,0 relinquish-default",
+            DynamicTest.dynamicTest("No. 27 - Confirmed-REQ readProperty[ 1] analog-output,0 relinquish-default",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -508,7 +508,7 @@ public class RandomPackagesTest {
                     assertEquals(0, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.RELINQUISH_DEFAULT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
-            DynamicTest.dynamicTest("Complex-ACK readProperty[ 1] analog-output,0 relinquish-default",
+            DynamicTest.dynamicTest("No. 28 - Complex-ACK readProperty[ 1] analog-output,0 relinquish-default",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -525,17 +525,17 @@ public class RandomPackagesTest {
                     assertEquals(0f, baCnetApplicationTagReal);
                      */
                 }),
-            DynamicTest.dynamicTest("Skip Misc 48 packages",
+            DynamicTest.dynamicTest("No. 29-76 - Skip Misc 48 packages",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipPackages(48);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 priority-array",
+            DynamicTest.dynamicTest("No. 77 - Confirmed-REQ writeProperty[ 1] analog-output,0 priority-array",
                 () -> {
                     // This package is broken as from the spec it requires 16 values // TODO: validate that
                     pcapEvaluator.skipPackages(1);
                 }),
-            DynamicTest.dynamicTest("Error writeProperty[ 1]",
+            DynamicTest.dynamicTest("No. 78 - Error writeProperty[ 1]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -547,12 +547,12 @@ public class RandomPackagesTest {
                     // TODO: change to enum
                     assertEquals(List.of((byte) 0x28), baCnetErrorWriteProperty.getErrorCode().getData());
                 }),
-            DynamicTest.dynamicTest("Skip Misc 8 packages",
+            DynamicTest.dynamicTest("No. 79-86 - Skip Misc 8 packages",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipPackages(8);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
+            DynamicTest.dynamicTest("No. 87 - Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -570,7 +570,7 @@ public class RandomPackagesTest {
                     BACnetContextTagUnsignedInteger priority = baCnetConfirmedServiceRequestWriteProperty.getPriority();
                     assertEquals(10, priority.getActualValue());
                 }),
-            DynamicTest.dynamicTest("Error writeProperty[ 1]",
+            DynamicTest.dynamicTest("No. 88 - Error writeProperty[ 1]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -582,12 +582,12 @@ public class RandomPackagesTest {
                     // TODO: change to enum
                     assertEquals(List.of((byte) 0x25), baCnetErrorWriteProperty.getErrorCode().getData());
                 }),
-            DynamicTest.dynamicTest("Skip to 142 Misc packages",
+            DynamicTest.dynamicTest("No. 89-142 - Skip to 142 Misc packages",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipTo(142);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
+            DynamicTest.dynamicTest("No. 143 - Confirmed-REQ writeProperty[ 1] analog-output,0 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -604,19 +604,19 @@ public class RandomPackagesTest {
                     BACnetContextTagUnsignedInteger priority = baCnetConfirmedServiceRequestWriteProperty.getPriority();
                     assertEquals(1, priority.getActualValue());
                 }),
-            DynamicTest.dynamicTest("Simple-ACK writeProperty[ 1]", () -> {
+            DynamicTest.dynamicTest("No. 144 - Simple-ACK writeProperty[ 1]", () -> {
                 BVLC bvlc = pcapEvaluator.nextBVLC();
                 dump(bvlc);
                 BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
                 APDUSimpleAck apduSimpleAck = (APDUSimpleAck) bvlcOriginalUnicastNPDU.getNpdu().getApdu();
                 assertEquals(15, apduSimpleAck.getServiceChoice());
             }),
-            DynamicTest.dynamicTest("Skip to 200 Misc packages",
+            DynamicTest.dynamicTest("No. 145-200 - Skip to 200 Misc packages",
                 () -> {
                     // this is a repeat from the package above
                     pcapEvaluator.skipTo(200);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ readProperty[  1] device,12345 object-identifier",
+            DynamicTest.dynamicTest("No. 201 - Confirmed-REQ readProperty[  1] device,12345 object-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -629,7 +629,7 @@ public class RandomPackagesTest {
                     assertEquals(12345, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getValue());
                 }),
-            DynamicTest.dynamicTest("Complex-ACK   readProperty[  1] device,12345 object-identifier device,12345",
+            DynamicTest.dynamicTest("No. 202 - Complex-ACK   readProperty[  1] device,12345 object-identifier device,12345",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -645,7 +645,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, objectIdentifier.getObjectType());
                     assertEquals(12345, objectIdentifier.getInstanceNumber());
                 }),
-            pcapEvaluator.parseEmAll()
+            pcapEvaluator.parseFrom(203)
         );
     }
 
@@ -4751,11 +4751,19 @@ public class RandomPackagesTest {
         }
 
         public DynamicContainer parseEmAll() {
-            return parseTill(maxPackages);
+            return parseTill(1, maxPackages);
         }
 
-        public DynamicContainer parseTill(int numberOfPackages) {
-            return DynamicContainer.dynamicContainer("Parse em all (" + numberOfPackages + ")", () -> IntStream.range(1, numberOfPackages + 1).mapToObj((i) -> DynamicTest.dynamicTest("test n." + i, () -> {
+        public DynamicContainer parseFrom(int startPackageNumber) {
+            return parseTill(startPackageNumber, maxPackages);
+        }
+
+        public DynamicContainer parseTill(int packageNumber) {
+            return parseTill(1, packageNumber);
+        }
+
+        public DynamicContainer parseTill(int startPackageNumber, int packageNumber) {
+            return DynamicContainer.dynamicContainer("Parse em all (No. " + startPackageNumber + "-" + packageNumber + ")", () -> IntStream.range(startPackageNumber, packageNumber + 1).mapToObj((i) -> DynamicTest.dynamicTest("No. " + (packageNumbers == null ? String.valueOf(i) : packageNumbers.get(i)) + " - Test nr." + i, () -> {
                 BVLC bvlc = nextBVLC();
                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                 assumeTrue(bvlc != null, "No more package left");
@@ -4770,7 +4778,10 @@ public class RandomPackagesTest {
         protected boolean done = false;
         protected final String pcapFile;
         protected final PcapHandle pcapHandle;
-        protected final Map<Long, Integer> timestampToNumberMap;
+        // maps timestamp to package number
+        protected final Map<Long, Integer> timestampToPackageNumberMap;
+        // maps read package (index) to package number
+        protected final List<Integer> packageNumbers;
         protected final int maxPackages;
 
         public PCAPEvaluator(String pcapFile) throws IOException, PcapNativeException, NotOpenException {
@@ -4785,18 +4796,27 @@ public class RandomPackagesTest {
             int packageNumber = 0;
             if (filter != null) {
                 // In case of filtering we need to read all packages
-                intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
                 LOGGER.info("Building timestamp number map");
-                timestampToNumberMap = new HashMap<>();
+                timestampToPackageNumberMap = new HashMap<>();
                 while (intermediateHandle.getNextPacket() != null) {
-                    timestampToNumberMap.put(intermediateHandle.getTimestamp().getTime(), ++packageNumber);
+                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp().getTime(), ++packageNumber);
+                }
+                intermediateHandle.close();
+                // Count package numbers now
+                intermediateHandle = getHandle(toParse);
+                packageNumber = 0;
+                packageNumbers = new LinkedList<>();
+                while (intermediateHandle.getNextPacket() != null) {
+                    packageNumber++;
+                    packageNumbers.add(timestampToPackageNumberMap.get(intermediateHandle.getTimestamp().getTime()));
                 }
                 intermediateHandle.close();
                 // We need a new handle as we consumed the old
                 intermediateHandle = getHandle(toParse);
                 intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
             } else {
-                timestampToNumberMap = null;
+                timestampToPackageNumberMap = null;
+                packageNumbers = null;
                 while (intermediateHandle.getNextPacket() != null) {
                     packageNumber++;
                 }
@@ -4807,15 +4827,15 @@ public class RandomPackagesTest {
             maxPackages = packageNumber;
         }
 
-        public void skipTo(int targetReadPackages) throws NotOpenException {
-            if (targetReadPackages <= readPackages) {
-                throw new IllegalArgumentException("Package number must be bigger than " + readPackages);
+        public void skipTo(int targetPackageNumber) throws NotOpenException {
+            if (targetPackageNumber <= currentPackageNumber) {
+                throw new IllegalArgumentException("Package number must be bigger than " + currentPackageNumber);
             }
-            LOGGER.info("Skipping to {} read packages starting at read packages {}. Current package number {}", targetReadPackages, readPackages, currentPackageNumber);
+            LOGGER.info("Skipping to package number {} starting at package number {}. Current packages so far {}", targetPackageNumber, currentPackageNumber, readPackages);
             do {
                 nextPacket();
-            } while (readPackages < targetReadPackages);
-            LOGGER.info("Ended skipping at {} with package number {}", readPackages, currentPackageNumber);
+            } while (currentPackageNumber < targetPackageNumber);
+            LOGGER.info("Ended skipping at {} read packages with package number {}", readPackages, currentPackageNumber);
         }
 
         public void skipPackages(int numberOfReadPackages) {
@@ -4855,10 +4875,10 @@ public class RandomPackagesTest {
                 return null;
             }
             readPackages++;
-            if (timestampToNumberMap == null) {
+            if (timestampToPackageNumberMap == null) {
                 currentPackageNumber++;
             } else {
-                currentPackageNumber = timestampToNumberMap.get(pcapHandle.getTimestamp().getTime());
+                currentPackageNumber = timestampToPackageNumberMap.get(pcapHandle.getTimestamp().getTime());
             }
             LOGGER.debug("({}) Next packet:\n{}", currentPackageNumber, packet);
             return packet;
