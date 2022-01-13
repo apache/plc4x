@@ -56,6 +56,8 @@ public class RandomPackagesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
+    public static final String BACNET_BPF_FILTER = "udp port 47808";
+
     @BeforeAll
     static void setUp() {
         // TODO: for mac only don't commit
@@ -252,7 +254,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("BACnet-MSTP-SNAP-Mixed")
     Collection<DynamicNode> BACnet_MSTP_SNAP_Mixed() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap", BACNET_BPF_FILTER);
         return List.of(
             pcapEvaluator.parseEmAll()
         );
@@ -1520,7 +1522,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("WireSharkOfNewObjects")
     Collection<DynamicNode> WireSharkOfNewObjects() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap", "udp port 47808");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2072,7 +2074,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("getEventInformation")
     Collection<DynamicNode> getEventInformation() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap", "udp port 47808");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2138,7 +2140,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("mstp-whois-basrt-mix")
     Collection<DynamicNode> mstp_whois_basrt_mix() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap", "udp port 47808");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2383,7 +2385,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", "udp port 47808");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4804,6 +4806,7 @@ public class RandomPackagesTest {
                 intermediateHandle.close();
                 // Count package numbers now
                 intermediateHandle = getHandle(toParse);
+                intermediateHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
                 packageNumber = 0;
                 packageNumbers = new LinkedList<>();
                 while (intermediateHandle.getNextPacket() != null) {
