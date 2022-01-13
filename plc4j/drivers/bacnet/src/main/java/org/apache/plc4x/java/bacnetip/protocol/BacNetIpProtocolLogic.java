@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
+import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,14 +135,11 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         } else {
             LOGGER.debug(String.format("Unexpected NPDU type: %s", npdu.getClass().getName()));
         }
-
-        System.err.println(npdu);
     }
 
     private void decodeConfirmedRequest(APDUConfirmedRequest apduConfirmedRequest) {
         final BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
-        // A value change subscription event.
-        if (serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) {
+        if (serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) { // A value change subscription event.
             BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
                 (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
 
@@ -150,12 +149,61 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
-            // TODO: fixme
-                /*for (BACnetTag notification1 : valueChange.getListOfValues().getData()) {
-                BACnetTagWithContent notification=null;
+            for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
-                if (notification.getPropertyIdentifier().get(0) == (short) 0x55) {
-                    final BACnetTag baCnetTag = notification.getValue();
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                    BACnetConstructedDataElement propertyValue = baCnetPropertyValue.getPropertyValue();
+
+                    // Initialize an enriched version of the PlcStruct.
+                    final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
+                    enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
+                    enrichedPlcValue.put("objectType", new PlcDINT(objectType));
+                    enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
+                    enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
+
+                    // From the original BACNet tag
+                    //enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(propertyValue.getActualTagNumber()));
+                    //enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getActualLength()));
+
+                    // Use the information in the edeModel to enrich the information.
+                    if (edeModel != null) {
+                        final Datapoint datapoint = edeModel.getDatapoint(curField);
+                        if (datapoint != null) {
+                            // Add all the attributes from the ede file.
+                            enrichedPlcValue.putAll(datapoint.toPlcValues());
+                        }
+                    }
+                    // Send out the enriched event.
+                    publishEvent(curField, new PlcStruct(enrichedPlcValue));
+                }
+            }
+        } else if (serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) { // Someone read a value.
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetConfirmedServiceRequestWriteProperty) { // Someone wrote a value.
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetConfirmedServiceRequestSubscribeCOV) {
+            // Ignore this ...
+        } else {
+            LOGGER.debug(String.format("Unexpected ConfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
+        }
+    }
+
+    private void decodeUnconfirmedRequest(APDUUnconfirmedRequest unconfirmedRequest) {
+        final BACnetUnconfirmedServiceRequest serviceRequest = unconfirmedRequest.getServiceRequest();
+        if (serviceRequest instanceof BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) { // A value change subscription event.
+            BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification valueChange =
+                (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) serviceRequest;
+
+            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            int objectType = valueChange.getMonitoredObjectIdentifier().getObjectType().getValue();
+            long objectInstance = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
+
+            // The actual value change is in the notifications ... iterate through them to get it.
+            for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
+                // These are value change notifications. Ignore the rest.
+                if (baCnetPropertyValue.getPropertyIdentifier().getValue() == BACnetPropertyIdentifier.PRESENT_VALUE) {
+                    BACnetApplicationTag baCnetTag = baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
 
                     // Initialize an enriched version of the PlcStruct.
                     final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
@@ -179,25 +227,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     // Send out the enriched event.
                     publishEvent(curField, new PlcStruct(enrichedPlcValue));
                 }
-            }*/
-        }
-        // Someone read a value.
-        else if (serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) {
-            // Ignore this ...
-        }
-        // Someone wrote a value.
-        else if (serviceRequest instanceof BACnetConfirmedServiceRequestWriteProperty) {
-            // Ignore this ...
-        } else if (serviceRequest instanceof BACnetConfirmedServiceRequestSubscribeCOV) {
-            // Ignore this ...
-        } else {
-            LOGGER.debug(String.format("Unexpected ConfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
-        }
-    }
-
-    private void decodeUnconfirmedRequest(APDUUnconfirmedRequest unconfirmedRequest) {
-        final BACnetUnconfirmedServiceRequest serviceRequest = unconfirmedRequest.getServiceRequest();
-        if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoHas) {
+            }
+        } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoHas) {
             // Ignore this ...
         } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoIs) {
             // Ignore this ...

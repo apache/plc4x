@@ -22,6 +22,7 @@ import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
@@ -46,6 +47,10 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
     @ConfigurationParameter("pcap-replay-speed")
     @DoubleDefaultValue(1.0F)
     private double pcapReplaySpeed;
+
+    @ConfigurationParameter("filter")
+    @StringDefaultValue("")
+    private String filter = "";
 
     public String getEdeFilePath() {
         return edeFilePath;
@@ -87,6 +92,14 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
         return null;
     }
 
+    @Override
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
     /**
      * Packet handler to use when running in PCAP mode.
