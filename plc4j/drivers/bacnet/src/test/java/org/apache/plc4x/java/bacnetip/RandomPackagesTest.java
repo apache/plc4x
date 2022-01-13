@@ -59,7 +59,7 @@ public class RandomPackagesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
-    public static final String BACNET_BPF_FILTER = "udp port 47808";
+    public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
 
     @BeforeAll
     static void setUp() {
@@ -256,7 +256,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("BACnet-MSTP-SNAP-Mixed")
     Collection<DynamicNode> BACnet_MSTP_SNAP_Mixed() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-MSTP-SNAP-Mixed.cap", BACNET_BPF_FILTER_UDP);
         return List.of(
             pcapEvaluator.parseEmAll()
         );
@@ -314,14 +314,14 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("BACnetIP-MSTP-Mix")
     Collection<DynamicNode> BACnet_MSTP_Mix() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("BBMD_Results")
     Collection<DynamicNode> BBMD_Results() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BBMD_Results.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BBMD_Results.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1171,11 +1171,11 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("no ip packages here")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("MSTP_Malformed_Packets")
     Collection<DynamicNode> MSTP_Malformed_Packets() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("MSTP_Malformed_Packets.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("MSTP_Malformed_Packets.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1307,11 +1307,10 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("Sysco-1")
     Collection<DynamicNode> Sysco_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-1.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("Sysco-1.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1329,19 +1328,19 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("TA02 MST")
     Collection<DynamicNode> TA02_MST() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TA02%20MST.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TA02%20MST.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("TAO2 TES.39A")
     Collection<DynamicNode> TAO2_TES_39_A() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TAO2%20TES.39A.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TAO2%20TES.39A.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1359,19 +1358,17 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non ip")
     @TestFactory
     @DisplayName("TestRun4 - Internal side of Router")
     Collection<DynamicNode> TestRun4___Internal_side_of_Router() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Internal%20side%20of%20Router.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Internal%20side%20of%20Router.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("TestRun4 - Outside of Router")
     Collection<DynamicNode> TestRun4___Outside_of_Router() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Outside%20of%20Router.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun4%20-%20Outside%20of%20Router.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1382,11 +1379,10 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("TestRun5 - Outside of Router")
     Collection<DynamicNode> TestRun5___Outside_of_Router() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Outside%20of%20Router.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun5%20-%20Outside%20of%20Router.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1397,27 +1393,24 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("TestRun8 - Outside of Router")
     Collection<DynamicNode> TestRun8___Outside_of_Router() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun8%20-%20Outside%20of%20Router.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TestRun8%20-%20Outside%20of%20Router.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("TimeSync_Decode_Noon")
     Collection<DynamicNode> TimeSync_Decode_Noon() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TimeSync_Decode_Noon.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("TimeSync_Decode_Noon.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("needs filtering")
     @TestFactory
     @DisplayName("Tower333 lighting 5min IP")
     Collection<DynamicNode> Tower333_lighting_5min_IP() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("Tower333%20lighting%205min%20IP.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1474,11 +1467,10 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("WhoIs_I-Am_Epics")
     Collection<DynamicNode> WhoIs_I_Am_Epics() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WhoIs_I-Am_Epics.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WhoIs_I-Am_Epics.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1514,7 +1506,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("WireSharkOfNewObjects")
     Collection<DynamicNode> WireSharkOfNewObjects() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkOfNewObjects.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1548,18 +1540,18 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("aha_220_to_20_lost_b")
     Collection<DynamicNode> aha_220_to_20_lost_b() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("aha_220_to_20_lost_b.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("aha_220_to_20_lost_b.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("alerton-plugfest-2")
     Collection<DynamicNode> alerton_plugfest_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
             DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-version",
                 () -> {
@@ -1586,19 +1578,18 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("alerton-plugfest-3")
     Collection<DynamicNode> alerton_plugfest_3() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("too fat will crash ide (250k entries)")
     @TestFactory
     @DisplayName("alerton-plugfest")
     Collection<DynamicNode> alerton_plugfest() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1672,19 +1663,17 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("atomic-write-file-480")
     Collection<DynamicNode> atomic_write_file_480() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-480.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-480.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("atomic-write-file-seg")
     Collection<DynamicNode> atomic_write_file_seg() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-seg.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("atomic-write-file-seg.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1709,27 +1698,25 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("bacnet-arcnet")
     Collection<DynamicNode> bacnet_arcnet() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-arcnet.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-arcnet.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("bacnet-ethernet-device")
     Collection<DynamicNode> bacnet_ethernet_device() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet-device.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet-device.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("bacnet-ethernet")
     Collection<DynamicNode> bacnet_ethernet() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-ethernet.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1740,26 +1727,24 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("bacnet-properties")
     Collection<DynamicNode> bacnet_properties() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-properties.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-properties.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("bacnet-services")
     Collection<DynamicNode> bacnet_services() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("bacnet-stack-services")
     Collection<DynamicNode> bacnet_stack_services() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-stack-services.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1770,19 +1755,18 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("needs filtering")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("bad_hub_restart")
     Collection<DynamicNode> bad_hub_restart() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bad_hub_restart.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bad_hub_restart.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("bip-discover")
     Collection<DynamicNode> bip_discover() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bip-discover.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bip-discover.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1807,11 +1791,11 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("bo_command_failure")
     Collection<DynamicNode> bo_command_failure() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1910,11 +1894,11 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("many broken packages")
     @TestFactory
     @DisplayName("bvlc-loop")
     Collection<DynamicNode> bvlc_loop() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-loop.cap");
+        String filterBrokenUDPPackages = "udp[4:2] > 29";
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc-loop.cap", BACNET_BPF_FILTER_UDP + " and " + filterBrokenUDPPackages);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1926,19 +1910,18 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("cimetrics_mstp")
     Collection<DynamicNode> cimetrics_mstp() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("cimetrics_mstp.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("cimetrics_mstp.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("config-tool-discover")
     Collection<DynamicNode> config_tool_discover() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("config-tool-discover.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("config-tool-discover.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2044,18 +2027,18 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("foreign-device-npdu")
     Collection<DynamicNode> foreign_device_npdu() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("foreign-device-npdu.cap");
+        String filterBrokenUDPPackages = "udp[4:2] > 29";
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("foreign-device-npdu.cap", BACNET_BPF_FILTER_UDP + " and " + filterBrokenUDPPackages);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("getEventInformation")
     Collection<DynamicNode> getEventInformation() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("getEventInformation.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2066,11 +2049,11 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("lmbc-300-bootload")
     Collection<DynamicNode> lmbc_300_bootload() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("lmbc-300-bootload.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("lmbc-300-bootload.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2102,34 +2085,32 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp-cimetrics")
     Collection<DynamicNode> mstp_cimetrics() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-cimetrics.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-cimetrics.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("mstp-test-4")
     Collection<DynamicNode> mstp_test_4() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-test-4.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-test-4.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("mstp-whois-basrt-mix")
     Collection<DynamicNode> mstp_whois_basrt_mix() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("mstp-whois-basrt-mix2")
     Collection<DynamicNode> mstp_whois_basrt_mix2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix2.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp-whois-basrt-mix2.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2140,147 +2121,147 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("Only non udp packages")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20090227094623")
     Collection<DynamicNode> mstp_20090227094623() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090227094623.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090227094623.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20090304105820")
     Collection<DynamicNode> mstp_20090304105820() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304105820.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304105820.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20090304110410")
     Collection<DynamicNode> mstp_20090304110410() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304110410.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090304110410.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20090807145500")
     Collection<DynamicNode> mstp_20090807145500() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090807145500.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20090807145500.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013121352")
     Collection<DynamicNode> mstp_20091013121352() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121352.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121352.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013121410")
     Collection<DynamicNode> mstp_20091013121410() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121410.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013121410.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013122053")
     Collection<DynamicNode> mstp_20091013122053() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122053.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122053.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013122451")
     Collection<DynamicNode> mstp_20091013122451() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122451.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013122451.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013123108")
     Collection<DynamicNode> mstp_20091013123108() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013123108.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013123108.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013124218")
     Collection<DynamicNode> mstp_20091013124218() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013124218.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013124218.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013130259")
     Collection<DynamicNode> mstp_20091013130259() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013130259.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013130259.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091013162906")
     Collection<DynamicNode> mstp_20091013162906() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013162906.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091013162906.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091014093519")
     Collection<DynamicNode> mstp_20091014093519() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014093519.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014093519.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20091014112427")
     Collection<DynamicNode> mstp_20091014112427() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014112427.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20091014112427.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_20140225214217")
     Collection<DynamicNode> mstp_20140225214217() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20140225214217.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_20140225214217.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("mstp_mix_basrt_V124")
     Collection<DynamicNode> mstp_mix_basrt_V124() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    // TODO: fixme needs more support in the protocols
+    @Disabled("fixme: more protocol support")
     @TestFactory
     @DisplayName("mstp_mix_basrt_V124_bad")
     Collection<DynamicNode> mstp_mix_basrt_V124_bad() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124_bad.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_mix_basrt_V124_bad.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non ip")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("mstp_wtap")
     Collection<DynamicNode> mstp_wtap() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_wtap.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("mstp_wtap.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2291,27 +2272,27 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("plugfest-2011-delta-1")
     Collection<DynamicNode> plugfest_2011_delta_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-1.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("plugfest-2011-delta-2")
     Collection<DynamicNode> plugfest_2011_delta_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-2.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-2.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("plugfest-2011-delta-3")
     Collection<DynamicNode> plugfest_2011_delta_3() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-3.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-delta-3.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2329,18 +2310,17 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("needs filtering")
     @TestFactory
     @DisplayName("plugfest-2011-siemens-1")
     Collection<DynamicNode> plugfest_2011_siemens_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-siemens-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-2011-trane-1")
     Collection<DynamicNode> plugfest_2011_trane_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed REQ who-Is",
                 () -> {
@@ -2359,28 +2339,28 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("plugfest-delta-2")
     Collection<DynamicNode> plugfest_delta_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-delta-2b")
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-1")
     Collection<DynamicNode> plugfest_tridium_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-2")
     Collection<DynamicNode> plugfest_tridium_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2391,19 +2371,17 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("polarsoft-free-range-router")
     Collection<DynamicNode> polarsoft_free_range_router() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("properties")
     Collection<DynamicNode> properties() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("properties.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("properties.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4082,11 +4060,11 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly llc messages")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("read-property-bad")
     Collection<DynamicNode> read_property_bad() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-bad.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-bad.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4097,19 +4075,19 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("read-property-synergy")
     Collection<DynamicNode> read_property_synergy() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-synergy.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property-synergy.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("read-property")
     Collection<DynamicNode> read_property() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-property.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4127,11 +4105,10 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("reinit-device")
     Collection<DynamicNode> reinit_device() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("reinit-device.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("reinit-device.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4146,25 +4123,7 @@ public class RandomPackagesTest {
     @DisplayName("routers")
     Collection<DynamicNode> routers() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("routers.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            pcapEvaluator.parseEmAll()
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4197,11 +4156,10 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("rp")
     Collection<DynamicNode> rp() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4247,19 +4205,18 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("too many packages 293726... needs splitup")
     @TestFactory
     @DisplayName("softdel-BTL")
     Collection<DynamicNode> softdel_BTL() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("softdel-BTL.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("softdel-BTL.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("special-events")
     Collection<DynamicNode> special_events() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("special-events.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("special-events.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4319,34 +4276,32 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("Needs filtering")
     @TestFactory
     @DisplayName("tridium jace2")
     Collection<DynamicNode> tridium_jace2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("tridium%20jace2.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("tridium%20jace2.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("u+4_MSTP")
     Collection<DynamicNode> u_4_MSTP() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("u+4_MSTP.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("u+4_MSTP.pcap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("weekend")
     Collection<DynamicNode> weekend() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("weekend.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("weekend.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("who-has-I-have")
     Collection<DynamicNode> who_has_I_have() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4502,27 +4457,26 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("who-is-i-am")
     Collection<DynamicNode> who_is_i_am() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-is-i-am.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-is-i-am.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non ip")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("whois-basrtp-b-1")
     Collection<DynamicNode> whois_basrtp_b_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-1.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-1.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non ip")
+    @Disabled("no udp packages")
     @TestFactory
     @DisplayName("whois-basrtp-b-2")
     Collection<DynamicNode> whois_basrtp_b_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-2.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("whois-basrtp-b-2.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4547,11 +4501,10 @@ public class RandomPackagesTest {
         return List.of(pcapEvaluator.parseEmAll());
     }
 
-    @Disabled("mostly non udp")
     @TestFactory
     @DisplayName("wp-rp-index")
     Collection<DynamicNode> wp_rp_index() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-rp-index.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-rp-index.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4600,7 +4553,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("write-property")
     Collection<DynamicNode> write_property() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property.cap", BACNET_BPF_FILTER);
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property.cap", BACNET_BPF_FILTER_UDP);
         return List.of(pcapEvaluator.parseEmAll(
             1594, // Malformed Package
             1595,   // Malformed Package
