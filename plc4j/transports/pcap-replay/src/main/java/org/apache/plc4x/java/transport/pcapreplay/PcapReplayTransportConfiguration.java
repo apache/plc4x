@@ -30,4 +30,5 @@ public interface PcapReplayTransportConfiguration extends PcapTransportConfigura
         return false;
     }
 
+    default String getFilter() { return "";}
 }

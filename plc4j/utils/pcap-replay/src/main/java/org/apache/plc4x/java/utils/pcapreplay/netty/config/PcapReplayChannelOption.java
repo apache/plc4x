@@ -37,4 +37,10 @@ public class PcapReplayChannelOption extends PcapChannelOption {
     public static final ChannelOption<Boolean> LOOP =
         ChannelOption.valueOf(Boolean.class, "LOOP");
 
+    /**
+     * set a BPF filter
+     */
+    public static final ChannelOption<String> FILTER =
+        ChannelOption.valueOf(String.class, "FILTER");
+
 }

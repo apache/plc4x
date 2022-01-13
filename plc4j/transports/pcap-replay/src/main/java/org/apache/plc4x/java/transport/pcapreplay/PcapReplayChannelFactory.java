@@ -66,6 +66,7 @@ public class PcapReplayChannelFactory extends NettyChannelFactory implements Has
                 bootstrap.option(PcapChannelOption.PACKET_HANDLER, configuration.getPcapPacketHandler());
             }
             bootstrap.option(PcapReplayChannelOption.SPEED_FACTOR, configuration.getReplaySpeedFactor());
+            bootstrap.option(PcapReplayChannelOption.FILTER, configuration.getFilter());
         }
     }
 
