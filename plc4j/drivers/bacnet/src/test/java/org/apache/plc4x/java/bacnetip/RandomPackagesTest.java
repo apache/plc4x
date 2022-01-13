@@ -44,8 +44,11 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.FileSystems;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -250,7 +253,6 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("Needs heavy filtering")
     @TestFactory
     @DisplayName("BACnet-MSTP-SNAP-Mixed")
     Collection<DynamicNode> BACnet_MSTP_SNAP_Mixed() throws Exception {
@@ -309,12 +311,11 @@ public class RandomPackagesTest {
         );
     }
 
-    @Disabled("mostly llc so we don't use that here for now")
     @TestFactory
     @DisplayName("BACnetIP-MSTP-Mix")
     Collection<DynamicNode> BACnet_MSTP_Mix() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap");
-        return null;
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnetIP-MSTP-Mix.cap", BACNET_BPF_FILTER);
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly llc so we don't use that here for now")
@@ -1508,15 +1509,7 @@ public class RandomPackagesTest {
     @DisplayName("WireSharkError_BufferReadyNotification")
     Collection<DynamicNode> WireSharkError_BufferReadyNotification() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkError_BufferReadyNotification.pcap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1551,7 +1544,8 @@ public class RandomPackagesTest {
                 dump(bvlc);
                 // TODO:
                 assumeTrue(false, "not properly implemented. Check manually and add asserts");
-            })
+            }),
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -1566,7 +1560,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("alerton-plugfest-2")
     Collection<DynamicNode> alerton_plugfest_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap", BACNET_BPF_FILTER);
         return Arrays.asList(
             DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-version",
                 () -> {
@@ -1588,7 +1582,8 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+                }),
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -1757,7 +1752,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("bacnet-services")
     Collection<DynamicNode> bacnet_services() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("bacnet-services.cap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -1929,15 +1924,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode>
     bvlc() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bvlc.pcap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -1968,13 +1955,7 @@ public class RandomPackagesTest {
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -2052,7 +2033,8 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+                }),
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -2359,7 +2341,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("plugfest-2011-trane-1")
     Collection<DynamicNode> plugfest_2011_trane_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap", BACNET_BPF_FILTER);
         return Arrays.asList(
             DynamicTest.dynamicTest("Unconfirmed REQ who-Is",
                 () -> {
@@ -2378,7 +2360,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("plugfest-delta-2")
     Collection<DynamicNode> plugfest_delta_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2.cap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2392,14 +2374,14 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("plugfest-tridium-1")
     Collection<DynamicNode> plugfest_tridium_1() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-1.pcap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("plugfest-tridium-2")
     Collection<DynamicNode> plugfest_tridium_2() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-tridium-2.pcap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -2407,24 +2389,7 @@ public class RandomPackagesTest {
     @DisplayName("polarsoft-free-range-router-init-routing-table")
     Collection<DynamicNode> polarsoft_free_range_router_init_routing_table() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("polarsoft-free-range-router-init-routing-table.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -4160,15 +4125,7 @@ public class RandomPackagesTest {
     @DisplayName("readrange_malformed")
     Collection<DynamicNode> readrange_malformed() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("readrange_malformed.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("mostly non udp")
@@ -4206,7 +4163,8 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+                }),
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -4235,7 +4193,8 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+                }),
+            pcapEvaluator.parseEmAll()
         );
     }
 
@@ -4388,7 +4347,7 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("who-has-I-have")
     Collection<DynamicNode> who_has_I_have() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap");
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has-I-have.cap", BACNET_BPF_FILTER);
         return List.of(pcapEvaluator.parseEmAll());
     }
 
@@ -4601,72 +4560,21 @@ public class RandomPackagesTest {
     @DisplayName("wp-weekly-schedule-index")
     Collection<DynamicNode> wp_weekly_schedule_index() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-index.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("wp-weekly-schedule-test")
     Collection<DynamicNode> wp_weekly_schedule_test() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp-weekly-schedule-test.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("wp_weekly_schedule")
     Collection<DynamicNode> wp_weekly_schedule() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("wp_weekly_schedule.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "BACnetConfirmedServiceRequestWriteProperty wrongly implemented");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4693,25 +4601,25 @@ public class RandomPackagesTest {
     @TestFactory
     @DisplayName("write-property")
     Collection<DynamicNode> write_property() throws Exception {
-        TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("TODO",
-                () -> {
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
-        );
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("write-property.cap", BACNET_BPF_FILTER);
+        return List.of(pcapEvaluator.parseEmAll(
+            1594, // Malformed Package
+            1595,   // Malformed Package
+            1596,   // Malformed Package
+            1597,   // Malformed Package
+            1598,   // Malformed Package
+            1599,   // Malformed Package
+            1600,   // Malformed Package
+            1601,   // Malformed Package
+            1602,   // Malformed Package
+            1603,   // Malformed Package
+            1604,   // Malformed Package
+            1605,   // Malformed Package
+            1606,   // Malformed Package
+            1607,   // Malformed Package
+            1608,   // Malformed Package
+            1609    // Malformed Package
+        ));
     }
 
     @TestFactory
@@ -4752,20 +4660,22 @@ public class RandomPackagesTest {
             super(pcapFile, filter);
         }
 
-        public DynamicContainer parseEmAll() {
-            return parseTill(1, maxPackages);
+        public DynamicContainer parseEmAll(int... skippedNumbers) {
+            return parseRange(1, maxPackages, skippedNumbers);
         }
 
-        public DynamicContainer parseFrom(int startPackageNumber) {
-            return parseTill(startPackageNumber, maxPackages);
+        public DynamicContainer parseFrom(int startPackageNumber, int... skippedNumbers) {
+            return parseRange(startPackageNumber, maxPackages, skippedNumbers);
         }
 
-        public DynamicContainer parseTill(int packageNumber) {
-            return parseTill(1, packageNumber);
+        public DynamicContainer parseTill(int packageNumber, int... skippedNumbers) {
+            return parseRange(1, packageNumber, skippedNumbers);
         }
 
-        public DynamicContainer parseTill(int startPackageNumber, int packageNumber) {
-            return DynamicContainer.dynamicContainer("Parse em all (No. " + startPackageNumber + "-" + packageNumber + ")", () -> IntStream.range(startPackageNumber, packageNumber + 1).mapToObj((i) -> DynamicTest.dynamicTest("No. " + (packageNumbers == null ? String.valueOf(i) : packageNumbers.get(i - 1)) + " - Test nr." + i, () -> {
+        public DynamicContainer parseRange(int startPackageNumber, int packageNumber, int... skippedNumbers) {
+            Set<Integer> numbersToSkip = Arrays.stream(skippedNumbers).boxed().collect(Collectors.toSet());
+            Function<Integer, Integer> packageNumResolver = i -> packageNumbers == null ? i : packageNumbers.get(i - 1);
+            return DynamicContainer.dynamicContainer("Parse em all (No. " + startPackageNumber + "-" + packageNumber + ")", () -> IntStream.range(startPackageNumber, packageNumber + 1).filter(i -> !numbersToSkip.contains(packageNumResolver.apply(i))).mapToObj((i) -> DynamicTest.dynamicTest("No. " + packageNumResolver.apply(i) + " - Test nr." + i, () -> {
                 BVLC bvlc = nextBVLC();
                 LOGGER.info("Test number {} is package number {}", i, currentPackageNumber);
                 assumeTrue(bvlc != null, "No more package left");
@@ -4781,7 +4691,7 @@ public class RandomPackagesTest {
         protected final String pcapFile;
         protected final PcapHandle pcapHandle;
         // maps timestamp to package number
-        protected final Map<Long, Integer> timestampToPackageNumberMap;
+        protected final Map<Timestamp, Integer> timestampToPackageNumberMap;
         // maps read package (index) to package number
         protected final List<Integer> packageNumbers;
         protected final int maxPackages;
@@ -4801,7 +4711,7 @@ public class RandomPackagesTest {
                 LOGGER.info("Building timestamp number map");
                 timestampToPackageNumberMap = new HashMap<>();
                 while (intermediateHandle.getNextPacket() != null) {
-                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp().getTime(), ++packageNumber);
+                    timestampToPackageNumberMap.put(intermediateHandle.getTimestamp(), ++packageNumber);
                 }
                 intermediateHandle.close();
                 // Count package numbers now
@@ -4811,7 +4721,7 @@ public class RandomPackagesTest {
                 packageNumbers = new LinkedList<>();
                 while (intermediateHandle.getNextPacket() != null) {
                     packageNumber++;
-                    packageNumbers.add(timestampToPackageNumberMap.get(intermediateHandle.getTimestamp().getTime()));
+                    packageNumbers.add(timestampToPackageNumberMap.get(intermediateHandle.getTimestamp()));
                 }
                 intermediateHandle.close();
                 // We need a new handle as we consumed the old
@@ -4881,7 +4791,7 @@ public class RandomPackagesTest {
             if (timestampToPackageNumberMap == null) {
                 currentPackageNumber++;
             } else {
-                currentPackageNumber = timestampToPackageNumberMap.get(pcapHandle.getTimestamp().getTime());
+                currentPackageNumber = timestampToPackageNumberMap.get(pcapHandle.getTimestamp());
             }
             LOGGER.debug("({}) Next packet:\n{}", currentPackageNumber, packet);
             return packet;

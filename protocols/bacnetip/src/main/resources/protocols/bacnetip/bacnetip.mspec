@@ -328,7 +328,8 @@
         ]
         ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         ]
-        ['0x7F' BACnetConfirmedServiceRequestConfirmedUnknown
+        [BACnetConfirmedServiceRequestConfirmedUnknown
+            // TODO: slurp all bytes
         ]
     ]
 ]
