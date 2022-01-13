@@ -44,8 +44,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
 	return 0x12
 }
 
-func (m *BACnetServiceAckConfirmedPrivateTransfer) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckConfirmedPrivateTransfer) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckConfirmedPrivateTransfer() *BACnetServiceAck {
 	child := &BACnetServiceAckConfirmedPrivateTransfer{

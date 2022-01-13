@@ -54,8 +54,7 @@ func (m *ModbusPDUReadInputRegistersResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUReadInputRegistersResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadInputRegistersResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadInputRegistersResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadInputRegistersResponse{

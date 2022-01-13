@@ -47,8 +47,7 @@ func (m *ApduDataGroupValueWrite) ApciType() uint8 {
 	return 0x2
 }
 
-func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {}
 
 func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *ApduData {
 	child := &ApduDataGroupValueWrite{

@@ -44,8 +44,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberResponse) ExtApciType() uint8 {
 	return 0x1D
 }
 
-func (m *ApduDataExtIndividualAddressSerialNumberResponse) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtIndividualAddressSerialNumberResponse) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtIndividualAddressSerialNumberResponse() *ApduDataExt {
 	child := &ApduDataExtIndividualAddressSerialNumberResponse{

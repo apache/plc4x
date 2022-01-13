@@ -47,8 +47,7 @@ func (m *FirmataCommandSysex) CommandCode() uint8 {
 	return 0x0
 }
 
-func (m *FirmataCommandSysex) InitializeParent(parent *FirmataCommand) {
-}
+func (m *FirmataCommandSysex) InitializeParent(parent *FirmataCommand) {}
 
 func NewFirmataCommandSysex(command *SysexCommand) *FirmataCommand {
 	child := &FirmataCommandSysex{

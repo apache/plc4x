@@ -47,8 +47,7 @@ func (m *APDUUnconfirmedRequest) ApduType() uint8 {
 	return 0x1
 }
 
-func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {
-}
+func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {}
 
 func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest) *APDU {
 	child := &APDUUnconfirmedRequest{

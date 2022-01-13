@@ -48,8 +48,7 @@ func (m *S7MessageObjectResponse) CpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7MessageObjectResponse) InitializeParent(parent *S7DataAlarmMessage) {
-}
+func (m *S7MessageObjectResponse) InitializeParent(parent *S7DataAlarmMessage) {}
 
 func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7DataAlarmMessage {
 	child := &S7MessageObjectResponse{

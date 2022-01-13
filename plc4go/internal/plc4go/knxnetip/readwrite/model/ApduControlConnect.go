@@ -44,8 +44,7 @@ func (m *ApduControlConnect) ControlType() uint8 {
 	return 0x0
 }
 
-func (m *ApduControlConnect) InitializeParent(parent *ApduControl) {
-}
+func (m *ApduControlConnect) InitializeParent(parent *ApduControl) {}
 
 func NewApduControlConnect() *ApduControl {
 	child := &ApduControlConnect{

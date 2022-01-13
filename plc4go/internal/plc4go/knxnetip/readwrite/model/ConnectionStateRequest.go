@@ -48,8 +48,7 @@ func (m *ConnectionStateRequest) MsgType() uint16 {
 	return 0x0207
 }
 
-func (m *ConnectionStateRequest) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *ConnectionStateRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &ConnectionStateRequest{

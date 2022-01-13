@@ -46,8 +46,7 @@ func (m *COTPParameterChecksum) ParameterType() uint8 {
 	return 0xC3
 }
 
-func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {
-}
+func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {}
 
 func NewCOTPParameterChecksum(crc uint8) *COTPParameter {
 	child := &COTPParameterChecksum{

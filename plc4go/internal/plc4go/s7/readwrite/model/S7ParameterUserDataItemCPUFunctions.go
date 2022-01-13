@@ -53,8 +53,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
 	return 0x12
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {
-}
+func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {}
 
 func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItem {
 	child := &S7ParameterUserDataItemCPUFunctions{

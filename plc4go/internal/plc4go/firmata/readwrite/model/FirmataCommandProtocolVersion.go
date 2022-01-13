@@ -47,8 +47,7 @@ func (m *FirmataCommandProtocolVersion) CommandCode() uint8 {
 	return 0x9
 }
 
-func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand) {
-}
+func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand) {}
 
 func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *FirmataCommand {
 	child := &FirmataCommandProtocolVersion{

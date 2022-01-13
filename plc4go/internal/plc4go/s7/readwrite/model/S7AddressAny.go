@@ -52,8 +52,7 @@ func (m *S7AddressAny) AddressType() uint8 {
 	return 0x10
 }
 
-func (m *S7AddressAny) InitializeParent(parent *S7Address) {
-}
+func (m *S7AddressAny) InitializeParent(parent *S7Address) {}
 
 func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7Address {
 	child := &S7AddressAny{

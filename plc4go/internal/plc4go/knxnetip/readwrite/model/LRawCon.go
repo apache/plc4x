@@ -44,8 +44,7 @@ func (m *LRawCon) MessageCode() uint8 {
 	return 0x2F
 }
 
-func (m *LRawCon) InitializeParent(parent *CEMI) {
-}
+func (m *LRawCon) InitializeParent(parent *CEMI) {}
 
 func NewLRawCon() *CEMI {
 	child := &LRawCon{

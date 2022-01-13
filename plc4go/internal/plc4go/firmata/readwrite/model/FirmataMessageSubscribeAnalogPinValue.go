@@ -48,8 +48,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) MessageType() uint8 {
 	return 0xC
 }
 
-func (m *FirmataMessageSubscribeAnalogPinValue) InitializeParent(parent *FirmataMessage) {
-}
+func (m *FirmataMessageSubscribeAnalogPinValue) InitializeParent(parent *FirmataMessage) {}
 
 func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool) *FirmataMessage {
 	child := &FirmataMessageSubscribeAnalogPinValue{

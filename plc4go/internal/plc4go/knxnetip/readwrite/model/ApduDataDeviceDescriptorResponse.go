@@ -47,8 +47,7 @@ func (m *ApduDataDeviceDescriptorResponse) ApciType() uint8 {
 	return 0xD
 }
 
-func (m *ApduDataDeviceDescriptorResponse) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataDeviceDescriptorResponse) InitializeParent(parent *ApduData) {}
 
 func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte) *ApduData {
 	child := &ApduDataDeviceDescriptorResponse{

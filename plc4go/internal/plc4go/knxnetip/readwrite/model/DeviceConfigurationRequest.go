@@ -47,8 +47,7 @@ func (m *DeviceConfigurationRequest) MsgType() uint16 {
 	return 0x0310
 }
 
-func (m *DeviceConfigurationRequest) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DeviceConfigurationRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI) *KnxNetIpMessage {
 	child := &DeviceConfigurationRequest{

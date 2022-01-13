@@ -51,8 +51,7 @@ func (m *MultipleServiceResponse) Service() uint8 {
 	return 0x8A
 }
 
-func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {
-}
+func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {}
 
 func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *CipService {
 	child := &MultipleServiceResponse{

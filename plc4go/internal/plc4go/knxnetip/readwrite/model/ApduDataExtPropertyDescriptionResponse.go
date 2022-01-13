@@ -54,8 +54,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) ExtApciType() uint8 {
 	return 0x19
 }
 
-func (m *ApduDataExtPropertyDescriptionResponse) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtPropertyDescriptionResponse) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) *ApduDataExt {
 	child := &ApduDataExtPropertyDescriptionResponse{

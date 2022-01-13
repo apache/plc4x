@@ -44,8 +44,7 @@ func (m *MPropInfoInd) MessageCode() uint8 {
 	return 0xF7
 }
 
-func (m *MPropInfoInd) InitializeParent(parent *CEMI) {
-}
+func (m *MPropInfoInd) InitializeParent(parent *CEMI) {}
 
 func NewMPropInfoInd() *CEMI {
 	child := &MPropInfoInd{

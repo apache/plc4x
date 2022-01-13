@@ -46,8 +46,7 @@ func (m *ApduDataOther) ApciType() uint8 {
 	return 0xF
 }
 
-func (m *ApduDataOther) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataOther) InitializeParent(parent *ApduData) {}
 
 func NewApduDataOther(extendedApdu *ApduDataExt) *ApduData {
 	child := &ApduDataOther{

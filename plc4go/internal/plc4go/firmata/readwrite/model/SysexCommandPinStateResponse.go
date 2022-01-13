@@ -52,8 +52,7 @@ func (m *SysexCommandPinStateResponse) Response() bool {
 	return false
 }
 
-func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommand {
 	child := &SysexCommandPinStateResponse{

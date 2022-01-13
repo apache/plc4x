@@ -46,8 +46,7 @@ func (m *KnxNetIpTunneling) ServiceType() uint8 {
 	return 0x04
 }
 
-func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {
-}
+func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {}
 
 func NewKnxNetIpTunneling(version uint8) *ServiceId {
 	child := &KnxNetIpTunneling{

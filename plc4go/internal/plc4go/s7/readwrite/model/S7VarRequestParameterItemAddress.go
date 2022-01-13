@@ -46,8 +46,7 @@ func (m *S7VarRequestParameterItemAddress) ItemType() uint8 {
 	return 0x12
 }
 
-func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {
-}
+func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {}
 
 func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItem {
 	child := &S7VarRequestParameterItemAddress{

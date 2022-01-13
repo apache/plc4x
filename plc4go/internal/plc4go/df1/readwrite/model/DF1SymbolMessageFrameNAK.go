@@ -44,8 +44,7 @@ func (m *DF1SymbolMessageFrameNAK) SymbolType() uint8 {
 	return 0x15
 }
 
-func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {
-}
+func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {}
 
 func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameNAK{

@@ -44,8 +44,7 @@ func (m *APDUUnknown) ApduType() uint8 {
 	return 0
 }
 
-func (m *APDUUnknown) InitializeParent(parent *APDU) {
-}
+func (m *APDUUnknown) InitializeParent(parent *APDU) {}
 
 func NewAPDUUnknown() *APDU {
 	child := &APDUUnknown{

@@ -48,8 +48,7 @@ func (m *ApduDataExtPropertyDescriptionRead) ExtApciType() uint8 {
 	return 0x18
 }
 
-func (m *ApduDataExtPropertyDescriptionRead) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtPropertyDescriptionRead) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8) *ApduDataExt {
 	child := &ApduDataExtPropertyDescriptionRead{

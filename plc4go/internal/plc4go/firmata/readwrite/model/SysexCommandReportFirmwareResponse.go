@@ -52,8 +52,7 @@ func (m *SysexCommandReportFirmwareResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *SysexCommandReportFirmwareResponse) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandReportFirmwareResponse) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
 	child := &SysexCommandReportFirmwareResponse{

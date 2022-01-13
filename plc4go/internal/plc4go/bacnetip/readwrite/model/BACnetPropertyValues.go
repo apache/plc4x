@@ -88,7 +88,7 @@ func (m *BACnetPropertyValues) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetPropertyValues, error) {
+func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetPropertyValues, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -113,12 +113,12 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	// Terminated array
 	data := make([]*BACnetPropertyValue, 0)
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, tagNumber)) {
-			_item, _err := BACnetPropertyValueParse(readBuffer)
+		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
+			_item, _err := BACnetPropertyValueParse(readBuffer, objectType)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
-			data = append(data, _item)
+			data = append(data, CastBACnetPropertyValue(_item))
 
 		}
 	}

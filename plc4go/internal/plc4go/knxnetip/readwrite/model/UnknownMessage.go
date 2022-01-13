@@ -46,8 +46,7 @@ func (m *UnknownMessage) MsgType() uint16 {
 	return 0x020B
 }
 
-func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
 	child := &UnknownMessage{

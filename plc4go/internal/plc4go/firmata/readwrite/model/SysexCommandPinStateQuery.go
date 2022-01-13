@@ -50,8 +50,7 @@ func (m *SysexCommandPinStateQuery) Response() bool {
 	return false
 }
 
-func (m *SysexCommandPinStateQuery) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandPinStateQuery) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandPinStateQuery(pin uint8) *SysexCommand {
 	child := &SysexCommandPinStateQuery{

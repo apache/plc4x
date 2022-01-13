@@ -49,8 +49,7 @@ func (m *AdsMultiRequestItemReadWrite) IndexGroup() uint32 {
 	return uint32(61570)
 }
 
-func (m *AdsMultiRequestItemReadWrite) InitializeParent(parent *AdsMultiRequestItem) {
-}
+func (m *AdsMultiRequestItemReadWrite) InitializeParent(parent *AdsMultiRequestItem) {}
 
 func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemReadWrite{

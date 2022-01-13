@@ -52,8 +52,7 @@ func (m *AdsWriteControlRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsWriteControlRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsWriteControlRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsData {
 	child := &AdsWriteControlRequest{

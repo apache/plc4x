@@ -55,8 +55,7 @@ func (m *S7ParameterModeTransition) MessageType() uint8 {
 	return 0x07
 }
 
-func (m *S7ParameterModeTransition) InitializeParent(parent *S7Parameter) {
-}
+func (m *S7ParameterModeTransition) InitializeParent(parent *S7Parameter) {}
 
 func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7Parameter {
 	child := &S7ParameterModeTransition{

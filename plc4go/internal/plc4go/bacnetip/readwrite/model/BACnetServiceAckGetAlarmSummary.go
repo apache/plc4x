@@ -44,8 +44,7 @@ func (m *BACnetServiceAckGetAlarmSummary) ServiceChoice() uint8 {
 	return 0x03
 }
 
-func (m *BACnetServiceAckGetAlarmSummary) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckGetAlarmSummary) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetAlarmSummary{

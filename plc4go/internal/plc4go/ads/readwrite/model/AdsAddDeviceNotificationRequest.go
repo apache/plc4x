@@ -56,8 +56,7 @@ func (m *AdsAddDeviceNotificationRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsData {
 	child := &AdsAddDeviceNotificationRequest{

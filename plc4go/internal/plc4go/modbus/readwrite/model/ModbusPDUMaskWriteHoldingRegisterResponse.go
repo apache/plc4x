@@ -56,8 +56,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
 	child := &ModbusPDUMaskWriteHoldingRegisterResponse{

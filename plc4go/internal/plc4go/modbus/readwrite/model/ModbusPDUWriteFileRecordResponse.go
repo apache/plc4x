@@ -54,8 +54,7 @@ func (m *ModbusPDUWriteFileRecordResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUWriteFileRecordResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUWriteFileRecordResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUWriteFileRecordResponse(items []*ModbusPDUWriteFileRecordResponseItem) *ModbusPDU {
 	child := &ModbusPDUWriteFileRecordResponse{

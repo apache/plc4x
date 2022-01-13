@@ -121,7 +121,7 @@ func (m *BACnetNotificationParametersExtended) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtended"); pullErr != nil {
 		return nil, pullErr
 	}

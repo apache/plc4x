@@ -50,8 +50,7 @@ func (m *S7ParameterWriteVarRequest) MessageType() uint8 {
 	return 0x01
 }
 
-func (m *S7ParameterWriteVarRequest) InitializeParent(parent *S7Parameter) {
-}
+func (m *S7ParameterWriteVarRequest) InitializeParent(parent *S7Parameter) {}
 
 func NewS7ParameterWriteVarRequest(items []*S7VarRequestParameterItem) *S7Parameter {
 	child := &S7ParameterWriteVarRequest{

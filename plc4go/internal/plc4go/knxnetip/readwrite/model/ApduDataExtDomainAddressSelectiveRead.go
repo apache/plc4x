@@ -44,8 +44,7 @@ func (m *ApduDataExtDomainAddressSelectiveRead) ExtApciType() uint8 {
 	return 0x23
 }
 
-func (m *ApduDataExtDomainAddressSelectiveRead) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtDomainAddressSelectiveRead) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtDomainAddressSelectiveRead() *ApduDataExt {
 	child := &ApduDataExtDomainAddressSelectiveRead{

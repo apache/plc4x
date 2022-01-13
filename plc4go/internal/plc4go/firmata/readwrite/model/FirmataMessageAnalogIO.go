@@ -47,8 +47,7 @@ func (m *FirmataMessageAnalogIO) MessageType() uint8 {
 	return 0xE
 }
 
-func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {
-}
+func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {}
 
 func NewFirmataMessageAnalogIO(pin uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageAnalogIO{

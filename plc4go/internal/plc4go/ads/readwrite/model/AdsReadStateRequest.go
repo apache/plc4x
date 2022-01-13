@@ -48,8 +48,7 @@ func (m *AdsReadStateRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsReadStateRequest() *AdsData {
 	child := &AdsReadStateRequest{

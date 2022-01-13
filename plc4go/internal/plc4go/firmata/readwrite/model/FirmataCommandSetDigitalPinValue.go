@@ -48,8 +48,7 @@ func (m *FirmataCommandSetDigitalPinValue) CommandCode() uint8 {
 	return 0x5
 }
 
-func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataCommand) {
-}
+func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataCommand) {}
 
 func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
 	child := &FirmataCommandSetDigitalPinValue{

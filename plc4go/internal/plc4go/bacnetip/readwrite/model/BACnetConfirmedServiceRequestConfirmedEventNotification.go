@@ -358,7 +358,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		if pullErr := readBuffer.PullContext("eventValues"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetNotificationParametersParse(readBuffer, uint8(12))
+		_val, _err := BACnetNotificationParametersParse(readBuffer, uint8(12), eventObjectIdentifier.ObjectType)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field")

@@ -46,8 +46,7 @@ func (m *ComObjectTableRealisationType6) FirmwareType() FirmwareType {
 	return FirmwareType_SYSTEM_300
 }
 
-func (m *ComObjectTableRealisationType6) InitializeParent(parent *ComObjectTable) {
-}
+func (m *ComObjectTableRealisationType6) InitializeParent(parent *ComObjectTable) {}
 
 func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
 	child := &ComObjectTableRealisationType6{

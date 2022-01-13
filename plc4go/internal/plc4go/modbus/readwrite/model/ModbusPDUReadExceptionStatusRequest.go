@@ -52,8 +52,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
 	child := &ModbusPDUReadExceptionStatusRequest{

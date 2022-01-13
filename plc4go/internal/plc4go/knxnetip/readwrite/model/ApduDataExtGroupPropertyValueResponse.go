@@ -44,8 +44,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) ExtApciType() uint8 {
 	return 0x29
 }
 
-func (m *ApduDataExtGroupPropertyValueResponse) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtGroupPropertyValueResponse) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtGroupPropertyValueResponse() *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueResponse{

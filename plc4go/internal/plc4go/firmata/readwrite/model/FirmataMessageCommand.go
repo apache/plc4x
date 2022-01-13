@@ -46,8 +46,7 @@ func (m *FirmataMessageCommand) MessageType() uint8 {
 	return 0xF
 }
 
-func (m *FirmataMessageCommand) InitializeParent(parent *FirmataMessage) {
-}
+func (m *FirmataMessageCommand) InitializeParent(parent *FirmataMessage) {}
 
 func NewFirmataMessageCommand(command *FirmataCommand) *FirmataMessage {
 	child := &FirmataMessageCommand{

@@ -44,8 +44,7 @@ func (m *TDataIndividualInd) MessageCode() uint8 {
 	return 0x94
 }
 
-func (m *TDataIndividualInd) InitializeParent(parent *CEMI) {
-}
+func (m *TDataIndividualInd) InitializeParent(parent *CEMI) {}
 
 func NewTDataIndividualInd() *CEMI {
 	child := &TDataIndividualInd{

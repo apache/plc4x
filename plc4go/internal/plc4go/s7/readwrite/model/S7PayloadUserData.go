@@ -50,8 +50,7 @@ func (m *S7PayloadUserData) MessageType() uint8 {
 	return 0x07
 }
 
-func (m *S7PayloadUserData) InitializeParent(parent *S7Payload) {
-}
+func (m *S7PayloadUserData) InitializeParent(parent *S7Payload) {}
 
 func NewS7PayloadUserData(items []*S7PayloadUserDataItem) *S7Payload {
 	child := &S7PayloadUserData{

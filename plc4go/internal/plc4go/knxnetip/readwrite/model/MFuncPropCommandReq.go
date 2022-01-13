@@ -44,8 +44,7 @@ func (m *MFuncPropCommandReq) MessageCode() uint8 {
 	return 0xF8
 }
 
-func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {
-}
+func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {}
 
 func NewMFuncPropCommandReq() *CEMI {
 	child := &MFuncPropCommandReq{

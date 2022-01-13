@@ -49,8 +49,7 @@ func (m *APDUAbort) ApduType() uint8 {
 	return 0x7
 }
 
-func (m *APDUAbort) InitializeParent(parent *APDU) {
-}
+func (m *APDUAbort) InitializeParent(parent *APDU) {}
 
 func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) *APDU {
 	child := &APDUAbort{

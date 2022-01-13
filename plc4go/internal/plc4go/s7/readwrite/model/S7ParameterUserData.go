@@ -50,8 +50,7 @@ func (m *S7ParameterUserData) MessageType() uint8 {
 	return 0x07
 }
 
-func (m *S7ParameterUserData) InitializeParent(parent *S7Parameter) {
-}
+func (m *S7ParameterUserData) InitializeParent(parent *S7Parameter) {}
 
 func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7Parameter {
 	child := &S7ParameterUserData{

@@ -44,8 +44,7 @@ func (m *ApduDataExtFileStreamInfoReport) ExtApciType() uint8 {
 	return 0x30
 }
 
-func (m *ApduDataExtFileStreamInfoReport) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtFileStreamInfoReport) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtFileStreamInfoReport() *ApduDataExt {
 	child := &ApduDataExtFileStreamInfoReport{

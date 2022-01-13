@@ -48,8 +48,7 @@ func (m *SysexCommandStringData) Response() bool {
 	return false
 }
 
-func (m *SysexCommandStringData) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandStringData) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandStringData() *SysexCommand {
 	child := &SysexCommandStringData{

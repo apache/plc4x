@@ -47,8 +47,7 @@ func (m *ConnectionStateResponse) MsgType() uint16 {
 	return 0x0208
 }
 
-func (m *ConnectionStateResponse) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *ConnectionStateResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewConnectionStateResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
 	child := &ConnectionStateResponse{

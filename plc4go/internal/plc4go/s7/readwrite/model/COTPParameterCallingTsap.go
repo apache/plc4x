@@ -46,8 +46,7 @@ func (m *COTPParameterCallingTsap) ParameterType() uint8 {
 	return 0xC1
 }
 
-func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {
-}
+func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {}
 
 func NewCOTPParameterCallingTsap(tsapId uint16) *COTPParameter {
 	child := &COTPParameterCallingTsap{

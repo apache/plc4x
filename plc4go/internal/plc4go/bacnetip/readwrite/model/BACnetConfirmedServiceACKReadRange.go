@@ -44,8 +44,7 @@ func (m *BACnetConfirmedServiceACKReadRange) ServiceChoice() uint8 {
 	return 0x1A
 }
 
-func (m *BACnetConfirmedServiceACKReadRange) InitializeParent(parent *BACnetConfirmedServiceACK) {
-}
+func (m *BACnetConfirmedServiceACKReadRange) InitializeParent(parent *BACnetConfirmedServiceACK) {}
 
 func NewBACnetConfirmedServiceACKReadRange() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKReadRange{

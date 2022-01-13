@@ -44,8 +44,7 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) ExtApciType() uint8 {
 	return 0x2E
 }
 
-func (m *ApduDataExtDomainAddressSerialNumberWrite) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtDomainAddressSerialNumberWrite) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtDomainAddressSerialNumberWrite() *ApduDataExt {
 	child := &ApduDataExtDomainAddressSerialNumberWrite{

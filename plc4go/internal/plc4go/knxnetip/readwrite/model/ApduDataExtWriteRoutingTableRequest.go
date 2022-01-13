@@ -44,8 +44,7 @@ func (m *ApduDataExtWriteRoutingTableRequest) ExtApciType() uint8 {
 	return 0x03
 }
 
-func (m *ApduDataExtWriteRoutingTableRequest) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtWriteRoutingTableRequest) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtWriteRoutingTableRequest() *ApduDataExt {
 	child := &ApduDataExtWriteRoutingTableRequest{

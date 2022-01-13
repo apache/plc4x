@@ -46,8 +46,7 @@ func (m *DeviceConfigurationAck) MsgType() uint16 {
 	return 0x0311
 }
 
-func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
 	child := &DeviceConfigurationAck{

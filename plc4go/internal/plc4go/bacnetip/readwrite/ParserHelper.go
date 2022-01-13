@@ -74,7 +74,9 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetConstructedDataParse(io, tagNumber)
+		var objectType model.BACnetObjectType
+		var propertyIdentifierArgument model.BACnetContextTagPropertyIdentifier
+		return model.BACnetConstructedDataParse(io, tagNumber, objectType, &propertyIdentifierArgument)
 	case "BACnetSegmentation":
 		return model.BACnetSegmentationParse(io)
 	case "BACnetConfirmedServiceACK":
@@ -112,7 +114,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetNotificationParametersParse(io, tagNumber)
+		var objectType model.BACnetObjectType
+		return model.BACnetNotificationParametersParse(io, tagNumber, objectType)
 	case "BACnetConfirmedServiceRequest":
 		len, err := utils.StrToUint16(arguments[0])
 		if err != nil {
@@ -130,17 +133,21 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		return model.BACnetDeviceObjectPropertyReferenceParse(io, tagNumber)
 	case "BACnetConstructedDataElement":
-		return model.BACnetConstructedDataElementParse(io)
+		var objectType model.BACnetObjectType
+		var propertyIdentifier model.BACnetContextTagPropertyIdentifier
+		return model.BACnetConstructedDataElementParse(io, objectType, &propertyIdentifier)
 	case "BACnetPropertyValues":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.BACnetPropertyValuesParse(io, tagNumber)
+		var objectType model.BACnetObjectType
+		return model.BACnetPropertyValuesParse(io, tagNumber, objectType)
 	case "BACnetTagHeader":
 		return model.BACnetTagHeaderParse(io)
 	case "BACnetPropertyValue":
-		return model.BACnetPropertyValueParse(io)
+		var objectType model.BACnetObjectType
+		return model.BACnetPropertyValueParse(io, objectType)
 	case "NLMInitalizeRoutingTablePortMapping":
 		return model.NLMInitalizeRoutingTablePortMappingParse(io)
 	case "BACnetServiceAck":

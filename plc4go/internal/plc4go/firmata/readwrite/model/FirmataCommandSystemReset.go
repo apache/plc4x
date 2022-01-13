@@ -44,8 +44,7 @@ func (m *FirmataCommandSystemReset) CommandCode() uint8 {
 	return 0xF
 }
 
-func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {
-}
+func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {}
 
 func NewFirmataCommandSystemReset() *FirmataCommand {
 	child := &FirmataCommandSystemReset{

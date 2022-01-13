@@ -53,8 +53,7 @@ func (m *S7ParameterSetupCommunication) MessageType() uint8 {
 	return 0
 }
 
-func (m *S7ParameterSetupCommunication) InitializeParent(parent *S7Parameter) {
-}
+func (m *S7ParameterSetupCommunication) InitializeParent(parent *S7Parameter) {}
 
 func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7Parameter {
 	child := &S7ParameterSetupCommunication{

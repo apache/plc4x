@@ -53,8 +53,7 @@ func (m *DF1SymbolMessageFrame) SymbolType() uint8 {
 	return 0x02
 }
 
-func (m *DF1SymbolMessageFrame) InitializeParent(parent *DF1Symbol) {
-}
+func (m *DF1SymbolMessageFrame) InitializeParent(parent *DF1Symbol) {}
 
 func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1Symbol {
 	child := &DF1SymbolMessageFrame{

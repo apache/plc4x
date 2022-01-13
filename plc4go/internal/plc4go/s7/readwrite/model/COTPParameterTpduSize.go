@@ -46,8 +46,7 @@ func (m *COTPParameterTpduSize) ParameterType() uint8 {
 	return 0xC0
 }
 
-func (m *COTPParameterTpduSize) InitializeParent(parent *COTPParameter) {
-}
+func (m *COTPParameterTpduSize) InitializeParent(parent *COTPParameter) {}
 
 func NewCOTPParameterTpduSize(tpduSize COTPTpduSize) *COTPParameter {
 	child := &COTPParameterTpduSize{

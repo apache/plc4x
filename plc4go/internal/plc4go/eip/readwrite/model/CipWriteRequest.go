@@ -50,8 +50,7 @@ func (m *CipWriteRequest) Service() uint8 {
 	return 0x4D
 }
 
-func (m *CipWriteRequest) InitializeParent(parent *CipService) {
-}
+func (m *CipWriteRequest) InitializeParent(parent *CipService) {}
 
 func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *CipService {
 	child := &CipWriteRequest{

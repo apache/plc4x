@@ -44,8 +44,7 @@ func (m *MResetInd) MessageCode() uint8 {
 	return 0xF0
 }
 
-func (m *MResetInd) InitializeParent(parent *CEMI) {
-}
+func (m *MResetInd) InitializeParent(parent *CEMI) {}
 
 func NewMResetInd() *CEMI {
 	child := &MResetInd{

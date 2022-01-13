@@ -148,7 +148,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 		if pullErr := readBuffer.PullContext("serviceParameters"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(2))
+		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(2), BACnetObjectType_UNKNOWN)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'serviceParameters' field")

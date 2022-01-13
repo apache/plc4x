@@ -49,8 +49,7 @@ func (m *LBusmonInd) MessageCode() uint8 {
 	return 0x2B
 }
 
-func (m *LBusmonInd) InitializeParent(parent *CEMI) {
-}
+func (m *LBusmonInd) InitializeParent(parent *CEMI) {}
 
 func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8) *CEMI {
 	child := &LBusmonInd{

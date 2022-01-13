@@ -51,8 +51,7 @@ func (m *MultipleServiceRequest) Service() uint8 {
 	return 0x0A
 }
 
-func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {
-}
+func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {}
 
 func NewMultipleServiceRequest(data *Services) *CipService {
 	child := &MultipleServiceRequest{

@@ -48,8 +48,7 @@ func (m *SysexCommandSysexRealtime) Response() bool {
 	return false
 }
 
-func (m *SysexCommandSysexRealtime) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandSysexRealtime) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandSysexRealtime() *SysexCommand {
 	child := &SysexCommandSysexRealtime{

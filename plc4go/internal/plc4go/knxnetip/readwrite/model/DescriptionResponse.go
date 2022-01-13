@@ -47,8 +47,7 @@ func (m *DescriptionResponse) MsgType() uint16 {
 	return 0x0204
 }
 
-func (m *DescriptionResponse) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DescriptionResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
 	child := &DescriptionResponse{

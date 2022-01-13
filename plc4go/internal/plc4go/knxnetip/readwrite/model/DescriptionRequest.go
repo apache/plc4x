@@ -46,8 +46,7 @@ func (m *DescriptionRequest) MsgType() uint16 {
 	return 0x0203
 }
 
-func (m *DescriptionRequest) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DescriptionRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DescriptionRequest{

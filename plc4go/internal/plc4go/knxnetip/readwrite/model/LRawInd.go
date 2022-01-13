@@ -44,8 +44,7 @@ func (m *LRawInd) MessageCode() uint8 {
 	return 0x2D
 }
 
-func (m *LRawInd) InitializeParent(parent *CEMI) {
-}
+func (m *LRawInd) InitializeParent(parent *CEMI) {}
 
 func NewLRawInd() *CEMI {
 	child := &LRawInd{

@@ -18,10 +18,7 @@
  */
 package org.apache.plc4x.java.bacnetip.readwrite.utils;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetDataType;
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetEventState;
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetEventType;
-import org.apache.plc4x.java.bacnetip.readwrite.BACnetPropertyIdentifier;
+import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -198,7 +195,10 @@ public class StaticHelper {
         writeBuffer.writeUnsignedLong("proprietaryEventState", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventState.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
-    public static boolean isBACnetConstructedDataClosingTag(ReadBuffer readBuffer, int expectedTagNumber) {
+    public static boolean isBACnetConstructedDataClosingTag(ReadBuffer readBuffer, boolean instantTerminate, int expectedTagNumber) {
+        if (instantTerminate) {
+            return true;
+        }
         int oldPos = readBuffer.getPos();
         try {
             // TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
@@ -258,8 +258,83 @@ public class StaticHelper {
         }
     }
 
-    public static BACnetDataType guessDataType() {
-        // TODO: implement me
+    public static BACnetDataType guessDataType(BACnetObjectType objectType) {
+        switch (objectType) {
+            case ACCESS_CREDENTIAL:
+            case ACCESS_DOOR:
+            case ACCESS_POINT:
+            case ACCESS_RIGHTS:
+            case ACCESS_USER:
+            case ACCESS_ZONE:
+            case ACCUMULATOR:
+            case ALERT_ENROLLMENT:
+                // TODO: temporary
+                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+            case ANALOG_INPUT:
+            case ANALOG_OUTPUT:
+                return BACnetDataType.REAL;
+            case ANALOG_VALUE:
+            case AVERAGING:
+            case BINARY_INPUT:
+            case BINARY_LIGHTING_OUTPUT:
+            case BINARY_OUTPUT:
+            case BINARY_VALUE:
+                // TODO: temporary
+                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+            case BITSTRING_VALUE:
+                return BACnetDataType.BIT_STRING;
+            case CALENDAR:
+            case CHANNEL:
+            case CHARACTERSTRING_VALUE:
+            case COMMAND:
+            case CREDENTIAL_DATA_INPUT:
+            case DATEPATTERN_VALUE:
+            case DATE_VALUE:
+            case DATETIMEPATTERN_VALUE:
+            case DATETIME_VALUE:
+            case DEVICE:
+            case ELEVATOR_GROUP:
+            case ESCALATOR:
+            case EVENT_ENROLLMENT:
+            case EVENT_LOG:
+            case FILE:
+            case GLOBAL_GROUP:
+            case GROUP:
+                // TODO: temporary
+                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+            case INTEGER_VALUE:
+                return BACnetDataType.SIGNED_INTEGER;
+            case LARGE_ANALOG_VALUE:
+            case LIFE_SAFETY_POINT:
+                // TODO: temporary
+                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+            case LIFE_SAFETY_ZONE:
+                return BACnetDataType.BACNET_OBJECT_IDENTIFIER;
+            case LIFT:
+            case LIGHTING_OUTPUT:
+            case LOAD_CONTROL:
+            case LOOP:
+            case MULTI_STATE_INPUT:
+            case MULTI_STATE_OUTPUT:
+            case MULTI_STATE_VALUE:
+            case NETWORK_PORT:
+            case NETWORK_SECURITY:
+            case NOTIFICATION_CLASS:
+            case NOTIFICATION_FORWARDER:
+            case OCTETSTRING_VALUE:
+            case POSITIVE_INTEGER_VALUE:
+            case PROGRAM:
+            case PULSE_CONVERTER:
+            case SCHEDULE:
+            case STRUCTURED_VIEW:
+            case TIMEPATTERN_VALUE:
+            case TIME_VALUE:
+            case TIMER:
+            case TREND_LOG:
+            case TREND_LOG_MULTIPLE:
+                return BACnetDataType.ENUMERATED;
+        }
+        // TODO: temporary
         return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
     }
 }

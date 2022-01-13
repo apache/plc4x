@@ -49,8 +49,7 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 	return 0x0C
 }
 
-func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, values *BACnetConstructedData) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
@@ -176,7 +175,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3))
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(3), objectIdentifier.ObjectType, propertyIdentifier)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'values' field")

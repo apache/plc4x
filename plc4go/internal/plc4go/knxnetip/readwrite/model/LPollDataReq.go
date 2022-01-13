@@ -44,8 +44,7 @@ func (m *LPollDataReq) MessageCode() uint8 {
 	return 0x13
 }
 
-func (m *LPollDataReq) InitializeParent(parent *CEMI) {
-}
+func (m *LPollDataReq) InitializeParent(parent *CEMI) {}
 
 func NewLPollDataReq() *CEMI {
 	child := &LPollDataReq{

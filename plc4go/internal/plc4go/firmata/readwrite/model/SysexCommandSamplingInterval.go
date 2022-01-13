@@ -48,8 +48,7 @@ func (m *SysexCommandSamplingInterval) Response() bool {
 	return false
 }
 
-func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandSamplingInterval() *SysexCommand {
 	child := &SysexCommandSamplingInterval{

@@ -44,8 +44,7 @@ func (m *BACnetServiceAckVTOpen) ServiceChoice() uint8 {
 	return 0x15
 }
 
-func (m *BACnetServiceAckVTOpen) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckVTOpen) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckVTOpen() *BACnetServiceAck {
 	child := &BACnetServiceAckVTOpen{

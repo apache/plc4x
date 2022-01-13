@@ -48,8 +48,7 @@ func (m *DisconnectRequest) MsgType() uint16 {
 	return 0x0209
 }
 
-func (m *DisconnectRequest) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DisconnectRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DisconnectRequest{

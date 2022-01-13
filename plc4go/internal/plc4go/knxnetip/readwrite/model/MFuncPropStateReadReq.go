@@ -44,8 +44,7 @@ func (m *MFuncPropStateReadReq) MessageCode() uint8 {
 	return 0xF9
 }
 
-func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {
-}
+func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {}
 
 func NewMFuncPropStateReadReq() *CEMI {
 	child := &MFuncPropStateReadReq{

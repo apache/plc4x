@@ -44,8 +44,7 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) ExtApciType() uint8 {
 	return 0x2B
 }
 
-func (m *ApduDataExtGroupPropertyValueInfoReport) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtGroupPropertyValueInfoReport) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtGroupPropertyValueInfoReport() *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueInfoReport{

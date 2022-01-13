@@ -48,8 +48,7 @@ func (m *LDataCon) MessageCode() uint8 {
 	return 0x2E
 }
 
-func (m *LDataCon) InitializeParent(parent *CEMI) {
-}
+func (m *LDataCon) InitializeParent(parent *CEMI) {}
 
 func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataCon{

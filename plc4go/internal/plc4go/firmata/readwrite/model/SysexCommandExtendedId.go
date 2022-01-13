@@ -50,8 +50,7 @@ func (m *SysexCommandExtendedId) Response() bool {
 	return false
 }
 
-func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandExtendedId(id []int8) *SysexCommand {
 	child := &SysexCommandExtendedId{

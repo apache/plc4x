@@ -44,8 +44,7 @@ func (m *ApduDataExtNetworkParameterRead) ExtApciType() uint8 {
 	return 0x1A
 }
 
-func (m *ApduDataExtNetworkParameterRead) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtNetworkParameterRead) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtNetworkParameterRead() *ApduDataExt {
 	child := &ApduDataExtNetworkParameterRead{

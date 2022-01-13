@@ -48,8 +48,7 @@ func (m *APDUSimpleAck) ApduType() uint8 {
 	return 0x2
 }
 
-func (m *APDUSimpleAck) InitializeParent(parent *APDU) {
-}
+func (m *APDUSimpleAck) InitializeParent(parent *APDU) {}
 
 func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) *APDU {
 	child := &APDUSimpleAck{

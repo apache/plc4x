@@ -48,8 +48,7 @@ func (m *AdsDeviceNotificationResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *AdsDeviceNotificationResponse) InitializeParent(parent *AdsData) {
-}
+func (m *AdsDeviceNotificationResponse) InitializeParent(parent *AdsData) {}
 
 func NewAdsDeviceNotificationResponse() *AdsData {
 	child := &AdsDeviceNotificationResponse{

@@ -44,8 +44,7 @@ func (m *ApduDataExtWriteRouterMemoryRequest) ExtApciType() uint8 {
 	return 0x0A
 }
 
-func (m *ApduDataExtWriteRouterMemoryRequest) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtWriteRouterMemoryRequest) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtWriteRouterMemoryRequest() *ApduDataExt {
 	child := &ApduDataExtWriteRouterMemoryRequest{

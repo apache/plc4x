@@ -46,8 +46,7 @@ func (m *KnxNetIpDeviceManagement) ServiceType() uint8 {
 	return 0x03
 }
 
-func (m *KnxNetIpDeviceManagement) InitializeParent(parent *ServiceId) {
-}
+func (m *KnxNetIpDeviceManagement) InitializeParent(parent *ServiceId) {}
 
 func NewKnxNetIpDeviceManagement(version uint8) *ServiceId {
 	child := &KnxNetIpDeviceManagement{

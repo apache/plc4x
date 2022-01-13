@@ -44,8 +44,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) ServiceChoice() uint8 {
 	return 0x0E
 }
 
-func (m *BACnetServiceAckReadPropertyMultiple) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckReadPropertyMultiple) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAck {
 	child := &BACnetServiceAckReadPropertyMultiple{

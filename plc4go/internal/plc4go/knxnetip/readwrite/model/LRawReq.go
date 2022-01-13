@@ -44,8 +44,7 @@ func (m *LRawReq) MessageCode() uint8 {
 	return 0x10
 }
 
-func (m *LRawReq) InitializeParent(parent *CEMI) {
-}
+func (m *LRawReq) InitializeParent(parent *CEMI) {}
 
 func NewLRawReq() *CEMI {
 	child := &LRawReq{

@@ -44,8 +44,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) ServiceChoice() uint8 {
 	return 0x04
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetEnrollmentSummary{

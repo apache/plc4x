@@ -44,8 +44,7 @@ func (m *TDataConnectedInd) MessageCode() uint8 {
 	return 0x89
 }
 
-func (m *TDataConnectedInd) InitializeParent(parent *CEMI) {
-}
+func (m *TDataConnectedInd) InitializeParent(parent *CEMI) {}
 
 func NewTDataConnectedInd() *CEMI {
 	child := &TDataConnectedInd{

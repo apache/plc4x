@@ -44,8 +44,7 @@ func (m *BACnetConfirmedServiceACKCreateObject) ServiceChoice() uint8 {
 	return 0x0A
 }
 
-func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetConfirmedServiceACK) {
-}
+func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetConfirmedServiceACK) {}
 
 func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKCreateObject{

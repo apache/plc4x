@@ -50,8 +50,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) FunctionCode() uint8 {
 	return 0xA2
 }
 
-func (m *DF1RequestProtectedTypedLogicalRead) InitializeParent(parent *DF1RequestCommand) {
-}
+func (m *DF1RequestProtectedTypedLogicalRead) InitializeParent(parent *DF1RequestCommand) {}
 
 func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestCommand {
 	child := &DF1RequestProtectedTypedLogicalRead{

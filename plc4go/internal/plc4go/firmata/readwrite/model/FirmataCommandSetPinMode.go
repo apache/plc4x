@@ -47,8 +47,7 @@ func (m *FirmataCommandSetPinMode) CommandCode() uint8 {
 	return 0x4
 }
 
-func (m *FirmataCommandSetPinMode) InitializeParent(parent *FirmataCommand) {
-}
+func (m *FirmataCommandSetPinMode) InitializeParent(parent *FirmataCommand) {}
 
 func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *FirmataCommand {
 	child := &FirmataCommandSetPinMode{

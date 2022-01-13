@@ -50,8 +50,7 @@ func (m *ApduDataExtPropertyValueWrite) ExtApciType() uint8 {
 	return 0x17
 }
 
-func (m *ApduDataExtPropertyValueWrite) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtPropertyValueWrite) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) *ApduDataExt {
 	child := &ApduDataExtPropertyValueWrite{

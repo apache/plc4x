@@ -44,8 +44,7 @@ func (m *MFuncPropCon) MessageCode() uint8 {
 	return 0xFA
 }
 
-func (m *MFuncPropCon) InitializeParent(parent *CEMI) {
-}
+func (m *MFuncPropCon) InitializeParent(parent *CEMI) {}
 
 func NewMFuncPropCon() *CEMI {
 	child := &MFuncPropCon{

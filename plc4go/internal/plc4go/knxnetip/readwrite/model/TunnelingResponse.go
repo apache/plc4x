@@ -46,8 +46,7 @@ func (m *TunnelingResponse) MsgType() uint16 {
 	return 0x0421
 }
 
-func (m *TunnelingResponse) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *TunnelingResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
 	child := &TunnelingResponse{

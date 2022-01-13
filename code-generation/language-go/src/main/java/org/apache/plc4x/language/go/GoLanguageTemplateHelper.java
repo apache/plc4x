@@ -240,7 +240,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case VSTRING:
                     return "\"\"";
             }
-        } else if (typeReference instanceof ComplexTypeReference) {
+        } else if (typeReference instanceof ComplexTypeReference && isEnumTypeReference(typeReference)) {
             return "0";
         }
         return "nil";
@@ -890,6 +890,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 sb.append(", ");
             }
             if (arg instanceof VariableLiteral) {
+                tracer = tracer.dive("VariableLiteral");
                 VariableLiteral va = (VariableLiteral) arg;
                 // "io" is the default name of the reader argument which is always available.
                 boolean isParserArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || ((thisType instanceof DataIoTypeDefinition) && "_value".equals(va.getName()));
@@ -933,7 +934,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
                 }
             } else if (arg instanceof StringLiteral) {
+                tracer = tracer.dive("StringLiteral");
                 sb.append(((StringLiteral) arg).getValue());
+            } else if (arg instanceof BooleanLiteral) {
+                tracer = tracer.dive("BooleanLiteral");
+                sb.append(((BooleanLiteral) arg).getValue());
+            } else if (arg instanceof BinaryTerm) {
+                tracer = tracer.dive("BinaryTerm");
+                sb.append(toBinaryTermExpression(field, typeReference,(BinaryTerm) arg, parserArguments,serializerArguments,serialize,tracer));
+            } else {
+                throw new RuntimeException(arg.getClass().getName());
             }
         }
         sb.append(")");

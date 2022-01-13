@@ -48,8 +48,7 @@ func (m *SysexCommandCapabilityResponse) Response() bool {
 	return false
 }
 
-func (m *SysexCommandCapabilityResponse) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandCapabilityResponse) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandCapabilityResponse() *SysexCommand {
 	child := &SysexCommandCapabilityResponse{

@@ -93,6 +93,7 @@ const (
 	BACnetObjectType_TIMER                  BACnetObjectType = 31
 	BACnetObjectType_TREND_LOG              BACnetObjectType = 20
 	BACnetObjectType_TREND_LOG_MULTIPLE     BACnetObjectType = 27
+	BACnetObjectType_UNKNOWN                BACnetObjectType = 0x3FF
 )
 
 var BACnetObjectTypeValues []BACnetObjectType
@@ -160,6 +161,7 @@ func init() {
 		BACnetObjectType_TIMER,
 		BACnetObjectType_TREND_LOG,
 		BACnetObjectType_TREND_LOG_MULTIPLE,
+		BACnetObjectType_UNKNOWN,
 	}
 }
 
@@ -167,6 +169,8 @@ func BACnetObjectTypeByValue(value uint16) BACnetObjectType {
 	switch value {
 	case 0:
 		return BACnetObjectType_ANALOG_INPUT
+	case 0x3FF:
+		return BACnetObjectType_UNKNOWN
 	case 1:
 		return BACnetObjectType_ANALOG_OUTPUT
 	case 10:
@@ -293,6 +297,8 @@ func BACnetObjectTypeByName(value string) BACnetObjectType {
 	switch value {
 	case "ANALOG_INPUT":
 		return BACnetObjectType_ANALOG_INPUT
+	case "UNKNOWN":
+		return BACnetObjectType_UNKNOWN
 	case "ANALOG_OUTPUT":
 		return BACnetObjectType_ANALOG_OUTPUT
 	case "FILE":
@@ -449,6 +455,8 @@ func (e BACnetObjectType) name() string {
 	switch e {
 	case BACnetObjectType_ANALOG_INPUT:
 		return "ANALOG_INPUT"
+	case BACnetObjectType_UNKNOWN:
+		return "UNKNOWN"
 	case BACnetObjectType_ANALOG_OUTPUT:
 		return "ANALOG_OUTPUT"
 	case BACnetObjectType_FILE:

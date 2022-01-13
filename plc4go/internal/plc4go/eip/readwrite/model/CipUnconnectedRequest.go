@@ -53,8 +53,7 @@ func (m *CipUnconnectedRequest) Service() uint8 {
 	return 0x52
 }
 
-func (m *CipUnconnectedRequest) InitializeParent(parent *CipService) {
-}
+func (m *CipUnconnectedRequest) InitializeParent(parent *CipService) {}
 
 func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8) *CipService {
 	child := &CipUnconnectedRequest{

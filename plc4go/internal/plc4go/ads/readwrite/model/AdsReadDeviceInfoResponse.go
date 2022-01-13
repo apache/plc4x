@@ -54,8 +54,7 @@ func (m *AdsReadDeviceInfoResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {
-}
+func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {}
 
 func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
 	child := &AdsReadDeviceInfoResponse{

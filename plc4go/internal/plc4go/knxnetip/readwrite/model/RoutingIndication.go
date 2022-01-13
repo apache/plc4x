@@ -44,8 +44,7 @@ func (m *RoutingIndication) MsgType() uint16 {
 	return 0x0530
 }
 
-func (m *RoutingIndication) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *RoutingIndication) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewRoutingIndication() *KnxNetIpMessage {
 	child := &RoutingIndication{

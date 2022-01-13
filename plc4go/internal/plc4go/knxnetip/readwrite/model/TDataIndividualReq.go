@@ -44,8 +44,7 @@ func (m *TDataIndividualReq) MessageCode() uint8 {
 	return 0x4A
 }
 
-func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {
-}
+func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {}
 
 func NewTDataIndividualReq() *CEMI {
 	child := &TDataIndividualReq{

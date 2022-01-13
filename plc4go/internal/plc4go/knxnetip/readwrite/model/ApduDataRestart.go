@@ -44,8 +44,7 @@ func (m *ApduDataRestart) ApciType() uint8 {
 	return 0xE
 }
 
-func (m *ApduDataRestart) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataRestart) InitializeParent(parent *ApduData) {}
 
 func NewApduDataRestart() *ApduData {
 	child := &ApduDataRestart{

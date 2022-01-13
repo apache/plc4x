@@ -52,8 +52,7 @@ func (m *AdsDeviceNotificationRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsData {
 	child := &AdsDeviceNotificationRequest{

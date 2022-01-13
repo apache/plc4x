@@ -47,8 +47,7 @@ func (m *ApduDataExtAuthorizeRequest) ExtApciType() uint8 {
 	return 0x11
 }
 
-func (m *ApduDataExtAuthorizeRequest) InitializeParent(parent *ApduDataExt) {
-}
+func (m *ApduDataExtAuthorizeRequest) InitializeParent(parent *ApduDataExt) {}
 
 func NewApduDataExtAuthorizeRequest(level uint8, data []byte) *ApduDataExt {
 	child := &ApduDataExtAuthorizeRequest{

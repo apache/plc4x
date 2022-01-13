@@ -46,8 +46,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
 	return 0x07
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent *ServiceId) {
-}
+func (m *KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent *ServiceId) {}
 
 func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *ServiceId {
 	child := &KnxNetRemoteConfigurationAndDiagnosis{

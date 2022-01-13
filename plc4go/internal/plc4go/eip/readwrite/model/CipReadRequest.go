@@ -48,8 +48,7 @@ func (m *CipReadRequest) Service() uint8 {
 	return 0x4C
 }
 
-func (m *CipReadRequest) InitializeParent(parent *CipService) {
-}
+func (m *CipReadRequest) InitializeParent(parent *CipService) {}
 
 func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16) *CipService {
 	child := &CipReadRequest{

@@ -44,8 +44,7 @@ func (m *ApduControlDisconnect) ControlType() uint8 {
 	return 0x1
 }
 
-func (m *ApduControlDisconnect) InitializeParent(parent *ApduControl) {
-}
+func (m *ApduControlDisconnect) InitializeParent(parent *ApduControl) {}
 
 func NewApduControlDisconnect() *ApduControl {
 	child := &ApduControlDisconnect{

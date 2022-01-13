@@ -44,8 +44,7 @@ func (m *ApduDataMemoryWrite) ApciType() uint8 {
 	return 0xA
 }
 
-func (m *ApduDataMemoryWrite) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataMemoryWrite) InitializeParent(parent *ApduData) {}
 
 func NewApduDataMemoryWrite() *ApduData {
 	child := &ApduDataMemoryWrite{

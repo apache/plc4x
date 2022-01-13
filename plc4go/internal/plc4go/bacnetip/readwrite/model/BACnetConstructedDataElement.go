@@ -103,7 +103,7 @@ func (m *BACnetConstructedDataElement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetConstructedDataElement, error) {
+func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType, propertyIdentifier *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataElement, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -160,7 +160,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType())
+		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType(objectType))
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field")
@@ -181,7 +181,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer) (*BACnetCons
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber)
+		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectType, propertyIdentifier)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")

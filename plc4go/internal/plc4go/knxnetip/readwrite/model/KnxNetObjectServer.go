@@ -46,8 +46,7 @@ func (m *KnxNetObjectServer) ServiceType() uint8 {
 	return 0x08
 }
 
-func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {
-}
+func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {}
 
 func NewKnxNetObjectServer(version uint8) *ServiceId {
 	child := &KnxNetObjectServer{

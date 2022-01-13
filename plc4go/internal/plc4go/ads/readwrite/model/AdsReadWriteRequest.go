@@ -54,8 +54,7 @@ func (m *AdsReadWriteRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsReadWriteRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsReadWriteRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []*AdsMultiRequestItem, data []byte) *AdsData {
 	child := &AdsReadWriteRequest{

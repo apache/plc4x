@@ -48,8 +48,7 @@ func (m *SysexCommandExtendedAnalog) Response() bool {
 	return false
 }
 
-func (m *SysexCommandExtendedAnalog) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandExtendedAnalog) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandExtendedAnalog() *SysexCommand {
 	child := &SysexCommandExtendedAnalog{

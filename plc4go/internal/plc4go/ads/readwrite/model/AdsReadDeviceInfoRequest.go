@@ -48,8 +48,7 @@ func (m *AdsReadDeviceInfoRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsReadDeviceInfoRequest() *AdsData {
 	child := &AdsReadDeviceInfoRequest{

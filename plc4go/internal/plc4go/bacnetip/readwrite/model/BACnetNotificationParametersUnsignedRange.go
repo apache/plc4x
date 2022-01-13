@@ -121,7 +121,7 @@ func (m *BACnetNotificationParametersUnsignedRange) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotificationParametersUnsignedRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersUnsignedRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnsignedRange"); pullErr != nil {
 		return nil, pullErr
 	}

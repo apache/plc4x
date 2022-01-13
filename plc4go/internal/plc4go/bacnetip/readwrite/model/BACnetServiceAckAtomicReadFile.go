@@ -44,8 +44,7 @@ func (m *BACnetServiceAckAtomicReadFile) ServiceChoice() uint8 {
 	return 0x06
 }
 
-func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckAtomicReadFile() *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicReadFile{

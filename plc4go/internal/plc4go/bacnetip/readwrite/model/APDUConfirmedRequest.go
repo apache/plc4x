@@ -55,8 +55,7 @@ func (m *APDUConfirmedRequest) ApduType() uint8 {
 	return 0x0
 }
 
-func (m *APDUConfirmedRequest) InitializeParent(parent *APDU) {
-}
+func (m *APDUConfirmedRequest) InitializeParent(parent *APDU) {}
 
 func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest) *APDU {
 	child := &APDUConfirmedRequest{

@@ -48,8 +48,7 @@ func (m *APDUError) ApduType() uint8 {
 	return 0x5
 }
 
-func (m *APDUError) InitializeParent(parent *APDU) {
-}
+func (m *APDUError) InitializeParent(parent *APDU) {}
 
 func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
 	child := &APDUError{

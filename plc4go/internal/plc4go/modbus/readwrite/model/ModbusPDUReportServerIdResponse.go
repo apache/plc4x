@@ -54,8 +54,7 @@ func (m *ModbusPDUReportServerIdResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReportServerIdResponse{

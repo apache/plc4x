@@ -54,8 +54,7 @@ func (m *S7MessageObjectRequest) CpuFunctionType() uint8 {
 	return 0x04
 }
 
-func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {
-}
+func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {}
 
 func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
 	child := &S7MessageObjectRequest{

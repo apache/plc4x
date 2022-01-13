@@ -28,22 +28,36 @@ import (
 
 // The data-structure of this message
 type BACnetConstructedData struct {
-	OpeningTag         *BACnetOpeningTag
-	Data               []*BACnetConstructedDataElement
-	PropertyIdentifier *BACnetContextTagPropertyIdentifier
-	Content            *BACnetApplicationTag
-	ClosingTag         *BACnetClosingTag
+	OpeningTag *BACnetOpeningTag
+	Data       []*BACnetConstructedDataElement
+	ClosingTag *BACnetClosingTag
+	HasData    bool
+	Child      IBACnetConstructedDataChild
 }
 
 // The corresponding interface
 type IBACnetConstructedData interface {
+	ObjectType() BACnetObjectType
+	PropertyIdentifierArgument() IBACnetContextTagPropertyIdentifier
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetConstructedData(openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
-	return &BACnetConstructedData{OpeningTag: openingTag, Data: data, PropertyIdentifier: propertyIdentifier, Content: content, ClosingTag: closingTag}
+type IBACnetConstructedDataParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetConstructedData, serializeChildFunction func() error) error
+	GetTypeName() string
+}
+
+type IBACnetConstructedDataChild interface {
+	Serialize(writeBuffer utils.WriteBuffer) error
+	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool)
+	GetTypeName() string
+	IBACnetConstructedData
+}
+
+func NewBACnetConstructedData(openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) *BACnetConstructedData {
+	return &BACnetConstructedData{OpeningTag: openingTag, Data: data, ClosingTag: closingTag, HasData: hasData}
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
@@ -68,6 +82,10 @@ func (m *BACnetConstructedData) LengthInBits() uint16 {
 }
 
 func (m *BACnetConstructedData) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (openingTag)
@@ -82,15 +100,7 @@ func (m *BACnetConstructedData) LengthInBitsConditional(lastItem bool) uint16 {
 		}
 	}
 
-	// Optional Field (propertyIdentifier)
-	if m.PropertyIdentifier != nil {
-		lengthInBits += (*m.PropertyIdentifier).LengthInBits()
-	}
-
-	// Optional Field (content)
-	if m.Content != nil {
-		lengthInBits += (*m.Content).LengthInBits()
-	}
+	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (closingTag)
 	if m.ClosingTag != nil {
@@ -104,7 +114,7 @@ func (m *BACnetConstructedData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetConstructedData, error) {
+func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedData"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -137,12 +147,12 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 	// Terminated array
 	data := make([]*BACnetConstructedDataElement, 0)
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, tagNumber)) {
-			_item, _err := BACnetConstructedDataElementParse(readBuffer)
+		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, bool((objectType) == (BACnetObjectType_LIFE_SAFETY_ZONE)), tagNumber)) {
+			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifierArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
 			}
-			data = append(data, _item)
+			data = append(data, CastBACnetConstructedDataElement(_item))
 
 		}
 	}
@@ -150,46 +160,24 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 		return nil, closeErr
 	}
 
-	// Optional Field (propertyIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var propertyIdentifier *BACnetContextTagPropertyIdentifier = nil
-	if bool((len(data)) == (0)) {
-		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
-		switch {
-		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
-		case _err == utils.ParseAssertError:
-			readBuffer.Reset(currentPos)
-		default:
-			propertyIdentifier = CastBACnetContextTagPropertyIdentifier(_val)
-			if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
-	}
+	// Virtual field
+	_hasData := bool((len(data)) == (0))
+	hasData := bool(_hasData)
 
-	// Optional Field (content) (Can be skipped, if a given expression evaluates to false)
-	var content *BACnetApplicationTag = nil
-	if bool((len(data)) == (0)) {
-		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("content"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
-		switch {
-		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'content' field")
-		case _err == utils.ParseAssertError:
-			readBuffer.Reset(currentPos)
-		default:
-			content = CastBACnetApplicationTag(_val)
-			if closeErr := readBuffer.CloseContext("content"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
+	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+	var _parent *BACnetConstructedData
+	var typeSwitchError error
+	switch {
+	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
+		_parent, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case true: // BACnetConstructedDataUnspecified
+		_parent, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument, hasData)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
+	}
+	if typeSwitchError != nil {
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
@@ -217,11 +205,16 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*
 		return nil, closeErr
 	}
 
-	// Create the instance
-	return NewBACnetConstructedData(openingTag, data, propertyIdentifier, content, closingTag), nil
+	// Finish initializing
+	_parent.Child.InitializeParent(_parent, openingTag, data, closingTag, hasData)
+	return _parent, nil
 }
 
 func (m *BACnetConstructedData) Serialize(writeBuffer utils.WriteBuffer) error {
+	return m.Child.Serialize(writeBuffer)
+}
+
+func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetConstructedData, serializeChildFunction func() error) error {
 	if pushErr := writeBuffer.PushContext("BACnetConstructedData"); pushErr != nil {
 		return pushErr
 	}
@@ -257,37 +250,14 @@ func (m *BACnetConstructedData) Serialize(writeBuffer utils.WriteBuffer) error {
 			return popErr
 		}
 	}
-
-	// Optional Field (propertyIdentifier) (Can be skipped, if the value is null)
-	var propertyIdentifier *BACnetContextTagPropertyIdentifier = nil
-	if m.PropertyIdentifier != nil {
-		if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-			return pushErr
-		}
-		propertyIdentifier = m.PropertyIdentifier
-		_propertyIdentifierErr := propertyIdentifier.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-			return popErr
-		}
-		if _propertyIdentifierErr != nil {
-			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
-		}
+	// Virtual field
+	if _hasDataErr := writeBuffer.WriteVirtual("hasData", m.HasData); _hasDataErr != nil {
+		return errors.Wrap(_hasDataErr, "Error serializing 'hasData' field")
 	}
 
-	// Optional Field (content) (Can be skipped, if the value is null)
-	var content *BACnetApplicationTag = nil
-	if m.Content != nil {
-		if pushErr := writeBuffer.PushContext("content"); pushErr != nil {
-			return pushErr
-		}
-		content = m.Content
-		_contentErr := content.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("content"); popErr != nil {
-			return popErr
-		}
-		if _contentErr != nil {
-			return errors.Wrap(_contentErr, "Error serializing 'content' field")
-		}
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	// Optional Field (closingTag) (Can be skipped, if the value is null)

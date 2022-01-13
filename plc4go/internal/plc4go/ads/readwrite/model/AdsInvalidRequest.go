@@ -48,8 +48,7 @@ func (m *AdsInvalidRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *AdsInvalidRequest) InitializeParent(parent *AdsData) {
-}
+func (m *AdsInvalidRequest) InitializeParent(parent *AdsData) {}
 
 func NewAdsInvalidRequest() *AdsData {
 	child := &AdsInvalidRequest{

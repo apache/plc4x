@@ -46,8 +46,7 @@ func (m *KnxGroupAddressFreeLevel) NumLevels() uint8 {
 	return uint8(1)
 }
 
-func (m *KnxGroupAddressFreeLevel) InitializeParent(parent *KnxGroupAddress) {
-}
+func (m *KnxGroupAddressFreeLevel) InitializeParent(parent *KnxGroupAddress) {}
 
 func NewKnxGroupAddressFreeLevel(subGroup uint16) *KnxGroupAddress {
 	child := &KnxGroupAddressFreeLevel{

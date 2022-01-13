@@ -52,8 +52,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadDeviceIdentificationResponse() *ModbusPDU {
 	child := &ModbusPDUReadDeviceIdentificationResponse{

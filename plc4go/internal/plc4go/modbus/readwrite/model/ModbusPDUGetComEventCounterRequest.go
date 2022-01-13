@@ -52,8 +52,7 @@ func (m *ModbusPDUGetComEventCounterRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUGetComEventCounterRequest) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUGetComEventCounterRequest) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUGetComEventCounterRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventCounterRequest{

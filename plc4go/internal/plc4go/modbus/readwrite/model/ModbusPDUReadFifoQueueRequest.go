@@ -54,8 +54,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueRequest{

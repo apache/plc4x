@@ -44,8 +44,7 @@ func (m *ApduDataAdcRead) ApciType() uint8 {
 	return 0x6
 }
 
-func (m *ApduDataAdcRead) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataAdcRead) InitializeParent(parent *ApduData) {}
 
 func NewApduDataAdcRead() *ApduData {
 	child := &ApduDataAdcRead{

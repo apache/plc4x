@@ -54,8 +54,7 @@ func (m *ModbusPDUReadCoilsResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUReadCoilsResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadCoilsResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadCoilsResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadCoilsResponse{

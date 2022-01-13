@@ -48,8 +48,7 @@ func (m *SearchResponse) MsgType() uint16 {
 	return 0x0202
 }
 
-func (m *SearchResponse) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *SearchResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
 	child := &SearchResponse{

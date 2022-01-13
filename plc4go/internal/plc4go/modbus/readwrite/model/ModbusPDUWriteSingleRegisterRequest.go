@@ -55,8 +55,7 @@ func (m *ModbusPDUWriteSingleRegisterRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUWriteSingleRegisterRequest) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *ModbusPDU {
 	child := &ModbusPDUWriteSingleRegisterRequest{

@@ -51,8 +51,7 @@ func (m *MPropReadCon) MessageCode() uint8 {
 	return 0xFB
 }
 
-func (m *MPropReadCon) InitializeParent(parent *CEMI) {
-}
+func (m *MPropReadCon) InitializeParent(parent *CEMI) {}
 
 func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) *CEMI {
 	child := &MPropReadCon{

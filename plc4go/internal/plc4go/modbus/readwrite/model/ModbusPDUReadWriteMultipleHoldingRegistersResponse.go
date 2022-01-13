@@ -54,8 +54,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{

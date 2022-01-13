@@ -44,8 +44,7 @@ func (m *ApduControlNack) ControlType() uint8 {
 	return 0x3
 }
 
-func (m *ApduControlNack) InitializeParent(parent *ApduControl) {
-}
+func (m *ApduControlNack) InitializeParent(parent *ApduControl) {}
 
 func NewApduControlNack() *ApduControl {
 	child := &ApduControlNack{

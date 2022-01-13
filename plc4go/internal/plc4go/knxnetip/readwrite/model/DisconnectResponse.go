@@ -47,8 +47,7 @@ func (m *DisconnectResponse) MsgType() uint16 {
 	return 0x020A
 }
 
-func (m *DisconnectResponse) InitializeParent(parent *KnxNetIpMessage) {
-}
+func (m *DisconnectResponse) InitializeParent(parent *KnxNetIpMessage) {}
 
 func NewDisconnectResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
 	child := &DisconnectResponse{

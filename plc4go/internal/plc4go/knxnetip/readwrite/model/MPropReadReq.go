@@ -50,8 +50,7 @@ func (m *MPropReadReq) MessageCode() uint8 {
 	return 0xFC
 }
 
-func (m *MPropReadReq) InitializeParent(parent *CEMI) {
-}
+func (m *MPropReadReq) InitializeParent(parent *CEMI) {}
 
 func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16) *CEMI {
 	child := &MPropReadReq{

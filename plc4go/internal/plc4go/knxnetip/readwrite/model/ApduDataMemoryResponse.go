@@ -47,8 +47,7 @@ func (m *ApduDataMemoryResponse) ApciType() uint8 {
 	return 0x9
 }
 
-func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {
-}
+func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {}
 
 func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
 	child := &ApduDataMemoryResponse{

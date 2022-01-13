@@ -52,8 +52,7 @@ func (m *APDUComplexAck) ApduType() uint8 {
 	return 0x3
 }
 
-func (m *APDUComplexAck) InitializeParent(parent *APDU) {
-}
+func (m *APDUComplexAck) InitializeParent(parent *APDU) {}
 
 func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck) *APDU {
 	child := &APDUComplexAck{

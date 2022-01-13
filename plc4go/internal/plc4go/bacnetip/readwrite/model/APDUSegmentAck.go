@@ -51,8 +51,7 @@ func (m *APDUSegmentAck) ApduType() uint8 {
 	return 0x4
 }
 
-func (m *APDUSegmentAck) InitializeParent(parent *APDU) {
-}
+func (m *APDUSegmentAck) InitializeParent(parent *APDU) {}
 
 func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8) *APDU {
 	child := &APDUSegmentAck{

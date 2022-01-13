@@ -48,8 +48,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *SysexCommandAnalogMappingQueryRequest) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandAnalogMappingQueryRequest) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandAnalogMappingQueryRequest() *SysexCommand {
 	child := &SysexCommandAnalogMappingQueryRequest{

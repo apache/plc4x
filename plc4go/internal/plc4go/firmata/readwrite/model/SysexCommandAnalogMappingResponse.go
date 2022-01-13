@@ -48,8 +48,7 @@ func (m *SysexCommandAnalogMappingResponse) Response() bool {
 	return false
 }
 
-func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandAnalogMappingResponse() *SysexCommand {
 	child := &SysexCommandAnalogMappingResponse{

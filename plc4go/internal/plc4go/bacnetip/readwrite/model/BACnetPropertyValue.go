@@ -94,7 +94,7 @@ func (m *BACnetPropertyValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetPropertyValueParse(readBuffer utils.ReadBuffer) (*BACnetPropertyValue, error) {
+func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPropertyValue, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -140,7 +140,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer) (*BACnetPropertyValue
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataElementParse(readBuffer)
+		_val, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifier)
 		switch {
 		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")

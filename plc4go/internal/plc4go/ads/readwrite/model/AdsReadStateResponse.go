@@ -52,8 +52,7 @@ func (m *AdsReadStateResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *AdsReadStateResponse) InitializeParent(parent *AdsData) {
-}
+func (m *AdsReadStateResponse) InitializeParent(parent *AdsData) {}
 
 func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsData {
 	child := &AdsReadStateResponse{

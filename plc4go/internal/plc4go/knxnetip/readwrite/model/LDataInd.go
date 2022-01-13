@@ -48,8 +48,7 @@ func (m *LDataInd) MessageCode() uint8 {
 	return 0x29
 }
 
-func (m *LDataInd) InitializeParent(parent *CEMI) {
-}
+func (m *LDataInd) InitializeParent(parent *CEMI) {}
 
 func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataInd{

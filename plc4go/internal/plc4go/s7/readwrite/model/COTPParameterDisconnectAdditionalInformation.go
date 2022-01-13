@@ -46,8 +46,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) ParameterType() uint8 {
 	return 0xE0
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {
-}
+func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {}
 
 func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
 	child := &COTPParameterDisconnectAdditionalInformation{

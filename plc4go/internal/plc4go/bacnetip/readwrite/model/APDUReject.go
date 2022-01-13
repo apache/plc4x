@@ -48,8 +48,7 @@ func (m *APDUReject) ApduType() uint8 {
 	return 0x6
 }
 
-func (m *APDUReject) InitializeParent(parent *APDU) {
-}
+func (m *APDUReject) InitializeParent(parent *APDU) {}
 
 func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
 	child := &APDUReject{

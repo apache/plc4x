@@ -48,8 +48,7 @@ func (m *ComObjectTableRealisationType2) FirmwareType() FirmwareType {
 	return FirmwareType_SYSTEM_2
 }
 
-func (m *ComObjectTableRealisationType2) InitializeParent(parent *ComObjectTable) {
-}
+func (m *ComObjectTableRealisationType2) InitializeParent(parent *ComObjectTable) {}
 
 func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []*GroupObjectDescriptorRealisationType2) *ComObjectTable {
 	child := &ComObjectTableRealisationType2{

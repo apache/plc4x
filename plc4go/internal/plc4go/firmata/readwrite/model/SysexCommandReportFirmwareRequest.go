@@ -48,8 +48,7 @@ func (m *SysexCommandReportFirmwareRequest) Response() bool {
 	return bool(false)
 }
 
-func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {
-}
+func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {}
 
 func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 	child := &SysexCommandReportFirmwareRequest{

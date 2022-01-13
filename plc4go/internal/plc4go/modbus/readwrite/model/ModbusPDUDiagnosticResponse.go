@@ -55,8 +55,7 @@ func (m *ModbusPDUDiagnosticResponse) Response() bool {
 	return bool(true)
 }
 
-func (m *ModbusPDUDiagnosticResponse) InitializeParent(parent *ModbusPDU) {
-}
+func (m *ModbusPDUDiagnosticResponse) InitializeParent(parent *ModbusPDU) {}
 
 func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *ModbusPDU {
 	child := &ModbusPDUDiagnosticResponse{

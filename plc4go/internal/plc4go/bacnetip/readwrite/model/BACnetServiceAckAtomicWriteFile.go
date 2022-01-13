@@ -46,8 +46,7 @@ func (m *BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
 	return 0x07
 }
 
-func (m *BACnetServiceAckAtomicWriteFile) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckAtomicWriteFile) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicWriteFile{

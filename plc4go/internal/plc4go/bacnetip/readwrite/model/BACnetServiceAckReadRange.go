@@ -44,8 +44,7 @@ func (m *BACnetServiceAckReadRange) ServiceChoice() uint8 {
 	return 0x1A
 }
 
-func (m *BACnetServiceAckReadRange) InitializeParent(parent *BACnetServiceAck) {
-}
+func (m *BACnetServiceAckReadRange) InitializeParent(parent *BACnetServiceAck) {}
 
 func NewBACnetServiceAckReadRange() *BACnetServiceAck {
 	child := &BACnetServiceAckReadRange{

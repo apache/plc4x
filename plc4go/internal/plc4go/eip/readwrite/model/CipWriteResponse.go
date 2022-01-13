@@ -48,8 +48,7 @@ func (m *CipWriteResponse) Service() uint8 {
 	return 0xCD
 }
 
-func (m *CipWriteResponse) InitializeParent(parent *CipService) {
-}
+func (m *CipWriteResponse) InitializeParent(parent *CipService) {}
 
 func NewCipWriteResponse(status uint8, extStatus uint8) *CipService {
 	child := &CipWriteResponse{

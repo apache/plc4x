@@ -47,8 +47,7 @@ func (m *FirmataMessageDigitalIO) MessageType() uint8 {
 	return 0x9
 }
 
-func (m *FirmataMessageDigitalIO) InitializeParent(parent *FirmataMessage) {
-}
+func (m *FirmataMessageDigitalIO) InitializeParent(parent *FirmataMessage) {}
 
 func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageDigitalIO{

@@ -48,8 +48,7 @@ func (m *LDataReq) MessageCode() uint8 {
 	return 0x11
 }
 
-func (m *LDataReq) InitializeParent(parent *CEMI) {
-}
+func (m *LDataReq) InitializeParent(parent *CEMI) {}
 
 func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataReq{
