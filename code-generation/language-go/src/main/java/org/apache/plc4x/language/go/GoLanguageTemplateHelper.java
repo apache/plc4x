@@ -939,6 +939,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             } else if (arg instanceof BooleanLiteral) {
                 tracer = tracer.dive("BooleanLiteral");
                 sb.append(((BooleanLiteral) arg).getValue());
+            }else if (arg instanceof NumericLiteral) {
+                tracer = tracer.dive("NumericLiteral");
+                sb.append(((NumericLiteral) arg).getNumber());
             } else if (arg instanceof BinaryTerm) {
                 tracer = tracer.dive("BinaryTerm");
                 sb.append(toBinaryTermExpression(field, typeReference,(BinaryTerm) arg, parserArguments,serializerArguments,serialize,tracer));

@@ -320,6 +320,8 @@ public class StaticHelper {
             case PULSE_CONVERTER:
             case SCHEDULE:
             case STRUCTURED_VIEW:
+                // TODO: temporary
+                return BACnetDataType.BACNET_OBJECT_IDENTIFIER;
             case TIMEPATTERN_VALUE:
             case TIME_VALUE:
             case TIMER:

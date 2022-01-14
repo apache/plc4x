@@ -843,6 +843,36 @@
     [virtual    bit isReverse        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
 ]
 
+[type BACnetActionCommand
+    [optional   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    deviceIdentifier
+    ]
+    [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier
+    ]
+    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier
+    ]
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex
+    ]
+    [optional   BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier')
+                    propertyValue
+    ]
+    [optional     BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
+                    priority
+    ]
+    [optional   BACnetContextTagBoolean('6', 'BACnetDataType.BOOLEAN')
+                    postDelay
+    ]
+    [simple   BACnetContextTagBoolean('7', 'BACnetDataType.BOOLEAN')
+                    quitOnFailure
+    ]
+    [simple   BACnetContextTagBoolean('8', 'BACnetDataType.BOOLEAN')
+                    writeSuccessful
+    ]
+]
+
 // TODO: this is a enum so we should build a static call which maps a enum
 [type BACnetBinaryPV(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
@@ -1214,18 +1244,31 @@
 ]
 
 [type BACnetConstructedData(uint 8 tagNumber, BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifierArgument)
-    [optional       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+    [simple       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                         openingTag
     ]
     //TODO: maybe more array into sub types later
     [array          BACnetConstructedDataElement('objectType', 'propertyIdentifierArgument')
                         data
                     terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, objectType == BACnetObjectType.LIFE_SAFETY_ZONE, tagNumber)'
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, objectType == BACnetObjectType.LIFE_SAFETY_ZONE || objectType == BACnetObjectType.COMMAND, tagNumber)'
     ]
     [virtual    bit     hasData 'COUNT(data) == 0']
     // TODO: maybe its better to typeswitch the elements
     [typeSwitch objectType, propertyIdentifierArgument
+        ['COMMAND' BACnetConstructedDataCommand
+            [simple       BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
+                                innerOpeningTag
+            ]
+            [array  BACnetActionCommand
+                        action
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'
+            ]
+            [simple       BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
+                                innerClosingTag
+            ]
+        ]
         ['LIFE_SAFETY_ZONE' BACnetConstructedDataLifeSafetyZone
             [array  BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         zones
@@ -1244,7 +1287,7 @@
             ]
         ]
     ]
-    [optional       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+    [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                         closingTag
     ]
 ]

@@ -88,10 +88,8 @@ func (m *BACnetConstructedData) LengthInBitsConditional(lastItem bool) uint16 {
 func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Optional Field (openingTag)
-	if m.OpeningTag != nil {
-		lengthInBits += (*m.OpeningTag).LengthInBits()
-	}
+	// Simple field (openingTag)
+	lengthInBits += m.OpeningTag.LengthInBits()
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -102,10 +100,8 @@ func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// Optional Field (closingTag)
-	if m.ClosingTag != nil {
-		lengthInBits += (*m.ClosingTag).LengthInBits()
-	}
+	// Simple field (closingTag)
+	lengthInBits += m.ClosingTag.LengthInBits()
 
 	return lengthInBits
 }
@@ -119,25 +115,17 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		return nil, pullErr
 	}
 
-	// Optional Field (openingTag) (Can be skipped, if a given expression evaluates to false)
-	var openingTag *BACnetOpeningTag = nil
-	{
-		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
-		switch {
-		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field")
-		case _err == utils.ParseAssertError:
-			readBuffer.Reset(currentPos)
-		default:
-			openingTag = CastBACnetOpeningTag(_val)
-			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
+	// Simple Field (openingTag)
+	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
+		return nil, pullErr
+	}
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
+	if _openingTagErr != nil {
+		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
+	}
+	openingTag := CastBACnetOpeningTag(_openingTag)
+	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Array field (data)
@@ -147,7 +135,7 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	// Terminated array
 	data := make([]*BACnetConstructedDataElement, 0)
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, bool((objectType) == (BACnetObjectType_LIFE_SAFETY_ZONE)), tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, bool(bool((objectType) == (BACnetObjectType_LIFE_SAFETY_ZONE))) || bool(bool((objectType) == (BACnetObjectType_COMMAND))), tagNumber)) {
 			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifierArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")
@@ -168,6 +156,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	var _parent *BACnetConstructedData
 	var typeSwitchError error
 	switch {
+	case objectType == BACnetObjectType_COMMAND: // BACnetConstructedDataCommand
+		_parent, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
 		_parent, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified
@@ -180,25 +170,17 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
-	var closingTag *BACnetClosingTag = nil
-	{
-		currentPos := readBuffer.GetPos()
-		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-			return nil, pullErr
-		}
-		_val, _err := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
-		switch {
-		case _err != nil && _err != utils.ParseAssertError:
-			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field")
-		case _err == utils.ParseAssertError:
-			readBuffer.Reset(currentPos)
-		default:
-			closingTag = CastBACnetClosingTag(_val)
-			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-				return nil, closeErr
-			}
-		}
+	// Simple Field (closingTag)
+	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
+		return nil, pullErr
+	}
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
+	if _closingTagErr != nil {
+		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
+	}
+	closingTag := CastBACnetClosingTag(_closingTag)
+	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedData"); closeErr != nil {
@@ -219,20 +201,16 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return pushErr
 	}
 
-	// Optional Field (openingTag) (Can be skipped, if the value is null)
-	var openingTag *BACnetOpeningTag = nil
-	if m.OpeningTag != nil {
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return pushErr
-		}
-		openingTag = m.OpeningTag
-		_openingTagErr := openingTag.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return popErr
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-		}
+	// Simple Field (openingTag)
+	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
+		return pushErr
+	}
+	_openingTagErr := m.OpeningTag.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
+		return popErr
+	}
+	if _openingTagErr != nil {
+		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
 	// Array Field (data)
@@ -260,20 +238,16 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (closingTag) (Can be skipped, if the value is null)
-	var closingTag *BACnetClosingTag = nil
-	if m.ClosingTag != nil {
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return pushErr
-		}
-		closingTag = m.ClosingTag
-		_closingTagErr := closingTag.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return popErr
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
-		}
+	// Simple Field (closingTag)
+	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
+		return pushErr
+	}
+	_closingTagErr := m.ClosingTag.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
+		return popErr
+	}
+	if _closingTagErr != nil {
+		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConstructedData"); popErr != nil {

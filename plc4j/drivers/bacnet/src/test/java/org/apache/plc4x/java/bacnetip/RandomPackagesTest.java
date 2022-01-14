@@ -31,6 +31,8 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferBoxBased;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.*;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Packet;
@@ -105,33 +107,33 @@ public class RandomPackagesTest {
     Collection<DynamicNode> BACnet_BBMD_on_same_subnet() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("BACnet-BBMD-on-same-subnet.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
+            DynamicTest.dynamicTest("No. 1 - BACnet Virtual Link Control BVLC Function Register-Foreign-Device",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     assertEquals(60000, ((BVLCRegisterForeignDevice) bvlc).getTtl());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed whoIs",
+            DynamicTest.dynamicTest("No. 2 - Unconfirmed whoIs",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) ((BVLCDistributeBroadcastToNetwork) bvlc).getNpdu().getApdu();
                     assertEquals((short) 0x8, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
                 }),
-            DynamicTest.dynamicTest("BACnet Virtual Link Control BVLC Function BVLC-Results",
+            DynamicTest.dynamicTest("No. 3 - BACnet Virtual Link Control BVLC Function BVLC-Results",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     assertEquals(BVLCResultCode.SUCCESSFUL_COMPLETION, ((BVLCResult) bvlc).getCode());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is",
+            DynamicTest.dynamicTest("No. 4 - Unconfirmed-REQ who-Is",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) ((BVLCForwardedNPDU) bvlc).getNpdu().getApdu();
                     assertEquals((short) 0x8, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
+            DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ i-Am device,123",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -143,7 +145,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,123",
+            DynamicTest.dynamicTest("No. 6 - Unconfirmed-REQ i-Am device,123",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -155,7 +157,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
+            DynamicTest.dynamicTest("No. 7 - Unconfirmed-REQ i-Am device,18",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -167,7 +169,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,18",
+            DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ i-Am device,18",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -179,7 +181,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(18, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
+            DynamicTest.dynamicTest("No. 9 - Unconfirmed-REQ i-Am device,2401",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -191,7 +193,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,2401",
+            DynamicTest.dynamicTest("No. 10 - Unconfirmed-REQ i-Am device,2401",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -203,7 +205,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(24, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
+            DynamicTest.dynamicTest("No. 11 - Unconfirmed-REQ i-Am device,86114",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -215,7 +217,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,86114",
+            DynamicTest.dynamicTest("No. 12 - Unconfirmed-REQ i-Am device,86114",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -227,7 +229,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
+            DynamicTest.dynamicTest("No. 13 - Unconfirmed-REQ i-Am device,884456",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -239,7 +241,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(86, baCnetUnconfirmedServiceRequestIAm.getVendorId().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Am device,884456",
+            DynamicTest.dynamicTest("No. 14 - Unconfirmed-REQ i-Am device,884456",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -704,7 +706,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CEN_9_11() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CEN_9_11.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[119] event-enrollment,11 analog-input,1",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   confirmedEventNotification[119] event-enrollment,11 analog-input,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -756,7 +758,7 @@ public class RandomPackagesTest {
                         assertEquals(40, baCnetNotificationParametersUnsignedRange.getExceededLimit().getActualValue());
                     }
                 }),
-            DynamicTest.dynamicTest("Simple-ACK      confirmedEventNotification[119]",
+            DynamicTest.dynamicTest("No. 2 - Simple-ACK      confirmedEventNotification[119]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -765,7 +767,7 @@ public class RandomPackagesTest {
                     assertEquals(119, apduSimpleAck.getOriginalInvokeId());
                     assertEquals(2, apduSimpleAck.getServiceChoice());
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[120] event-enrollment,11 analog-input,1",
+            DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   confirmedEventNotification[120] event-enrollment,11 analog-input,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -813,7 +815,7 @@ public class RandomPackagesTest {
                         assertEquals(33, baCnetNotificationParametersExtended.getExtendedEventType().getActualValue());
                     }
                 }),
-            DynamicTest.dynamicTest("Simple-ACK      confirmedEventNotification[120]",
+            DynamicTest.dynamicTest("No. 4 - Simple-ACK      confirmedEventNotification[120]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -822,7 +824,7 @@ public class RandomPackagesTest {
                     assertEquals(120, apduSimpleAck.getOriginalInvokeId());
                     assertEquals(2, apduSimpleAck.getServiceChoice());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 140 140",
+            DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ who-Is 140 140",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -832,7 +834,7 @@ public class RandomPackagesTest {
                     assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 140 140",
+            DynamicTest.dynamicTest("No. 6 - Unconfirmed-REQ who-Is 140 140",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -842,7 +844,7 @@ public class RandomPackagesTest {
                     assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(140, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 871 871",
+            DynamicTest.dynamicTest("No. 7 - Unconfirmed-REQ who-Is 871 871",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -852,7 +854,7 @@ public class RandomPackagesTest {
                     assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(871, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeHighLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 871 871",
+            DynamicTest.dynamicTest("No. 8 - Unconfirmed-REQ who-Is 871 871",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -870,7 +872,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CEN_10() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CEN_10.pcap");
         return List.of(
-            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[  7] device,151 trend-log,1 trend-log,1 log-buffer device,151",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   confirmedEventNotification[  7] device,151 trend-log,1 trend-log,1 log-buffer device,151",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -933,7 +935,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> COV_AWF_ARF() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("COV_AWF_ARF.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   subscribeCOV[ 10] binary-input,0",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   subscribeCOV[ 10] binary-input,0",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -948,7 +950,7 @@ public class RandomPackagesTest {
                     assertTrue(baCnetConfirmedServiceRequestSubscribeCOV.getIssueConfirmed().getIsFalse());
                     assertEquals(10, baCnetConfirmedServiceRequestSubscribeCOV.getLifetimeInSeconds().getActualValue() / 60);
                 }),
-            DynamicTest.dynamicTest("Simple-ACK      subscribeCOV[ 10]",
+            DynamicTest.dynamicTest("No. 2 - Simple-ACK      subscribeCOV[ 10]",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -956,7 +958,7 @@ public class RandomPackagesTest {
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
                     assertEquals((short) 5, apduSimpleAck.getServiceChoice());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
+            DynamicTest.dynamicTest("No. 3 - Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -995,9 +997,9 @@ public class RandomPackagesTest {
     Collection<DynamicNode> ContextTagAbove14Sample_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("ContextTagAbove14Sample_1.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("skipLLC",
+            DynamicTest.dynamicTest("No. 1 - skipLLC",
                 () -> pcapEvaluator.skipPackages(1)),
-            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[138] device,1 event-enrollment,1",
+            DynamicTest.dynamicTest("No. 2 - Confirmed-REQ   confirmedEventNotification[138] device,1 event-enrollment,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -1059,7 +1061,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> CriticalRoom55_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("CriticalRoom55-2.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ writeProperty[113] analog-value,1 present-value",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ writeProperty[113] analog-value,1 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -1094,7 +1096,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Ethereal_Misinterpreted_Packet() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Ethereal-Misinterpreted-Packet.cap");
         return List.of(
-            DynamicTest.dynamicTest("Confirmed-REQ   confirmedEventNotification[ 10] device,1041000 analog-input,3000016 (2200) Vendor Proprietary Value object-name (2201) Vendor Proprietary Value (2202) Vendor Proprietary Value reliability (661) VendorProprietary Value units (1659) Vendor Proprietary Value (2203) Vendor Proprietary Value vendor-identifier",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   confirmedEventNotification[ 10] device,1041000 analog-input,3000016 (2200) Vendor Proprietary Value object-name (2201) Vendor Proprietary Value (2202) Vendor Proprietary Value reliability (661) VendorProprietary Value units (1659) Vendor Proprietary Value (2203) Vendor Proprietary Value vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -1271,19 +1273,35 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Subordinate_List() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Subordinate%20List.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ readProperty[152] structured-view,1 subordinate-list",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ readProperty[152] structured-view,1 subordinate-list",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
+                    BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
+                    assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[152] structured-view,1 subordinate-list device,128 analog-input,1 device,128 analog-input,3 device,128 analog-output,1 device,128 analog-output,3",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[152] structured-view,1 subordinate-list device,128 analog-input,1 device,128 analog-input,3 device,128 analog-output,1 device,128 analog-output,3",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) npdu.getApdu();
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAckReadProperty);
+                    assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    List<BACnetConstructedDataElement> data = baCnetServiceAckReadProperty.getValues().getData();
+                    assertThat(data.get(0).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 128L);
+                    assertThat(data.get(1).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_INPUT, 1L);
+                    assertThat(data.get(2).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 128L);
+                    assertThat(data.get(3).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_INPUT, 3L);
+                    assertThat(data.get(4).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 128L);
+                    assertThat(data.get(5).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_OUTPUT, 1L);
+                    assertThat(data.get(6).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 128L);
+                    assertThat(data.get(7).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_OUTPUT, 3L);
                 })
         );
     }
@@ -1293,33 +1311,58 @@ public class RandomPackagesTest {
     Collection<DynamicNode> Subordinate_List2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("Subordinate%20List2.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[143] structured-view,1 subordinate-list",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[143] structured-view,1 subordinate-list",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
+                    BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
+                    assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_LIST);
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[143] structured-view,1 subordinate-list device,4000 analog-input,1 analog-value,1 binary-input,1 binary-value,1",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[143] structured-view,1 subordinate-list device,4000 analog-input,1 analog-value,1 binary-input,1 binary-value,1",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) npdu.getApdu();
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAckReadProperty);
+                    assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_LIST, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    List<BACnetConstructedDataElement> data = baCnetServiceAckReadProperty.getValues().getData();
+                    assertThat(data.get(0).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.DEVICE, 4000L);
+                    assertThat(data.get(1).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_INPUT, 1L);
+                    assertThat(data.get(2).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.ANALOG_VALUE, 1L);
+                    assertThat(data.get(3).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.BINARY_INPUT, 1L);
+                    assertThat(data.get(4).getContextTag()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.BINARY_VALUE, 1L);
                 }),
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[144] structured-view,1 subordinate-annotations",
+            DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   readProperty[144] structured-view,1 subordinate-annotations",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
+                    BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
+                    assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS);
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[144] structured-view,1 subordinate-annotations",
+            DynamicTest.dynamicTest("No. 4 - Complex-ACK     readProperty[144] structured-view,1 subordinate-annotations",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) npdu.getApdu();
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAckReadProperty);
+                    assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.STRUCTURED_VIEW, 1L);
+                    assertEquals(BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    List<BACnetConstructedDataElement> data = baCnetServiceAckReadProperty.getValues().getData();
+                    assertThat(data.get(0).getApplicationTag()).extracting("encoding", "value").contains(BACnetCharacterEncoding.ISO_10646, "Subordinate 1");
+                    assertThat(data.get(1).getApplicationTag()).extracting("encoding", "value").contains(BACnetCharacterEncoding.ISO_10646, "Subordinate 2");
+                    assertThat(data.get(2).getApplicationTag()).extracting("encoding", "value").contains(BACnetCharacterEncoding.ISO_10646, "Subordinate 3");
+                    assertThat(data.get(3).getApplicationTag()).extracting("encoding", "value").contains(BACnetCharacterEncoding.ISO_10646, "Subordinate 4");
                 })
         );
     }
@@ -1560,19 +1603,29 @@ public class RandomPackagesTest {
     Collection<DynamicNode> WireSharkError_ArrayIndex() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("WireSharkError_ArrayIndex.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[ 74] schedule,1 exception-schedule",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[ 74] schedule,1 exception-schedule",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUConfirmedRequest apdu = (APDUConfirmedRequest) npdu.getApdu();
+                    BACnetConfirmedServiceRequestReadProperty serviceRequest = (BACnetConfirmedServiceRequestReadProperty) apdu.getServiceRequest();
+                    assertThat(serviceRequest.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.SCHEDULE, 1L);
+                    assertThat(serviceRequest.getPropertyIdentifier()).extracting("propertyIdentifier").isEqualTo(BACnetPropertyIdentifier.EXCEPTION_SCHEDULE);
+                    assertThat(serviceRequest.getArrayIndex()).extracting("actualValue").isEqualTo(0L);
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[ 74] schedule,1 exception-schedule",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[ 74] schedule,1 exception-schedule",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUComplexAck apduComplexAck = (APDUComplexAck) npdu.getApdu();
+                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
+                    assertNotNull(baCnetServiceAckReadProperty);
+                    assertThat(baCnetServiceAckReadProperty.getObjectIdentifier()).extracting("objectType", "instanceNumber").contains(BACnetObjectType.SCHEDULE, 1L);
+                    assertEquals(BACnetPropertyIdentifier.EXCEPTION_SCHEDULE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
+                    List<BACnetConstructedDataElement> data = baCnetServiceAckReadProperty.getValues().getData();
+                    assertThat(data.get(0).getApplicationTag()).extracting("actualValue").isEqualTo(0L);
                 })
         );
     }
@@ -1602,22 +1655,162 @@ public class RandomPackagesTest {
     @DisplayName("action-list")
     Collection<DynamicNode> action_list() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("action-list.pcap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[107] command,1 action",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[107] command,1 action binary-value,0 present-value device,0 analog-value,1 present-value binary-value,2 present-value device,0 analog-value,3 present-value binary-value,4 present-value device,0 analog-value,5 present-value binary-value,6 present-value device,0 analog-value,7 present-value binary-value,8 present-value device,0 analog-value,9 present-value", () -> {
-                BVLC bvlc;
-                bvlc = pcapEvaluator.nextBVLC();
-                dump(bvlc);
-                // TODO:
-                assumeTrue(false, "not properly implemented. Check manually and add asserts");
+        return List.of(
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[107] command,1 action", () -> {
+                assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUConfirmedRequest.class))
+                    .extracting(APDUConfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetConfirmedServiceRequestReadProperty.class))
+                    .satisfies(baCnetConfirmedServiceRequestReadProperty -> {
+                        assertThat(baCnetConfirmedServiceRequestReadProperty)
+                            .extracting(BACnetConfirmedServiceRequestReadProperty::getObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.COMMAND, 1L);
+                        assertThat(baCnetConfirmedServiceRequestReadProperty)
+                            .extracting(BACnetConfirmedServiceRequestReadProperty::getPropertyIdentifier)
+                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .isEqualTo(BACnetPropertyIdentifier.ACTION);
+                        assertThat(baCnetConfirmedServiceRequestReadProperty)
+                            .extracting(BACnetConfirmedServiceRequestReadProperty::getArrayIndex)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(1L);
+                    });
             }),
-            pcapEvaluator.parseFrom(3)
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[107] command,1 action binary-value,0 present-value device,0 analog-value,1 present-value binary-value,2 present-value device,0 analog-value,3 present-value binary-value,4 present-value device,0 analog-value,5 present-value binary-value,6 present-value device,0 analog-value,7 present-value binary-value,8 present-value device,0 analog-value,9 present-value",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getServiceAck)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetServiceAckReadProperty.class))
+                    .satisfies(baCnetServiceAckReadProperty -> {
+                        assertThat(baCnetServiceAckReadProperty.getObjectIdentifier())
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .contains(BACnetObjectType.COMMAND, 1L);
+                        assertThat(baCnetServiceAckReadProperty.getPropertyIdentifier())
+                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .isEqualTo(BACnetPropertyIdentifier.ACTION);
+                        assertThat(baCnetServiceAckReadProperty.getValues())
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataCommand.class))
+                            .extracting(BACnetConstructedDataCommand::getAction)
+                            .satisfies(baCnetActionCommands -> {
+                                assertThat(baCnetActionCommands)
+                                    .element(0)
+                                    .extracting(
+                                        BACnetActionCommand::getObjectIdentifier,
+                                        BACnetActionCommand::getPropertyIdentifier,
+                                        BACnetActionCommand::getPropertyValue,
+                                        BACnetActionCommand::getQuitOnFailure,
+                                        BACnetActionCommand::getWriteSuccessful
+                                    )
+                                    .doesNotContainNull()
+                                    .satisfiesExactly(
+                                        objectIdentifier -> assertThat(objectIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagObjectIdentifier.class))
+                                            .extracting(BACnetContextTagObjectIdentifier::getObjectType)
+                                            .isEqualTo(BACnetObjectType.BINARY_VALUE),
+                                        propertyIdentifier -> assertThat(propertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
+                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
+                                        propertyValue -> assertThat(propertyValue)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedData.class))
+                                            .extracting(BACnetConstructedData::getData)
+                                            .asList().element(0)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataElement.class))
+                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagReal.class))
+                                            .extracting(BACnetApplicationTagReal::getValue)
+                                            .isEqualTo(0f),
+                                        quitOnFailure -> assertThat(quitOnFailure)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(false),
+                                        writeSuccessful -> assertThat(writeSuccessful)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(true)
+                                    );
+                                assertThat(baCnetActionCommands)
+                                    .element(1)
+                                    .extracting(
+                                        BACnetActionCommand::getObjectIdentifier,
+                                        BACnetActionCommand::getPropertyIdentifier,
+                                        BACnetActionCommand::getPropertyValue,
+                                        BACnetActionCommand::getQuitOnFailure,
+                                        BACnetActionCommand::getWriteSuccessful
+                                    )
+                                    .doesNotContainNull()
+                                    .satisfiesExactly(
+                                        objectIdentifier -> assertThat(objectIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagObjectIdentifier.class))
+                                            .extracting(BACnetContextTagObjectIdentifier::getObjectType)
+                                            .isEqualTo(BACnetObjectType.ANALOG_VALUE),
+                                        propertyIdentifier -> assertThat(propertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
+                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
+                                        propertyValue -> assertThat(propertyValue)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedData.class))
+                                            .extracting(BACnetConstructedData::getData)
+                                            .asList().element(0)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataElement.class))
+                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagReal.class))
+                                            .extracting(BACnetApplicationTagReal::getValue)
+                                            .isEqualTo(1.0f),
+                                        quitOnFailure -> assertThat(quitOnFailure)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(true),
+                                        writeSuccessful -> assertThat(writeSuccessful)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(false)
+                                    );
+                                assertThat(baCnetActionCommands)
+                                    .element(2)
+                                    .extracting(
+                                        BACnetActionCommand::getObjectIdentifier,
+                                        BACnetActionCommand::getPropertyIdentifier,
+                                        BACnetActionCommand::getPropertyValue,
+                                        BACnetActionCommand::getQuitOnFailure,
+                                        BACnetActionCommand::getWriteSuccessful
+                                    )
+                                    .doesNotContainNull()
+                                    .satisfiesExactly(
+                                        objectIdentifier -> assertThat(objectIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagObjectIdentifier.class))
+                                            .extracting(BACnetContextTagObjectIdentifier::getObjectType)
+                                            .isEqualTo(BACnetObjectType.BINARY_VALUE),
+                                        propertyIdentifier -> assertThat(propertyIdentifier)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagPropertyIdentifier.class))
+                                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                                            .isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE),
+                                        propertyValue -> assertThat(propertyValue)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedData.class))
+                                            .extracting(BACnetConstructedData::getData)
+                                            .asList().element(0)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataElement.class))
+                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagReal.class))
+                                            .extracting(BACnetApplicationTagReal::getValue)
+                                            .isEqualTo(2.0f),
+                                        quitOnFailure -> assertThat(quitOnFailure)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(false),
+                                        writeSuccessful -> assertThat(writeSuccessful)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetContextTagBoolean.class))
+                                            .extracting(BACnetContextTagBoolean::getIsTrue)
+                                            .isEqualTo(true)
+                                    );
+                            });
+                    }))
         );
     }
 
@@ -1634,7 +1827,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> alerton_plugfest_2() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
-            DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-version",
+            DynamicTest.dynamicTest("No. 1 - Complex-ACK readProperty[155] device,42222 protocol-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -1648,7 +1841,7 @@ public class RandomPackagesTest {
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            DynamicTest.dynamicTest("Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2043,7 +2236,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> confirmedEventNotification() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("confirmedEventNotification.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ confirmedEventNotification[103] device,1041000 analog-input,3000016 present-value",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ confirmedEventNotification[103] device,1041000 analog-input,3000016 present-value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2117,14 +2310,14 @@ public class RandomPackagesTest {
     Collection<DynamicNode> eventTimeStamp_rp() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("eventTimeStamp_rp.pcap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[148] load-control,1 event-time-stamp",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[148] load-control,1 event-time-stamp",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[148] load-control,1 event-time-stamp",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[148] load-control,1 event-time-stamp",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2438,7 +2631,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_2011_trane_1() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-2011-trane-1.pcap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
-            DynamicTest.dynamicTest("No.1 - Unconfirmed REQ who-Is",
+            DynamicTest.dynamicTest("No. 1 - Unconfirmed REQ who-Is",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2586,7 +2779,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 29] device,201 object-identifier device,201",
+            DynamicTest.dynamicTest("No. 12 - Complex-ACK     readProperty[ 29] device,201 object-identifier device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2599,7 +2792,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 30] device,201 object-name",
+            DynamicTest.dynamicTest("No. 13 - Confirmed-REQ   readProperty[ 30] device,201 object-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2612,7 +2805,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 30] device,201 object-name device,201",
+            DynamicTest.dynamicTest("No. 14 - Complex-ACK     readProperty[ 30] device,201 object-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2628,7 +2821,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString baCnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Lithonia Router", baCnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 31] device,201 object-type",
+            DynamicTest.dynamicTest("No. 15 - Confirmed-REQ   readProperty[ 31] device,201 object-type",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2641,7 +2834,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 31] device,201 object-type device,201",
+            DynamicTest.dynamicTest("No. 16 - Complex-ACK     readProperty[ 31] device,201 object-type device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2654,7 +2847,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 32] device,201 system-status",
+            DynamicTest.dynamicTest("No. 17 - Confirmed-REQ   readProperty[ 32] device,201 system-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2667,7 +2860,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 32] device,201 system-status device,201",
+            DynamicTest.dynamicTest("No. 18 - Complex-ACK     readProperty[ 32] device,201 system-status device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2683,7 +2876,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 33] device,201 vendor-name",
+            DynamicTest.dynamicTest("No. 19 - Confirmed-REQ   readProperty[ 33] device,201 vendor-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2696,7 +2889,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 33] device,201 vendor-name device,201",
+            DynamicTest.dynamicTest("No. 20 - Complex-ACK     readProperty[ 33] device,201 vendor-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2712,7 +2905,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Alerton Technologies, Inc.", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 34] device,201 vendor-identifier",
+            DynamicTest.dynamicTest("No. 21 - Confirmed-REQ   readProperty[ 34] device,201 vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2725,7 +2918,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 34] device,201 vendor-identifier device,201",
+            DynamicTest.dynamicTest("No. 22 - Complex-ACK     readProperty[ 34] device,201 vendor-identifier device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2738,7 +2931,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 35] device,201 model-name",
+            DynamicTest.dynamicTest("No. 23 - Confirmed-REQ   readProperty[ 35] device,201 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2751,7 +2944,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 35] device,201 model-name device,201",
+            DynamicTest.dynamicTest("No. 24 - Complex-ACK     readProperty[ 35] device,201 model-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2767,7 +2960,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("LSi Controller", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 36] device,201 model-name",
+            DynamicTest.dynamicTest("No. 25 - Confirmed-REQ   readProperty[ 36] device,201 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2780,7 +2973,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 36] device,201 model-name device,201",
+            DynamicTest.dynamicTest("No. 26 - Complex-ACK     readProperty[ 36] device,201 model-name device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2796,7 +2989,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("BACtalk LSi   v3.10 A         ", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 37] device,201 application-software-version",
+            DynamicTest.dynamicTest("No. 27 - Confirmed-REQ   readProperty[ 37] device,201 application-software-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2809,7 +3002,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 37] device,201 application-software-version device,201",
+            DynamicTest.dynamicTest("No. 28 - Complex-ACK     readProperty[ 37] device,201 application-software-version device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2825,7 +3018,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("LSi Controller v3.11 E", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 38] device,201 protocol-version",
+            DynamicTest.dynamicTest("No. 29 - Confirmed-REQ   readProperty[ 38] device,201 protocol-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2838,7 +3031,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 38] device,201 protocol-version device,201",
+            DynamicTest.dynamicTest("No. 30 - Complex-ACK     readProperty[ 38] device,201 protocol-version device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2854,7 +3047,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 39] device,201 protocol-conformance-class",
+            DynamicTest.dynamicTest("No. 31 - Confirmed-REQ   readProperty[ 39] device,201 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2867,7 +3060,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 39] device,201 protocol-conformance-class device,201",
+            DynamicTest.dynamicTest("No. 32 - Complex-ACK     readProperty[ 39] device,201 protocol-conformance-class device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2883,7 +3076,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(3, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 40] device,201 protocol-services-supported",
+            DynamicTest.dynamicTest("No. 33 - Confirmed-REQ   readProperty[ 40] device,201 protocol-services-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2896,7 +3089,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 40] device,201 protocol-services-supported device,201",
+            DynamicTest.dynamicTest("No. 34 - Complex-ACK     readProperty[ 40] device,201 protocol-services-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2912,7 +3105,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(true, false, true, true, false, true, true, true, false, false, true, true, true, false, true, true, true, true, true, false, true, false, false, false, false, false, true, true, false, false, true, false, true, true, true), BACnetApplicationTagBitString.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 41] device,201 protocol-object-types-supported",
+            DynamicTest.dynamicTest("No. 35 - Confirmed-REQ   readProperty[ 41] device,201 protocol-object-types-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2925,7 +3118,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 41] device,201 protocol-object-types-supported device,201",
+            DynamicTest.dynamicTest("No. 36 - Complex-ACK     readProperty[ 41] device,201 protocol-object-types-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2941,7 +3134,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(false, false, true, false, false, true, true, false, true, true, true, false, false, false, false, true, true, true), BACnetApplicationTagBitString.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 42] device,201 max-apdu-length-accepted",
+            DynamicTest.dynamicTest("No. 37 - Confirmed-REQ   readProperty[ 42] device,201 max-apdu-length-accepted",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2954,7 +3147,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 42] device,201 max-apdu-length-accepted device,201",
+            DynamicTest.dynamicTest("No. 38 - Complex-ACK     readProperty[ 42] device,201 max-apdu-length-accepted device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2970,7 +3163,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1476, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 43] device,201 segmentation-supported",
+            DynamicTest.dynamicTest("No. 39 - Confirmed-REQ   readProperty[ 43] device,201 segmentation-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2983,7 +3176,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 43] device,201 segmentation-supported device,201",
+            DynamicTest.dynamicTest("No. 40 - Complex-ACK     readProperty[ 43] device,201 segmentation-supported device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -2999,7 +3192,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(List.of((byte) 0), BACnetApplicationTagEnumerated.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 44] device,201 local-time",
+            DynamicTest.dynamicTest("No. 41 - Confirmed-REQ   readProperty[ 44] device,201 local-time",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3012,7 +3205,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 44] device,201 local-time device,201",
+            DynamicTest.dynamicTest("No. 42 - Complex-ACK     readProperty[ 44] device,201 local-time device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3030,7 +3223,7 @@ public class RandomPackagesTest {
                     assertEquals(28, BACnetApplicationTagTime.getMinute());
                     assertEquals(41, BACnetApplicationTagTime.getSecond());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 45] device,201 local-date",
+            DynamicTest.dynamicTest("No. 43 - Confirmed-REQ   readProperty[ 45] device,201 local-date",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3043,7 +3236,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 45] device,201 local-date device,201",
+            DynamicTest.dynamicTest("No. 44 - Complex-ACK     readProperty[ 45] device,201 local-date device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3062,7 +3255,7 @@ public class RandomPackagesTest {
                     assertEquals(1, BACnetApplicationTagDate.getDayOfMonth());
                     assertEquals(4, BACnetApplicationTagDate.getDayOfWeek());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 46] device,201 utc-offset",
+            DynamicTest.dynamicTest("No. 45 - Confirmed-REQ   readProperty[ 46] device,201 utc-offset",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3075,7 +3268,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 46] device,201 utc-offset device,201",
+            DynamicTest.dynamicTest("No. 46 - Complex-ACK     readProperty[ 46] device,201 utc-offset device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3091,7 +3284,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagSignedInteger BACnetApplicationTagSignedInteger = (BACnetApplicationTagSignedInteger) value;
                     assertEquals(BigInteger.ZERO, BACnetApplicationTagSignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 47] device,201 daylights-savings-status",
+            DynamicTest.dynamicTest("No. 47 - Confirmed-REQ   readProperty[ 47] device,201 daylights-savings-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3104,7 +3297,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 47] device,201 daylights-savings-status device,201",
+            DynamicTest.dynamicTest("No. 48 - Complex-ACK     readProperty[ 47] device,201 daylights-savings-status device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3120,7 +3313,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertTrue(BACnetApplicationTagBoolean.getIsFalse());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 48] device,201 apdu-segment-timeout",
+            DynamicTest.dynamicTest("No. 49 - Confirmed-REQ   readProperty[ 48] device,201 apdu-segment-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3133,7 +3326,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 48] device,201 apdu-segment-timeout device,201",
+            DynamicTest.dynamicTest("No. 50 - Complex-ACK     readProperty[ 48] device,201 apdu-segment-timeout device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3149,7 +3342,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(6000, BACnetApplicationTagUnsignedInteger.getValueUint16());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 49] device,201 apdu-timeout",
+            DynamicTest.dynamicTest("No. 51 - Confirmed-REQ   readProperty[ 49] device,201 apdu-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3162,7 +3355,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 49] device,201 apdu-timeout device,201",
+            DynamicTest.dynamicTest("No. 52 - Complex-ACK     readProperty[ 49] device,201 apdu-timeout device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3178,7 +3371,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(6000, BACnetApplicationTagUnsignedInteger.getValueUint16());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 50] device,201 number-of-APDU-retries",
+            DynamicTest.dynamicTest("No. 53 - Confirmed-REQ   readProperty[ 50] device,201 number-of-APDU-retries",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3191,7 +3384,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 50] device,201 number-of-APDU-retries device,201",
+            DynamicTest.dynamicTest("No. 54 - Complex-ACK     readProperty[ 50] device,201 number-of-APDU-retries device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3207,7 +3400,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 3, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 51] device,201 time-synchronization-recipients",
+            DynamicTest.dynamicTest("No. 55 - Confirmed-REQ   readProperty[ 51] device,201 time-synchronization-recipients",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3220,7 +3413,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - ERROR           readProperty[ 51] device,201",
+            DynamicTest.dynamicTest("No. 56 - ERROR           readProperty[ 51] device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3230,7 +3423,7 @@ public class RandomPackagesTest {
                     // TODO: use proper enums
                     assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 52] device,201 max-master",
+            DynamicTest.dynamicTest("No. 57 - Confirmed-REQ   readProperty[ 52] device,201 max-master",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3243,7 +3436,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 52] device,201 max-master device,201",
+            DynamicTest.dynamicTest("No. 58 - Complex-ACK     readProperty[ 52] device,201 max-master device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3259,7 +3452,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 127, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 53] device,201 max-info-frames",
+            DynamicTest.dynamicTest("No. 59 - Confirmed-REQ   readProperty[ 53] device,201 max-info-frames",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3272,7 +3465,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 53] device,201 max-info-frames device,201",
+            DynamicTest.dynamicTest("No. 60 - Complex-ACK     readProperty[ 53] device,201 max-info-frames device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3288,7 +3481,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 40, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 54] device,201 device-address-binding",
+            DynamicTest.dynamicTest("No. 61 - Confirmed-REQ   readProperty[ 54] device,201 device-address-binding",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3301,7 +3494,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 54] device,201 device-address-binding device,201",
+            DynamicTest.dynamicTest("No. 62 - Complex-ACK     readProperty[ 54] device,201 device-address-binding device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3314,7 +3507,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 55] device,201 (514) Vendor Proprietary Value",
+            DynamicTest.dynamicTest("No. 63 - Confirmed-REQ   readProperty[ 55] device,201 (514) Vendor Proprietary Value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3327,7 +3520,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 55] device,201 (514) Vendor Proprietary Value device,201",
+            DynamicTest.dynamicTest("No. 64 - Complex-ACK     readProperty[ 55] device,201 (514) Vendor Proprietary Value device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3343,7 +3536,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertTrue(BACnetApplicationTagBoolean.getIsFalse());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 56] device,201 (515) Vendor Proprietary Value device,201",
+            DynamicTest.dynamicTest("No. 65 - Confirmed-REQ   readProperty[ 56] device,201 (515) Vendor Proprietary Value device,201",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3356,7 +3549,7 @@ public class RandomPackagesTest {
                     assertEquals(201, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 56] device,201 Error",
+            DynamicTest.dynamicTest("No. 66 - Complex-ACK     readProperty[ 56] device,201 Error",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3366,7 +3559,7 @@ public class RandomPackagesTest {
                     // TODO: use proper enums
                     assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
+            DynamicTest.dynamicTest("No. 67 - Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3379,7 +3572,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 57] object-identifier device,61",
+            DynamicTest.dynamicTest("No. 68 - Complex-ACK     readProperty[ 57] object-identifier device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3396,7 +3589,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, BACnetApplicationTagObjectIdentifier.getObjectType());
                     assertEquals(61, BACnetApplicationTagObjectIdentifier.getInstanceNumber());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 58] device,61 object-name",
+            DynamicTest.dynamicTest("No. 69 - Confirmed-REQ   readProperty[ 58] device,61 object-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3409,7 +3602,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 58] object-name device,61",
+            DynamicTest.dynamicTest("No. 70 - Complex-ACK     readProperty[ 58] object-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3425,7 +3618,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagObjectIdentifier = (BACnetApplicationTagCharacterString) value;
                     assertEquals("SYNERGY", BACnetApplicationTagObjectIdentifier.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 59] device,61 object-type",
+            DynamicTest.dynamicTest("No. 71 - Confirmed-REQ   readProperty[ 59] device,61 object-type",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3438,7 +3631,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.OBJECT_TYPE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 59] object-type device,61",
+            DynamicTest.dynamicTest("No. 72 - Complex-ACK     readProperty[ 59] object-type device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3454,7 +3647,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(List.of((byte) 8), baCnetApplicationTagEnumerated.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 60] device,61 system-status",
+            DynamicTest.dynamicTest("No. 73 - Confirmed-REQ   readProperty[ 60] device,61 system-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3467,7 +3660,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.SYSTEM_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 60] device,61 system-status device,61",
+            DynamicTest.dynamicTest("No. 74 - Complex-ACK     readProperty[ 60] device,61 system-status device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3483,7 +3676,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagEnumerated baCnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(List.of((byte) 0x0), baCnetApplicationTagEnumerated.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 61] device,61 vendor-name",
+            DynamicTest.dynamicTest("No. 75 - Confirmed-REQ   readProperty[ 61] device,61 vendor-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3496,7 +3689,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 61] device,61 vendor-name device,61",
+            DynamicTest.dynamicTest("No. 76 - Complex-ACK     readProperty[ 61] device,61 vendor-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3512,7 +3705,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("Lithonia Lighting, Inc.", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 62] device,61 vendor-identifier",
+            DynamicTest.dynamicTest("No. 77 - Confirmed-REQ   readProperty[ 62] device,61 vendor-identifier",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3525,7 +3718,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 62] device,61 vendor-identifier device,61",
+            DynamicTest.dynamicTest("No. 78 - Complex-ACK     readProperty[ 62] device,61 vendor-identifier device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3538,7 +3731,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_IDENTIFIER, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 63] device,61 model-name",
+            DynamicTest.dynamicTest("No. 79 - Confirmed-REQ   readProperty[ 63] device,61 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3551,7 +3744,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MODEL_NAME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 63] device,61 model-name device,61",
+            DynamicTest.dynamicTest("No. 80 - Complex-ACK     readProperty[ 63] device,61 model-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3567,7 +3760,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("SYSC MLX", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 64] device,61 model-name",
+            DynamicTest.dynamicTest("No. 81 - Confirmed-REQ   readProperty[ 64] device,61 model-name",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3580,7 +3773,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.FIRMWARE_REVISION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 64] device,61 model-name device,61",
+            DynamicTest.dynamicTest("No. 82 - Complex-ACK     readProperty[ 64] device,61 model-name device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3596,7 +3789,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("2x62i", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 65] device,61 application-software-version",
+            DynamicTest.dynamicTest("No. 83 - Confirmed-REQ   readProperty[ 65] device,61 application-software-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3609,7 +3802,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 65] device,61 application-software-version device,61",
+            DynamicTest.dynamicTest("No. 84 - Complex-ACK     readProperty[ 65] device,61 application-software-version device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3625,7 +3818,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagCharacterString BACnetApplicationTagCharacterString = (BACnetApplicationTagCharacterString) value;
                     assertEquals("10-Nov-2004", BACnetApplicationTagCharacterString.getValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 66] device,61 protocol-version",
+            DynamicTest.dynamicTest("No. 85 - Confirmed-REQ   readProperty[ 66] device,61 protocol-version",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3638,7 +3831,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 66] device,61 protocol-version device,61",
+            DynamicTest.dynamicTest("No. 86 - Complex-ACK     readProperty[ 66] device,61 protocol-version device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3654,7 +3847,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(1, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 67] device,61 protocol-conformance-class",
+            DynamicTest.dynamicTest("No. 87 - Confirmed-REQ   readProperty[ 67] device,61 protocol-conformance-class",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3667,7 +3860,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_CONFORMANCE_CLASS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 67] device,61 protocol-conformance-class device,61",
+            DynamicTest.dynamicTest("No. 88 - Complex-ACK     readProperty[ 67] device,61 protocol-conformance-class device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3683,7 +3876,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(2, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 68] device,61 protocol-services-supported",
+            DynamicTest.dynamicTest("No. 89 - Confirmed-REQ   readProperty[ 68] device,61 protocol-services-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3696,7 +3889,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 68] device,61 protocol-services-supported device,61",
+            DynamicTest.dynamicTest("No. 90 - Complex-ACK     readProperty[ 68] device,61 protocol-services-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3712,7 +3905,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(false, false, false, false, false, false, true, true, false, false, false, false, true, false, true, true, false, true, false, false, true, false, false, false, false, false, true, true, false, false, false, false, true, true, true), BACnetApplicationTagBitString.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 69] device,61 protocol-object-types-supported",
+            DynamicTest.dynamicTest("No. 91 - Confirmed-REQ   readProperty[ 69] device,61 protocol-object-types-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3725,7 +3918,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 69] device,61 protocol-object-types-supported device,61",
+            DynamicTest.dynamicTest("No. 92 - Complex-ACK     readProperty[ 69] device,61 protocol-object-types-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3741,7 +3934,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBitString BACnetApplicationTagBitString = (BACnetApplicationTagBitString) value;
                     assertEquals(Arrays.asList(true, true, true, true, true, true, false, false, true, false, true, false, false, false, false, false, false, false, false, false, false), BACnetApplicationTagBitString.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 70] device,61 max-apdu-length-accepted",
+            DynamicTest.dynamicTest("No. 93 - Confirmed-REQ   readProperty[ 70] device,61 max-apdu-length-accepted",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3754,7 +3947,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 70] device,61 max-apdu-length-accepted device,61",
+            DynamicTest.dynamicTest("No. 94 - Complex-ACK     readProperty[ 70] device,61 max-apdu-length-accepted device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3770,7 +3963,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(480, BACnetApplicationTagUnsignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 71] device,61 segmentation-supported",
+            DynamicTest.dynamicTest("No. 95 - Confirmed-REQ   readProperty[ 71] device,61 segmentation-supported",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3783,7 +3976,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 71] device,61 segmentation-supported device,61",
+            DynamicTest.dynamicTest("No. 96 - Complex-ACK     readProperty[ 71] device,61 segmentation-supported device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3799,7 +3992,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagEnumerated BACnetApplicationTagEnumerated = (BACnetApplicationTagEnumerated) value;
                     assertEquals(List.of((byte) 0), BACnetApplicationTagEnumerated.getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 72] device,61 local-time",
+            DynamicTest.dynamicTest("No. 97 - Confirmed-REQ   readProperty[ 72] device,61 local-time",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3812,7 +4005,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.LOCAL_TIME, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 72] device,61 local-time device,61",
+            DynamicTest.dynamicTest("No. 98 - Complex-ACK     readProperty[ 72] device,61 local-time device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3830,7 +4023,7 @@ public class RandomPackagesTest {
                     assertEquals(26, BACnetApplicationTagTime.getMinute());
                     assertEquals(40, BACnetApplicationTagTime.getSecond());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 73] device,61 local-date",
+            DynamicTest.dynamicTest("No. 99 - Confirmed-REQ   readProperty[ 73] device,61 local-date",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3843,7 +4036,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.LOCAL_DATE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 73] device,61 local-date device,61",
+            DynamicTest.dynamicTest("No. 100 - Complex-ACK     readProperty[ 73] device,61 local-date device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3862,7 +4055,7 @@ public class RandomPackagesTest {
                     assertEquals(1, BACnetApplicationTagDate.getDayOfMonth());
                     assertEquals(-1, BACnetApplicationTagDate.getDayOfWeek());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 74] device,61 utc-offset",
+            DynamicTest.dynamicTest("No. 101 - Confirmed-REQ   readProperty[ 74] device,61 utc-offset",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3875,7 +4068,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.UTC_OFFSET, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 74] device,61 utc-offset device,61",
+            DynamicTest.dynamicTest("No. 102 - Complex-ACK     readProperty[ 74] device,61 utc-offset device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3891,7 +4084,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagSignedInteger BACnetApplicationTagSignedInteger = (BACnetApplicationTagSignedInteger) value;
                     assertEquals(BigInteger.valueOf(-300), BACnetApplicationTagSignedInteger.getActualValue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 75] device,61 daylights-savings-status",
+            DynamicTest.dynamicTest("No. 103 - Confirmed-REQ   readProperty[ 75] device,61 daylights-savings-status",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3904,7 +4097,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 75] device,61 daylights-savings-status device,61",
+            DynamicTest.dynamicTest("No. 104 - Complex-ACK     readProperty[ 75] device,61 daylights-savings-status device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3920,7 +4113,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagBoolean BACnetApplicationTagBoolean = (BACnetApplicationTagBoolean) value;
                     assertTrue(BACnetApplicationTagBoolean.getIsTrue());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 76] device,61 apdu-segment-timeout",
+            DynamicTest.dynamicTest("No. 105 - Confirmed-REQ   readProperty[ 76] device,61 apdu-segment-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3933,7 +4126,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 76] device,61 apdu-segment-timeout device,61",
+            DynamicTest.dynamicTest("No. 106 - Complex-ACK     readProperty[ 76] device,61 apdu-segment-timeout device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3949,7 +4142,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(8000, BACnetApplicationTagUnsignedInteger.getValueUint16());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 77] device,61 apdu-timeout",
+            DynamicTest.dynamicTest("No. 107 - Confirmed-REQ   readProperty[ 77] device,61 apdu-timeout",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3962,7 +4155,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.APDU_TIMEOUT, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 77] device,61 apdu-timeout device,61",
+            DynamicTest.dynamicTest("No. 108 - Complex-ACK     readProperty[ 77] device,61 apdu-timeout device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3978,7 +4171,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals(8000, BACnetApplicationTagUnsignedInteger.getValueUint16());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 78] device,61 number-of-APDU-retries",
+            DynamicTest.dynamicTest("No. 109 - Confirmed-REQ   readProperty[ 78] device,61 number-of-APDU-retries",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -3991,7 +4184,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 78] device,61 number-of-APDU-retries device,61",
+            DynamicTest.dynamicTest("No. 100 - Complex-ACK     readProperty[ 78] device,61 number-of-APDU-retries device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4007,7 +4200,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 3, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 79] device,61 time-synchronization-recipients",
+            DynamicTest.dynamicTest("No. 111 - Confirmed-REQ   readProperty[ 79] device,61 time-synchronization-recipients",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4020,7 +4213,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - ERROR           readProperty[ 79] device,61",
+            DynamicTest.dynamicTest("No. 112 - ERROR           readProperty[ 79] device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4030,7 +4223,7 @@ public class RandomPackagesTest {
                     // TODO: use proper enums
                     assertEquals(List.of((byte) 32), baCnetErrorReadProperty.getErrorCode().getData());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 80] device,61 max-master",
+            DynamicTest.dynamicTest("No. 113 - Confirmed-REQ   readProperty[ 80] device,61 max-master",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4043,7 +4236,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_MASTER, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 80] device,61 max-master device,61",
+            DynamicTest.dynamicTest("No. 114 - Complex-ACK     readProperty[ 80] device,61 max-master device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4059,7 +4252,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 127, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 81] device,61 max-info-frames",
+            DynamicTest.dynamicTest("No. 115 - Confirmed-REQ   readProperty[ 81] device,61 max-info-frames",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4072,7 +4265,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.MAX_INFO_FRAMES, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 81] device,61 max-info-frames device,61",
+            DynamicTest.dynamicTest("No. 116 - Complex-ACK     readProperty[ 81] device,61 max-info-frames device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4088,7 +4281,7 @@ public class RandomPackagesTest {
                     BACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger = (BACnetApplicationTagUnsignedInteger) value;
                     assertEquals((short) 1, BACnetApplicationTagUnsignedInteger.getValueUint8());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 82] device,61 device-address-binding",
+            DynamicTest.dynamicTest("No. 117 - Confirmed-REQ   readProperty[ 82] device,61 device-address-binding",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4101,7 +4294,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 82] device,61 device-address-binding device,61",
+            DynamicTest.dynamicTest("No. 118 - Complex-ACK     readProperty[ 82] device,61 device-address-binding device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4114,7 +4307,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 83] device,61 (514) Vendor Proprietary Value",
+            DynamicTest.dynamicTest("No. 119 - Confirmed-REQ   readProperty[ 83] device,61 (514) Vendor Proprietary Value",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4127,7 +4320,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 83] device,61 (514) Vendor Proprietary Value device,61",
+            DynamicTest.dynamicTest("No. 120 - Complex-ACK     readProperty[ 83] device,61 (514) Vendor Proprietary Value device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4145,7 +4338,7 @@ public class RandomPackagesTest {
                     assertEquals(11, baCnetApplicationTagTime.getMinute());
                     assertEquals(38, baCnetApplicationTagTime.getSecond());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Confirmed-REQ   readProperty[ 84] device,61 (515) Vendor Proprietary Value device,61",
+            DynamicTest.dynamicTest("No. 121 - Confirmed-REQ   readProperty[ 84] device,61 (515) Vendor Proprietary Value device,61",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4158,7 +4351,7 @@ public class RandomPackagesTest {
                     assertEquals(61, baCnetConfirmedServiceRequestReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestReadProperty.getPropertyIdentifier().getPropertyIdentifier());
                 }),
-            DynamicTest.dynamicTest("No. TODO - Complex-ACK     readProperty[ 84] device,61 Error",
+            DynamicTest.dynamicTest("No. 122 - Complex-ACK     readProperty[ 84] device,61 Error",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4261,14 +4454,14 @@ public class RandomPackagesTest {
     Collection<DynamicNode> rp_shed_level() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp-shed-level.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Confirmed-REQ   readProperty[  1] load-control,0 expected-shed-level",
+            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[  1] load-control,0 expected-shed-level",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     // TODO:
                     assumeTrue(false, "not properly implemented. Check manually and add asserts");
                 }),
-            DynamicTest.dynamicTest("Complex-ACK     readProperty[  1] load-control,0 expected-shed-level",
+            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[  1] load-control,0 expected-shed-level",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4447,7 +4640,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> who_has() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("who-has.cap");
         return Arrays.asList(
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Is 133 133",
+            DynamicTest.dynamicTest("No. 1 - Unconfirmed-REQ who-Is 133 133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4457,7 +4650,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoIs.getDeviceInstanceRangeLowLimit().getActualValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
+            DynamicTest.dynamicTest("No. 2 - Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4469,9 +4662,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
-            DynamicTest.dynamicTest("skip 2 LLC packages",
+            DynamicTest.dynamicTest("No. 3-4 - skip 2 LLC packages",
                 () -> pcapEvaluator.skipPackages(2)),
-            DynamicTest.dynamicTest("Unconfirmed-REQ I-Am 133 133",
+            DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ I-Am 133 133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4488,7 +4681,7 @@ public class RandomPackagesTest {
             DynamicContainer.dynamicContainer("Confirmed-REQ atomicWriteFile 1-30", () -> {
                 Collection<DynamicNode> nodes = new LinkedList<>();
                 IntStream.range(1, 31).forEach(i -> {
-                    nodes.add(DynamicTest.dynamicTest("Confirmed-REQ atomicWriteFile [" + i + "] file,0", () -> {
+                    nodes.add(DynamicTest.dynamicTest("No. " + (4 + i * 2) + " - Confirmed-REQ atomicWriteFile [" + i + "] file,0", () -> {
                         BVLC bvlc = pcapEvaluator.nextBVLC();
                         dump(bvlc);
                         NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
@@ -4498,7 +4691,7 @@ public class RandomPackagesTest {
                         assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileStartPosition());
                         assertNotNull(baCnetConfirmedServiceRequestAtomicWriteFile.getFileData());
                     }));
-                    nodes.add(DynamicTest.dynamicTest("Confirmed-Ack     atomicWriteFile [" + i + "]", () -> {
+                    nodes.add(DynamicTest.dynamicTest("No. " + (5 + i * 2) + " - Confirmed-Ack     atomicWriteFile [" + i + "]", () -> {
                         BVLC bvlc = pcapEvaluator.nextBVLC();
                         dump(bvlc);
                         NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
@@ -4509,7 +4702,7 @@ public class RandomPackagesTest {
                 });
                 return nodes.iterator();
             }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
+            DynamicTest.dynamicTest("No. 66 - Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4521,9 +4714,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
-            DynamicTest.dynamicTest("skip 1 LLC packages",
+            DynamicTest.dynamicTest("No. 67 - skip 1 LLC packages",
                 () -> pcapEvaluator.skipPackages(1)),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
+            DynamicTest.dynamicTest("No. 68 - Unconfirmed-REQ i-Have device,4194303 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4536,7 +4729,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
+            DynamicTest.dynamicTest("No. 69 - Unconfirmed-REQ i-Have device,133 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4549,7 +4742,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("SYNERGY", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ who-Has device,133",
+            DynamicTest.dynamicTest("No. 70 - Unconfirmed-REQ who-Has device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4561,9 +4754,9 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestWhoHas.getObjectIdentifier().getInstanceNumber());
                 }),
-            DynamicTest.dynamicTest("skip 1 LLC packages",
+            DynamicTest.dynamicTest("No. 71 - skip 1 LLC packages",
                 () -> pcapEvaluator.skipPackages(1)),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,4194303 device,133",
+            DynamicTest.dynamicTest("No. 72 - Unconfirmed-REQ i-Have device,4194303 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4576,7 +4769,7 @@ public class RandomPackagesTest {
                     assertEquals(133, baCnetUnconfirmedServiceRequestIHave.getObjectIdentifier().getInstanceNumber());
                     assertEquals("Unknown", baCnetUnconfirmedServiceRequestIHave.getObjectName().getValue());
                 }),
-            DynamicTest.dynamicTest("Unconfirmed-REQ i-Have device,133 device,133",
+            DynamicTest.dynamicTest("No. 73 - Unconfirmed-REQ i-Have device,133 device,133",
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
@@ -4909,7 +5102,7 @@ public class RandomPackagesTest {
             } else {
                 currentPackageNumber = timestampToPackageNumberMap.get(pcapHandle.getTimestamp());
             }
-            LOGGER.debug("({}) Next packet:\n{}", currentPackageNumber, packet);
+            LOGGER.info("({}) Next packet:\n{}", currentPackageNumber, packet);
             return packet;
         }
 
