@@ -622,6 +622,26 @@
             ]
         ]
         // TODO: implement other cases
+        ['4' BACnetNotificationParametersFloatingLimit(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                            innerOpeningTag
+            ]
+            [simple BACnetContextTagReal('0', 'BACnetDataType.REAL')
+                    referenceValue
+            ]
+            [simple BACnetStatusFlags('1')
+                    statusFlags
+            ]
+            [simple BACnetContextTagReal('2', 'BACnetDataType.REAL')
+                    setPointValue
+            ]
+            [simple BACnetContextTagReal('3', 'BACnetDataType.REAL')
+                    errorLimit
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
         ['5' BACnetNotificationParametersOutOfRange(uint 8 peekedTagNumber)
             [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
                             innerOpeningTag
