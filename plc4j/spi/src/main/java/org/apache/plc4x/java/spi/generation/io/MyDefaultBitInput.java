@@ -20,6 +20,9 @@ package org.apache.plc4x.java.spi.generation.io;
 
 import com.github.jinahya.bit.io.ArrayByteInput;
 import com.github.jinahya.bit.io.DefaultBitInput;
+import org.apache.plc4x.java.spi.utils.hex.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -27,6 +30,8 @@ import java.io.IOException;
  * Modified version that exposes the position.
  */
 public class MyDefaultBitInput extends DefaultBitInput<ArrayByteInput> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyDefaultBitInput.class);
 
     public MyDefaultBitInput(ArrayByteInput delegate) {
         super(delegate);
@@ -38,11 +43,19 @@ public class MyDefaultBitInput extends DefaultBitInput<ArrayByteInput> {
     }
 
     public void reset(int pos) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Before\n{}", Hex.dump(delegate.getSource(), Hex.DefaultWidth, delegate.getIndex()));
+        }
         try {
-            align(1);
+            long align = align(1);
+            LOGGER.debug("aligned {}", align);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         delegate.setIndex(pos);
+        LOGGER.debug("set to index {}", pos);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("After\n{}", Hex.dump(delegate.getSource(), Hex.DefaultWidth, pos));
+        }
     }
 }

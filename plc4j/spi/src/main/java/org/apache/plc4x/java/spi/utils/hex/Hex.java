@@ -29,6 +29,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Hex {
 
@@ -75,10 +77,11 @@ public class Hex {
     }
 
     // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
-    public static String dump(byte[] data, int desiredCharWidth) {
+    public static String dump(byte[] data, int desiredCharWidth, int... highlights) {
         if (data == null || data.length < 1) {
             return "";
         }
+        Set<Integer> highlightsSet = Arrays.stream(highlights).boxed().collect(Collectors.toSet());
         // We copy the array to avoid mutations
         data = Arrays.copyOf(data, data.length);
         StringBuilder hexString = new StringBuilder();
@@ -91,7 +94,13 @@ public class Hex {
             for (int columnIndex = 0; columnIndex < maxBytesPerRow; columnIndex++) {
                 int absoluteIndex = byteIndex + columnIndex;
                 if (absoluteIndex < data.length) {
+                    if(highlightsSet.contains(absoluteIndex)) {
+                        hexString.append("\033[0;31m");
+                    }
                     hexString.append(String.format("%02x ", data[absoluteIndex]));
+                    if(highlightsSet.contains(absoluteIndex)) {
+                        hexString.append("\033[0m");
+                    }
                 } else {
                     // align with empty byte representation
                     hexString.append(StringUtils.repeat(" ", byteWidth));
