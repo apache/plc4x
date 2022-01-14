@@ -215,6 +215,8 @@ public class StaticHelper {
         }
         // We need to reset our reader to the position we read before
         // TODO: maybe we reset to much here because pos is byte based
+        // we consume the leftover bits before we reset to avoid trouble // TODO: we really need bit precision on resetting
+        readBuffer.readUnsignedInt(6);
         readBuffer.reset(readBuffer.getPos() - 2);
         return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
     }
@@ -260,6 +262,8 @@ public class StaticHelper {
             case ACCESS_USER:
             case ACCESS_ZONE:
             case ACCUMULATOR:
+                // TODO: temporary
+                return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
             case ALERT_ENROLLMENT:
                 // TODO: temporary
                 return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
@@ -306,6 +310,8 @@ public class StaticHelper {
             case LIFT:
             case LIGHTING_OUTPUT:
             case LOAD_CONTROL:
+                // TODO: temporary // FIXME: this is just so tags get consumed
+                return BACnetDataType.ENUMERATED;
             case LOOP:
             case MULTI_STATE_INPUT:
             case MULTI_STATE_OUTPUT:

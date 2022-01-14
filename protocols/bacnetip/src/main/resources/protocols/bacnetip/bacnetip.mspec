@@ -255,7 +255,7 @@
             [simple   BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple   BACnetContextTagBoolean('2', 'BACnetDataType.BOOLEAN')                           issueConfirmed              ]
             [simple   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple   BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                     listOfValues                ]
+            [simple   BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification // Spec complete
             [simple   BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          processIdentifier            ]
@@ -270,7 +270,7 @@
             [optional BACnetContextTagBoolean('9', 'BACnetDataType.BOOLEAN')                           ackRequired                  ]
             [optional BACnetContextTagEventState('10', 'BACnetDataType.EVENT_STATE')                   fromState                    ]
             [simple   BACnetContextTagEventState('11', 'BACnetDataType.EVENT_STATE')                   toState                      ]
-            [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')                eventValues                  ]
+            [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
 
         ['0x04' BACnetConfirmedServiceRequestGetEnrollmentSummary
@@ -381,7 +381,7 @@
             [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
             [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
             [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple     BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                     listOfValues                ]
+            [simple     BACnetPropertyValues('4', 'monitoredObjectIdentifier.objectType')                listOfValues                ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
@@ -448,10 +448,10 @@
 
         ]
         ['0x0C' BACnetServiceAckReadProperty
-            [simple BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier   ]
-            [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')            arrayIndex         ]
-            [optional BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')         values             ]
+            [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')        objectIdentifier   ]
+            [simple     BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')    propertyIdentifier ]
+            [optional   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')                 arrayIndex         ]
+            [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')         values             ]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -1306,6 +1306,7 @@
                        contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifier')
                        constructedData     'isConstructedData'                                             ]
+    [validation 'isApplicationTag || isContextTag || isConstructedData' "BACnetConstructedDataElement could not parse anything"]
 ]
 
 [enum uint 16 BVLCResultCode
