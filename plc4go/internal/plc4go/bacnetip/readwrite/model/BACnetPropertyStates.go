@@ -138,6 +138,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
 		_parent, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
+	case peekedTagNumber == uint8(1): // BACnetPropertyStatesBinaryValue
+		_parent, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
 		_parent, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
 	default:

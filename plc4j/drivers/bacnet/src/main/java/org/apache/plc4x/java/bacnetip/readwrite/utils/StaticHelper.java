@@ -138,7 +138,9 @@ public class StaticHelper {
             bitsToWrite = 32;
         }
         writeBuffer.writeUnsignedLong("proprietaryEventType", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventType.VENDOR_PROPRIETARY_VALUE.name()));
-    }  public static BACnetEventState readEventState(ReadBuffer readBuffer, Long actualLength) throws ParseException {
+    }
+
+    public static BACnetEventState readEventState(ReadBuffer readBuffer, Long actualLength) throws ParseException {
         int bitsToRead = (int) (actualLength * 8);
         int readUnsignedLong = readBuffer.readUnsignedInt("eventState", bitsToRead);
         if (!BACnetEventState.isDefined(readUnsignedLong)) {
@@ -190,6 +192,38 @@ public class StaticHelper {
             bitsToWrite = 32;
         }
         writeBuffer.writeUnsignedLong("proprietaryEventState", bitsToWrite, value, WithAdditionalStringRepresentation(BACnetEventState.VENDOR_PROPRIETARY_VALUE.name()));
+    }
+
+    public static BACnetObjectType readObjectType(ReadBuffer readBuffer) throws ParseException {
+        int readUnsignedLong = readBuffer.readUnsignedInt("objectType", 10);
+        if (!BACnetObjectType.isDefined(readUnsignedLong)) {
+            return BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        }
+        return BACnetObjectType.enumForValue(readUnsignedLong);
+    }
+
+    public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
+        if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
+    }
+
+    public static Integer readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
+        if (value != null && value != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
+            return 0;
+        }
+        // We need to reset our reader to the position we read before
+        // TODO: maybe we reset to much here because pos is byte based
+        readBuffer.reset(readBuffer.getPos() - 2);
+        return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
+    }
+
+    public static void writeProprietaryObjectType(WriteBuffer writeBuffer, BACnetObjectType objectType, int value) throws SerializationException {
+        if (objectType != null && objectType != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        writeBuffer.writeUnsignedInt("proprietaryObjectType", 10, value, WithAdditionalStringRepresentation(BACnetObjectType.VENDOR_PROPRIETARY_VALUE.name()));
     }
 
     public static boolean isBACnetConstructedDataClosingTag(ReadBuffer readBuffer, boolean instantTerminate, int expectedTagNumber) {

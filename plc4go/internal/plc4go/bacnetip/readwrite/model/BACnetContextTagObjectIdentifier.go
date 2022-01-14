@@ -29,8 +29,10 @@ import (
 // The data-structure of this message
 type BACnetContextTagObjectIdentifier struct {
 	*BACnetContextTag
-	ObjectType     BACnetObjectType
-	InstanceNumber uint32
+	ObjectType       BACnetObjectType
+	ProprietaryValue uint16
+	InstanceNumber   uint32
+	IsProprietary    bool
 }
 
 // The corresponding interface
@@ -57,10 +59,12 @@ func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContex
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagObjectIdentifier(objectType BACnetObjectType, instanceNumber uint32, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagObjectIdentifier{
 		ObjectType:       objectType,
+		ProprietaryValue: proprietaryValue,
 		InstanceNumber:   instanceNumber,
+		IsProprietary:    isProprietary,
 		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
@@ -97,8 +101,13 @@ func (m *BACnetContextTagObjectIdentifier) LengthInBits() uint16 {
 func (m *BACnetContextTagObjectIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Simple field (objectType)
-	lengthInBits += 10
+	// Manual Field (objectType)
+	lengthInBits += uint16(m.ActualLength * 8)
+
+	// Manual Field (proprietaryValue)
+	lengthInBits += uint16(m.ActualLength * 8)
+
+	// A virtual field doesn't have any in- or output.
 
 	// Simple field (instanceNumber)
 	lengthInBits += 22
@@ -115,18 +124,21 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, pullErr
 	}
 
-	// Simple Field (objectType)
-	if pullErr := readBuffer.PullContext("objectType"); pullErr != nil {
-		return nil, pullErr
-	}
-	_objectType, _objectTypeErr := BACnetObjectTypeParse(readBuffer)
+	// Manual Field (objectType)
+	objectType, _objectTypeErr := ReadObjectType(readBuffer)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
-	objectType := _objectType
-	if closeErr := readBuffer.CloseContext("objectType"); closeErr != nil {
-		return nil, closeErr
+
+	// Manual Field (proprietaryValue)
+	proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(readBuffer, objectType)
+	if _proprietaryValueErr != nil {
+		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
+
+	// Virtual field
+	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
+	isProprietary := bool(_isProprietary)
 
 	// Simple Field (instanceNumber)
 	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
@@ -142,7 +154,9 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	// Create a partially initialized instance
 	_child := &BACnetContextTagObjectIdentifier{
 		ObjectType:       objectType,
+		ProprietaryValue: proprietaryValue,
 		InstanceNumber:   instanceNumber,
+		IsProprietary:    isProprietary,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -155,16 +169,20 @@ func (m *BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 			return pushErr
 		}
 
-		// Simple Field (objectType)
-		if pushErr := writeBuffer.PushContext("objectType"); pushErr != nil {
-			return pushErr
-		}
-		_objectTypeErr := m.ObjectType.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("objectType"); popErr != nil {
-			return popErr
-		}
+		// Manual Field (objectType)
+		_objectTypeErr := WriteObjectType(writeBuffer, m.ObjectType)
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
+		}
+
+		// Manual Field (proprietaryValue)
+		_proprietaryValueErr := WriteProprietaryObjectType(writeBuffer, m.ObjectType, m.ProprietaryValue)
+		if _proprietaryValueErr != nil {
+			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
+		}
+		// Virtual field
+		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.IsProprietary); _isProprietaryErr != nil {
+			return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 		}
 
 		// Simple Field (instanceNumber)

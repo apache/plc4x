@@ -29,9 +29,9 @@ import (
 // The data-structure of this message
 type BACnetContextTagPropertyIdentifier struct {
 	*BACnetContextTag
-	Value            BACnetPropertyIdentifier
-	ProprietaryValue uint32
-	IsProprietary    bool
+	PropertyIdentifier BACnetPropertyIdentifier
+	ProprietaryValue   uint32
+	IsProprietary      bool
 }
 
 // The corresponding interface
@@ -58,12 +58,12 @@ func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetCont
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagPropertyIdentifier(value BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagPropertyIdentifier{
-		Value:            value,
-		ProprietaryValue: proprietaryValue,
-		IsProprietary:    isProprietary,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
+		PropertyIdentifier: propertyIdentifier,
+		ProprietaryValue:   proprietaryValue,
+		IsProprietary:      isProprietary,
+		BACnetContextTag:   NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -99,7 +99,7 @@ func (m *BACnetContextTagPropertyIdentifier) LengthInBits() uint16 {
 func (m *BACnetContextTagPropertyIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Manual Field (value)
+	// Manual Field (propertyIdentifier)
 	lengthInBits += uint16(m.ActualLength * 8)
 
 	// Manual Field (proprietaryValue)
@@ -119,20 +119,20 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 		return nil, pullErr
 	}
 
-	// Manual Field (value)
-	value, _valueErr := ReadPropertyIdentifier(readBuffer, actualLength)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	// Manual Field (propertyIdentifier)
+	propertyIdentifier, _propertyIdentifierErr := ReadPropertyIdentifier(readBuffer, actualLength)
+	if _propertyIdentifierErr != nil {
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryPropertyIdentifier(readBuffer, value, actualLength)
+	proprietaryValue, _proprietaryValueErr := ReadProprietaryPropertyIdentifier(readBuffer, propertyIdentifier, actualLength)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
 
 	// Virtual field
-	_isProprietary := bool((value) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	_isProprietary := bool((propertyIdentifier) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagPropertyIdentifier"); closeErr != nil {
@@ -141,10 +141,10 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagPropertyIdentifier{
-		Value:            value,
-		ProprietaryValue: proprietaryValue,
-		IsProprietary:    isProprietary,
-		BACnetContextTag: &BACnetContextTag{},
+		PropertyIdentifier: propertyIdentifier,
+		ProprietaryValue:   proprietaryValue,
+		IsProprietary:      isProprietary,
+		BACnetContextTag:   &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
 	return _child.BACnetContextTag, nil
@@ -156,14 +156,14 @@ func (m *BACnetContextTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBu
 			return pushErr
 		}
 
-		// Manual Field (value)
-		_valueErr := WritePropertyIdentifier(writeBuffer, m.Value)
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Manual Field (propertyIdentifier)
+		_propertyIdentifierErr := WritePropertyIdentifier(writeBuffer, m.PropertyIdentifier)
+		if _propertyIdentifierErr != nil {
+			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 		}
 
 		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryPropertyIdentifier(writeBuffer, m.Value, m.ProprietaryValue)
+		_proprietaryValueErr := WriteProprietaryPropertyIdentifier(writeBuffer, m.PropertyIdentifier, m.ProprietaryValue)
 		if _proprietaryValueErr != nil {
 			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 		}

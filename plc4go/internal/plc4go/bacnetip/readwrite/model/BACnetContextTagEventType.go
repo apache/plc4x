@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type BACnetContextTagEventType struct {
 	*BACnetContextTag
-	Value            BACnetEventType
+	EventType        BACnetEventType
 	ProprietaryValue uint32
 	IsProprietary    bool
 }
@@ -58,9 +58,9 @@ func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, t
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagEventType(value BACnetEventType, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagEventType{
-		Value:            value,
+		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
 		IsProprietary:    isProprietary,
 		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
@@ -99,7 +99,7 @@ func (m *BACnetContextTagEventType) LengthInBits() uint16 {
 func (m *BACnetContextTagEventType) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Manual Field (value)
+	// Manual Field (eventType)
 	lengthInBits += uint16(m.ActualLength * 8)
 
 	// Manual Field (proprietaryValue)
@@ -119,20 +119,20 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 		return nil, pullErr
 	}
 
-	// Manual Field (value)
-	value, _valueErr := ReadEventType(readBuffer, actualLength)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	// Manual Field (eventType)
+	eventType, _eventTypeErr := ReadEventType(readBuffer, actualLength)
+	if _eventTypeErr != nil {
+		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
 	}
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryEventType(readBuffer, value, actualLength)
+	proprietaryValue, _proprietaryValueErr := ReadProprietaryEventType(readBuffer, eventType, actualLength)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
 
 	// Virtual field
-	_isProprietary := bool((value) == (BACnetEventType_VENDOR_PROPRIETARY_VALUE))
+	_isProprietary := bool((eventType) == (BACnetEventType_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEventType"); closeErr != nil {
@@ -141,7 +141,7 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagEventType{
-		Value:            value,
+		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
 		IsProprietary:    isProprietary,
 		BACnetContextTag: &BACnetContextTag{},
@@ -156,14 +156,14 @@ func (m *BACnetContextTagEventType) Serialize(writeBuffer utils.WriteBuffer) err
 			return pushErr
 		}
 
-		// Manual Field (value)
-		_valueErr := WriteEventType(writeBuffer, m.Value)
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Manual Field (eventType)
+		_eventTypeErr := WriteEventType(writeBuffer, m.EventType)
+		if _eventTypeErr != nil {
+			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
 		}
 
 		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryEventType(writeBuffer, m.Value, m.ProprietaryValue)
+		_proprietaryValueErr := WriteProprietaryEventType(writeBuffer, m.EventType, m.ProprietaryValue)
 		if _proprietaryValueErr != nil {
 			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 		}

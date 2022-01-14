@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type BACnetContextTagEventState struct {
 	*BACnetContextTag
-	Value            BACnetEventState
+	EventState       BACnetEventState
 	ProprietaryValue uint32
 	IsProprietary    bool
 }
@@ -58,9 +58,9 @@ func (m *BACnetContextTagEventState) InitializeParent(parent *BACnetContextTag, 
 	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetContextTagEventState(value BACnetEventState, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagEventState(eventState BACnetEventState, proprietaryValue uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagEventState{
-		Value:            value,
+		EventState:       eventState,
 		ProprietaryValue: proprietaryValue,
 		IsProprietary:    isProprietary,
 		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
@@ -99,7 +99,7 @@ func (m *BACnetContextTagEventState) LengthInBits() uint16 {
 func (m *BACnetContextTagEventState) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Manual Field (value)
+	// Manual Field (eventState)
 	lengthInBits += uint16(m.ActualLength * 8)
 
 	// Manual Field (proprietaryValue)
@@ -119,20 +119,20 @@ func BACnetContextTagEventStateParse(readBuffer utils.ReadBuffer, tagNumberArgum
 		return nil, pullErr
 	}
 
-	// Manual Field (value)
-	value, _valueErr := ReadEventState(readBuffer, actualLength)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	// Manual Field (eventState)
+	eventState, _eventStateErr := ReadEventState(readBuffer, actualLength)
+	if _eventStateErr != nil {
+		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field")
 	}
 
 	// Manual Field (proprietaryValue)
-	proprietaryValue, _proprietaryValueErr := ReadProprietaryEventState(readBuffer, value, actualLength)
+	proprietaryValue, _proprietaryValueErr := ReadProprietaryEventState(readBuffer, eventState, actualLength)
 	if _proprietaryValueErr != nil {
 		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field")
 	}
 
 	// Virtual field
-	_isProprietary := bool((value) == (BACnetEventState_VENDOR_PROPRIETARY_VALUE))
+	_isProprietary := bool((eventState) == (BACnetEventState_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEventState"); closeErr != nil {
@@ -141,7 +141,7 @@ func BACnetContextTagEventStateParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagEventState{
-		Value:            value,
+		EventState:       eventState,
 		ProprietaryValue: proprietaryValue,
 		IsProprietary:    isProprietary,
 		BACnetContextTag: &BACnetContextTag{},
@@ -156,14 +156,14 @@ func (m *BACnetContextTagEventState) Serialize(writeBuffer utils.WriteBuffer) er
 			return pushErr
 		}
 
-		// Manual Field (value)
-		_valueErr := WriteEventState(writeBuffer, m.Value)
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Manual Field (eventState)
+		_eventStateErr := WriteEventState(writeBuffer, m.EventState)
+		if _eventStateErr != nil {
+			return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
 		}
 
 		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryEventState(writeBuffer, m.Value, m.ProprietaryValue)
+		_proprietaryValueErr := WriteProprietaryEventState(writeBuffer, m.EventState, m.ProprietaryValue)
 		if _proprietaryValueErr != nil {
 			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 		}

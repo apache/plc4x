@@ -230,6 +230,33 @@ func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType
 	bitsToRead := (uint8)(actualLength * 8)
 	return readBuffer.ReadUint32("proprietaryEventType", bitsToRead)
 }
+func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
+	readValue, err := readBuffer.ReadUint16("ObjectType", 10)
+	if err != nil {
+		return 0, err
+	}
+	return BACnetObjectType(readValue), nil
+}
+
+func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
+	return writeBuffer.WriteUint16("ObjectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
+}
+
+func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
+	if baCnetObjectType != 0 && baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
+	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.name()))
+}
+
+func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (uint16, error) {
+	if value != 0 && value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+		return 0, nil
+	}
+	// We need to reset our reader to the position we read before
+	readBuffer.Reset(readBuffer.GetPos() - 2)
+	return readBuffer.ReadUint16("proprietaryObjectType", 10)
+}
 
 func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
 	if instantTerminate {
