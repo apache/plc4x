@@ -46,20 +46,18 @@ func (m *BACnetContextTagEnumerated) DataType() BACnetDataType {
 	return BACnetDataType_ENUMERATED
 }
 
-func (m *BACnetContextTagEnumerated) InitializeParent(parent *BACnetContextTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.TagNumber = tagNumber
-	m.TagClass = tagClass
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	m.ExtExtLength = extExtLength
-	m.ExtExtExtLength = extExtExtLength
+func (m *BACnetContextTagEnumerated) LengthValueType() uint8 {
+	return 0
 }
 
-func NewBACnetContextTagEnumerated(data []int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func (m *BACnetContextTagEnumerated) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+	m.Header = header
+}
+
+func NewBACnetContextTagEnumerated(data []int8, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
 	child := &BACnetContextTagEnumerated{
 		Data:             data,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
 	}
 	child.Child = child
 	return child.BACnetContextTag

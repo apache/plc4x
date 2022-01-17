@@ -965,7 +965,7 @@
 ]
 
 [discriminatedType BACnetTagHeader
-    [simple        uint 4   tagNumber                                                                                  ]
+    [simple        uint 4   tagNumber                                                                                 ]
     [simple        TagClass tagClass                                                                                  ]
     [simple        uint 3   lengthValueType                                                                           ]
     [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
@@ -980,19 +980,12 @@
 ]
 
 [discriminatedType BACnetApplicationTag
-    [discriminator uint 4   tagNumber                                                                                 ]
-    [assert        TagClass tagClass        'TagClass.APPLICATION_TAGS'                                               ]
-    [simple        uint 3   lengthValueType                                                                           ]
-    [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
-    [virtual       uint 8   actualTagNumber 'tagNumber < 15 ? tagNumber : extTagNumber'                               ]
-    [virtual       bit      isBoolean       'tagNumber == 1 && tagClass == TagClass.APPLICATION_TAGS'                 ]
-    [virtual       bit      isConstructed   'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6'      ]
-    [virtual       bit      isPrimitiveAndNotBoolean '!isConstructed && !isBoolean'                                   ]
-    [optional      uint 8   extLength       'isPrimitiveAndNotBoolean && lengthValueType == 5'                        ]
-    [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'    ]
-    [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'    ]
-    [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
-    [validation                             'tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"  ]
+    [simple        BACnetTagHeader
+                            header
+    ]
+    [validation    'header.tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"                    ]
+    [virtual       uint 4   tagNumber     'header.tagNumber'                                                          ]
+    [virtual       uint 32  actualLength  'header.actualLength'                                                       ]
     [typeSwitch tagNumber
         ['0x0' BACnetApplicationTagNull
         ]
@@ -1101,17 +1094,15 @@
 ]
 
 [discriminatedType BACnetContextTag(uint 8 tagNumberArgument, BACnetDataType dataType)
-    [simple        uint 4   tagNumber                                                                         ]
-    [assert        TagClass tagClass            'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
-    [simple        uint 3   lengthValueType                                                                   ]
-    [optional      uint 8   extTagNumber        'tagNumber == 15'                                             ]
-    [virtual       uint 8   actualTagNumber     'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
-    [optional      uint 8   extLength           'lengthValueType == 5'                                        ]
-    [optional      uint 16  extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
-    [optional      uint 32  extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
-    [virtual       uint 32  actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
-    [validation                                 'actualTagNumber == tagNumberArgument'    "tagnumber doesn't match" ]
-    [validation                                 'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"  ]
+    [simple        BACnetTagHeader
+                            header
+    ]
+    [validation    'header.actualTagNumber == tagNumberArgument'    "tagnumber doesn't match"                         ]
+    [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"                   ]
+    [virtual       uint 4   tagNumber     'header.tagNumber'                                                          ]
+    [virtual       uint 32  actualLength  'header.actualLength'                                                       ]
+    // Required to detect opening and closing tags.
+    [virtual       uint 3  lengthValueType  'header.lengthValueType'                                                  ]
     [typeSwitch dataType, lengthValueType
         ['BOOLEAN' BACnetContextTagBoolean
             [simple  uint 8 value                          ]

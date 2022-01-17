@@ -28,21 +28,17 @@ import (
 
 // The data-structure of this message
 type BACnetContextTag struct {
+	Header          *BACnetTagHeader
 	TagNumber       uint8
-	TagClass        TagClass
-	LengthValueType uint8
-	ExtTagNumber    *uint8
-	ExtLength       *uint8
-	ExtExtLength    *uint16
-	ExtExtExtLength *uint32
-	ActualTagNumber uint8
 	ActualLength    uint32
+	LengthValueType uint8
 	Child           IBACnetContextTagChild
 }
 
 // The corresponding interface
 type IBACnetContextTag interface {
 	DataType() BACnetDataType
+	LengthValueType() uint8
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
@@ -55,13 +51,13 @@ type IBACnetContextTagParent interface {
 
 type IBACnetContextTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetContextTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32)
+	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8)
 	GetTypeName() string
 	IBACnetContextTag
 }
 
-func NewBACnetContextTag(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
-	return &BACnetContextTag{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength, ActualTagNumber: actualTagNumber, ActualLength: actualLength}
+func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+	return &BACnetContextTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength, LengthValueType: lengthValueType}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
@@ -92,33 +88,12 @@ func (m *BACnetContextTag) LengthInBitsConditional(lastItem bool) uint16 {
 func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (tagNumber)
-	lengthInBits += 4
-
-	// Simple field (lengthValueType)
-	lengthInBits += 3
-
-	// Optional Field (extTagNumber)
-	if m.ExtTagNumber != nil {
-		lengthInBits += 8
-	}
+	// Simple field (header)
+	lengthInBits += m.Header.LengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
-	// Optional Field (extLength)
-	if m.ExtLength != nil {
-		lengthInBits += 8
-	}
-
-	// Optional Field (extExtLength)
-	if m.ExtExtLength != nil {
-		lengthInBits += 16
-	}
-
-	// Optional Field (extExtExtLength)
-	if m.ExtExtExtLength != nil {
-		lengthInBits += 32
-	}
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -134,80 +109,30 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, pullErr
 	}
 
-	// Simple Field (tagNumber)
-	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
-	if _tagNumberErr != nil {
-		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
+	// Simple Field (header)
+	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
+		return nil, pullErr
 	}
-	tagNumber := _tagNumber
-
-	// Assert Field (tagClass) (Can be skipped, if a given expression evaluates to false)
-	tagClass, _err := TagClassParse(readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'tagClass' field")
+	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	if _headerErr != nil {
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
 	}
-	if tagClass != TagClass_CONTEXT_SPECIFIC_TAGS {
-		return nil, utils.ParseAssertError
-	}
-
-	// Simple Field (lengthValueType)
-	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
-	if _lengthValueTypeErr != nil {
-		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
-	}
-	lengthValueType := _lengthValueType
-
-	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
-	var extTagNumber *uint8 = nil
-	if bool((tagNumber) == (15)) {
-		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
-		}
-		extTagNumber = &_val
+	header := CastBACnetTagHeader(_header)
+	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Virtual field
-	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() interface{} { return uint8(tagNumber) }, func() interface{} { return uint8((*extTagNumber)) }).(uint8)
-	actualTagNumber := uint8(_actualTagNumber)
-
-	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
-	var extLength *uint8 = nil
-	if bool((lengthValueType) == (5)) {
-		_val, _err := readBuffer.ReadUint8("extLength", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
-		}
-		extLength = &_val
-	}
-
-	// Optional Field (extExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtLength *uint16 = nil
-	if bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))) {
-		_val, _err := readBuffer.ReadUint16("extExtLength", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field")
-		}
-		extExtLength = &_val
-	}
-
-	// Optional Field (extExtExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtExtLength *uint32 = nil
-	if bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))) {
-		_val, _err := readBuffer.ReadUint32("extExtExtLength", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field")
-		}
-		extExtExtLength = &_val
-	}
+	_tagNumber := header.TagNumber
+	tagNumber := uint8(_tagNumber)
 
 	// Virtual field
-	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() interface{} { return uint32((*extExtExtLength)) }, func() interface{} {
-		return uint32(uint32(utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() interface{} { return uint32((*extExtLength)) }, func() interface{} {
-			return uint32(uint32(utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} { return uint32(lengthValueType) }).(uint32)))
-		}).(uint32)))
-	}).(uint32)
+	_actualLength := header.ActualLength
 	actualLength := uint32(_actualLength)
+
+	// Virtual field
+	_lengthValueType := header.LengthValueType
+	lengthValueType := uint8(_lengthValueType)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetContextTag
@@ -266,7 +191,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength)
+	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength, lengthValueType)
 	return _parent, nil
 }
 
@@ -279,66 +204,28 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return pushErr
 	}
 
-	// Simple Field (tagNumber)
-	tagNumber := uint8(m.TagNumber)
-	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, (tagNumber))
-	if _tagNumberErr != nil {
-		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
+	// Simple Field (header)
+	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
+		return pushErr
 	}
-
-	// Simple Field (lengthValueType)
-	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := writeBuffer.WriteUint8("lengthValueType", 3, (lengthValueType))
-	if _lengthValueTypeErr != nil {
-		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
+	_headerErr := m.Header.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("header"); popErr != nil {
+		return popErr
 	}
-
-	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
-	var extTagNumber *uint8 = nil
-	if m.ExtTagNumber != nil {
-		extTagNumber = m.ExtTagNumber
-		_extTagNumberErr := writeBuffer.WriteUint8("extTagNumber", 8, *(extTagNumber))
-		if _extTagNumberErr != nil {
-			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
-		}
+	if _headerErr != nil {
+		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
-		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
-	}
-
-	// Optional Field (extLength) (Can be skipped, if the value is null)
-	var extLength *uint8 = nil
-	if m.ExtLength != nil {
-		extLength = m.ExtLength
-		_extLengthErr := writeBuffer.WriteUint8("extLength", 8, *(extLength))
-		if _extLengthErr != nil {
-			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
-		}
-	}
-
-	// Optional Field (extExtLength) (Can be skipped, if the value is null)
-	var extExtLength *uint16 = nil
-	if m.ExtExtLength != nil {
-		extExtLength = m.ExtExtLength
-		_extExtLengthErr := writeBuffer.WriteUint16("extExtLength", 16, *(extExtLength))
-		if _extExtLengthErr != nil {
-			return errors.Wrap(_extExtLengthErr, "Error serializing 'extExtLength' field")
-		}
-	}
-
-	// Optional Field (extExtExtLength) (Can be skipped, if the value is null)
-	var extExtExtLength *uint32 = nil
-	if m.ExtExtExtLength != nil {
-		extExtExtLength = m.ExtExtExtLength
-		_extExtExtLengthErr := writeBuffer.WriteUint32("extExtExtLength", 32, *(extExtExtLength))
-		if _extExtExtLengthErr != nil {
-			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
-		}
+	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.TagNumber); _tagNumberErr != nil {
+		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 	// Virtual field
 	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
+	}
+	// Virtual field
+	if _lengthValueTypeErr := writeBuffer.WriteVirtual("lengthValueType", m.LengthValueType); _lengthValueTypeErr != nil {
+		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

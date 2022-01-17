@@ -49,23 +49,21 @@ func (m *BACnetContextTagObjectIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }
 
-func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.TagNumber = tagNumber
-	m.TagClass = tagClass
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	m.ExtExtLength = extExtLength
-	m.ExtExtExtLength = extExtExtLength
+func (m *BACnetContextTagObjectIdentifier) LengthValueType() uint8 {
+	return 0
 }
 
-func NewBACnetContextTagObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+	m.Header = header
+}
+
+func NewBACnetContextTagObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
 	child := &BACnetContextTagObjectIdentifier{
 		ObjectType:       objectType,
 		ProprietaryValue: proprietaryValue,
 		InstanceNumber:   instanceNumber,
 		IsProprietary:    isProprietary,
-		BACnetContextTag: NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
 	}
 	child.Child = child
 	return child.BACnetContextTag

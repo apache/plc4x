@@ -54,17 +54,15 @@ func (m *BACnetContextTagTime) DataType() BACnetDataType {
 	return BACnetDataType_TIME
 }
 
-func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.TagNumber = tagNumber
-	m.TagClass = tagClass
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	m.ExtExtLength = extExtLength
-	m.ExtExtExtLength = extExtExtLength
+func (m *BACnetContextTagTime) LengthValueType() uint8 {
+	return 0
 }
 
-func NewBACnetContextTagTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+	m.Header = header
+}
+
+func NewBACnetContextTagTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
 	child := &BACnetContextTagTime{
 		Hour:                 hour,
 		Minute:               minute,
@@ -75,7 +73,7 @@ func NewBACnetContextTagTime(hour int8, minute int8, second int8, fractional int
 		MinuteIsWildcard:     minuteIsWildcard,
 		SecondIsWildcard:     secondIsWildcard,
 		FractionalIsWildcard: fractionalIsWildcard,
-		BACnetContextTag:     NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
+		BACnetContextTag:     NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
 	}
 	child.Child = child
 	return child.BACnetContextTag

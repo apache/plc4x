@@ -48,21 +48,16 @@ func (m *BACnetApplicationTagBitString) TagNumber() uint8 {
 	return 0x8
 }
 
-func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetApplicationTag, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.TagClass = tagClass
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	m.ExtExtLength = extExtLength
-	m.ExtExtExtLength = extExtExtLength
+func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+	m.Header = header
 }
 
-func NewBACnetApplicationTagBitString(unusedBits uint8, data []bool, unused []bool, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagBitString{
 		UnusedBits:           unusedBits,
 		Data:                 data,
 		Unused:               unused,
-		BACnetApplicationTag: NewBACnetApplicationTag(tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag
