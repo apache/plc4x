@@ -311,7 +311,7 @@
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
             [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex          ]
-            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')           propertyValue       ]
+            [simple   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')      propertyValue       ]
             [optional BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              priority            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
@@ -965,7 +965,7 @@
 ]
 
 [discriminatedType BACnetTagHeader
-    [simple        uint 4  tagNumber                                                                                  ]
+    [simple        uint 4   tagNumber                                                                                  ]
     [simple        TagClass tagClass                                                                                  ]
     [simple        uint 3   lengthValueType                                                                           ]
     [optional      uint 8   extTagNumber    'tagNumber == 15'                                                         ]
@@ -992,6 +992,7 @@
     [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254'    ]
     [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255'    ]
     [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [validation                             'tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"  ]
     [typeSwitch tagNumber
         ['0x0' BACnetApplicationTagNull
         ]
@@ -1100,16 +1101,17 @@
 ]
 
 [discriminatedType BACnetContextTag(uint 8 tagNumberArgument, BACnetDataType dataType)
-    [simple        uint 4           tagNumber                                                                         ]
-    [assert        TagClass         tagClass            'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
-    [simple        uint 3           lengthValueType                                                                   ]
-    [optional      uint 8           extTagNumber        'tagNumber == 15'                                             ]
-    [virtual       uint 8           actualTagNumber     'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
-    [optional      uint 8           extLength           'lengthValueType == 5'                                        ]
-    [optional      uint 16          extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
-    [optional      uint 32          extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
-    [virtual       uint 32          actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
-    [validation                                         'actualTagNumber == tagNumberArgument'    "tagnumber doesn't match" ]
+    [simple        uint 4   tagNumber                                                                         ]
+    [assert        TagClass tagClass            'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
+    [simple        uint 3   lengthValueType                                                                   ]
+    [optional      uint 8   extTagNumber        'tagNumber == 15'                                             ]
+    [virtual       uint 8   actualTagNumber     'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
+    [optional      uint 8   extLength           'lengthValueType == 5'                                        ]
+    [optional      uint 16  extExtLength        'lengthValueType == 5 && extLength == 254'                    ]
+    [optional      uint 32  extExtExtLength     'lengthValueType == 5 && extLength == 255'                    ]
+    [virtual       uint 32  actualLength        'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : lengthValueType))']
+    [validation                                 'actualTagNumber == tagNumberArgument'    "tagnumber doesn't match" ]
+    [validation                                 'tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"  ]
     [typeSwitch dataType, lengthValueType
         ['BOOLEAN' BACnetContextTagBoolean
             [simple  uint 8 value                          ]
@@ -1297,15 +1299,15 @@
                             peekedTagHeader
     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
-    [virtual    bit    isApplicationTag    'peekedTagHeader.tagClass == TagClass.APPLICATION_TAGS'         ]
-    [virtual    bit    isConstructedData   '!isApplicationTag && peekedTagHeader.actualLength == 0x6'      ]
-    [virtual    bit    isContextTag        '!isConstructedData && !isApplicationTag'                       ]
+    [virtual    bit         isApplicationTag    'peekedTagHeader.tagClass == TagClass.APPLICATION_TAGS'         ]
+    [virtual    bit         isConstructedData   '!isApplicationTag && peekedTagHeader.actualLength == 0x6'      ]
+    [virtual    bit         isContextTag        '!isConstructedData && !isApplicationTag'                       ]
     [optional   BACnetApplicationTag
-                       applicationTag      'isApplicationTag'                                              ]
+                            applicationTag      'isApplicationTag'                                              ]
     [optional   BACnetContextTag('peekedTagNumber', 'STATIC_CALL("guessDataType", objectType)')
-                       contextTag          'isContextTag'                                                  ]
+                            contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifier')
-                       constructedData     'isConstructedData'                                             ]
+                            constructedData     'isConstructedData'                                             ]
     [validation 'isApplicationTag || isContextTag || isConstructedData' "BACnetConstructedDataElement could not parse anything"]
 ]
 
