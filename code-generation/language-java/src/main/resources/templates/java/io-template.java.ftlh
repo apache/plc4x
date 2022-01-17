@@ -243,18 +243,22 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
             <#if case.discriminatorValueTerms?has_content>
                 if(
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
-                    <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
-                    <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
-                    EvaluationHelper.equals(
-                    ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
-                    <#if helper.isEnumTypeReference(discriminatorType)>
-                    ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                    <#if helper.isWildcard(discriminatorValueTerm)>
+                        true
                     <#else>
-                    ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                        <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                        <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
+                        EvaluationHelper.equals(
+                        ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
+                        <#if helper.isEnumTypeReference(discriminatorType)>
+                        ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                        <#else>
+                        ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                        </#if>
+                        )
                     </#if>
-                    )
                     <#sep> && </#sep>
-                    </#list>
+                </#list>
                 )
             </#if>{
             </@compress>

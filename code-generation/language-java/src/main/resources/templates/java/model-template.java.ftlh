@@ -83,7 +83,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
     public ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
-            <#if discriminatorValue??>
+            <#if discriminatorValue?? && !helper.isWildcard(discriminatorValue)>
                 <#if helper.isEnumTypeReference(discriminatorType)>
         return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
                 <#else>

@@ -129,7 +129,7 @@ type I${type.name} interface {
 func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isComplexTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 	return
-				<#if discriminatorTerm??>
+				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
 					<#if helper.isComplexTypeReference(typeRef)>
 						<#if helper.isEnumTypeReference(typeRef)>
                             <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
@@ -1149,30 +1149,34 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						<#if case.discriminatorValueTerms?has_content>
 							case
 							<#list case.discriminatorValueTerms as discriminatorValueTerm>
-								<#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index]>
-								<#assign parsedDiscriminatorExpression=helper.toParseExpression(null, null, discriminatorExpression, parserArguments)>
-								<#-- We remove debug informations as we need them for lookup-->
-								<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
-								<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
-								<#if helper.isComplexTypeReference(discriminatorType)>
-									<#--TODO: What is meant to be here????-->
-								</#if>
-								${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
-								<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
-								<#elseif helper.isComplexTypeReference(discriminatorType)>
-									<#if helper.isEnumTypeReference(discriminatorType)>
-										<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
-										<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
-										<#assign enumTypeTraces=tracer.extractTraces(enumType)>
-										<#assign enumValue=helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)>
-										<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
-										<#assign enumValueTraces=tracer.extractTraces(enumValue)>
-										${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+								<#if helper.isWildcard(discriminatorValueTerm)>
+									true
+								<#else>
+									<#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index]>
+									<#assign parsedDiscriminatorExpression=helper.toParseExpression(null, null, discriminatorExpression, parserArguments)>
+									<#-- We remove debug informations as we need them for lookup-->
+									<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
+									<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
+									<#if helper.isComplexTypeReference(discriminatorType)>
+										<#--TODO: What is meant to be here????-->
+									</#if>
+									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
+									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
+									<#elseif helper.isComplexTypeReference(discriminatorType)>
+										<#if helper.isEnumTypeReference(discriminatorType)>
+											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
+											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+											<#assign enumTypeTraces=tracer.extractTraces(enumType)>
+											<#assign enumValue=helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)>
+											<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+											<#assign enumValueTraces=tracer.extractTraces(enumValue)>
+											${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+										<#else>
+											${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
+										</#if>
 									<#else>
 										${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 									</#if>
-								<#else>
-									${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 								</#if>
 								<#sep> && </#sep>
 							</#list>

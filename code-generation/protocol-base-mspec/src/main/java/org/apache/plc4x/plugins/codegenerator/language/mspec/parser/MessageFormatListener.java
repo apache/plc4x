@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
@@ -485,7 +486,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     private Term getExpressionTerm(MSpecParser.ExpressionContext expressionContext) {
+        if (expressionContext.ASTERISK() != null) {
+            return WildcardTerm.INSTANCE;
+        }
         String expressionString = getExprString(expressionContext);
+        Objects.requireNonNull(expressionString, "Expression string should not be null");
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
         ExpressionStringParser parser = new ExpressionStringParser();
         try {

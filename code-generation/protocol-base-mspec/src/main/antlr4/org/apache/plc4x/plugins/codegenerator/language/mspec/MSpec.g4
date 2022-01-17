@@ -189,6 +189,8 @@ argumentList
 
 expression
  : TICK expr=innerExpression TICK
+ // TODO: check if this is really universal or should be specific to case statement
+ | ASTERISK
  ;
 
 multipleExpressions
@@ -212,7 +214,7 @@ innerExpression
  | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
  | innerExpression '[' + INTEGER_LITERAL + ']' // Array index
- | innerExpression BinaryOperator innerExpression  // Addition
+ | innerExpression binaryOperator innerExpression  // Addition
  | innerExpression '?' innerExpression ':' innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
@@ -233,19 +235,11 @@ idExpression
  | id=ARRAY_LOOP_TYPE
  ;
 
-TICK : '\'';
-LBRACKET : '[';
-RBRACKET : ']';
-LRBRACKET : '(';
-RRBRACKET : ')';
-LCBRACKET : '{';
-RCBRACKET : '}';
-
-BinaryOperator
+binaryOperator
  : '+'
  | '-'
  | '/'
- | '*'
+ | ASTERISK
  | '^'
  | '=='
  | '!='
@@ -261,6 +255,16 @@ BinaryOperator
  | '|'
  | '%'
  ;
+
+TICK : '\'';
+LBRACKET : '[';
+RBRACKET : ']';
+LRBRACKET : '(';
+RRBRACKET : ')';
+LCBRACKET : '{';
+RCBRACKET : '}';
+
+ASTERISK : '*';
 
 ARRAY_LOOP_TYPE
  : 'count'
