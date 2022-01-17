@@ -1238,13 +1238,6 @@
     [simple       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                         openingTag
     ]
-    //TODO: maybe more array into sub types later
-    [array          BACnetConstructedDataElement('objectType', 'propertyIdentifierArgument')
-                        data
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, objectType == BACnetObjectType.LIFE_SAFETY_ZONE || objectType == BACnetObjectType.COMMAND, tagNumber)'
-    ]
-    [virtual    bit     hasData 'COUNT(data) == 0']
     // TODO: maybe its better to typeswitch the elements
     [typeSwitch objectType, propertyIdentifierArgument
         ['COMMAND' BACnetConstructedDataCommand
@@ -1267,7 +1260,13 @@
                     'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
             ]
         ]
-        [BACnetConstructedDataUnspecified(bit hasData)
+        [BACnetConstructedDataUnspecified
+            [array          BACnetConstructedDataElement('objectType', 'propertyIdentifierArgument')
+                                data
+                            terminated
+                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'
+            ]
+            [virtual    bit     hasData 'COUNT(data) == 0']
             [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                             propertyIdentifier
 

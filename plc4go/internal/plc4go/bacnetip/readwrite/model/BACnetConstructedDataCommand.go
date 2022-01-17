@@ -52,18 +52,17 @@ func (m *BACnetConstructedDataCommand) PropertyIdentifierArgument() IBACnetConte
 	return nil
 }
 
-func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) {
+func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.OpeningTag = openingTag
-	m.Data = data
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action []*BACnetActionCommand, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) *BACnetConstructedData {
+func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action []*BACnetActionCommand, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
 	child := &BACnetConstructedDataCommand{
 		InnerOpeningTag:       innerOpeningTag,
 		Action:                action,
 		InnerClosingTag:       innerClosingTag,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, data, closingTag, hasData),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag),
 	}
 	child.Child = child
 	return child.BACnetConstructedData

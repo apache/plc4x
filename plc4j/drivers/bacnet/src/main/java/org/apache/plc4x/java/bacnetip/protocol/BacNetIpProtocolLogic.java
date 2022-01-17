@@ -203,7 +203,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
                 // These are value change notifications. Ignore the rest.
                 if (baCnetPropertyValue.getPropertyIdentifier().getPropertyIdentifier() == BACnetPropertyIdentifier.PRESENT_VALUE) {
-                    BACnetApplicationTag baCnetTag = baCnetPropertyValue.getPropertyValue().getConstructedData().getData().get(0).getApplicationTag();
+                    BACnetApplicationTag baCnetTag = ((BACnetConstructedDataUnspecified)baCnetPropertyValue.getPropertyValue().getConstructedData()).getData().get(0).getApplicationTag();
 
                     // Initialize an enriched version of the PlcStruct.
                     final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();

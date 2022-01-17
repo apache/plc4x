@@ -29,9 +29,7 @@ import (
 // The data-structure of this message
 type BACnetConstructedData struct {
 	OpeningTag *BACnetOpeningTag
-	Data       []*BACnetConstructedDataElement
 	ClosingTag *BACnetClosingTag
-	HasData    bool
 	Child      IBACnetConstructedDataChild
 }
 
@@ -51,13 +49,13 @@ type IBACnetConstructedDataParent interface {
 
 type IBACnetConstructedDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool)
+	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
 	GetTypeName() string
 	IBACnetConstructedData
 }
 
-func NewBACnetConstructedData(openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) *BACnetConstructedData {
-	return &BACnetConstructedData{OpeningTag: openingTag, Data: data, ClosingTag: closingTag, HasData: hasData}
+func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
+	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag}
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
@@ -91,15 +89,6 @@ func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.LengthInBits()
 
-	// Array field
-	if len(m.Data) > 0 {
-		for _, element := range m.Data {
-			lengthInBits += element.LengthInBits()
-		}
-	}
-
-	// A virtual field doesn't have any in- or output.
-
 	// Simple field (closingTag)
 	lengthInBits += m.ClosingTag.LengthInBits()
 
@@ -128,30 +117,6 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		return nil, closeErr
 	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Terminated array
-	data := make([]*BACnetConstructedDataElement, 0)
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, bool(bool((objectType) == (BACnetObjectType_LIFE_SAFETY_ZONE))) || bool(bool((objectType) == (BACnetObjectType_COMMAND))), tagNumber)) {
-			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifierArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
-			}
-			data = append(data, CastBACnetConstructedDataElement(_item))
-
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
-	}
-
-	// Virtual field
-	_hasData := bool((len(data)) == (0))
-	hasData := bool(_hasData)
-
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetConstructedData
 	var typeSwitchError error
@@ -161,7 +126,7 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
 		_parent, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified
-		_parent, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument, hasData)
+		_parent, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -188,7 +153,7 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, data, closingTag, hasData)
+	_parent.Child.InitializeParent(_parent, openingTag, closingTag)
 	return _parent, nil
 }
 
@@ -211,26 +176,6 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-	}
-
-	// Array Field (data)
-	if m.Data != nil {
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Data {
-			_elementErr := _element.Serialize(writeBuffer)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
-		}
-	}
-	// Virtual field
-	if _hasDataErr := writeBuffer.WriteVirtual("hasData", m.HasData); _hasDataErr != nil {
-		return errors.Wrap(_hasDataErr, "Error serializing 'hasData' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

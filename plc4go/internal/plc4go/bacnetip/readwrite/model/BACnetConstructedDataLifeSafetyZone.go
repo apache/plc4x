@@ -50,16 +50,15 @@ func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierArgument() IBACn
 	return nil
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) {
+func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.OpeningTag = openingTag
-	m.Data = data
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) *BACnetConstructedData {
+func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
 	child := &BACnetConstructedDataLifeSafetyZone{
 		Zones:                 zones,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, data, closingTag, hasData),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag),
 	}
 	child.Child = child
 	return child.BACnetConstructedData
