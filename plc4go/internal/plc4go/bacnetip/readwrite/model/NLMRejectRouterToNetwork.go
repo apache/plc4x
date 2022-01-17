@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type NLMRejectRouterToNetwork struct {
 	*NLM
-	RejectReason              uint8
+	RejectReason              NLMRejectRouterToNetworkRejectReason
 	DestinationNetworkAddress uint16
 }
 
@@ -51,7 +51,7 @@ func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint1
 	m.VendorId = vendorId
 }
 
-func NewNLMRejectRouterToNetwork(rejectReason uint8, destinationNetworkAddress uint16, vendorId *uint16) *NLM {
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16) *NLM {
 	child := &NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
@@ -110,11 +110,17 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 
 	// Simple Field (rejectReason)
-	_rejectReason, _rejectReasonErr := readBuffer.ReadUint8("rejectReason", 8)
+	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
+		return nil, pullErr
+	}
+	_rejectReason, _rejectReasonErr := NLMRejectRouterToNetworkRejectReasonParse(readBuffer)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
 	rejectReason := _rejectReason
+	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
@@ -144,8 +150,13 @@ func (m *NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) erro
 		}
 
 		// Simple Field (rejectReason)
-		rejectReason := uint8(m.RejectReason)
-		_rejectReasonErr := writeBuffer.WriteUint8("rejectReason", 8, (rejectReason))
+		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
+			return pushErr
+		}
+		_rejectReasonErr := m.RejectReason.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
+			return popErr
+		}
 		if _rejectReasonErr != nil {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}

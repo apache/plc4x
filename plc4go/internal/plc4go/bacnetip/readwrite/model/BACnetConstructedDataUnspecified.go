@@ -49,22 +49,22 @@ func (m *BACnetConstructedDataUnspecified) ObjectType() BACnetObjectType {
 	return 0
 }
 
-func (m *BACnetConstructedDataUnspecified) PropertyIdentifierArgument() IBACnetContextTagPropertyIdentifier {
-	return nil
+func (m *BACnetConstructedDataUnspecified) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return 0
 }
 
-func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
 	m.OpeningTag = openingTag
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, hasData bool, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
+func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, hasData bool, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataUnspecified{
 		Data:                  data,
 		PropertyIdentifier:    propertyIdentifier,
 		Content:               content,
 		HasData:               hasData,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
 	}
 	child.Child = child
 	return child.BACnetConstructedData
@@ -138,7 +138,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 	// Terminated array
 	data := make([]*BACnetConstructedDataElement, 0)
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, bool(bool((objectType) == (BACnetObjectType_LIFE_SAFETY_ZONE))) || bool(bool((objectType) == (BACnetObjectType_COMMAND))), tagNumber)) {
+		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifierArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field")

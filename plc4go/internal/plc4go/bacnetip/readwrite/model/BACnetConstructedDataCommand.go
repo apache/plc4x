@@ -48,21 +48,21 @@ func (m *BACnetConstructedDataCommand) ObjectType() BACnetObjectType {
 	return BACnetObjectType_COMMAND
 }
 
-func (m *BACnetConstructedDataCommand) PropertyIdentifierArgument() IBACnetContextTagPropertyIdentifier {
-	return nil
+func (m *BACnetConstructedDataCommand) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return 0
 }
 
-func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
 	m.OpeningTag = openingTag
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action []*BACnetActionCommand, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
+func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action []*BACnetActionCommand, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataCommand{
 		InnerOpeningTag:       innerOpeningTag,
 		Action:                action,
 		InnerClosingTag:       innerClosingTag,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
 	}
 	child.Child = child
 	return child.BACnetConstructedData

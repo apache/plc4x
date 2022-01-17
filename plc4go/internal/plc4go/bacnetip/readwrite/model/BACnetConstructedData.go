@@ -28,15 +28,16 @@ import (
 
 // The data-structure of this message
 type BACnetConstructedData struct {
-	OpeningTag *BACnetOpeningTag
-	ClosingTag *BACnetClosingTag
-	Child      IBACnetConstructedDataChild
+	OpeningTag             *BACnetOpeningTag
+	ClosingTag             *BACnetClosingTag
+	PropertyIdentifierEnum BACnetPropertyIdentifier
+	Child                  IBACnetConstructedDataChild
 }
 
 // The corresponding interface
 type IBACnetConstructedData interface {
 	ObjectType() BACnetObjectType
-	PropertyIdentifierArgument() IBACnetContextTagPropertyIdentifier
+	PropertyIdentifierEnum() BACnetPropertyIdentifier
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
@@ -49,13 +50,13 @@ type IBACnetConstructedDataParent interface {
 
 type IBACnetConstructedDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
+	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier)
 	GetTypeName() string
 	IBACnetConstructedData
 }
 
-func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConstructedData {
-	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag}
+func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
+	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag, PropertyIdentifierEnum: propertyIdentifierEnum}
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
@@ -89,6 +90,8 @@ func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
 	// Simple field (openingTag)
 	lengthInBits += m.OpeningTag.LengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	// Simple field (closingTag)
 	lengthInBits += m.ClosingTag.LengthInBits()
 
@@ -117,6 +120,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		return nil, closeErr
 	}
 
+	// Virtual field
+	_propertyIdentifierEnum := propertyIdentifierArgument.PropertyIdentifier
+	propertyIdentifierEnum := BACnetPropertyIdentifier(_propertyIdentifierEnum)
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetConstructedData
 	var typeSwitchError error
@@ -125,6 +132,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_parent, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
 		_parent, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
+		_parent, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified
 		_parent, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	default:
@@ -153,7 +162,7 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, closingTag)
+	_parent.Child.InitializeParent(_parent, openingTag, closingTag, propertyIdentifierEnum)
 	return _parent, nil
 }
 
@@ -176,6 +185,10 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 	if _openingTagErr != nil {
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	}
+	// Virtual field
+	if _propertyIdentifierEnumErr := writeBuffer.WriteVirtual("propertyIdentifierEnum", m.PropertyIdentifierEnum); _propertyIdentifierEnumErr != nil {
+		return errors.Wrap(_propertyIdentifierEnumErr, "Error serializing 'propertyIdentifierEnum' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
