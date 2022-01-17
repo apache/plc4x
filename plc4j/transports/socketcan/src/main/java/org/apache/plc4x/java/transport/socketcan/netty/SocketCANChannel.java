@@ -116,12 +116,7 @@ public class SocketCANChannel extends OioByteStreamChannel {
                 while (!isInputShutdown()) {
                     handle.readUnsafe(byteBuffer);
                     buffer.writeBytes(byteBuffer);
-//                    CanFrame frame = handle.read();
-//                    System.out.println("Read frame " + frame);
-//                    frameBytes.writeBytes(frame.getBuffer());
-//                    String dump = ByteBufUtil.prettyHexDump(frameBytes);
-//                    System.out.println(frame + "\n" + dump);
-//                    buffer.writeBytes(frame.getBuffer());
+                    byteBuffer.rewind();
                 }
             } catch (Exception e) {
                 logger.warn("Could not read data", e);
