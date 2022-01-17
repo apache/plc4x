@@ -28,17 +28,15 @@ import (
 
 // The data-structure of this message
 type BACnetContextTag struct {
-	Header          *BACnetTagHeader
-	TagNumber       uint8
-	ActualLength    uint32
-	LengthValueType uint8
-	Child           IBACnetContextTagChild
+	Header       *BACnetTagHeader
+	TagNumber    uint8
+	ActualLength uint32
+	Child        IBACnetContextTagChild
 }
 
 // The corresponding interface
 type IBACnetContextTag interface {
 	DataType() BACnetDataType
-	LengthValueType() uint8
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
@@ -51,13 +49,13 @@ type IBACnetContextTagParent interface {
 
 type IBACnetContextTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8)
+	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32)
 	GetTypeName() string
 	IBACnetContextTag
 }
 
-func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
-	return &BACnetContextTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength, LengthValueType: lengthValueType}
+func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+	return &BACnetContextTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
@@ -95,8 +93,6 @@ func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
-	// A virtual field doesn't have any in- or output.
-
 	return lengthInBits
 }
 
@@ -129,10 +125,6 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	// Virtual field
 	_actualLength := header.ActualLength
 	actualLength := uint32(_actualLength)
-
-	// Virtual field
-	_lengthValueType := header.LengthValueType
-	lengthValueType := uint8(_lengthValueType)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetContextTag
@@ -173,9 +165,9 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetContextTagDeviceState
 		_parent, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_OPENING_TAG: // BACnetOpeningTag
-		_parent, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+		_parent, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag
-		_parent, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+		_parent, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case true: // BACnetContextTagEmpty
 		_parent, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
 	default:
@@ -191,7 +183,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength, lengthValueType)
+	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength)
 	return _parent, nil
 }
 
@@ -222,10 +214,6 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 	// Virtual field
 	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
-	}
-	// Virtual field
-	if _lengthValueTypeErr := writeBuffer.WriteVirtual("lengthValueType", m.LengthValueType); _lengthValueTypeErr != nil {
-		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

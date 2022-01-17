@@ -48,20 +48,16 @@ func (m *BACnetContextTagBoolean) DataType() BACnetDataType {
 	return BACnetDataType_BOOLEAN
 }
 
-func (m *BACnetContextTagBoolean) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagBoolean{
 		Value:            value,
 		IsTrue:           isTrue,
 		IsFalse:          isFalse,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

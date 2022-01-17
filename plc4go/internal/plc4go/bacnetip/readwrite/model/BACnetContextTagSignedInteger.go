@@ -62,15 +62,11 @@ func (m *BACnetContextTagSignedInteger) DataType() BACnetDataType {
 	return BACnetDataType_SIGNED_INTEGER
 }
 
-func (m *BACnetContextTagSignedInteger) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagSignedInteger) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagSignedInteger) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagSignedInteger{
 		ValueInt8:        valueInt8,
 		ValueInt16:       valueInt16,
@@ -89,7 +85,7 @@ func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueI
 		IsInt56:          isInt56,
 		IsInt64:          isInt64,
 		ActualValue:      actualValue,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

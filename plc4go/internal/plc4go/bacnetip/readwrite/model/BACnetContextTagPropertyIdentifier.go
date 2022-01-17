@@ -48,20 +48,16 @@ func (m *BACnetContextTagPropertyIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }
 
-func (m *BACnetContextTagPropertyIdentifier) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagPropertyIdentifier{
 		PropertyIdentifier: propertyIdentifier,
 		ProprietaryValue:   proprietaryValue,
 		IsProprietary:      isProprietary,
-		BACnetContextTag:   NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag:   NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

@@ -48,20 +48,16 @@ func (m *BACnetContextTagBitString) DataType() BACnetDataType {
 	return BACnetDataType_BIT_STRING
 }
 
-func (m *BACnetContextTagBitString) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagBitString{
 		UnusedBits:       unusedBits,
 		Data:             data,
 		Unused:           unused,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

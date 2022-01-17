@@ -1101,9 +1101,7 @@
     [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"                   ]
     [virtual       uint 4   tagNumber     'header.tagNumber'                                                          ]
     [virtual       uint 32  actualLength  'header.actualLength'                                                       ]
-    // Required to detect opening and closing tags.
-    [virtual       uint 3  lengthValueType  'header.lengthValueType'                                                  ]
-    [typeSwitch dataType, lengthValueType
+    [typeSwitch dataType
         ['BOOLEAN' BACnetContextTagBoolean
             [simple  uint 8 value                          ]
             [virtual bit    isTrue  'value == 1'           ]
@@ -1225,11 +1223,11 @@
         ['BACNET_DEVICE_STATE' BACnetContextTagDeviceState
             [simple BACnetDeviceState   state]
         ]
-        ['OPENING_TAG' BACnetOpeningTag(uint 3 lengthValueType)
-            [validation 'lengthValueType == 6' "opening tag should habe a value of 6"]
+        ['OPENING_TAG' BACnetOpeningTag(uint 32 actualLength)
+            [validation 'actualLength == 6' "opening tag should habe a value of 6"]
         ]
-        ['CLOSING_TAG' BACnetClosingTag(uint 3 lengthValueType)
-            [validation 'lengthValueType == 7' "closing tag should habe a value of 7"]
+        ['CLOSING_TAG' BACnetClosingTag(uint 32 actualLength)
+            [validation 'actualLength == 7' "closing tag should habe a value of 7"]
         ]
         [BACnetContextTagEmpty
         ]

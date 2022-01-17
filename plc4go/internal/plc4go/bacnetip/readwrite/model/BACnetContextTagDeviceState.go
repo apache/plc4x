@@ -46,18 +46,14 @@ func (m *BACnetContextTagDeviceState) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_DEVICE_STATE
 }
 
-func (m *BACnetContextTagDeviceState) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagDeviceState{
 		State:            state,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

@@ -48,20 +48,16 @@ func (m *BACnetContextTagCharacterString) DataType() BACnetDataType {
 	return BACnetDataType_CHARACTER_STRING
 }
 
-func (m *BACnetContextTagCharacterString) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagCharacterString{
 		Encoding:          encoding,
 		Value:             value,
 		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag:  NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag

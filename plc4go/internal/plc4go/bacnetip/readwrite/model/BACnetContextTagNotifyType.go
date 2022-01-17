@@ -46,18 +46,14 @@ func (m *BACnetContextTagNotifyType) DataType() BACnetDataType {
 	return BACnetDataType_NOTIFY_TYPE
 }
 
-func (m *BACnetContextTagNotifyType) LengthValueType() uint8 {
-	return 0
-}
-
-func (m *BACnetContextTagNotifyType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) {
+func (m *BACnetContextTagNotifyType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
 	m.Header = header
 }
 
-func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, lengthValueType uint8) *BACnetContextTag {
+func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagNotifyType{
 		Value:            value,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, lengthValueType),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag
