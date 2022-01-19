@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -90,21 +89,15 @@ public class ConfigurationFactory {
                     try {
                         // As the arguments might be URL encoded, be sure it's decoded.
                         stringValue = URLDecoder.decode(stringValue, "utf-8");
-                        BeanUtils.setProperty(instance, field.getName(), toFieldValue(field, stringValue));
+                        setFieldValue(instance, field, stringValue);
                         missingFieldNames.remove(configName);
-                    } catch (InvocationTargetException | UnsupportedEncodingException e) {
+                    } catch (UnsupportedEncodingException e) {
                         throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
                     }
                 } else {
-                    Object defaultValue = getDefaultValueFromAnnotation(field);
-                    // TODO: Check if the default values type matches.
-                    if (defaultValue != null) {
-                        try {
-                            BeanUtils.setProperty(instance, field.getName(), defaultValue);
-                            missingFieldNames.remove(configName);
-                        } catch (InvocationTargetException e) {
-                            throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                        }
+                    boolean success = setFieldDefaultValueFromAnnotation(instance, field);
+                    if (success) {
+                        missingFieldNames.remove(configName);
                     }
                 }
             }
@@ -161,13 +154,13 @@ public class ConfigurationFactory {
     }
 
     /**
-     * Convert the string value from the parameter string into the type the field requires.
+     * Set the instance field value.
      *
+     * @param instance    instance that should be set
      * @param field       field that should be set
      * @param valueString string representation of the value
-     * @return parsed value of the field in the type the field requires
      */
-    private static Object toFieldValue(Field field, String valueString) {
+    private static void setFieldValue(Object instance, Field field, String valueString) throws IllegalAccessException {
         if (field == null) {
             throw new IllegalArgumentException("Field not defined");
         }
@@ -178,7 +171,7 @@ public class ConfigurationFactory {
             try {
                 ConfigurationParameterConverter<?> converter = converterClass.getDeclaredConstructor().newInstance();
                 if (converter.getType().isAssignableFrom(field.getType())) {
-                    return converter.convert(valueString);
+                    valueString = converter.convert(valueString).toString();
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new IllegalArgumentException("Could not initialize parameter converter", e);
@@ -186,55 +179,70 @@ public class ConfigurationFactory {
             throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
         }
 
+        field.setAccessible(true);
+
         if (field.getType() == String.class) {
-            return valueString;
+            field.set(instance, valueString);
+        } else if ((field.getType() == boolean.class) || (field.getType() == Boolean.class)) {
+            field.setBoolean(instance, Boolean.parseBoolean(valueString));
+        } else if ((field.getType() == byte.class) || (field.getType() == Byte.class)) {
+            field.setByte(instance, Byte.parseByte(valueString));
+        } else if ((field.getType() == short.class) || (field.getType() == Short.class)) {
+            field.setShort(instance, Short.parseShort(valueString));
+        } else if ((field.getType() == int.class) || (field.getType() == Integer.class)) {
+            field.setInt(instance, Integer.parseInt(valueString));
+        } else if ((field.getType() == long.class) || (field.getType() == Long.class)) {
+            field.setLong(instance, Long.parseLong(valueString));
+        } else if ((field.getType() == float.class) || (field.getType() == Float.class)) {
+            field.setFloat(instance, Float.parseFloat(valueString));
+        } else if ((field.getType() == double.class) || (field.getType() == Double.class)) {
+            field.setDouble(instance, Double.parseDouble(valueString));
+        } else {
+            throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
         }
-        if ((field.getType() == boolean.class) || (field.getType() == Boolean.class)) {
-            return Boolean.parseBoolean(valueString);
-        }
-        if ((field.getType() == byte.class) || (field.getType() == Byte.class)) {
-            return Byte.parseByte(valueString);
-        }
-        if ((field.getType() == short.class) || (field.getType() == Short.class)) {
-            return Short.parseShort(valueString);
-        }
-        if ((field.getType() == int.class) || (field.getType() == Integer.class)) {
-            return Integer.parseInt(valueString);
-        }
-        if ((field.getType() == long.class) || (field.getType() == Long.class)) {
-            return Long.parseLong(valueString);
-        }
-        if ((field.getType() == float.class) || (field.getType() == Float.class)) {
-            return Float.parseFloat(valueString);
-        }
-        if ((field.getType() == double.class) || (field.getType() == Double.class)) {
-            return Double.parseDouble(valueString);
-        }
-        throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
+
+        field.setAccessible(false);
     }
 
-    private static Object getDefaultValueFromAnnotation(Field field) {
+    /**
+     * Set the instance field default value from annotation.
+     *
+     * @param instance    instance that should be set
+     * @param field       field that should be set
+     * @return field is set
+     */
+    private static boolean setFieldDefaultValueFromAnnotation(Object instance, Field field) throws IllegalAccessException {
+        field.setAccessible(true);
+
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
-            return intDefaultValue.value();
+             field.setInt(instance, intDefaultValue.value());
+             return true;
         }
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {
-            return booleanDefaultValue.value();
+            field.setBoolean(instance, booleanDefaultValue.value());
+            return true;
         }
         FloatDefaultValue floatDefaultValue = field.getAnnotation(FloatDefaultValue.class);
         if (floatDefaultValue != null) {
-            return floatDefaultValue.value();
+            field.setFloat(instance, floatDefaultValue.value());
+            return true;
         }
         DoubleDefaultValue doubleDefaultValue = field.getAnnotation(DoubleDefaultValue.class);
         if (doubleDefaultValue != null) {
-            return doubleDefaultValue.value();
+            field.setDouble(instance, doubleDefaultValue.value());
+            return true;
         }
         StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
         if (stringDefaultValue != null) {
-            return stringDefaultValue.value();
+            field.set(instance, stringDefaultValue.value());
+            return true;
         }
-        return null;
+
+        field.setAccessible(false);
+
+        return false;
     }
 
     /**
