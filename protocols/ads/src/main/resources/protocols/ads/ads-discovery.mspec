@@ -85,9 +85,9 @@
 ]
 
 [type AmsMagicString
-    [implicit uint 16 len 'COUNT(text) + 1']
+    [implicit uint 16 len 'text.length + 1']
     [reserved uint 8 '0x00']
-    [array int 8 text count 'len - 1']
+    [simple vstring 'len - 1' text encoding='"UTF-8"']
     [reserved uint 8 '0x00']
 ]
 
