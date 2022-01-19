@@ -41,6 +41,7 @@
 
     <!-- Utilities for building tests -->
     <module>test-utils</module>
+      <module>test-generator</module>
   </modules>
 
 </project>
