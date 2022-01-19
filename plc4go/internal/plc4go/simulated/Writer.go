@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"strconv"
@@ -29,18 +30,24 @@ import (
 type Writer struct {
 	device  *Device
 	options map[string][]string
+	tracer  *spi.Tracer
 }
 
-func NewWriter(device *Device, options map[string][]string) Writer {
+func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) Writer {
 	return Writer{
 		device:  device,
 		options: options,
+		tracer:  tracer,
 	}
 }
 
 func (w Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	ch := make(chan model.PlcWriteRequestResult)
 	go func() {
+		var txId string
+		if w.tracer != nil {
+			txId = w.tracer.AddTransactionalStartTrace("write", "started")
+		}
 		// Possibly add a delay.
 		if delayString, ok := w.options["writeDelay"]; ok {
 			if len(delayString) == 1 {
@@ -65,6 +72,9 @@ func (w Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			}
 		}
 
+		if w.tracer != nil {
+			w.tracer.AddTransactionalTrace(txId, "write", "success")
+		}
 		// Emit the response
 		ch <- &model2.DefaultPlcWriteRequestResult{
 			Request:  writeRequest,

@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
@@ -30,18 +31,24 @@ import (
 type Reader struct {
 	device  *Device
 	options map[string][]string
+	tracer  *spi.Tracer
 }
 
-func NewReader(device *Device, options map[string][]string) Reader {
+func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) Reader {
 	return Reader{
 		device:  device,
 		options: options,
+		tracer:  tracer,
 	}
 }
 
 func (r Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	ch := make(chan model.PlcReadRequestResult)
 	go func() {
+		var txId string
+		if r.tracer != nil {
+			txId = r.tracer.AddTransactionalStartTrace("read", "started")
+		}
 		// Possibly add a delay.
 		if delayString, ok := r.options["readDelay"]; ok {
 			if len(delayString) == 1 {
@@ -73,6 +80,9 @@ func (r Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadReque
 			}
 		}
 
+		if r.tracer != nil {
+			r.tracer.AddTransactionalTrace(txId, "read", "success")
+		}
 		// Emit the response
 		ch <- &model2.DefaultPlcReadRequestResult{
 			Request:  readRequest,

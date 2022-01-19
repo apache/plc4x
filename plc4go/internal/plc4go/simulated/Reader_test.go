@@ -166,7 +166,7 @@ func TestReader_Read(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := NewReader(tt.fields.device, tt.fields.options)
+			r := NewReader(tt.fields.device, tt.fields.options, nil)
 			readRequest := model3.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
 			readResponseChannel := r.Read(readRequest)

@@ -586,7 +586,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcReadRequestBuilder(NewFieldHandler(), NewReader(NewDevice("hurz"), map[string][]string{})),
+			want: internalModel.NewDefaultPlcReadRequestBuilder(NewFieldHandler(), NewReader(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {
@@ -715,7 +715,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcWriteRequestBuilder(NewFieldHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{})),
+			want: internalModel.NewDefaultPlcWriteRequestBuilder(NewFieldHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {
@@ -729,29 +729,6 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 			}
 			if got := c.WriteRequestBuilder(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("WriteRequestBuilder() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNewConnection(t *testing.T) {
-	type args struct {
-		device       *Device
-		fieldHandler spi.PlcFieldHandler
-		valueHandler spi.PlcValueHandler
-		options      map[string][]string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Connection
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewConnection(tt.args.device, tt.args.fieldHandler, tt.args.valueHandler, tt.args.options); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewConnection() = %v, want %v", got, tt.want)
 			}
 		})
 	}

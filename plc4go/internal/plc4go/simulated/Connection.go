@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
@@ -36,6 +37,8 @@ type Connection struct {
 	valueHandler spi.PlcValueHandler
 	options      map[string][]string
 	connected    bool
+	connectionId string
+	tracer       *spi.Tracer
 }
 
 func NewConnection(device *Device, fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, options map[string][]string) *Connection {
@@ -45,8 +48,26 @@ func NewConnection(device *Device, fieldHandler spi.PlcFieldHandler, valueHandle
 		valueHandler: valueHandler,
 		options:      options,
 		connected:    false,
+		connectionId: utils.GenerateId(4),
+	}
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
 	}
 	return connection
+}
+
+func (c *Connection) GetConnectionId() string {
+	return c.connectionId
+}
+
+func (c *Connection) IsTraceEnabled() bool {
+	return c.tracer != nil
+}
+
+func (c *Connection) GetTracer() *spi.Tracer {
+	return c.tracer
 }
 
 func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
@@ -54,8 +75,16 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	go func() {
 		// Check if the connection was already connected
 		if c.connected {
+			if c.tracer != nil {
+				c.tracer.AddTrace("connect", "error: already connected")
+			}
 			// Return an error to the user.
 			ch <- _default.NewDefaultPlcConnectionConnectResult(c, errors.New("already connected"))
+			return
+		}
+		var txId string
+		if c.tracer != nil {
+			txId = c.tracer.AddTransactionalStartTrace("connect", "started")
 		}
 		if delayString, ok := c.options["connectionDelay"]; ok {
 			// This is the length of the array, not the string
@@ -66,10 +95,24 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				}
 			}
 		}
-		// Mark the connection as "connected"
-		c.connected = true
-		// Return the connection in a connected state to the user.
-		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
+		// If we want the connection to fail, do so, otherwise return the connection.
+		if errorString, ok := c.options["connectionError"]; ok {
+			// If the ping operation should fail with an error, do so.
+			if len(errorString) == 1 {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(c, errors.New(errorString[0]))
+			}
+			if c.tracer != nil {
+				c.tracer.AddTransactionalTrace(txId, "connect", "error: "+errorString[0])
+			}
+		} else {
+			// Mark the connection as "connected"
+			c.connected = true
+			if c.tracer != nil {
+				c.tracer.AddTransactionalTrace(txId, "connect", "success")
+			}
+			// Return the connection in a connected state to the user.
+			ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
+		}
 	}()
 	return ch
 }
@@ -81,11 +124,20 @@ func (c *Connection) BlockingClose() {
 func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	ch := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
-		// Check if the connection is connected
+		// Check if the connection is connected.
 		if !c.connected {
+			if c.tracer != nil {
+				c.tracer.AddTrace("close", "error: not connected")
+			}
 			// Return an error to the user.
 			ch <- _default.NewDefaultPlcConnectionCloseResult(c, errors.New("not connected"))
+			return
 		}
+		var txId string
+		if c.tracer != nil {
+			txId = c.tracer.AddTransactionalStartTrace("close", "started")
+		}
+		// If a delay was configured, wait for the pre-configured time.
 		if delayString, ok := c.options["closingDelay"]; ok {
 			// This is the length of the array, not the string
 			if len(delayString) == 1 {
@@ -95,8 +147,11 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 				}
 			}
 		}
-		// Mark the connection as "disconnected"
+		// Mark the connection as "disconnected".
 		c.connected = false
+		if c.tracer != nil {
+			c.tracer.AddTransactionalTrace(txId, "close", "success")
+		}
 		// Return a new connection to the user.
 		ch <- _default.NewDefaultPlcConnectionCloseResult(c, nil)
 	}()
@@ -110,6 +165,19 @@ func (c *Connection) IsConnected() bool {
 func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
+		// Check if the connection is connected
+		if !c.connected {
+			if c.tracer != nil {
+				c.tracer.AddTrace("ping", "error: not connected")
+			}
+			// Return an error to the user.
+			ch <- _default.NewDefaultPlcConnectionPingResult(errors.New("not connected"))
+			return
+		}
+		var txId string
+		if c.tracer != nil {
+			txId = c.tracer.AddTransactionalStartTrace("ping", "started")
+		}
 		if delayString, ok := c.options["pingDelay"]; ok {
 			// This is the length of the array, not the string
 			if len(delayString) == 1 {
@@ -119,8 +187,21 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				}
 			}
 		}
-		// Return a new connection to the user.
-		ch <- _default.NewDefaultPlcConnectionPingResult(nil)
+		if errorString, ok := c.options["pingError"]; ok {
+			// If the ping operation should fail with an error, do so.
+			if len(errorString) == 1 {
+				ch <- _default.NewDefaultPlcConnectionPingResult(errors.New(errorString[0]))
+			}
+			if c.tracer != nil {
+				c.tracer.AddTransactionalTrace(txId, "ping", "error: "+errorString[0])
+			}
+		} else {
+			// Otherwise, give a positive response.
+			if c.tracer != nil {
+				c.tracer.AddTransactionalTrace(txId, "ping", "success")
+			}
+			ch <- _default.NewDefaultPlcConnectionPingResult(nil)
+		}
 	}()
 	return ch
 }
@@ -142,11 +223,11 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.fieldHandler, NewReader(c.device, c.options))
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.fieldHandler, NewReader(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.fieldHandler, c.valueHandler, NewWriter(c.device, c.options))
+	return internalModel.NewDefaultPlcWriteRequestBuilder(c.fieldHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
