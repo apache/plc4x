@@ -31,9 +31,10 @@ class ParserSerializerTestsuiteGeneratorSpec extends Specification {
         def testSuitePath = Files.createTempFile("parser-serializer-testsuite", ".xml")
         URL pcap = ParserSerializerTestsuiteGeneratorSpec.getResource("/bacnet-stack-services.cap");
         File pcapFile = new File(pcap.toURI());
+        ParserSerializerTestsuiteGenerator.exitFunc = (it)-> println("exiting with $it")
 
         when:
-        ParserSerializerTestsuiteGenerator.main("-d", "-c=$DummyMessageRootType.class.name", "-t='BACNET IP'", "-l", pcapFile.path, testSuitePath.toString())
+        ParserSerializerTestsuiteGenerator.main("-d", "-t TODO: name me", "-l", DummyMessageRootType.class.name, pcapFile.path, testSuitePath.toString())
 
         then:
         assert Files.exists(testSuitePath)

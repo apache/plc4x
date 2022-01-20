@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.test.generator
 
-import groovy.cli.picocli.CliBuilder
 import groovy.xml.MarkupBuilder
+import groovyjarjarpicocli.CommandLine
 import org.apache.plc4x.java.spi.generation.ByteOrder
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased
 import org.pcap4j.core.PcapHandle
@@ -28,22 +28,48 @@ import org.pcap4j.packet.Packet
 import org.pcap4j.packet.TcpPacket
 import org.pcap4j.packet.UdpPacket
 
-class ParserSerializerTestsuiteGenerator {
+import java.util.function.Consumer
 
-    static boolean debug = false
+@CommandLine.Command(name = "pstg", version = "0.1-Alpha", mixinStandardHelpOptions = true)
+class ParserSerializerTestsuiteGenerator implements Runnable {
+
+    @CommandLine.Option(names = ["-d", "--debug"], description = "show debug information")
+    boolean debug
+
+    @CommandLine.Option(names = ["-l", "--little-endian"], description = "render a little endian attribute")
+    boolean littleEndian
+
+    @CommandLine.Option(names = ["-t", "--test-suite-name"], description = "render a little endian attribute", defaultValue = "TODO: name me")
+    String testSuiteName
+
+    @CommandLine.Option(names = ["-p", "--protocol-name"], description = "output flavor of the driver", defaultValue = "TODO: name me")
+    String protocolName
+
+    @CommandLine.Option(names = ["-o", "--output-flavor"], description = "output flavor of the driver", defaultValue = "read-write")
+    String flavor
+
+    @CommandLine.Parameters(paramLabel = "root-message-type-class", description = "fqcn of the root message type")
+    String rootMessageTypeClass
+
+    @CommandLine.Parameters(paramLabel = "inputpcap", description = "pcap to consume")
+    String pcapFile
+
+    @CommandLine.Parameters(paramLabel = "outputtestfile", description = "test suite file to write")
+    String xmlTestSuiteFile
+
+    static Consumer<Integer> exitFunc = System::exit
 
     static void main(String... args) {
-        def options = parseAndGetOptions(args)
-        def pcapFile = options.arguments()[0]
-        String testSuiteName = options.t
-        boolean littleEnding = options.l
-        String rootMessageTypeClass = options.c
-        String xmlTestSuiteFile = options.arguments()[1]
-
-        generateOutput(pcapFile, xmlTestSuiteFile, testSuiteName, rootMessageTypeClass, littleEnding)
+        int exitCode = new CommandLine(new ParserSerializerTestsuiteGenerator()).execute(args)
+        exitFunc.accept(exitCode)
     }
 
-    static void generateOutput(String pcapFile, String xmlTestSuiteFile, String testSuiteName, String rootMessageTypeClass, boolean littleEnding) {
+    @Override
+    void run() {
+        generateOutput()
+    }
+
+    void generateOutput() {
         checkForRequirements()
         // 1. Extract headers out of the existing pcap file
         debugOutput "Extracting headers"
@@ -56,12 +82,12 @@ class ParserSerializerTestsuiteGenerator {
         Map<String, byte[]> testMap = [infoFields, values].transpose().collectEntries { [it[0], it[1]] }
 
         debugOutput "Generating xml to $xmlTestSuiteFile"
-        generateXmlTestSuite xmlTestSuiteFile, testSuiteName, littleEnding, rootMessageTypeClass, testMap
+        generateXmlTestSuite xmlTestSuiteFile, testSuiteName, littleEndian, rootMessageTypeClass, testMap
 
         infoOutput "Done"
     }
 
-    static def generateXmlTestSuite(String xmlTestSuiteFile, String testSuiteName, boolean littleEndian, String rootMessageTypeClass, Map<String, byte[]> testMap) {
+    def generateXmlTestSuite(String xmlTestSuiteFile, String testSuiteName, boolean littleEndian, String rootMessageTypeClass, Map<String, byte[]> testMap) {
         def writer = new FileWriter(xmlTestSuiteFile)
         def xml = new MarkupBuilder(writer)
 
@@ -91,10 +117,8 @@ class ParserSerializerTestsuiteGenerator {
         xml."test:testsuite"(["xmlns:test": "https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd", "byteOrder": byteOrder]) {
             name(testSuiteName)
             mkp.yield "\n"
-            // TODO: get name
-            protocolName "bacnet"
-            // TODO: get flavor
-            outputFlavor "read-write"
+            protocolName protocolName
+            outputFlavor flavor
             mkp.yield "\n"
 
             testMap.each { testEntry ->
@@ -123,7 +147,7 @@ class ParserSerializerTestsuiteGenerator {
         }
     }
 
-    static List<byte[]> readPayloads(String pcapFile) {
+    List<byte[]> readPayloads(String pcapFile) {
         def values = []
         def pcapHandle = Pcaps.openOffline(pcapFile, PcapHandle.TimestampPrecision.NANO)
         Packet packet
@@ -144,21 +168,7 @@ class ParserSerializerTestsuiteGenerator {
         values
     }
 
-    static def parseAndGetOptions(String... args) {
-        def cli = new CliBuilder(usage: 'ptsg [options] <inputpcap> <outputtestfile>')
-        cli.d(longOpt: 'debug', 'Debug output')
-        cli.l(longOpt: 'littleEndian', 'Little Endian')
-        cli.t(longOpt: 'testSuiteName', args: 1, argName: 'testSuiteName', defaultValue: 'TODO: name me', 'test suite name')
-        cli.c(longOpt: 'rootMessageTypeClass', args: 1, argName: 'rootMessageTypeClass', required: true, 'fqcn of the root message type')
-        def options = cli.parse(args)
-        assert options
-        if (options.d) debug = true
-
-        assert options.arguments().size() == 2
-        options
-    }
-
-    static def checkForRequirements() {
+    def checkForRequirements() {
         // check for sh
         try {
             debugOutput "sh -c 'echo we have a shell'".execute().text
@@ -175,16 +185,17 @@ class ParserSerializerTestsuiteGenerator {
         }
     }
 
-    static def errorOutput(String format, def ... values) {
+    def errorOutput(String format, def ... values) {
         System.err.printf("$format\n", values)
     }
 
-    static def infoOutput(def format, def ... values) {
+    def infoOutput(def format, def ... values) {
         System.out.printf("$format\n", values)
     }
 
-    static def debugOutput(def format, def ... values) {
+    def debugOutput(def format, def ... values) {
         if (!debug) return
         System.out.printf("$format\n", values)
     }
+
 }

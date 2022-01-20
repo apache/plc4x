@@ -18,9 +18,9 @@
   under the License.
  -->
 <test:testsuite xmlns:test='https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd' byteOrder='LITTLE_ENDIAN'>
-  <name>'BACNET IP'</name>
+  <name>TODO: name me</name>
 
-  <protocolName>bacnet</protocolName>
+  <protocolName>TODO: name me</protocolName>
   <outputFlavor>read-write</outputFlavor>
 
   <testcase>
