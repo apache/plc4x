@@ -527,13 +527,13 @@ func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 		t1.Errorf("Timeout")
 	}
 
-	// Wait for 20ms to have the connection pool timeout (10ms) the lease as nobody's listening.
-	time.Sleep(time.Millisecond * 50)
+	// Wait for 1s to have the connection pool timeout (10ms) the lease as nobody's listening.
+	time.Sleep(time.Millisecond * 1000)
 
 	// This should be quite equal to the serial case as the connections are requested serially.
 	assert.NotNil(t1, pool.GetTracer(), "Tracer should be available")
 	traces := pool.GetTracer().GetTraces()
-	if assert.Equal(t1, 6, len(traces), "Unexpected number of trace entries") {
+	if assert.Equal(t1, 5, len(traces), "Unexpected number of trace entries") {
 		// First is needs to create a new container for this connection
 		assert.Equal(t1, "create new pooled connection", traces[0].Message, "Unexpected message")
 		// Then it gets a lease for the connection
@@ -542,9 +542,8 @@ func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 		assert.Equal(t1, "lease", traces[2].Message, "Unexpected message")
 		// Now the delay of 100ms is over, and we should see the first success
 		assert.Equal(t1, "success", traces[3].Message, "Unexpected message")
-		// Now the first operation is finished, and we should see the second success
-		assert.Equal(t1, "success", traces[4].Message, "Unexpected message")
-		assert.Equal(t1, "client given up", traces[5].Message, "Unexpected message")
+		// Now the first operation is finished, and we should see the second give up
+		assert.Equal(t1, "client given up", traces[4].Message, "Unexpected message")
 	} else if len(traces) > 0 {
 		var values string
 		for _, traceEntry := range traces {

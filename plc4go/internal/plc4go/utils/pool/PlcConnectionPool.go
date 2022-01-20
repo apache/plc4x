@@ -110,14 +110,16 @@ func (t *PlcConnectionPool) GetConnection(connectionString string) <-chan plc4go
 		select {
 		// Wait till we get a lease.
 		case connectionResponse := <-leaseChan:
-			if t.tracer != nil {
-				t.tracer.AddTransactionalTrace(txId, "get-connection", "success")
-			}
 			select {
 			case ch <- connectionResponse:
+				if t.tracer != nil {
+					t.tracer.AddTransactionalTrace(txId, "get-connection", "success")
+				}
 			case <-time.After(10 * time.Millisecond):
 				// Log a message, that the client has given up
-				t.tracer.AddTransactionalTrace(txId, "get-connection", "client given up")
+				if t.tracer != nil {
+					t.tracer.AddTransactionalTrace(txId, "get-connection", "client given up")
+				}
 				close(ch)
 				// Return the connection to give another connection the chance to use it.
 				connectionResponse.GetConnection().Close()
