@@ -23,8 +23,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AsciiBox {
+
+    // source: https://github.com/chalk/ansi-regex/blob/main/index.js#L3
+    private final Pattern ANSI_PATTERN = Pattern.compile("[\u001b\u009b][\\[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]");
+
     private final AsciiBoxWriter asciiBoxWriter;
 
     private final String data;
@@ -45,7 +50,7 @@ public class AsciiBox {
     public int width() {
         int maxWidth = 0;
         for (String line : lines()) {
-            int currentLength = line.length();
+            int currentLength = ANSI_PATTERN.matcher(line).replaceAll("").length();
             if (maxWidth < currentLength) {
                 maxWidth = currentLength;
             }
