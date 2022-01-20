@@ -48,4 +48,12 @@ public class PcapChannelOption {
     public static final ChannelOption<PacketHandler> PACKET_HANDLER =
         ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
 
+    /**
+     * Option for automatically resolving the remote ips MAC address with an
+     * ARP request.
+     */
+    public static final ChannelOption<Boolean> RESOLVE_MAC_ADDRESS =
+        ChannelOption.valueOf("RESOLVE_MAC_ADDRESS");
+
+
 }

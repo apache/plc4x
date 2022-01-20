@@ -45,10 +45,7 @@ import java.net.*;
 import java.util.Objects;
 
 /**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-16
+ * Channel based on a Pcap4J raw-socket, allowing to actively communicate based on ethernet frames.
  */
 public class RawSocketChannel extends OioByteStreamChannel {
 
@@ -61,12 +58,28 @@ public class RawSocketChannel extends OioByteStreamChannel {
     private MacAddress localMacAddress;
     private SocketAddress localAddress;
     private PcapHandle receiveHandle;
-    private PcapHandle sendHandle;
     private Thread loopThread;
 
     public RawSocketChannel() {
         super(null);
         config = new RawSocketChannelConfig(this);
+    }
+
+    public void setRemoteMacAddress(MacAddress remoteMacAddress) {
+        this.remoteMacAddress = remoteMacAddress;
+
+        // Update the filter expression, if the handle is already open.
+        if((receiveHandle != null) && (receiveHandle.isOpen())){
+            MacAddress tempRemoteMacAddress = remoteMacAddress != null ? remoteMacAddress : MacAddress.getByAddress(new byte[]{0,0,0,0,0,0});
+            String filter = config.getMacBasedFilterString(localMacAddress, tempRemoteMacAddress);
+            if(filter.length() > 0) {
+                try {
+                    receiveHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
+                } catch (NotOpenException | PcapNativeException e) {
+                    throw new RuntimeException("Error updating filter expression");
+                }
+            }
+        }
     }
 
     @Override
@@ -147,10 +160,12 @@ public class RawSocketChannel extends OioByteStreamChannel {
             return;
         }
 
-        // Try to get the mac address of the remote station by sending an ARP request.
-        if((this.remoteMacAddress == null) && (this.remoteAddress instanceof InetSocketAddress)) {
-            this.remoteMacAddress = ArpLookup.resolveMacAddress(nif, (InetSocketAddress) this.remoteAddress,
-                (InetSocketAddress) this.localAddress, localMacAddress).orElse(null);
+        // If desired: Try to get the mac address of the remote station by sending an ARP request.
+        if(config.isResolveMacAddress()) {
+            if ((this.remoteMacAddress == null) && (this.remoteAddress instanceof InetSocketAddress)) {
+                this.remoteMacAddress = ArpLookup.resolveMacAddress(nif, (InetSocketAddress) this.remoteAddress,
+                    (InetSocketAddress) this.localAddress, localMacAddress).orElse(null);
+            }
         }
 
         receiveHandle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
@@ -159,7 +174,11 @@ public class RawSocketChannel extends OioByteStreamChannel {
         }
 
         // If the address allows fine-tuning which packets to process, set a filter to reduce the load.
-        String filter = config.getMacBasedFilterString(this.localMacAddress, this.remoteMacAddress);
+        // If no remote mac address is set, we'll set it to 00:00:00:00:00, which is an invalid address
+        // and therefore no traffic will be incoming.
+        // TODO: Make configurable, if we should accept from any source or not.
+        MacAddress tempRemoteMacAddress = remoteMacAddress != null ? remoteMacAddress : MacAddress.getByAddress(new byte[]{0,0,0,0,0,0});
+        String filter = config.getMacBasedFilterString(localMacAddress, tempRemoteMacAddress);
         if(filter.length() > 0) {
             receiveHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
@@ -171,12 +190,8 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // forwards the bytes read to the buffer.
         loopThread = new Thread(() -> {
             try {
-                receiveHandle.loop(-1, new PacketListener() {
-                    @Override
-                    public void gotPacket(Packet packet) {
-                        buffer.writeBytes(config.getPacketHandler().getData(packet));
-                    }
-                });
+                receiveHandle.loop(-1,
+                    (PacketListener) packet -> buffer.writeBytes(config.getPacketHandler().getData(packet)));
             } catch (PcapNativeException | NotOpenException e) {
                 // TODO this should close everything automatically
                 logger.error("Pcap4j loop thread died!", e);
@@ -197,7 +212,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
             // simply block indefinitely.
             activate(new PcapInputStream(buffer), new DiscardingOutputStream());
         } else {
-            sendHandle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
+            PcapHandle sendHandle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
             activate(new PcapInputStream(buffer), new PcapOutputStream(sendHandle));
         }
     }
