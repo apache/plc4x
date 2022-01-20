@@ -22,6 +22,7 @@ import groovy.xml.MarkupBuilder
 import groovyjarjarpicocli.CommandLine
 import org.apache.plc4x.java.spi.generation.ByteOrder
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased
+import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased
 import org.pcap4j.core.PcapHandle
 import org.pcap4j.core.Pcaps
 import org.pcap4j.packet.Packet
@@ -132,7 +133,9 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
                             try {
                                 def clazz = Class.forName(rootMessageTypeClass)
                                 def message = clazz."staticParse"(new ReadBufferByteBased(testEntry.value, littleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN))
-                                def messageString = message.toString()
+                                def xmlWriter = new WriteBufferXmlBased()
+                                message.serialize(xmlWriter)
+                                def messageString = xmlWriter.getXmlString()
                                 // TODO ugyWorkaround
                                 messageString = messageString.split("\n").collect { "      $it" }.join("\n") + "\n    "
                                 return messageString
