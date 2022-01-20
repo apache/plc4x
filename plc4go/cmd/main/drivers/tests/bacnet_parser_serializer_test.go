@@ -16,18 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.test.generator.ParserSerializerTestsuiteGenerator;
+package tests
 
-import java.nio.file.Path;
+import (
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"testing"
+)
 
-public class BACnetParserSerializerTestSuiteGenerator {
-
-    public static void main(String... args) {
-        String pcapFile = Path.of("plc4j/utils/test-generator/src/test/resources/bacnet-stack-services.cap").toAbsolutePath().toString();
-        String xmlTestSuiteFile = Path.of("protocols/bacnetip/src/test/resources/protocols/bacnet/ParserSerializerTestsuite.xml").toAbsolutePath().toString();
-        ParserSerializerTestsuiteGenerator.main("-tBACnet/IP", "-pbacnetip", BVLC.class.getName(), pcapFile, xmlTestSuiteFile);
-    }
+func TestBacnetParserSerializer(t *testing.T) {
+	t.Skip("Test not ready yet")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/bacnet/ParserSerializerTestsuite.xml")
 }

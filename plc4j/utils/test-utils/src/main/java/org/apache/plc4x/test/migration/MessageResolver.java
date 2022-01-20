@@ -139,7 +139,7 @@ public class MessageResolver {
                 }
             };
         } catch (DriverTestsuiteException e) {
-            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e.getCause());
+            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e);
         }
     }
 
