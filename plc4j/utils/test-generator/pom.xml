@@ -29,7 +29,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-generator</artifactId>
+  <artifactId>plc4j-utils-test-generator</artifactId>
 
   <name>PLC4J: Utils: Test-Generator</name>
   <description>Generates tests.</description>

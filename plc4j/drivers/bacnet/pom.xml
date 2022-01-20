@@ -129,7 +129,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>test-generator</artifactId>
+      <artifactId>plc4j-utils-test-generator</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
