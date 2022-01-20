@@ -21,6 +21,8 @@ package org.apache.plc4x.test.parserserializer;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.test.XmlTestsuiteLoader;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
@@ -163,18 +165,25 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 LOGGER.info("Expected a byte array with a length of " + testcase.getRaw().length +
                     " but got one with " + data.length);
             }
-            // TODO: improve output
             if (!Arrays.equals(testcase.getRaw(), data)) {
                 int numBytes = Math.min(data.length, testcase.getRaw().length);
-                int i;
-                for (i = 0; i < numBytes; i++) {
+                int brokenAt = -1;
+                List<Integer> diffIndexes = new LinkedList<>();
+                for (int i = 0; i < numBytes; i++) {
                     if (data[i] != testcase.getRaw()[i]) {
-                        break;
+                        if (brokenAt < 0) {
+                            brokenAt = i;
+                        }
+                        diffIndexes.add(i);
                     }
                 }
+                String rawHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcase.getRaw(), 40, diffIndexes.stream().mapToInt(integer -> integer).toArray());
+                String dataHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(data, 40, diffIndexes.stream().mapToInt(integer -> integer).toArray());
+                AsciiBox compareBox = AsciiBoxWriter.DEFAULT.boxSideBySide(AsciiBoxWriter.DEFAULT.boxString("", rawHex, 0), AsciiBoxWriter.DEFAULT.boxString("", dataHex, 0));
+                LOGGER.error("Diff\n{}", compareBox);
                 throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
                     Hex.encodeHexString(testcase.getRaw()) + "\nBut Got:  " + Hex.encodeHexString(data) +
-                    "\n          " + String.join("", Collections.nCopies(i, "--")) + "^");
+                    "\n          " + String.join("", Collections.nCopies(brokenAt, "--")) + "^");
             }
         } catch (SerializationException | ParseException e) {
             throw new ParserSerializerTestsuiteException("Unable to parse message", e);
