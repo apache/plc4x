@@ -87,7 +87,7 @@
 [type AmsMagicString
     [implicit uint 16 len 'text.length + 1']
     [reserved uint 8 '0x00']
-    [simple vstring 'len - 1' text encoding='"UTF-8"']
+    [simple vstring '8 * (len - 1)' text encoding='"UTF-8"']
     [reserved uint 8 '0x00']
 ]
 
