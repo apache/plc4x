@@ -166,7 +166,7 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
                 } else {
                     def ethernetPacket = packet.get(EthernetPacket.class)
                     if(ethernetPacket != null) {
-                        values << ethernetPacket.payload.rawData
+                        values << ethernetPacket.rawData
                     } else {
                         values << new byte[]{0, 0, 0, 0}
                     }
