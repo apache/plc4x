@@ -76,7 +76,7 @@ func (m *AssociatedValueType) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Manual Field (valueLength)
-	lengthInBits += uint16(int32(2) * 8)
+	lengthInBits += uint16(int32(16))
 
 	// Array field
 	if len(m.Data) > 0 {

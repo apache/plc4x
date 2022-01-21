@@ -27,6 +27,7 @@ import org.apache.plc4x.java.spi.values.PlcStruct;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.FileSystems;
+import java.util.concurrent.TimeUnit;
 
 public class PassiveBacNetIpDriver3Manual {
 
@@ -37,16 +38,18 @@ public class PassiveBacNetIpDriver3Manual {
             FileUtils.copyURLToFile(new URL("http://kargs.net/captures/bo_command_failure_original.pcap"), pcapFile);
 
         final BacNetIpDriver driver = new BacNetIpDriver();
-        final PlcConnection connection = driver.getConnection(
-            "bacnet-ip:pcap://" + pcapFile.getAbsolutePath() + "?filter=udp%20port%2047808");
-        connection.connect();
-        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
-            "Hurz", "*/*/*").build().execute().get();
-        subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
-            PlcStruct plcStruct = (PlcStruct)
-                ((DefaultPlcSubscriptionEvent) plcSubscriptionEvent).getValues().get("event").getValue();
-            System.out.println(plcStruct);
-        });
+        try (final PlcConnection connection = driver.getConnection(
+            "bacnet-ip:pcap://" + pcapFile.getAbsolutePath() + "?filter=udp%20port%2047808")) {
+            connection.connect();
+            final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+                "Hurz", "*/*/*").build().execute().get();
+            subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
+                PlcStruct plcStruct = (PlcStruct)
+                    ((DefaultPlcSubscriptionEvent) plcSubscriptionEvent).getValues().get("event").getValue();
+                System.out.println(plcStruct);
+            });
+            TimeUnit.SECONDS.sleep(3);
+        }
     }
 
 }

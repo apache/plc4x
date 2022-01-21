@@ -95,23 +95,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">68</value>
-                <value dataType="int" bitLength="8">69</value>
-                <value dataType="int" bitLength="8">83</value>
-                <value dataType="int" bitLength="8">75</value>
-                <value dataType="int" bitLength="8">84</value>
-                <value dataType="int" bitLength="8">79</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">84</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">78</value>
-                <value dataType="int" bitLength="8">54</value>
-                <value dataType="int" bitLength="8">85</value>
-                <value dataType="int" bitLength="8">78</value>
-                <value dataType="int" bitLength="8">66</value>
-              </text>
+              <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-T0N6UNB</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </name>
@@ -153,19 +137,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">12</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-              </text>
+              <text dataType="string" bitLength="88" encoding="UTF-8">10.10.10.10</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </routeName>
@@ -187,16 +159,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">9</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">117</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">101</value>
-                <value dataType="int" bitLength="8">114</value>
-                <value dataType="int" bitLength="8">110</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">109</value>
-                <value dataType="int" bitLength="8">101</value>
-              </text>
+              <text dataType="string" bitLength="64" encoding="UTF-8">username</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </username>
@@ -205,16 +168,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">9</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">112</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">119</value>
-                <value dataType="int" bitLength="8">111</value>
-                <value dataType="int" bitLength="8">114</value>
-                <value dataType="int" bitLength="8">100</value>
-              </text>
+              <text dataType="string" bitLength="64" encoding="UTF-8">password</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </password>
@@ -223,19 +177,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">12</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">46</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">48</value>
-              </text>
+              <text dataType="string" bitLength="88" encoding="UTF-8">10.10.10.10</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </address>
@@ -445,23 +387,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">68</value>
-                <value dataType="int" bitLength="8">69</value>
-                <value dataType="int" bitLength="8">83</value>
-                <value dataType="int" bitLength="8">75</value>
-                <value dataType="int" bitLength="8">84</value>
-                <value dataType="int" bitLength="8">79</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">51</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">74</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">65</value>
-                <value dataType="int" bitLength="8">53</value>
-                <value dataType="int" bitLength="8">68</value>
-              </text>
+              <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-3PJ1A5D</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </routeName>
@@ -483,21 +409,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">14</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">65</value>
-                <value dataType="int" bitLength="8">100</value>
-                <value dataType="int" bitLength="8">109</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">110</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">115</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">114</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">116</value>
-                <value dataType="int" bitLength="8">111</value>
-                <value dataType="int" bitLength="8">114</value>
-              </text>
+              <text dataType="string" bitLength="104" encoding="UTF-8">Administrator</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </username>
@@ -506,8 +418,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">1</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-              </text>
+              <text dataType="string" bitLength="0" encoding="UTF-8"></text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </password>
@@ -516,23 +427,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text isList="true">
-                <value dataType="int" bitLength="8">68</value>
-                <value dataType="int" bitLength="8">69</value>
-                <value dataType="int" bitLength="8">83</value>
-                <value dataType="int" bitLength="8">75</value>
-                <value dataType="int" bitLength="8">84</value>
-                <value dataType="int" bitLength="8">79</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">45</value>
-                <value dataType="int" bitLength="8">51</value>
-                <value dataType="int" bitLength="8">80</value>
-                <value dataType="int" bitLength="8">74</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">65</value>
-                <value dataType="int" bitLength="8">53</value>
-                <value dataType="int" bitLength="8">68</value>
-              </text>
+              <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-3PJ1A5D</text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
           </address>

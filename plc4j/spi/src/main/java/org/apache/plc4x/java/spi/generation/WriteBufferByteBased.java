@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.BufferByteOutput;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+
+import static org.apache.commons.lang3.ArrayUtils.subarray;
 
 public class WriteBufferByteBased implements WriteBuffer {
 
@@ -56,20 +59,21 @@ public class WriteBufferByteBased implements WriteBuffer {
         bb.position(position);
     }
 
+    /**
+     * @deprecated use {@link WriteBufferByteBased#getBytes()}
+     */
+    @Deprecated
     public byte[] getData() {
-        return bb.array();
+        return getBytes();
+    }
+
+    public byte[] getBytes() {
+        return ArrayUtils.subarray(bb.array(), 0, getPos());
     }
 
     @Override
     public int getPos() {
         return (int) bo.getPos();
-    }
-
-    public byte[] getBytes(int startPos, int endPos) {
-        int numBytes = endPos - startPos;
-        byte[] data = new byte[numBytes];
-        System.arraycopy(bb.array(), startPos, data, 0, numBytes);
-        return data;
     }
 
     @Override

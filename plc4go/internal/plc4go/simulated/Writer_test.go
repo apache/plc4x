@@ -178,7 +178,7 @@ func TestWriter_Write(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			w := NewWriter(tt.fields.device, tt.fields.options)
+			w := NewWriter(tt.fields.device, tt.fields.options, nil)
 			writeRequest := model3.NewDefaultPlcWriteRequest(tt.args.fields, tt.args.fieldNames, tt.args.values, w, nil)
 			timeBeforeWriteRequest := time.Now()
 			writeResponseChannel := w.Write(writeRequest)

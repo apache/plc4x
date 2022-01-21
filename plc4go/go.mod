@@ -30,6 +30,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.20.0
 	github.com/snksoft/crc v1.1.0
+	github.com/stretchr/testify v1.5.1
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect
 	github.com/viney-shih/go-lock v1.1.1

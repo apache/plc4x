@@ -22,18 +22,12 @@
                xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- encoders are assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
 
-  <!--<logger level="OFF" name="io.netty.util" additivity="false">-->
-    <!--<appender-ref ref="STDOUT" />-->
-  <!--</logger>-->
-
-  <root level="info">
+  <root level="error">
     <appender-ref ref="STDOUT" />
   </root>
 

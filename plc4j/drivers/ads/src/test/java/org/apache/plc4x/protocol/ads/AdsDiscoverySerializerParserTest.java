@@ -19,7 +19,9 @@
 package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("someone didn't care about a test")
 public class AdsDiscoverySerializerParserTest extends ParserSerializerTestsuiteRunner {
 
     public AdsDiscoverySerializerParserTest() {

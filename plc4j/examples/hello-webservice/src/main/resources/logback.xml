@@ -22,8 +22,6 @@
                xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- encoders are assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
@@ -31,7 +29,7 @@
 
   <logger name="org.apache.plc4x.java.examples.hellowebservice.HelloWebservice" level="info"/>
 
-  <root level="DEBUG">
+  <root level="warn">
     <appender-ref ref="STDOUT" />
   </root>
 

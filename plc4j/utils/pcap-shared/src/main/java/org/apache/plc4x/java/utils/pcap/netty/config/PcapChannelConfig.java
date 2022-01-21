@@ -39,6 +39,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
     private int protocolId = ALL_PROTOCOLS;
     private int port = ALL_PORTS;
     private PacketHandler packetHandler = Packet::getRawData;
+    private boolean resolveMacAddress = false;
 
     public PcapChannelConfig(Channel channel) {
         super(channel);
@@ -50,6 +51,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         clone.protocolId = this.protocolId;
         clone.port = this.port;
         clone.packetHandler = this.packetHandler;
+        clone.resolveMacAddress = this.resolveMacAddress;
         return clone;
     }
 
@@ -57,7 +59,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
     public Map<ChannelOption<?>, Object> getOptions() {
         return getOptions(super.getOptions(),
             PcapChannelOption.SUPPORT_VLANS, PcapChannelOption.PORT, PcapChannelOption.PROTOCOL_ID,
-            PcapChannelOption.PACKET_HANDLER);
+            PcapChannelOption.PACKET_HANDLER, PcapChannelOption.RESOLVE_MAC_ADDRESS);
     }
 
     @Override
@@ -83,6 +85,12 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         } else if (option == PcapChannelOption.PACKET_HANDLER) {
             if (value instanceof PacketHandler) {
                 packetHandler = (PacketHandler) value;
+                return true;
+            }
+            return false;
+        } else if (option == PcapChannelOption.RESOLVE_MAC_ADDRESS) {
+            if (value instanceof Boolean) {
+                resolveMacAddress = (Boolean) value;
                 return true;
             }
             return false;
@@ -117,6 +125,10 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
 
     public PacketHandler getPacketHandler() {
         return packetHandler;
+    }
+
+    public boolean isResolveMacAddress() {
+        return resolveMacAddress;
     }
 
     public String getMacBasedFilterString(MacAddress localMacAddress, MacAddress remoteMacAddress) {

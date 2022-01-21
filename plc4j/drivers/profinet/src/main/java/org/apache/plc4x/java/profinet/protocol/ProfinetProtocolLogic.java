@@ -102,7 +102,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
         profinetDriverContext.setLocalUdpPort(udpSocket.getPort());
 
         // Remote connectivity attributes
-        profinetDriverContext.setRemoteMacAddress(new MacAddress(rawSocketChannel.getRemoteMacAddress().getAddress()));
+        byte[] macAddress = null;
+        try {
+            macAddress = Hex.decodeHex("000000000000");
+        } catch (DecoderException e) {
+            // Ignore this.
+        }
+        profinetDriverContext.setRemoteMacAddress(new MacAddress(macAddress));
         final InetSocketAddress remoteAddress = (InetSocketAddress) rawSocketChannel.getRemoteAddress();
         Inet4Address remoteIpAddress = (Inet4Address) remoteAddress.getAddress();
         profinetDriverContext.setRemoteIpAddress(new IpAddress(remoteIpAddress.getAddress()));
@@ -136,8 +142,24 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             udpSocket.receive(connectResponsePacket);
             ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
             final DceRpc_Packet dceRpc_packet = DceRpc_PacketIO.staticParse(readBuffer);
-            if(dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE) {
-                System.out.println(dceRpc_packet);
+            if((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+                    // Get the remote MAC address and store it in the context.
+                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                    if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
+                        final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
+                        profinetDriverContext.setRemoteMacAddress(pnIoCm_block_arRes.getCmResponderMacAddr());
+
+                        // Update the raw-socket transports filter expression.
+                        ((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(profinetDriverContext.getRemoteMacAddress().getAddress()));
+                    } else {
+                        throw new PlcException("Unexpected type of frist block.");
+                    }
+                } else {
+                    throw new PlcException("Unexpected response");
+                }
+            } else {
+                throw new PlcException("Unexpected response");
             }
         } catch (SerializationException e) {
             e.printStackTrace();

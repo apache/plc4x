@@ -28,4 +28,8 @@ public interface RawSocketTransportConfiguration extends PcapTransportConfigurat
         return NO_DEFAULT_PORT;
     }
 
+    default boolean isResolveMacAccess() {
+        return false;
+    }
+
 }

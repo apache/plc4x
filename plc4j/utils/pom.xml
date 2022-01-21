@@ -40,6 +40,7 @@
     <module>raw-sockets</module>
 
     <!-- Utilities for building tests -->
+    <module>test-generator</module>
     <module>test-utils</module>
   </modules>
 

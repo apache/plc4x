@@ -18,3 +18,22 @@
  */
 
 package pool
+
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/utils/pool"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+)
+
+type PlcConnectionPool struct {
+	connectionPool *pool.PlcConnectionPool
+}
+
+func NewPlcConnectionPool(driverManager plc4go.PlcDriverManager) *PlcConnectionPool {
+	return &PlcConnectionPool{
+		connectionPool: pool.NewPlcConnectionPool(driverManager),
+	}
+}
+
+func (t *PlcConnectionPool) GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult {
+	return t.connectionPool.GetConnection(connectionString)
+}

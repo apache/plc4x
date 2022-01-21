@@ -79,10 +79,11 @@ public class MessageValidatorAndMigrator {
      * @param byteOrder       the byte-order being used
      * @param autoMigrate     indicates if we want to migrate to a new version
      * @param siteURI         the file which we want to auto migrate
+     * @return true if migration happened
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageInput<Message> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<Message> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
@@ -127,6 +128,7 @@ public class MessageValidatorAndMigrator {
                         centeredTestCaseName));
                     throw new MigrationException(xmlString);
                 }
+                return false;
             } catch (RuntimeException | SerializationException e) {
                 if (!(e instanceof MigrationException)) {
                     LOGGER.error("Error in serializer", e);
@@ -159,14 +161,15 @@ public class MessageValidatorAndMigrator {
                         throw new RuntimeException(ioException);
                     }
                     LOGGER.info("Done migrating {}", path);
+                    return true;
                 } else {
-                    throw new RuntimeException("Output doesn't match", e);
+                    throw new RuntimeException("Output doesn't match. Set to auto migrate to fix", e);
                 }
             }
         } catch (ParseException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
         } catch (RuntimeException e) {
-            LOGGER.error("Something wen't wrong: siteURI='{}'", siteURI, e);
+            LOGGER.error("Something went wrong: siteURI='{}'", siteURI, e);
             throw e;
         }
     }

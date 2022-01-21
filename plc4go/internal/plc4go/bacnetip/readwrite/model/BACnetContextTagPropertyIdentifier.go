@@ -94,10 +94,10 @@ func (m *BACnetContextTagPropertyIdentifier) LengthInBitsConditional(lastItem bo
 	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Manual Field (propertyIdentifier)
-	lengthInBits += uint16(m.ActualLength * 8)
+	lengthInBits += uint16(int32(32))
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(m.ActualLength * 8)
+	lengthInBits += uint16(int32(0))
 
 	// A virtual field doesn't have any in- or output.
 

@@ -392,7 +392,7 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	lengthInBits += uint16(${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)} * 8)
+	lengthInBits += uint16(${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)})
 					<#break>
 				<#case "optional">
 					<#assign optionalField = field.asOptionalField().orElseThrow()>

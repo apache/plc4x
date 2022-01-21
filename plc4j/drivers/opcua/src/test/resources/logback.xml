@@ -17,14 +17,17 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<configuration>
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ch.qos.logback/xml/ns/logback https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
     </encoder>
   </appender>
-  <root>
-    <level value="TRACE"/>
-    <appender-ref ref="CONSOLE"/>
+
+  <root level="error">
+    <appender-ref ref="STDOUT" />
   </root>
 </configuration>
