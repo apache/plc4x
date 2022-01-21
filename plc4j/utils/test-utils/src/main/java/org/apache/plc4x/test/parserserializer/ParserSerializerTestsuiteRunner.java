@@ -139,50 +139,61 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-        ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.getByteOrder());
+        LOGGER.info("Running testcase {}", testcase);
+        byte[] testcaseRaw = testcase.getRaw();
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("\n{}", AsciiBoxWriter.DEFAULT.boxString("Testcase raw input", org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcaseRaw), 0));
+        ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcaseRaw, testSuite.getByteOrder());
 
         try {
             MessageInput<Message> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
                 testcase.getXml().elements().get(0).getName()
             );
+            LOGGER.trace("Parsing message");
             Message parsedOutput = messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
-            MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
+            LOGGER.trace("Validating and migrating");
+            boolean migrated = MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
                 testcase.getName(),
                 messageInput,
                 testcase.getXml().elements().get(0),
                 testcase.getParserArguments(),
-                testcase.getRaw(),
+                testcaseRaw,
                 testSuite.getByteOrder(),
                 autoMigrate,
                 suiteUri
             );
+            if (migrated) {
+                LOGGER.warn("Migrated testcase {}", testcase);
+            }
+            LOGGER.info("Parsing passed for testcase {}", testcase);
 
+            LOGGER.trace("Writing message back again");
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
             parsedOutput.serialize(writeBuffer);
+            LOGGER.info("Serializing passed for testcase {}", testcase);
             byte[] data = writeBuffer.getData();
-            if (testcase.getRaw().length != data.length) {
-                LOGGER.info("Expected a byte array with a length of " + testcase.getRaw().length +
-                    " but got one with " + data.length);
+            if (testcaseRaw.length != data.length) {
+                LOGGER.info("Expected a byte array with a length of {} but got one with {}", testcaseRaw.length, data.length);
             }
-            if (!Arrays.equals(testcase.getRaw(), data)) {
-                int numBytes = Math.min(data.length, testcase.getRaw().length);
+            if (!Arrays.equals(testcaseRaw, data)) {
+                int numBytes = Math.min(data.length, testcaseRaw.length);
                 int brokenAt = -1;
                 List<Integer> diffIndexes = new LinkedList<>();
                 for (int i = 0; i < numBytes; i++) {
-                    if (data[i] != testcase.getRaw()[i]) {
+                    if (data[i] != testcaseRaw[i]) {
                         if (brokenAt < 0) {
                             brokenAt = i;
                         }
                         diffIndexes.add(i);
                     }
                 }
-                String rawHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcase.getRaw(), 40, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                String dataHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(data, 40, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                AsciiBox compareBox = AsciiBoxWriter.DEFAULT.boxSideBySide(AsciiBoxWriter.DEFAULT.boxString("", rawHex, 0), AsciiBoxWriter.DEFAULT.boxString("", dataHex, 0));
+                String rawHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcaseRaw, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
+                String dataHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(data, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
+                AsciiBox compareBox = AsciiBoxWriter.DEFAULT.boxSideBySide(AsciiBoxWriter.DEFAULT.boxString("expected", rawHex, 0), AsciiBoxWriter.DEFAULT.boxString("actual", dataHex, 0));
                 LOGGER.error("Diff\n{}", compareBox);
                 throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
-                    Hex.encodeHexString(testcase.getRaw()) + "\nBut Got:  " + Hex.encodeHexString(data) +
+                    Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) +
                     "\n          " + String.join("", Collections.nCopies(brokenAt, "--")) + "^");
             }
         } catch (SerializationException | ParseException e) {

@@ -36,4 +36,11 @@ public class Location {
         return column;
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+            "line=" + line +
+            ", column=" + column +
+            '}';
+    }
 }
