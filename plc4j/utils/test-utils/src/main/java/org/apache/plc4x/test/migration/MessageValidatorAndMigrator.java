@@ -163,13 +163,13 @@ public class MessageValidatorAndMigrator {
                     LOGGER.info("Done migrating {}", path);
                     return true;
                 } else {
-                    throw new RuntimeException("Output doesn't match", e);
+                    throw new RuntimeException("Output doesn't match. Set to auto migrate to fix", e);
                 }
             }
         } catch (ParseException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
         } catch (RuntimeException e) {
-            LOGGER.error("Something wen't wrong: siteURI='{}'", siteURI, e);
+            LOGGER.error("Something went wrong: siteURI='{}'", siteURI, e);
             throw e;
         }
     }

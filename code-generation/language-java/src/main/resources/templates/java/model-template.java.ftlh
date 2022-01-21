@@ -399,7 +399,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#assign manualField = field.asManualField().orElseThrow()>
 
         // Manual Field (${manualField.name})
-        lengthInBits += ${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)} * 8;
+        lengthInBits += ${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)};
         <#break>
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>

@@ -1089,8 +1089,8 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
         ['0xC' BACnetApplicationTagObjectIdentifier
-            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '_value.actualLength']
-            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '_value.actualLength']
+            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '10']
+            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '0']
             [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
             [simple     uint 22             instanceNumber  ]
         ]
@@ -1201,24 +1201,24 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier
-            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '_value.actualLength']
-            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '_value.actualLength']
+            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '10']
+            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '0']
             [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
             [simple     uint 22             instanceNumber  ]
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(uint 32 actualLength)
-            [manual     BACnetPropertyIdentifier   propertyIdentifier 'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)' '_value.actualLength']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)' '_value.actualLength']
+            [manual     BACnetPropertyIdentifier   propertyIdentifier 'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)' '32']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)' '0']
             [virtual    bit                        isProprietary      'propertyIdentifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
         ]
         ['EVENT_TYPE' BACnetContextTagEventType(uint 32 actualLength)
-            [manual     BACnetEventType            eventType          'STATIC_CALL("readEventType", readBuffer, actualLength)' 'STATIC_CALL("writeEventType", writeBuffer, eventType)' '_value.actualLength']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)' 'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)' '_value.actualLength']
+            [manual     BACnetEventType            eventType          'STATIC_CALL("readEventType", readBuffer, actualLength)' 'STATIC_CALL("writeEventType", writeBuffer, eventType)' '32']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)' 'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)' '0']
             [virtual    bit                        isProprietary      'eventType == BACnetEventType.VENDOR_PROPRIETARY_VALUE']
         ]
         ['EVENT_STATE' BACnetContextTagEventState(uint 32 actualLength)
-            [manual     BACnetEventState           eventState         'STATIC_CALL("readEventState", readBuffer, actualLength)' 'STATIC_CALL("writeEventState", writeBuffer, eventState)' '_value.actualLength']
-            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)' 'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)' '_value.actualLength']
+            [manual     BACnetEventState           eventState         'STATIC_CALL("readEventState", readBuffer, actualLength)' 'STATIC_CALL("writeEventState", writeBuffer, eventState)' '32']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)' 'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)' '0']
             [virtual    bit                        isProprietary      'eventState == BACnetEventState.VENDOR_PROPRIETARY_VALUE']
         ]
         ['NOTIFY_TYPE' BACnetContextTagNotifyType(uint 32 actualLength)

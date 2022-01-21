@@ -280,19 +280,19 @@
 [type AssociatedValueType
     [simple DataTransportErrorCode returnCode]
     [simple DataTransportSize      transportSize]
-    [manual uint 16                valueLength   'STATIC_CALL("RightShift3", readBuffer)' 'STATIC_CALL("LeftShift3", writeBuffer, valueLength)' '2']
+    [manual uint 16                valueLength   'STATIC_CALL("RightShift3", readBuffer)' 'STATIC_CALL("LeftShift3", writeBuffer, valueLength)' '16']
     [array  uint 8                 data          count    'STATIC_CALL("EventItemLength", readBuffer, valueLength)']
 ]
 
 //TODO: Convert BCD to uint
 [type DateAndTime
-    [manual uint 8  year    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, year)'    '1']
-    [manual uint 8  month   'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, month)'   '1']
-    [manual uint 8  day     'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, day)'     '1']
-    [manual uint 8  hour    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, hour)'    '1']
-    [manual uint 8  minutes 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, minutes)' '1']
-    [manual uint 8  seconds 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, seconds)' '1']
-    [manual uint 12 msec    'STATIC_CALL("S7msecToInt", readBuffer)' 'STATIC_CALL("IntToS7msec", writeBuffer, msec)'  '2']
+    [manual uint 8  year    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, year)'    '8']
+    [manual uint 8  month   'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, month)'   '8']
+    [manual uint 8  day     'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, day)'     '8']
+    [manual uint 8  hour    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, hour)'    '8']
+    [manual uint 8  minutes 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, minutes)' '8']
+    [manual uint 8  seconds 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, seconds)' '8']
+    [manual uint 12 msec    'STATIC_CALL("S7msecToInt", readBuffer)' 'STATIC_CALL("IntToS7msec", writeBuffer, msec)'  '12']
     [simple uint 4  dow                                                                                                         ]
 ]
 
@@ -597,10 +597,10 @@
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' CHAR
-            [manual string 8 value  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
+            [manual string 8 value  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '8']
         ]
         ['"IEC61131_WCHAR"' CHAR
-            [manual string 16 value 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='"UTF-16"']
+            [manual string 16 value 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '16' encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length

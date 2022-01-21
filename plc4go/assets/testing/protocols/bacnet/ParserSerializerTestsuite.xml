@@ -143,14 +143,6 @@
   </testcase>
 
   <testcase>
-    <name>3	Unconfirmed-REQ who-Has </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>4	Unconfirmed-REQ i-Have device,61 device,61 </name>
     <raw>810a00200108000d013d1001c40200003dc40200003d75080053594e45524759</raw>
     <root-type>BVLC</root-type>
@@ -158,7 +150,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">45</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">31</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -267,7 +259,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">23</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">16</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -332,14 +324,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>6	Unconfirmed-REQ who-Has device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>7	Unconfirmed-REQ i-Have device,61 device,61 </name>
     <raw>810a00200108000d013d1001c40200003dc40200003d75080053594e45524759</raw>
     <root-type>BVLC</root-type>
@@ -347,7 +331,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">45</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">31</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -542,14 +526,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>9	Unconfirmed-REQ timeSynchronization </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>10	Unconfirmed-REQ who-Is 61 61 </name>
     <raw>810a00100120ffff00ff1008093d193d</raw>
     <root-type>BVLC</root-type>
@@ -637,22 +613,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>11	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>12	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>13	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -660,7 +620,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -789,7 +749,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">482</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">475</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -1032,7 +992,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -1155,7 +1115,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       ./atomicreadfile &gt;&gt; test.log
       make -f arf.mak clean
       
-      make -f awf.mak </value>
+      make -f awf.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1269,7 +1229,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -1395,7 +1355,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       make -f bacstr.mak clean
       make -f bacstr.mak
       ./bacstr &gt;&gt; test.log
-      make -f bacstr.mak </value>
+      make -f bacstr.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1509,7 +1469,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -1746,7 +1706,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -1849,9 +1809,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">
-      
-      make -f demo/object/device.mak clean
+                                <value dataType="string" bitLength="3584" encoding="UTF-8">make -f demo/object/device.mak clean
       make -f demo/object/device.mak
       ./device &gt;&gt; test.log
       make -f demo/object/device.mak clean
@@ -1986,7 +1944,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -2227,7 +2185,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">483</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">476</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -2330,7 +2288,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8"> -f reject.mak clean
+                                <value dataType="string" bitLength="3584" encoding="UTF-8">-f reject.mak clean
       make -f reject.mak
       ./reject &gt;&gt; test.log
       make -f reject.mak clean
@@ -2469,7 +2427,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">358</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">351</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -2590,8 +2548,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       make -f wp.mak clean
       make -f wp.mak
       ./writeproperty &gt;&gt; test.log
-      make -f wp.mak clean
-      </value>
+      make -f wp.mak clean</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2785,22 +2742,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>31	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>32	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>33	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -2808,7 +2749,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -3209,22 +3150,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>37	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>38	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>39	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -3232,7 +3157,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -3361,7 +3286,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">29</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">21</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -3628,22 +3553,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>43	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>44	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>45	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -3651,7 +3560,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -3780,7 +3689,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">29</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">21</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4047,22 +3956,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>49	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>50	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>51	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -4070,7 +3963,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -4199,7 +4092,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">29</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">21</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4294,7 +4187,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">45</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">37</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4695,7 +4588,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">51</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">36</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4923,14 +4816,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>55	Unconfirmed-REQ unconfirmedCOVNotification device,2 binary-input,4 present-value </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>56	Unconfirmed-REQ who-Is 61 61 </name>
     <raw>810a00100120ffff00ff1008093d193d</raw>
     <root-type>BVLC</root-type>
@@ -5018,22 +4903,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>57	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>58	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>59	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -5041,7 +4910,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -5170,7 +5039,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">32</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">24</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -5492,22 +5361,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>63	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>64	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>65	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -5515,7 +5368,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -5836,22 +5689,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>69	Unconfirmed-REQ who-Is 61 61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>70	Unconfirmed-REQ i-Am device,61 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>71	Unconfirmed-REQ i-Am device,61 </name>
     <raw>810b001c0128ffff00000d013dfe1000c40200003d2201e09100212a</raw>
     <root-type>BVLC</root-type>
@@ -5859,7 +5696,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">34</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -6142,7 +5979,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">30</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">23</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6258,14 +6095,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
         </BVLCOriginalUnicastNPDU>
       </BVLC>
     </xml>
-  </testcase>
-
-  <testcase>
-    <name>75	Unconfirmed-REQ i-Am device,123 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
   </testcase>
 
   <testcase>
@@ -6684,7 +6513,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">30</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">23</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6800,14 +6629,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
         </BVLCOriginalUnicastNPDU>
       </BVLC>
     </xml>
-  </testcase>
-
-  <testcase>
-    <name>85	Unconfirmed-REQ i-Am device,123 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
   </testcase>
 
   <testcase>
@@ -7084,7 +6905,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">30</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">23</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -7203,22 +7024,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>91	Unconfirmed-REQ i-Am device,123 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
-    <name>92	Unconfirmed-REQ timeSynchronization </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>93	Unconfirmed-REQ timeSynchronization </name>
     <raw>810b001a0128ffff00000d013dfe1006a46a0917ffb417150d00</raw>
     <root-type>BVLC</root-type>
@@ -7315,14 +7120,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
   </testcase>
 
   <testcase>
-    <name>94	Unconfirmed-REQ who-Has device,123 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
-  </testcase>
-
-  <testcase>
     <name>95	Unconfirmed-REQ who-Has device,123 </name>
     <raw>810b00150128ffff00000d013dfe10072c0200007b</raw>
     <root-type>BVLC</root-type>
@@ -7330,7 +7127,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">11</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">20</bvlcLength>
         <BVLCOriginalBroadcastNPDU>
           <npdu>
             <NPDU>
@@ -7405,7 +7202,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">50</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">36</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -7504,14 +7301,6 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
         </BVLCOriginalUnicastNPDU>
       </BVLC>
     </xml>
-  </testcase>
-
-  <testcase>
-    <name>97	Unconfirmed-REQ i-Have device,123 device,123 </name>
-    <raw>00000000</raw>
-    <root-type>BVLC</root-type>
-    <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't match expected 129. Byte position: 1</xml>
   </testcase>
 
   <testcase>
@@ -8344,7 +8133,7 @@ org.apache.plc4x.java.spi.generation.ParseException: Actual value 0 doesn't matc
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">473</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">466</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
