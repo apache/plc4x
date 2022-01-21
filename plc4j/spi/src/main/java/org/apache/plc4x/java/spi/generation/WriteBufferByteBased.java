@@ -59,20 +59,21 @@ public class WriteBufferByteBased implements WriteBuffer {
         bb.position(position);
     }
 
+    /**
+     * @deprecated use {@link WriteBufferByteBased#getBytes()}
+     */
+    @Deprecated
     public byte[] getData() {
+        return getBytes();
+    }
+
+    public byte[] getBytes() {
         return ArrayUtils.subarray(bb.array(), 0, getPos());
     }
 
     @Override
     public int getPos() {
         return (int) bo.getPos();
-    }
-
-    public byte[] getBytes(int startPos, int endPos) {
-        int numBytes = endPos - startPos;
-        byte[] data = new byte[numBytes];
-        System.arraycopy(bb.array(), startPos, data, 0, numBytes);
-        return data;
     }
 
     @Override
