@@ -24,12 +24,12 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -86,14 +86,10 @@ public class ConfigurationFactory {
                 final Field field = fields.get(configName);
                 if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
-                    try {
-                        // As the arguments might be URL encoded, be sure it's decoded.
-                        stringValue = URLDecoder.decode(stringValue, "utf-8");
-                        setFieldValue(instance, field, stringValue);
-                        missingFieldNames.remove(configName);
-                    } catch (UnsupportedEncodingException e) {
-                        throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
-                    }
+                    // As the arguments might be URL encoded, be sure it's decoded.
+                    stringValue = URLDecoder.decode(stringValue, StandardCharsets.UTF_8);
+                    setFieldValue(instance, field, stringValue);
+                    missingFieldNames.remove(configName);
                 } else {
                     boolean success = setFieldDefaultValueFromAnnotation(instance, field);
                     if (success) {
@@ -165,43 +161,51 @@ public class ConfigurationFactory {
             throw new IllegalArgumentException("Field not defined");
         }
 
-        if (field.getAnnotation(ParameterConverter.class) != null) {
-            Class<? extends ConfigurationParameterConverter<?>> converterClass = field.getAnnotation(ParameterConverter.class).value();
+        try {
+            // Make the field accessible
+            field.setAccessible(true);
 
-            try {
-                ConfigurationParameterConverter<?> converter = converterClass.getDeclaredConstructor().newInstance();
-                if (converter.getType().isAssignableFrom(field.getType())) {
-                    valueString = converter.convert(valueString).toString();
+            // If a ParameterConverter is provided, use this for the conversion instead.
+            if (field.getAnnotation(ParameterConverter.class) != null) {
+                Class<? extends ConfigurationParameterConverter<?>> converterClass = field.getAnnotation(ParameterConverter.class).value();
+                try {
+                    ConfigurationParameterConverter<?> converter = converterClass.getDeclaredConstructor().newInstance();
+                    if (converter.getType().isAssignableFrom(field.getType())) {
+                        Object value = converter.convert(valueString);
+                        field.set(instance, value);
+                        return;
+                    }
+                    throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Could not initialize parameter converter", e);
                 }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new IllegalArgumentException("Could not initialize parameter converter", e);
             }
-            throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
+            // Use the default value conversions.
+            else {
+                if (field.getType() == String.class) {
+                    field.set(instance, valueString);
+                } else if ((field.getType() == boolean.class) || (field.getType() == Boolean.class)) {
+                    field.setBoolean(instance, Boolean.parseBoolean(valueString));
+                } else if ((field.getType() == byte.class) || (field.getType() == Byte.class)) {
+                    field.setByte(instance, Byte.parseByte(valueString));
+                } else if ((field.getType() == short.class) || (field.getType() == Short.class)) {
+                    field.setShort(instance, Short.parseShort(valueString));
+                } else if ((field.getType() == int.class) || (field.getType() == Integer.class)) {
+                    field.setInt(instance, Integer.parseInt(valueString));
+                } else if ((field.getType() == long.class) || (field.getType() == Long.class)) {
+                    field.setLong(instance, Long.parseLong(valueString));
+                } else if ((field.getType() == float.class) || (field.getType() == Float.class)) {
+                    field.setFloat(instance, Float.parseFloat(valueString));
+                } else if ((field.getType() == double.class) || (field.getType() == Double.class)) {
+                    field.setDouble(instance, Double.parseDouble(valueString));
+                } else {
+                    throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
+                }
+            }
+        } finally {
+            // Ensure we undo the accessible-making
+            field.setAccessible(false);
         }
-
-        field.setAccessible(true);
-
-        if (field.getType() == String.class) {
-            field.set(instance, valueString);
-        } else if ((field.getType() == boolean.class) || (field.getType() == Boolean.class)) {
-            field.setBoolean(instance, Boolean.parseBoolean(valueString));
-        } else if ((field.getType() == byte.class) || (field.getType() == Byte.class)) {
-            field.setByte(instance, Byte.parseByte(valueString));
-        } else if ((field.getType() == short.class) || (field.getType() == Short.class)) {
-            field.setShort(instance, Short.parseShort(valueString));
-        } else if ((field.getType() == int.class) || (field.getType() == Integer.class)) {
-            field.setInt(instance, Integer.parseInt(valueString));
-        } else if ((field.getType() == long.class) || (field.getType() == Long.class)) {
-            field.setLong(instance, Long.parseLong(valueString));
-        } else if ((field.getType() == float.class) || (field.getType() == Float.class)) {
-            field.setFloat(instance, Float.parseFloat(valueString));
-        } else if ((field.getType() == double.class) || (field.getType() == Double.class)) {
-            field.setDouble(instance, Double.parseDouble(valueString));
-        } else {
-            throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
-        }
-
-        field.setAccessible(false);
     }
 
     /**
@@ -212,36 +216,40 @@ public class ConfigurationFactory {
      * @return field is set
      */
     private static boolean setFieldDefaultValueFromAnnotation(Object instance, Field field) throws IllegalAccessException {
-        field.setAccessible(true);
+        try {
+            // Make the field accessible
+            field.setAccessible(true);
 
-        IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
-        if (intDefaultValue != null) {
-             field.setInt(instance, intDefaultValue.value());
-             return true;
+            // Go through the possible default-value annotations and use the first one that's there.
+            IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
+            if (intDefaultValue != null) {
+                field.setInt(instance, intDefaultValue.value());
+                return true;
+            }
+            BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
+            if (booleanDefaultValue != null) {
+                field.setBoolean(instance, booleanDefaultValue.value());
+                return true;
+            }
+            FloatDefaultValue floatDefaultValue = field.getAnnotation(FloatDefaultValue.class);
+            if (floatDefaultValue != null) {
+                field.setFloat(instance, floatDefaultValue.value());
+                return true;
+            }
+            DoubleDefaultValue doubleDefaultValue = field.getAnnotation(DoubleDefaultValue.class);
+            if (doubleDefaultValue != null) {
+                field.setDouble(instance, doubleDefaultValue.value());
+                return true;
+            }
+            StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
+            if (stringDefaultValue != null) {
+                field.set(instance, stringDefaultValue.value());
+                return true;
+            }
+        } finally {
+            // Ensure we undo the accessible-making
+            field.setAccessible(false);
         }
-        BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
-        if (booleanDefaultValue != null) {
-            field.setBoolean(instance, booleanDefaultValue.value());
-            return true;
-        }
-        FloatDefaultValue floatDefaultValue = field.getAnnotation(FloatDefaultValue.class);
-        if (floatDefaultValue != null) {
-            field.setFloat(instance, floatDefaultValue.value());
-            return true;
-        }
-        DoubleDefaultValue doubleDefaultValue = field.getAnnotation(DoubleDefaultValue.class);
-        if (doubleDefaultValue != null) {
-            field.setDouble(instance, doubleDefaultValue.value());
-            return true;
-        }
-        StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
-        if (stringDefaultValue != null) {
-            field.set(instance, stringDefaultValue.value());
-            return true;
-        }
-
-        field.setAccessible(false);
-
         return false;
     }
 
