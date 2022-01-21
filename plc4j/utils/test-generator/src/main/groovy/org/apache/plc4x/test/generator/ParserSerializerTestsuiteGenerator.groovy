@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.generation.ReadBufferByteBased
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased
 import org.pcap4j.core.PcapHandle
 import org.pcap4j.core.Pcaps
+import org.pcap4j.packet.EthernetPacket
 import org.pcap4j.packet.Packet
 import org.pcap4j.packet.TcpPacket
 import org.pcap4j.packet.UdpPacket
@@ -163,7 +164,12 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
                 if (tcpPacket != null) {
                     values << tcpPacket.payload.rawData
                 } else {
-                    values << new byte[]{0, 0, 0, 0}
+                    def ethernetPacket = packet.get(EthernetPacket.class)
+                    if(ethernetPacket != null) {
+                        values << ethernetPacket.payload.rawData
+                    } else {
+                        values << new byte[]{0, 0, 0, 0}
+                    }
                 }
             }
         }

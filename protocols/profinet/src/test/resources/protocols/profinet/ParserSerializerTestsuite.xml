@@ -25,42 +25,42 @@
 
   <testcase>
     <name>1	DelayReq         , Seq=9133, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023ad0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>2	DelayReq         , Seq=9134, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023ae0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>3	DelayReq         , Seq=9135, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023af0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>4	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>5	DelayReq         , Seq=9136, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b00000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -73,154 +73,154 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>7	DelayReq         , Seq=9137, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b10000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>8	DelayReq         , Seq=9138, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b20000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>9	DelayReq         , Seq=9139, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b30000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>10	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>11	DelayReq         , Seq=9140, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b40000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>12	DelayReq         , Seq=9141, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b50000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>13	DelayReq         , Seq=9142, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b60000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>14	DelayReq         , Seq=9143, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b70000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>15	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>16	DelayReq         , Seq=9144, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b80000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>17	DelayReq         , Seq=9145, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023b90000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>18	DelayReq         , Seq=9146, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023ba0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>19	DelayReq         , Seq=9147, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023bb0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>20	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>21	DelayReq         , Seq=9148, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023bc0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>22	DelayReq         , Seq=9149, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023bd0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>23	Membership Report / Leave group 224.0.0.252</name>
-    <raw>00000000</raw>
+    <raw>460000289558000001020000c0a818c8e0000016940400002200fa010000000103000000e00000fc</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>24	Membership Report / Join group 224.0.0.252 for any sources</name>
-    <raw>00000000</raw>
+    <raw>460000289559000001020000c0a818c8e0000016940400002200f9010000000104000000e00000fc</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>25	Membership Report / Leave group 224.0.0.252</name>
-    <raw>00000000</raw>
+    <raw>46000028955a000001020000c0a818c8e0000016940400002200fa010000000103000000e00000fc</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -233,10 +233,10 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>27	Membership Report / Join group 224.0.0.252 for any sources</name>
-    <raw>00000000</raw>
+    <raw>46000028955b000001020000c0a818c8e0000016940400002200f9010000000104000000e00000fc</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -281,42 +281,42 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>33	Membership Report / Join group 224.0.0.252 for any sources</name>
-    <raw>00000000</raw>
+    <raw>46000028955c000001020000c0a818c8e0000016940400002200f9010000000104000000e00000fc</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>34	DelayReq         , Seq=9150, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023be0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>35	Who has 192.168.24.31? Tell 192.168.24.200</name>
-    <raw>00000000</raw>
+    <raw>0001080006040001606d3c3da9a3c0a818c8ffffffffffffc0a8181f</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>36	Who has 192.168.24.31? Tell 192.168.24.200</name>
-    <raw>00000000</raw>
+    <raw>0001080006040001606d3c3da9a3c0a818c8ffffffffffffc0a8181f</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>37	192.168.24.31 is at 88:3f:99:00:06:ef</name>
-    <raw>00000000</raw>
+    <raw>0001080006040002883f990006efc0a8181f606d3c3da9a3c0a818c8</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -345,242 +345,242 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>41	RTC1, ID:0xbbf0, Len:  40, Cycle:31744 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000007c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>42	RTC1, ID:0xbbf0, Len:  40, Cycle:32768 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000080003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>43	RTC1, ID:0xbbf0, Len:  40, Cycle:33792 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000084003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>44	RTC1, ID:0xbbf0, Len:  40, Cycle:34816 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000088003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>45	RTC1, ID:0xbbf0, Len:  40, Cycle:35840 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000008c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>46	RTC1, ID:0xbbf0, Len:  40, Cycle:36864 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000090003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>47	RTC1, ID:0xbbf0, Len:  40, Cycle:37888 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000094003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>48	DelayReq         , Seq=9151, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023bf0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>49	RTC1, ID:0xbbf0, Len:  40, Cycle:38912 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000098003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>50	RTC1, ID:0xbbf0, Len:  40, Cycle:39936 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000009c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>51	RTC1, ID:0xbbf0, Len:  40, Cycle:40960 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>52	RTC1, ID:0xbbf0, Len:  40, Cycle:41984 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>53	RTC1, ID:0xbbf0, Len:  40, Cycle:43008 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>54	RTC1, ID:0xbbf0, Len:  40, Cycle:44032 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ac003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>55	RTC1, ID:0xbbf0, Len:  40, Cycle:45056 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>56	RTC1, ID:0xbbf0, Len:  40, Cycle:46080 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>57	RTC1, ID:0xbbf0, Len:  40, Cycle:47104 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>58	RTC1, ID:0xbbf0, Len:  40, Cycle:48128 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000bc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>59	RTC1, ID:0xbbf0, Len:  40, Cycle:49152 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>60	RTC1, ID:0xbbf0, Len:  40, Cycle:50176 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>61	RTC1, ID:0xbbf0, Len:  40, Cycle:51200 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>62	RTC1, ID:0xbbf0, Len:  40, Cycle:52224 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000cc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>63	RTC1, ID:0xbbf0, Len:  40, Cycle:53248 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>64	RTC1, ID:0xbbf0, Len:  40, Cycle:54272 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>65	RTC1, ID:0xbbf0, Len:  40, Cycle:55296 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>66	RTC1, ID:0xbbf0, Len:  40, Cycle:56320 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000dc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>67	RTC1, ID:0xbbf0, Len:  40, Cycle:57344 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>68	RTC1, ID:0xbbf0, Len:  40, Cycle:58368 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>69	RTC1, ID:0xbbf0, Len:  40, Cycle:59392 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>70	RTC1, ID:0xbbf0, Len:  40, Cycle:60416 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ec003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -601,786 +601,786 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>73	RTC1, ID:0xbbf0, Len:  40, Cycle:61440 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>74	RTC1, ID:0xbbf0, Len:  40, Cycle:62464 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>75	RTC1, ID:0xbbf0, Len:  40, Cycle:63488 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>76	RTC1, ID:0xbbf0, Len:  40, Cycle:64512 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000fc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>77	RTC1, ID:0xbbf0, Len:  40, Cycle:    0 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000000003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>78	RTC1, ID:0xbbf0, Len:  40, Cycle: 1024 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000004003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>79	RTC1, ID:0xbbf0, Len:  40, Cycle: 2048 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000008003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>80	RTC1, ID:0xbbf0, Len:  40, Cycle: 3072 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000000c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>81	RTC1, ID:0xbbf0, Len:  40, Cycle: 4096 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000010003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>82	RTC1, ID:0xbbf0, Len:  40, Cycle: 5120 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000014003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>83	RTC1, ID:0xbbf0, Len:  40, Cycle: 6144 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000018003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>84	RTC1, ID:0xbbf0, Len:  40, Cycle: 7168 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000001c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>85	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>86	RTC1, ID:0xbbf0, Len:  40, Cycle: 8192 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000020003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>87	RTC1, ID:0xbbf0, Len:  40, Cycle: 9216 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000024003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>88	RTC1, ID:0xbbf0, Len:  40, Cycle:10240 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000028003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>89	RTC1, ID:0xbbf0, Len:  40, Cycle:11264 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000002c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>90	DelayReq         , Seq=9152, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023c00000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>91	RTC1, ID:0xbbf0, Len:  40, Cycle:12288 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000030003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>92	RTC1, ID:0xbbf0, Len:  40, Cycle:13312 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000034003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>93	RTC1, ID:0xbbf0, Len:  40, Cycle:14336 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000038003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>94	RTC1, ID:0xbbf0, Len:  40, Cycle:15360 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000003c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>95	RTC1, ID:0xbbf0, Len:  40, Cycle:16384 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000040003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>96	RTC1, ID:0xbbf0, Len:  40, Cycle:17408 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000044003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>97	RTC1, ID:0xbbf0, Len:  40, Cycle:18432 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000048003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>98	RTC1, ID:0xbbf0, Len:  40, Cycle:19456 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000004c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>99	RTC1, ID:0xbbf0, Len:  40, Cycle:20480 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000050003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>100	RTC1, ID:0xbbf0, Len:  40, Cycle:21504 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000054003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>101	RTC1, ID:0xbbf0, Len:  40, Cycle:22528 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000058003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>102	RTC1, ID:0xbbf0, Len:  40, Cycle:23552 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000005c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>103	RTC1, ID:0xbbf0, Len:  40, Cycle:24576 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000060003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>104	RTC1, ID:0xbbf0, Len:  40, Cycle:25600 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000064003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>105	RTC1, ID:0xbbf0, Len:  40, Cycle:26624 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000068003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>106	RTC1, ID:0xbbf0, Len:  40, Cycle:27648 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000006c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>107	RTC1, ID:0xbbf0, Len:  40, Cycle:28672 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000070003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>108	RTC1, ID:0xbbf0, Len:  40, Cycle:29696 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000074003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>109	RTC1, ID:0xbbf0, Len:  40, Cycle:30720 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000078003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>110	RTC1, ID:0xbbf0, Len:  40, Cycle:31744 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000007c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>111	RTC1, ID:0xbbf0, Len:  40, Cycle:32768 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000080003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>112	RTC1, ID:0xbbf0, Len:  40, Cycle:33792 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000084003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>113	RTC1, ID:0xbbf0, Len:  40, Cycle:34816 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000088003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>114	RTC1, ID:0xbbf0, Len:  40, Cycle:35840 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000008c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>115	RTC1, ID:0xbbf0, Len:  40, Cycle:36864 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000090003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>116	RTC1, ID:0xbbf0, Len:  40, Cycle:37888 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000094003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>117	RTC1, ID:0xbbf0, Len:  40, Cycle:38912 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000098003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>118	RTC1, ID:0xbbf0, Len:  40, Cycle:39936 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000009c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>119	RTC1, ID:0xbbf0, Len:  40, Cycle:40960 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>120	RTC1, ID:0xbbf0, Len:  40, Cycle:41984 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>121	RTC1, ID:0xbbf0, Len:  40, Cycle:43008 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>122	RTC1, ID:0xbbf0, Len:  40, Cycle:44032 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ac003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>123	RTC1, ID:0xbbf0, Len:  40, Cycle:45056 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>124	RTC1, ID:0xbbf0, Len:  40, Cycle:46080 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>125	RTC1, ID:0xbbf0, Len:  40, Cycle:47104 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>126	RTC1, ID:0xbbf0, Len:  40, Cycle:48128 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000bc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>127	RTC1, ID:0xbbf0, Len:  40, Cycle:49152 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>128	RTC1, ID:0xbbf0, Len:  40, Cycle:50176 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>129	DelayReq         , Seq=9153, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023c10000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>130	RTC1, ID:0xbbf0, Len:  40, Cycle:51200 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>131	RTC1, ID:0xbbf0, Len:  40, Cycle:52224 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000cc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>132	RTC1, ID:0xbbf0, Len:  40, Cycle:53248 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>133	RTC1, ID:0xbbf0, Len:  40, Cycle:54272 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>134	RTC1, ID:0xbbf0, Len:  40, Cycle:55296 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>135	RTC1, ID:0xbbf0, Len:  40, Cycle:56320 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000dc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>136	RTC1, ID:0xbbf0, Len:  40, Cycle:57344 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>137	RTC1, ID:0xbbf0, Len:  40, Cycle:58368 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>138	RTC1, ID:0xbbf0, Len:  40, Cycle:59392 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>139	RTC1, ID:0xbbf0, Len:  40, Cycle:60416 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ec003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>140	RTC1, ID:0xbbf0, Len:  40, Cycle:61440 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>141	RTC1, ID:0xbbf0, Len:  40, Cycle:62464 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>142	RTC1, ID:0xbbf0, Len:  40, Cycle:63488 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>143	RTC1, ID:0xbbf0, Len:  40, Cycle:64512 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000fc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>144	RTC1, ID:0xbbf0, Len:  40, Cycle:    0 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000000003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>145	RTC1, ID:0xbbf0, Len:  40, Cycle: 1024 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000004003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>146	RTC1, ID:0xbbf0, Len:  40, Cycle: 2048 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000008003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>147	RTC1, ID:0xbbf0, Len:  40, Cycle: 3072 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000000c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>148	RTC1, ID:0xbbf0, Len:  40, Cycle: 4096 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000010003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>149	RTC1, ID:0xbbf0, Len:  40, Cycle: 5120 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000014003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>150	RTC1, ID:0xbbf0, Len:  40, Cycle: 6144 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000018003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>151	RTC1, ID:0xbbf0, Len:  40, Cycle: 7168 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000001c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>152	RTC1, ID:0xbbf0, Len:  40, Cycle: 8192 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000020003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>153	RTC1, ID:0xbbf0, Len:  40, Cycle: 9216 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000024003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>154	RTC1, ID:0xbbf0, Len:  40, Cycle:10240 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000028003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>155	RTC1, ID:0xbbf0, Len:  40, Cycle:11264 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000002c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>156	RTC1, ID:0xbbf0, Len:  40, Cycle:12288 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000030003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>157	RTC1, ID:0xbbf0, Len:  40, Cycle:13312 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000034003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>158	RTC1, ID:0xbbf0, Len:  40, Cycle:14336 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000038003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>159	RTC1, ID:0xbbf0, Len:  40, Cycle:15360 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000003c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>160	RTC1, ID:0xbbf0, Len:  40, Cycle:16384 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000040003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>161	RTC1, ID:0xbbf0, Len:  40, Cycle:17408 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000044003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>162	RTC1, ID:0xbbf0, Len:  40, Cycle:18432 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000048003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>163	RTC1, ID:0xbbf0, Len:  40, Cycle:19456 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000004c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>164	RTC1, ID:0xbbf0, Len:  40, Cycle:20480 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000050003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>165	RTC1, ID:0xbbf0, Len:  40, Cycle:21504 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000054003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>166	RTC1, ID:0xbbf0, Len:  40, Cycle:22528 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000058003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>167	DelayReq         , Seq=9154, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023c20000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>168	RTC1, ID:0xbbf0, Len:  40, Cycle:23552 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000005c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>169	RTC1, ID:0xbbf0, Len:  40, Cycle:24576 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000060003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>170	RTC1, ID:0xbbf0, Len:  40, Cycle:25600 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000064003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -1401,546 +1401,546 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>173	RTC1, ID:0xbbf0, Len:  40, Cycle:26624 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000068003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>174	RTC1, ID:0xbbf0, Len:  40, Cycle:27648 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000006c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>175	RTC1, ID:0xbbf0, Len:  40, Cycle:28672 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000070003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>176	RTC1, ID:0xbbf0, Len:  40, Cycle:29696 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000074003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>177	RTC1, ID:0xbbf0, Len:  40, Cycle:30720 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000078003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>178	RTC1, ID:0xbbf0, Len:  40, Cycle:31744 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000007c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>179	RTC1, ID:0xbbf0, Len:  40, Cycle:32768 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000080003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>180	RTC1, ID:0xbbf0, Len:  40, Cycle:33792 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000084003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>181	RTC1, ID:0xbbf0, Len:  40, Cycle:34816 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000088003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>182	RTC1, ID:0xbbf0, Len:  40, Cycle:35840 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000008c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>183	RTC1, ID:0xbbf0, Len:  40, Cycle:36864 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000090003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>184	RTC1, ID:0xbbf0, Len:  40, Cycle:37888 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000094003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>185	RTC1, ID:0xbbf0, Len:  40, Cycle:38912 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000098003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>186	RTC1, ID:0xbbf0, Len:  40, Cycle:39936 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000009c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>187	RTC1, ID:0xbbf0, Len:  40, Cycle:40960 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>188	RTC1, ID:0xbbf0, Len:  40, Cycle:41984 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>189	RTC1, ID:0xbbf0, Len:  40, Cycle:43008 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>190	RTC1, ID:0xbbf0, Len:  40, Cycle:44032 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ac003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>191	RTC1, ID:0xbbf0, Len:  40, Cycle:45056 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>192	RTC1, ID:0xbbf0, Len:  40, Cycle:46080 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>193	RTC1, ID:0xbbf0, Len:  40, Cycle:47104 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>194	RTC1, ID:0xbbf0, Len:  40, Cycle:48128 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000bc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>195	RTC1, ID:0xbbf0, Len:  40, Cycle:49152 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>196	RTC1, ID:0xbbf0, Len:  40, Cycle:50176 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>197	RTC1, ID:0xbbf0, Len:  40, Cycle:51200 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>198	RTC1, ID:0xbbf0, Len:  40, Cycle:52224 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000cc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>199	RTC1, ID:0xbbf0, Len:  40, Cycle:53248 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>200	RTC1, ID:0xbbf0, Len:  40, Cycle:54272 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>201	RTC1, ID:0xbbf0, Len:  40, Cycle:55296 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>202	RTC1, ID:0xbbf0, Len:  40, Cycle:56320 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000dc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>203	RTC1, ID:0xbbf0, Len:  40, Cycle:57344 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>204	RTC1, ID:0xbbf0, Len:  40, Cycle:58368 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>205	RTC1, ID:0xbbf0, Len:  40, Cycle:59392 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>206	RTC1, ID:0xbbf0, Len:  40, Cycle:60416 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ec003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>207	RTC1, ID:0xbbf0, Len:  40, Cycle:61440 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>208	DelayReq         , Seq=9155, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023c30000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>209	RTC1, ID:0xbbf0, Len:  40, Cycle:62464 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>210	RTC1, ID:0xbbf0, Len:  40, Cycle:63488 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000f8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>211	RTC1, ID:0xbbf0, Len:  40, Cycle:64512 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000fc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>212	RTC1, ID:0xbbf0, Len:  40, Cycle:    0 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000000003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>213	RTC1, ID:0xbbf0, Len:  40, Cycle: 1024 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000004003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>214	RTC1, ID:0xbbf0, Len:  40, Cycle: 2048 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000008003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>215	RTC1, ID:0xbbf0, Len:  40, Cycle: 3072 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000000c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>216	RTC1, ID:0xbbf0, Len:  40, Cycle: 4096 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000010003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>217	RTC1, ID:0xbbf0, Len:  40, Cycle: 5120 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000014003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>218	RTC1, ID:0xbbf0, Len:  40, Cycle: 6144 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000018003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>219	RTC1, ID:0xbbf0, Len:  40, Cycle: 7168 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000001c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>220	RTC1, ID:0xbbf0, Len:  40, Cycle: 8192 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000020003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>221	RTC1, ID:0xbbf0, Len:  40, Cycle: 9216 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000024003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>222	RTC1, ID:0xbbf0, Len:  40, Cycle:10240 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000028003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>223	RTC1, ID:0xbbf0, Len:  40, Cycle:11264 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000002c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>224	RTC1, ID:0xbbf0, Len:  40, Cycle:12288 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000030003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>225	RTC1, ID:0xbbf0, Len:  40, Cycle:13312 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000034003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>226	RTC1, ID:0xbbf0, Len:  40, Cycle:14336 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000038003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>227	RTC1, ID:0xbbf0, Len:  40, Cycle:15360 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000003c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>228	RTC1, ID:0xbbf0, Len:  40, Cycle:16384 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000040003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>229	RTC1, ID:0xbbf0, Len:  40, Cycle:17408 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000044003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>230	RTC1, ID:0xbbf0, Len:  40, Cycle:18432 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000048003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>231	RTC1, ID:0xbbf0, Len:  40, Cycle:19456 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000004c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>232	RTC1, ID:0xbbf0, Len:  40, Cycle:20480 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000050003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>233	RTC1, ID:0xbbf0, Len:  40, Cycle:21504 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000054003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>234	RTC1, ID:0xbbf0, Len:  40, Cycle:22528 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000058003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>235	RTC1, ID:0xbbf0, Len:  40, Cycle:23552 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000005c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>236	RTC1, ID:0xbbf0, Len:  40, Cycle:24576 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000060003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>237	RTC1, ID:0xbbf0, Len:  40, Cycle:25600 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000064003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>238	RTC1, ID:0xbbf0, Len:  40, Cycle:26624 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000068003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>239	RTC1, ID:0xbbf0, Len:  40, Cycle:27648 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000006c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>240	RTC1, ID:0xbbf0, Len:  40, Cycle:28672 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000070003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -1969,122 +1969,122 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>244	RTC1, ID:0xbbf0, Len:  40, Cycle:29696 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000074003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>245	RTC1, ID:0xbbf0, Len:  40, Cycle:30720 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000078003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>246	RTC1, ID:0xbbf0, Len:  40, Cycle:31744 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000007c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>247	RTC1, ID:0xbbf0, Len:  40, Cycle:32768 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000080003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>248	RTC1, ID:0xbbf0, Len:  40, Cycle:33792 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000084003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>249	DelayReq         , Seq=9156, Delay=          0ns, PortMAC=88:3f:99:00:06:e0</name>
-    <raw>00000000</raw>
+    <raw>ff4000000000000000000000000023c40000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>250	RTC1, ID:0xbbf0, Len:  40, Cycle:34816 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000088003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>251	RTC1, ID:0xbbf0, Len:  40, Cycle:35840 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000008c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>252	LA/cdxb195b3 LA/port-001 20 SysN=cdxb195b3 SysD=Siemens, SIMOCODE pro V PN, 3UF7 011-1AU00-0, FW: Version V02.01.03 RTClass3 Port Status = OFF</name>
-    <raw>00000000</raw>
+    <raw>020a07636478623139356233040907706f72742d3030310602001408275369656d656e732c2053494d4f434f44452c2045746865726e657420506f72742c2058312050310a096364786231393562330c435369656d656e732c2053494d4f434f44452070726f205620504e2c2033554637203031312d31415530302d302c2046573a2056657273696f6e205630322e30312e30330e040084008410140501c0a8181f0200000001082b0601040181c06efe18000ecf010000012900000000000000670000000000000000fe08000ecf0200000000fe16000ecf04ffffffffffffffffffffffffffffffff0000fe0a000ecf05883f990006effe0900120f0103ec000010fe0600120f0405f20000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>253	RTC1, ID:0xbbf0, Len:  40, Cycle:36864 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000090003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>254	RTC1, ID:0xbbf0, Len:  40, Cycle:37888 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000094003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>255	RTC1, ID:0xbbf0, Len:  40, Cycle:38912 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf00000000000000000000000000000000000000000000000000000000000000000000000000000000098003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>256	RTC1, ID:0xbbf0, Len:  40, Cycle:39936 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf0000000000000000000000000000000000000000000000000000000000000000000000000000000009c003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>257	RTC1, ID:0xbbf0, Len:  40, Cycle:40960 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>258	RTC1, ID:0xbbf0, Len:  40, Cycle:41984 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -2105,90 +2105,90 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>261	RTC1, ID:0xbbf0, Len:  40, Cycle:43008 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000a8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>262	RTC1, ID:0xbbf0, Len:  40, Cycle:44032 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000ac003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>263	RTC1, ID:0xbbf0, Len:  40, Cycle:45056 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>264	RTC1, ID:0xbbf0, Len:  40, Cycle:46080 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>265	RTC1, ID:0xbbf0, Len:  40, Cycle:47104 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000b8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>266	RTC1, ID:0xbbf0, Len:  40, Cycle:48128 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000bc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>267	RTC1, ID:0xbbf0, Len:  40, Cycle:49152 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>268	RTC1, ID:0xbbf0, Len:  40, Cycle:50176 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>269	RTC1, ID:0xbbf0, Len:  40, Cycle:51200 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000c8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>270	RTC1, ID:0xbbf0, Len:  40, Cycle:52224 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000cc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>271	RTC1, ID:0xbbf0, Len:  40, Cycle:53248 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -2201,26 +2201,26 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>273	RTC1, ID:0xbbf0, Len:  40, Cycle:54272 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d4003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>274	RTC1, ID:0xbbf0, Len:  40, Cycle:55296 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000d8003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
     <name>275	RTC1, ID:0xbbf0, Len:  40, Cycle:56320 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000dc003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
   <testcase>
@@ -2233,10 +2233,10 @@ org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discri
 
   <testcase>
     <name>277	RTC1, ID:0xbbf0, Len:  40, Cycle:57344 (Valid,Primary,Ok,Run)</name>
-    <raw>00000000</raw>
+    <raw>bbf000000000000000000000000000000000000000000000000000000000000000000000000000000000e0003500</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 4</xml>
+org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
   </testcase>
 
 </test:testsuite>
