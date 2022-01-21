@@ -26,7 +26,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-bacnet-driver</artifactId>
+  <artifactId>plc4j-driver-bacnet</artifactId>
 
   <name>PLC4J: Driver: BACNet/IP Driver</name>
 
