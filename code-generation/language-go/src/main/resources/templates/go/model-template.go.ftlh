@@ -691,11 +691,42 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						<#if (!helper.isSimpleTypeReference(arrayField.type)) && helper.requiresVariable(arrayField, "lastItem")>
 			lastItem := curItem == uint16(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)} - 1)
 						</#if>
-			_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+                        <@compress single_line=true>
+			_item, _err :=
+                            <#if helper.isSimpleTypeReference(arrayField.type)>
+                                ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}
+                            <#else>
+                                <#assign complexTypeReference=arrayField.type.asComplexTypeReference().orElseThrow()>
+                                <#assign typeName=complexTypeReference.name>
+                                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+                                <#-- Usually you don't use child directly unless they are parameterized #-->
+                                    <#assign typeName=typeDefinition.parentType.name>
+                                    <#assign typeDefinition=typeDefinition.parentType>
+                                </#if>
+                                <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                                <#assign refParams>
+                                    <#if hasRefParams>
+										,
+                                        <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                            <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
+                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}
+                                            <#sep>, </#sep>
+                                        </#list>
+                                    </#if>
+                                </#assign>
+                                ${typeName}Parse(readBuffer${refParams})
+                            </#if>
+                        </@compress>
+
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
+                        <#if helper.isSimpleTypeReference(arrayField.type)>
 			${arrayField.name}[curItem] = _item
+                        <#else>
+			${arrayField.name}[curItem] = Cast${arrayField.type.asComplexTypeReference().orElseThrow().name}(_item)
+                        </#if>
 		}
 	}
 				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -729,16 +760,26 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 							<#if helper.isSimpleTypeReference(arrayField.type)>
 								${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}
 							<#else>
-								${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer
-								<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>
-									,
-									<#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>
-										<#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
-										${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}
-										<#sep>, </#sep>
-									</#list>
-								</#if>
-								)
+                                <#assign complexTypeReference=arrayField.type.asComplexTypeReference().orElseThrow()>
+                                <#assign typeName=complexTypeReference.name>
+                                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+                                <#-- Usually you don't use child directly unless they are parameterized #-->
+                                    <#assign typeName=typeDefinition.parentType.name>
+                                    <#assign typeDefinition=typeDefinition.parentType>
+                                </#if>
+                                <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                                <#assign refParams>
+                                    <#if hasRefParams>
+										,
+                                        <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                            <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
+                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}
+                                            <#sep>, </#sep>
+                                        </#list>
+                                    </#if>
+                                </#assign>
+                                ${typeName}Parse(readBuffer${refParams})
 							</#if>
 						</@compress>
 
