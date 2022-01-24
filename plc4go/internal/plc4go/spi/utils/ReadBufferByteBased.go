@@ -378,11 +378,11 @@ func (rb *byteReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, _ ..
 }
 
 func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, _ ...WithReaderArgs) (string, error) {
-	bigInt, err := rb.ReadBigInt(logicalName, uint64(bitLength))
+	stringBytes, err := rb.ReadByteArray(logicalName, int(bitLength/8))
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")
 	}
-	return string(bigInt.Bytes()), nil
+	return string(stringBytes), nil
 }
 
 func (rb *byteReadBuffer) CloseContext(_ string, _ ...WithReaderArgs) error {
