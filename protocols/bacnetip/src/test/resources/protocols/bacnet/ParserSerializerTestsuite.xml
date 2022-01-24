@@ -3286,7 +3286,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">25</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">22</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -3689,7 +3689,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">25</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">22</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4092,7 +4092,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">25</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">22</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4187,7 +4187,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">41</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">38</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -4588,7 +4588,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">40</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">37</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -5039,7 +5039,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">25</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
