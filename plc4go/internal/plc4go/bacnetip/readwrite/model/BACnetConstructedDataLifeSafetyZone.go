@@ -121,7 +121,7 @@ func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNu
 	zones := make([]*BACnetContextTagObjectIdentifier, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetContextTagObjectIdentifierParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+			_item, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'zones' field")
 			}

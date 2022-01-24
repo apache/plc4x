@@ -65,6 +65,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetNotificationParametersChangeOfValueNewValueParse(io, tagNumber)
+	case "BACnetServiceAckAtomicReadFileStreamOrRecord":
+		return model.BACnetServiceAckAtomicReadFileStreamOrRecordParse(io)
 	case "NPDUControl":
 		return model.NPDUControlParse(io)
 	case "BACnetPropertyStates":
@@ -73,6 +75,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetPropertyStatesParse(io, tagNumber)
+	case "BACnetReadAccessSpecification":
+		return model.BACnetReadAccessSpecificationParse(io)
 	case "BACnetConstructedData":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -85,12 +89,20 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.BACnetSegmentationParse(io)
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(io)
+	case "BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(io, tagNumber)
 	case "BACnetUnconfirmedServiceRequest":
 		len, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetUnconfirmedServiceRequestParse(io, len)
+	case "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord":
+		return model.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(io)
 	case "BVLC":
 		return model.BVLCParse(io)
 	case "BACnetDateTime":
@@ -174,6 +186,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.NPDUParse(io, npduLength)
+	case "BACnetPropertyReference":
+		return model.BACnetPropertyReferenceParse(io)
 	case "BVLCWriteBroadcastDistributionTableEntry":
 		return model.BVLCWriteBroadcastDistributionTableEntryParse(io)
 	}

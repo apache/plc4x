@@ -48,16 +48,16 @@ func (m *BACnetContextTagBoolean) DataType() BACnetDataType {
 	return BACnetDataType_BOOLEAN
 }
 
-func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.Header = header
 }
 
-func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagBoolean{
 		Value:            value,
 		IsTrue:           isTrue,
 		IsFalse:          isFalse,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -107,7 +107,7 @@ func (m *BACnetContextTagBoolean) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
+func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}

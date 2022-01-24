@@ -141,6 +141,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		_parent, typeSwitchError = BACnetErrorWritePropertyParse(readBuffer)
 	case serviceChoice == 0x1A: // BACnetErrorReadRange
 		_parent, typeSwitchError = BACnetErrorReadRangeParse(readBuffer)
+	case serviceChoice == 0x11: // BACnetErrorDeviceCommunicationProtocol
+		_parent, typeSwitchError = BACnetErrorDeviceCommunicationProtocolParse(readBuffer)
 	case serviceChoice == 0x12: // BACnetErrorConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(readBuffer)
 	case serviceChoice == 0x14: // BACnetErrorPasswordFailure

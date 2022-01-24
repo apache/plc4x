@@ -48,16 +48,16 @@ func (m *BACnetContextTagEventType) DataType() BACnetDataType {
 	return BACnetDataType_EVENT_TYPE
 }
 
-func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.Header = header
 }
 
-func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagEventType{
 		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
 		IsProprietary:    isProprietary,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -94,7 +94,7 @@ func (m *BACnetContextTagEventType) LengthInBitsConditional(lastItem bool) uint1
 	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Manual Field (eventType)
-	lengthInBits += uint16(int32(32))
+	lengthInBits += uint16(int32(m.ActualLength) * int32(int32(8)))
 
 	// Manual Field (proprietaryValue)
 	lengthInBits += uint16(int32(0))
@@ -108,7 +108,7 @@ func (m *BACnetContextTagEventType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagEventType"); pullErr != nil {
 		return nil, pullErr
 	}

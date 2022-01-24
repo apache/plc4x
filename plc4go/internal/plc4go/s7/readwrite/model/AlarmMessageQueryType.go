@@ -170,7 +170,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
 			}
-			messageObjects[curItem] = _item
+			messageObjects[curItem] = CastAlarmMessageObjectQueryType(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {

@@ -383,7 +383,7 @@
     [array    BACnetPropertyReference
                     listOfPropertyReferences
                     terminated
-                    'STATIC_CALL('isBACnetConstructedDataClosingTag', readBuffer, false, 1)'
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 1)'
     ]
     [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]

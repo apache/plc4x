@@ -133,7 +133,7 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field")
 			}
-			portMappings[curItem] = _item
+			portMappings[curItem] = CastNLMInitalizeRoutingTablePortMapping(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("portMappings", utils.WithRenderAsList(true)); closeErr != nil {

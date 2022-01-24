@@ -48,16 +48,16 @@ func (m *BACnetContextTagBitString) DataType() BACnetDataType {
 	return BACnetDataType_BIT_STRING
 }
 
-func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+func (m *BACnetContextTagBitString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.Header = header
 }
 
-func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagBitString(unusedBits uint8, data []bool, unused []bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagBitString{
 		UnusedBits:       unusedBits,
 		Data:             data,
 		Unused:           unused,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -113,7 +113,7 @@ func (m *BACnetContextTagBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}

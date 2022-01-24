@@ -137,7 +137,7 @@ func AlarmMessagePushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessagePushTy
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
 			}
-			messageObjects[curItem] = _item
+			messageObjects[curItem] = CastAlarmMessageObjectPushType(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {

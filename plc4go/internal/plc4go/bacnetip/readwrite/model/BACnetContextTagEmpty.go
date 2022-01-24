@@ -44,13 +44,13 @@ func (m *BACnetContextTagEmpty) DataType() BACnetDataType {
 	return 0
 }
 
-func (m *BACnetContextTagEmpty) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+func (m *BACnetContextTagEmpty) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.Header = header
 }
 
-func NewBACnetContextTagEmpty(header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagEmpty(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagEmpty{
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag

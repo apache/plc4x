@@ -147,7 +147,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")
 			}
-			adsStampHeaders[curItem] = _item
+			adsStampHeaders[curItem] = CastAdsStampHeader(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("adsStampHeaders", utils.WithRenderAsList(true)); closeErr != nil {

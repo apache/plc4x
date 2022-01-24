@@ -232,7 +232,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field")
 			}
-			AssociatedValues[curItem] = _item
+			AssociatedValues[curItem] = CastAssociatedValueType(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("AssociatedValues", utils.WithRenderAsList(true)); closeErr != nil {

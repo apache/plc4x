@@ -143,7 +143,7 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
 			}
-			comObjectDescriptors[curItem] = _item
+			comObjectDescriptors[curItem] = CastGroupObjectDescriptorRealisationType2(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {

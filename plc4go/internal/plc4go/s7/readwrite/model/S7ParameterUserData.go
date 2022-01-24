@@ -133,7 +133,7 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (*
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field")
 			}
-			items[curItem] = _item
+			items[curItem] = CastS7ParameterUserDataItem(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {

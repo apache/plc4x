@@ -48,16 +48,16 @@ func (m *BACnetContextTagPropertyIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }
 
-func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.Header = header
 }
 
-func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagPropertyIdentifier{
 		PropertyIdentifier: propertyIdentifier,
 		ProprietaryValue:   proprietaryValue,
 		IsProprietary:      isProprietary,
-		BACnetContextTag:   NewBACnetContextTag(header, tagNumber, actualLength),
+		BACnetContextTag:   NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -94,7 +94,7 @@ func (m *BACnetContextTagPropertyIdentifier) LengthInBitsConditional(lastItem bo
 	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Manual Field (propertyIdentifier)
-	lengthInBits += uint16(int32(32))
+	lengthInBits += uint16(int32(m.ActualLength) * int32(int32(8)))
 
 	// Manual Field (proprietaryValue)
 	lengthInBits += uint16(int32(0))
@@ -108,7 +108,7 @@ func (m *BACnetContextTagPropertyIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagPropertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}

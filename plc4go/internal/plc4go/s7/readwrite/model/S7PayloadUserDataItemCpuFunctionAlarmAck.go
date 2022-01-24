@@ -152,7 +152,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
 			}
-			messageObjects[curItem] = _item
+			messageObjects[curItem] = CastAlarmMessageObjectAckType(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {

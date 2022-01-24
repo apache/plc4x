@@ -134,7 +134,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'services' field")
 			}
-			services[curItem] = _item
+			services[curItem] = CastCipService(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("services", utils.WithRenderAsList(true)); closeErr != nil {

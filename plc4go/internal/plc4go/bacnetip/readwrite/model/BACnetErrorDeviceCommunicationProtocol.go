@@ -41,7 +41,7 @@ type IBACnetErrorDeviceCommunicationProtocol interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetErrorDeviceCommunicationProtocol) ServiceChoice() uint8 {
-	return 0x05
+	return 0x11
 }
 
 func (m *BACnetErrorDeviceCommunicationProtocol) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {

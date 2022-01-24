@@ -120,7 +120,7 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
 			}
-			adsNotificationSamples[curItem] = _item
+			adsNotificationSamples[curItem] = CastAdsNotificationSample(_item)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
