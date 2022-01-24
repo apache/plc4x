@@ -6292,7 +6292,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">463</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6318,6 +6318,133 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
+              <apdu>
+                <APDU>
+                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <APDUComplexAck>
+                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
+                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
+                    <reserved dataType="uint" bitLength="2">0</reserved>
+                    <originalInvokeId dataType="uint" bitLength="8">54</originalInvokeId>
+                    <serviceAck>
+                      <BACnetServiceAck>
+                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <BACnetServiceAckAtomicReadFile>
+                          <endOfFile>
+                            <BACnetApplicationTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetApplicationTagBoolean>
+                              </BACnetApplicationTagBoolean>
+                            </BACnetApplicationTag>
+                          </endOfFile>
+                          <accessMethod>
+                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
+                              <openingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetOpeningTag>
+                                  </BACnetOpeningTag>
+                                </BACnetContextTag>
+                              </openingTag>
+                              <BACnetServiceAckAtomicReadFileStream>
+                                <fileStartPosition>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagSignedInteger>
+                                      <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                    </BACnetApplicationTagSignedInteger>
+                                  </BACnetApplicationTag>
+                                </fileStartPosition>
+                                <fileData>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                        <extLength dataType="uint" bitLength="8">254</extLength>
+                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagOctetString>
+                                      <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
+      	Passed: 260107
+      	Failed: 0
+      Test "BACnet Address":
+      	Passed: 2805
+      	Failed: 0
+      Test "BACnet DeviceCommunicationControl":
+      	Passed: 12
+      	Failed: 0
+      Test "BACnet Analog Input":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet Analog Output":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet Analog Value":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet AtomicReadFile":
+      	Passed: 29
+      	Failed: 0
+      Test "BACnet AtomicWriteFile":
+      	Passed: 25
+      	Failed: 0
+      Test "BACnet Applicat</value>
+                                    </BACnetApplicationTagOctetString>
+                                  </BACnetApplicationTag>
+                                </fileData>
+                              </BACnetServiceAckAtomicReadFileStream>
+                              <closingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetClosingTag>
+                                  </BACnetClosingTag>
+                                </BACnetContextTag>
+                              </closingTag>
+                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
+                          </accessMethod>
+                        </BACnetServiceAckAtomicReadFile>
+                      </BACnetServiceAck>
+                    </serviceAck>
+                  </APDUComplexAck>
+                </APDU>
+              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -6436,7 +6563,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">464</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6462,6 +6589,138 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
+              <apdu>
+                <APDU>
+                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <APDUComplexAck>
+                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
+                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
+                    <reserved dataType="uint" bitLength="2">0</reserved>
+                    <originalInvokeId dataType="uint" bitLength="8">55</originalInvokeId>
+                    <serviceAck>
+                      <BACnetServiceAck>
+                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <BACnetServiceAckAtomicReadFile>
+                          <endOfFile>
+                            <BACnetApplicationTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetApplicationTagBoolean>
+                              </BACnetApplicationTagBoolean>
+                            </BACnetApplicationTag>
+                          </endOfFile>
+                          <accessMethod>
+                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
+                              <openingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetOpeningTag>
+                                  </BACnetOpeningTag>
+                                </BACnetContextTag>
+                              </openingTag>
+                              <BACnetServiceAckAtomicReadFileStream>
+                                <fileStartPosition>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagSignedInteger>
+                                      <valueInt16 dataType="int" bitLength="16">440</valueInt16>
+                                    </BACnetApplicationTagSignedInteger>
+                                  </BACnetApplicationTag>
+                                </fileStartPosition>
+                                <fileData>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                        <extLength dataType="uint" bitLength="8">254</extLength>
+                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagOctetString>
+                                      <value dataType="string" bitLength="3520" encoding="UTF-8">ion Data":
+      	Passed: 66
+      	Failed: 0
+      Test "BACDCode":
+      	Passed: 12617539
+      	Failed: 0
+      Test "BACnet Error":
+      	Passed: 64275
+      	Failed: 0
+      Test "BACnet Strings":
+      	Passed: 1153
+      	Failed: 0
+      Test "BACnet Binary Input":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet Binary Output":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet Binary_Value":
+      	Passed: 4
+      	Failed: 0
+      Test "crc":
+      	Passed: 13
+      	Failed: 0
+      Test "BACnet Device":
+      	Passed: 12
+      	Failed: 0
+      Test "BACnet I-Am":
+      	Passed: 6
+      	Fa</value>
+                                    </BACnetApplicationTagOctetString>
+                                  </BACnetApplicationTag>
+                                </fileData>
+                              </BACnetServiceAckAtomicReadFileStream>
+                              <closingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetClosingTag>
+                                  </BACnetClosingTag>
+                                </BACnetContextTag>
+                              </closingTag>
+                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
+                          </accessMethod>
+                        </BACnetServiceAckAtomicReadFile>
+                      </BACnetServiceAck>
+                    </serviceAck>
+                  </APDUComplexAck>
+                </APDU>
+              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -6580,7 +6839,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">464</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6606,6 +6865,135 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
+              <apdu>
+                <APDU>
+                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <APDUComplexAck>
+                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
+                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
+                    <reserved dataType="uint" bitLength="2">0</reserved>
+                    <originalInvokeId dataType="uint" bitLength="8">56</originalInvokeId>
+                    <serviceAck>
+                      <BACnetServiceAck>
+                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <BACnetServiceAckAtomicReadFile>
+                          <endOfFile>
+                            <BACnetApplicationTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetApplicationTagBoolean>
+                              </BACnetApplicationTagBoolean>
+                            </BACnetApplicationTag>
+                          </endOfFile>
+                          <accessMethod>
+                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
+                              <openingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetOpeningTag>
+                                  </BACnetOpeningTag>
+                                </BACnetContextTag>
+                              </openingTag>
+                              <BACnetServiceAckAtomicReadFileStream>
+                                <fileStartPosition>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagSignedInteger>
+                                      <valueInt16 dataType="int" bitLength="16">880</valueInt16>
+                                    </BACnetApplicationTagSignedInteger>
+                                  </BACnetApplicationTag>
+                                </fileStartPosition>
+                                <fileData>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                        <extLength dataType="uint" bitLength="8">254</extLength>
+                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagOctetString>
+                                      <value dataType="string" bitLength="3520" encoding="UTF-8">iled: 0
+      Test "BACnet I-Have":
+      	Passed: 3469312
+      	Failed: 0
+      Test "index text":
+      	Passed: 25
+      	Failed: 0
+      Test "BACnet Life Safety Point":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet Multi-state Output":
+      	Passed: 4
+      	Failed: 0
+      Test "BACnet NPDU":
+      	Passed: 27
+      	Failed: 0
+      Test "BACnet ReinitializeDevice":
+      	Passed: 5
+      	Failed: 0
+      Test "BACnet Reject":
+      	Passed: 260107
+      	Failed: 0
+      Test "ringbuf":
+      	Passed: 769
+      	Failed: 0
+      Test "BACnet ReadProperty":
+      	Passed: 17</value>
+                                    </BACnetApplicationTagOctetString>
+                                  </BACnetApplicationTag>
+                                </fileData>
+                              </BACnetServiceAckAtomicReadFileStream>
+                              <closingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetClosingTag>
+                                  </BACnetClosingTag>
+                                </BACnetContextTag>
+                              </closingTag>
+                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
+                          </accessMethod>
+                        </BACnetServiceAckAtomicReadFile>
+                      </BACnetServiceAck>
+                    </serviceAck>
+                  </APDUComplexAck>
+                </APDU>
+              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -6724,7 +7112,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">288</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6750,6 +7138,124 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
+              <apdu>
+                <APDU>
+                  <apduType dataType="uint" bitLength="4">3</apduType>
+                  <APDUComplexAck>
+                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
+                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
+                    <reserved dataType="uint" bitLength="2">0</reserved>
+                    <originalInvokeId dataType="uint" bitLength="8">57</originalInvokeId>
+                    <serviceAck>
+                      <BACnetServiceAck>
+                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <BACnetServiceAckAtomicReadFile>
+                          <endOfFile>
+                            <BACnetApplicationTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetApplicationTagBoolean>
+                              </BACnetApplicationTagBoolean>
+                            </BACnetApplicationTag>
+                          </endOfFile>
+                          <accessMethod>
+                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
+                              <openingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetOpeningTag>
+                                  </BACnetOpeningTag>
+                                </BACnetContextTag>
+                              </openingTag>
+                              <BACnetServiceAckAtomicReadFileStream>
+                                <fileStartPosition>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagSignedInteger>
+                                      <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
+                                    </BACnetApplicationTagSignedInteger>
+                                  </BACnetApplicationTag>
+                                </fileStartPosition>
+                                <fileData>
+                                  <BACnetApplicationTag>
+                                    <header>
+                                      <BACnetTagHeader>
+                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
+                                        <tagClass>
+                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                        </tagClass>
+                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                        <extLength dataType="uint" bitLength="8">254</extLength>
+                                        <extExtLength dataType="uint" bitLength="16">264</extExtLength>
+                                      </BACnetTagHeader>
+                                    </header>
+                                    <BACnetApplicationTagOctetString>
+                                      <value dataType="string" bitLength="2112" encoding="UTF-8">Failed: 0
+      Test "BACnet ReadPropertyMultiple":
+      	Passed: 73
+      	Failed: 0
+      Test "static buffer":
+      	Passed: 22
+      	Failed: 0
+      Test "BACnet Who-Is":
+      	Passed: 104
+      	Failed: 0
+      Test "BACnet Who-Has":
+      	Passed: 3942557
+      	Failed: 0
+      Test "BACnet WriteProperty":
+      	Passed: 183
+      	Failed: 0</value>
+                                    </BACnetApplicationTagOctetString>
+                                  </BACnetApplicationTag>
+                                </fileData>
+                              </BACnetServiceAckAtomicReadFileStream>
+                              <closingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetClosingTag>
+                                  </BACnetClosingTag>
+                                </BACnetContextTag>
+                              </closingTag>
+                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
+                          </accessMethod>
+                        </BACnetServiceAckAtomicReadFile>
+                      </BACnetServiceAck>
+                    </serviceAck>
+                  </APDUComplexAck>
+                </APDU>
+              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -8135,7 +8641,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">463</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -8161,133 +8667,6 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
-              <apdu>
-                <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
-                  <APDUComplexAck>
-                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
-                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
-                    <reserved dataType="uint" bitLength="2">0</reserved>
-                    <originalInvokeId dataType="uint" bitLength="8">54</originalInvokeId>
-                    <serviceAck>
-                      <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
-                        <BACnetServiceAckAtomicReadFile>
-                          <endOfFile>
-                            <BACnetApplicationTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetApplicationTagBoolean>
-                              </BACnetApplicationTagBoolean>
-                            </BACnetApplicationTag>
-                          </endOfFile>
-                          <accessMethod>
-                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
-                              <openingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
-                              </openingTag>
-                              <BACnetServiceAckAtomicReadFileStream>
-                                <fileStartPosition>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagSignedInteger>
-                                      <valueInt8 dataType="int" bitLength="8">0</valueInt8>
-                                    </BACnetApplicationTagSignedInteger>
-                                  </BACnetApplicationTag>
-                                </fileStartPosition>
-                                <fileData>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
-                                        <extLength dataType="uint" bitLength="8">254</extLength>
-                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
-      	Passed: 260107
-      	Failed: 0
-      Test "BACnet Address":
-      	Passed: 2805
-      	Failed: 0
-      Test "BACnet DeviceCommunicationControl":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet Analog Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Value":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet AtomicReadFile":
-      	Passed: 29
-      	Failed: 0
-      Test "BACnet AtomicWriteFile":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Applicat</value>
-                                    </BACnetApplicationTagOctetString>
-                                  </BACnetApplicationTag>
-                                </fileData>
-                              </BACnetServiceAckAtomicReadFileStream>
-                              <closingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
-                              </closingTag>
-                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
-                          </accessMethod>
-                        </BACnetServiceAckAtomicReadFile>
-                      </BACnetServiceAck>
-                    </serviceAck>
-                  </APDUComplexAck>
-                </APDU>
-              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -8449,7 +8828,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">464</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -8475,138 +8854,6 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
-              <apdu>
-                <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
-                  <APDUComplexAck>
-                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
-                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
-                    <reserved dataType="uint" bitLength="2">0</reserved>
-                    <originalInvokeId dataType="uint" bitLength="8">55</originalInvokeId>
-                    <serviceAck>
-                      <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
-                        <BACnetServiceAckAtomicReadFile>
-                          <endOfFile>
-                            <BACnetApplicationTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetApplicationTagBoolean>
-                              </BACnetApplicationTagBoolean>
-                            </BACnetApplicationTag>
-                          </endOfFile>
-                          <accessMethod>
-                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
-                              <openingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
-                              </openingTag>
-                              <BACnetServiceAckAtomicReadFileStream>
-                                <fileStartPosition>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">440</valueInt16>
-                                    </BACnetApplicationTagSignedInteger>
-                                  </BACnetApplicationTag>
-                                </fileStartPosition>
-                                <fileData>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
-                                        <extLength dataType="uint" bitLength="8">254</extLength>
-                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">ion Data":
-      	Passed: 66
-      	Failed: 0
-      Test "BACDCode":
-      	Passed: 12617539
-      	Failed: 0
-      Test "BACnet Error":
-      	Passed: 64275
-      	Failed: 0
-      Test "BACnet Strings":
-      	Passed: 1153
-      	Failed: 0
-      Test "BACnet Binary Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary_Value":
-      	Passed: 4
-      	Failed: 0
-      Test "crc":
-      	Passed: 13
-      	Failed: 0
-      Test "BACnet Device":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet I-Am":
-      	Passed: 6
-      	Fa</value>
-                                    </BACnetApplicationTagOctetString>
-                                  </BACnetApplicationTag>
-                                </fileData>
-                              </BACnetServiceAckAtomicReadFileStream>
-                              <closingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
-                              </closingTag>
-                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
-                          </accessMethod>
-                        </BACnetServiceAckAtomicReadFile>
-                      </BACnetServiceAck>
-                    </serviceAck>
-                  </APDUComplexAck>
-                </APDU>
-              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -8768,7 +9015,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">464</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -8794,135 +9041,6 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
-              <apdu>
-                <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
-                  <APDUComplexAck>
-                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
-                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
-                    <reserved dataType="uint" bitLength="2">0</reserved>
-                    <originalInvokeId dataType="uint" bitLength="8">56</originalInvokeId>
-                    <serviceAck>
-                      <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
-                        <BACnetServiceAckAtomicReadFile>
-                          <endOfFile>
-                            <BACnetApplicationTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetApplicationTagBoolean>
-                              </BACnetApplicationTagBoolean>
-                            </BACnetApplicationTag>
-                          </endOfFile>
-                          <accessMethod>
-                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
-                              <openingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
-                              </openingTag>
-                              <BACnetServiceAckAtomicReadFileStream>
-                                <fileStartPosition>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">880</valueInt16>
-                                    </BACnetApplicationTagSignedInteger>
-                                  </BACnetApplicationTag>
-                                </fileStartPosition>
-                                <fileData>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
-                                        <extLength dataType="uint" bitLength="8">254</extLength>
-                                        <extExtLength dataType="uint" bitLength="16">440</extExtLength>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">iled: 0
-      Test "BACnet I-Have":
-      	Passed: 3469312
-      	Failed: 0
-      Test "index text":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Life Safety Point":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Multi-state Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet NPDU":
-      	Passed: 27
-      	Failed: 0
-      Test "BACnet ReinitializeDevice":
-      	Passed: 5
-      	Failed: 0
-      Test "BACnet Reject":
-      	Passed: 260107
-      	Failed: 0
-      Test "ringbuf":
-      	Passed: 769
-      	Failed: 0
-      Test "BACnet ReadProperty":
-      	Passed: 17</value>
-                                    </BACnetApplicationTagOctetString>
-                                  </BACnetApplicationTag>
-                                </fileData>
-                              </BACnetServiceAckAtomicReadFileStream>
-                              <closingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
-                              </closingTag>
-                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
-                          </accessMethod>
-                        </BACnetServiceAckAtomicReadFile>
-                      </BACnetServiceAck>
-                    </serviceAck>
-                  </APDUComplexAck>
-                </APDU>
-              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -9084,7 +9202,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">288</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">11</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -9110,124 +9228,6 @@
               <sourceAddress isList="true">
               </sourceAddress>
               <hopCount dataType="uint" bitLength="8">255</hopCount>
-              <apdu>
-                <APDU>
-                  <apduType dataType="uint" bitLength="4">3</apduType>
-                  <APDUComplexAck>
-                    <segmentedMessage dataType="bit" bitLength="1">false</segmentedMessage>
-                    <moreFollows dataType="bit" bitLength="1">false</moreFollows>
-                    <reserved dataType="uint" bitLength="2">0</reserved>
-                    <originalInvokeId dataType="uint" bitLength="8">57</originalInvokeId>
-                    <serviceAck>
-                      <BACnetServiceAck>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
-                        <BACnetServiceAckAtomicReadFile>
-                          <endOfFile>
-                            <BACnetApplicationTag>
-                              <header>
-                                <BACnetTagHeader>
-                                  <tagNumber dataType="uint" bitLength="4">1</tagNumber>
-                                  <tagClass>
-                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                  </tagClass>
-                                  <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
-                                </BACnetTagHeader>
-                              </header>
-                              <BACnetApplicationTagBoolean>
-                              </BACnetApplicationTagBoolean>
-                            </BACnetApplicationTag>
-                          </endOfFile>
-                          <accessMethod>
-                            <BACnetServiceAckAtomicReadFileStreamOrRecord>
-                              <openingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetOpeningTag>
-                                  </BACnetOpeningTag>
-                                </BACnetContextTag>
-                              </openingTag>
-                              <BACnetServiceAckAtomicReadFileStream>
-                                <fileStartPosition>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">3</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">2</lengthValueType>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
-                                    </BACnetApplicationTagSignedInteger>
-                                  </BACnetApplicationTag>
-                                </fileStartPosition>
-                                <fileData>
-                                  <BACnetApplicationTag>
-                                    <header>
-                                      <BACnetTagHeader>
-                                        <tagNumber dataType="uint" bitLength="4">6</tagNumber>
-                                        <tagClass>
-                                          <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                        </tagClass>
-                                        <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
-                                        <extLength dataType="uint" bitLength="8">254</extLength>
-                                        <extExtLength dataType="uint" bitLength="16">264</extExtLength>
-                                      </BACnetTagHeader>
-                                    </header>
-                                    <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="2112" encoding="UTF-8">Failed: 0
-      Test "BACnet ReadPropertyMultiple":
-      	Passed: 73
-      	Failed: 0
-      Test "static buffer":
-      	Passed: 22
-      	Failed: 0
-      Test "BACnet Who-Is":
-      	Passed: 104
-      	Failed: 0
-      Test "BACnet Who-Has":
-      	Passed: 3942557
-      	Failed: 0
-      Test "BACnet WriteProperty":
-      	Passed: 183
-      	Failed: 0</value>
-                                    </BACnetApplicationTagOctetString>
-                                  </BACnetApplicationTag>
-                                </fileData>
-                              </BACnetServiceAckAtomicReadFileStream>
-                              <closingTag>
-                                <BACnetContextTag>
-                                  <header>
-                                    <BACnetTagHeader>
-                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                      <tagClass>
-                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
-                                      </tagClass>
-                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
-                                    </BACnetTagHeader>
-                                  </header>
-                                  <BACnetClosingTag>
-                                  </BACnetClosingTag>
-                                </BACnetContextTag>
-                              </closingTag>
-                            </BACnetServiceAckAtomicReadFileStreamOrRecord>
-                          </accessMethod>
-                        </BACnetServiceAckAtomicReadFile>
-                      </BACnetServiceAck>
-                    </serviceAck>
-                  </APDUComplexAck>
-                </APDU>
-              </apdu>
             </NPDU>
           </npdu>
         </BVLCOriginalUnicastNPDU>
@@ -9460,7 +9460,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">23</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -9500,6 +9500,77 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">14</serviceChoice>
                         <BACnetConfirmedServiceRequestReadPropertyMultiple>
+                          <data isList="true">
+                            <BACnetReadAccessSpecification>
+                              <objectIdentifier>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">4</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_INPUT">0</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetContextTagObjectIdentifier>
+                                </BACnetContextTag>
+                              </objectIdentifier>
+                              <openingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">6</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetOpeningTag>
+                                  </BACnetOpeningTag>
+                                </BACnetContextTag>
+                              </openingTag>
+                              <listOfPropertyReferences isList="true">
+                                <BACnetPropertyReference>
+                                  <propertyIdentifier>
+                                    <BACnetContextTag>
+                                      <header>
+                                        <BACnetTagHeader>
+                                          <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                          <tagClass>
+                                            <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                          </tagClass>
+                                          <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                        </BACnetTagHeader>
+                                      </header>
+                                      <BACnetContextTagPropertyIdentifier>
+                                        <propertyIdentifier dataType="uint" bitLength="8" stringRepresentation="ALL">8</propertyIdentifier>
+                                      </BACnetContextTagPropertyIdentifier>
+                                    </BACnetContextTag>
+                                  </propertyIdentifier>
+                                </BACnetPropertyReference>
+                              </listOfPropertyReferences>
+                              <closingTag>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">7</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetClosingTag>
+                                  </BACnetClosingTag>
+                                </BACnetContextTag>
+                              </closingTag>
+                            </BACnetReadAccessSpecification>
+                          </data>
                         </BACnetConfirmedServiceRequestReadPropertyMultiple>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>

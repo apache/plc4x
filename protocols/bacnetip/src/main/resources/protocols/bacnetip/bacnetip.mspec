@@ -303,11 +303,18 @@
         ['0x0B' BACnetConfirmedServiceRequestDeleteObject
         ]
         ['0x0C' BACnetConfirmedServiceRequestReadProperty
-            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier     ]
-            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier   ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              arrayIndex           ]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                            objectIdentifier        ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                            propertyIdentifier      ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                            arrayIndex              ]
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
+            [array    BACnetReadAccessSpecification
+                            data
+                            length
+                            'len'                   ]
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
@@ -368,11 +375,31 @@
     ]
 ]
 
+[type BACnetReadAccessSpecification
+    [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier                ]
+    [simple     BACnetOpeningTag('1', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [array    BACnetPropertyReference
+                    listOfPropertyReferences
+                    terminated
+                    'STATIC_CALL('isBACnetConstructedDataClosingTag', readBuffer, false, 1)'
+    ]
+    [simple     BACnetClosingTag('1', 'BACnetDataType.CLOSING_TAG')
+                     closingTag                     ]
+]
+
+[type BACnetPropertyReference
+    [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier              ]
+    [optional   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex                      ]
+]
+
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
-              rawData
-    ]
+                    rawData                         ]
     [virtual    bit isEnable            'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
     [virtual    bit isDisable           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
     [virtual    bit isDisableInitiation 'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 2']
@@ -380,11 +407,9 @@
 
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
     [peek       BACnetTagHeader
-                            peekedTagHeader
-    ]
+                    peekedTagHeader                 ]
     [simple     BACnetOpeningTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.OPENING_TAG')
-                     openingTag
-    ]
+                     openingTag                     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [typeSwitch peekedTagNumber
         ['0x0' BACnetConfirmedServiceRequestAtomicReadFileStream
