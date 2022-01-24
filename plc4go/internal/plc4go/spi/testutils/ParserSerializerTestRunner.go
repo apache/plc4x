@@ -25,6 +25,7 @@ import (
 	"fmt"
 	abethModel "github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	bacnetModel "github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite"
 	df1Model "github.com/apache/plc4x/plc4go/internal/plc4go/df1/readwrite"
 	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
 	firmataModel "github.com/apache/plc4x/plc4go/internal/plc4go/firmata/readwrite"
@@ -138,6 +139,8 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					helper = new(abethModel.AbethParserHelper)
 				case "ads":
 					helper = new(adsModel.AdsParserHelper)
+				case "bacnetip":
+					helper = new(bacnetModel.BacnetipParserHelper)
 				case "df1":
 					helper = new(df1Model.Df1ParserHelper)
 				case "eip":
@@ -151,7 +154,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				case "knxnetip":
 					helper = new(knxModel.KnxnetipParserHelper)
 				default:
-					t.Errorf("Testsuite %s has not mapped parser", testsuiteName)
+					t.Errorf("Testsuite %s has not mapped parser for %s", testsuiteName, protocolName)
 					return
 				}
 				_ = outputFlavor

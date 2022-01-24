@@ -118,6 +118,13 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 		return nil, closeErr
 	}
 
+	// Validation
+	if !(bool((header.TagClass) == (TagClass_APPLICATION_TAGS))) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("should be a application tag") //TODO: add emit import here
+	}
+
 	// Virtual field
 	_tagNumber := header.TagNumber
 	tagNumber := uint8(_tagNumber)

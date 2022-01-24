@@ -191,6 +191,13 @@ func BACnetContextTagSignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberAr
 		return nil, pullErr
 	}
 
+	// Validation
+	if !(isNotOpeningOrClosingTag) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+	}
+
 	// Virtual field
 	_isInt8 := bool((actualLength) == (1))
 	isInt8 := bool(_isInt8)

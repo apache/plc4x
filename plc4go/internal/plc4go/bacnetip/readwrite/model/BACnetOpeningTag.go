@@ -98,6 +98,13 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, pullErr
 	}
 
+	// Validation
+	if !(bool((actualLength) == (6))) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("opening tag should habe a value of 6") //TODO: add emit import here
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetOpeningTag"); closeErr != nil {
 		return nil, closeErr
 	}

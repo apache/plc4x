@@ -121,6 +121,20 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, closeErr
 	}
 
+	// Validation
+	if !(bool((header.ActualTagNumber) == (tagNumberArgument))) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("tagnumber doesn't match") //TODO: add emit import here
+	}
+
+	// Validation
+	if !(bool((header.TagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("should be a context tag") //TODO: add emit import here
+	}
+
 	// Virtual field
 	_tagNumber := header.TagNumber
 	tagNumber := uint8(_tagNumber)

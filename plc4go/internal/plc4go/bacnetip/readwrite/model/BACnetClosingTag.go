@@ -98,6 +98,13 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, pullErr
 	}
 
+	// Validation
+	if !(bool((actualLength) == (7))) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("closing tag should habe a value of 7") //TODO: add emit import here
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetClosingTag"); closeErr != nil {
 		return nil, closeErr
 	}

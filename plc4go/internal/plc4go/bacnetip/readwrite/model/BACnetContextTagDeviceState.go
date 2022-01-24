@@ -104,6 +104,13 @@ func BACnetContextTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgu
 		return nil, pullErr
 	}
 
+	// Validation
+	if !(isNotOpeningOrClosingTag) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+	}
+
 	// Simple Field (state)
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
 		return nil, pullErr

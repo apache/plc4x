@@ -195,6 +195,13 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		}
 	}
 
+	// Validation
+	if !(bool(bool(isApplicationTag) || bool(isContextTag)) || bool(isConstructedData)) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("BACnetConstructedDataElement could not parse anything") //TODO: add emit import here
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElement"); closeErr != nil {
 		return nil, closeErr
 	}

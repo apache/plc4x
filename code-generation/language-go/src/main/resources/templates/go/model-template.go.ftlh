@@ -1255,6 +1255,16 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 				<#break>
+            <#case "validation">
+                <#assign validationField = field.asValidationField().orElseThrow()>
+
+	// Validation
+	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New(${validationField.getDescription().orElse("Validation failed")}) //TODO: add emit import here
+	}
+                <#break>
             <#case "peek">
                 <#assign peekField = field.asPeekField().orElseThrow()>
 

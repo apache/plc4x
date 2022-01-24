@@ -118,6 +118,13 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 		return nil, pullErr
 	}
 
+	// Validation
+	if !(isNotOpeningOrClosingTag) {
+		return nil, utils.ParseAssertError
+		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
+		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+	}
+
 	// Manual Field (objectType)
 	objectType, _objectTypeErr := ReadObjectType(readBuffer)
 	if _objectTypeErr != nil {

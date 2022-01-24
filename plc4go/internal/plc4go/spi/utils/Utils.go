@@ -30,4 +30,5 @@ func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{}
 	}
 }
 
+// TODO: make a error witch can be checked with errors.With
 var ParseAssertError = errors.New("Wrong assertion")
