@@ -5497,7 +5497,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">15</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -5538,6 +5538,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">0</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">9</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -5825,7 +5867,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">15</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">29</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -5866,6 +5908,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">0</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -5920,9 +6004,9 @@
                     <originalInvokeId dataType="uint" bitLength="8">1</originalInvokeId>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
-                        <BACnetErrorUnknown>
-                        </BACnetErrorUnknown>
+                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <BACnetErrorDeviceCommunicationProtocol>
+                        </BACnetErrorDeviceCommunicationProtocol>
                         <errorClass>
                           <BACnetApplicationTag>
                             <header>
@@ -6105,7 +6189,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6145,6 +6229,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -6207,7 +6333,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6247,6 +6373,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -6309,7 +6477,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6349,6 +6517,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -6411,7 +6621,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6451,6 +6661,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -6639,7 +6891,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">28</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6679,6 +6931,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">10</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>
@@ -6734,9 +7028,9 @@
                     <originalInvokeId dataType="uint" bitLength="8">50</originalInvokeId>
                     <error>
                       <BACnetError>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
-                        <BACnetErrorUnknown>
-                        </BACnetErrorUnknown>
+                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <BACnetErrorDeviceCommunicationProtocol>
+                        </BACnetErrorDeviceCommunicationProtocol>
                         <errorClass>
                           <BACnetApplicationTag>
                             <header>
@@ -6793,7 +7087,7 @@
       <BVLC>
         <bacnetType dataType="uint" bitLength="8">129</bacnetType>
         <bvlcFunction dataType="uint" bitLength="8">10</bvlcFunction>
-        <bvlcLength dataType="uint" bitLength="16">14</bvlcLength>
+        <bvlcLength dataType="uint" bitLength="16">27</bvlcLength>
         <BVLCOriginalUnicastNPDU>
           <npdu>
             <NPDU>
@@ -6833,6 +7127,48 @@
                       <BACnetConfirmedServiceRequest>
                         <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
+                          <enableDisable>
+                            <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                              <rawData>
+                                <BACnetContextTag>
+                                  <header>
+                                    <BACnetTagHeader>
+                                      <tagNumber dataType="uint" bitLength="4">1</tagNumber>
+                                      <tagClass>
+                                        <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                      </tagClass>
+                                      <lengthValueType dataType="uint" bitLength="3">1</lengthValueType>
+                                    </BACnetTagHeader>
+                                  </header>
+                                  <BACnetContextTagEnumerated>
+                                    <data isList="true">
+                                      <value dataType="int" bitLength="8">1</value>
+                                    </data>
+                                  </BACnetContextTagEnumerated>
+                                </BACnetContextTag>
+                              </rawData>
+                            </BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
+                          </enableDisable>
+                          <password>
+                            <BACnetContextTag>
+                              <header>
+                                <BACnetTagHeader>
+                                  <tagNumber dataType="uint" bitLength="4">2</tagNumber>
+                                  <tagClass>
+                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="CONTEXT_SPECIFIC_TAGS">1</TagClass>
+                                  </tagClass>
+                                  <lengthValueType dataType="uint" bitLength="3">5</lengthValueType>
+                                  <extLength dataType="uint" bitLength="8">9</extLength>
+                                </BACnetTagHeader>
+                              </header>
+                              <BACnetContextTagCharacterString>
+                                <encoding>
+                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                </encoding>
+                                <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                              </BACnetContextTagCharacterString>
+                            </BACnetContextTag>
+                          </password>
                         </BACnetConfirmedServiceRequestDeviceCommunicationControl>
                       </BACnetConfirmedServiceRequest>
                     </serviceRequest>

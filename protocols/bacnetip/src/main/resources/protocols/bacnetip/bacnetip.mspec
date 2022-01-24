@@ -318,6 +318,10 @@
         ]
 
         ['0x11' BACnetConfirmedServiceRequestDeviceCommunicationControl
+            [optional BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')              timeDuration        ]
+            [simple   BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable('1')                    enableDisable       ]
+            [optional BACnetContextTagCharacterString('2', 'BACnetDataType.CHARACTER_STRING')              password            ]
+
         ]
         ['0x12' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
         ]
@@ -360,6 +364,16 @@
             [array  byte    unknownBytes length '(len>0)?(len - 1):0']
         ]
     ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
+[type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
+    [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
+              rawData
+    ]
+    [virtual    bit isEnable            'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
+    [virtual    bit isDisable           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isDisableInitiation 'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 2']
 ]
 
 [discriminatedType BACnetUnconfirmedServiceRequest(uint 16 len)
@@ -553,6 +567,8 @@
         ['0x0F' BACnetErrorWriteProperty
         ]
         ['0x1A' BACnetErrorReadRange
+        ]
+        ['0x11' BACnetErrorDeviceCommunicationProtocol
         ]
         ['0x12' BACnetErrorConfirmedPrivateTransfer
         ]
