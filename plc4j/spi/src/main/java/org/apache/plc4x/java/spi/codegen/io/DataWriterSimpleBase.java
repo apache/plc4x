@@ -18,11 +18,12 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public abstract class DataWriterSimpleBase<T> implements DataWriter<T> {
+public abstract class DataWriterSimpleBase<T> implements DataWriter<T>, FieldCommons {
 
     protected final WriteBuffer writeBuffer;
     protected final int bitLength;

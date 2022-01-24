@@ -25,7 +25,9 @@
 
   <testcase>
     <name>1	Simple-ACK      acknowledgeAlarm[  2] </name>
-    <raw>810a000b10072c0200003d</raw>
+    <!-- TODO: original pcap contains bytes at the end which will be just ignored so we remove them here. A reserved part is 12 instead of 0-->
+    <!--raw>810a000b10072c0200003d</raw-->
+    <raw>810a00091007200200</raw>
     <root-type>BVLC</root-type>
     <xml>
       <BVLC>
@@ -125,7 +127,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagOctetString>
-                                <value dataType="string" bitLength="64" encoding="UTF-8">SYNERGY</value>
+                                <value dataType="string" bitLength="64" encoding="ASCII">SYNERGY</value>
                               </BACnetContextTagOctetString>
                             </BACnetContextTag>
                           </objectName>
@@ -852,33 +854,33 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">#!/bin/sh
-      # Unit tests builder / runner for this project
-      
-      rm test.log
-      touch test.log
-      
-      make -f abort.mak clean
-      make -f abort.mak
-      ./abort &gt;&gt; test.log
-      make -f abort.mak clean
-      
-      make -f address.mak clean
-      make -f address.mak
-      ./address &gt;&gt; test.log
-      make -f address.mak clean
-      
-      make -f cov.mak clean
-      make -f cov.mak
-      ./cov &gt;&gt; test.log
-      make -f cov.mak clean
-      
-      make -f dcc.mak clean
-      make -f dcc.mak
-      ./dcc &gt;&gt; test.log
-      make -f dcc.mak clean
-      
-      make -f demo/object/ai</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
+                                  # Unit tests builder / runner for this project
+
+                                  rm test.log
+                                  touch test.log
+
+                                  make -f abort.mak clean
+                                  make -f abort.mak
+                                  ./abort &gt;&gt; test.log
+                                  make -f abort.mak clean
+
+                                  make -f address.mak clean
+                                  make -f address.mak
+                                  ./address &gt;&gt; test.log
+                                  make -f address.mak clean
+
+                                  make -f cov.mak clean
+                                  make -f cov.mak
+                                  ./cov &gt;&gt; test.log
+                                  make -f cov.mak clean
+
+                                  make -f dcc.mak clean
+                                  make -f dcc.mak
+                                  ./dcc &gt;&gt; test.log
+                                  make -f dcc.mak clean
+
+                                  make -f demo/object/ai</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1095,27 +1097,27 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">.mak clean
-      make -f demo/object/ai.mak
-      ./analog_input &gt;&gt; test.log
-      make -f demo/object/ai.mak clean
-      
-      make -f demo/object/ao.mak clean
-      make -f demo/object/ao.mak
-      ./analog_output &gt;&gt; test.log
-      make -f demo/object/ao.mak clean
-      
-      make -f demo/object/av.mak clean
-      make -f demo/object/av.mak
-      ./analog_value &gt;&gt; test.log
-      make -f demo/object/av.mak clean
-      
-      make -f arf.mak clean
-      make -f arf.mak
-      ./atomicreadfile &gt;&gt; test.log
-      make -f arf.mak clean
-      
-      make -f awf.mak</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
+                                  make -f demo/object/ai.mak
+                                  ./analog_input &gt;&gt; test.log
+                                  make -f demo/object/ai.mak clean
+
+                                  make -f demo/object/ao.mak clean
+                                  make -f demo/object/ao.mak
+                                  ./analog_output &gt;&gt; test.log
+                                  make -f demo/object/ao.mak clean
+
+                                  make -f demo/object/av.mak clean
+                                  make -f demo/object/av.mak
+                                  ./analog_value &gt;&gt; test.log
+                                  make -f demo/object/av.mak clean
+
+                                  make -f arf.mak clean
+                                  make -f arf.mak
+                                  ./atomicreadfile &gt;&gt; test.log
+                                  make -f arf.mak clean
+
+                                  make -f awf.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1332,30 +1334,30 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">clean
-      make -f awf.mak
-      ./atomicwritefile &gt;&gt; test.log
-      make -f awf.mak clean
-      
-      make -f bacapp.mak clean
-      make -f bacapp.mak
-      ./bacapp &gt;&gt; test.log
-      make -f bacapp.mak clean
-      
-      make -f bacdcode.mak clean
-      make -f bacdcode.mak
-      ./bacdcode &gt;&gt; test.log
-      make -f bacdcode.mak clean
-      
-      make -f bacerror.mak clean
-      make -f bacerror.mak
-      ./bacerror &gt;&gt; test.log
-      make -f bacerror.mak clean
-      
-      make -f bacstr.mak clean
-      make -f bacstr.mak
-      ./bacstr &gt;&gt; test.log
-      make -f bacstr.mak</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
+                                  make -f awf.mak
+                                  ./atomicwritefile &gt;&gt; test.log
+                                  make -f awf.mak clean
+
+                                  make -f bacapp.mak clean
+                                  make -f bacapp.mak
+                                  ./bacapp &gt;&gt; test.log
+                                  make -f bacapp.mak clean
+
+                                  make -f bacdcode.mak clean
+                                  make -f bacdcode.mak
+                                  ./bacdcode &gt;&gt; test.log
+                                  make -f bacdcode.mak clean
+
+                                  make -f bacerror.mak clean
+                                  make -f bacerror.mak
+                                  ./bacerror &gt;&gt; test.log
+                                  make -f bacerror.mak clean
+
+                                  make -f bacstr.mak clean
+                                  make -f bacstr.mak
+                                  ./bacstr &gt;&gt; test.log
+                                  make -f bacstr.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1572,27 +1574,27 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">clean
-      
-      make -f demo/object/bi.mak clean
-      make -f demo/object/bi.mak
-      ./binary_input &gt;&gt; test.log
-      make -f demo/object/bi.mak clean
-      
-      make -f demo/object/bo.mak clean
-      make -f demo/object/bo.mak
-      ./binary_output &gt;&gt; test.log
-      make -f demo/object/bo.mak clean
-      
-      make -f demo/object/bv.mak clean
-      make -f demo/object/bv.mak
-      ./binary_value &gt;&gt; test.log
-      make -f demo/object/bv.mak clean
-      
-      make -f crc.mak clean
-      make -f crc.mak
-      ./crc &gt;&gt; test.log
-      make -f crc.mak clean</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
+
+                                  make -f demo/object/bi.mak clean
+                                  make -f demo/object/bi.mak
+                                  ./binary_input &gt;&gt; test.log
+                                  make -f demo/object/bi.mak clean
+
+                                  make -f demo/object/bo.mak clean
+                                  make -f demo/object/bo.mak
+                                  ./binary_output &gt;&gt; test.log
+                                  make -f demo/object/bo.mak clean
+
+                                  make -f demo/object/bv.mak clean
+                                  make -f demo/object/bv.mak
+                                  ./binary_value &gt;&gt; test.log
+                                  make -f demo/object/bv.mak clean
+
+                                  make -f crc.mak clean
+                                  make -f crc.mak
+                                  ./crc &gt;&gt; test.log
+                                  make -f crc.mak clean</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1809,28 +1811,28 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">make -f demo/object/device.mak clean
-      make -f demo/object/device.mak
-      ./device &gt;&gt; test.log
-      make -f demo/object/device.mak clean
-      
-      make -f iam.mak clean
-      make -f iam.mak
-      ./iam &gt;&gt; test.log
-      make -f iam.mak clean
-      
-      make -f ihave.mak clean
-      make -f ihave.mak
-      ./ihave &gt;&gt; test.log
-      make -f ihave.mak clean
-      
-      make -f indtext.mak clean
-      make -f indtext.mak
-      ./indtext &gt;&gt; test.log
-      make -f indtext.mak clean
-      
-      make -f demo/object/lsp.mak clean
-      make -f demo/object/lsp.</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
+                                  make -f demo/object/device.mak
+                                  ./device &gt;&gt; test.log
+                                  make -f demo/object/device.mak clean
+
+                                  make -f iam.mak clean
+                                  make -f iam.mak
+                                  ./iam &gt;&gt; test.log
+                                  make -f iam.mak clean
+
+                                  make -f ihave.mak clean
+                                  make -f ihave.mak
+                                  ./ihave &gt;&gt; test.log
+                                  make -f ihave.mak clean
+
+                                  make -f indtext.mak clean
+                                  make -f indtext.mak
+                                  ./indtext &gt;&gt; test.log
+                                  make -f indtext.mak clean
+
+                                  make -f demo/object/lsp.mak clean
+                                  make -f demo/object/lsp.</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2047,31 +2049,31 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">mak
-      ./lsp &gt;&gt; test.log
-      make -f demo/object/lsp.mak clean
-      
-      make -f demo/object/mso.mak clean
-      make -f demo/object/mso.mak
-      ./multistate_output &gt;&gt; test.log
-      make -f demo/object/mso.mak clean
-      
-      make -f mstp.mak clean
-      make -f mstp.mak
-      ./mstp &gt;&gt; test.log
-      make -f mstp.mak clean
-      
-      make -f npdu.mak clean
-      make -f npdu.mak
-      ./npdu &gt;&gt; test.log
-      make -f npdu.mak clean
-      
-      make -f rd.mak clean
-      make -f rd.mak
-      ./reinitialize_device &gt;&gt; test.log
-      make -f rd.mak clean
-      
-      make</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">mak
+                                  ./lsp &gt;&gt; test.log
+                                  make -f demo/object/lsp.mak clean
+
+                                  make -f demo/object/mso.mak clean
+                                  make -f demo/object/mso.mak
+                                  ./multistate_output &gt;&gt; test.log
+                                  make -f demo/object/mso.mak clean
+
+                                  make -f mstp.mak clean
+                                  make -f mstp.mak
+                                  ./mstp &gt;&gt; test.log
+                                  make -f mstp.mak clean
+
+                                  make -f npdu.mak clean
+                                  make -f npdu.mak
+                                  ./npdu &gt;&gt; test.log
+                                  make -f npdu.mak clean
+
+                                  make -f rd.mak clean
+                                  make -f rd.mak
+                                  ./reinitialize_device &gt;&gt; test.log
+                                  make -f rd.mak clean
+
+                                  make</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2288,32 +2290,32 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">-f reject.mak clean
-      make -f reject.mak
-      ./reject &gt;&gt; test.log
-      make -f reject.mak clean
-      
-      make -f ringbuf.mak clean
-      make -f ringbuf.mak
-      ./ringbuf &gt;&gt; test.log
-      make -f ringbuf.mak clean
-      
-      make -f rp.mak clean
-      make -f rp.mak
-      ./readproperty &gt;&gt; test.log
-      make -f rp.mak clean
-      
-      make -f rpm.mak clean
-      make -f rpm.mak
-      ./rpm &gt;&gt; test.log
-      make -f rpm.mak clean
-      
-      make -f sbuf.mak clean
-      make -f sbuf.mak
-      ./sbuf &gt;&gt; test.log
-      make -f sbuf.mak clean
-      
-      make -f tsm.mak cle</value>
+                                <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
+                                  make -f reject.mak
+                                  ./reject &gt;&gt; test.log
+                                  make -f reject.mak clean
+
+                                  make -f ringbuf.mak clean
+                                  make -f ringbuf.mak
+                                  ./ringbuf &gt;&gt; test.log
+                                  make -f ringbuf.mak clean
+
+                                  make -f rp.mak clean
+                                  make -f rp.mak
+                                  ./readproperty &gt;&gt; test.log
+                                  make -f rp.mak clean
+
+                                  make -f rpm.mak clean
+                                  make -f rpm.mak
+                                  ./rpm &gt;&gt; test.log
+                                  make -f rpm.mak clean
+
+                                  make -f sbuf.mak clean
+                                  make -f sbuf.mak
+                                  ./sbuf &gt;&gt; test.log
+                                  make -f sbuf.mak clean
+
+                                  make -f tsm.mak cle</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2530,25 +2532,25 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="2584" encoding="UTF-8">an
-      make -f tsm.mak
-      ./tsm &gt;&gt; test.log
-      make -f tsm.mak clean
-      
-      make -f whois.mak clean
-      make -f whois.mak
-      ./whois &gt;&gt; test.log
-      make -f whois.mak clean
-      
-      make -f whohas.mak clean
-      make -f whohas.mak
-      ./whohas &gt;&gt; test.log
-      make -f whohas.mak clean
-      
-      make -f wp.mak clean
-      make -f wp.mak
-      ./writeproperty &gt;&gt; test.log
-      make -f wp.mak clean</value>
+                                <value dataType="string" bitLength="2584" encoding="ASCII">an
+                                  make -f tsm.mak
+                                  ./tsm &gt;&gt; test.log
+                                  make -f tsm.mak clean
+
+                                  make -f whois.mak clean
+                                  make -f whois.mak
+                                  ./whois &gt;&gt; test.log
+                                  make -f whois.mak clean
+
+                                  make -f whohas.mak clean
+                                  make -f whohas.mak
+                                  ./whohas &gt;&gt; test.log
+                                  make -f whohas.mak clean
+
+                                  make -f wp.mak clean
+                                  make -f wp.mak
+                                  ./writeproperty &gt;&gt; test.log
+                                  make -f wp.mak clean</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -6393,31 +6395,31 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
-      	Passed: 260107
-      	Failed: 0
-      Test "BACnet Address":
-      	Passed: 2805
-      	Failed: 0
-      Test "BACnet DeviceCommunicationControl":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet Analog Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Value":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet AtomicReadFile":
-      	Passed: 29
-      	Failed: 0
-      Test "BACnet AtomicWriteFile":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Applicat</value>
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
+                                        Passed: 260107
+                                        Failed: 0
+                                        Test "BACnet Address":
+                                        Passed: 2805
+                                        Failed: 0
+                                        Test "BACnet DeviceCommunicationControl":
+                                        Passed: 12
+                                        Failed: 0
+                                        Test "BACnet Analog Input":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet Analog Output":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet Analog Value":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet AtomicReadFile":
+                                        Passed: 29
+                                        Failed: 0
+                                        Test "BACnet AtomicWriteFile":
+                                        Passed: 25
+                                        Failed: 0
+                                        Test "BACnet Applicat</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -6664,36 +6666,36 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">ion Data":
-      	Passed: 66
-      	Failed: 0
-      Test "BACDCode":
-      	Passed: 12617539
-      	Failed: 0
-      Test "BACnet Error":
-      	Passed: 64275
-      	Failed: 0
-      Test "BACnet Strings":
-      	Passed: 1153
-      	Failed: 0
-      Test "BACnet Binary Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary_Value":
-      	Passed: 4
-      	Failed: 0
-      Test "crc":
-      	Passed: 13
-      	Failed: 0
-      Test "BACnet Device":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet I-Am":
-      	Passed: 6
-      	Fa</value>
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
+                                        Passed: 66
+                                        Failed: 0
+                                        Test "BACDCode":
+                                        Passed: 12617539
+                                        Failed: 0
+                                        Test "BACnet Error":
+                                        Passed: 64275
+                                        Failed: 0
+                                        Test "BACnet Strings":
+                                        Passed: 1153
+                                        Failed: 0
+                                        Test "BACnet Binary Input":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet Binary Output":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet Binary_Value":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "crc":
+                                        Passed: 13
+                                        Failed: 0
+                                        Test "BACnet Device":
+                                        Passed: 12
+                                        Failed: 0
+                                        Test "BACnet I-Am":
+                                        Passed: 6
+                                        Fa</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -6940,33 +6942,33 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">iled: 0
-      Test "BACnet I-Have":
-      	Passed: 3469312
-      	Failed: 0
-      Test "index text":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Life Safety Point":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Multi-state Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet NPDU":
-      	Passed: 27
-      	Failed: 0
-      Test "BACnet ReinitializeDevice":
-      	Passed: 5
-      	Failed: 0
-      Test "BACnet Reject":
-      	Passed: 260107
-      	Failed: 0
-      Test "ringbuf":
-      	Passed: 769
-      	Failed: 0
-      Test "BACnet ReadProperty":
-      	Passed: 17</value>
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
+                                        Test "BACnet I-Have":
+                                        Passed: 3469312
+                                        Failed: 0
+                                        Test "index text":
+                                        Passed: 25
+                                        Failed: 0
+                                        Test "BACnet Life Safety Point":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet Multi-state Output":
+                                        Passed: 4
+                                        Failed: 0
+                                        Test "BACnet NPDU":
+                                        Passed: 27
+                                        Failed: 0
+                                        Test "BACnet ReinitializeDevice":
+                                        Passed: 5
+                                        Failed: 0
+                                        Test "BACnet Reject":
+                                        Passed: 260107
+                                        Failed: 0
+                                        Test "ringbuf":
+                                        Passed: 769
+                                        Failed: 0
+                                        Test "BACnet ReadProperty":
+                                        Passed: 17</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -7213,22 +7215,22 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="2112" encoding="UTF-8">Failed: 0
-      Test "BACnet ReadPropertyMultiple":
-      	Passed: 73
-      	Failed: 0
-      Test "static buffer":
-      	Passed: 22
-      	Failed: 0
-      Test "BACnet Who-Is":
-      	Passed: 104
-      	Failed: 0
-      Test "BACnet Who-Has":
-      	Passed: 3942557
-      	Failed: 0
-      Test "BACnet WriteProperty":
-      	Passed: 183
-      	Failed: 0</value>
+                                      <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
+                                        Test "BACnet ReadPropertyMultiple":
+                                        Passed: 73
+                                        Failed: 0
+                                        Test "static buffer":
+                                        Passed: 22
+                                        Failed: 0
+                                        Test "BACnet Who-Is":
+                                        Passed: 104
+                                        Failed: 0
+                                        Test "BACnet Who-Has":
+                                        Passed: 3942557
+                                        Failed: 0
+                                        Test "BACnet WriteProperty":
+                                        Passed: 183
+                                        Failed: 0</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -9345,31 +9347,31 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
-      	Passed: 260107
-      	Failed: 0
-      Test "BACnet Address":
-      	Passed: 2805
-      	Failed: 0
-      Test "BACnet DeviceCommunicationControl":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet Analog Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Value":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet AtomicReadFile":
-      	Passed: 29
-      	Failed: 0
-      Test "BACnet AtomicWriteFile":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Applicat</value>
+                                <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
+                                  Passed: 260107
+                                  Failed: 0
+                                  Test "BACnet Address":
+                                  Passed: 2805
+                                  Failed: 0
+                                  Test "BACnet DeviceCommunicationControl":
+                                  Passed: 12
+                                  Failed: 0
+                                  Test "BACnet Analog Input":
+                                  Passed: 4
+                                  Failed: 0
+                                  Test "BACnet Analog Output":
+                                  Passed: 4
+                                  Failed: 0
+                                  Test "BACnet Analog Value":
+                                  Passed: 4
+                                  Failed: 0
+                                  Test "BACnet AtomicReadFile":
+                                  Passed: 29
+                                  Failed: 0
+                                  Test "BACnet AtomicWriteFile":
+                                  Passed: 25
+                                  Failed: 0
+                                  Test "BACnet Applicat</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>

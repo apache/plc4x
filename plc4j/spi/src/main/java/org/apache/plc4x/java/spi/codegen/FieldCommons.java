@@ -27,18 +27,35 @@ import java.util.stream.Stream;
 
 public interface FieldCommons {
 
-    default Optional<ByteOrder> extractByteOder(WithReaderArgs... readerArgs) {
-        return extractByteOder(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    default Optional<ByteOrder> extractByteOrder(WithReaderArgs... readerArgs) {
+        return extractByteOrder(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
     }
 
-    default Optional<ByteOrder> extractByteOder(WithWriterArgs... writerArgs) {
-        return extractByteOder(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    default Optional<ByteOrder> extractByteOrder(WithWriterArgs... writerArgs) {
+        return extractByteOrder(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
     }
 
-    default Optional<ByteOrder> extractByteOder(WithReaderWriterArgs... readerWriterArgs) {
+    default Optional<ByteOrder> extractByteOrder(WithReaderWriterArgs... readerWriterArgs) {
         for (WithReaderWriterArgs arg : readerWriterArgs) {
             if (arg instanceof withOptionByteOrder) {
                 return Optional.of(((withOptionByteOrder) arg).byteOrder());
+            }
+        }
+        return Optional.empty();
+    }
+
+    default Optional<String> extractEncoding(WithReaderArgs... readerArgs) {
+        return extractEncoding(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default Optional<String> extractEncoding(WithWriterArgs... writerArgs) {
+        return extractEncoding(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default Optional<String> extractEncoding(WithReaderWriterArgs... readerWriterArgs) {
+        for (WithReaderWriterArgs arg : readerWriterArgs) {
+            if (arg instanceof withOptionEncoding) {
+                return Optional.of(((withOptionEncoding) arg).encoding());
             }
         }
         return Optional.empty();

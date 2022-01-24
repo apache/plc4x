@@ -31,7 +31,7 @@ public class FieldReaderImplicit<T> implements FieldCommons {
 
     public T readImplicitField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         LOGGER.debug("reading field {}", logicalName);
-        return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOrder(readerArgs).orElse(null));
     }
 
 }

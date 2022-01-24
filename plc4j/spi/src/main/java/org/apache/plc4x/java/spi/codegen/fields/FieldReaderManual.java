@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
-import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.codegen.io.ParseSupplier;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -34,7 +33,7 @@ public class FieldReaderManual<T> implements FieldCommons {
     public T readManualField(String logicalName, ReadBuffer readBuffer, ParseSupplier<T> parseFunction, WithReaderArgs... readerArgs) throws ParseException {
         LOGGER.debug("reading field {}", logicalName);
         readBuffer.pullContext(logicalName);
-        T value = switchParseByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOder(readerArgs).orElse(null));
+        T value = switchParseByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOrder(readerArgs).orElse(null));
         readBuffer.closeContext(logicalName);
         return value;
     }

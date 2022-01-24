@@ -31,7 +31,7 @@ public class FieldWriterManual<T> implements FieldCommons {
 
     public void writeManualField(String logicalName, RunSerializeWrapped consumer, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
         LOGGER.debug("write field {}", logicalName);
-        switchSerializeByteOrderIfNecessary(consumer, writeBuffer, extractByteOder(writerArgs).orElse(null));
+        switchSerializeByteOrderIfNecessary(consumer, writeBuffer, extractByteOrder(writerArgs).orElse(null));
     }
 
 }

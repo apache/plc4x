@@ -31,7 +31,7 @@ public class FieldReaderSimple<T> implements FieldCommons {
 
     public T readSimpleField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         LOGGER.debug("reading field {}", logicalName);
-        return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOrder(readerArgs).orElse(null));
     }
 
 }

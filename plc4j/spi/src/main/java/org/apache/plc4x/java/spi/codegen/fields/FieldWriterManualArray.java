@@ -39,7 +39,7 @@ public class FieldWriterManualArray<T> implements FieldCommons {
                 }
                 writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             }
-        }, writeBuffer, extractByteOder(writerArgs).orElse(null));
+        }, writeBuffer, extractByteOrder(writerArgs).orElse(null));
     }
 
 }

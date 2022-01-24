@@ -32,7 +32,7 @@ public class FieldWriterDiscriminatorEnum<T> implements FieldCommons {
     public void writeDiscriminatorEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         LOGGER.debug("write field {}", logicalName);
         dataWriter.pushContext(logicalName);
-        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
+        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOrder(writerArgs).orElse(null));
         dataWriter.popContext(logicalName);
     }
 

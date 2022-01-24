@@ -31,7 +31,7 @@ public class FieldWriterChecksum<T> implements FieldCommons {
 
     public void writeChecksumField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         LOGGER.debug("write field {}", logicalName);
-        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(logicalName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
+        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(logicalName, value, writerArgs), dataWriter, extractByteOrder(writerArgs).orElse(null));
     }
 
 }

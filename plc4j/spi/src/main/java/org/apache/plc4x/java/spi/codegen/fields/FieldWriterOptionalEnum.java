@@ -33,7 +33,7 @@ public class FieldWriterOptionalEnum<T> implements FieldCommons {
         LOGGER.debug("write field {}", logicalName);
         dataWriter.pushContext(logicalName);
         if(value != null) {
-            switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
+            switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOrder(writerArgs).orElse(null));
         }
         dataWriter.popContext(logicalName);
     }

@@ -47,7 +47,7 @@ public class FieldWriterArray<T> implements FieldCommons {
                 }
                 dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             }
-        }, dataWriter, extractByteOder(writerArgs).orElse(null));
+        }, dataWriter, extractByteOrder(writerArgs).orElse(null));
     }
 
     public void writeComplexTypeArrayField(String logicalName, List<? extends Message> values, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
@@ -60,7 +60,7 @@ public class FieldWriterArray<T> implements FieldCommons {
                 }
                 writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             }
-        }, writeBuffer, extractByteOder(writerArgs).orElse(null));
+        }, writeBuffer, extractByteOrder(writerArgs).orElse(null));
     }
 
 }

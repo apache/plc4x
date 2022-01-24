@@ -25,7 +25,9 @@
 
   <testcase>
     <name>1	Simple-ACK      acknowledgeAlarm[  2] </name>
-    <raw>810a000b10072c0200003d</raw>
+    <!-- TODO: original pcap contains bytes at the end which will be just ignored so we remove them here. A reserved part is 12 instead of 0-->
+    <!--raw>810a000b10072c0200003d</raw-->
+    <raw>810a00091007200200</raw>
     <root-type>BVLC</root-type>
     <xml>
       <BVLC>
@@ -125,7 +127,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagOctetString>
-                                <value dataType="string" bitLength="64" encoding="UTF-8">SYNERGY</value>
+                                <value dataType="string" bitLength="64" encoding="ASCII">SYNERGY</value>
                               </BACnetContextTagOctetString>
                             </BACnetContextTag>
                           </objectName>
@@ -852,7 +854,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">#!/bin/sh
+                                <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
       # Unit tests builder / runner for this project
       
       rm test.log
@@ -1095,7 +1097,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">.mak clean
+                                <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
       make -f demo/object/ai.mak
       ./analog_input &gt;&gt; test.log
       make -f demo/object/ai.mak clean
@@ -1332,7 +1334,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">clean
+                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
       make -f awf.mak
       ./atomicwritefile &gt;&gt; test.log
       make -f awf.mak clean
@@ -1572,7 +1574,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">clean
+                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
       
       make -f demo/object/bi.mak clean
       make -f demo/object/bi.mak
@@ -1809,7 +1811,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">make -f demo/object/device.mak clean
+                                <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
       make -f demo/object/device.mak
       ./device &gt;&gt; test.log
       make -f demo/object/device.mak clean
@@ -2047,7 +2049,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">mak
+                                <value dataType="string" bitLength="3584" encoding="ASCII">mak
       ./lsp &gt;&gt; test.log
       make -f demo/object/lsp.mak clean
       
@@ -2288,7 +2290,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="UTF-8">-f reject.mak clean
+                                <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
       make -f reject.mak
       ./reject &gt;&gt; test.log
       make -f reject.mak clean
@@ -2530,7 +2532,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="2584" encoding="UTF-8">an
+                                <value dataType="string" bitLength="2584" encoding="ASCII">an
       make -f tsm.mak
       ./tsm &gt;&gt; test.log
       make -f tsm.mak clean
@@ -6393,7 +6395,7 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
       	Passed: 260107
       	Failed: 0
       Test "BACnet Address":
@@ -6664,7 +6666,7 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">ion Data":
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
       	Passed: 66
       	Failed: 0
       Test "BACDCode":
@@ -6940,7 +6942,7 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="UTF-8">iled: 0
+                                      <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
       Test "BACnet I-Have":
       	Passed: 3469312
       	Failed: 0
@@ -7213,7 +7215,7 @@
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="2112" encoding="UTF-8">Failed: 0
+                                      <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
       Test "BACnet ReadPropertyMultiple":
       	Passed: 73
       	Failed: 0
@@ -9345,7 +9347,7 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3520" encoding="UTF-8">Test "BACnet Abort":
+                                <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
       	Passed: 260107
       	Failed: 0
       Test "BACnet Address":

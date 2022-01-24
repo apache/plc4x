@@ -38,7 +38,7 @@ public class FieldWriterPadding<T> implements FieldCommons {
                 dataWriter.write("", value, writerArgs);
             }
             dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        }, dataWriter, extractByteOder(writerArgs).orElse(null));
+        }, dataWriter, extractByteOrder(writerArgs).orElse(null));
     }
 
 }

@@ -34,7 +34,7 @@ public class FieldReaderPeek<T> implements FieldCommons {
         int curPos = dataReader.getPos();
         try {
             // TODO: implement offset. We either need to pass the readBuffer or add a instruction to the dataReader
-            T field = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+            T field = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOrder(readerArgs).orElse(null));
             LOGGER.debug("done reading field {}. Value: {}", logicalName, field);
             return field;
         } catch (ParseAssertException e) {

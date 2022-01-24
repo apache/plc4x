@@ -33,7 +33,7 @@ public class FieldReaderEnum<T> implements FieldCommons {
     public T readEnumField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         LOGGER.debug("reading field {}", logicalName);
         dataReader.pullContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        T result = switchParseByteOrderIfNecessary(() -> dataReader.read(innerName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        T result = switchParseByteOrderIfNecessary(() -> dataReader.read(innerName, readerArgs), dataReader, extractByteOrder(readerArgs).orElse(null));
         dataReader.closeContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
         return result;
     }
