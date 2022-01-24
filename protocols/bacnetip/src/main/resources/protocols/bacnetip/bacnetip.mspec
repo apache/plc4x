@@ -283,6 +283,8 @@
         ]
 
         ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
+            [simple BACnetApplicationTagObjectIdentifier                        fileIdentifier      ]
+            [simple BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord   accessMethod        ]
         ]
         ['0x07' BACnetConfirmedServiceRequestAtomicWriteFile
             [simple BACnetApplicationTagObjectIdentifier                  deviceIdentifier    ]
@@ -376,6 +378,29 @@
     [virtual    bit isDisableInitiation 'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 2']
 ]
 
+[type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [simple     BACnetOpeningTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0x0' BACnetConfirmedServiceRequestAtomicReadFileStream
+            [simple BACnetApplicationTagSignedInteger                     fileStartPosition   ]
+            [simple BACnetApplicationTagUnsignedInteger                   requestOctetCount   ]
+        ]
+        ['0x1' BACnetConfirmedServiceRequestAtomicReadFileRecord
+            [simple BACnetApplicationTagSignedInteger                     fileStartRecord     ]
+            [simple BACnetApplicationTagUnsignedInteger                   requestRecordCount  ]
+        ]
+    ]
+    [simple     BACnetClosingTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag
+    ]
+]
+
 [discriminatedType BACnetUnconfirmedServiceRequest(uint 16 len)
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
@@ -455,20 +480,28 @@
         ]
 
         ['0x06' BACnetServiceAckAtomicReadFile
-
+            [simple BACnetApplicationTagBoolean
+                            endOfFile               ]
+            [simple BACnetServiceAckAtomicReadFileStreamOrRecord
+                            accessMethod            ]
         ]
         ['0x07' BACnetServiceAckAtomicWriteFile
-            [simple BACnetContextTagSignedInteger('0', 'BACnetDataType.SIGNED_INTEGER') fileStartPosition]
+            [simple BACnetContextTagSignedInteger('0', 'BACnetDataType.SIGNED_INTEGER')
+                            fileStartPosition       ]
         ]
 
         ['0x0A' BACnetServiceAckCreateObject
 
         ]
         ['0x0C' BACnetServiceAckReadProperty
-            [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')        objectIdentifier   ]
-            [simple     BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')    propertyIdentifier ]
-            [optional   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')                 arrayIndex         ]
-            [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')         values             ]
+            [simple     BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                            objectIdentifier        ]
+            [simple     BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                            propertyIdentifier      ]
+            [optional   BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')
+                            arrayIndex              ]
+            [optional   BACnetConstructedData('3', 'objectIdentifier.objectType', 'propertyIdentifier')
+                            values                  ]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -494,6 +527,37 @@
         ['0x0D' BACnetServiceAckRemovedReadPropertyConditional
 
         ]
+    ]
+]
+
+[type BACnetServiceAckAtomicReadFileStreamOrRecord
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [simple     BACnetOpeningTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0x0' BACnetServiceAckAtomicReadFileStream
+            [simple BACnetApplicationTagSignedInteger
+                            fileStartPosition           ]
+            [simple BACnetApplicationTagOctetString
+                            fileData                    ]
+        ]
+        ['0x1' BACnetServiceAckAtomicReadFileRecord
+            [simple BACnetApplicationTagSignedInteger
+                            fileStartRecord             ]
+            [simple BACnetApplicationTagUnsignedInteger
+                            returnedRecordCount         ]
+            [array  BACnetApplicationTagOctetString
+                            fileRecordData
+                            count
+                            'returnedRecordCount.actualValue'   ]
+        ]
+    ]
+    [simple     BACnetClosingTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag
     ]
 ]
 
