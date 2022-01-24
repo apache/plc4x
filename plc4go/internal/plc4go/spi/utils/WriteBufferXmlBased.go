@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
+	"unicode"
 )
 
 type WriteBufferXmlBased interface {
@@ -152,13 +153,40 @@ func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, valu
 	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
+//[^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]
+var printableRange = &unicode.RangeTable{
+	R16: []unicode.Range16{
+		{0x0009, 0x0009, 1},
+		{0x000D, 0x000D, 1},
+		{0x000A, 0x000A, 1},
+		{0x0020, 0xD7FF, 1},
+		{0xE000, 0xFFFD, 1},
+		{0xD800, 0xD800, 1},
+		{0xDC00, 0xDBFF, 1},
+		{0xDFFF, 0xDFFF, 1},
+	},
+}
+
 func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
-	return x.encodeElement(logicalName, value, attr, writerArgs...)
+	var valueToBeWritten interface{}
+	cleanedUpString := strings.TrimFunc(value, func(r rune) bool {
+		return !unicode.In(r, printableRange)
+	})
+	cleanedUpString = value
+	valueToBeWritten = cleanedUpString
+	if strings.Contains(cleanedUpString, "\n") {
+		valueToBeWritten = struct {
+			S string `xml:",innerxml"`
+		}{
+			S: "<![CDATA[" + cleanedUpString + "]]>",
+		}
+	}
+	return x.encodeElement(logicalName, valueToBeWritten, attr, writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteVirtual(_ string, _ interface{}, _ ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }

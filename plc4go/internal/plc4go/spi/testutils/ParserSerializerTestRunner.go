@@ -34,6 +34,7 @@ import (
 	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 	"github.com/subchen/go-xmldom"
 	"os"
 	"strconv"
@@ -115,7 +116,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				referenceXml := child.FindOneByName("xml")
 				normalizeXml(referenceXml)
-				referenceSerialized := referenceXml.FirstChild().XML()
+				referenceSerialized := referenceXml.FirstChild().XMLPretty()
 
 				// Get the raw input by decoding the hex-encoded binary input
 				rawInput, err := hex.DecodeString(rawInputText)
@@ -166,13 +167,11 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 
 				{
 					// First try to use the native xml writer
-					var err error
 					serializable := msg.(utils.Serializable)
 					buffer := utils.NewXmlWriteBuffer()
-					if err = serializable.Serialize(buffer); err == nil {
+					if err := serializable.Serialize(buffer); err == nil {
 						actualXml := buffer.GetXmlString()
-						err = CompareResults([]byte(actualXml), []byte(referenceSerialized))
-						if err != nil {
+						if err := CompareResults([]byte(actualXml), []byte(referenceSerialized)); err != nil {
 							border := strings.Repeat("=", 100)
 							fmt.Printf(
 								"\n"+
@@ -198,6 +197,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 								actualXml,
 								err,
 								testCaseName)
+							assert.Equal(t, referenceSerialized, actualXml)
 							t.Error("Error comparing the results: " + err.Error())
 							return
 						}

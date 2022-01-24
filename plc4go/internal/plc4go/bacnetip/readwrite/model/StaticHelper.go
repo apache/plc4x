@@ -231,7 +231,7 @@ func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType
 	return readBuffer.ReadUint32("proprietaryEventType", bitsToRead)
 }
 func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
-	readValue, err := readBuffer.ReadUint16("ObjectType", 10)
+	readValue, err := readBuffer.ReadUint16("objectType", 10)
 	if err != nil {
 		return 0, err
 	}
@@ -239,7 +239,7 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
 }
 
 func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
-	return writeBuffer.WriteUint16("ObjectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
+	return writeBuffer.WriteUint16("objectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
 func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
