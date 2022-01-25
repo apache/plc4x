@@ -93,6 +93,78 @@ func TestPlcConnectionCache_GetConnection(t1 *testing.T) {
 	}
 }
 
+func TestPlcConnectionCache_Close(t1 *testing.T) {
+	type fields struct {
+		driverManager plc4go.PlcDriverManager
+	}
+	type args struct {
+		connectionStrings []string
+	}
+	tests := []struct {
+		name        string
+		fields      fields
+		args        args
+		wantErr     bool
+		wantTimeout bool
+	}{
+		{name: "simple",
+			fields: fields{
+				driverManager: func() plc4go.PlcDriverManager {
+					driverManager := plc4go.NewPlcDriverManager()
+					driverManager.RegisterDriver(simulated.NewDriver())
+					return driverManager
+				}(),
+			}, args: args{
+				connectionStrings: []string{
+					"simulated://1.2.3.4:42",
+					"simulated://4.3.2.1:23",
+					"simulated://0.8.1.15:7",
+				},
+			},
+			wantErr:     false,
+			wantTimeout: false,
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			cc := NewPlcConnectionCache(tt.fields.driverManager)
+			// Connect to all sources first
+			for _, connectionString := range tt.args.connectionStrings {
+				got := cc.GetConnection(connectionString)
+				select {
+				case connectResult := <-got:
+					if connectResult.GetErr() != nil {
+						t1.Errorf("PlcConnectionCache.GetConnection() error = %v", connectResult.GetErr())
+					} else {
+						// Give the connection back.
+						connectResult.GetConnection().Close()
+					}
+				case <-time.After(10 * time.Second):
+					if !tt.wantTimeout {
+						t1.Errorf("PlcConnectionCache.GetConnection() got timeout")
+					}
+				}
+			}
+			// Close all connections.
+			cacheCloseResults := cc.Close()
+			// Wait for all connections to be closed.
+			select {
+			case cacheCloseResult := <-cacheCloseResults:
+				if tt.wantErr && (cacheCloseResult.GetErr() == nil) {
+					t1.Errorf("PlcConnectionCache.Close() = %v, wantErr %v", cacheCloseResult.GetErr(), tt.wantErr)
+				} else if cacheCloseResult.GetErr() != nil {
+					t1.Errorf("PlcConnectionCache.Close() error = %v, wantErr %v", cacheCloseResult.GetErr(), tt.wantErr)
+				}
+			case <-time.After(10 * time.Second):
+				if !tt.wantTimeout {
+					t1.Errorf("PlcConnectionCache.Close() got timeout")
+				}
+			}
+
+		})
+	}
+}
+
 func readFromPlc(t1 *testing.T, cache plcConnectionCache, connectionString string, resourceString string) <-chan []spi.TraceEntry {
 	ch := make(chan []spi.TraceEntry)
 
@@ -356,7 +428,7 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t1 *testing.T) {
 		if connectResult.GetErr() != nil {
 			t1.Errorf("PlcConnectionCache.GetConnection() error = %v", connectResult.GetErr())
 		}
-		connection := connectResult.GetConnection().(*leasedPlcConnection)
+		connection := connectResult.GetConnection().(*plcConnectionLease)
 		if connection != nil {
 			connectionCloseResultChan := connection.Close()
 			closeResult := <-connectionCloseResultChan

@@ -163,28 +163,18 @@ func (t *plcConnectionCache) Close() <-chan PlcConnectionCacheCloseResult {
 				// We're just getting the lease as this way we can be sure nobody else is using it.
 				// We also really don't care if it worked, or not ... it's just an attempt of being
 				// nice.
-				case connectionConnectResult := <-leaseResults:
-					container.connection.Close()
+				case _ = <-leaseResults:
 					// Give back the connection.
-					if connectionConnectResult.GetErr() == nil {
-						connectionConnectResult.GetConnection().Close()
-					}
+					container.connection.Close()
 				// If we're timing out brutally kill the connection.
 				case <-time.After(t.maxWaitTime):
 					// Forcefully close this connection.
 					container.connection.Close()
 				}
 
-				// Check if all are closed and send the "all closed" event if all are closed.
-				allClosed := true
-				for _, cc2 := range t.connections {
-					if !cc2.closed {
-						allClosed = false
-						break
-					}
-				}
-				if allClosed {
-					ch <- newDefaultPlcConnectionCacheCloseResult(t, nil)
+				select {
+				case ch <- newDefaultPlcConnectionCacheCloseResult(t, nil):
+				case <-time.After(time.Millisecond * 10):
 				}
 			}(cc)
 		}
@@ -254,7 +244,7 @@ func (t *connectionContainer) connect() {
 			// Mark the connection as being used.
 			t.state = StateInUse
 			// Return the lease to the caller.
-			connection := newLeasedPlcConnection(t, t.leaseCounter, t.connection)
+			connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
 			// In this case we don't need to check for blocks
 			// as the getConnection function of the connection cache
 			// is definitely eagerly waiting for input.
@@ -297,7 +287,7 @@ func (t *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	// Check if the connection is available.
 	if t.state == StateIdle {
 		t.leaseCounter++
-		connection := newLeasedPlcConnection(t, t.leaseCounter, t.connection)
+		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
 		// In this case we don't need to check for blocks
 		// as the getConnection function of the connection cache
 		// is definitely eagerly waiting for input.
@@ -328,7 +318,7 @@ func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) e
 		next := t.queue[0]
 		t.queue = t.queue[1:]
 		t.leaseCounter++
-		connection := newLeasedPlcConnection(t, t.leaseCounter, t.connection)
+		connection := newPlcConnectionLease(t, t.leaseCounter, t.connection)
 		// Send asynchronously as the receiver might have given up waiting,
 		// and we don't want anything to block here. 1ms should be enough for
 		// the calling process to reach the blocking read.
@@ -346,10 +336,10 @@ func (t *connectionContainer) returnConnection(state cachedPlcConnectionState) e
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// leasedPlcConnection
+// plcConnectionLease
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-type leasedPlcConnection struct {
+type plcConnectionLease struct {
 	// Reference back to the container, so we can give the connection back.
 	connectionContainer *connectionContainer
 	// Counter for the number of times this connection has been used before.
@@ -358,8 +348,8 @@ type leasedPlcConnection struct {
 	connection spi.PlcConnection
 }
 
-func newLeasedPlcConnection(connectionContainer *connectionContainer, leaseId uint32, connection spi.PlcConnection) *leasedPlcConnection {
-	p := &leasedPlcConnection{
+func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection spi.PlcConnection) *plcConnectionLease {
+	p := &plcConnectionLease{
 		connectionContainer: connectionContainer,
 		leaseId:             leaseId,
 		connection:          connection,
@@ -370,32 +360,32 @@ func newLeasedPlcConnection(connectionContainer *connectionContainer, leaseId ui
 	return p
 }
 
-func (t *leasedPlcConnection) IsTraceEnabled() bool {
+func (t *plcConnectionLease) IsTraceEnabled() bool {
 	if t.connection == nil {
 		panic("Called 'IsTraceEnabled' on a closed cached connection")
 	}
 	return t.connection.IsTraceEnabled()
 }
 
-func (t *leasedPlcConnection) GetTracer() *spi.Tracer {
+func (t *plcConnectionLease) GetTracer() *spi.Tracer {
 	if t.connection == nil {
 		panic("Called 'GetTracer' on a closed cached connection")
 	}
 	return t.connection.GetTracer()
 }
 
-func (t *leasedPlcConnection) GetConnectionId() string {
+func (t *plcConnectionLease) GetConnectionId() string {
 	if t.connection == nil {
 		panic("Called 'GetConnectionId' on a closed cached connection")
 	}
 	return fmt.Sprintf("%s-%d", t.connection.GetConnectionId(), t.leaseId)
 }
 
-func (t *leasedPlcConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (t *plcConnectionLease) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	panic("Called 'Connect' on a cached connection")
 }
 
-func (t *leasedPlcConnection) BlockingClose() {
+func (t *plcConnectionLease) BlockingClose() {
 	if t.connection == nil {
 		panic("Called 'BlockingClose' on a closed cached connection")
 	}
@@ -403,7 +393,7 @@ func (t *leasedPlcConnection) BlockingClose() {
 	<-t.Close()
 }
 
-func (t *leasedPlcConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 	if t.connection == nil {
 		panic("Called 'Close' on a closed cached connection")
 	}
@@ -458,56 +448,56 @@ func (t *leasedPlcConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	return result
 }
 
-func (t *leasedPlcConnection) IsConnected() bool {
+func (t *plcConnectionLease) IsConnected() bool {
 	if t.connection == nil {
 		return false
 	}
 	return t.connection.IsConnected()
 }
 
-func (t *leasedPlcConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (t *plcConnectionLease) Ping() <-chan plc4go.PlcConnectionPingResult {
 	if t.connection == nil {
 		panic("Called 'Ping' on a closed cached connection")
 	}
 	return t.connection.Ping()
 }
 
-func (t *leasedPlcConnection) GetMetadata() model.PlcConnectionMetadata {
+func (t *plcConnectionLease) GetMetadata() model.PlcConnectionMetadata {
 	if t.connection == nil {
 		panic("Called 'GetMetadata' on a closed cached connection")
 	}
 	return t.connection.GetMetadata()
 }
 
-func (t *leasedPlcConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
+func (t *plcConnectionLease) ReadRequestBuilder() model.PlcReadRequestBuilder {
 	if t.connection == nil {
 		panic("Called 'ReadRequestBuilder' on a closed cached connection")
 	}
 	return t.connection.ReadRequestBuilder()
 }
 
-func (t *leasedPlcConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
+func (t *plcConnectionLease) WriteRequestBuilder() model.PlcWriteRequestBuilder {
 	if t.connection == nil {
 		panic("Called 'WriteRequestBuilder' on a closed cached connection")
 	}
 	return t.connection.WriteRequestBuilder()
 }
 
-func (t *leasedPlcConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
+func (t *plcConnectionLease) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
 	if t.connection == nil {
 		panic("Called 'SubscriptionRequestBuilder' on a closed cached connection")
 	}
 	return t.connection.SubscriptionRequestBuilder()
 }
 
-func (t *leasedPlcConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
+func (t *plcConnectionLease) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
 	if t.connection == nil {
 		panic("Called 'UnsubscriptionRequestBuilder' on a closed cached connection")
 	}
 	return t.connection.UnsubscriptionRequestBuilder()
 }
 
-func (t *leasedPlcConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
+func (t *plcConnectionLease) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
 	if t.connection == nil {
 		panic("Called 'BrowseRequestBuilder' on a closed cached connection")
 	}
