@@ -170,20 +170,10 @@ var printableRange = &unicode.RangeTable{
 func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
-	var valueToBeWritten interface{}
 	cleanedUpString := strings.TrimFunc(value, func(r rune) bool {
 		return !unicode.In(r, printableRange)
 	})
-	cleanedUpString = value
-	valueToBeWritten = cleanedUpString
-	if strings.Contains(cleanedUpString, "\n") {
-		valueToBeWritten = struct {
-			S string `xml:",innerxml"`
-		}{
-			S: "<![CDATA[" + cleanedUpString + "]]>",
-		}
-	}
-	return x.encodeElement(logicalName, valueToBeWritten, attr, writerArgs...)
+	return x.encodeElement(logicalName, cleanedUpString, attr, writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteVirtual(_ string, _ interface{}, _ ...WithWriterArgs) error {

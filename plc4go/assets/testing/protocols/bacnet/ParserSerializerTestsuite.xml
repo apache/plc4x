@@ -855,32 +855,32 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
-                                  # Unit tests builder / runner for this project
+# Unit tests builder / runner for this project
 
-                                  rm test.log
-                                  touch test.log
+rm test.log
+touch test.log
 
-                                  make -f abort.mak clean
-                                  make -f abort.mak
-                                  ./abort >> test.log
-                                  make -f abort.mak clean
+make -f abort.mak clean
+make -f abort.mak
+./abort >> test.log
+make -f abort.mak clean
 
-                                  make -f address.mak clean
-                                  make -f address.mak
-                                  ./address >> test.log
-                                  make -f address.mak clean
+make -f address.mak clean
+make -f address.mak
+./address >> test.log
+make -f address.mak clean
 
-                                  make -f cov.mak clean
-                                  make -f cov.mak
-                                  ./cov >> test.log
-                                  make -f cov.mak clean
+make -f cov.mak clean
+make -f cov.mak
+./cov >> test.log
+make -f cov.mak clean
 
-                                  make -f dcc.mak clean
-                                  make -f dcc.mak
-                                  ./dcc >> test.log
-                                  make -f dcc.mak clean
+make -f dcc.mak clean
+make -f dcc.mak
+./dcc >> test.log
+make -f dcc.mak clean
 
-                                  make -f demo/object/ai</value>
+make -f demo/object/ai</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>

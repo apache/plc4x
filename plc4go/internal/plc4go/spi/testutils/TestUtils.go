@@ -62,6 +62,16 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 					continue
 				}
 			}
+			if delta.Operation == xdiff.Update &&
+				string(delta.Subject.Parent.FirstChild.Name) == "dataType" &&
+				string(delta.Subject.Parent.FirstChild.Value) == "string" &&
+				string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
+				string(delta.Object.Parent.FirstChild.Value) == "string" {
+				if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
+					log.Info().Msgf("We ignore newline diffs %v", delta)
+					continue
+				}
+			}
 			cleanDiff = append(cleanDiff, delta)
 		}
 
