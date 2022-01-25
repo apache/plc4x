@@ -1033,9 +1033,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 </@compress>
 
 		switch {
-		case _err != nil && _err != utils.ParseAssertError:
+		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):<@emitImport import="io" />
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
-		case _err == utils.ParseAssertError:
+		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):<@emitImport import="io" />
 			readBuffer.Reset(currentPos)
 		default:
 			${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
