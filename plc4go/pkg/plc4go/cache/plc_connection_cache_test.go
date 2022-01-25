@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package pool
+package cache
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/simulated"
@@ -25,13 +25,14 @@ import (
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/stretchr/testify/assert"
+	"github.com/viney-shih/go-lock"
 	"testing"
 	"time"
 )
 
 var debugTimeout = 1
 
-func TestPlcConnectionPool_GetConnection(t1 *testing.T) {
+func TestPlcConnectionCache_GetConnection(t1 *testing.T) {
 	type fields struct {
 		driverManager plc4go.PlcDriverManager
 	}
@@ -74,36 +75,36 @@ func TestPlcConnectionPool_GetConnection(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := NewPlcConnectionPool(tt.fields.driverManager)
-			got := t.GetConnection(tt.args.connectionString)
+			cc := NewPlcConnectionCache(tt.fields.driverManager)
+			got := cc.GetConnection(tt.args.connectionString)
 			select {
 			case connectResult := <-got:
 				if tt.wantErr && (connectResult.GetErr() == nil) {
-					t1.Errorf("PlcConnectionPool.GetConnection() = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
+					t1.Errorf("PlcConnectionCache.GetConnection() = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
 				} else if connectResult.GetErr() != nil {
-					t1.Errorf("PlcConnectionPool.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
+					t1.Errorf("PlcConnectionCache.GetConnection() error = %v, wantErr %v", connectResult.GetErr(), tt.wantErr)
 				}
 			case <-time.After(10 * time.Second):
 				if !tt.wantTimeout {
-					t1.Errorf("PlcConnectionPool.GetConnection() got timeout")
+					t1.Errorf("PlcConnectionCache.GetConnection() got timeout")
 				}
 			}
 		})
 	}
 }
 
-func readFromPlc(t1 *testing.T, pool *PlcConnectionPool, connectionString string, resourceString string) <-chan []spi.TraceEntry {
+func readFromPlc(t1 *testing.T, cache plcConnectionCache, connectionString string, resourceString string) <-chan []spi.TraceEntry {
 	ch := make(chan []spi.TraceEntry)
 
 	// Get a connection
-	connectionResultChan := pool.GetConnection(connectionString)
+	connectionResultChan := cache.GetConnection(connectionString)
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() != nil {
-			t1.Errorf("PlcConnectionPool.GetConnection() error = %v", connectResult.GetErr())
+			t1.Errorf("PlcConnectionCache.GetConnection() error = %v", connectResult.GetErr())
 			return nil
 		}
-		connection := connectResult.GetConnection().(*LeasedPlcConnection)
+		connection := connectResult.GetConnection()
 		defer func() {
 			closeResults := connection.Close()
 			// Wait for the connection to be correctly closed.
@@ -116,7 +117,7 @@ func readFromPlc(t1 *testing.T, pool *PlcConnectionPool, connectionString string
 		// Prepare a read request.
 		readRequest, err := connection.ReadRequestBuilder().AddQuery("test", resourceString).Build()
 		if err != nil {
-			t1.Errorf("PlcConnectionPool.ReadRequest.Build() error = %v", err)
+			t1.Errorf("PlcConnectionCache.ReadRequest.Build() error = %v", err)
 			return ch
 		}
 
@@ -126,23 +127,23 @@ func readFromPlc(t1 *testing.T, pool *PlcConnectionPool, connectionString string
 		case readRequestResult := <-execution:
 			err := readRequestResult.GetErr()
 			if err != nil {
-				t1.Errorf("PlcConnectionPool.ReadRequest.Read() error = %v", err)
+				t1.Errorf("PlcConnectionCache.ReadRequest.Read() error = %v", err)
 			}
 		case <-time.After(1 * time.Second):
-			t1.Errorf("PlcConnectionPool.ReadRequest.Read() timeout")
+			t1.Errorf("PlcConnectionCache.ReadRequest.Read() timeout")
 		}
 		return ch
 	case <-time.After(20 * time.Second):
-		t1.Errorf("PlcConnectionPool.GetConnection() got timeout")
+		t1.Errorf("PlcConnectionCache.GetConnection() got timeout")
 	}
 	return ch
 }
 
-func executeAndTestReadFromPlc(t1 *testing.T, pool *PlcConnectionPool, connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan bool {
+func executeAndTestReadFromPlc(t1 *testing.T, cache plcConnectionCache, connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan bool {
 	ch := make(chan bool)
 	go func() {
-		// Read once from the pool.
-		tracesChannel := readFromPlc(t1, pool, connectionString, resourceString)
+		// Read once from the cache.
+		tracesChannel := readFromPlc(t1, cache, connectionString, resourceString)
 		traces := <-tracesChannel
 
 		// In the log we should see one "Successfully connected" entry.
@@ -155,28 +156,35 @@ func executeAndTestReadFromPlc(t1 *testing.T, pool *PlcConnectionPool, connectio
 				t1.Errorf("Expected %s as trace entry but got %s", expectedTraceEntry, currentTraceEntry)
 			}
 		}
-		// Now there should be one connection in the pool.
-		if len(pool.connections) != expectedNumTotalConnections {
-			t1.Errorf("Expected %d connections in the pool but got %d", expectedNumTotalConnections, len(pool.connections))
+		// Now there should be one connection in the cache.
+		if len(cache.connections) != expectedNumTotalConnections {
+			t1.Errorf("Expected %d connections in the cache but got %d", expectedNumTotalConnections, len(cache.connections))
 		}
 		ch <- true
 	}()
 	return ch
 }
 
-func TestPlcConnectionPool_ReusingAnExistingConnection(t1 *testing.T) {
+func TestPlcConnectionCache_ReusingAnExistingConnection(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	// Read once from the pool.
-	finishedChan := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
+	// Read once from the cache.
+	finishedChan := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -192,7 +200,7 @@ func TestPlcConnectionPool_ReusingAnExistingConnection(t1 *testing.T) {
 	}
 
 	// Request the same connection for a second time.
-	finishedChan = executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
+	finishedChan = executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
@@ -205,11 +213,11 @@ func TestPlcConnectionPool_ReusingAnExistingConnection(t1 *testing.T) {
 		t1.Errorf("Timeout")
 	}
 
-	assert.NotNil(t1, pool.GetTracer(), "Tracer should be available")
-	traces := pool.GetTracer().GetTraces()
+	assert.NotNil(t1, cache.GetTracer(), "Tracer should be available")
+	traces := cache.GetTracer().GetTraces()
 	assert.Equal(t1, 5, len(traces), "Unexpected number of trace entries")
 	// First is needs to create a new container for this connection
-	assert.Equal(t1, "create new pooled connection", traces[0].Message, "Unexpected message")
+	assert.Equal(t1, "create new cached connection", traces[0].Message, "Unexpected message")
 	// Then it gets a lease for the connection
 	assert.Equal(t1, "lease", traces[1].Message, "Unexpected message")
 	assert.Equal(t1, "success", traces[2].Message, "Unexpected message")
@@ -218,19 +226,26 @@ func TestPlcConnectionPool_ReusingAnExistingConnection(t1 *testing.T) {
 	assert.Equal(t1, "success", traces[4].Message, "Unexpected message")
 }
 
-func TestPlcConnectionPool_MultipleConcurrentConnectionRequests(t1 *testing.T) {
+func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	// Read once from the pool.
-	firstRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	// Read once from the cache.
+	firstRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -246,7 +261,7 @@ func TestPlcConnectionPool_MultipleConcurrentConnectionRequests(t1 *testing.T) {
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	secondRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
@@ -266,11 +281,11 @@ func TestPlcConnectionPool_MultipleConcurrentConnectionRequests(t1 *testing.T) {
 	}
 
 	// This should be quite equal to the serial case as the connections are requested serially.
-	assert.NotNil(t1, pool.GetTracer(), "Tracer should be available")
-	traces := pool.GetTracer().GetTraces()
+	assert.NotNil(t1, cache.GetTracer(), "Tracer should be available")
+	traces := cache.GetTracer().GetTraces()
 	assert.Equal(t1, 5, len(traces), "Unexpected number of trace entries")
 	// First is needs to create a new container for this connection
-	assert.Equal(t1, "create new pooled connection", traces[0].Message, "Unexpected message")
+	assert.Equal(t1, "create new cached connection", traces[0].Message, "Unexpected message")
 	// Then it gets a lease for the connection
 	assert.Equal(t1, "lease", traces[1].Message, "Unexpected message")
 	// And a second time
@@ -281,18 +296,25 @@ func TestPlcConnectionPool_MultipleConcurrentConnectionRequests(t1 *testing.T) {
 	assert.Equal(t1, "success", traces[4].Message, "Unexpected message")
 }
 
-func TestPlcConnectionPool_ConnectWithError(t1 *testing.T) {
+func TestPlcConnectionCache_ConnectWithError(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	connectionResultChan := pool.GetConnection("simulated://1.2.3.4:42?connectionError=hurz&traceEnabled=true")
+	connectionResultChan := cache.GetConnection("simulated://1.2.3.4:42?connectionError=hurz&traceEnabled=true")
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() == nil {
@@ -303,31 +325,38 @@ func TestPlcConnectionPool_ConnectWithError(t1 *testing.T) {
 			t1.Errorf("An error '%s' was expected, but got '%s'", "hurz", connectResult.GetErr().Error())
 		}
 	case <-time.After(20 * time.Second):
-		t1.Errorf("PlcConnectionPool.GetConnection() got timeout")
+		t1.Errorf("PlcConnectionCache.GetConnection() got timeout")
 	}
 }
 
 // In this test, the ping operation used to test the connection before
-// putting it back into the pool will return an error, hereby marking
+// putting it back into the cache will return an error, hereby marking
 // the connection as invalid
-func TestPlcConnectionPool_ReturningConnectionWithPingError(t1 *testing.T) {
+func TestPlcConnectionCache_ReturningConnectionWithPingError(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	connectionResultChan := pool.GetConnection("simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
+	connectionResultChan := cache.GetConnection("simulated://1.2.3.4:42?pingError=hurz&traceEnabled=true")
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() != nil {
-			t1.Errorf("PlcConnectionPool.GetConnection() error = %v", connectResult.GetErr())
+			t1.Errorf("PlcConnectionCache.GetConnection() error = %v", connectResult.GetErr())
 		}
-		connection := connectResult.GetConnection().(*LeasedPlcConnection)
+		connection := connectResult.GetConnection().(*leasedPlcConnection)
 		if connection != nil {
 			connectionCloseResultChan := connection.Close()
 			closeResult := <-connectionCloseResultChan
@@ -352,25 +381,32 @@ func TestPlcConnectionPool_ReturningConnectionWithPingError(t1 *testing.T) {
 			}
 		}
 	case <-time.After(20 * time.Second):
-		t1.Errorf("PlcConnectionPool.GetConnection() got timeout")
+		t1.Errorf("PlcConnectionCache.GetConnection() got timeout")
 	}
 }
 
-// In this test, we'll make the ping operation take longer than the timeout in the connection pool
+// In this test, we'll make the ping operation take longer than the timeout in the connection cache
 // Therefore the error handling should kick in.
-func TestPlcConnectionPool_PingTimeout(t1 *testing.T) {
+func TestPlcConnectionCache_PingTimeout(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	// Read once from the pool.
-	firstRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true", "RANDOM/test_random:BOOL",
+	// Read once from the cache.
+	firstRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -392,19 +428,26 @@ func TestPlcConnectionPool_PingTimeout(t1 *testing.T) {
 // In this test there are multiple requests for the same connection but the first operation fails at returning
 // the connection due to a timeout in the ping operation. The second call should get a new connection in this
 // case.
-func TestPlcConnectionPool_SecondCallGetNewConnectionAfterPingTimeout(t1 *testing.T) {
+func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	// Read once from the pool.
-	firstRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	// Read once from the cache.
+	firstRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -420,7 +463,7 @@ func TestPlcConnectionPool_SecondCallGetNewConnectionAfterPingTimeout(t1 *testin
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	secondRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -442,11 +485,11 @@ func TestPlcConnectionPool_SecondCallGetNewConnectionAfterPingTimeout(t1 *testin
 	}
 
 	// This should be quite equal to the serial case as the connections are requested serially.
-	assert.NotNil(t1, pool.GetTracer(), "Tracer should be available")
-	traces := pool.GetTracer().GetTraces()
+	assert.NotNil(t1, cache.GetTracer(), "Tracer should be available")
+	traces := cache.GetTracer().GetTraces()
 	assert.Equal(t1, 5, len(traces), "Unexpected number of trace entries")
 	// First is needs to create a new container for this connection
-	assert.Equal(t1, "create new pooled connection", traces[0].Message, "Unexpected message")
+	assert.Equal(t1, "create new cached connection", traces[0].Message, "Unexpected message")
 	// Then it gets a lease for the connection
 	assert.Equal(t1, "lease", traces[1].Message, "Unexpected message")
 	// And a second time
@@ -458,26 +501,33 @@ func TestPlcConnectionPool_SecondCallGetNewConnectionAfterPingTimeout(t1 *testin
 }
 
 // In this test the first client requests a connection, but doesn't listen on the response-channel
-// This shouldn't block the connection pool.
-func TestPlcConnectionPool_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTakesOver(t1 *testing.T) {
+// This shouldn't block the connection cache.
+func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTakesOver(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
 	// Intentionally just ignore the response.
-	pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 
 	time.Sleep(time.Millisecond * 1)
 
-	// Read once from the pool.
+	// Read once from the cache.
 	// NOTE: It doesn't contain the connect-part, as the previous connection handled that.
-	firstRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
@@ -493,19 +543,26 @@ func TestPlcConnectionPool_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTa
 	}
 }
 
-func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
+func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
-	pool := NewPlcConnectionPool(driverManager)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 5,
+		maxWaitTime:   time.Second * 25,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
-	// Read once from the pool.
-	firstRun := executeAndTestReadFromPlc(t1, pool, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	// Read once from the cache.
+	firstRun := executeAndTestReadFromPlc(t1, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -518,7 +575,7 @@ func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 	time.Sleep(time.Millisecond * 1)
 
 	// Almost instantly we try to get a new connection but don't listen for the result
-	pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 
 	// Wait for the first operation to finish
 	select {
@@ -527,15 +584,15 @@ func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 		t1.Errorf("Timeout")
 	}
 
-	// Wait for 1s to have the connection pool timeout (10ms) the lease as nobody's listening.
+	// Wait for 1s to have the connection cache timeout (10ms) the lease as nobody's listening.
 	time.Sleep(time.Millisecond * 1000)
 
 	// This should be quite equal to the serial case as the connections are requested serially.
-	assert.NotNil(t1, pool.GetTracer(), "Tracer should be available")
-	traces := pool.GetTracer().GetTraces()
+	assert.NotNil(t1, cache.GetTracer(), "Tracer should be available")
+	traces := cache.GetTracer().GetTraces()
 	if assert.Equal(t1, 5, len(traces), "Unexpected number of trace entries") {
 		// First is needs to create a new container for this connection
-		assert.Equal(t1, "create new pooled connection", traces[0].Message, "Unexpected message")
+		assert.Equal(t1, "create new cached connection", traces[0].Message, "Unexpected message")
 		// Then it gets a lease for the connection
 		assert.Equal(t1, "lease", traces[1].Message, "Unexpected message")
 		// And a second time
@@ -555,29 +612,36 @@ func TestPlcConnectionPool_SecondConnectionGivenUpWaiting(t1 *testing.T) {
 	}
 }
 
-func TestPlcConnectionPool_MaximumWaitTimeReached(t1 *testing.T) {
+func TestPlcConnectionCache_MaximumWaitTimeReached(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
-	// Initially there should be no connection in the pool.
-	if len(pool.connections) != 0 {
-		t1.Errorf("Expected %d connections in the pool but got %d", 0, len(pool.connections))
+	// Initially there should be no connection in the cache.
+	if len(cache.connections) != 0 {
+		t1.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
 	// The first and second connection should work fine
-	firstConnectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	firstConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	time.Sleep(time.Millisecond * 1)
 
-	secondConnectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	secondConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	time.Sleep(time.Millisecond * 1)
 
-	// The third connection should be given up by the pool
-	thirdConnectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
+	// The third connection should be given up by the cache
+	thirdConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
 	// Just make sure the first two connections are returned as soon as they are received
 	go func() {
@@ -607,7 +671,7 @@ func TestPlcConnectionPool_MaximumWaitTimeReached(t1 *testing.T) {
 		}
 	}()
 
-	// Now wait for the last connection to be timed out by the pool
+	// Now wait for the last connection to be timed out by the cache
 	select {
 	case connectionResult := <-thirdConnectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -628,11 +692,18 @@ func TestLeasedPlcConnection_IsTraceEnabled(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -644,7 +715,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'IsTraceEnabled' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'IsTraceEnabled' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -658,7 +729,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t1 *testing.T) {
 	}
 
 	// The first and second connection should work fine
-	connectionResults = pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100")
+	connectionResults = cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -670,7 +741,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'IsTraceEnabled' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'IsTraceEnabled' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -688,11 +759,18 @@ func TestLeasedPlcConnection_GetTracer(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -704,7 +782,7 @@ func TestLeasedPlcConnection_GetTracer(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'GetTracer' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'GetTracer' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -722,11 +800,18 @@ func TestLeasedPlcConnection_GetConnectionId(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -738,7 +823,7 @@ func TestLeasedPlcConnection_GetConnectionId(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'GetConnectionId' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'GetConnectionId' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -756,11 +841,18 @@ func TestLeasedPlcConnection_Connect(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -770,7 +862,7 @@ func TestLeasedPlcConnection_Connect(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'Connect' on a pooled connection")
+							assert.Equal(t1, r, "Called 'Connect' on a cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -788,11 +880,18 @@ func TestLeasedPlcConnection_BlockingClose(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -803,7 +902,7 @@ func TestLeasedPlcConnection_BlockingClose(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'BlockingClose' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'BlockingClose' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -821,11 +920,18 @@ func TestLeasedPlcConnection_Close(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -836,7 +942,7 @@ func TestLeasedPlcConnection_Close(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'Close' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'Close' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -854,11 +960,18 @@ func TestLeasedPlcConnection_IsConnected(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -879,11 +992,18 @@ func TestLeasedPlcConnection_Ping(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -895,7 +1015,7 @@ func TestLeasedPlcConnection_Ping(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'Ping' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'Ping' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -913,11 +1033,18 @@ func TestLeasedPlcConnection_GetMetadata(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -933,7 +1060,7 @@ func TestLeasedPlcConnection_GetMetadata(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'GetMetadata' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'GetMetadata' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -951,11 +1078,18 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -968,7 +1102,7 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'ReadRequestBuilder' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'ReadRequestBuilder' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -986,11 +1120,18 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -1003,7 +1144,7 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'WriteRequestBuilder' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'WriteRequestBuilder' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -1021,11 +1162,18 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -1046,7 +1194,7 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'SubscriptionRequestBuilder' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'SubscriptionRequestBuilder' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -1064,11 +1212,18 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -1089,7 +1244,7 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'UnsubscriptionRequestBuilder' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'UnsubscriptionRequestBuilder' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
@@ -1107,11 +1262,18 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t1 *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(simulated.NewDriver())
 	// Reduce the max lease time as this way we also reduce the max wait time.
-	pool := NewPlcConnectionPoolWithMaxLeaseTime(driverManager, time.Second*1)
-	pool.EnableTracer()
+	cache := plcConnectionCache{
+		driverManager: driverManager,
+		maxLeaseTime:  time.Second * 1,
+		maxWaitTime:   time.Second * 5,
+		cacheLock:     lock.NewCASMutex(),
+		connections:   make(map[string]*connectionContainer),
+		tracer:        nil,
+	}
+	cache.EnableTracer()
 
 	// The first and second connection should work fine
-	connectionResults := pool.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
+	connectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 	select {
 	case connectionResult := <-connectionResults:
 		if assert.NotNil(t1, connectionResult) {
@@ -1132,7 +1294,7 @@ func TestLeasedPlcConnection_BrowseRequestBuilder(t1 *testing.T) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							assert.Equal(t1, r, "Called 'BrowseRequestBuilder' on a closed pooled connection")
+							assert.Equal(t1, r, "Called 'BrowseRequestBuilder' on a closed cached connection")
 						} else {
 							t1.Errorf("The code did not panic")
 						}
