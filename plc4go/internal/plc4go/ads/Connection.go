@@ -37,9 +37,11 @@ type Connection struct {
 	configuration      Configuration
 	reader             *Reader
 	writer             *Writer
+	connectionId       string
+	tracer             *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, fieldHandler spi.PlcFieldHandler) (*Connection, error) {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, fieldHandler spi.PlcFieldHandler, options map[string][]string) (*Connection, error) {
 	reader := *NewReader(
 		messageCodec,
 		configuration.targetAmsNetId,
@@ -66,11 +68,28 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, f
 		reader: &reader,
 		writer: &writer,
 	}
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
+	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcFieldHandler(fieldHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection, nil
+}
+
+func (m *Connection) GetConnectionId() string {
+	return m.connectionId
+}
+
+func (m *Connection) IsTraceEnabled() bool {
+	return m.tracer != nil
+}
+
+func (m *Connection) GetTracer() *spi.Tracer {
+	return m.tracer
 }
 
 func (m *Connection) GetConnection() plc4go.PlcConnection {

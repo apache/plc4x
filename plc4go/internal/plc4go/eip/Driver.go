@@ -96,7 +96,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcFieldHandler(), &m.tm)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcFieldHandler(), &m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
 }

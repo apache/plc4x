@@ -39,6 +39,9 @@ type Connection struct {
 	messageCodec       spi.MessageCodec
 	options            map[string][]string
 	requestInterceptor interceptors.RequestInterceptor
+
+	connectionId string
+	tracer       *spi.Tracer
 }
 
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
@@ -53,12 +56,29 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 			internalModel.NewDefaultPlcWriteResponse,
 		),
 	}
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
+	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithDefaultTtl(time.Second*5),
 		_default.WithPlcFieldHandler(fieldHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
+}
+
+func (m *Connection) GetConnectionId() string {
+	return m.connectionId
+}
+
+func (m *Connection) IsTraceEnabled() bool {
+	return m.tracer != nil
+}
+
+func (m *Connection) GetTracer() *spi.Tracer {
+	return m.tracer
 }
 
 func (m *Connection) GetConnection() plc4go.PlcConnection {

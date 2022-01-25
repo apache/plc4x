@@ -33,17 +33,36 @@ type Connection struct {
 	_default.DefaultConnection
 	messageCodec spi.MessageCodec
 	subscribers  []*Subscriber
+	connectionId string
+	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, options map[string][]string) *Connection {
 	connection := &Connection{
 		messageCodec: messageCodec,
+	}
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcFieldHandler(fieldHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
+}
+
+func (m *Connection) GetConnectionId() string {
+	return m.connectionId
+}
+
+func (m *Connection) IsTraceEnabled() bool {
+	return m.tracer != nil
+}
+
+func (m *Connection) GetTracer() *spi.Tracer {
+	return m.tracer
 }
 
 func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {

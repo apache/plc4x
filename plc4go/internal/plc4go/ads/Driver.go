@@ -74,7 +74,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	// Create the new connection
-	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler())
+	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler(), options)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {

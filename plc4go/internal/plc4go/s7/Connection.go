@@ -59,9 +59,12 @@ type Connection struct {
 	configuration Configuration
 	driverContext DriverContext
 	tm            *spi.RequestTransactionManager
+
+	connectionId string
+	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		tpduGenerator: TpduGenerator{currentTpduId: 10},
 		messageCodec:  messageCodec,
@@ -69,11 +72,28 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, d
 		driverContext: driverContext,
 		tm:            tm,
 	}
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
+	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcFieldHandler(fieldHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
+}
+
+func (m *Connection) GetConnectionId() string {
+	return m.connectionId
+}
+
+func (m *Connection) IsTraceEnabled() bool {
+	return m.tracer != nil
+}
+
+func (m *Connection) GetTracer() *spi.Tracer {
+	return m.tracer
 }
 
 func (m *Connection) GetConnection() plc4go.PlcConnection {

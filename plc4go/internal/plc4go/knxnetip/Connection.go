@@ -130,6 +130,9 @@ type Connection struct {
 
 	// indicates if the tunneling requests loop is running
 	handleTunnelingRequests bool
+
+	connectionId string
+	tracer       *spi.Tracer
 }
 
 func (m *Connection) String() string {
@@ -182,6 +185,11 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
 
+	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+		if len(traceEnabledOption) == 1 {
+			connection.tracer = spi.NewTracer(connection.connectionId)
+		}
+	}
 	// If a building key was provided, save that in a dedicated variable
 	if buildingKey, ok := options["buildingKey"]; ok {
 		bc, err := hex.DecodeString(buildingKey[0])
@@ -191,6 +199,18 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 	}
 	connection.messageCodec = NewMessageCodec(transportInstance, connection.interceptIncomingMessage)
 	return connection
+}
+
+func (m *Connection) GetConnectionId() string {
+	return m.connectionId
+}
+
+func (m *Connection) IsTraceEnabled() bool {
+	return m.tracer != nil
+}
+
+func (m *Connection) GetTracer() *spi.Tracer {
+	return m.tracer
 }
 
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {

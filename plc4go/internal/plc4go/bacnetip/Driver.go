@@ -71,7 +71,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, m.GetPlcFieldHandler())
+	connection := NewConnection(codec, m.GetPlcFieldHandler(), options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
 }
