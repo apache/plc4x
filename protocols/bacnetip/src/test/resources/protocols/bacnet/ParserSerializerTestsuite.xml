@@ -855,32 +855,32 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
-      # Unit tests builder / runner for this project
-      
-      rm test.log
-      touch test.log
-      
-      make -f abort.mak clean
-      make -f abort.mak
-      ./abort &gt;&gt; test.log
-      make -f abort.mak clean
-      
-      make -f address.mak clean
-      make -f address.mak
-      ./address &gt;&gt; test.log
-      make -f address.mak clean
-      
-      make -f cov.mak clean
-      make -f cov.mak
-      ./cov &gt;&gt; test.log
-      make -f cov.mak clean
-      
-      make -f dcc.mak clean
-      make -f dcc.mak
-      ./dcc &gt;&gt; test.log
-      make -f dcc.mak clean
-      
-      make -f demo/object/ai</value>
+# Unit tests builder / runner for this project
+
+rm test.log
+touch test.log
+
+make -f abort.mak clean
+make -f abort.mak
+./abort >> test.log
+make -f abort.mak clean
+
+make -f address.mak clean
+make -f address.mak
+./address >> test.log
+make -f address.mak clean
+
+make -f cov.mak clean
+make -f cov.mak
+./cov >> test.log
+make -f cov.mak clean
+
+make -f dcc.mak clean
+make -f dcc.mak
+./dcc >> test.log
+make -f dcc.mak clean
+
+make -f demo/object/ai</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1098,26 +1098,26 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
-      make -f demo/object/ai.mak
-      ./analog_input &gt;&gt; test.log
-      make -f demo/object/ai.mak clean
-      
-      make -f demo/object/ao.mak clean
-      make -f demo/object/ao.mak
-      ./analog_output &gt;&gt; test.log
-      make -f demo/object/ao.mak clean
-      
-      make -f demo/object/av.mak clean
-      make -f demo/object/av.mak
-      ./analog_value &gt;&gt; test.log
-      make -f demo/object/av.mak clean
-      
-      make -f arf.mak clean
-      make -f arf.mak
-      ./atomicreadfile &gt;&gt; test.log
-      make -f arf.mak clean
-      
-      make -f awf.mak</value>
+make -f demo/object/ai.mak
+./analog_input >> test.log
+make -f demo/object/ai.mak clean
+
+make -f demo/object/ao.mak clean
+make -f demo/object/ao.mak
+./analog_output >> test.log
+make -f demo/object/ao.mak clean
+
+make -f demo/object/av.mak clean
+make -f demo/object/av.mak
+./analog_value >> test.log
+make -f demo/object/av.mak clean
+
+make -f arf.mak clean
+make -f arf.mak
+./atomicreadfile >> test.log
+make -f arf.mak clean
+
+make -f awf.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1335,29 +1335,29 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">clean
-      make -f awf.mak
-      ./atomicwritefile &gt;&gt; test.log
-      make -f awf.mak clean
-      
-      make -f bacapp.mak clean
-      make -f bacapp.mak
-      ./bacapp &gt;&gt; test.log
-      make -f bacapp.mak clean
-      
-      make -f bacdcode.mak clean
-      make -f bacdcode.mak
-      ./bacdcode &gt;&gt; test.log
-      make -f bacdcode.mak clean
-      
-      make -f bacerror.mak clean
-      make -f bacerror.mak
-      ./bacerror &gt;&gt; test.log
-      make -f bacerror.mak clean
-      
-      make -f bacstr.mak clean
-      make -f bacstr.mak
-      ./bacstr &gt;&gt; test.log
-      make -f bacstr.mak</value>
+make -f awf.mak
+./atomicwritefile >> test.log
+make -f awf.mak clean
+
+make -f bacapp.mak clean
+make -f bacapp.mak
+./bacapp >> test.log
+make -f bacapp.mak clean
+
+make -f bacdcode.mak clean
+make -f bacdcode.mak
+./bacdcode >> test.log
+make -f bacdcode.mak clean
+
+make -f bacerror.mak clean
+make -f bacerror.mak
+./bacerror >> test.log
+make -f bacerror.mak clean
+
+make -f bacstr.mak clean
+make -f bacstr.mak
+./bacstr >> test.log
+make -f bacstr.mak</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1575,26 +1575,26 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">clean
-      
-      make -f demo/object/bi.mak clean
-      make -f demo/object/bi.mak
-      ./binary_input &gt;&gt; test.log
-      make -f demo/object/bi.mak clean
-      
-      make -f demo/object/bo.mak clean
-      make -f demo/object/bo.mak
-      ./binary_output &gt;&gt; test.log
-      make -f demo/object/bo.mak clean
-      
-      make -f demo/object/bv.mak clean
-      make -f demo/object/bv.mak
-      ./binary_value &gt;&gt; test.log
-      make -f demo/object/bv.mak clean
-      
-      make -f crc.mak clean
-      make -f crc.mak
-      ./crc &gt;&gt; test.log
-      make -f crc.mak clean</value>
+
+make -f demo/object/bi.mak clean
+make -f demo/object/bi.mak
+./binary_input >> test.log
+make -f demo/object/bi.mak clean
+
+make -f demo/object/bo.mak clean
+make -f demo/object/bo.mak
+./binary_output >> test.log
+make -f demo/object/bo.mak clean
+
+make -f demo/object/bv.mak clean
+make -f demo/object/bv.mak
+./binary_value >> test.log
+make -f demo/object/bv.mak clean
+
+make -f crc.mak clean
+make -f crc.mak
+./crc >> test.log
+make -f crc.mak clean</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1812,27 +1812,27 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
-      make -f demo/object/device.mak
-      ./device &gt;&gt; test.log
-      make -f demo/object/device.mak clean
-      
-      make -f iam.mak clean
-      make -f iam.mak
-      ./iam &gt;&gt; test.log
-      make -f iam.mak clean
-      
-      make -f ihave.mak clean
-      make -f ihave.mak
-      ./ihave &gt;&gt; test.log
-      make -f ihave.mak clean
-      
-      make -f indtext.mak clean
-      make -f indtext.mak
-      ./indtext &gt;&gt; test.log
-      make -f indtext.mak clean
-      
-      make -f demo/object/lsp.mak clean
-      make -f demo/object/lsp.</value>
+make -f demo/object/device.mak
+./device >> test.log
+make -f demo/object/device.mak clean
+
+make -f iam.mak clean
+make -f iam.mak
+./iam >> test.log
+make -f iam.mak clean
+
+make -f ihave.mak clean
+make -f ihave.mak
+./ihave >> test.log
+make -f ihave.mak clean
+
+make -f indtext.mak clean
+make -f indtext.mak
+./indtext >> test.log
+make -f indtext.mak clean
+
+make -f demo/object/lsp.mak clean
+make -f demo/object/lsp.</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2050,30 +2050,30 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">mak
-      ./lsp &gt;&gt; test.log
-      make -f demo/object/lsp.mak clean
-      
-      make -f demo/object/mso.mak clean
-      make -f demo/object/mso.mak
-      ./multistate_output &gt;&gt; test.log
-      make -f demo/object/mso.mak clean
-      
-      make -f mstp.mak clean
-      make -f mstp.mak
-      ./mstp &gt;&gt; test.log
-      make -f mstp.mak clean
-      
-      make -f npdu.mak clean
-      make -f npdu.mak
-      ./npdu &gt;&gt; test.log
-      make -f npdu.mak clean
-      
-      make -f rd.mak clean
-      make -f rd.mak
-      ./reinitialize_device &gt;&gt; test.log
-      make -f rd.mak clean
-      
-      make</value>
+./lsp >> test.log
+make -f demo/object/lsp.mak clean
+
+make -f demo/object/mso.mak clean
+make -f demo/object/mso.mak
+./multistate_output >> test.log
+make -f demo/object/mso.mak clean
+
+make -f mstp.mak clean
+make -f mstp.mak
+./mstp >> test.log
+make -f mstp.mak clean
+
+make -f npdu.mak clean
+make -f npdu.mak
+./npdu >> test.log
+make -f npdu.mak clean
+
+make -f rd.mak clean
+make -f rd.mak
+./reinitialize_device >> test.log
+make -f rd.mak clean
+
+make</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2291,31 +2291,31 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
-      make -f reject.mak
-      ./reject &gt;&gt; test.log
-      make -f reject.mak clean
-      
-      make -f ringbuf.mak clean
-      make -f ringbuf.mak
-      ./ringbuf &gt;&gt; test.log
-      make -f ringbuf.mak clean
-      
-      make -f rp.mak clean
-      make -f rp.mak
-      ./readproperty &gt;&gt; test.log
-      make -f rp.mak clean
-      
-      make -f rpm.mak clean
-      make -f rpm.mak
-      ./rpm &gt;&gt; test.log
-      make -f rpm.mak clean
-      
-      make -f sbuf.mak clean
-      make -f sbuf.mak
-      ./sbuf &gt;&gt; test.log
-      make -f sbuf.mak clean
-      
-      make -f tsm.mak cle</value>
+make -f reject.mak
+./reject >> test.log
+make -f reject.mak clean
+
+make -f ringbuf.mak clean
+make -f ringbuf.mak
+./ringbuf >> test.log
+make -f ringbuf.mak clean
+
+make -f rp.mak clean
+make -f rp.mak
+./readproperty >> test.log
+make -f rp.mak clean
+
+make -f rpm.mak clean
+make -f rpm.mak
+./rpm >> test.log
+make -f rpm.mak clean
+
+make -f sbuf.mak clean
+make -f sbuf.mak
+./sbuf >> test.log
+make -f sbuf.mak clean
+
+make -f tsm.mak cle</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2533,24 +2533,24 @@
                               </header>
                               <BACnetApplicationTagOctetString>
                                 <value dataType="string" bitLength="2584" encoding="ASCII">an
-      make -f tsm.mak
-      ./tsm &gt;&gt; test.log
-      make -f tsm.mak clean
-      
-      make -f whois.mak clean
-      make -f whois.mak
-      ./whois &gt;&gt; test.log
-      make -f whois.mak clean
-      
-      make -f whohas.mak clean
-      make -f whohas.mak
-      ./whohas &gt;&gt; test.log
-      make -f whohas.mak clean
-      
-      make -f wp.mak clean
-      make -f wp.mak
-      ./writeproperty &gt;&gt; test.log
-      make -f wp.mak clean</value>
+make -f tsm.mak
+./tsm >> test.log
+make -f tsm.mak clean
+
+make -f whois.mak clean
+make -f whois.mak
+./whois >> test.log
+make -f whois.mak clean
+
+make -f whohas.mak clean
+make -f whohas.mak
+./whohas >> test.log
+make -f whohas.mak clean
+
+make -f wp.mak clean
+make -f wp.mak
+./writeproperty >> test.log
+make -f wp.mak clean</value>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
