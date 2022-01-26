@@ -162,6 +162,15 @@ func AccessLevelByName(value string) AccessLevel {
 	return 0
 }
 
+func AccessLevelKnows(value uint8) bool {
+	for _, typeValue := range AccessLevelValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastAccessLevel(structType interface{}) AccessLevel {
 	castFunc := func(typ interface{}) AccessLevel {
 		if sAccessLevel, ok := typ.(AccessLevel); ok {

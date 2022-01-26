@@ -421,6 +421,15 @@ func BACnetObjectTypeByName(value string) BACnetObjectType {
 	return 0
 }
 
+func BACnetObjectTypeKnows(value uint16) bool {
+	for _, typeValue := range BACnetObjectTypeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetObjectType(structType interface{}) BACnetObjectType {
 	castFunc := func(typ interface{}) BACnetObjectType {
 		if sBACnetObjectType, ok := typ.(BACnetObjectType); ok {

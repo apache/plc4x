@@ -8212,6 +8212,15 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 	return 0
 }
 
+func KnxManufacturerKnows(value uint16) bool {
+	for _, typeValue := range KnxManufacturerValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxManufacturer(structType interface{}) KnxManufacturer {
 	castFunc := func(typ interface{}) KnxManufacturer {
 		if sKnxManufacturer, ok := typ.(KnxManufacturer); ok {

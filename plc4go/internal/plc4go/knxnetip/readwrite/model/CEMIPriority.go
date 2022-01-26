@@ -79,6 +79,15 @@ func CEMIPriorityByName(value string) CEMIPriority {
 	return 0
 }
 
+func CEMIPriorityKnows(value uint8) bool {
+	for _, typeValue := range CEMIPriorityValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCEMIPriority(structType interface{}) CEMIPriority {
 	castFunc := func(typ interface{}) CEMIPriority {
 		if sCEMIPriority, ok := typ.(CEMIPriority); ok {

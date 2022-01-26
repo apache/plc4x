@@ -73,6 +73,15 @@ func AlarmTypeByName(value string) AlarmType {
 	return 0
 }
 
+func AlarmTypeKnows(value uint8) bool {
+	for _, typeValue := range AlarmTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastAlarmType(structType interface{}) AlarmType {
 	castFunc := func(typ interface{}) AlarmType {
 		if sAlarmType, ok := typ.(AlarmType); ok {

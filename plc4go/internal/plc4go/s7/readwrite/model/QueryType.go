@@ -73,6 +73,15 @@ func QueryTypeByName(value string) QueryType {
 	return 0
 }
 
+func QueryTypeKnows(value uint8) bool {
+	for _, typeValue := range QueryTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastQueryType(structType interface{}) QueryType {
 	castFunc := func(typ interface{}) QueryType {
 		if sQueryType, ok := typ.(QueryType); ok {

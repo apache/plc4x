@@ -1011,6 +1011,15 @@ func KnxPropertyDataTypeByName(value string) KnxPropertyDataType {
 	return 0
 }
 
+func KnxPropertyDataTypeKnows(value uint8) bool {
+	for _, typeValue := range KnxPropertyDataTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
 	castFunc := func(typ interface{}) KnxPropertyDataType {
 		if sKnxPropertyDataType, ok := typ.(KnxPropertyDataType); ok {

@@ -143,6 +143,15 @@ func COTPTpduSizeByName(value string) COTPTpduSize {
 	return 0
 }
 
+func COTPTpduSizeKnows(value int8) bool {
+	for _, typeValue := range COTPTpduSizeValues {
+		if int8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
 	castFunc := func(typ interface{}) COTPTpduSize {
 		if sCOTPTpduSize, ok := typ.(COTPTpduSize); ok {

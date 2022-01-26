@@ -127,6 +127,15 @@ func PinModeByName(value string) PinMode {
 	return 0
 }
 
+func PinModeKnows(value uint8) bool {
+	for _, typeValue := range PinModeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastPinMode(structType interface{}) PinMode {
 	castFunc := func(typ interface{}) PinMode {
 		if sPinMode, ok := typ.(PinMode); ok {

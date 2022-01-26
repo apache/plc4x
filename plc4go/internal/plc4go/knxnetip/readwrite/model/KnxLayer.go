@@ -73,6 +73,15 @@ func KnxLayerByName(value string) KnxLayer {
 	return 0
 }
 
+func KnxLayerKnows(value uint8) bool {
+	for _, typeValue := range KnxLayerValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxLayer(structType interface{}) KnxLayer {
 	castFunc := func(typ interface{}) KnxLayer {
 		if sKnxLayer, ok := typ.(KnxLayer); ok {

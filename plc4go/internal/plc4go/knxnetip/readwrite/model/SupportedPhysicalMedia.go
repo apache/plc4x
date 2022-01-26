@@ -386,6 +386,15 @@ func SupportedPhysicalMediaByName(value string) SupportedPhysicalMedia {
 	return 0
 }
 
+func SupportedPhysicalMediaKnows(value uint8) bool {
+	for _, typeValue := range SupportedPhysicalMediaValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastSupportedPhysicalMedia(structType interface{}) SupportedPhysicalMedia {
 	castFunc := func(typ interface{}) SupportedPhysicalMedia {
 		if sSupportedPhysicalMedia, ok := typ.(SupportedPhysicalMedia); ok {

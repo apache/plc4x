@@ -91,6 +91,15 @@ func KnxMediumByName(value string) KnxMedium {
 	return 0
 }
 
+func KnxMediumKnows(value uint8) bool {
+	for _, typeValue := range KnxMediumValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxMedium(structType interface{}) KnxMedium {
 	castFunc := func(typ interface{}) KnxMedium {
 		if sKnxMedium, ok := typ.(KnxMedium); ok {

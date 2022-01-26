@@ -91,6 +91,15 @@ func AlarmStateTypeByName(value string) AlarmStateType {
 	return 0
 }
 
+func AlarmStateTypeKnows(value uint8) bool {
+	for _, typeValue := range AlarmStateTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastAlarmStateType(structType interface{}) AlarmStateType {
 	castFunc := func(typ interface{}) AlarmStateType {
 		if sAlarmStateType, ok := typ.(AlarmStateType); ok {

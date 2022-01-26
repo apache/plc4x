@@ -143,6 +143,15 @@ func DataTransportSizeByName(value string) DataTransportSize {
 	return 0
 }
 
+func DataTransportSizeKnows(value uint8) bool {
+	for _, typeValue := range DataTransportSizeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastDataTransportSize(structType interface{}) DataTransportSize {
 	castFunc := func(typ interface{}) DataTransportSize {
 		if sDataTransportSize, ok := typ.(DataTransportSize); ok {

@@ -2803,6 +2803,15 @@ func BACnetPropertyIdentifierByName(value string) BACnetPropertyIdentifier {
 	return 0
 }
 
+func BACnetPropertyIdentifierKnows(value uint32) bool {
+	for _, typeValue := range BACnetPropertyIdentifierValues {
+		if uint32(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetPropertyIdentifier(structType interface{}) BACnetPropertyIdentifier {
 	castFunc := func(typ interface{}) BACnetPropertyIdentifier {
 		if sBACnetPropertyIdentifier, ok := typ.(BACnetPropertyIdentifier); ok {

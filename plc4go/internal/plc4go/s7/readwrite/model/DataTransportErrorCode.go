@@ -91,6 +91,15 @@ func DataTransportErrorCodeByName(value string) DataTransportErrorCode {
 	return 0
 }
 
+func DataTransportErrorCodeKnows(value uint8) bool {
+	for _, typeValue := range DataTransportErrorCodeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
 	castFunc := func(typ interface{}) DataTransportErrorCode {
 		if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {

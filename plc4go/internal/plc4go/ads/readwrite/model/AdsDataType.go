@@ -652,6 +652,15 @@ func AdsDataTypeByName(value string) AdsDataType {
 	return 0
 }
 
+func AdsDataTypeKnows(value int8) bool {
+	for _, typeValue := range AdsDataTypeValues {
+		if int8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastAdsDataType(structType interface{}) AdsDataType {
 	castFunc := func(typ interface{}) AdsDataType {
 		if sAdsDataType, ok := typ.(AdsDataType); ok {

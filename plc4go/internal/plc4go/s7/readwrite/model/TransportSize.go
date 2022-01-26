@@ -1563,6 +1563,15 @@ func TransportSizeByName(value string) TransportSize {
 	return 0
 }
 
+func TransportSizeKnows(value int8) bool {
+	for _, typeValue := range TransportSizeValues {
+		if int8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastTransportSize(structType interface{}) TransportSize {
 	castFunc := func(typ interface{}) TransportSize {
 		if sTransportSize, ok := typ.(TransportSize); ok {

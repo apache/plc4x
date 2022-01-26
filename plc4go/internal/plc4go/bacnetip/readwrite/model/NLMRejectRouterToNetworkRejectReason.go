@@ -97,6 +97,15 @@ func NLMRejectRouterToNetworkRejectReasonByName(value string) NLMRejectRouterToN
 	return 0
 }
 
+func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
+	for _, typeValue := range NLMRejectRouterToNetworkRejectReasonValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastNLMRejectRouterToNetworkRejectReason(structType interface{}) NLMRejectRouterToNetworkRejectReason {
 	castFunc := func(typ interface{}) NLMRejectRouterToNetworkRejectReason {
 		if sNLMRejectRouterToNetworkRejectReason, ok := typ.(NLMRejectRouterToNetworkRejectReason); ok {

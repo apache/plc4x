@@ -498,6 +498,15 @@ func DeviceDescriptorByName(value string) DeviceDescriptor {
 	return 0
 }
 
+func DeviceDescriptorKnows(value uint16) bool {
+	for _, typeValue := range DeviceDescriptorValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastDeviceDescriptor(structType interface{}) DeviceDescriptor {
 	castFunc := func(typ interface{}) DeviceDescriptor {
 		if sDeviceDescriptor, ok := typ.(DeviceDescriptor); ok {

@@ -18503,6 +18503,15 @@ func ComObjectTableAddressesByName(value string) ComObjectTableAddresses {
 	return 0
 }
 
+func ComObjectTableAddressesKnows(value uint16) bool {
+	for _, typeValue := range ComObjectTableAddressesValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastComObjectTableAddresses(structType interface{}) ComObjectTableAddresses {
 	castFunc := func(typ interface{}) ComObjectTableAddresses {
 		if sComObjectTableAddresses, ok := typ.(ComObjectTableAddresses); ok {

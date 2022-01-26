@@ -187,6 +187,15 @@ func BACnetNodeTypeByName(value string) BACnetNodeType {
 	return 0
 }
 
+func BACnetNodeTypeKnows(value uint8) bool {
+	for _, typeValue := range BACnetNodeTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetNodeType(structType interface{}) BACnetNodeType {
 	castFunc := func(typ interface{}) BACnetNodeType {
 		if sBACnetNodeType, ok := typ.(BACnetNodeType); ok {

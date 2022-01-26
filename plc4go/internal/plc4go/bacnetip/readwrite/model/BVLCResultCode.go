@@ -97,6 +97,15 @@ func BVLCResultCodeByName(value string) BVLCResultCode {
 	return 0
 }
 
+func BVLCResultCodeKnows(value uint16) bool {
+	for _, typeValue := range BVLCResultCodeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBVLCResultCode(structType interface{}) BVLCResultCode {
 	castFunc := func(typ interface{}) BVLCResultCode {
 		if sBVLCResultCode, ok := typ.(BVLCResultCode); ok {

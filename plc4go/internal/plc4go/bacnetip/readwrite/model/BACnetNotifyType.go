@@ -73,6 +73,15 @@ func BACnetNotifyTypeByName(value string) BACnetNotifyType {
 	return 0
 }
 
+func BACnetNotifyTypeKnows(value uint8) bool {
+	for _, typeValue := range BACnetNotifyTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
 	castFunc := func(typ interface{}) BACnetNotifyType {
 		if sBACnetNotifyType, ok := typ.(BACnetNotifyType); ok {

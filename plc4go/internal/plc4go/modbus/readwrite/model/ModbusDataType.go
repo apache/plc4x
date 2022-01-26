@@ -343,6 +343,15 @@ func ModbusDataTypeByName(value string) ModbusDataType {
 	return 0
 }
 
+func ModbusDataTypeKnows(value uint8) bool {
+	for _, typeValue := range ModbusDataTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastModbusDataType(structType interface{}) ModbusDataType {
 	castFunc := func(typ interface{}) ModbusDataType {
 		if sModbusDataType, ok := typ.(ModbusDataType); ok {

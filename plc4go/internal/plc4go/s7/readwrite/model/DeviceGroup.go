@@ -73,6 +73,15 @@ func DeviceGroupByName(value string) DeviceGroup {
 	return 0
 }
 
+func DeviceGroupKnows(value int8) bool {
+	for _, typeValue := range DeviceGroupValues {
+		if int8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastDeviceGroup(structType interface{}) DeviceGroup {
 	castFunc := func(typ interface{}) DeviceGroup {
 		if sDeviceGroup, ok := typ.(DeviceGroup); ok {

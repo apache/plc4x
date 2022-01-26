@@ -109,6 +109,15 @@ func ModeTransitionTypeByName(value string) ModeTransitionType {
 	return 0
 }
 
+func ModeTransitionTypeKnows(value uint8) bool {
+	for _, typeValue := range ModeTransitionTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastModeTransitionType(structType interface{}) ModeTransitionType {
 	castFunc := func(typ interface{}) ModeTransitionType {
 		if sModeTransitionType, ok := typ.(ModeTransitionType); ok {

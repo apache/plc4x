@@ -787,6 +787,15 @@ func ReturnCodeByName(value string) ReturnCode {
 	return 0
 }
 
+func ReturnCodeKnows(value uint32) bool {
+	for _, typeValue := range ReturnCodeValues {
+		if uint32(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastReturnCode(structType interface{}) ReturnCode {
 	castFunc := func(typ interface{}) ReturnCode {
 		if sReturnCode, ok := typ.(ReturnCode); ok {

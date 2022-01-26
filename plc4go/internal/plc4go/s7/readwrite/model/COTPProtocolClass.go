@@ -85,6 +85,15 @@ func COTPProtocolClassByName(value string) COTPProtocolClass {
 	return 0
 }
 
+func COTPProtocolClassKnows(value int8) bool {
+	for _, typeValue := range COTPProtocolClassValues {
+		if int8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
 	castFunc := func(typ interface{}) COTPProtocolClass {
 		if sCOTPProtocolClass, ok := typ.(COTPProtocolClass); ok {

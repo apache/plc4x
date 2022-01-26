@@ -343,6 +343,15 @@ func SimulatedDataTypeSizesByName(value string) SimulatedDataTypeSizes {
 	return 0
 }
 
+func SimulatedDataTypeSizesKnows(value uint8) bool {
+	for _, typeValue := range SimulatedDataTypeSizesValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastSimulatedDataTypeSizes(structType interface{}) SimulatedDataTypeSizes {
 	castFunc := func(typ interface{}) SimulatedDataTypeSizes {
 		if sSimulatedDataTypeSizes, ok := typ.(SimulatedDataTypeSizes); ok {

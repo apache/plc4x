@@ -442,6 +442,15 @@ func KnxInterfaceObjectTypeByName(value string) KnxInterfaceObjectType {
 	return 0
 }
 
+func KnxInterfaceObjectTypeKnows(value uint16) bool {
+	for _, typeValue := range KnxInterfaceObjectTypeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
 	castFunc := func(typ interface{}) KnxInterfaceObjectType {
 		if sKnxInterfaceObjectType, ok := typ.(KnxInterfaceObjectType); ok {

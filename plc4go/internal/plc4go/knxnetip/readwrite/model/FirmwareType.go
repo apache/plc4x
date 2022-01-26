@@ -151,6 +151,15 @@ func FirmwareTypeByName(value string) FirmwareType {
 	return 0
 }
 
+func FirmwareTypeKnows(value uint16) bool {
+	for _, typeValue := range FirmwareTypeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastFirmwareType(structType interface{}) FirmwareType {
 	castFunc := func(typ interface{}) FirmwareType {
 		if sFirmwareType, ok := typ.(FirmwareType); ok {

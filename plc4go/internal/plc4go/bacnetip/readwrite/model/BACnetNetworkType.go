@@ -121,6 +121,15 @@ func BACnetNetworkTypeByName(value string) BACnetNetworkType {
 	return 0
 }
 
+func BACnetNetworkTypeKnows(value uint8) bool {
+	for _, typeValue := range BACnetNetworkTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
 	castFunc := func(typ interface{}) BACnetNetworkType {
 		if sBACnetNetworkType, ok := typ.(BACnetNetworkType); ok {

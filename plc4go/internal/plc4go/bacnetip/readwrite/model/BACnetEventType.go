@@ -181,6 +181,15 @@ func BACnetEventTypeByName(value string) BACnetEventType {
 	return 0
 }
 
+func BACnetEventTypeKnows(value uint16) bool {
+	for _, typeValue := range BACnetEventTypeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetEventType(structType interface{}) BACnetEventType {
 	castFunc := func(typ interface{}) BACnetEventType {
 		if sBACnetEventType, ok := typ.(BACnetEventType); ok {

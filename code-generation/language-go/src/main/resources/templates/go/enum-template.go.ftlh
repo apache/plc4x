@@ -143,6 +143,15 @@ func ${type.name}ByName(value string) ${type.name} {
 	return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
+func ${type.name}Knows(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>)  bool {
+	for _, typeValue := range ${type.name}Values {
+		if <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>(typeValue) == value {
+			return true
+		}
+	}
+	return false;
+}
+
 func Cast${type.name}(structType interface{}) ${type.name} {
 	castFunc := func(typ interface{}) ${type.name} {
 		if s${type.name}, ok := typ.(${type.name}); ok {

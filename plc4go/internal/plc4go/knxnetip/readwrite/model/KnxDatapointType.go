@@ -6375,6 +6375,15 @@ func KnxDatapointTypeByName(value string) KnxDatapointType {
 	return 0
 }
 
+func KnxDatapointTypeKnows(value uint32) bool {
+	for _, typeValue := range KnxDatapointTypeValues {
+		if uint32(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxDatapointType(structType interface{}) KnxDatapointType {
 	castFunc := func(typ interface{}) KnxDatapointType {
 		if sKnxDatapointType, ok := typ.(KnxDatapointType); ok {

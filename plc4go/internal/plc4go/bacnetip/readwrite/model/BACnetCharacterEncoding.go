@@ -91,6 +91,15 @@ func BACnetCharacterEncodingByName(value string) BACnetCharacterEncoding {
 	return 0
 }
 
+func BACnetCharacterEncodingKnows(value byte) bool {
+	for _, typeValue := range BACnetCharacterEncodingValues {
+		if byte(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetCharacterEncoding(structType interface{}) BACnetCharacterEncoding {
 	castFunc := func(typ interface{}) BACnetCharacterEncoding {
 		if sBACnetCharacterEncoding, ok := typ.(BACnetCharacterEncoding); ok {

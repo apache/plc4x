@@ -127,6 +127,15 @@ func StatusByName(value string) Status {
 	return 0
 }
 
+func StatusKnows(value uint8) bool {
+	for _, typeValue := range StatusValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastStatus(structType interface{}) Status {
 	castFunc := func(typ interface{}) Status {
 		if sStatus, ok := typ.(Status); ok {

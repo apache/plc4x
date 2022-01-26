@@ -235,6 +235,15 @@ func ReservedIndexGroupsByName(value string) ReservedIndexGroups {
 	return 0
 }
 
+func ReservedIndexGroupsKnows(value uint32) bool {
+	for _, typeValue := range ReservedIndexGroupsValues {
+		if uint32(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
 	castFunc := func(typ interface{}) ReservedIndexGroups {
 		if sReservedIndexGroups, ok := typ.(ReservedIndexGroups); ok {

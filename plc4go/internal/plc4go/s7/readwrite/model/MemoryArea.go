@@ -163,6 +163,15 @@ func MemoryAreaByName(value string) MemoryArea {
 	return 0
 }
 
+func MemoryAreaKnows(value uint8) bool {
+	for _, typeValue := range MemoryAreaValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastMemoryArea(structType interface{}) MemoryArea {
 	castFunc := func(typ interface{}) MemoryArea {
 		if sMemoryArea, ok := typ.(MemoryArea); ok {

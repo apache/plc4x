@@ -103,6 +103,15 @@ func BACnetDeviceStateByName(value string) BACnetDeviceState {
 	return 0
 }
 
+func BACnetDeviceStateKnows(value uint8) bool {
+	for _, typeValue := range BACnetDeviceStateValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetDeviceState(structType interface{}) BACnetDeviceState {
 	castFunc := func(typ interface{}) BACnetDeviceState {
 		if sBACnetDeviceState, ok := typ.(BACnetDeviceState); ok {

@@ -175,6 +175,15 @@ func BACnetDataTypeByName(value string) BACnetDataType {
 	return 0
 }
 
+func BACnetDataTypeKnows(value uint8) bool {
+	for _, typeValue := range BACnetDataTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastBACnetDataType(structType interface{}) BACnetDataType {
 	castFunc := func(typ interface{}) BACnetDataType {
 		if sBACnetDataType, ok := typ.(BACnetDataType); ok {

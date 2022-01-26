@@ -79,6 +79,15 @@ func SzlModuleTypeClassByName(value string) SzlModuleTypeClass {
 	return 0
 }
 
+func SzlModuleTypeClassKnows(value uint8) bool {
+	for _, typeValue := range SzlModuleTypeClassValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
 	castFunc := func(typ interface{}) SzlModuleTypeClass {
 		if sSzlModuleTypeClass, ok := typ.(SzlModuleTypeClass); ok {

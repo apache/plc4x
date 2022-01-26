@@ -169,6 +169,15 @@ func SzlSublistByName(value string) SzlSublist {
 	return 0
 }
 
+func SzlSublistKnows(value uint8) bool {
+	for _, typeValue := range SzlSublistValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastSzlSublist(structType interface{}) SzlSublist {
 	castFunc := func(typ interface{}) SzlSublist {
 		if sSzlSublist, ok := typ.(SzlSublist); ok {

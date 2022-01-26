@@ -79,6 +79,15 @@ func NPDUNetworkPriorityByName(value string) NPDUNetworkPriority {
 	return 0
 }
 
+func NPDUNetworkPriorityKnows(value uint8) bool {
+	for _, typeValue := range NPDUNetworkPriorityValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastNPDUNetworkPriority(structType interface{}) NPDUNetworkPriority {
 	castFunc := func(typ interface{}) NPDUNetworkPriority {
 		if sNPDUNetworkPriority, ok := typ.(NPDUNetworkPriority); ok {

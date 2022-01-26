@@ -91,6 +91,15 @@ func DeviceDescriptorMediumTypeByName(value string) DeviceDescriptorMediumType {
 	return 0
 }
 
+func DeviceDescriptorMediumTypeKnows(value uint8) bool {
+	for _, typeValue := range DeviceDescriptorMediumTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMediumType {
 	castFunc := func(typ interface{}) DeviceDescriptorMediumType {
 		if sDeviceDescriptorMediumType, ok := typ.(DeviceDescriptorMediumType); ok {

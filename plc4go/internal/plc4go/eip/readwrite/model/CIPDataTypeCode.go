@@ -157,6 +157,15 @@ func CIPDataTypeCodeByName(value string) CIPDataTypeCode {
 	return 0
 }
 
+func CIPDataTypeCodeKnows(value uint16) bool {
+	for _, typeValue := range CIPDataTypeCodeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
 	castFunc := func(typ interface{}) CIPDataTypeCode {
 		if sCIPDataTypeCode, ok := typ.(CIPDataTypeCode); ok {

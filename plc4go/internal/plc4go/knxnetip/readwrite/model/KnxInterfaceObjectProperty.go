@@ -4882,6 +4882,15 @@ func KnxInterfaceObjectPropertyByName(value string) KnxInterfaceObjectProperty {
 	return 0
 }
 
+func KnxInterfaceObjectPropertyKnows(value uint32) bool {
+	for _, typeValue := range KnxInterfaceObjectPropertyValues {
+		if uint32(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxInterfaceObjectProperty(structType interface{}) KnxInterfaceObjectProperty {
 	castFunc := func(typ interface{}) KnxInterfaceObjectProperty {
 		if sKnxInterfaceObjectProperty, ok := typ.(KnxInterfaceObjectProperty); ok {

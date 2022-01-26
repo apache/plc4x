@@ -67,6 +67,15 @@ func TagClassByName(value string) TagClass {
 	return 0
 }
 
+func TagClassKnows(value uint8) bool {
+	for _, typeValue := range TagClassValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastTagClass(structType interface{}) TagClass {
 	castFunc := func(typ interface{}) TagClass {
 		if sTagClass, ok := typ.(TagClass); ok {

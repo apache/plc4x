@@ -115,6 +115,15 @@ func ModbusErrorCodeByName(value string) ModbusErrorCode {
 	return 0
 }
 
+func ModbusErrorCodeKnows(value uint8) bool {
+	for _, typeValue := range ModbusErrorCodeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
 	castFunc := func(typ interface{}) ModbusErrorCode {
 		if sModbusErrorCode, ok := typ.(ModbusErrorCode); ok {

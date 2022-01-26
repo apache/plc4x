@@ -223,6 +223,15 @@ func ComObjectValueTypeByName(value string) ComObjectValueType {
 	return 0
 }
 
+func ComObjectValueTypeKnows(value uint8) bool {
+	for _, typeValue := range ComObjectValueTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastComObjectValueType(structType interface{}) ComObjectValueType {
 	castFunc := func(typ interface{}) ComObjectValueType {
 		if sComObjectValueType, ok := typ.(ComObjectValueType); ok {

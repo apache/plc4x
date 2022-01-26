@@ -73,6 +73,15 @@ func EiPCommandByName(value string) EiPCommand {
 	return 0
 }
 
+func EiPCommandKnows(value uint16) bool {
+	for _, typeValue := range EiPCommandValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastEiPCommand(structType interface{}) EiPCommand {
 	castFunc := func(typ interface{}) EiPCommand {
 		if sEiPCommand, ok := typ.(EiPCommand); ok {

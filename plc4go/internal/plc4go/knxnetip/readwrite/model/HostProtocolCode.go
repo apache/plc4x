@@ -67,6 +67,15 @@ func HostProtocolCodeByName(value string) HostProtocolCode {
 	return 0
 }
 
+func HostProtocolCodeKnows(value uint8) bool {
+	for _, typeValue := range HostProtocolCodeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastHostProtocolCode(structType interface{}) HostProtocolCode {
 	castFunc := func(typ interface{}) HostProtocolCode {
 		if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {

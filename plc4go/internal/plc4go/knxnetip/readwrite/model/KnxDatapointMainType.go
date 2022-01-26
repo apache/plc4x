@@ -1191,6 +1191,15 @@ func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
 	return 0
 }
 
+func KnxDatapointMainTypeKnows(value uint16) bool {
+	for _, typeValue := range KnxDatapointMainTypeValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastKnxDatapointMainType(structType interface{}) KnxDatapointMainType {
 	castFunc := func(typ interface{}) KnxDatapointMainType {
 		if sKnxDatapointMainType, ok := typ.(KnxDatapointMainType); ok {

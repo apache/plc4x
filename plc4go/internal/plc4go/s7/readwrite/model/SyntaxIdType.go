@@ -133,6 +133,15 @@ func SyntaxIdTypeByName(value string) SyntaxIdType {
 	return 0
 }
 
+func SyntaxIdTypeKnows(value uint8) bool {
+	for _, typeValue := range SyntaxIdTypeValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastSyntaxIdType(structType interface{}) SyntaxIdType {
 	castFunc := func(typ interface{}) SyntaxIdType {
 		if sSyntaxIdType, ok := typ.(SyntaxIdType); ok {

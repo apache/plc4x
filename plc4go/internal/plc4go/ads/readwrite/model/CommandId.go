@@ -115,6 +115,15 @@ func CommandIdByName(value string) CommandId {
 	return 0
 }
 
+func CommandIdKnows(value uint16) bool {
+	for _, typeValue := range CommandIdValues {
+		if uint16(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCommandId(structType interface{}) CommandId {
 	castFunc := func(typ interface{}) CommandId {
 		if sCommandId, ok := typ.(CommandId); ok {

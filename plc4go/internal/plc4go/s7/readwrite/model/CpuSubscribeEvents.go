@@ -79,6 +79,15 @@ func CpuSubscribeEventsByName(value string) CpuSubscribeEvents {
 	return 0
 }
 
+func CpuSubscribeEventsKnows(value uint8) bool {
+	for _, typeValue := range CpuSubscribeEventsValues {
+		if uint8(typeValue) == value {
+			return true
+		}
+	}
+	return false
+}
+
 func CastCpuSubscribeEvents(structType interface{}) CpuSubscribeEvents {
 	castFunc := func(typ interface{}) CpuSubscribeEvents {
 		if sCpuSubscribeEvents, ok := typ.(CpuSubscribeEvents); ok {
