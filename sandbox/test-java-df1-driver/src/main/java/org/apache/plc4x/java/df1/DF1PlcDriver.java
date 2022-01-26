@@ -24,7 +24,6 @@ import org.apache.plc4x.java.df1.configuration.Df1Configuration;
 import org.apache.plc4x.java.df1.field.Df1FieldHandler;
 import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
-import org.apache.plc4x.java.df1.readwrite.io.DF1CommandIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -65,7 +64,7 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
 
     @Override
     protected ProtocolStackConfigurer<DF1Command> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(DF1Command.class, DF1CommandIO.class)
+        return SingleProtocolStackConfigurer.builder(DF1Command.class, DF1Command::staticParse)
             .withProtocol(Df1ProtocolLogic.class)
             .build();
     }

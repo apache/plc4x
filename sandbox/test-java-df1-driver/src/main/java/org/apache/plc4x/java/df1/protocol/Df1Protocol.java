@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
-import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
@@ -43,12 +42,10 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     private final short localAddr;
     private final short remoteAddr;
-    private final DF1SymbolIO df1SymbolIO;
 
     public Df1Protocol(short localAddr, short remoteAddr) {
         this.localAddr = localAddr;
         this.remoteAddr = remoteAddr;
-        df1SymbolIO = new DF1SymbolIO();
     }
 
     @Override
@@ -141,7 +138,7 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         in.readBytes(data);
         ReadBuffer readBuffer = new ReadBufferByteBased(data);
 
-        resp = DF1SymbolIO.staticParse(readBuffer);
+        resp = DF1Symbol.staticParse(readBuffer);
 
 //        } while (readWasSucessfull);
 //        // TODO if unableto read

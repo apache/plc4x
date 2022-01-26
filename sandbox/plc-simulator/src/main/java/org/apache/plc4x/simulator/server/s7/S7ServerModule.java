@@ -28,7 +28,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
@@ -71,7 +70,7 @@ public class S7ServerModule implements ServerModule {
                     @Override
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class, new TPKTPacketIO(), ByteOrder.BIG_ENDIAN, null,
+                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class, TPKTPacket::staticParse, ByteOrder.BIG_ENDIAN, null,
                             new S7Driver.ByteLengthEstimator(),
                             new S7Driver.CorruptPackageCleaner()));
                         pipeline.addLast(new S7Step7ServerAdapter(context));
