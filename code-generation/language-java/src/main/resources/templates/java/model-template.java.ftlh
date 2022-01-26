@@ -68,7 +68,7 @@ import java.math.BigInteger;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.allParserArguments.orElseThrow()></#if>
-public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()><T extends ${type.name}></#if><#if type.parentType??> extends ${type.parentType.name}<${type.name}></#if> implements Message {
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType??> extends ${type.parentType.name}<${type.name}></#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
