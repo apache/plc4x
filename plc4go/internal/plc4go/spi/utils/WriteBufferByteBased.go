@@ -36,7 +36,7 @@ type WriteBufferByteBased interface {
 }
 
 func NewWriteBufferByteBased() WriteBufferByteBased {
-	data := &bytes.Buffer{}
+	data := new(bytes.Buffer)
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{
 		data:      data,
@@ -46,12 +46,21 @@ func NewWriteBufferByteBased() WriteBufferByteBased {
 }
 
 func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
-	data := &bytes.Buffer{}
+	data := new(bytes.Buffer)
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{
 		data:      data,
 		writer:    writer,
 		byteOrder: binary.LittleEndian,
+	}
+}
+
+func NewCustomWriteBufferByteBased(buffer *bytes.Buffer, byteOrder binary.ByteOrder) WriteBufferByteBased {
+	writer := bitio.NewWriter(buffer)
+	return &byteWriteBuffer{
+		data:      buffer,
+		writer:    writer,
+		byteOrder: byteOrder,
 	}
 }
 
