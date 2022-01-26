@@ -54,11 +54,11 @@ func (m *LPollData) Polling() bool {
 }
 
 func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-	m.FrameType = frameType
-	m.NotRepeated = notRepeated
-	m.Priority = priority
-	m.AcknowledgeRequested = acknowledgeRequested
-	m.ErrorFlag = errorFlag
+	m.LDataFrame.FrameType = frameType
+	m.LDataFrame.NotRepeated = notRepeated
+	m.LDataFrame.Priority = priority
+	m.LDataFrame.AcknowledgeRequested = acknowledgeRequested
+	m.LDataFrame.ErrorFlag = errorFlag
 }
 
 func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {

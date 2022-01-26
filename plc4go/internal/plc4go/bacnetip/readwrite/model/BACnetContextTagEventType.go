@@ -49,7 +49,10 @@ func (m *BACnetContextTagEventType) DataType() BACnetDataType {
 }
 
 func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
-	m.Header = header
+	m.BACnetContextTag.Header = header
+	m.BACnetContextTag.TagNumber = tagNumber
+	m.BACnetContextTag.ActualLength = actualLength
+	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -115,9 +118,7 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
 	// Manual Field (eventType)

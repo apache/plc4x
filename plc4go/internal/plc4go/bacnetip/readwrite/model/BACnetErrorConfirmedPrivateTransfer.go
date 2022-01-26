@@ -45,8 +45,8 @@ func (m *BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
-	m.ErrorClass = errorClass
-	m.ErrorCode = errorCode
+	m.BACnetError.ErrorClass = errorClass
+	m.BACnetError.ErrorCode = errorCode
 }
 
 func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {

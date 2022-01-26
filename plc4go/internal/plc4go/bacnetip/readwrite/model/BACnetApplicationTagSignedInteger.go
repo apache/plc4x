@@ -58,15 +58,17 @@ type IBACnetApplicationTagSignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagSignedInteger) TagNumber() uint8 {
+func (m *BACnetApplicationTagSignedInteger) ActualTagNumber() uint8 {
 	return 0x3
 }
 
-func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
-	m.Header = header
+func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+	m.BACnetApplicationTag.Header = header
+	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
+	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagSignedInteger{
 		ValueInt8:            valueInt8,
 		ValueInt16:           valueInt16,
@@ -85,7 +87,7 @@ func NewBACnetApplicationTagSignedInteger(valueInt8 *int8, valueInt16 *int16, va
 		IsInt56:              isInt56,
 		IsInt64:              isInt64,
 		ActualValue:          actualValue,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, tagNumber, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag

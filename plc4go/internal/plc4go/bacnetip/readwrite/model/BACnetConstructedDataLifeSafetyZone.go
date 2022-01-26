@@ -51,8 +51,9 @@ func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierEnum() BACnetPro
 }
 
 func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
+	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.ClosingTag = closingTag
+	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {

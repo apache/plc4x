@@ -48,8 +48,8 @@ func (m *DF1UnprotectedReadRequest) CommandCode() uint8 {
 }
 
 func (m *DF1UnprotectedReadRequest) InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16) {
-	m.Status = status
-	m.TransactionCounter = transactionCounter
+	m.DF1Command.Status = status
+	m.DF1Command.TransactionCounter = transactionCounter
 }
 
 func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1Command {

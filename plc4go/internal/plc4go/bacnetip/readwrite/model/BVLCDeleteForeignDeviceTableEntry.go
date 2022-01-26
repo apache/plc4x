@@ -45,6 +45,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
 
 func NewBVLCDeleteForeignDeviceTableEntry(bvlcPayloadLength uint16) *BVLC {

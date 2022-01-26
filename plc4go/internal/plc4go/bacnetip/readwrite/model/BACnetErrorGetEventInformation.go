@@ -45,8 +45,8 @@ func (m *BACnetErrorGetEventInformation) ServiceChoice() uint8 {
 }
 
 func (m *BACnetErrorGetEventInformation) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
-	m.ErrorClass = errorClass
-	m.ErrorCode = errorCode
+	m.BACnetError.ErrorClass = errorClass
+	m.BACnetError.ErrorCode = errorCode
 }
 
 func NewBACnetErrorGetEventInformation(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {

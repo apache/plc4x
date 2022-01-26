@@ -47,10 +47,10 @@ func (m *DF1CommandRequestMessage) CommandCode() uint8 {
 }
 
 func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
-	m.DestinationAddress = destinationAddress
-	m.SourceAddress = sourceAddress
-	m.Status = status
-	m.TransactionCounter = transactionCounter
+	m.DF1RequestMessage.DestinationAddress = destinationAddress
+	m.DF1RequestMessage.SourceAddress = sourceAddress
+	m.DF1RequestMessage.Status = status
+	m.DF1RequestMessage.TransactionCounter = transactionCounter
 }
 
 func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {

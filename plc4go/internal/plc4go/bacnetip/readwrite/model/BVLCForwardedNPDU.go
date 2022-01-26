@@ -48,7 +48,9 @@ func (m *BVLCForwardedNPDU) BvlcFunction() uint8 {
 	return 0x04
 }
 
-func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
+func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+}
 
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCForwardedNPDU{

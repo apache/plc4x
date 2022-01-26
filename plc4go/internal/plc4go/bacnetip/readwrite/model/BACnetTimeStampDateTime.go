@@ -47,9 +47,10 @@ func (m *BACnetTimeStampDateTime) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
+	m.BACnetTimeStamp.OpeningTag = openingTag
+	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
+	m.BACnetTimeStamp.ClosingTag = closingTag
+	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {

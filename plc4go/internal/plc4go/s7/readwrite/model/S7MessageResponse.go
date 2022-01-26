@@ -48,9 +48,9 @@ func (m *S7MessageResponse) MessageType() uint8 {
 }
 
 func (m *S7MessageResponse) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
-	m.TpduReference = tpduReference
-	m.Parameter = parameter
-	m.Payload = payload
+	m.S7Message.TpduReference = tpduReference
+	m.S7Message.Parameter = parameter
+	m.S7Message.Payload = payload
 }
 
 func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {

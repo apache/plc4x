@@ -60,7 +60,10 @@ func (m *BACnetContextTagDate) DataType() BACnetDataType {
 }
 
 func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
-	m.Header = header
+	m.BACnetContextTag.Header = header
+	m.BACnetContextTag.TagNumber = tagNumber
+	m.BACnetContextTag.ActualLength = actualLength
+	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -161,9 +164,7 @@ func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
 	// Virtual field

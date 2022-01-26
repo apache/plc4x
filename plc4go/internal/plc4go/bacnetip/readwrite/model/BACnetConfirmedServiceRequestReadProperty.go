@@ -151,10 +151,10 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field")
 		default:
 			arrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {

@@ -43,19 +43,21 @@ type IBACnetApplicationTagOctetString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagOctetString) TagNumber() uint8 {
+func (m *BACnetApplicationTagOctetString) ActualTagNumber() uint8 {
 	return 0x6
 }
 
-func (m *BACnetApplicationTagOctetString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
-	m.Header = header
+func (m *BACnetApplicationTagOctetString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+	m.BACnetApplicationTag.Header = header
+	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
+	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagOctetString(value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagOctetString(value string, actualLengthInBit uint16, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagOctetString{
 		Value:                value,
 		ActualLengthInBit:    actualLengthInBit,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, tagNumber, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag

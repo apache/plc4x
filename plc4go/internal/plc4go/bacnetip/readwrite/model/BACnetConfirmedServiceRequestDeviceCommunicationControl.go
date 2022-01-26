@@ -127,10 +127,10 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field")
 		default:
 			timeDuration = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("timeDuration"); closeErr != nil {
@@ -161,10 +161,10 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'password' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'password' field")
 		default:
 			password = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {

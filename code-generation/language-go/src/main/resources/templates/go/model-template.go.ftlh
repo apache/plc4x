@@ -221,7 +221,10 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}
 	{
 </@compress>
 	<#list type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
-	m.${field.name?cap_first} = ${field.name}
+	m.${type.parentType.name}.${field.name?cap_first} = ${field.name}
+	</#list>
+	<#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as field>
+	m.${type.parentType.name}.${field.name?cap_first} = ${field.name}
 	</#list>
 }
 </#if>
@@ -1033,10 +1036,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 </@compress>
 
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):<@emitImport import="io" />
-			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):<@emitImport import="io" />
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		default:
 			${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
@@ -1083,7 +1086,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	${assertField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			</#if>
 	if ${assertField.name} != ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)} {
-		return nil, utils.ParseAssertError
+		return nil, utils.ParseAssertError{"${assertField.conditionExpression} doesn't match"}
 	}
 				<#break>
 			<#case "padding">
@@ -1260,9 +1263,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Validation
 	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New(${validationField.getDescription().orElse("Validation failed")}) //TODO: add emit import here
+		return nil, utils.ParseAssertError{${validationField.getDescription().orElse("Validation failed")}}
 	}
                 <#break>
             <#case "peek">

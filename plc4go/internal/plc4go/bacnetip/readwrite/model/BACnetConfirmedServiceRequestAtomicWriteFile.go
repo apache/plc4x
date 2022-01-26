@@ -150,10 +150,10 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_OPENING_TAG)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field")
 		default:
 			openingTag = CastBACnetOpeningTag(_val)
 			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
@@ -197,10 +197,10 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_CLOSING_TAG)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field")
 		default:
 			closingTag = CastBACnetClosingTag(_val)
 			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {

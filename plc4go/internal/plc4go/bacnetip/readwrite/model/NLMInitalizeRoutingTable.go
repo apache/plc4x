@@ -48,7 +48,7 @@ func (m *NLMInitalizeRoutingTable) MessageType() uint8 {
 }
 
 func (m *NLMInitalizeRoutingTable) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.VendorId = vendorId
+	m.NLM.VendorId = vendorId
 }
 
 func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16) *NLM {

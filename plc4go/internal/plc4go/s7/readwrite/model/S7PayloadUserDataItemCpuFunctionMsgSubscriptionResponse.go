@@ -53,8 +53,8 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) DataLength() u
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
+	m.S7PayloadUserDataItem.ReturnCode = returnCode
+	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {

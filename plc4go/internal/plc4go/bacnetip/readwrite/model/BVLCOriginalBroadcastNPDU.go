@@ -46,7 +46,9 @@ func (m *BVLCOriginalBroadcastNPDU) BvlcFunction() uint8 {
 	return 0x0B
 }
 
-func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
+func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+}
 
 func NewBVLCOriginalBroadcastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCOriginalBroadcastNPDU{

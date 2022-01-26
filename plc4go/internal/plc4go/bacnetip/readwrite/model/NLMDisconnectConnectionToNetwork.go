@@ -47,7 +47,7 @@ func (m *NLMDisconnectConnectionToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMDisconnectConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.VendorId = vendorId
+	m.NLM.VendorId = vendorId
 }
 
 func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16) *NLM {

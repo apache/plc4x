@@ -42,18 +42,20 @@ type IBACnetApplicationTagReal interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagReal) TagNumber() uint8 {
+func (m *BACnetApplicationTagReal) ActualTagNumber() uint8 {
 	return 0x4
 }
 
-func (m *BACnetApplicationTagReal) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
-	m.Header = header
+func (m *BACnetApplicationTagReal) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+	m.BACnetApplicationTag.Header = header
+	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
+	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagReal(value float32, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagReal(value float32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagReal{
 		Value:                value,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, tagNumber, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag

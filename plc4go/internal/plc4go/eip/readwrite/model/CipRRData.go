@@ -48,10 +48,10 @@ func (m *CipRRData) Command() uint16 {
 }
 
 func (m *CipRRData) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
+	m.EipPacket.SessionHandle = sessionHandle
+	m.EipPacket.Status = status
+	m.EipPacket.SenderContext = senderContext
+	m.EipPacket.Options = options
 }
 
 func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {

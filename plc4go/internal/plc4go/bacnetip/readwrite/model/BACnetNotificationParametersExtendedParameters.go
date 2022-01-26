@@ -192,10 +192,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'nullValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'nullValue' field")
 		default:
 			nullValue = CastBACnetApplicationTagNull(_val)
 			if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
@@ -213,10 +213,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'realValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'realValue' field")
 		default:
 			realValue = CastBACnetApplicationTagReal(_val)
 			if closeErr := readBuffer.CloseContext("realValue"); closeErr != nil {
@@ -234,10 +234,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'unsignedValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'unsignedValue' field")
 		default:
 			unsignedValue = CastBACnetApplicationTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
@@ -255,10 +255,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'booleanValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'booleanValue' field")
 		default:
 			booleanValue = CastBACnetApplicationTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
@@ -276,10 +276,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'integerValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'integerValue' field")
 		default:
 			integerValue = CastBACnetApplicationTagSignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("integerValue"); closeErr != nil {
@@ -297,10 +297,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'doubleValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'doubleValue' field")
 		default:
 			doubleValue = CastBACnetApplicationTagDouble(_val)
 			if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
@@ -318,10 +318,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'octetStringValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'octetStringValue' field")
 		default:
 			octetStringValue = CastBACnetApplicationTagOctetString(_val)
 			if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
@@ -339,10 +339,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'characterStringValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'characterStringValue' field")
 		default:
 			characterStringValue = CastBACnetApplicationTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
@@ -360,10 +360,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'bitStringValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'bitStringValue' field")
 		default:
 			bitStringValue = CastBACnetApplicationTagBitString(_val)
 			if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
@@ -381,10 +381,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'enumeratedValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'enumeratedValue' field")
 		default:
 			enumeratedValue = CastBACnetApplicationTagEnumerated(_val)
 			if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
@@ -402,10 +402,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'dateValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'dateValue' field")
 		default:
 			dateValue = CastBACnetApplicationTagDate(_val)
 			if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
@@ -423,10 +423,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'timeValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'timeValue' field")
 		default:
 			timeValue = CastBACnetApplicationTagTime(_val)
 			if closeErr := readBuffer.CloseContext("timeValue"); closeErr != nil {
@@ -444,10 +444,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
 		default:
 			objectIdentifier = CastBACnetApplicationTagObjectIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
@@ -465,10 +465,10 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 		}
 		_val, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer, uint8(0))
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'reference' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'reference' field")
 		default:
 			reference = CastBACnetDeviceObjectPropertyReference(_val)
 			if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {

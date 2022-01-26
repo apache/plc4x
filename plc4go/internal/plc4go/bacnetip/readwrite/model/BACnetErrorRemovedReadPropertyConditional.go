@@ -45,8 +45,8 @@ func (m *BACnetErrorRemovedReadPropertyConditional) ServiceChoice() uint8 {
 }
 
 func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
-	m.ErrorClass = errorClass
-	m.ErrorCode = errorCode
+	m.BACnetError.ErrorClass = errorClass
+	m.BACnetError.ErrorCode = errorCode
 }
 
 func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {

@@ -45,8 +45,8 @@ func (m *BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
 }
 
 func (m *BACnetErrorAtomicReadFile) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
-	m.ErrorClass = errorClass
-	m.ErrorCode = errorCode
+	m.BACnetError.ErrorClass = errorClass
+	m.BACnetError.ErrorCode = errorCode
 }
 
 func NewBACnetErrorAtomicReadFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {

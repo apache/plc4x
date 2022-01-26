@@ -42,18 +42,20 @@ type IBACnetApplicationTagEnumerated interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagEnumerated) TagNumber() uint8 {
+func (m *BACnetApplicationTagEnumerated) ActualTagNumber() uint8 {
 	return 0x9
 }
 
-func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
-	m.Header = header
+func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+	m.BACnetApplicationTag.Header = header
+	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
+	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagEnumerated(data []int8, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagEnumerated(data []int8, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagEnumerated{
 		Data:                 data,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, tagNumber, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag

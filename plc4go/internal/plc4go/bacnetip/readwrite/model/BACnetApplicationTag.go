@@ -28,15 +28,15 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTag struct {
-	Header       *BACnetTagHeader
-	TagNumber    uint8
-	ActualLength uint32
-	Child        IBACnetApplicationTagChild
+	Header          *BACnetTagHeader
+	ActualTagNumber uint8
+	ActualLength    uint32
+	Child           IBACnetApplicationTagChild
 }
 
 // The corresponding interface
 type IBACnetApplicationTag interface {
-	TagNumber() uint8
+	ActualTagNumber() uint8
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
@@ -49,13 +49,13 @@ type IBACnetApplicationTagParent interface {
 
 type IBACnetApplicationTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32)
+	InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32)
 	GetTypeName() string
 	IBACnetApplicationTag
 }
 
-func NewBACnetApplicationTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetApplicationTag {
-	return &BACnetApplicationTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength}
+func NewBACnetApplicationTag(header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+	return &BACnetApplicationTag{Header: header, ActualTagNumber: actualTagNumber, ActualLength: actualLength}
 }
 
 func CastBACnetApplicationTag(structType interface{}) *BACnetApplicationTag {
@@ -120,14 +120,12 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 
 	// Validation
 	if !(bool((header.TagClass) == (TagClass_APPLICATION_TAGS))) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("should be a application tag") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"should be a application tag"}
 	}
 
 	// Virtual field
-	_tagNumber := header.TagNumber
-	tagNumber := uint8(_tagNumber)
+	_actualTagNumber := header.ActualTagNumber
+	actualTagNumber := uint8(_actualTagNumber)
 
 	// Virtual field
 	_actualLength := header.ActualLength
@@ -137,31 +135,31 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	var _parent *BACnetApplicationTag
 	var typeSwitchError error
 	switch {
-	case tagNumber == 0x0: // BACnetApplicationTagNull
+	case actualTagNumber == 0x0: // BACnetApplicationTagNull
 		_parent, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
-	case tagNumber == 0x1: // BACnetApplicationTagBoolean
+	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
 		_parent, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, actualLength)
-	case tagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
+	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
 		_parent, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, actualLength)
-	case tagNumber == 0x3: // BACnetApplicationTagSignedInteger
+	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
 		_parent, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, actualLength)
-	case tagNumber == 0x4: // BACnetApplicationTagReal
+	case actualTagNumber == 0x4: // BACnetApplicationTagReal
 		_parent, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
-	case tagNumber == 0x5: // BACnetApplicationTagDouble
+	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
 		_parent, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
-	case tagNumber == 0x6: // BACnetApplicationTagOctetString
+	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
 		_parent, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, actualLength)
-	case tagNumber == 0x7: // BACnetApplicationTagCharacterString
+	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
 		_parent, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, actualLength)
-	case tagNumber == 0x8: // BACnetApplicationTagBitString
+	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
 		_parent, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, actualLength)
-	case tagNumber == 0x9: // BACnetApplicationTagEnumerated
+	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
 		_parent, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, actualLength)
-	case tagNumber == 0xA: // BACnetApplicationTagDate
+	case actualTagNumber == 0xA: // BACnetApplicationTagDate
 		_parent, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
-	case tagNumber == 0xB: // BACnetApplicationTagTime
+	case actualTagNumber == 0xB: // BACnetApplicationTagTime
 		_parent, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
-	case tagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
+	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
 		_parent, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
 	default:
 		// TODO: return actual type
@@ -176,7 +174,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength)
+	_parent.Child.InitializeParent(_parent, header, actualTagNumber, actualLength)
 	return _parent, nil
 }
 
@@ -201,8 +199,8 @@ func (m *BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.TagNumber); _tagNumberErr != nil {
-		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
+	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
+		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
 	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {

@@ -1093,9 +1093,9 @@
                             header
     ]
     [validation    'header.tagClass == TagClass.APPLICATION_TAGS'    "should be a application tag"                    ]
-    [virtual       uint 4   tagNumber     'header.tagNumber'                                                          ]
-    [virtual       uint 32  actualLength  'header.actualLength'                                                       ]
-    [typeSwitch tagNumber
+    [virtual       uint 8   actualTagNumber 'header.actualTagNumber'                                                  ]
+    [virtual       uint 32  actualLength    'header.actualLength'                                                     ]
+    [typeSwitch actualTagNumber
         ['0x0' BACnetApplicationTagNull
         ]
         ['0x1' BACnetApplicationTagBoolean(uint 32 actualLength)

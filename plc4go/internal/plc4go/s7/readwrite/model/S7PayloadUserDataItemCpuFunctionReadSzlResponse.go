@@ -61,8 +61,8 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) DataLength() uint16 {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
+	m.S7PayloadUserDataItem.ReturnCode = returnCode
+	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
 func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {

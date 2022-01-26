@@ -63,7 +63,10 @@ func (m *BACnetContextTagSignedInteger) DataType() BACnetDataType {
 }
 
 func (m *BACnetContextTagSignedInteger) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
-	m.Header = header
+	m.BACnetContextTag.Header = header
+	m.BACnetContextTag.TagNumber = tagNumber
+	m.BACnetContextTag.ActualLength = actualLength
+	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 func NewBACnetContextTagSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -193,9 +196,7 @@ func BACnetContextTagSignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberAr
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
 	// Virtual field

@@ -48,7 +48,7 @@ func (m *NLMEstablishConnectionToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMEstablishConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.VendorId = vendorId
+	m.NLM.VendorId = vendorId
 }
 
 func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16) *NLM {

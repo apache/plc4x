@@ -48,8 +48,8 @@ func (m *COTPPacketTpduError) TpduCode() uint8 {
 }
 
 func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
-	m.Parameters = parameters
-	m.Payload = payload
+	m.COTPPacket.Parameters = parameters
+	m.COTPPacket.Payload = payload
 }
 
 func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {

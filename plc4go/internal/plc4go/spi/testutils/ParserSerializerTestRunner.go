@@ -161,7 +161,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				_ = outputFlavor
 				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
 				if err != nil {
-					t.Error("Error parsing input data: " + err.Error())
+					t.Error("Error parsing input data: ", err)
 					return
 				}
 

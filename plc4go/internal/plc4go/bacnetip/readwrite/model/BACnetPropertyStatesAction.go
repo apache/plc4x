@@ -48,9 +48,10 @@ func (m *BACnetPropertyStatesAction) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
+	m.BACnetPropertyStates.OpeningTag = openingTag
+	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
+	m.BACnetPropertyStates.ClosingTag = closingTag
+	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
@@ -118,10 +119,10 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint
 		}
 		_val, _err := BACnetActionParse(readBuffer, peekedTagNumber)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'action' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'action' field")
 		default:
 			action = CastBACnetAction(_val)
 			if closeErr := readBuffer.CloseContext("action"); closeErr != nil {

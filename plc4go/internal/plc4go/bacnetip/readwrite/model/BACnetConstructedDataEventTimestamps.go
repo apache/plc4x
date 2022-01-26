@@ -53,8 +53,9 @@ func (m *BACnetConstructedDataEventTimestamps) PropertyIdentifierEnum() BACnetPr
 }
 
 func (m *BACnetConstructedDataEventTimestamps) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
+	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.ClosingTag = closingTag
+	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetContextTagTime, toFault *BACnetContextTagUnsignedInteger, toNormal *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {

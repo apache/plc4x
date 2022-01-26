@@ -48,7 +48,7 @@ func (m *NLMRejectRouterToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.VendorId = vendorId
+	m.NLM.VendorId = vendorId
 }
 
 func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16) *NLM {

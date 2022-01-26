@@ -142,10 +142,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field")
 		default:
 			applicationTag = CastBACnetApplicationTag(_val)
 			if closeErr := readBuffer.CloseContext("applicationTag"); closeErr != nil {
@@ -163,10 +163,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, GuessDataType(objectType))
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field")
 		default:
 			contextTag = CastBACnetContextTag(_val)
 			if closeErr := readBuffer.CloseContext("contextTag"); closeErr != nil {
@@ -184,10 +184,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 		}
 		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectType, propertyIdentifier)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field")
 		default:
 			constructedData = CastBACnetConstructedData(_val)
 			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {
@@ -198,9 +198,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 
 	// Validation
 	if !(bool(bool(isApplicationTag) || bool(isContextTag)) || bool(isConstructedData)) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("BACnetConstructedDataElement could not parse anything") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"BACnetConstructedDataElement could not parse anything"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElement"); closeErr != nil {

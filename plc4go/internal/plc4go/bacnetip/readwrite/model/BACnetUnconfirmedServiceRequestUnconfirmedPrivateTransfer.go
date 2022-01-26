@@ -151,10 +151,10 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 		}
 		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'serviceParameters' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'serviceParameters' field")
 		default:
 			serviceParameters = CastBACnetPropertyValues(_val)
 			if closeErr := readBuffer.CloseContext("serviceParameters"); closeErr != nil {

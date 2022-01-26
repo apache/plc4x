@@ -47,10 +47,10 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) CommandCode() uint8
 }
 
 func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) InitializeParent(parent *DF1ResponseMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
-	m.DestinationAddress = destinationAddress
-	m.SourceAddress = sourceAddress
-	m.Status = status
-	m.TransactionCounter = transactionCounter
+	m.DF1ResponseMessage.DestinationAddress = destinationAddress
+	m.DF1ResponseMessage.SourceAddress = sourceAddress
+	m.DF1ResponseMessage.Status = status
+	m.DF1ResponseMessage.TransactionCounter = transactionCounter
 }
 
 func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1ResponseMessage {

@@ -51,9 +51,10 @@ func (m *BACnetNotificationParametersExtended) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetNotificationParametersExtended) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
+	m.BACnetNotificationParameters.OpeningTag = openingTag
+	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
+	m.BACnetNotificationParameters.ClosingTag = closingTag
+	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetNotificationParametersExtended(innerOpeningTag *BACnetOpeningTag, vendorId *BACnetContextTagUnsignedInteger, extendedEventType *BACnetContextTagUnsignedInteger, parameters *BACnetNotificationParametersExtendedParameters, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {

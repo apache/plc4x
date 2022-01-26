@@ -61,8 +61,8 @@ func (m *S7PayloadDiagnosticMessage) DataLength() uint16 {
 }
 
 func (m *S7PayloadDiagnosticMessage) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
-	m.ReturnCode = returnCode
-	m.TransportSize = transportSize
+	m.S7PayloadUserDataItem.ReturnCode = returnCode
+	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
 func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {

@@ -48,9 +48,10 @@ func (m *BACnetServiceAckAtomicReadFileStream) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetServiceAckAtomicReadFileStream) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.PeekedTagHeader = peekedTagHeader
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
+	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
+	m.BACnetServiceAckAtomicReadFileStreamOrRecord.OpeningTag = openingTag
+	m.BACnetServiceAckAtomicReadFileStreamOrRecord.ClosingTag = closingTag
+	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetServiceAckAtomicReadFileStreamOrRecord {

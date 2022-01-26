@@ -49,7 +49,10 @@ func (m *BACnetContextTagCharacterString) DataType() BACnetDataType {
 }
 
 func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
-	m.Header = header
+	m.BACnetContextTag.Header = header
+	m.BACnetContextTag.TagNumber = tagNumber
+	m.BACnetContextTag.ActualLength = actualLength
+	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 func NewBACnetContextTagCharacterString(encoding BACnetCharacterEncoding, value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -115,9 +118,7 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("length 6 and 7 reserved for opening and closing tag") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
 	// Simple Field (encoding)

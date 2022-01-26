@@ -45,6 +45,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) BvlcFunction() uint8 {
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
 
 func NewBVLCReadBroadcastDistributionTableAck(bvlcPayloadLength uint16) *BVLC {

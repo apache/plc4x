@@ -46,7 +46,9 @@ func (m *BVLCRegisterForeignDevice) BvlcFunction() uint8 {
 	return 0x05
 }
 
-func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
+func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+}
 
 func NewBVLCRegisterForeignDevice(ttl uint16, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCRegisterForeignDevice{

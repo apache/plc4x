@@ -52,9 +52,10 @@ func (m *BACnetNotificationParametersOutOfRange) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetNotificationParametersOutOfRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
+	m.BACnetNotificationParameters.OpeningTag = openingTag
+	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
+	m.BACnetNotificationParameters.ClosingTag = closingTag
+	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag, exceedingValue *BACnetContextTagReal, statusFlags *BACnetStatusFlags, deadband *BACnetContextTagReal, exceededLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {

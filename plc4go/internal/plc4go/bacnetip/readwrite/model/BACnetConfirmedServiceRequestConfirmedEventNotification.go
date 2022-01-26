@@ -272,10 +272,10 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(7), BACnetDataType_CHARACTER_STRING)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'messageText' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'messageText' field")
 		default:
 			messageText = CastBACnetContextTagCharacterString(_val)
 			if closeErr := readBuffer.CloseContext("messageText"); closeErr != nil {
@@ -306,10 +306,10 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(9), BACnetDataType_BOOLEAN)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field")
 		default:
 			ackRequired = CastBACnetContextTagBoolean(_val)
 			if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
@@ -327,10 +327,10 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(10), BACnetDataType_EVENT_STATE)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'fromState' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'fromState' field")
 		default:
 			fromState = CastBACnetContextTagEventState(_val)
 			if closeErr := readBuffer.CloseContext("fromState"); closeErr != nil {
@@ -361,10 +361,10 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		}
 		_val, _err := BACnetNotificationParametersParse(readBuffer, uint8(12), eventObjectIdentifier.ObjectType)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field")
 		default:
 			eventValues = CastBACnetNotificationParameters(_val)
 			if closeErr := readBuffer.CloseContext("eventValues"); closeErr != nil {

@@ -51,9 +51,10 @@ func (m *BACnetNotificationParametersBufferReady) PeekedTagNumber() uint8 {
 }
 
 func (m *BACnetNotificationParametersBufferReady) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
-	m.OpeningTag = openingTag
-	m.PeekedTagHeader = peekedTagHeader
-	m.ClosingTag = closingTag
+	m.BACnetNotificationParameters.OpeningTag = openingTag
+	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
+	m.BACnetNotificationParameters.ClosingTag = closingTag
+	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
 func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTag, bufferProperty *BACnetDeviceObjectPropertyReference, previousNotification *BACnetContextTagUnsignedInteger, currentNotification *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {

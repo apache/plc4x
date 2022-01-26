@@ -55,8 +55,9 @@ func (m *BACnetConstructedDataUnspecified) PropertyIdentifierEnum() BACnetProper
 }
 
 func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
+	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.ClosingTag = closingTag
+	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, hasData bool, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
@@ -165,10 +166,10 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
 		default:
 			propertyIdentifier = CastBACnetContextTagPropertyIdentifier(_val)
 			if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
@@ -186,10 +187,10 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 		}
 		_val, _err := BACnetApplicationTagParse(readBuffer)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'content' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'content' field")
 		default:
 			content = CastBACnetApplicationTag(_val)
 			if closeErr := readBuffer.CloseContext("content"); closeErr != nil {

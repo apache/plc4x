@@ -44,7 +44,9 @@ func (m *BVLCReadForeignDeviceTable) BvlcFunction() uint8 {
 	return 0x06
 }
 
-func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
+func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
+	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
+}
 
 func NewBVLCReadForeignDeviceTable(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCReadForeignDeviceTable{

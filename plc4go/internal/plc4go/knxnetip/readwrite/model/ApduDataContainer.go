@@ -47,8 +47,8 @@ func (m *ApduDataContainer) Control() uint8 {
 }
 
 func (m *ApduDataContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
-	m.Numbered = numbered
-	m.Counter = counter
+	m.Apdu.Numbered = numbered
+	m.Apdu.Counter = counter
 }
 
 func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8) *Apdu {

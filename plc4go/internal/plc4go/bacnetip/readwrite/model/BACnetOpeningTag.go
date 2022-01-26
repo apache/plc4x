@@ -45,7 +45,10 @@ func (m *BACnetOpeningTag) DataType() BACnetDataType {
 }
 
 func (m *BACnetOpeningTag) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
-	m.Header = header
+	m.BACnetContextTag.Header = header
+	m.BACnetContextTag.TagNumber = tagNumber
+	m.BACnetContextTag.ActualLength = actualLength
+	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 func NewBACnetOpeningTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -100,9 +103,7 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 
 	// Validation
 	if !(bool((actualLength) == (6))) {
-		return nil, utils.ParseAssertError
-		// TODO: message would be helpful but then we need to change ParserAssertError to be customizable
-		//return nil, errors.New("opening tag should habe a value of 6") //TODO: add emit import here
+		return nil, utils.ParseAssertError{"opening tag should habe a value of 6"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOpeningTag"); closeErr != nil {

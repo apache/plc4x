@@ -26,6 +26,5 @@ import (
 )
 
 func TestBacnetParserSerializer(t *testing.T) {
-	t.Skip("Test not ready yet")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/bacnet/ParserSerializerTestsuite.xml")
 }

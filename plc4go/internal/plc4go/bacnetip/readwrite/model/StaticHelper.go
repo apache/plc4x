@@ -67,7 +67,7 @@ func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetProperty
 }
 
 func WriteProprietaryPropertyIdentifier(writeBuffer utils.WriteBuffer, baCnetPropertyIdentifier BACnetPropertyIdentifier, value uint32) error {
-	if baCnetPropertyIdentifier != 0 && baCnetPropertyIdentifier != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+	if baCnetPropertyIdentifier != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
 	var bitsToWrite uint8
@@ -84,7 +84,7 @@ func WriteProprietaryPropertyIdentifier(writeBuffer utils.WriteBuffer, baCnetPro
 }
 
 func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnetPropertyIdentifier, actualLength uint32) (uint32, error) {
-	if value != 0 && value != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+	if value != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
 		return 0, nil
 	}
 	// We need to reset our reader to the position we read before
@@ -136,7 +136,7 @@ func WriteEventState(writeBuffer utils.WriteBuffer, value BACnetEventState) erro
 }
 
 func WriteProprietaryEventState(writeBuffer utils.WriteBuffer, baCnetEventState BACnetEventState, value uint32) error {
-	if baCnetEventState != 0 && baCnetEventState != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
+	if baCnetEventState != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
 	var bitsToWrite uint8
@@ -153,7 +153,7 @@ func WriteProprietaryEventState(writeBuffer utils.WriteBuffer, baCnetEventState 
 }
 
 func ReadProprietaryEventState(readBuffer utils.ReadBuffer, value BACnetEventState, actualLength uint32) (uint32, error) {
-	if value != 0 && value != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
+	if value != BACnetEventState_VENDOR_PROPRIETARY_VALUE {
 		return 0, nil
 	}
 	// We need to reset our reader to the position we read before
@@ -205,7 +205,7 @@ func WriteEventType(writeBuffer utils.WriteBuffer, value BACnetEventType) error 
 }
 
 func WriteProprietaryEventType(writeBuffer utils.WriteBuffer, baCnetEventType BACnetEventType, value uint32) error {
-	if baCnetEventType != 0 && baCnetEventType != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
+	if baCnetEventType != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
 	var bitsToWrite uint8
@@ -222,7 +222,7 @@ func WriteProprietaryEventType(writeBuffer utils.WriteBuffer, baCnetEventType BA
 }
 
 func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType, actualLength uint32) (uint32, error) {
-	if value != 0 && value != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
+	if value != BACnetEventType_VENDOR_PROPRIETARY_VALUE {
 		return 0, nil
 	}
 	// We need to reset our reader to the position we read before
@@ -243,14 +243,14 @@ func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) erro
 }
 
 func WriteProprietaryObjectType(writeBuffer utils.WriteBuffer, baCnetObjectType BACnetObjectType, value uint16) error {
-	if baCnetObjectType != 0 && baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+	if baCnetObjectType != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return nil
 	}
 	return writeBuffer.WriteUint16("proprietaryObjectType", 10, value, utils.WithAdditionalStringRepresentation(BACnetObjectType_VENDOR_PROPRIETARY_VALUE.name()))
 }
 
 func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (uint16, error) {
-	if value != 0 && value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return 0, nil
 	}
 	// We need to reset our reader to the position we read before

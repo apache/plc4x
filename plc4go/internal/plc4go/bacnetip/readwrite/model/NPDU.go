@@ -278,10 +278,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		default:
 			nlm = CastNLM(_val)
 			if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
@@ -299,10 +299,10 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		default:
 			apdu = CastAPDU(_val)
 			if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {

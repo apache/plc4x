@@ -45,10 +45,10 @@ func (m *CIPEncapsulationConnectionResponse) CommandType() uint16 {
 }
 
 func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
+	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
+	m.CIPEncapsulationPacket.Status = status
+	m.CIPEncapsulationPacket.SenderContext = senderContext
+	m.CIPEncapsulationPacket.Options = options
 }
 
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {

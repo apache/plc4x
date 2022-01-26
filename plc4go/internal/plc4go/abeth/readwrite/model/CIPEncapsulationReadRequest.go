@@ -47,10 +47,10 @@ func (m *CIPEncapsulationReadRequest) CommandType() uint16 {
 }
 
 func (m *CIPEncapsulationReadRequest) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.SessionHandle = sessionHandle
-	m.Status = status
-	m.SenderContext = senderContext
-	m.Options = options
+	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
+	m.CIPEncapsulationPacket.Status = status
+	m.CIPEncapsulationPacket.SenderContext = senderContext
+	m.CIPEncapsulationPacket.Options = options
 }
 
 func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {

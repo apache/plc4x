@@ -45,9 +45,9 @@ func (m *S7MessageUserData) MessageType() uint8 {
 }
 
 func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
-	m.TpduReference = tpduReference
-	m.Parameter = parameter
-	m.Payload = payload
+	m.S7Message.TpduReference = tpduReference
+	m.S7Message.Parameter = parameter
+	m.S7Message.Payload = payload
 }
 
 func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {

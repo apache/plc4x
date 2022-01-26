@@ -47,7 +47,7 @@ func (m *NLMIAmRouterToNetwork) MessageType() uint8 {
 }
 
 func (m *NLMIAmRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
-	m.VendorId = vendorId
+	m.NLM.VendorId = vendorId
 }
 
 func NewNLMIAmRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16) *NLM {

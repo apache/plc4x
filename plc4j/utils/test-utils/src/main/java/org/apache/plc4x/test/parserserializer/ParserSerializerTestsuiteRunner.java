@@ -166,6 +166,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             if (migrated) {
                 LOGGER.warn("Migrated testcase {}", testcase);
             }
+            LOGGER.debug("Parsed message {}", parsedOutput);
             LOGGER.info("Parsing passed for testcase {}", testcase);
 
             LOGGER.trace("Writing message back again");

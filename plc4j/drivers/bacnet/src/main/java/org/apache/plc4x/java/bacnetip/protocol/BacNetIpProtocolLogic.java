@@ -213,7 +213,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(baCnetTag.getTagNumber()));
+                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(baCnetTag.getActualTagNumber()));
                     enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.

@@ -53,8 +53,9 @@ func (m *BACnetConstructedDataCommand) PropertyIdentifierEnum() BACnetPropertyId
 }
 
 func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
-	m.OpeningTag = openingTag
-	m.ClosingTag = closingTag
+	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.ClosingTag = closingTag
+	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action []*BACnetActionCommand, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {

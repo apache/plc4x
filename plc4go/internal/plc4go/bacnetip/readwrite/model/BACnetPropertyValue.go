@@ -122,10 +122,10 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field")
 		default:
 			propertyArrayIndex = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
@@ -143,10 +143,10 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 		}
 		_val, _err := BACnetConstructedDataElementParse(readBuffer, objectType, propertyIdentifier)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
 		default:
 			propertyValue = CastBACnetConstructedDataElement(_val)
 			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
@@ -164,10 +164,10 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 		}
 		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
-		case _err != nil && _err != utils.ParseAssertError && !errors.Is(_err, io.EOF):
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
-		case _err == utils.ParseAssertError || errors.Is(_err, io.EOF):
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)
+		case _err != nil:
+			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
 		default:
 			priority = CastBACnetContextTagUnsignedInteger(_val)
 			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
