@@ -51,7 +51,9 @@ func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (B
 }
 
 func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetPropertyIdentifier) error {
-	// TODO: check if it's in the known range and if not return (==VENDOR_PROPRIETARY_VALUE)
+	if value == BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
 	var bitsToWrite uint8
 	valueValue := uint64(value)
 	if valueValue <= 0xff {
@@ -120,7 +122,9 @@ func ReadEventState(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEve
 }
 
 func WriteEventState(writeBuffer utils.WriteBuffer, value BACnetEventState) error {
-	// TODO: check if it's in the known range and if not return (==VENDOR_PROPRIETARY_VALUE)
+	if value == BACnetEventState_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
 	var bitsToWrite uint8
 	valueValue := uint64(value)
 	if valueValue <= 0xff {
@@ -189,7 +193,9 @@ func ReadEventType(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetEven
 }
 
 func WriteEventType(writeBuffer utils.WriteBuffer, value BACnetEventType) error {
-	// TODO: check if it's in the known range and if not return (==VENDOR_PROPRIETARY_VALUE)
+	if value == BACnetEventType_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
 	var bitsToWrite uint8
 	valueValue := uint64(value)
 	if valueValue <= 0xff {
@@ -239,6 +245,9 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
 }
 
 func WriteObjectType(writeBuffer utils.WriteBuffer, value BACnetObjectType) error {
+	if value == BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
 	return writeBuffer.WriteUint16("objectType", 10, uint16(value), utils.WithAdditionalStringRepresentation(value.name()))
 }
 
