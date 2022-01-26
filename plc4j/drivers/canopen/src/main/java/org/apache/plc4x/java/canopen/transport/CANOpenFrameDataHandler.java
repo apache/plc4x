@@ -24,10 +24,8 @@ import org.apache.plc4x.java.canopen.readwrite.utils.StaticHelper;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
-import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
@@ -50,7 +48,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
     public CANOpenFrame fromCAN(FrameData frame) {
         CANOpenService service = StaticHelper.serviceId((short) frame.getNodeId());
         int nodeId = Math.abs(service.getMin() - frame.getNodeId());
-        return new CANOpenFrame((short) nodeId, service, frame.read(new CANOpenPayloadIO(), service));
+        return new CANOpenFrame((short) nodeId, service, frame.read(CANOpenPayload::staticParse, service));
     }
 
     @Override

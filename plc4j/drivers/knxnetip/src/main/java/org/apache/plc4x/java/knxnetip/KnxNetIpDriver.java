@@ -23,7 +23,6 @@ import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxNetIpMessageIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
@@ -97,7 +96,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
 
     @Override
     protected ProtocolStackConfigurer<KnxNetIpMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(KnxNetIpMessage.class, KnxNetIpMessageIO.class)
+        return SingleProtocolStackConfigurer.builder(KnxNetIpMessage.class, KnxNetIpMessage::staticParse)
             .withProtocol(KnxNetIpProtocolLogic.class)
             .withDriverContext(KnxNetIpDriverContext.class)
             .withPacketSizeEstimator(PacketSizeEstimator.class)

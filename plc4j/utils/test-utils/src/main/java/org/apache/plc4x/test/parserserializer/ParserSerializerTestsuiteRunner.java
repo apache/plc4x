@@ -146,12 +146,12 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcaseRaw, testSuite.getByteOrder());
 
         try {
-            MessageInput<Message> messageInput = MessageResolver.getMessageIOStaticLinked(
+            MessageInput<?> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
                 testcase.getXml().elements().get(0).getName()
             );
             LOGGER.trace("Parsing message");
-            Message parsedOutput = messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
+            Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
             LOGGER.trace("Validating and migrating");
             boolean migrated = MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
                 testcase.getName(),

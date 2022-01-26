@@ -23,7 +23,6 @@ import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.field.AdsFieldHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
-import org.apache.plc4x.java.ads.readwrite.io.AmsTCPPacketIO;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -99,7 +98,7 @@ public class ADSPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
 
     @Override
     protected ProtocolStackConfigurer<AmsTCPPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(AmsTCPPacket.class, AmsTCPPacketIO.class)
+        return SingleProtocolStackConfigurer.builder(AmsTCPPacket.class, AmsTCPPacket::staticParse)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withProtocol(AdsProtocolLogic.class)
             .littleEndian()

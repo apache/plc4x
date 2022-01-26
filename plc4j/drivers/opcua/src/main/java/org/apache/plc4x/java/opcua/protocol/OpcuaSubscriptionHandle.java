@@ -25,7 +25,6 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.field.OpcuaField;
 import org.apache.plc4x.java.opcua.readwrite.*;
-import org.apache.plc4x.java.opcua.readwrite.io.ExtensionObjectIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
@@ -164,7 +163,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateMonitoredItemsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (unknownExtensionObject instanceof CreateMonitoredItemsResponse) {
                         responseMessage = (CreateMonitoredItemsResponse) unknownExtensionObject;
                     } else {
@@ -274,7 +273,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                 PublishResponse responseMessage = null;
                                 ServiceFault serviceFault = null;
                                 try {
-                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                                     if (unknownExtensionObject instanceof PublishResponse) {
                                         responseMessage = (PublishResponse) unknownExtensionObject;
                                     } else {
@@ -386,7 +385,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             Consumer<byte[]> consumer = opcuaResponse -> {
                 DeleteSubscriptionsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (unknownExtensionObject instanceof DeleteSubscriptionsResponse) {
                         responseMessage = (DeleteSubscriptionsResponse) unknownExtensionObject;
                     } else {

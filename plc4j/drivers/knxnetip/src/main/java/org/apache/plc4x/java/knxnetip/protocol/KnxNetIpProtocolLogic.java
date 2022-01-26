@@ -35,7 +35,6 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -452,7 +451,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // Decode the group address depending on the project settings.
         ReadBuffer addressBuffer = new ReadBufferByteBased(destinationGroupAddress);
         final KnxGroupAddress knxGroupAddress =
-            KnxGroupAddressIO.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
+            KnxGroupAddress.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
         final String destinationAddress = toString(knxGroupAddress);
 
         // If there is an ETS5 model provided, continue decoding the payload.

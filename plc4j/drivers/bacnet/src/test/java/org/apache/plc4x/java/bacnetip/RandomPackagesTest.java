@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -5165,7 +5164,7 @@ public class RandomPackagesTest {
             byte[] rawData = udpPacket.getPayload().getRawData();
             LOGGER.info("Reading BVLC from:\n{}", Hex.dump(rawData));
             try {
-                return BVLCIO.staticParse(new ReadBufferByteBased(rawData));
+                return BVLC.staticParse(new ReadBufferByteBased(rawData));
             } catch (ParseException e) {
                 throw new ParseException(String.format("Caught at current package number: %d. Packages read so far %d", currentPackageNumber, readPackages), e);
             }

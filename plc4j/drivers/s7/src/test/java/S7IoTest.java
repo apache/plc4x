@@ -18,7 +18,6 @@
  */
 
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
 import org.junit.jupiter.api.Test;
@@ -381,7 +380,7 @@ public class S7IoTest {
             String gotXml = writeBufferXmlBased.getXmlString();
             assertEquals(wantXml, gotXml);
             ReadBufferXmlBased readBufferXmlBased = new ReadBufferXmlBased(new ByteArrayInputStream(gotXml.getBytes()));
-            TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
+            TPKTPacket reReadTpktPacket = TPKTPacket.staticParse(readBufferXmlBased);
             assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
         }
         // json
@@ -391,7 +390,7 @@ public class S7IoTest {
             String gotJson = writeBufferJsonBased.getJsonString();
             JSONAssert.assertEquals(wantJson, gotJson, JSONCompareMode.LENIENT);
             ReadBufferJsonBased readBufferXmlBased = new ReadBufferJsonBased(new ByteArrayInputStream(gotJson.getBytes()));
-            TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
+            TPKTPacket reReadTpktPacket = TPKTPacket.staticParse(readBufferXmlBased);
             assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
         }
     }

@@ -19,7 +19,6 @@
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
@@ -32,13 +31,12 @@ public class BenchmarkGeneratedS7 {
         byte[] rData = Hex.decodeHex("0300001611e00000000f00c2020100c1020311c0010a");
         long start = System.currentTimeMillis();
         int numRunsParse = 2000000;
-        TPKTPacketIO tpktPacketIO = new TPKTPacketIO();
 
         // Benchmark the parsing code
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBufferByteBased(rData);
-            packet = TPKTPacketIO.staticParse(rBuf);
+            packet = TPKTPacket.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 

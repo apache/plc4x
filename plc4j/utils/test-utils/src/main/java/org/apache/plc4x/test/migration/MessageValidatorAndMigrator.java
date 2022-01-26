@@ -64,7 +64,7 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings({"rawtypes"})
     public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        MessageInput<Message> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName());
+        MessageInput<?> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName());
         validateOutboundMessageAndMigrate(testCaseName, messageInput, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
     }
 
@@ -83,11 +83,11 @@ public class MessageValidatorAndMigrator {
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<Message> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<?> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
-            final Message parsedOutput = messageInput.parse(readBuffer, parserArguments.toArray());
+            final Message parsedOutput = (Message) messageInput.parse(readBuffer, parserArguments.toArray());
             final String referenceXmlString = referenceXml.asXML();
             try {
                 // First try to use the native xml writer
@@ -186,7 +186,7 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings("rawtypes")
     public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml, List<String> parserArguments) {
-        MessageInput<Message> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName());
+        MessageInput<?> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName());
         return validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
     }
 

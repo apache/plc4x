@@ -68,7 +68,7 @@ import java.math.BigInteger;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.allParserArguments.orElseThrow()></#if>
-public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()><T extends ${type.name}></#if><#if type.parentType??> extends ${type.parentType.name}<${type.name}></#if> implements Message, MessageInput<<#if type.isDiscriminatedParentTypeDefinition()>T<#else>${type.name}</#if>> {
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()><T extends ${type.name}></#if><#if type.parentType??> extends ${type.parentType.name}<${type.name}></#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
@@ -481,32 +481,26 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
 <#-- The parse and serialize methods here are just proxies for forwardning the requests to static counterparts -->
     <#if !type.isDiscriminatedChildTypeDefinition()>
-    @Override
-    public <#if type.isDiscriminatedParentTypeDefinition()>T<#else>${type.name}</#if> parse(ReadBuffer readBuffer, Object... args) throws ParseException {
+    public static ${type.name} staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
         <#if parserArguments?has_content>
         if((args == null) || (args.length != ${parserArguments?size})) {
             throw new PlcRuntimeException("Wrong number of arguments, expected ${parserArguments?size}, but got " + args.length);
         }
             <#list parserArguments as parserArgument>
-                ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name};
-        if(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) {
-            ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
+                <#assign languageName=helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)>
+                ${languageName} ${parserArgument.name};
+        if(args[${parserArgument?index}] instanceof ${languageName}) {
+            ${parserArgument.name} = (${languageName}) args[${parserArgument?index}];
                 <#if helper.isSimpleTypeReference(parserArgument.type)>
         } else if (args[${parserArgument?index}] instanceof String) {
-            ${parserArgument.name} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}.valueOf((String) args[${parserArgument?index}]);
+            ${parserArgument.name} = ${languageName}.valueOf((String) args[${parserArgument?index}]);
                 </#if>
         } else {
-            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} or a string which is parseable but was " + args[${parserArgument?index}].getClass().getName());
+            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${languageName} or a string which is parseable but was " + args[${parserArgument?index}].getClass().getName());
         }
             </#list>
         </#if>
-        return <#if type.isDiscriminatedParentTypeDefinition()>(T)</#if>${type.name}.staticParse(readBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
-    }
-
-    <#else>
-    @Override
-    public ${type.name} parse(ReadBuffer readBuffer, Object... args) throws ParseException {
-        return (${type.name}) super.parse(readBuffer, args);
+        return staticParse(readBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
     }
 
     </#if>

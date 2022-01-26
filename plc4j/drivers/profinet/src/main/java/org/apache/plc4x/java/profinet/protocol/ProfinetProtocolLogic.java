@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.io.DceRpc_PacketIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -141,7 +140,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> {
             DatagramPacket connectResponsePacket = new DatagramPacket(resultBuffer, resultBuffer.length);
             udpSocket.receive(connectResponsePacket);
             ReadBufferByteBased readBuffer = new ReadBufferByteBased(resultBuffer);
-            final DceRpc_Packet dceRpc_packet = DceRpc_PacketIO.staticParse(readBuffer);
+            final DceRpc_Packet dceRpc_packet = DceRpc_Packet.staticParse(readBuffer);
             if((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
                 if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
                     // Get the remote MAC address and store it in the context.

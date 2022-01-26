@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
-import org.apache.plc4x.java.eip.readwrite.io.CipServiceIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -292,7 +291,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, offset + length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipServiceIO.staticParse(read, length);
+                    service = CipService.staticParse(read, length);
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
@@ -503,7 +502,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
-                    service = CipServiceIO.staticParse(read, length);
+                    service = CipService.staticParse(read, length);
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);

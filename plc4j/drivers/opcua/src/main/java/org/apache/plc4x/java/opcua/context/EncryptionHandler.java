@@ -24,7 +24,6 @@ import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageResponse;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenResponse;
-import org.apache.plc4x.java.opcua.readwrite.io.OpcuaAPUIO;
 import org.apache.plc4x.java.spi.generation.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -139,7 +138,7 @@ public class EncryptionHandler {
                     buf.setPos(4);
                     buf.writeInt(32, tempPos - 256);
                     ReadBuffer readBuffer = new ReadBufferByteBased(getBytes(buf.getBytes(), 0, tempPos - 256), ByteOrder.LITTLE_ENDIAN);
-                    return OpcuaAPUIO.staticParse(readBuffer, true);
+                    return OpcuaAPU.staticParse(readBuffer, true);
                 } catch (SerializationException | ParseException e) {
                     LOGGER.error("Unable to Parse encrypted message");
                 }

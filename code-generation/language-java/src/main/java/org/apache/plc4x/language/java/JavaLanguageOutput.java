@@ -62,9 +62,7 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/java/model-template.java.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/java/io-template.java.ftlh"));
+        return List.of(freemarkerConfiguration.getTemplate("templates/java/model-template.java.ftlh"));
     }
 
     @Override

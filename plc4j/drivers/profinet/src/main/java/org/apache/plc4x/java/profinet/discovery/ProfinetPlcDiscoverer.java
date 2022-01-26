@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
@@ -108,7 +107,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                     if (isPnPacket) {
                                         ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                                         try {
-                                            Ethernet_Frame ethernetFrame = Ethernet_FrameIO.staticParse(reader);
+                                            Ethernet_Frame ethernetFrame = Ethernet_Frame.staticParse(reader);
                                             PnDcp_Pdu pdu;
                                             // Access the pdu data (either directly or by
                                             // unpacking the content of the VLAN packet.
