@@ -26,6 +26,8 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
+
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
 public class StaticHelper {
@@ -337,5 +339,9 @@ public class StaticHelper {
         }
         // TODO: temporary
         return BACnetDataType.BACNET_PROPERTY_IDENTIFIER;
+    }
+
+    public static long parseVarUint(byte[] data) {
+        return new BigInteger(data).longValue();
     }
 }

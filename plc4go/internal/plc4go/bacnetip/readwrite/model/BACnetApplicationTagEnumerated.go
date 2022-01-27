@@ -29,7 +29,8 @@ import (
 // The data-structure of this message
 type BACnetApplicationTagEnumerated struct {
 	*BACnetApplicationTag
-	Data []int8
+	Data        []byte
+	ActualValue uint32
 }
 
 // The corresponding interface
@@ -52,9 +53,10 @@ func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicat
 	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagEnumerated(data []int8, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagEnumerated(data []byte, actualValue uint32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagEnumerated{
 		Data:                 data,
+		ActualValue:          actualValue,
 		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
 	child.Child = child
@@ -96,6 +98,8 @@ func (m *BACnetApplicationTagEnumerated) LengthInBitsConditional(lastItem bool) 
 		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -107,27 +111,16 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLeng
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+	// Byte Array field (data)
+	numberOfBytesdata := int(actualLength)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Length array
-	data := make([]int8, 0)
-	{
-		_dataLength := actualLength
-		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-		for readBuffer.GetPos() < _dataEndPos {
-			_item, _err := readBuffer.ReadInt8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field")
-			}
-			data = append(data, _item)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
-	}
+	// Virtual field
+	_actualValue := ParseVarUint(data)
+	actualValue := uint32(_actualValue)
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagEnumerated"); closeErr != nil {
 		return nil, closeErr
@@ -136,6 +129,7 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLeng
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagEnumerated{
 		Data:                 data,
+		ActualValue:          actualValue,
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
@@ -150,18 +144,15 @@ func (m *BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffer
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagEnumerated"); popErr != nil {

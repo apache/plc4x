@@ -22,6 +22,7 @@ package model
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"math/big"
 )
 
 func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetPropertyIdentifier, error) {
@@ -294,4 +295,13 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTermi
 func GuessDataType(objectType BACnetObjectType) BACnetDataType {
 	// TODO: implement me
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
+}
+
+func ParseVarUint(data []byte) uint32 {
+	bigInt := big.NewInt(0)
+	return uint32(bigInt.SetBytes(data).Uint64())
+}
+
+func WriteVarUint(value uint32) []byte {
+	return big.NewInt(int64(value)).Bytes()
 }

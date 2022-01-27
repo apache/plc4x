@@ -706,9 +706,7 @@
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -2835,9 +2833,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -3028,9 +3024,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">5</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x05</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3046,9 +3040,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">26</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x1a</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -3243,9 +3235,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -3431,9 +3421,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">2</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x02</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3449,9 +3437,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">32</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x20</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -3646,9 +3632,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -3834,9 +3818,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">2</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x02</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3852,9 +3834,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">32</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x20</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -4049,9 +4029,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -4996,9 +4974,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5239,9 +5215,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">1</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x01</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -5257,9 +5231,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">31</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x1f</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -5454,9 +5426,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5554,9 +5524,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -5824,9 +5792,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5924,9 +5890,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">0</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x00</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6021,9 +5985,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">5</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x05</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -6039,9 +6001,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">26</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x1a</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -6146,9 +6106,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">3</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x03</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -6245,9 +6203,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6348,9 +6304,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6451,9 +6405,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6554,9 +6506,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6684,9 +6634,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">3</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x03</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -6783,9 +6731,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6881,9 +6827,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">5</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x05</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -6899,9 +6843,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">26</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x1a</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -6979,9 +6921,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">1</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x01</data>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -7160,9 +7100,7 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data isList="true">
-                                      <value dataType="int" bitLength="8">3</value>
-                                    </data>
+                                    <data dataType="byte" bitLength="8">0x03</data>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -7633,9 +7571,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">5</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x05</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -7651,9 +7587,7 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data isList="true">
-                                <value dataType="int" bitLength="8">26</value>
-                              </data>
+                              <data dataType="byte" bitLength="8">0x1a</data>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>

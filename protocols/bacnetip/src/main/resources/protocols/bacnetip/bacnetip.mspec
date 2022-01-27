@@ -400,9 +400,9 @@
 [type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                     rawData                         ]
-    [virtual    bit isEnable            'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isDisable           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
-    [virtual    bit isDisableInitiation 'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 2']
+    [virtual    bit isEnable            'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isDisable           'rawData != null && rawData.actualValue == 1']
+    [virtual    bit isDisableInitiation 'rawData != null && rawData.actualValue == 2']
 ]
 
 [type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -485,10 +485,10 @@
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetSegmentation
     [simple BACnetApplicationTagEnumerated          rawData ]
-    [virtual    bit isSegmentedBoth           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isSegmentedTransmit       'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
-    [virtual    bit isSegmentedReceive        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 3']
-    [virtual    bit isNoSegmentation          'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 4']
+    [virtual    bit isSegmentedBoth           'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isSegmentedTransmit       'rawData != null && rawData.actualValue == 1']
+    [virtual    bit isSegmentedReceive        'rawData != null && rawData.actualValue == 3']
+    [virtual    bit isNoSegmentation          'rawData != null && rawData.actualValue == 4']
 ]
 
 [discriminatedType BACnetServiceAck
@@ -948,8 +948,8 @@
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isDirect         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isReverse        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isDirect         'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isReverse        'rawData != null && rawData.actualValue == 1']
 ]
 
 [type BACnetActionCommand
@@ -987,8 +987,8 @@
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
     ]
-    [virtual    bit isInactive         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
-    [virtual    bit isActive           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isInactive         'rawData != null && rawData.actualValue == 0']
+    [virtual    bit isActive           'rawData != null && rawData.actualValue == 1']
 ]
 
 [type BACnetPropertyStates(uint 8 tagNumber)
@@ -1163,7 +1163,8 @@
             [array      bit         unused count 'unusedBits'                            ]
         ]
         ['0x9' BACnetApplicationTagEnumerated(uint 32 actualLength)
-            [array int 8 data length 'actualLength']
+            [array   byte       data length 'actualLength']
+            [virtual uint 32    actualValue 'STATIC_CALL("parseVarUint", data)'  ]
         ]
         ['0xA' BACnetApplicationTagDate
             [virtual int  8 wildcard '0xFF'                                 ]
@@ -1286,7 +1287,8 @@
         ]
         ['ENUMERATED' BACnetContextTagEnumerated(bit isNotOpeningOrClosingTag, uint 32 actualLength)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
-            [array int 8 data length 'actualLength']
+            [array byte data length 'actualLength']
+            [virtual uint 32    actualValue 'STATIC_CALL("parseVarUint", data)'  ]
         ]
         ['DATE' BACnetContextTagDate(bit isNotOpeningOrClosingTag)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
