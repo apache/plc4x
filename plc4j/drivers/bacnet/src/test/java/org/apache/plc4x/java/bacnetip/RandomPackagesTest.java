@@ -38,6 +38,7 @@ import org.pcap4j.packet.UdpPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -2388,22 +2389,22 @@ public class RandomPackagesTest {
                                     .extracting(BACnetContextTagUnsignedInteger::getActualValue)
                                     .isEqualTo(0L)
                             )
-                            .satisfies(baCnetConstructedDataEventTimestamps->
-                                    assertThat(baCnetConstructedDataEventTimestamps)
-                                        .extracting(BACnetConstructedDataEventTimestamps::getToNormal)
-                                        .satisfies(baCnetDateTime ->
-                                            assertThat(baCnetDateTime)
-                                                .extracting(BACnetDateTime::getDateValue)
-                                                .extracting(BACnetApplicationTagDate::getYearIsWildcard, BACnetApplicationTagDate::getMonthIsWildcard, BACnetApplicationTagDate::getDayOfMonthIsWildcard, BACnetApplicationTagDate::getDayOfWeekIsWildcard)
-                                                .containsExactly(true, true, true, true)
-                                        )
-                                        .satisfies(baCnetDateTime ->
-                                            assertThat(baCnetDateTime)
-                                                .extracting(BACnetDateTime::getTimeValue)
-                                                .extracting(BACnetApplicationTagTime::getFractionalIsWildcard, BACnetApplicationTagTime::getMinuteIsWildcard, BACnetApplicationTagTime::getSecondIsWildcard, BACnetApplicationTagTime::getFractionalIsWildcard)
-                                                .containsExactly(true, true, true, true)
-                                        )
-                                )
+                            .satisfies(baCnetConstructedDataEventTimestamps ->
+                                assertThat(baCnetConstructedDataEventTimestamps)
+                                    .extracting(BACnetConstructedDataEventTimestamps::getToNormal)
+                                    .satisfies(baCnetDateTime ->
+                                        assertThat(baCnetDateTime)
+                                            .extracting(BACnetDateTime::getDateValue)
+                                            .extracting(BACnetApplicationTagDate::getYearIsWildcard, BACnetApplicationTagDate::getMonthIsWildcard, BACnetApplicationTagDate::getDayOfMonthIsWildcard, BACnetApplicationTagDate::getDayOfWeekIsWildcard)
+                                            .containsExactly(true, true, true, true)
+                                    )
+                                    .satisfies(baCnetDateTime ->
+                                        assertThat(baCnetDateTime)
+                                            .extracting(BACnetDateTime::getTimeValue)
+                                            .extracting(BACnetApplicationTagTime::getFractionalIsWildcard, BACnetApplicationTagTime::getMinuteIsWildcard, BACnetApplicationTagTime::getSecondIsWildcard, BACnetApplicationTagTime::getFractionalIsWildcard)
+                                            .containsExactly(true, true, true, true)
+                                    )
+                            )
                         ;
                     }))
         );
@@ -2781,6 +2782,120 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-file.cap");
         return List.of(pcapEvaluator.parseEmAll());
     }
+
+    @TestFactory
+    @DisplayName("read-file-segments")
+    Collection<DynamicNode> read_file_segments() throws Exception {
+        TestPcapEvaluator pcapEvaluator = pcapEvaluator("read-file.cap");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // TODO: the tests below are not really independend as the last one uses the complete byte array
+        return List.of(
+            DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   atomicReadFile[195] file,1",
+                () -> assertThat(pcapEvaluator.nextBVLC(3))
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUConfirmedRequest.class))
+                    .extracting(APDUConfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetConfirmedServiceRequestAtomicReadFile.class))
+                    .satisfies(baCnetConfirmedServiceRequestAtomicReadFile -> {
+                        assertThat(baCnetConfirmedServiceRequestAtomicReadFile)
+                            .extracting(BACnetConfirmedServiceRequestAtomicReadFile::getFileIdentifier)
+                            .extracting(BACnetApplicationTagObjectIdentifier::getObjectType, BACnetApplicationTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.FILE, 1L);
+                        assertThat(baCnetConfirmedServiceRequestAtomicReadFile)
+                            .extracting(BACnetConfirmedServiceRequestAtomicReadFile::getAccessMethod)
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConfirmedServiceRequestAtomicReadFileStream.class))
+                            .satisfies(baCnetConfirmedServiceRequestAtomicReadFileStream -> {
+                                assertThat(baCnetConfirmedServiceRequestAtomicReadFileStream)
+                                    .extracting(BACnetConfirmedServiceRequestAtomicReadFileStream::getFileStartPosition)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagSignedInteger.class))
+                                    .extracting(BACnetApplicationTagSignedInteger::getActualValue)
+                                    .isEqualTo(BigInteger.valueOf(0));
+                                assertThat(baCnetConfirmedServiceRequestAtomicReadFileStream)
+                                    .extracting(BACnetConfirmedServiceRequestAtomicReadFileStream::getRequestOctetCount)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                    .extracting(BACnetApplicationTagUnsignedInteger::getActualValue)
+                                    .isEqualTo(2048L);
+                            });
+                    })),
+            DynamicTest.dynamicTest("No. 4 - Complex-ACK     atomicReadFile[195]  (Message fragment 0)",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getSegment)
+                    .satisfies(baos::writeBytes)),
+            DynamicTest.dynamicTest("No. 5 - Complex-ACK",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .containsExactly(false, false, (short) 195, (short) 0, (short) 16)),
+            DynamicTest.dynamicTest("No. 6 - Complex-ACK     atomicReadFile[195]  (Message fragment 1)",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getSegment)
+                    .satisfies(bytes -> LOGGER.info("Segment 1:\n{}", Hex.dump(bytes)))
+                    .satisfies(baos::writeBytes)),
+            DynamicTest.dynamicTest("No. 7 - Complex-ACK     atomicReadFile[195]  (Message fragment 2)",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getSegment)
+                    .satisfies(bytes -> LOGGER.info("Segment 2:\n{}", Hex.dump(bytes)))
+                    .satisfies(baos::writeBytes)),
+            DynamicTest.dynamicTest("No. 8 - Complex-ACK     atomicReadFile[195]  (Message fragment 3)",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getSegment)
+                    .satisfies(bytes -> LOGGER.info("Segment 3:\n{}", Hex.dump(bytes)))
+                    .satisfies(baos::writeBytes)),
+            DynamicTest.dynamicTest("No. 9 - Complex-ACK     atomicReadFile[195]  (Message Reassembled)",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getSegment)
+                    .satisfies(bytes -> LOGGER.info("Segment 4:\n{}", Hex.dump(bytes)))
+                    .satisfies(baos::writeBytes)),
+            DynamicTest.dynamicTest("No. 10 - Segment-ACK",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .containsExactly(false, false, (short) 195, (short) 4, (short) 16)),
+            DynamicTest.dynamicTest("Manually put together payload",
+                () -> assertThat(baos.toByteArray())
+                    .satisfies(bytes -> {
+                        LOGGER.info("Trying to parse\n{}",Hex.dump(bytes));
+                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes));
+                        assertThat(baCnetServiceAck)
+                            .isNotNull()
+                            .extracting(BACnetServiceAckAtomicReadFile::getAccessMethod)
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetServiceAckAtomicReadFileStream.class))
+                            .extracting(BACnetServiceAckAtomicReadFileStream::getFileData)
+                            .extracting(BACnetApplicationTagOctetString::getValue)
+                            .isNotNull();
+                    })
+            )
+        );
+    }
+
 
     @TestFactory
     @DisplayName("read-properties")

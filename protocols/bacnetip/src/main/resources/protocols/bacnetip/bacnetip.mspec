@@ -211,8 +211,14 @@
             [simple   uint 8    originalInvokeId                        ]
             [optional uint 8    sequenceNumber     'segmentedMessage'   ]
             [optional uint 8    proposedWindowSize 'segmentedMessage'   ]
-            [simple   BACnetServiceAck
-                                serviceAck                              ]
+            [optional BACnetServiceAck
+                                serviceAck         '!segmentedMessage'  ]
+            // TODO: maybe we should put this in the discriminated types below
+            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [array    byte      segment
+                                length
+                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?5:4)):0):0'
+                                                                        ]
         ]
         ['0x4' APDUSegmentAck
             [reserved uint 2    '0x00'                                  ]
