@@ -8018,30 +8018,30 @@ make -f wp.mak clean</value>
                                     </header>
                                     <BACnetApplicationTagOctetString>
                                       <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
-      	Passed: 260107
-      	Failed: 0
-      Test "BACnet Address":
-      	Passed: 2805
-      	Failed: 0
-      Test "BACnet DeviceCommunicationControl":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet Analog Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Analog Value":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet AtomicReadFile":
-      	Passed: 29
-      	Failed: 0
-      Test "BACnet AtomicWriteFile":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Applicat</value>
+	Passed: 260107
+	Failed: 0
+Test "BACnet Address":
+	Passed: 2805
+	Failed: 0
+Test "BACnet DeviceCommunicationControl":
+	Passed: 12
+	Failed: 0
+Test "BACnet Analog Input":
+	Passed: 4
+	Failed: 0
+Test "BACnet Analog Output":
+	Passed: 4
+	Failed: 0
+Test "BACnet Analog Value":
+	Passed: 4
+	Failed: 0
+Test "BACnet AtomicReadFile":
+	Passed: 29
+	Failed: 0
+Test "BACnet AtomicWriteFile":
+	Passed: 25
+	Failed: 0
+Test "BACnet Applicat</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8333,35 +8333,35 @@ make -f wp.mak clean</value>
                                     </header>
                                     <BACnetApplicationTagOctetString>
                                       <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
-      	Passed: 66
-      	Failed: 0
-      Test "BACDCode":
-      	Passed: 12617539
-      	Failed: 0
-      Test "BACnet Error":
-      	Passed: 64275
-      	Failed: 0
-      Test "BACnet Strings":
-      	Passed: 1153
-      	Failed: 0
-      Test "BACnet Binary Input":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Binary_Value":
-      	Passed: 4
-      	Failed: 0
-      Test "crc":
-      	Passed: 13
-      	Failed: 0
-      Test "BACnet Device":
-      	Passed: 12
-      	Failed: 0
-      Test "BACnet I-Am":
-      	Passed: 6
-      	Fa</value>
+	Passed: 66
+	Failed: 0
+Test "BACDCode":
+	Passed: 12617539
+	Failed: 0
+Test "BACnet Error":
+	Passed: 64275
+	Failed: 0
+Test "BACnet Strings":
+	Passed: 1153
+	Failed: 0
+Test "BACnet Binary Input":
+	Passed: 4
+	Failed: 0
+Test "BACnet Binary Output":
+	Passed: 4
+	Failed: 0
+Test "BACnet Binary_Value":
+	Passed: 4
+	Failed: 0
+Test "crc":
+	Passed: 13
+	Failed: 0
+Test "BACnet Device":
+	Passed: 12
+	Failed: 0
+Test "BACnet I-Am":
+	Passed: 6
+	Fa</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8653,32 +8653,32 @@ make -f wp.mak clean</value>
                                     </header>
                                     <BACnetApplicationTagOctetString>
                                       <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
-      Test "BACnet I-Have":
-      	Passed: 3469312
-      	Failed: 0
-      Test "index text":
-      	Passed: 25
-      	Failed: 0
-      Test "BACnet Life Safety Point":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet Multi-state Output":
-      	Passed: 4
-      	Failed: 0
-      Test "BACnet NPDU":
-      	Passed: 27
-      	Failed: 0
-      Test "BACnet ReinitializeDevice":
-      	Passed: 5
-      	Failed: 0
-      Test "BACnet Reject":
-      	Passed: 260107
-      	Failed: 0
-      Test "ringbuf":
-      	Passed: 769
-      	Failed: 0
-      Test "BACnet ReadProperty":
-      	Passed: 17</value>
+Test "BACnet I-Have":
+	Passed: 3469312
+	Failed: 0
+Test "index text":
+	Passed: 25
+	Failed: 0
+Test "BACnet Life Safety Point":
+	Passed: 4
+	Failed: 0
+Test "BACnet Multi-state Output":
+	Passed: 4
+	Failed: 0
+Test "BACnet NPDU":
+	Passed: 27
+	Failed: 0
+Test "BACnet ReinitializeDevice":
+	Passed: 5
+	Failed: 0
+Test "BACnet Reject":
+	Passed: 260107
+	Failed: 0
+Test "ringbuf":
+	Passed: 769
+	Failed: 0
+Test "BACnet ReadProperty":
+	Passed: 17</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8970,21 +8970,21 @@ make -f wp.mak clean</value>
                                     </header>
                                     <BACnetApplicationTagOctetString>
                                       <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
-      Test "BACnet ReadPropertyMultiple":
-      	Passed: 73
-      	Failed: 0
-      Test "static buffer":
-      	Passed: 22
-      	Failed: 0
-      Test "BACnet Who-Is":
-      	Passed: 104
-      	Failed: 0
-      Test "BACnet Who-Has":
-      	Passed: 3942557
-      	Failed: 0
-      Test "BACnet WriteProperty":
-      	Passed: 183
-      	Failed: 0</value>
+Test "BACnet ReadPropertyMultiple":
+	Passed: 73
+	Failed: 0
+Test "static buffer":
+	Passed: 22
+	Failed: 0
+Test "BACnet Who-Is":
+	Passed: 104
+	Failed: 0
+Test "BACnet Who-Has":
+	Passed: 3942557
+	Failed: 0
+Test "BACnet WriteProperty":
+	Passed: 183
+	Failed: 0</value>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
