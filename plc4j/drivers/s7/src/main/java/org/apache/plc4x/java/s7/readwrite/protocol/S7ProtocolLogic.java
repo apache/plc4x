@@ -350,7 +350,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     //encodeCycledUnSubscriptionRequest(msg, out);
                     break;
                 default:;
-            };
+            }
             //final PlcValue plcValue = request.getPlcValue(fieldName);
             //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
             //payloadItems.add(serializePlcValue(field, plcValue));
@@ -703,8 +703,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
         return new COTPPacketConnectionRequest(
             Arrays.asList(
-                new COTPParameterCalledTsap(calledTsapId),
                 new COTPParameterCallingTsap(callingTsapId),
+                new COTPParameterCalledTsap(calledTsapId),
                 new COTPParameterTpduSize(cotpTpduSize)
             ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
