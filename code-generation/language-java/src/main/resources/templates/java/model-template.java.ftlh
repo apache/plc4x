@@ -522,7 +522,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                     <#if !field.isCountArrayField() && !field.isLengthArrayField()>
                         throw new ParseException("array fields of type byte only support 'count' and 'length' loop-types.");
                     </#if>
-                    byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+                    byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", Math.toIntExact(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 <#else>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if field.isCountArrayField()>
