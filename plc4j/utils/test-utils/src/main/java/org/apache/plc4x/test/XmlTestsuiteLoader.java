@@ -20,6 +20,7 @@ package org.apache.plc4x.test;
 
 import org.apache.plc4x.test.model.LocationAware;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -40,7 +41,11 @@ public abstract class XmlTestsuiteLoader {
 
     protected XmlTestsuiteLoader(String testsuiteDocument) {
         this.testsuiteDocument = testsuiteDocument;
-        this.testsuiteDocumentXml = getClass().getResourceAsStream(testsuiteDocument);
+        try {
+            this.testsuiteDocumentXml = getClass().getClassLoader().getUnnamedModule().getResourceAsStream(testsuiteDocument);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Suite " + testsuiteDocument + " not found");
+        }
 
         if (testsuiteDocumentXml == null) {
             throw new IllegalArgumentException("Suite " + testsuiteDocument + " not found");

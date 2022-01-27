@@ -148,7 +148,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         try {
             MessageInput<?> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
-                testcase.getXml().elements().get(0).getName()
+                testcase.getRootType()
             );
             LOGGER.trace("Parsing message");
             Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
