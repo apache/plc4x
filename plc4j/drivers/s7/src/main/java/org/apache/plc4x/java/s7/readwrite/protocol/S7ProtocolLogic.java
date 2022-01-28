@@ -37,7 +37,6 @@ import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
-import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -852,7 +851,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for(int i = 0; i < field.getNumberOfElements(); i++) {
-                WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue.getIndex(i),
+                WriteBufferByteBased writeBuffer = DataItem.staticSerialize(plcValue.getIndex(i),
                     field.getDataType().getDataProtocolId(), stringLength);
                 if(writeBuffer != null) {
                     // Allocate enough space for all items.
@@ -877,13 +876,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         try {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             if (field.getNumberOfElements() == 1) {
-                return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
+                return DataItem.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
                     stringLength);
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
-                        return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
+                        return DataItem.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
                             stringLength);
                     } catch (ParseException e) {
                         logger.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);

@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${type.name}IO.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.java
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,7 +44,7 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * specific language governing permissions and limitations
  * under the License.
  */
-package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
+package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
@@ -72,9 +72,9 @@ import java.util.function.Supplier;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-public class ${type.name}IO {
+public class ${type.name} {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}IO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}.class);
     public static PlcValue staticParse(ReadBuffer readBuffer<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>

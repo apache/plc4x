@@ -31,7 +31,6 @@ import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.field.ModbusFieldInputRegister;
 import org.apache.plc4x.java.modbus.field.ModbusExtendedRegister;
 import org.apache.plc4x.java.modbus.readwrite.*;
-import org.apache.plc4x.java.modbus.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -379,7 +378,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if(fieldDataTypeSize < 2) {
                 io.readByte();
             }
-            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
+            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -391,7 +390,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if((dataType != ModbusDataType.STRING) && fieldDataTypeSize < 2) {
                 io.readByte();
             }
-            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
+            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -417,7 +416,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if(fieldDataTypeSize < 2) {
                 io.readByte();
             }
-            return DataItemIO.staticParse(io, dataType, Math.round(Math.max(dataLength/2.0f, 1)/Math.max(fieldDataTypeSize/2.0f, 1)));
+            return DataItem.staticParse(io, dataType, Math.round(Math.max(dataLength/2.0f, 1)/Math.max(fieldDataTypeSize/2.0f, 1)));
         }
         return null;
     }
@@ -427,7 +426,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         try {
             WriteBufferByteBased buffer;
             if(plcValue instanceof PlcList) {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 byte[] data = buffer.getData();
                 switch (((ModbusField) field).getDataType()) {
                     case BOOL:
@@ -442,7 +441,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {
@@ -468,7 +467,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
         ReadBuffer io = new ReadBufferByteBased(data);
         if(count == 1) {
-            return DataItemIO.staticParse(io, ModbusDataType.BOOL, 1);
+            return DataItem.staticParse(io, ModbusDataType.BOOL, 1);
         }
         // Make sure we read in all the bytes. Unfortunately when requesting 9 bytes
         // they are ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9

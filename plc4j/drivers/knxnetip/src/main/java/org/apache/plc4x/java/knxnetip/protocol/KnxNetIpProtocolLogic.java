@@ -35,7 +35,7 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapoint;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
@@ -284,7 +284,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
-                    final WriteBufferByteBased writeBuffer = KnxDatapointIO.staticSerialize(value,
+                    final WriteBufferByteBased writeBuffer = KnxDatapoint.staticSerialize(value,
                         groupAddress.getType());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
@@ -469,7 +469,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Parse the payload depending on the type of the group-address.
                 ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
-                final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
+                final PlcValue value = KnxDatapoint.staticParse(rawDataReader,
                     groupAddress.getType());
 
                 // Assemble the plc4x return data-structure.

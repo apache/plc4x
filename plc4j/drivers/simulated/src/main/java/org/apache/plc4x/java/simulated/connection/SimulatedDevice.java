@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
-import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.simulated.readwrite.DataItem;
 import org.apache.plc4x.java.spi.generation.*;
 
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
@@ -102,7 +102,7 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItemIO.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
+                            DataItem.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
                         } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }
@@ -121,7 +121,7 @@ public class SimulatedDevice {
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
-            return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
+            return DataItem.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {
             return null;
         }
