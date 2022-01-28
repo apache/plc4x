@@ -209,28 +209,6 @@
       </plugin>
 
       <!--
-        Make the failsafe execute all integration-tests
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
-                Notice the @ instead of the $ as prefix? That's late evaluation.
-          -->
-          <!--argLine>@{failsafeArgLine}</argLine-->
-        </configuration>
-      </plugin>
-
-      <!--
         Even if Maven transitively pulls in dependencies, relying on these can
         quite often cause hard to find problems. So it's a good practice to make
         sure everything directly required is also directly added as a dependency.

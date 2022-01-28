@@ -41,11 +41,7 @@ public abstract class XmlTestsuiteLoader {
 
     protected XmlTestsuiteLoader(String testsuiteDocument) {
         this.testsuiteDocument = testsuiteDocument;
-        try {
-            this.testsuiteDocumentXml = getClass().getClassLoader().getUnnamedModule().getResourceAsStream(testsuiteDocument);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Suite " + testsuiteDocument + " not found");
-        }
+        this.testsuiteDocumentXml = getClass().getResourceAsStream(testsuiteDocument);
 
         if (testsuiteDocumentXml == null) {
             throw new IllegalArgumentException("Suite " + testsuiteDocument + " not found");
