@@ -18,9 +18,7 @@
  */
 package org.apache.plc4x.test.generator
 
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.condition.DisabledOnOs
-import org.junit.jupiter.api.condition.OS
+import org.opentest4j.TestAbortedException
 
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo
 import static spock.util.matcher.HamcrestSupport.*
@@ -29,10 +27,10 @@ import spock.lang.Specification
 
 import java.nio.file.Files
 
-// We don't have a "sh" shell on Windows (Couldn't find another way to disable, as it was ignoring all Disa
-class ParserSerializerTestsuiteGeneratorSpec /*extends Specification*/ {
+class ParserSerializerTestsuiteGeneratorSpec extends Specification {
     def "Test main with an example pcap"() {
         given:
+        if (!new File('/bin/sh').canExecute()) throw new TestAbortedException("No bin sh")
         def testSuitePath = Files.createTempFile("parser-serializer-testsuite", ".xml")
         URL pcap = ParserSerializerTestsuiteGeneratorSpec.getResource("/bacnet-stack-services.cap");
         File pcapFile = new File(pcap.toURI());
