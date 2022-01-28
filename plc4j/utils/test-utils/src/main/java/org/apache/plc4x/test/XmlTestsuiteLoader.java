@@ -25,10 +25,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * Parent class for test suites utilizing XML as representation mechanism.
- *
+ * <p>
  * It adds handling of resource loading and helps in navigating test framework to suite source files.
  */
 public abstract class XmlTestsuiteLoader {
@@ -47,6 +48,7 @@ public abstract class XmlTestsuiteLoader {
 
         try {
             URL resource = getClass().getResource(testsuiteDocument);
+            Objects.requireNonNull(resource, testsuiteDocument + " not found in classpath");
             if ("file".equals(resource.getProtocol())) { // we run in IDE so lets swap "target" directory to source!
                 String sourceLocation = resource.toString()
                     .replace("/target/classes/", "/src/main/resources/")
