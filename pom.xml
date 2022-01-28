@@ -163,7 +163,7 @@
     <xmlunit.version>2.8.4</xmlunit.version>
 
     <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
+    <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.1</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
 
