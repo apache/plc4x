@@ -280,7 +280,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Simple Field (${namedField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
+                        <#if helper.isEnumTypeReference(typedField.type)>
+                            writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});
+                        <#elseif helper.isDataIoTypeReference(simpleField.type)>
+                            writeSimpleField("value", value, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${simpleField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)));
+                        <#else>
+                            writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
                         <#break>
                     <#case "switch">
                         <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -453,6 +458,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             </#if>
         <#elseif helper.isEnumField(field)>
         lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits};
+        <#elseif helper.isDataIoTypeReference(simpleField.type)>
+        lengthInBits += ${simpleField.type.asComplexTypeReference().orElseThrow().name}.getLengthInBits(${simpleField.name}<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>);
         <#else>
         lengthInBits += ${simpleField.name}.getLengthInBits();
         </#if>

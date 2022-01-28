@@ -102,7 +102,9 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItem.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
+                            final int lengthInBits = DataItem.getLengthInBits(value, field.getPlcDataType(), field.getNumberOfElements());
+                            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
+                            DataItem.staticSerialize(writeBuffer, value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
                         } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }

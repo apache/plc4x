@@ -175,6 +175,22 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     /**
      * @param typeReference type reference
+     * @return true if the given type reference is a dataIo type reference.
+     */
+    public boolean isDataIoTypeReference(TypeReference typeReference) {
+        if (typeReference == null) {
+            return false;
+        }
+        if (typeReference.isSimpleTypeReference()) {
+            return false;
+        }
+        final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow();
+        final TypeDefinition typeDefinition = types.get(complexTypeReference.getName());
+        return typeDefinition instanceof DataIoTypeDefinition;
+    }
+
+    /**
+     * @param typeReference type reference
      * @return true if the given type reference is a complex type reference.
      * @deprecated use method of {@link TypeReference}
      */

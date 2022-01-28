@@ -851,15 +851,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for(int i = 0; i < field.getNumberOfElements(); i++) {
-                WriteBufferByteBased writeBuffer = DataItem.staticSerialize(plcValue.getIndex(i),
-                    field.getDataType().getDataProtocolId(), stringLength);
-                if(writeBuffer != null) {
-                    // Allocate enough space for all items.
-                    if(byteBuffer == null) {
-                        byteBuffer = ByteBuffer.allocate(writeBuffer.getData().length * field.getNumberOfElements());
-                    }
-                    byteBuffer.put(writeBuffer.getData());
+                final int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
+                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
+                // Allocate enough space for all items.
+                if(byteBuffer == null) {
+                    byteBuffer = ByteBuffer.allocate(writeBuffer.getData().length * field.getNumberOfElements());
                 }
+                byteBuffer.put(writeBuffer.getData());
             }
             if(byteBuffer != null) {
                 byte[] data = byteBuffer.array();
