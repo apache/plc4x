@@ -1065,7 +1065,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <!-- With 3.0.0 the dependencyConvergence rule wouldn't work anymore -->
-          <version>3.0.0-M3</version>
+          <version>3.0.0</version>
         </plugin>
 
         <plugin>
