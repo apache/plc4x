@@ -127,7 +127,7 @@ uint16_t plc4c_s7_read_write_associated_value_type_length_in_bits(plc4c_s7_read_
   lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
 
   // Manual Field (valueLength)
-  lengthInBits += 2 * 8;
+  lengthInBits += 16;
 
   // Array field
   lengthInBits += 8 * plc4c_utils_list_size(_message->data);

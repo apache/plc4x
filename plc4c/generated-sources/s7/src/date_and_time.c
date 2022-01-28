@@ -136,25 +136,25 @@ uint16_t plc4c_s7_read_write_date_and_time_length_in_bits(plc4c_s7_read_write_da
   uint16_t lengthInBits = 0;
 
   // Manual Field (year)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (month)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (day)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (hour)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (minutes)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (seconds)
-  lengthInBits += 1 * 8;
+  lengthInBits += 8;
 
   // Manual Field (msec)
-  lengthInBits += 2 * 8;
+  lengthInBits += 12;
 
   // Simple field (dow)
   lengthInBits += 4;

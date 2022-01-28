@@ -670,13 +670,13 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#assign manualArrayField = field>
 
 <#if indentContent>    </#if>  // Manual Array Field (${manualArrayField.name})
-<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualArrayField, manualArrayField.lengthExpression, parserArguments)} * 8;
+<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualArrayField, manualArrayField.lengthExpression, parserArguments)};
                 <#break>
             <#case "manual">
                 <#assign manualField = field.asManualField().orElseThrow()>
 
 <#if indentContent>    </#if>  // Manual Field (${manualField.name})
-<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualField, manualField.lengthExpression, parserArguments)} * 8;
+<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualField, manualField.lengthExpression, parserArguments)};
                 <#break>
             <#case "optional">
                 <#assign optionalField = field.asOptionalField().orElseThrow()>
