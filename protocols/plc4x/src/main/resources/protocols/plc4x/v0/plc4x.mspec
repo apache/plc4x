@@ -19,6 +19,7 @@
 
 [discriminatedType Plc4xRequest byteOrder='BIG_ENDIAN'
     [const         uint 8           version 0x01                       ]
+    [implicit      uint 16          packetLength 'lengthInBytes'       ]
     [discriminator Plc4xRequestType requestType                        ]
     [typeSwitch requestType
         ['READ_REQUEST' Plc4xReadRequest
