@@ -191,7 +191,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         if(request.getFieldNames().size() == 1) {
             String fieldName = request.getFieldNames().iterator().next();
             PlcField field = request.getField(fieldName);
-            final ModbusPDU requestPdu = getWriteRequestPdu(field, ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName));
+            final ModbusPDU requestPdu = getWriteRequestPdu(field, writeRequest.getPlcValue(fieldName));
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
             if(transactionIdentifierGenerator.get() == 0xFFFF) {
@@ -207,7 +207,6 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                 .unwrap(ModbusTcpADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
-                    PlcValue plcValue = null;
                     PlcResponseCode responseCode;
 
                     // Check if the response was an error response.
@@ -215,6 +214,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
                         responseCode = getErrorCode(errorResponse);
                     } else {
+                        responseCode = PlcResponseCode.OK;
                         // TODO: Check the correct number of elements were written.
                         if (responsePdu instanceof ModbusPDUWriteSingleCoilResponse) {
                             ModbusPDUWriteSingleCoilResponse response = (ModbusPDUWriteSingleCoilResponse) responsePdu;
@@ -223,7 +223,6 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                                 responseCode = PlcResponseCode.REMOTE_ERROR;
                             }
                         }
-                        responseCode = PlcResponseCode.OK;
                     }
 
                     // Prepare the response.
@@ -262,7 +261,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             int group2Address = 0;
             int group1Quantity;
             int group2Quantity;
-            short group1FileNumber = (short) (Math.floor(extendedRegister.getAddress() / 10000) + 1);
+            short group1FileNumber = (short) (Math.floor((float) extendedRegister.getAddress() / 10000) + 1);
             short group2FileNumber;
             List<ModbusPDUReadFileRecordRequestItem> itemArray;
 
@@ -319,7 +318,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             int group2Quantity;
             byte[] plcValue1, plcValue2;
             short group1FileNumber = (short)
-                (Math.floor(extendedRegister.getAddress() / FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) + 1);
+                (Math.floor((float) extendedRegister.getAddress() / FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) + 1);
             short group2FileNumber;
             List<ModbusPDUWriteFileRecordRequestItem> itemArray;
             if ((group1Address + extendedRegister.getLengthWords()) <= FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) {
@@ -424,29 +423,24 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
         ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
         try {
-            WriteBufferByteBased buffer;
             if(plcValue instanceof PlcList) {
-                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                byte[] data = buffer.getData();
-                switch (((ModbusField) field).getDataType()) {
-                    case BOOL:
-                        //Reverse Bits in each byte as
-                        //they should ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
-                        byte[] bytes = new byte[data.length];
-                        for (int i = 0; i < data.length; i++) {
-                            bytes[i] = reverseBitsOfByte(data[i]);
-                        }
-                        return bytes;
-                    default:
-                        return data;
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBits(plcValue, fieldDataType, plcValue.getLength()));
+                DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                byte[] data = writeBuffer.getData();
+                if (((ModbusField) field).getDataType() == ModbusDataType.BOOL) {
+                    //Reverse Bits in each byte as
+                    //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
+                    byte[] bytes = new byte[data.length];
+                    for (int i = 0; i < data.length; i++) {
+                        bytes[i] = reverseBitsOfByte(data[i]);
+                    }
+                    return bytes;
                 }
+                return data;
             } else {
-                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                if (buffer != null) {
-                    return buffer.getData();
-                } else {
-                    throw new PlcRuntimeException("Unable to parse PlcValue :- " + ((ModbusField) field).getPlcDataType());
-                }
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBits(plcValue, fieldDataType, plcValue.getLength()));
+                DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                return writeBuffer.getData();
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
