@@ -602,8 +602,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_SUMAMO = 575,
         M_SVIT = 576,
         M_TECGET = 577,
-        M_ABB___RESERVED = 578,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 579,
+        M_XEROPOINT = 578,
+        M_ABB___RESERVED = 579,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 580,
     }
 
     public static class KnxManufacturerInfo
@@ -2209,14 +2210,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECGET: { /* '577' */
                     return 635;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '578' */
-                    return 43954;
+                case KnxManufacturer.M_XEROPOINT: { /* '578' */
+                    return 636;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '579' */
-                    return 43959;
+                case KnxManufacturer.M_ABB___RESERVED: { /* '579' */
+                    return 43954;
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return 97;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '580' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
                     return 98;
@@ -3959,14 +3963,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECGET: { /* '577' */
                     return "tecget";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '578' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_XEROPOINT: { /* '578' */
+                    return "Xeropoint";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '579' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_ABB___RESERVED: { /* '579' */
+                    return "ABB - reserved";
                 }
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return "Dätwyler";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '580' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
                     return "Electrak";
