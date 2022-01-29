@@ -171,7 +171,7 @@
 //       dynamically endianed and the last 8 bytes are set to Big Endian, we
 //       had to do this trick.
 [discriminatedType DceRpc_InterfaceUuid
-    [discriminator  uint 32 interfaceType                                 ]
+    [discriminator  uint 32 interfaceType                               ]
     [const          uint 16 data1      0x6C97                           ]
     [const          uint 16 data2      0x11D1                           ]
     // This part is described as a byte array, so the byte order is always big-endian
@@ -268,16 +268,45 @@
 
 // Page 90
 [discriminatedType PnDcp_Pdu
-    [discriminator PnDcp_FrameId     frameId                           ]
-    [discriminator PnDcp_ServiceId   serviceId                         ]
-    [simple        PnDcp_ServiceType serviceType                       ]
-    // 4.3.1.3.4 (Page 95)
-    [simple        uint 32           xid                               ]
-    // 4.3.1.3.5 (Page 95ff)
-    [simple        uint 16           responseDelayFactorOrPadding      ]
-    // 4.3.1.3.4 (Page 95)
-    [implicit      uint 16           dcpDataLength 'lengthInBytes - 12']
-    [typeSwitch frameId,serviceId,serviceType.response
+    [simple        uint 16           frameIdValue                      ]
+    [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
+    [typeSwitch frameId
+        ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
+//            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
+            [simple   uint 16                    cycleCounter             ]
+            // Data Status Start (4.7.2.1.3)
+            [simple   bit                        ignore                   ]
+            [reserved bit                        'false'                  ]
+            [simple   bit                        stationProblemIndicatorOk]
+            [simple   bit                        providerStateRun         ]
+            [reserved bit                        'false'                  ]
+            [simple   bit                        dataValid                ]
+            [simple   bit                        redundancy               ]
+            [simple   bit                        statePrimary             ]
+            // Data Status End
+            // "Transfer-Status" (Set to 0x00 for all RT-Classes except RT-CLASS-3,
+            // which PLC4X will never be able to support
+            [reserved uint 8                     '0x00'                   ] // transferStatus
+        ]
+        ['PTCP_DelayReqPDU' PcDcp_Pdu_DelayReq
+
+        ]
+        ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq
+            [const    uint 8      serviceId                    0x05                                ]
+            // ServiceType Start
+            [reserved uint 5      '0x00'                                                           ]
+            [const    bit         notSupported                 false                               ]
+            [reserved uint 1      '0x00'                                                           ]
+            [const    bit         response                     false                               ]
+            // ServiceType End
+            // 4.3.1.3.3 (Page 95)
+            [simple   uint 32     xid                                                              ]
+            // 4.3.1.3.5 (Page 95ff)
+            [simple   uint 16     responseDelay                                                    ]
+            // 4.3.1.3.4 (Page 95)
+            [implicit uint 16     dcpDataLength                'lengthInBytes - 12'                ]
+            [array    PnDcp_Block blocks                        length              'dcpDataLength']
+        ]
         ////////////////////////////////////////////////////////////////////////////
         // Multicast (Well theoretically)
         ////////////////////////////////////////////////////////////////////////////
@@ -285,17 +314,38 @@
         // 1) One containing only an AllSelectorBlock
         // 2) One containing optionally either NameOfStationBlock or AliasNameBlock and another optional IdentifyReqBlock
         // (I assume, that if in case 2 both optionally aren't used, this might not be valid and option 1 should be sent instead)
-        ['DCP_Identify_ReqPDU','IDENTIFY','false' PnDcp_Pdu_IdentifyReq(uint 16 dcpDataLength)
-            [array PnDcp_Block blocks length 'dcpDataLength'           ]
+        ['DCP_Identify_ResPDU' PnDcp_Pdu_IdentifyRes
+            [const    uint 8      serviceId                    0x05                                ]
+            // ServiceType Start
+            [reserved uint 5      '0x00'                                                           ]
+            [simple   bit         notSupported                                                     ]
+            [reserved uint 1      '0x00'                                                           ]
+            [const    bit         response                     true                                ]
+            // ServiceType End
+            // 4.3.1.3.3 (Page 95)
+            [simple   uint 32     xid                                                              ]
+            // 4.3.1.3.5 (Page 95ff)
+            [reserved uint 16     '0x0000'                                                         ]
+            // 4.3.1.3.4 (Page 95)
+            [implicit uint 16     dcpDataLength                'lengthInBytes - 12'                ]
+            [array    PnDcp_Block blocks                        length              'dcpDataLength']
         ]
+    ]
+]
 
-        // Response to a Identify request
-        ['DCP_Identify_ResPDU','IDENTIFY','true' PnDcp_Pdu_IdentifyRes(uint 16 dcpDataLength)
-            [array PnDcp_Block blocks length 'dcpDataLength'           ]
-        ]
+[discriminatedType PnDcp_Pdu_IdentifyRes_Payload
+    [discriminator PnDcp_ServiceId   serviceId                         ]
+    [simple        PnDcp_ServiceType serviceType                       ]
+    // 4.3.1.3.3 (Page 95)
+    [simple        uint 32           xid                               ]
+    // 4.3.1.3.5 (Page 95ff)
+    [simple        uint 16           responseDelayFactorOrPadding      ]
+    // 4.3.1.3.4 (Page 95)
+    [implicit      uint 16           dcpDataLength 'lengthInBytes - 12']
+    [typeSwitch serviceId,serviceType.response
 
         // Packet a Profinet station might emit once it is turned on
-        ['DCP_Hello_ReqPDU','HELLO','false' PnDcp_Pdu_HelloReq
+//        ['DCP_Hello_ReqPDU','HELLO','false' PnDcp_Pdu_HelloReq
 //            [simple NameOfStationBlockRes    nameOfStationBlockRes   ]
 //            [simple IPParameterBlockRes      iPParameterBlockRes     ]
 //            [simple DeviceIdBlockRes         deviceIdBlockRes        ]
@@ -303,34 +353,37 @@
 //            [simple DeviceOptionsBlockRes    deviceOptionsBlockRes   ]
 //            [simple DeviceRoleBlockRes       deviceRoleBlockRes      ]
 //            [simple DeviceInitiativeBlockRes deviceInitiativeBlockRes]
-        ]
+//        ]
 
         ////////////////////////////////////////////////////////////////////////////
         // Unicast
         ////////////////////////////////////////////////////////////////////////////
 
-        ['DCP_GetSet_PDU','GET','false' PnDcp_Pdu_GetReq
+//        ['DCP_GetSet_PDU','GET','false' PnDcp_Pdu_GetReq
 //            [simple GetReqBlock              getReqBlock             ]
-        ]
-        ['DCP_GetSet_PDU','GET','true' PnDcp_Pdu_GetRes
+//        ]
+//        ['DCP_GetSet_PDU','GET','true' PnDcp_Pdu_GetRes
 //            [simple GetResBlock              getResBlock             ]
 //            [simple GetNegResBlock           getNegResBlock          ]
-        ]
+//        ]
 
-        ['DCP_GetSet_PDU','SET','false' PnDcp_Pdu_SetReq
+//        ['DCP_GetSet_PDU','SET','false' PnDcp_Pdu_SetReq
 //            [simple StartTransactionBlock    startTransactionBlock   ]
 //            [simple BlockQualifier           blockQualifier          ]
 //            [simple SetResetReqBlock         setResetReqBlock        ]
 //            [simple SetReqBlock              setReqBlock             ]
 //            [simple StopTransactionBlock     stopTransactionBlock    ]
 //            [simple BlockQualifier           blockQualifier          ]
-        ]
-        ['DCP_GetSet_PDU','SET','true' PnDcp_Pdu_SetRes
+//        ]
+//        ['DCP_GetSet_PDU','SET','true' PnDcp_Pdu_SetRes
 //            [simple SetResBlock              setResBlock             ]
 //            [simple SetNegResBlock           setNegResBlock          ]
-        ]
+//        ]
     ]
 ]
+
+//[discriminatedType PnIo_CyclicServiceDataUnit
+//]
 
 [discriminatedType PnDcp_Block
     [discriminator PnDcp_BlockOptions option                   ]
@@ -354,9 +407,9 @@
             [reserved uint 5 '0x00'                                                   ]
             [simple   bit    setViaDhcp                                               ]
             [simple   bit    setManually                                              ]
-            [array    uint 8 ipAddress       count '4'                                ]
-            [array    uint 8 subnetMask      count '4'                                ]
-            [array    uint 8 standardGateway count '4'                                ]
+            [array    byte   ipAddress       count '4'                                ]
+            [array    byte   subnetMask      count '4'                                ]
+            [array    byte   standardGateway count '4'                                ]
         ]
         ['IP_OPTION','3' PnDcp_Block_FullIpSuite
             // TODO: Implement this ...
@@ -368,13 +421,11 @@
 
         ['DEVICE_PROPERTIES_OPTION','1' PnDcp_Block_DevicePropertiesDeviceVendor(uint 16 blockLength)
             [reserved uint 16     '0x0000'                                            ]
-            // TODO: Figure out how to do this correctly.
             [array    byte        deviceVendorValue count 'blockLength-2'             ]
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", deviceVendorValue) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 blockLength)
             [reserved uint 16     '0x0000'                                            ]
-            // TODO: Figure out how to do this correctly.
             [array    byte        nameOfStation count 'blockLength-2'                 ]
             [padding  uint 8      pad '0x00' 'STATIC_CALL("arrayLength", nameOfStation) % 2']
         ]
@@ -498,25 +549,36 @@
 ]
 
 // 4.3.1.3.2 (Page 94ff)
+// 4.3.1.3.2 (Page 94ff)
+// The spec lists meanings for request and response separately, but
+// they are actually mergeable, which we did in this construct.
 [type PnDcp_ServiceType
-    [reserved uint 5 '0x00'   ]
-    [simple   bit notSupported]
-    [reserved uint 1 '0x00'   ]
-    [simple   bit response    ]
+    [reserved uint 5 '0x00'      ]
+    [simple   bit    notSupported]
+    [reserved uint 1 '0x00'      ]
+    [simple   bit    response    ]
 ]
 
 // Page 86ff: Coding of the field FrameID
 [enum uint 16 PnDcp_FrameId
+    ['0x0000' RESERVED                       ]
     // Range 1
     ['0x0020' PTCP_RTSyncPDUWithFollowUp     ]
     // Range 2
     ['0x0080' PTCP_RTSyncPDU                 ]
     // Range 3
-    // 0x100-0x0FFF RT_CLASS_3
+    // 0x0100-0x0FFF RT_CLASS_3
+    ['0x0100' RT_CLASS_3                     ]
+    // Range 4
+    // (Not used)
+    // Range 5
+    // (Not used)
     // Range 6
     // 0x8000-BFFF RT_CLASS_1
+    ['0x8000' RT_CLASS_1                     ]
     // Range 7
     // 0XC000-FBFF RT_CLASS_UDP
+    ['0xC000' RT_CLASS_UDP                   ]
     // Range 8
     ['0xFC01' Alarm_High                     ]
     ['0xFE01' Alarm_Low                      ]
@@ -533,6 +595,7 @@
     ['0xFF43' PTCP_DelayResPDUWithoutFollowUp]
     // Range 12
     // 0xFF80 - 0xFF8F FragmentationFrameId
+    ['0xFF80' FragmentationFrameId           ]
 ]
 
 // Page 94
