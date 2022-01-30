@@ -43,9 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * PlcDriverManager cached = new CachedDriverManager(url, () -&gt; manager.getConnection(url));
  * </code>
  * Now you can use "cached" everywhere you need the corresponding connection.
- *
- * @author julian
- * Created by julian on 24.02.20
  */
 public class CachedDriverManager extends PlcDriverManager implements CachedDriverManagerMBean {
 

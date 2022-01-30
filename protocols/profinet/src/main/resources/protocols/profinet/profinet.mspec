@@ -273,6 +273,7 @@
     [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
     [typeSwitch frameId
         ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
+            // TODO: This type needs to be implemented ...
 //            [simple   PnIo_CyclicServiceDataUnit dataUnit                 ]
             [simple   uint 16                    cycleCounter             ]
             // Data Status Start (4.7.2.1.3)

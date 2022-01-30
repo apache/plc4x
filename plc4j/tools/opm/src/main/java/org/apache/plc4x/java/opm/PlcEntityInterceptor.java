@@ -56,8 +56,6 @@ import java.util.concurrent.TimeoutException;
  * <p>
  * For those not too familiar with the JVM's dispatch on can roughly imagine the intercept method being a "regular"
  * method on the "proxied" entity and all parameters of the intercept method could then be access to local fields.
- *
- * @author julian
  */
 @SuppressWarnings({"common-java:DuplicatedBlocks", "Duplicates"})
 public class PlcEntityInterceptor {

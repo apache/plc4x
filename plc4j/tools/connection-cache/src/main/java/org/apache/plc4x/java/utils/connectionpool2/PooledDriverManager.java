@@ -33,9 +33,6 @@ import java.util.function.Function;
  * Pool that sits on top of the {@link CachedDriverManager}.
  * <p>
  * This class is thread safe!
- *
- * @author julian
- * Created by julian on 24.02.20
  */
 public class PooledDriverManager extends PlcDriverManager implements PooledDriverManagerMBean {
 

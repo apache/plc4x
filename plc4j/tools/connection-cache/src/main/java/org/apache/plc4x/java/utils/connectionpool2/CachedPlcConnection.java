@@ -40,9 +40,6 @@ import java.util.function.BiFunction;
 
 /**
  * Wrapper around a PlcConnection which interacts with the {@link CachedDriverManager}.
- *
- * @author julian
- * Created by julian on 24.02.20
  */
 public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata {
 

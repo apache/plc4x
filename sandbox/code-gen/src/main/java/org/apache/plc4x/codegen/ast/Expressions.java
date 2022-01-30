@@ -96,8 +96,6 @@ import java.util.List;
  * {@link org.apache.plc4x.codegen.util.PojoFactory} or in the {@link org.apache.plc4x.codegen.util.EnumFactory}
  * which are "layers" on top of this AST whcih make it easier to create POJOs or ENUM-like constructs.
  * They define the class and all fields / methods / getters / setters and constructor and such stuff.
- *
- * @author julian
  */
 public class Expressions {
 

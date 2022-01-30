@@ -47,10 +47,6 @@ import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author cgarcia
- */
 public class S7ProtocolEventLogic implements PlcSubscriber {
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(S7ProtocolEventLogic.class);
     

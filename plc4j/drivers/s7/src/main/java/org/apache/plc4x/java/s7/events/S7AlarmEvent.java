@@ -46,10 +46,6 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSQ;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify8;
 
-/**
- *
- * @author cgarcia
- */
 public class S7AlarmEvent implements S7Event {
 
     

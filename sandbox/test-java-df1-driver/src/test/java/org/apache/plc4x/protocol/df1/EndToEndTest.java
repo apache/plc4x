@@ -27,12 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-07
- */
 public class EndToEndTest {
 
     @Test

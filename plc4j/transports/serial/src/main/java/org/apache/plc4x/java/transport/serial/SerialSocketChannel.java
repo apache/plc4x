@@ -31,12 +31,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
 
-/**
- * TODO write comment
- *
- * @author julian
- * Created by julian on 2019-08-10
- */
 class SerialSocketChannel extends SocketChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialSocketChannel.class);

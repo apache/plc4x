@@ -36,16 +36,13 @@ import static org.mockito.Mockito.when;
 
 /**
  * Multi Threading Test
- *
- * @author julian
- * Created by julian on 06.04.20
  */
 class CachedDriverManagerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CachedDriverManagerIT.class);
 
     @Test
-    void connectWithMultpleThreads() throws InterruptedException, PlcException {
+    void connectWithMultipleThreads() throws InterruptedException, PlcException {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         PlcConnectionFactory mock = Mockito.mock(PlcConnectionFactory.class);
