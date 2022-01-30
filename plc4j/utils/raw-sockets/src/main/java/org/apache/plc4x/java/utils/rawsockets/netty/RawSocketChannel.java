@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
-import java.util.Objects;
 
 /**
  * Channel based on a Pcap4J raw-socket, allowing to actively communicate based on ethernet frames.
@@ -326,7 +325,9 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
         @Override
         public void write(byte[] packetBytes, int offset, int len) throws IOException {
-            Objects.checkFromIndexSize(offset, len, packetBytes.length);
+            if((offset < 0) || (len < 0) || (offset + len > packetBytes.length)) {
+                throw new IndexOutOfBoundsException();
+            }
             try {
                 // Create a new EthernetPacket with the raw content of the packet bytes.
                 Packet rawPacket = EthernetPacket.newPacket(packetBytes, offset, len);

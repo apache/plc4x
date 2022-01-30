@@ -151,20 +151,20 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                 if (blocks.containsKey(DEVICE_ROLE)) {
                                                     role = "";
                                                     PnDcp_Block_DevicePropertiesDeviceRole block = (PnDcp_Block_DevicePropertiesDeviceRole) blocks.get(DEVICE_ROLE);
-                                                    if(block.getPnioSupervisor()) {
+                                                    if (block.getPnioSupervisor()) {
                                                         role += ",SUPERVISOR";
                                                     }
-                                                    if(block.getPnioMultidevive()) {
+                                                    if (block.getPnioMultidevive()) {
                                                         role += ",MULTIDEVICE";
                                                     }
-                                                    if(block.getPnioController()) {
+                                                    if (block.getPnioController()) {
                                                         role += ",CONTROLLER";
                                                     }
-                                                    if(block.getPnioDevice()) {
+                                                    if (block.getPnioDevice()) {
                                                         role += ",DEVICE";
                                                     }
                                                     // Cut off the first comma
-                                                    if(role.length() > 0) {
+                                                    if (role.length() > 0) {
                                                         role = role.substring(1);
                                                     } else {
                                                         role = "unknown";
@@ -194,17 +194,16 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                                     deviceId = String.format("%04X", block.getDeviceId());
                                                 }
 
-                                                Map<String, String> options = Map.of(
-                                                    "remoteIpAddress", remoteIpAddress,
-                                                    "remoteSubnetMask", remoteSubnetMask,
-                                                    "remoteMacAddress", srcAddr.toString(),
-                                                    "localMacAddress", dstAddr.toString(),
-                                                    "deviceTypeName", deviceTypeName,
-                                                    "deviceName", deviceName,
-                                                    "vendorId", vendorId,
-                                                    "deviceId", deviceId,
-                                                    "role", role
-                                                    );
+                                                Map<String, String> options = new HashMap<>();
+                                                options.put("remoteIpAddress", remoteIpAddress);
+                                                options.put("remoteSubnetMask", remoteSubnetMask);
+                                                options.put("remoteMacAddress", srcAddr.toString());
+                                                options.put("localMacAddress", dstAddr.toString());
+                                                options.put("deviceTypeName", deviceTypeName);
+                                                options.put("deviceName", deviceName);
+                                                options.put("vendorId", vendorId);
+                                                options.put("deviceId", deviceId);
+                                                options.put("role", role);
                                                 String name = deviceTypeName + " - " + deviceName;
                                                 PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                                                     ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
