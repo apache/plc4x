@@ -312,7 +312,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     @Override
     public int getLengthInBytes() {
-        return getLengthInBits() / 8;
+        return (int) Math.ceil((float) getLengthInBits() / 8.0);
     }
 
     @Override
