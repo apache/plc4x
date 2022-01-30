@@ -156,6 +156,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         if (!this.url.equals(url)) {
             throw new IllegalArgumentException("This Cached Driver Manager only supports the Connection " + url);
         }
+        CompletableFuture<PlcConnection> future;
         synchronized (this) {
             logger.trace("current queue size before check {}", queue.size());
             if (queue.isEmpty() && isConnectionAvailable()) {
@@ -169,9 +170,8 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                 } catch (Exception ignore) {
                 }
             }
-        }
-        CompletableFuture<PlcConnection> future = new CompletableFuture<>();
-        synchronized (this) {
+
+            future = new CompletableFuture<>();
             logger.trace("current queue size before add {}", queue.size());
             queue.add(future);
         }
