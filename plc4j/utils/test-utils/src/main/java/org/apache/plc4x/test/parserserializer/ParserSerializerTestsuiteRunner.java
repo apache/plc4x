@@ -153,6 +153,18 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             LOGGER.trace("Parsing message");
             Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
             LOGGER.trace("Validating and migrating");
+            // In this case no reference xml has been provided
+            // (This is usually during development)
+            if(testcase.getXml().elements().size() == 0) {
+                WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
+                parsedOutput.serialize(writeBufferXmlBased);
+                String xmlString = writeBufferXmlBased.getXmlString();
+                throw new ParserSerializerTestsuiteException("Missing reference xml element. Parsed: \n" + xmlString);
+            }
+            // If more than one root element is provided, the testcase is corrupt.
+            else if (testcase.getXml().elements().size() > 1) {
+                throw new ParserSerializerTestsuiteException("Too many element roots in testcase");
+            }
             boolean migrated = MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
                 testcase.getName(),
                 messageInput,
