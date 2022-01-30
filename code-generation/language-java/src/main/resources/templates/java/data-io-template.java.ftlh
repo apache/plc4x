@@ -428,8 +428,79 @@ public class ${type.name} {
     }
 </#if>
 
+    public static int getLengthInBytes(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) {
+        return (int) Math.ceil((float) getLengthInBits(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>) / 8.0);
+    }
+
     public static int getLengthInBits(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) {
-        return 0;
+        int sizeInBits = 0;
+        <#assign defaultCaseOutput=false>
+        <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
+        <#list dataIoTypeDefinition.switchField.cases as case>
+        <@compress single_line=true>
+        <#if case.discriminatorValueTerms?has_content>
+        if(
+            <#list case.discriminatorValueTerms as discriminatorValueTerm>
+            <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+            <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
+                EvaluationHelper.equals(
+                    ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorExpression, parserArguments)},
+                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                    <#else>
+                    ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                    </#if>
+                )
+            <#sep> && </#sep>
+            </#list>
+        )
+        <#else>
+            <#assign defaultCaseOutput=true>
+        </#if>
+        </@compress> { // ${case.name}
+            <#list case.fields as field>
+            <#switch field.typeName>
+            <#case "array">
+                <#assign arrayField=field.asArrayField().orElseThrow()>
+                PlcList values = (PlcList) _value;
+                <#if case.name == "Struct">
+                // TODO: Finish this!
+                <#elseif arrayField.type.isComplexTypeReference()>
+                // TODO: Finish this!
+                <#else>
+                sizeInBits += values.getList().size() * ${arrayField.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+                </#if>
+                <#break>
+            <#case "const">
+                <#assign constField=field.asConstField().orElseThrow()>
+                // Const Field (${constField.name})
+                <#-- const fields are only simple type -->
+                sizeInBits += ${constField.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+                <#break>
+            <#case "enum">
+                <#assign enumField=field.asEnumField().orElseThrow()>
+                // Enum field (${enumField.name})
+                sizeInBits += ${helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName).sizeInBits};
+                <#break>
+            <#case "manual">
+                <#assign manualField=field.asManualField().orElseThrow()>
+                // Manual Field (${manualField.name})
+                sizeInBits += ${helper.toSerializationExpression(manualField, helper.intTypeReference, manualField.lengthExpression, type.parserArguments.orElse(null))};
+                <#break>
+            <#case "reserved">
+                <#assign reservedField=field.asReservedField().orElseThrow()>
+                // Reserved Field
+                sizeInBits += ${reservedField.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+                <#break>
+            <#case "simple">
+                <#assign simpleField=field.asSimpleField().orElseThrow()>
+                // Simple Field (${simpleField.name})
+                sizeInBits += ${simpleField.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+                <#break>
+            </#switch>
+            </#list>
+        }<#sep> else </#sep></#list>
+        return sizeInBits;
     }
 
 }

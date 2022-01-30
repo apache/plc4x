@@ -121,10 +121,11 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     }
 
     private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws SerializationException {
-        WriteBufferByteBased data = DataItem.staticSerialize(value, field.getDataType());
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, field.getDataType()));
+        DataItem.staticSerialize(writeBuffer, value, field.getDataType());
         try {
             buffer.pushContext("write-" + field);
-            buffer.writeByteArray(data.getData());
+            buffer.writeByteArray(writeBuffer.getData());
         } finally {
             buffer.popContext("write-" + field);
         }

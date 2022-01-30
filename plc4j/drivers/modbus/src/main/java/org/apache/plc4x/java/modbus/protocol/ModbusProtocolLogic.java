@@ -424,7 +424,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
         try {
             if(plcValue instanceof PlcList) {
-                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBits(plcValue, fieldDataType, plcValue.getLength()));
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, fieldDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 byte[] data = writeBuffer.getData();
                 if (((ModbusField) field).getDataType() == ModbusDataType.BOOL) {
@@ -438,7 +438,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                 }
                 return data;
             } else {
-                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBits(plcValue, fieldDataType, plcValue.getLength()));
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, fieldDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 return writeBuffer.getData();
             }

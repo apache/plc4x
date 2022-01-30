@@ -22,12 +22,12 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
 import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
@@ -41,7 +41,9 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItem.staticSerialize(value, type,  null, ByteOrder.LITTLE_ENDIAN).getData();
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null));
+            DataItem.staticSerialize(writeBuffer, value, type, null, ByteOrder.LITTLE_ENDIAN);
+            data = writeBuffer.getData();
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }
