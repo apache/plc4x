@@ -28,7 +28,33 @@
     <raw>0180c200000e883f990006e08892ff4000000000000000000000000023ad0000000000000c06883f990006e00000eeee000000000000000000000000</raw>
     <root-type>Ethernet_Frame</root-type>
     <xml>
-org.apache.plc4x.java.spi.generation.ParseException: Unsupported case for discriminated type</xml>
+      <Ethernet_Frame>
+        <destination>
+          <MacAddress>
+            <address dataType="byte" bitLength="48">0x0180c200000e</address>
+          </MacAddress>
+        </destination>
+        <source>
+          <MacAddress>
+            <address dataType="byte" bitLength="48">0x883f990006e0</address>
+          </MacAddress>
+        </source>
+        <payload>
+          <Ethernet_FramePayload>
+            <packetType dataType="uint" bitLength="16">34962</packetType>
+            <Ethernet_FramePayload_PnDcp>
+              <pdu>
+                <PnDcp_Pdu>
+                  <frameIdValue dataType="uint" bitLength="16">65344</frameIdValue>
+                  <PcDcp_Pdu_DelayReq>
+                  </PcDcp_Pdu_DelayReq>
+                </PnDcp_Pdu>
+              </pdu>
+            </Ethernet_FramePayload_PnDcp>
+          </Ethernet_FramePayload>
+        </payload>
+      </Ethernet_Frame>
+    </xml>
   </testcase>
 
   <testcase>

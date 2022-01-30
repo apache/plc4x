@@ -159,10 +159,11 @@
     [const  uint 16 data2      0x6C97                           ]
     [const  uint 16 data3      0x11D1                           ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [const  uint 16 data4      0x8271       byteOrder='BIG_ENDIAN']
-    [simple uint 16 nodeNumber              byteOrder='BIG_ENDIAN']
-    [simple uint 16 deviceId                byteOrder='BIG_ENDIAN']
-    [simple uint 16 vendorId                byteOrder='BIG_ENDIAN']
+    [const  uint 16 data4      0x8271     byteOrder='BIG_ENDIAN']
+    [simple uint 4  interfaceNumber       byteOrder='BIG_ENDIAN']
+    [simple uint 12 nodeNumber            byteOrder='BIG_ENDIAN']
+    [simple uint 16 deviceId              byteOrder='BIG_ENDIAN']
+    [simple uint 16 vendorId              byteOrder='BIG_ENDIAN']
 ]
 
 // RPCInterfaceUUID 4.10.3.2.9
@@ -289,7 +290,22 @@
             [reserved uint 8                     '0x00'                   ] // transferStatus
         ]
         ['PTCP_DelayReqPDU' PcDcp_Pdu_DelayReq
-
+            // Header Start
+            [reserved uint 32 '0x00000000']
+            [reserved uint 32 '0x00000000']
+            [reserved uint 32 '0x00000000']
+            [simple   uint 16 sequenceId  ]
+            [reserved uint 16 '0x0000'    ]
+            // Header End
+            [simple   uint 32 delayInNs   ]
+            // Delay Parameter Start
+            // TODO: This seems to usually be an array of parameters terminated by an End-Parameter which is indicated by type and length being 0
+            [const    uint 7     parameterType   6]
+            [const    uint 9     parameterLength 6]
+            [simple   MacAddress portMacAddress   ]
+            [const    uint 7     endType         0]
+            [const    uint 9     endLength       0]
+            // Delay Parameter End
         ]
         ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq
             [const    uint 8      serviceId                    0x05                                ]
