@@ -18,14 +18,21 @@
  */
 package org.apache.plc4x.java.plc4x;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.field.Plc4xFieldHandler;
+import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xRequest;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
-public class Plc4xDriver extends GeneratedDriverBase<Plc4xRequest> {
+import java.util.function.ToIntFunction;
+
+public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
 
     @Override
     public String getProtocolCode() {
@@ -39,12 +46,12 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xRequest> {
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return null;
+        return Plc4xConfiguration.class;
     }
 
     @Override
     protected PlcFieldHandler getFieldHandler() {
-        return null;
+        return new Plc4xFieldHandler();
     }
 
     @Override
@@ -54,12 +61,27 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xRequest> {
 
     @Override
     protected String getDefaultTransport() {
-        return "tls";
+        // TODO: This should be TLS (which we currently don't have yet).
+        return "tcp";
     }
 
     @Override
-    protected ProtocolStackConfigurer<Plc4xRequest> getStackConfigurer() {
-        return null;
+    protected ProtocolStackConfigurer<Plc4xMessage> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(Plc4xMessage.class, Plc4xMessage::staticParse)
+            .withProtocol(Plc4xProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 3) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 1) + 2;
+            }
+            return -1;
+        }
     }
 
 }

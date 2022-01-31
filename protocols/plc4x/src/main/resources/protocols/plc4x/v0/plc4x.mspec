@@ -17,60 +17,59 @@
  * under the License.
  */
 
-[discriminatedType Plc4xRequest byteOrder='BIG_ENDIAN'
-    [const         uint 8           version 0x01                       ]
-    [implicit      uint 16          packetLength 'lengthInBytes'       ]
-    [discriminator Plc4xRequestType requestType                        ]
+[type Plc4xConstants
+    [const          uint 16     plc4xTcpDefaultPort 59837] // Hex of CAFE
+]
+
+[discriminatedType Plc4xMessage byteOrder='BIG_ENDIAN'
+    [const         uint 8                            version 0x01                                   ]
+    [implicit      uint 16                           packetLength        'lengthInBytes'            ]
+    [implicit      uint 8                            connectionStringLen 'STR_LEN(connectionString)']
+    [simple        vstring 'connectionStringLen * 8' connectionString                               ]
+    [simple        uint 16                           requestId                                      ]
+    [discriminator Plc4xRequestType                  requestType                                    ]
     [typeSwitch requestType
         ['READ_REQUEST' Plc4xReadRequest
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array  Plc4xFieldRequest       fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array    Plc4xFieldRequest       fields    count 'numFields']
         ]
         ['READ_RESPONSE' Plc4xReadResponse
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array  Plc4xFieldValueResponse fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array    Plc4xFieldValueResponse fields    count 'numFields']
         ]
         ['WRITE_REQUEST' Plc4xWriteRequest
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array  Plc4xFieldValueRequest  fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array    Plc4xFieldValueRequest  fields    count 'numFields']
         ]
         ['WRITE_RESPONSE' Plc4xWriteResponse
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array  Plc4xFieldResponse      fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array    Plc4xFieldResponse      fields    count 'numFields']
         ]
         // TODO: Implement this later on.
         /*['SUBSCRIPTION_REQUEST' Plc4xSubscriptionRequest
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array                          fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array                            fields    count 'numFields']
         ]
         ['SUBSCRIPTION_RESPONSE' Plc4xSubscriptionResponse
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array                          fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array                            fields    count 'numFields']
         ]
         ['UNSUBSCRIPTION_REQUEST' Plc4xUnsubscriptionRequest
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array                          fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array                            fields    count 'numFields']
         ]
         ['UNSUBSCRIPTION_RESPONSE' Plc4xUnsubscriptionResponse
-            [simple uint 16                 requestId                  ]
-            [simple uint 8                  numFields                  ]
-            [array                          fields    count 'numFields']
+            [implicit uint 8                  numFields 'COUNT(fields)'  ]
+            [array                            fields    count 'numFields']
         ]*/
     ]
 ]
 
 [type Plc4xField
-    [simple uint 8                  nameLen      ]
-    [simple vstring 'nameLen'       name         ]
-    [simple uint 8                  fieldQueryLen]
-    [simple vstring 'fieldQueryLen' fieldQuery   ]
+    [implicit uint 8                      nameLen       'STR_LEN(name)'      ]
+    [simple   vstring 'nameLen * 8'       name                               ]
+    [implicit uint 8                      fieldQueryLen 'STR_LEN(fieldQuery)']
+    [simple   vstring 'fieldQueryLen * 8' fieldQuery                         ]
 ]
 
 [type Plc4xFieldRequest
