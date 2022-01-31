@@ -583,25 +583,36 @@
       <!-- *****************************************************************************
       **********************************************************************************
       **                             Transitive dependencies                          **
+      **                                                                              **
+      ** These updates are reported by the dependency-checker as requiring management **
+      ** When bumping versions of the above artifacts ideally comment out all         **
+      ** artifacts in below section and manage them as suggested by the dependency    **
+      ** plugin.                                                                      **
       **********************************************************************************
       ****************************************************************************** -->
 
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.jupiter.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-resolver</artifactId>
-        <version>${netty.version}</version>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
       </dependency>
 
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>jakarta.activation</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver</artifactId>
+        <version>${netty.version}</version>
       </dependency>
 
       <dependency>
@@ -617,9 +628,15 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons-logging.version}</version>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>${jna.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apiguardian</groupId>
+        <artifactId>apiguardian-api</artifactId>
+        <version>${apiguardian.version}</version>
       </dependency>
 
       <dependency>
@@ -629,24 +646,27 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apiguardian</groupId>
-        <artifactId>apiguardian-api</artifactId>
-        <version>${apiguardian.version}</version>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>20.1.0</version>
       </dependency>
+
       <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>${jna.version}</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.jupiter.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-engine</artifactId>
         <version>${junit.platform.version}</version>
       </dependency>
+
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>jakarta.activation</artifactId>
-        <version>2.0.1</version>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>6.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -882,7 +902,7 @@
             <exclude>org.apache.plc4x:plc4j-driver-ads</exclude>
             <!--
               CVE-2020-13955 affects Apache Calcite till version 1.26 (excluding)
-              We're using at least 1.26, so this is a false positive.
+              We're using at least 1.28, so this is a false positive.
             -->
             <exclude>org.apache.calcite.avatica:avatica-core</exclude>
           </excludes>
@@ -935,7 +955,12 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.3</version>
+            <version>1.5.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-dependency-tree</artifactId>
+            <version>3.1.0</version>
           </dependency>
         </dependencies>
       </plugin>
