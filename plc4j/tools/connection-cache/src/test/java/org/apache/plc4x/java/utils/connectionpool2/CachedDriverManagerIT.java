@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +50,7 @@ class CachedDriverManagerIT {
         MockConnection plcMockConnection = mock(MockConnection.class);
         when(mock.create()).thenReturn(plcMockConnection);
 
-        CachedDriverManager driverManager = new CachedDriverManager("", mock, 100_000);
+        CachedDriverManager driverManager = new CachedDriverManager("", mock, 10_000);
 
         AtomicInteger errorCounter = new AtomicInteger(0);
         AtomicInteger successCounter = new AtomicInteger(0);
@@ -68,7 +69,10 @@ class CachedDriverManagerIT {
 
         executorService.shutdown();
 
-        executorService.awaitTermination(50, TimeUnit.SECONDS);
+        boolean forced = executorService.awaitTermination(50, TimeUnit.SECONDS);
+
+        // If this is false, a thread was still hanging => something failed
+        assertTrue(forced);
 
         assertEquals(100, successCounter.get());
         assertEquals(0, errorCounter.get());
