@@ -21,33 +21,75 @@ package org.apache.plc4x.java.plc4x.protocol;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.context.Plc4xDriverContext;
 import org.apache.plc4x.java.plc4x.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implements HasConfiguration<Plc4xConfiguration> {
 
+    private final Logger logger = LoggerFactory.getLogger(Plc4xProtocolLogic.class);
+
+    private final AtomicInteger txIdGenerator = new AtomicInteger(1);
     private String remoteConnectionString;
     private Duration requestTimeout;
     private RequestTransactionManager tm;
-    private final AtomicInteger txIdGenerator = new AtomicInteger(1);
+    private Plc4xDriverContext plc4xDriverContext;
 
     @Override
     public void setConfiguration(Plc4xConfiguration configuration) {
         this.remoteConnectionString = configuration.getRemoteConnectionString();
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public void setDriverContext(DriverContext driverContext) {
+        super.setDriverContext(driverContext);
+        plc4xDriverContext = (Plc4xDriverContext) driverContext;
+    }
+
+    @Override
+    public void onConnect(ConversationContext<Plc4xMessage> context) {
+        final int txId = txIdGenerator.getAndIncrement();
+
+        Plc4xConnectRequest connectRequest = new Plc4xConnectRequest(txId, remoteConnectionString);
+
+        context.sendRequest(connectRequest)
+            .onTimeout(e -> {
+                logger.warn("Timeout during Connection establishing, closing channel...");
+                context.getChannel().close();
+            })
+            .expectResponse(Plc4xMessage.class, requestTimeout)
+            .onTimeout(e -> {
+                logger.warn("Timeout during Connection establishing, closing channel...");
+                context.getChannel().close();
+            })
+            .check(p -> p.getRequestId() == txId)
+            .unwrap(plc4xMessage -> (Plc4xConnectResponse) plc4xMessage)
+            .handle(connectResponse -> {
+                // Save the connection id.
+                plc4xDriverContext.setConnectionId(connectResponse.getConnectionId());
+                logger.debug("Got Plc4x Connection Response");
+                context.fireConnected();
+            });
+    }
+
+    @Override
+    public void onDisconnect(ConversationContext<Plc4xMessage> context) {
     }
 
     @Override
@@ -61,7 +103,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             fields.add(fieldRequest);
         }
         final int txId = txIdGenerator.getAndIncrement();
-        Plc4xReadRequest read = new Plc4xReadRequest(remoteConnectionString, txId, fields);
+        Plc4xReadRequest read = new Plc4xReadRequest(plc4xDriverContext.getConnectionId(), txId, fields);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         context.sendRequest(read)
@@ -92,7 +134,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             fields.add(fieldRequest);
         }
         final int txId = txIdGenerator.getAndIncrement();
-        Plc4xWriteRequest write = new Plc4xWriteRequest(remoteConnectionString, txId, fields);
+        Plc4xWriteRequest write = new Plc4xWriteRequest(plc4xDriverContext.getConnectionId(), txId, fields);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         context.sendRequest(write)

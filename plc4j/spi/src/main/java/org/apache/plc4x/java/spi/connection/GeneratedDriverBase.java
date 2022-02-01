@@ -92,7 +92,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
-        // Split up the connection string into it's individual segments.
+        // Split up the connection string into its individual segments.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
             throw new PlcConnectionException(

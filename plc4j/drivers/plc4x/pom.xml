@@ -136,6 +136,15 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -150,7 +159,6 @@
       <version>1.5.0</version>
       <scope>test</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
