@@ -21,12 +21,10 @@ package org.apache.plc4x.java.plc4x.protocol;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
-import org.apache.plc4x.java.plc4x.context.Plc4xDriverContext;
 import org.apache.plc4x.java.plc4x.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -47,19 +45,14 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     private String remoteConnectionString;
     private Duration requestTimeout;
     private RequestTransactionManager tm;
-    private Plc4xDriverContext plc4xDriverContext;
+    private int connectionId;
 
     @Override
     public void setConfiguration(Plc4xConfiguration configuration) {
+        this.tm = new RequestTransactionManager(1);
         this.remoteConnectionString = configuration.getRemoteConnectionString();
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
-        this.tm = new RequestTransactionManager(1);
-    }
-
-    @Override
-    public void setDriverContext(DriverContext driverContext) {
-        super.setDriverContext(driverContext);
-        plc4xDriverContext = (Plc4xDriverContext) driverContext;
+        this.connectionId = 0;
     }
 
     @Override
@@ -74,15 +67,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
                 context.getChannel().close();
             })
             .expectResponse(Plc4xMessage.class, requestTimeout)
-            .onTimeout(e -> {
-                logger.warn("Timeout during Connection establishing, closing channel...");
-                context.getChannel().close();
-            })
             .check(p -> p.getRequestId() == txId)
             .unwrap(plc4xMessage -> (Plc4xConnectResponse) plc4xMessage)
             .handle(connectResponse -> {
                 // Save the connection id.
-                plc4xDriverContext.setConnectionId(connectResponse.getConnectionId());
+                connectionId = connectResponse.getConnectionId();
                 logger.debug("Got Plc4x Connection Response");
                 context.fireConnected();
             });
@@ -103,14 +92,15 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             fields.add(fieldRequest);
         }
         final int txId = txIdGenerator.getAndIncrement();
-        Plc4xReadRequest read = new Plc4xReadRequest(plc4xDriverContext.getConnectionId(), txId, fields);
+        Plc4xReadRequest read = new Plc4xReadRequest(txId, connectionId, fields);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         context.sendRequest(read)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
-            .check(p -> p.getRequestId() == txId)
+            .check(plc4xMessage -> plc4xMessage.getRequestId() == txId)
             .unwrap(plc4xMessage -> (Plc4xReadResponse) plc4xMessage)
+            .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xReadResponse -> {
                 // TODO: Do something with this response.
                 future.complete(new DefaultPlcReadResponse(readRequest, null));//Map.of("test", null)
@@ -134,7 +124,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             fields.add(fieldRequest);
         }
         final int txId = txIdGenerator.getAndIncrement();
-        Plc4xWriteRequest write = new Plc4xWriteRequest(plc4xDriverContext.getConnectionId(), txId, fields);
+        Plc4xWriteRequest write = new Plc4xWriteRequest(txId, connectionId, fields);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         context.sendRequest(write)
@@ -142,6 +132,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .onTimeout(future::completeExceptionally)
             .check(p -> p.getRequestId() == txId)
             .unwrap(plc4xMessage -> (Plc4xWriteResponse) plc4xMessage)
+            .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xWriteResponse -> {
                 // TODO: Do something with this response.
                 future.complete(new DefaultPlcWriteResponse(writeRequest, null)); // Map.of("test", PlcResponseCode.OK)
@@ -164,6 +155,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     @Override
     public void close(ConversationContext<Plc4xMessage> context) {
         // Nothing to do here ...
+    }
+
+    @Override
+    protected void decode(ConversationContext<Plc4xMessage> context, Plc4xMessage msg) throws Exception {
+        super.decode(context, msg);
     }
 
 }

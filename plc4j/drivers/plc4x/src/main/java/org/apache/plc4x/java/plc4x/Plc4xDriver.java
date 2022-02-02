@@ -97,7 +97,7 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 3) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 1) + 2;
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 1);
             }
             return -1;
         }
