@@ -115,32 +115,71 @@
 [dataIo Plc4xValue(Plc4xValueType valueType)
     [typeSwitch valueType
         // Bit Strings
-        ['BOOL'          BOOL         ]
-        ['BYTE'          BYTE         ]
-        ['WORD'          WORD         ]
-        ['DWORD'         DWORD        ]
+        ['BOOL'          BOOL
+            [reserved uint 7                     '0x00'                          ]
+            [simple   bit                        value                           ]
+        ]
+        ['BYTE'          BitString
+            [simple   uint 8                     value                           ]
+        ]
+        ['WORD'          BitString
+            [simple   uint 16                    value                           ]
+        ]
+        ['DWORD'         BitString
+            [simple   uint 32                    value                           ]
+        ]
 
         // Unsigned Integers
-        ['USINT'         USINT        ]
-        ['UINT'          UINT         ]
-        ['UDINT'         UDINT        ]
-        ['ULINT'         ULINT        ]
+        ['USINT'         USINT
+            [simple   uint 8                     value                           ]
+        ]
+        ['UINT'          UINT
+            [simple   uint 16                    value                           ]
+        ]
+        ['UDINT'         UDINT
+            [simple   uint 32                    value                           ]
+        ]
+        ['ULINT'         ULINT
+            [simple   uint 64                    value                           ]
+        ]
 
         // Signed Integers
-        ['SINT'          SINT         ]
-        ['INT'           INT          ]
-        ['DINT'          DINT         ]
-        ['LINT'          LINT         ]
+        ['SINT'          SINT
+            [simple   int 8                      value                           ]
+        ]
+        ['INT'           INT
+            [simple   int 16                     value                           ]
+        ]
+        ['DINT'          DINT
+            [simple   int 32                     value                           ]
+        ]
+        ['LINT'          LINT
+            [simple   int 64                     value                           ]
+        ]
 
         // Floating Points
-        ['REAL'          REAL         ]
-        ['LREAL'         LREAL        ]
+        ['REAL'          REAL
+            [simple   float 32                   value                           ]
+        ]
+        ['LREAL'         LREAL
+            [simple   float 64                   value                           ]
+        ]
 
         // Chars and Strings
-        ['CHAR'          CHAR         ]
-        ['WCHAR'         WCHAR        ]
-        ['STRING'        STRING       ]
-        ['WSTRING'       WSTRING      ]
+        ['CHAR'          STRING
+            [simple   string 8                   value                           ]
+        ]
+        ['WCHAR'         STRING
+            [simple   string 16                  value        encoding='"UTF-16"']
+        ]
+        ['STRING'        STRING
+//            [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
+//            [simple   vstring 'stringLength'     value                           ]
+        ]
+        ['WSTRING'       STRING
+//            [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
+//            [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
+        ]
 
         // Times and Dates
         ['TIME'          TIME         ]

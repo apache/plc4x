@@ -95,7 +95,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                                     if(responseCode == PlcResponseCode.OK) {
                                         resCode = Plc4xResponseCode.OK;
                                         // TODO: Get the real type.
-                                        valueType = Plc4xValueType.BOOL;
+                                        valueType = Plc4xValueType.INT;
                                         value = plcReadResponse.getPlcValue(requestField.getField().getName());
                                     } else {
                                         resCode = Plc4xResponseCode.INVALID_ADDRESS;

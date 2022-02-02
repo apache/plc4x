@@ -26,8 +26,8 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class Plc4xClient {
 
     public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Ffoo")) {
-            final PlcReadRequest readRequest = connection.readRequestBuilder().addItem("lalala", "hurz").build();
+        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
+            final PlcReadRequest readRequest = connection.readRequestBuilder().addItem("lalala", "RANDOM/foo:INT").build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse);
         }
