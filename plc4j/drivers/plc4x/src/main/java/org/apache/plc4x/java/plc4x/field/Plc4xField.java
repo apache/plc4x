@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.plc4x.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -26,18 +27,24 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 public class Plc4xField implements PlcField, Serializable {
 
     private final String address;
+    private final Plc4xValueType valueType;
 
-    public Plc4xField(String address) {
+    public Plc4xField(String address, Plc4xValueType valueType) {
         this.address = address;
+        this.valueType = valueType;
     }
 
     public String getAddress() {
         return address;
     }
 
+    public Plc4xValueType getValueType() {
+        return valueType;
+    }
+
     @Override
     public String getPlcDataType() {
-        return PlcField.super.getPlcDataType();
+        return valueType.name();
     }
 
     @Override

@@ -16,23 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.plc4x.field;
+package org.apache.plc4x.java.plc4x;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
-public class Plc4xFieldHandler implements PlcFieldHandler {
+public class Plc4xWriteClient {
 
-    @Override
-    public PlcField createField(String fieldQuery) {
-        if(!fieldQuery.contains(":")) {
-            throw new PlcInvalidFieldException(fieldQuery);
+    public static void main(String[] args) throws Exception {
+        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
+            final PlcWriteRequest writeRequest = connection.writeRequestBuilder().addItem("lalala", "STDOUT/foo:INT", (short) 23).build();
+            final PlcWriteResponse writeResponse = writeRequest.execute().get();
+            System.out.println(writeResponse);
         }
-        String address = fieldQuery.substring(0, fieldQuery.lastIndexOf(":"));
-        String dataType = fieldQuery.substring(fieldQuery.lastIndexOf(":") + 1);
-        return new Plc4xField(address, Plc4xValueType.valueOf(dataType));
     }
 
 }
