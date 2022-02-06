@@ -93,7 +93,7 @@ public class SimulatedDevice {
                 state.put(field, value);
                 return;
             case STDOUT:
-                LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.getString());
+                LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.toString());
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
