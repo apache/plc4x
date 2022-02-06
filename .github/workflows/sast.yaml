@@ -38,7 +38,7 @@ jobs:
           ignore-unfixed: true
           format: 'template'
           template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results-fs.sarif'
           severity: 'CRITICAL'
 
       - name: Upload Trivy scan results to GitHub Security tab
