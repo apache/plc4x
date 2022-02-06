@@ -86,45 +86,35 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         final PlcReadRequest rr = builder.build();
 
                         // Execute the query.
-                        final CompletableFuture<? extends PlcReadResponse> execute = rr.execute();
+                        // (It has to be synchronously when working with the connection cache)
+                        final PlcReadResponse apiReadResponse = rr.execute().get();
 
-                        execute.whenComplete((plcReadResponse, throwable) -> {
-                            if(throwable == null) {
-                                // Create the response.
-                                List<Plc4xFieldValueResponse> fields = new ArrayList<>(plcReadResponse.getFieldNames().size());
-                                for (Plc4xFieldRequest plc4xRequestField : request.getFields()) {
-                                    final PlcResponseCode responseCode = plcReadResponse.getResponseCode(plc4xRequestField.getField().getName());
-                                    Plc4xResponseCode resCode;
-                                    Plc4xValueType valueType;
-                                    PlcValue value;
-                                    if(responseCode == PlcResponseCode.OK) {
-                                        resCode = Plc4xResponseCode.OK;
-                                        value = plcReadResponse.getPlcValue(plc4xRequestField.getField().getName());
-                                        final String valueTypeName = value.getClass().getSimpleName();
-                                        // Cut off the "Plc" prefix to get the name of the PlcValueType.
-                                        valueType = Plc4xValueType.valueOf(valueTypeName.substring(3));
-                                    } else {
-                                        resCode = Plc4xResponseCode.INVALID_ADDRESS;
-                                        value = null;
-                                        valueType = Plc4xValueType.NULL;
-                                    }
-                                    fields.add(new Plc4xFieldValueResponse(
-                                        plc4xRequestField.getField(), resCode, valueType, value));
-                                }
-                                Plc4xReadResponse response = new Plc4xReadResponse(
-                                    request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.OK, fields);
-
-                                // Send the response.
-                                ctx.writeAndFlush(response);
+                        // Create the response.
+                        List<Plc4xFieldValueResponse> fields = new ArrayList<>(apiReadResponse.getFieldNames().size());
+                        for (Plc4xFieldRequest plc4xRequestField : request.getFields()) {
+                            final PlcResponseCode responseCode = apiReadResponse.getResponseCode(plc4xRequestField.getField().getName());
+                            Plc4xResponseCode resCode;
+                            Plc4xValueType valueType;
+                            PlcValue value;
+                            if(responseCode == PlcResponseCode.OK) {
+                                resCode = Plc4xResponseCode.OK;
+                                value = apiReadResponse.getPlcValue(plc4xRequestField.getField().getName());
+                                final String valueTypeName = value.getClass().getSimpleName();
+                                // Cut off the "Plc" prefix to get the name of the PlcValueType.
+                                valueType = Plc4xValueType.valueOf(valueTypeName.substring(3));
                             } else {
-                                logger.error("Error executing request", throwable);
-                                Plc4xReadResponse response = new Plc4xReadResponse(
-                                    request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.NOT_FOUND,
-                                    Collections.emptyList());
-                                // Send the response.
-                                ctx.writeAndFlush(response);
+                                resCode = Plc4xResponseCode.INVALID_ADDRESS;
+                                value = null;
+                                valueType = Plc4xValueType.NULL;
                             }
-                        });
+                            fields.add(new Plc4xFieldValueResponse(
+                                plc4xRequestField.getField(), resCode, valueType, value));
+                        }
+                        Plc4xReadResponse response = new Plc4xReadResponse(
+                            request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.OK, fields);
+
+                        // Send the response.
+                        ctx.writeAndFlush(response);
                     } catch (Exception e) {
                         logger.error("Error executing request", e);
                         Plc4xReadResponse response = new Plc4xReadResponse(
@@ -147,40 +137,30 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         }
                         final PlcWriteRequest apiWriteRequest = builder.build();
 
-                        // Execute the query.
-                        final CompletableFuture<? extends PlcWriteResponse> execute = apiWriteRequest.execute();
+                        // Execute the query
+                        // (It has to be synchronously when working with the connection cache)
+                        final PlcWriteResponse apiWriteResponse = apiWriteRequest.execute().get();
 
-                        execute.whenComplete((apiWriteResponse, throwable) -> {
-                            if(throwable == null) {
-                                // Create the response.
-                                List<Plc4xFieldResponse> plc4xFields =
-                                    new ArrayList<>(apiWriteResponse.getFieldNames().size());
-                                for (Plc4xFieldValueRequest plc4xRequestField : plc4xWriteRequest.getFields()) {
-                                    final PlcResponseCode apiResponseCode =
-                                        apiWriteResponse.getResponseCode(plc4xRequestField.getField().getName());
-                                    Plc4xResponseCode resCode;
-                                    if(apiResponseCode == PlcResponseCode.OK) {
-                                        resCode = Plc4xResponseCode.OK;
-                                    } else {
-                                        resCode = Plc4xResponseCode.INVALID_ADDRESS;
-                                    }
-                                    plc4xFields.add(new Plc4xFieldResponse(plc4xRequestField.getField(), resCode));
-                                }
-                                Plc4xWriteResponse plc4xWriteResponse = new Plc4xWriteResponse(
-                                    plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
-                                    Plc4xResponseCode.OK, plc4xFields);
-
-                                // Send the response.
-                                ctx.writeAndFlush(plc4xWriteResponse);
+                        // Create the response.
+                        List<Plc4xFieldResponse> plc4xFields =
+                            new ArrayList<>(apiWriteResponse.getFieldNames().size());
+                        for (Plc4xFieldValueRequest plc4xRequestField : plc4xWriteRequest.getFields()) {
+                            final PlcResponseCode apiResponseCode =
+                                apiWriteResponse.getResponseCode(plc4xRequestField.getField().getName());
+                            Plc4xResponseCode resCode;
+                            if(apiResponseCode == PlcResponseCode.OK) {
+                                resCode = Plc4xResponseCode.OK;
                             } else {
-                                logger.error("Error executing request", throwable);
-                                Plc4xWriteResponse response = new Plc4xWriteResponse(
-                                    plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
-                                    Plc4xResponseCode.NOT_FOUND, Collections.emptyList());
-                                // Send the response.
-                                ctx.writeAndFlush(response);
+                                resCode = Plc4xResponseCode.INVALID_ADDRESS;
                             }
-                        });
+                            plc4xFields.add(new Plc4xFieldResponse(plc4xRequestField.getField(), resCode));
+                        }
+                        Plc4xWriteResponse plc4xWriteResponse = new Plc4xWriteResponse(
+                            plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
+                            Plc4xResponseCode.OK, plc4xFields);
+
+                        // Send the response.
+                        ctx.writeAndFlush(plc4xWriteResponse);
                     } catch (Exception e) {
                         logger.error("Error executing request", e);
                         Plc4xWriteResponse response = new Plc4xWriteResponse(

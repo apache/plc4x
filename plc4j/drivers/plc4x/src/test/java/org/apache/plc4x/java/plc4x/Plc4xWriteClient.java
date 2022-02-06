@@ -32,8 +32,8 @@ public class Plc4xWriteClient {
             final PlcWriteRequest.Builder requestBuilder = connection.writeRequestBuilder();
             requestBuilder.addItem("test-BOOL", "STDOUT/foo:BOOL", true);
             requestBuilder.addItem("test-BYTE", "STDOUT/foo:BYTE", new boolean[] {true, true, false, true, false, true, false, true});
-//            requestBuilder.addItem("test-WORD", "STDOUT/foo:WORD");
-//            requestBuilder.addItem("test-DWORD", "STDOUT/foo:DWORD");
+            requestBuilder.addItem("test-WORD", "STDOUT/foo:WORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true});
+            requestBuilder.addItem("test-DWORD", "STDOUT/foo:DWORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false});
             requestBuilder.addItem("test-USINT", "STDOUT/foo:USINT", 12);
             requestBuilder.addItem("test-UINT", "STDOUT/foo:UINT", 12345);
             requestBuilder.addItem("test-UDINT", "STDOUT/foo:UDINT", 1234567890);
