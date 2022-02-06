@@ -304,19 +304,20 @@ public class WriteBufferByteBased implements WriteBuffer {
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         final byte[] bytes = value.getBytes(Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
-        int fixedByteLength = bitLength / 8;
+        int fixedByteLength = (int) Math.ceil((float) bitLength / 8.0);
 
         if (bitLength == 0) {
             fixedByteLength = bytes.length;
         }
 
         try {
-            for (int i = 0; i < fixedByteLength; i++) {
-                if (i >= bytes.length) {
-                    bo.writeByte(false, 8, (byte) 0x00);
-                } else {
-                    bo.writeByte(false, 8, bytes[i]);
-                }
+            int offset = bytes.length - fixedByteLength;
+            while (offset < 0) {
+                bo.writeByte(false, 8, (byte) 0x00);
+                offset++;
+            }
+            for (int i = offset; i < bytes.length; i++) {
+                bo.writeByte(false, 8, bytes[i]);
             }
         } catch (IOException e) {
             throw new SerializationException("Error writing string", e);
