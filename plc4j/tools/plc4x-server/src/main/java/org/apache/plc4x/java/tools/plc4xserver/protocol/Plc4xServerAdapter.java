@@ -29,6 +29,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.readwrite.*;
 import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +40,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
+
+    private final Logger logger = LoggerFactory.getLogger(Plc4xServerAdapter.class);
 
     private final PooledDriverManager driverManager;
     private final AtomicInteger connectionIdGenerator;
@@ -50,13 +54,13 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof Plc4xMessage) {
             final Plc4xMessage plc4xMessage = (Plc4xMessage) msg;
             switch (plc4xMessage.getRequestType()) {
                 case CONNECT_REQUEST: {
                     Plc4xConnectRequest request = (Plc4xConnectRequest) plc4xMessage;
-                    try (final PlcConnection connection = driverManager.getConnection(request.getConnectionString())) {
+                    try (final PlcConnection ignored = driverManager.getConnection(request.getConnectionString())) {
                         //connection.ping().get();
                         final int connectionId = connectionIdGenerator.getAndIncrement();
                         connectionUrls.put(connectionId, request.getConnectionString());
@@ -95,13 +99,14 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                                     PlcValue value;
                                     if(responseCode == PlcResponseCode.OK) {
                                         resCode = Plc4xResponseCode.OK;
-                                        // TODO: Get the real type.
-                                        valueType = Plc4xValueType.INT;
                                         value = plcReadResponse.getPlcValue(plc4xRequestField.getField().getName());
+                                        final String valueTypeName = value.getClass().getSimpleName();
+                                        // Cut off the "Plc" prefix to get the name of the PlcValueType.
+                                        valueType = Plc4xValueType.valueOf(valueTypeName.substring(3));
                                     } else {
                                         resCode = Plc4xResponseCode.INVALID_ADDRESS;
-                                        valueType = Plc4xValueType.NULL;
                                         value = null;
+                                        valueType = Plc4xValueType.NULL;
                                     }
                                     fields.add(new Plc4xFieldValueResponse(
                                         plc4xRequestField.getField(), resCode, valueType, value));
@@ -112,6 +117,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                                 // Send the response.
                                 ctx.writeAndFlush(response);
                             } else {
+                                logger.error("Error executing request", throwable);
                                 Plc4xReadResponse response = new Plc4xReadResponse(
                                     request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.NOT_FOUND,
                                     Collections.emptyList());
@@ -120,6 +126,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                             }
                         });
                     } catch (Exception e) {
+                        logger.error("Error executing request", e);
                         Plc4xReadResponse response = new Plc4xReadResponse(
                             request.getRequestId(), request.getConnectionId(),
                             Plc4xResponseCode.INVALID_ADDRESS, Collections.emptyList());
@@ -166,7 +173,8 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                                 // Send the response.
                                 ctx.writeAndFlush(plc4xWriteResponse);
                             } else {
-                                Plc4xReadResponse response = new Plc4xReadResponse(
+                                logger.error("Error executing request", throwable);
+                                Plc4xWriteResponse response = new Plc4xWriteResponse(
                                     plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
                                     Plc4xResponseCode.NOT_FOUND, Collections.emptyList());
                                 // Send the response.
@@ -174,7 +182,8 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                             }
                         });
                     } catch (Exception e) {
-                        Plc4xReadResponse response = new Plc4xReadResponse(
+                        logger.error("Error executing request", e);
+                        Plc4xWriteResponse response = new Plc4xWriteResponse(
                             plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
                             Plc4xResponseCode.INVALID_ADDRESS, Collections.emptyList());
                         ctx.writeAndFlush(response);
