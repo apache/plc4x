@@ -220,7 +220,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         try {
             String fieldName = writeRequest.getFieldNames().iterator().next();
 
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, field.getCanOpenDataType(), writeValue.getLength()));
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, field.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, writeValue, field.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
             final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getData()));
             context.sendToWire(new CANOpenFrame((short) field.getNodeId(), field.getService(), payload));

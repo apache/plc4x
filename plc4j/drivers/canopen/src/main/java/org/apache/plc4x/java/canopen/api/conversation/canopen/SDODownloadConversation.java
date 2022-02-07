@@ -41,7 +41,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         this.indexAddress = indexAddress;
 
         try {
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null));
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, type, null), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, value, type, null, ByteOrder.LITTLE_ENDIAN);
             data = writeBuffer.getData();
         } catch (SerializationException e) {
