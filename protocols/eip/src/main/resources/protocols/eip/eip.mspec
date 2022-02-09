@@ -21,7 +21,7 @@
 ///EthernetIP Header of size 24
 /////////////////////////////////////////////////////////////////
 
-[discriminatedType EipPacket byteOrder='BIG_ENDIAN'
+[discriminatedType EipPacket byteOrder='LITTLE_ENDIAN'
     [discriminator uint 16 command]
     [implicit      uint 16 len 'lengthInBytes - 24']
     [simple        uint 32 sessionHandle]
