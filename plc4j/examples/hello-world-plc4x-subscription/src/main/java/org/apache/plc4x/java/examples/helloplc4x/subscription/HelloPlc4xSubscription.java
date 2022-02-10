@@ -83,7 +83,7 @@ public class HelloPlc4xSubscription {
     }
 
     /**
-     * Example code do demonstrate using PLC4X Subcription API.
+     * Example code do demonstrate using PLC4X Subscription API.
      */
     public static void main(String[] args) throws Exception {
         CliOptions options = CliOptions.fromArgs(args);
@@ -114,6 +114,12 @@ public class HelloPlc4xSubscription {
                     for (PlcValue value : plcValue.getList()) {
                         sb.append(" ").append(value.getString());
                     }
+                    logger.info(sb.toString());
+                } else if (plcValue.isStruct()) {
+                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    plcValue.getStruct().forEach((name, value) ->
+                        sb.append(" ").append(name).append("=").append(value.getString())
+                    );
                     logger.info(sb.toString());
                 } else {
                     logger.info(String.format("Field '%s' value: %s", fieldName, plcValue.getString()));

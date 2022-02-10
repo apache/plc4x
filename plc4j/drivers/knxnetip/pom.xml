@@ -155,8 +155,8 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
+      <groupId>net.lingala.zip4j</groupId>
+      <artifactId>zip4j</artifactId>
     </dependency>
 
     <dependency>
