@@ -69,7 +69,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     @Override
     public void onConnect(ConversationContext<FirmataMessage> context) {
         LOGGER.debug("Sending Firmata Reset Command");
-        FirmataMessageCommand resetCommandMessage = new FirmataMessageCommand(new FirmataCommandSystemReset());
+        FirmataMessageCommand resetCommandMessage = new FirmataMessageCommand(new FirmataCommandSystemReset(false), false);
         context.sendRequest(resetCommandMessage)
             .expectResponse(FirmataMessage.class, REQUEST_TIMEOUT)
             .only(FirmataMessageCommand.class)
@@ -141,21 +141,21 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     protected void decode(ConversationContext<FirmataMessage> context, FirmataMessage msg) {
         // Especially when we restart there might already be data incoming before we actually are finished
         // setting up. Just ignore all incoming data until we're officially connected.
-        if(!connected.get()) {
+        if (!connected.get()) {
             return;
         }
 
-        if(msg instanceof FirmataMessageAnalogIO) {
+        if (msg instanceof FirmataMessageAnalogIO) {
             // Analog values are single value messages (Value for one port only)
             FirmataMessageAnalogIO analogIO = (FirmataMessageAnalogIO) msg;
             int pin = analogIO.getPin();
             int analogValue = getAnalogValue(analogIO.getData());
             // If this is the first value, or the value changed, send update events..
-            if((analogValues.get(pin) == null) || (analogValue != analogValues.get(pin).intValue())) {
+            if ((analogValues.get(pin) == null) || (analogValue != analogValues.get(pin).intValue())) {
                 analogValues.put(pin, new AtomicInteger(analogValue));
                 publishAnalogEvents(pin, analogValue);
             }
-        } else if(msg instanceof FirmataMessageDigitalIO) {
+        } else if (msg instanceof FirmataMessageDigitalIO) {
             // Digital values come 8 pins together (ignoring the pin value, which is always 0).
             FirmataMessageDigitalIO digitalIO = (FirmataMessageDigitalIO) msg;
             BitSet newDigitalValues = getDigitalValues(digitalIO.getPinBlock(), digitalIO.getData());
@@ -210,12 +210,12 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                     if (subscriptionHandle.getField() instanceof FirmataFieldAnalog) {
                         FirmataFieldAnalog analogField = (FirmataFieldAnalog) subscriptionHandle.getField();
                         // Check if this field would include the current pin.
-                        if((analogField.getAddress() <= pin) &&
+                        if ((analogField.getAddress() <= pin) &&
                             (analogField.getAddress() + analogField.getNumberOfElements() >= pin)) {
                             // Build an update event containing the current values for all subscribed fields.
                             List<PlcValue> values = new ArrayList<>(analogField.getNumberOfElements());
-                            for(int i = analogField.getAddress(); i < analogField.getAddress() + analogField.getNumberOfElements(); i++) {
-                                if(analogValues.containsKey(i)) {
+                            for (int i = analogField.getAddress(); i < analogField.getAddress() + analogField.getNumberOfElements(); i++) {
+                                if (analogValues.containsKey(i)) {
                                     values.add(new PlcDINT(analogValues.get(i).intValue()));
                                 }
                                 // This could be the case if only some of the requested array values are available
@@ -233,7 +233,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     protected void publishDigitalEvents(BitSet changedBits, BitSet bitValues) {
         // If nothing changed, no need to do anything.
-        if(changedBits.cardinality() == 0) {
+        if (changedBits.cardinality() == 0) {
             return;
         }
         // Try sending the subscription event to all listeners.
@@ -242,17 +242,17 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
             // Only if the current data point matches the subscription, publish the event to it.
             for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
-                if(handle instanceof FirmataSubscriptionHandle) {
+                if (handle instanceof FirmataSubscriptionHandle) {
                     FirmataSubscriptionHandle subscriptionHandle = (FirmataSubscriptionHandle) handle;
                     // Check if the subscription matches this current event
                     // (The bit subscribed to in this field actually changed).
-                    if(subscriptionHandle.getField() instanceof FirmataFieldDigital) {
+                    if (subscriptionHandle.getField() instanceof FirmataFieldDigital) {
                         FirmataFieldDigital digitalField = (FirmataFieldDigital) subscriptionHandle.getField();
                         // If at least one bit of the current subscription changed it's value,
                         // send out an update event with all of its current values.
-                        if(digitalField.getBitSet().intersects(changedBits)) {
+                        if (digitalField.getBitSet().intersects(changedBits)) {
                             List<PlcValue> values = new ArrayList<>(digitalField.getBitSet().cardinality());
-                            for(int i = 0; i < digitalField.getBitSet().length(); i++) {
+                            for (int i = 0; i < digitalField.getBitSet().length(); i++) {
                                 values.add(new PlcBOOL(bitValues.get(i)));
                             }
                             sendUpdateEvents(consumer, subscriptionHandle.getName(), values);
@@ -265,7 +265,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     protected void sendUpdateEvents(Consumer<PlcSubscriptionEvent> consumer, String fieldName, List<PlcValue> values) {
         // If it's just one element, return this as a direct PlcValue
-        if(values.size() == 1) {
+        if (values.size() == 1) {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
                 Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, values.get(0))));
             consumer.accept(event);
@@ -281,7 +281,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     protected int getAnalogValue(List<Byte> data) {
         // In Firmata analog values are encoded as a 14bit integer with the least significant bits being located in
         // the bits 0-6 of the birst byte and the second half as the 0-6 bits of the second byte.
-        return ((data.get(0) & 0xFF)| (data.get(1) << 7)) & 0xFFFF;
+        return ((data.get(0) & 0xFF) | (data.get(1) << 7)) & 0xFFFF;
     }
 
     protected int convertToSingleByteRepresentation(List<Byte> data) {
@@ -292,7 +292,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     protected BitSet getDigitalValues(int byteBlock, List<Byte> data) {
         int singleByte = convertToSingleByteRepresentation(data);
-        if(byteBlock > 0) {
+        if (byteBlock > 0) {
             singleByte = singleByte * (256 * byteBlock);
         }
         byte[] bitSetData = BigInteger.valueOf(singleByte).toByteArray();

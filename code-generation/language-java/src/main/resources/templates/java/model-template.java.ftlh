@@ -114,27 +114,82 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 <#if type.constFields?has_content>
 
     // Constant values.
-<#list type.constFields as field>
+    <#list type.constFields as field>
     public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
-</#list>
+    </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 
     // Properties.
-<#list type.propertyFields as field>
+    <#list type.propertyFields as field>
     protected final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
-</#list>
+    </#list>
+</#if>
+<#if parserArguments?has_content>
+  <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name))>
+</#if>
+<#if filteredParserArguments?has_content>
+
+    // Arguments.
+    <#list filteredParserArguments as parserArgument>
+    protected final ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name};
+    </#list>
 </#if>
 
     <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-    public ${type.name}(<#list type.getAllPropertyFields() as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
-<#if type.getParentPropertyFields()?has_content>
-        super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
-</#if>
+    <@compress single_line=true>
+    public ${type.name}(
+        <#list type.getAllPropertyFields() as field>
+            <#if field.loopType?? && field.type.isByteBased()>
+                byte[]
+            <#elseif field.loopType??>
+                List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}>
+            <#else>
+                ${helper.getLanguageTypeNameForField(field)}
+            </#if>
+            ${field.name}
+            <#sep>, </#sep>
+        </#list>
+        <#if filteredParserArguments?has_content>
+            <#if type.getAllPropertyFields()?has_content>, </#if>
+            <#list filteredParserArguments as parserArgument>
+                ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}
+                <#sep>, </#sep>
+            </#list>
+        </#if>
+        ) {
+    </@compress>
+
+    <@compress single_line=true>
+        super(
+        <#if type.parentPropertyFields?has_content>
+            <#list type.parentPropertyFields as field>
+                ${field.name}
+                <#sep>, </#sep>
+            </#list>
+        </#if>
+        <#if type.parentType?has_content && type.parentType.allParserArguments.isPresent()>
+            <#assign filteredParentParserArguments = type.parentType.allParserArguments.orElseThrow()?filter(arg -> !type.parentType.asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+            <#if filteredParentParserArguments?has_content>
+                <#if type.parentPropertyFields?has_content>, </#if>
+                <#list filteredParentParserArguments as parserArgument>
+                    ${parserArgument.name}
+                    <#sep>, </#sep>
+                </#list>
+            </#if>
+        </#if>
+        );
+    </@compress>
+
 <#list type.propertyFields as field>
         this.${field.name} = ${field.name};
 </#list>
+<#if filteredParserArguments?has_content>
+    <#list filteredParserArguments as parserArgument>
+        this.${parserArgument.name} = ${parserArgument.name};
+    </#list>
+</#if>
     }
 
 <#list type.abstractFields as field>
@@ -713,17 +768,17 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     readBuffer.closeContext("${type.name}");
     // Create the instance
     <#if type.isDiscriminatedChildTypeDefinition()>
-        return new ${type.name}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        return new ${type.name}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
     <#elseif type.isDiscriminatedParentTypeDefinition()>
-        return builder.build(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        return builder.build(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
     <#else>
-        return new ${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        return new ${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
     </#if>
     }
 
     <#if type.isDiscriminatedParentTypeDefinition()>
         public static interface ${type.name}Builder {
-        ${type.name} build(<#list type.propertyFields as field><#if field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>);
+            ${type.name} build(<#list type.propertyFields as field><#if field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>);
         }
 
     </#if>
@@ -734,17 +789,27 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
             </#list>
         </#if>
+        <#if filteredParserArguments?has_content>
+            <#list filteredParserArguments as arg>
+                private final ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name};
+            </#list>
+        </#if>
 
-        public ${type.name}Builder(<#list type.propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
+        public ${type.name}Builder(<#list type.propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
         <#list type.propertyFields as field>
             this.${field.name} = ${field.name};
         </#list>
+        <#if filteredParserArguments?has_content>
+            <#list filteredParserArguments as arg>
+            this.${arg.name} = ${arg.name};
+            </#list>
+        </#if>
         }
 
-        public ${type.name} build(<#list type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
-        return new ${type.name}(<#list type.allPropertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        public ${type.name} build(<#list type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParentParserArguments?has_content><#if type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
+            return new ${type.name}(<#list type.allPropertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.allPropertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
         }
-        }
+    }
 
     </#if>
 

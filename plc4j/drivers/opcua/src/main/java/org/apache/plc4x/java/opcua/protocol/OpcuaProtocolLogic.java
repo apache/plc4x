@@ -68,7 +68,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
         NULL_EXPANDED_NODEID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new NullExtension(),
+        false);               // Body
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private OpcuaConfiguration configuration;
@@ -162,7 +163,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            opcuaReadRequest);
+            opcuaReadRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -737,7 +739,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            opcuaWriteRequest);
+            opcuaWriteRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -858,7 +861,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            createSubscriptionRequest);
+            createSubscriptionRequest,
+            false);
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);

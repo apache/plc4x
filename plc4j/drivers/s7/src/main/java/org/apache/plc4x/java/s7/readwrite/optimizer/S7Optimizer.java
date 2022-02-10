@@ -40,11 +40,11 @@ public class S7Optimizer extends BaseOptimizer {
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
         Collections.emptyList()), null).getLengthInBytes();
     public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterReadVarResponse(
-        (short) 0), new S7PayloadReadVarResponse(Collections.emptyList()), (short) 0, (short) 0).getLengthInBytes();
+        (short) 0), new S7PayloadReadVarResponse(Collections.emptyList(), null), (short) 0, (short) 0).getLengthInBytes();
     public static final int EMPTY_WRITE_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterWriteVarRequest(
-        Collections.emptyList()), new S7PayloadWriteVarRequest(Collections.emptyList())).getLengthInBytes();
+        Collections.emptyList()), new S7PayloadWriteVarRequest(Collections.emptyList(), null)).getLengthInBytes();
     public static final int EMPTY_WRITE_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterWriteVarResponse(
-        (short) 0), new S7PayloadWriteVarResponse(Collections.emptyList()), (short) 0, (short) 0).getLengthInBytes();
+        (short) 0), new S7PayloadWriteVarResponse(Collections.emptyList(), null), (short) 0, (short) 0).getLengthInBytes();
     public static final int S7_ADDRESS_ANY_SIZE = 2 +
         new S7AddressAny(TransportSize.INT, 1, 1, MemoryArea.DATA_BLOCKS, 1, (byte) 0).getLengthInBytes();
 
@@ -92,7 +92,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.
-                if(((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) &&
                     ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Field size exceeds maximum payload for one item.");
                 }
@@ -101,7 +101,7 @@ public class S7Optimizer extends BaseOptimizer {
         }
 
         // Create a new PlcReadRequest from the remaining field items.
-        if(!curFields.isEmpty()) {
+        if (!curFields.isEmpty()) {
             processedRequests.add(new DefaultPlcReadRequest(
                 ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
         }
@@ -159,7 +159,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.
-                if(((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) &&
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Field size exceeds maximum payload for one item.");
                 }
@@ -168,7 +168,7 @@ public class S7Optimizer extends BaseOptimizer {
         }
 
         // Create a new PlcWriteRequest from the remaining field items.
-        if(!curFields.isEmpty()) {
+        if (!curFields.isEmpty()) {
             processedRequests.add(new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(), curFields));
         }

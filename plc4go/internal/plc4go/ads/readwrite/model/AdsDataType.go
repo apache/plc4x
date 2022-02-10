@@ -315,7 +315,7 @@ func (e AdsDataType) DataFormatName() string {
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return "IEC61131_BOOL"
+			return "IEC61131_BYTE"
 		}
 	case 0x04:
 		{ /* '0x04' */

@@ -26,6 +26,7 @@ import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
+
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
@@ -52,7 +53,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
     public void execute(CompletableFuture<PlcResponseCode> receiver) {
         if (data.length > 4) {
             // segmented
-            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length);
+            SDOInitiateSegmentedUploadResponse size = new SDOInitiateSegmentedUploadResponse(data.length, (byte) 0);
             delegate.send(createFrame(new SDOInitiateDownloadRequest(false, true, indexAddress, size)))
                 .check(new NodeIdPredicate(answerNodeId))
                 .onTimeout(receiver::completeExceptionally)
@@ -85,7 +86,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         SDOInitiateDownloadRequest rq = new SDOInitiateDownloadRequest(
             true, true,
             indexAddress,
-            new SDOInitiateExpeditedUploadResponse(data)
+            new SDOInitiateExpeditedUploadResponse(data,(byte)0)
         );
 
         delegate.send(createFrame(rq))

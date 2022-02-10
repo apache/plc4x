@@ -104,7 +104,7 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) LengthInBytes() uin
 	return m.LengthInBits() / 8
 }
 
-func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16, status uint8) (*DF1ResponseMessage, error) {
+func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1ResponseMessage, error) {
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {
 		return nil, pullErr
 	}

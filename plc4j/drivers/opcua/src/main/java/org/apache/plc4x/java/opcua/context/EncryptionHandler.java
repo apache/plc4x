@@ -82,7 +82,7 @@ public class EncryptionHandler {
         int encryptedLength = numberOfBlocks * 256 + positionFirstBlock;
         WriteBufferByteBased buf = new WriteBufferByteBased(encryptedLength, ByteOrder.LITTLE_ENDIAN);
         try {
-            new OpcuaAPU(pdu).serialize(buf);
+            new OpcuaAPU(pdu, false).serialize(buf);
             byte paddingByte = (byte) paddingSize;
             buf.writeByte(paddingByte);
             for (int i = 0; i < paddingSize; i++) {
