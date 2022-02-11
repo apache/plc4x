@@ -230,7 +230,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-	_serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
+	_serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(readBuffer, uint16(uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}

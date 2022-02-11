@@ -124,7 +124,7 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.LengthInBytes()))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.LengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}

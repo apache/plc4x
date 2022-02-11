@@ -29,9 +29,9 @@ import (
 // The data-structure of this message
 type BACnetContextTagBoolean struct {
 	*BACnetContextTag
-	Value   uint8
-	IsTrue  bool
-	IsFalse bool
+	Value       uint8
+	Payload     *BACnetTagPayloadBoolean
+	ActualValue bool
 }
 
 // The corresponding interface
@@ -55,11 +55,11 @@ func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, hea
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagBoolean(value uint8, isTrue bool, isFalse bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, actualValue bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagBoolean{
 		Value:            value,
-		IsTrue:           isTrue,
-		IsFalse:          isFalse,
+		Payload:          payload,
+		ActualValue:      actualValue,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
@@ -99,7 +99,8 @@ func (m *BACnetContextTagBoolean) LengthInBitsConditional(lastItem bool) uint16 
 	// Simple field (value)
 	lengthInBits += 8
 
-	// A virtual field doesn't have any in- or output.
+	// Simple field (payload)
+	lengthInBits += m.Payload.LengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -110,7 +111,7 @@ func (m *BACnetContextTagBoolean) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
+func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,6 +121,11 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
+	// Validation
+	if !(bool((header.ActualLength) == (1))) {
+		return nil, utils.ParseAssertError{"length field should be 1"}
+	}
+
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadUint8("value", 8)
 	if _valueErr != nil {
@@ -127,13 +133,22 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	}
 	value := _value
 
-	// Virtual field
-	_isTrue := bool((value) == (1))
-	isTrue := bool(_isTrue)
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
+	}
+	_payload, _payloadErr := BACnetTagPayloadBooleanParse(readBuffer, uint32(value))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+	}
+	payload := CastBACnetTagPayloadBoolean(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Virtual field
-	_isFalse := bool((value) == (0))
-	isFalse := bool(_isFalse)
+	_actualValue := payload.Value
+	actualValue := bool(_actualValue)
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagBoolean"); closeErr != nil {
 		return nil, closeErr
@@ -142,8 +157,8 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	// Create a partially initialized instance
 	_child := &BACnetContextTagBoolean{
 		Value:            value,
-		IsTrue:           isTrue,
-		IsFalse:          isFalse,
+		Payload:          CastBACnetTagPayloadBoolean(payload),
+		ActualValue:      actualValue,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -162,13 +177,21 @@ func (m *BACnetContextTagBoolean) Serialize(writeBuffer utils.WriteBuffer) error
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
-		// Virtual field
-		if _isTrueErr := writeBuffer.WriteVirtual("isTrue", m.IsTrue); _isTrueErr != nil {
-			return errors.Wrap(_isTrueErr, "Error serializing 'isTrue' field")
+
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _isFalseErr := writeBuffer.WriteVirtual("isFalse", m.IsFalse); _isFalseErr != nil {
-			return errors.Wrap(_isFalseErr, "Error serializing 'isFalse' field")
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagBoolean"); popErr != nil {

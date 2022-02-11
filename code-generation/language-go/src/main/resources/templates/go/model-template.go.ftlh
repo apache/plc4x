@@ -1157,7 +1157,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
             <#if hasRefParams>
 				,
                 <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                    ${helper.toTypedParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)}
+					<#assign parserTypeRef=helper.getArgumentType(simpleField.type, parserArgument?index)>
+					<#if !parserTypeRef.isComplexTypeReference()>${helper.getLanguageTypeNameForTypeReference(parserTypeRef)}(</#if>
+                    ${helper.toTypedParseExpression(simpleField, parserTypeRef, parserArgument, parserArguments)}
+                    <#if !parserTypeRef.isComplexTypeReference()>)</#if>
                     <#sep>, </#sep>
                 </#list>
             </#if>

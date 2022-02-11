@@ -146,7 +146,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error)
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
 		return nil, pullErr
 	}
-	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(len)-uint16(uint16(6)))
+	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(len)-uint16(uint16(6))))
 	if _exchangeErr != nil {
 		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field")
 	}

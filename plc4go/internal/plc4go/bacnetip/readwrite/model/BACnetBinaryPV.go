@@ -112,11 +112,11 @@ func BACnetBinaryPVParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetB
 	}
 
 	// Virtual field
-	_isInactive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (0)))
+	_isInactive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (0)))
 	isInactive := bool(_isInactive)
 
 	// Virtual field
-	_isActive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (1)))
+	_isActive := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (1)))
 	isActive := bool(_isActive)
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPV"); closeErr != nil {

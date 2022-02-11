@@ -29,8 +29,7 @@ import (
 // The data-structure of this message
 type BACnetContextTagEnumerated struct {
 	*BACnetContextTag
-	Data        []byte
-	ActualValue uint32
+	Payload *BACnetTagPayloadEnumerated
 }
 
 // The corresponding interface
@@ -54,10 +53,9 @@ func (m *BACnetContextTagEnumerated) InitializeParent(parent *BACnetContextTag, 
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagEnumerated(data []byte, actualValue uint32, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagEnumerated{
-		Data:             data,
-		ActualValue:      actualValue,
+		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
@@ -94,12 +92,8 @@ func (m *BACnetContextTagEnumerated) LengthInBits() uint16 {
 func (m *BACnetContextTagEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
-
-	// A virtual field doesn't have any in- or output.
+	// Simple field (payload)
+	lengthInBits += m.Payload.LengthInBits()
 
 	return lengthInBits
 }
@@ -108,7 +102,7 @@ func (m *BACnetContextTagEnumerated) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -117,16 +111,19 @@ func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	if !(isNotOpeningOrClosingTag) {
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(actualLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
-	}
 
-	// Virtual field
-	_actualValue := ParseVarUint(data)
-	actualValue := uint32(_actualValue)
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
+	}
+	_payload, _payloadErr := BACnetTagPayloadEnumeratedParse(readBuffer, uint32(header.ActualLength))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+	}
+	payload := CastBACnetTagPayloadEnumerated(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEnumerated"); closeErr != nil {
 		return nil, closeErr
@@ -134,8 +131,7 @@ func BACnetContextTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagEnumerated{
-		Data:             data,
-		ActualValue:      actualValue,
+		Payload:          CastBACnetTagPayloadEnumerated(payload),
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -148,17 +144,16 @@ func (m *BACnetContextTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 			return pushErr
 		}
 
-		// Array Field (data)
-		if m.Data != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
 		}
-		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
-			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagEnumerated"); popErr != nil {

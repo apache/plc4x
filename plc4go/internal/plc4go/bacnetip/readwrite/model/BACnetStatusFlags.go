@@ -97,7 +97,7 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 	if pullErr := readBuffer.PullContext("rawBits"); pullErr != nil {
 		return nil, pullErr
 	}
-	_rawBits, _rawBitsErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_BIT_STRING)
+	_rawBits, _rawBitsErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType_BIT_STRING)
 	if _rawBitsErr != nil {
 		return nil, errors.Wrap(_rawBitsErr, "Error parsing 'rawBits' field")
 	}
@@ -107,19 +107,19 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 	}
 
 	// Virtual field
-	_inAlarm := rawBits.Data[0]
+	_inAlarm := rawBits.Payload.Data[0]
 	inAlarm := bool(_inAlarm)
 
 	// Virtual field
-	_fault := rawBits.Data[1]
+	_fault := rawBits.Payload.Data[1]
 	fault := bool(_fault)
 
 	// Virtual field
-	_overriden := rawBits.Data[2]
+	_overriden := rawBits.Payload.Data[2]
 	overriden := bool(_overriden)
 
 	// Virtual field
-	_outOfService := rawBits.Data[3]
+	_outOfService := rawBits.Payload.Data[3]
 	outOfService := bool(_outOfService)
 
 	if closeErr := readBuffer.CloseContext("BACnetStatusFlags"); closeErr != nil {

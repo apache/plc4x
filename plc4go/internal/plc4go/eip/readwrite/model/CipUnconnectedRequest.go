@@ -236,7 +236,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, pullErr
 	}
-	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
+	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, uint16(messageSize))
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")
 	}

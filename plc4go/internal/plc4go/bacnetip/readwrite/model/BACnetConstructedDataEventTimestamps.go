@@ -124,7 +124,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_TIME)
+	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_TIME)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field")
 	}
@@ -137,7 +137,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_UNSIGNED_INTEGER)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field")
 	}
@@ -150,7 +150,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(2))
+	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(uint8(2)))
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field")
 	}

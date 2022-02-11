@@ -129,7 +129,7 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(len)-uint16(uint16(4)))
+	_payload, _payloadErr := COTPPacketParse(readBuffer, uint16(uint16(len)-uint16(uint16(4))))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}

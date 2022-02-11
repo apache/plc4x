@@ -193,7 +193,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_apdu, _apduErr := ApduParse(readBuffer, dataLength)
+	_apdu, _apduErr := ApduParse(readBuffer, uint8(dataLength))
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}

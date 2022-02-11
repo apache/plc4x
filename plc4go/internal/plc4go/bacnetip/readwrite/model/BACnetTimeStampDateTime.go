@@ -111,7 +111,7 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeParse(readBuffer, uint8(2))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeParse(readBuffer, uint8(uint8(2)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field")
 	}

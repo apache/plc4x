@@ -138,23 +138,23 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
 		_parent, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		_parent, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, header)
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		_parent, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, header)
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		_parent, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, header)
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
 		_parent, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
 		_parent, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		_parent, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, header)
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		_parent, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, header)
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		_parent, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, header)
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		_parent, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, header)
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
 		_parent, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime

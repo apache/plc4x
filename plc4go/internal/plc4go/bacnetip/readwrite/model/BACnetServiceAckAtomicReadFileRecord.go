@@ -153,9 +153,9 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (*BA
 		return nil, pullErr
 	}
 	// Count array
-	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.ActualValue)
+	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.Payload.ActualValue)
 	{
-		for curItem := uint16(0); curItem < uint16(returnedRecordCount.ActualValue); curItem++ {
+		for curItem := uint16(0); curItem < uint16(returnedRecordCount.Payload.ActualValue); curItem++ {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field")

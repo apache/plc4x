@@ -127,7 +127,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagOctetString>
-                                <value dataType="string" bitLength="64" encoding="ASCII">SYNERGY</value>
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="64" encoding="ASCII">SYNERGY</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetContextTagOctetString>
                             </BACnetContextTag>
                           </objectName>
@@ -198,8 +202,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -215,8 +223,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </objectIdentifier>
@@ -233,10 +245,14 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetApplicationTagCharacterString>
                             </BACnetApplicationTag>
                           </objectName>
@@ -307,8 +323,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -379,8 +399,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -396,8 +420,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </objectIdentifier>
@@ -414,10 +442,14 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="56" encoding="UTF-8">SYNERGY</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetApplicationTagCharacterString>
                             </BACnetApplicationTag>
                           </objectName>
@@ -488,10 +520,14 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagDate>
-                                <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
-                                <month dataType="int" bitLength="8">9</month>
-                                <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
-                                <dayOfWeek dataType="int" bitLength="8">6</dayOfWeek>
+                                <payload>
+                                  <BACnetTagPayloadDate>
+                                    <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
+                                    <month dataType="int" bitLength="8">9</month>
+                                    <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
+                                    <dayOfWeek dataType="int" bitLength="8">6</dayOfWeek>
+                                  </BACnetTagPayloadDate>
+                                </payload>
                               </BACnetApplicationTagDate>
                             </BACnetApplicationTag>
                           </synchronizedDate>
@@ -507,10 +543,14 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagTime>
-                                <hour dataType="int" bitLength="8">23</hour>
-                                <minute dataType="int" bitLength="8">9</minute>
-                                <second dataType="int" bitLength="8">54</second>
-                                <fractional dataType="int" bitLength="8">0</fractional>
+                                <payload>
+                                  <BACnetTagPayloadTime>
+                                    <hour dataType="int" bitLength="8">23</hour>
+                                    <minute dataType="int" bitLength="8">9</minute>
+                                    <second dataType="int" bitLength="8">54</second>
+                                    <fractional dataType="int" bitLength="8">0</fractional>
+                                  </BACnetTagPayloadTime>
+                                </payload>
                               </BACnetApplicationTagTime>
                             </BACnetApplicationTag>
                           </synchronizedTime>
@@ -581,7 +621,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -597,7 +641,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -671,8 +719,12 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -688,7 +740,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -706,7 +762,11 @@
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -724,7 +784,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -802,9 +866,13 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
-                              </BACnetApplicationTagObjectIdentifier>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                 </payload>
+                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
                           <openingTag>
@@ -834,7 +902,11 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -852,7 +924,9 @@
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">#!/bin/sh
 # Unit tests builder / runner for this project
 
 rm test.log
@@ -879,6 +953,8 @@ make -f dcc.mak
 make -f dcc.mak clean
 
 make -f demo/object/ai</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -967,7 +1043,11 @@ make -f demo/object/ai</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -1046,8 +1126,12 @@ make -f demo/object/ai</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -1078,7 +1162,11 @@ make -f demo/object/ai</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">448</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">448</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -1096,7 +1184,9 @@ make -f demo/object/ai</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">.mak clean
 make -f demo/object/ai.mak
 ./analog_input >> test.log
 make -f demo/object/ai.mak clean
@@ -1117,6 +1207,8 @@ make -f arf.mak
 make -f arf.mak clean
 
 make -f awf.mak</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1205,7 +1297,11 @@ make -f awf.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">448</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">448</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -1284,8 +1380,12 @@ make -f awf.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -1316,7 +1416,11 @@ make -f awf.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">896</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">896</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -1334,7 +1438,9 @@ make -f awf.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">clean
 make -f awf.mak
 ./atomicwritefile >> test.log
 make -f awf.mak clean
@@ -1358,6 +1464,8 @@ make -f bacstr.mak clean
 make -f bacstr.mak
 ./bacstr >> test.log
 make -f bacstr.mak</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1446,7 +1554,11 @@ make -f bacstr.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">896</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">896</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -1525,8 +1637,12 @@ make -f bacstr.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -1557,7 +1673,11 @@ make -f bacstr.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">1344</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">1344</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -1575,7 +1695,9 @@ make -f bacstr.mak</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">clean
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">clean
 
 make -f demo/object/bi.mak clean
 make -f demo/object/bi.mak
@@ -1596,6 +1718,8 @@ make -f crc.mak clean
 make -f crc.mak
 ./crc >> test.log
 make -f crc.mak clean</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1684,7 +1808,11 @@ make -f crc.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">1344</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">1344</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -1763,8 +1891,12 @@ make -f crc.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -1795,7 +1927,11 @@ make -f crc.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">1792</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">1792</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -1813,7 +1949,9 @@ make -f crc.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">make -f demo/object/device.mak clean
 make -f demo/object/device.mak
 ./device >> test.log
 make -f demo/object/device.mak clean
@@ -1835,6 +1973,8 @@ make -f indtext.mak clean
 
 make -f demo/object/lsp.mak clean
 make -f demo/object/lsp.</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -1923,7 +2063,11 @@ make -f demo/object/lsp.</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">1792</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">1792</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -2002,8 +2146,12 @@ make -f demo/object/lsp.</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -2034,7 +2182,11 @@ make -f demo/object/lsp.</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">2240</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">2240</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -2052,7 +2204,9 @@ make -f demo/object/lsp.</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">mak
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">mak
 ./lsp >> test.log
 make -f demo/object/lsp.mak clean
 
@@ -2077,6 +2231,8 @@ make -f rd.mak
 make -f rd.mak clean
 
 make</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2165,7 +2321,11 @@ make</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">2240</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">2240</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -2244,8 +2404,12 @@ make</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -2276,7 +2440,11 @@ make</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">2688</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">2688</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -2294,7 +2462,9 @@ make</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3584" encoding="ASCII">-f reject.mak clean
 make -f reject.mak
 ./reject >> test.log
 make -f reject.mak clean
@@ -2320,6 +2490,8 @@ make -f sbuf.mak
 make -f sbuf.mak clean
 
 make -f tsm.mak cle</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2408,7 +2580,11 @@ make -f tsm.mak cle</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">2688</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">2688</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -2487,8 +2663,12 @@ make -f tsm.mak cle</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -2519,7 +2699,11 @@ make -f tsm.mak cle</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">3136</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">3136</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -2537,7 +2721,9 @@ make -f tsm.mak cle</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="2584" encoding="ASCII">an
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="2584" encoding="ASCII">an
 make -f tsm.mak
 ./tsm >> test.log
 make -f tsm.mak clean
@@ -2556,6 +2742,8 @@ make -f wp.mak clean
 make -f wp.mak
 ./writeproperty >> test.log
 make -f wp.mak clean</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -2644,7 +2832,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagSignedInteger>
-                                <valueInt16 dataType="int" bitLength="16">3136</valueInt16>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt16 dataType="int" bitLength="16">3136</valueInt16>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetContextTagSignedInteger>
                             </BACnetContextTag>
                           </fileStartPosition>
@@ -2716,7 +2908,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -2732,7 +2928,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -2806,8 +3006,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -2823,7 +3027,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -2841,7 +3049,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -2859,7 +3071,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -2956,10 +3172,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -3032,7 +3252,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x05</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x05</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3048,7 +3272,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x1a</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x1a</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -3118,7 +3346,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -3134,7 +3366,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -3208,8 +3444,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -3225,7 +3465,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -3243,7 +3487,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -3261,7 +3509,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -3339,8 +3591,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -3429,7 +3685,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x02</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x02</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3445,7 +3705,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x20</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x20</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -3515,7 +3779,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -3531,7 +3799,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -3605,8 +3877,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -3622,7 +3898,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -3640,7 +3920,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -3658,7 +3942,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -3736,8 +4024,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_INPUT">0</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_INPUT">0</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -3826,7 +4118,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x02</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x02</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -3842,7 +4138,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x20</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x20</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -3912,7 +4212,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -3928,7 +4232,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -4002,8 +4310,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -4019,7 +4331,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -4037,7 +4353,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -4055,7 +4375,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -4133,8 +4457,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -4224,8 +4552,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">101</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -4623,7 +4955,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">1</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">1</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </subscriberProcessIdentifier>
@@ -4639,8 +4975,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">2</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">2</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </monitoredDeviceIdentifier>
@@ -4656,8 +4996,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="BINARY_INPUT">3</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">4</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="BINARY_INPUT">3</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">4</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </monitoredObjectIdentifier>
@@ -4673,7 +5017,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">5</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">5</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </lifetimeInSeconds>
@@ -4746,7 +5094,11 @@ make -f wp.mak clean</value>
                                                       </BACnetTagHeader>
                                                     </header>
                                                     <BACnetApplicationTagReal>
-                                                      <value dataType="float" bitLength="32">100.0</value>
+                                                      <payload>
+                                                        <BACnetTagPayloadReal>
+                                                          <value dataType="float" bitLength="32">100.0</value>
+                                                        </BACnetTagPayloadReal>
+                                                      </payload>
                                                     </BACnetApplicationTagReal>
                                                   </BACnetApplicationTag>
                                                 </applicationTag>
@@ -4858,7 +5210,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -4874,7 +5230,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -4948,8 +5308,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -4965,7 +5329,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -4983,7 +5351,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5001,7 +5373,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -5079,8 +5455,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_OUTPUT">1</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -5224,7 +5604,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x01</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x01</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -5240,7 +5624,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x1f</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x1f</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -5310,7 +5698,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -5326,7 +5718,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -5400,8 +5796,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -5417,7 +5817,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -5435,7 +5839,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5453,7 +5861,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -5533,7 +5945,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -5552,10 +5968,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -5676,7 +6096,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeLowLimit>
@@ -5692,7 +6116,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">61</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </deviceInstanceRangeHighLimit>
@@ -5766,8 +6194,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">61</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -5783,7 +6215,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -5801,7 +6237,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -5819,7 +6259,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">42</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -5899,7 +6343,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x00</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x00</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -5918,10 +6366,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -5994,7 +6446,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x05</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x05</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -6010,7 +6466,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x1a</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x1a</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -6080,8 +6540,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -6097,7 +6561,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -6115,7 +6583,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x03</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x03</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -6133,7 +6605,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -6212,7 +6688,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6231,10 +6711,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -6313,7 +6797,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6332,10 +6820,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -6414,7 +6906,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6433,10 +6929,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -6515,7 +7015,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6534,10 +7038,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -6608,8 +7116,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -6625,7 +7137,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -6643,7 +7159,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x03</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x03</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -6661,7 +7181,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -6740,7 +7264,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6759,10 +7287,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="72" encoding="UTF-8">wireshark</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -6836,7 +7368,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x05</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x05</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -6852,7 +7388,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x1a</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x1a</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -6930,7 +7470,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x01</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x01</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetContextTagEnumerated>
                                 </BACnetContextTag>
                               </rawData>
@@ -6949,10 +7493,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -7074,8 +7622,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -7091,7 +7643,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint16 dataType="uint" bitLength="16">480</valueUint16>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </maximumApduLengthAcceptedLength>
@@ -7109,7 +7665,11 @@ make -f wp.mak clean</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetApplicationTagEnumerated>
-                                    <data dataType="byte" bitLength="8">0x03</data>
+                                    <payload>
+                                      <BACnetTagPayloadEnumerated>
+                                        <data dataType="byte" bitLength="8">0x03</data>
+                                      </BACnetTagPayloadEnumerated>
+                                    </payload>
                                   </BACnetApplicationTagEnumerated>
                                 </BACnetApplicationTag>
                               </rawData>
@@ -7127,7 +7687,11 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagUnsignedInteger>
-                                <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                <payload>
+                                  <BACnetTagPayloadUnsignedInteger>
+                                    <valueUint8 dataType="uint" bitLength="8">0</valueUint8>
+                                  </BACnetTagPayloadUnsignedInteger>
+                                </payload>
                               </BACnetApplicationTagUnsignedInteger>
                             </BACnetApplicationTag>
                           </vendorId>
@@ -7201,10 +7765,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagDate>
-                                <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
-                                <month dataType="int" bitLength="8">9</month>
-                                <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
-                                <dayOfWeek dataType="int" bitLength="8">-1</dayOfWeek>
+                                <payload>
+                                  <BACnetTagPayloadDate>
+                                    <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
+                                    <month dataType="int" bitLength="8">9</month>
+                                    <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
+                                    <dayOfWeek dataType="int" bitLength="8">-1</dayOfWeek>
+                                  </BACnetTagPayloadDate>
+                                </payload>
                               </BACnetApplicationTagDate>
                             </BACnetApplicationTag>
                           </synchronizedDate>
@@ -7220,10 +7788,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagTime>
-                                <hour dataType="int" bitLength="8">23</hour>
-                                <minute dataType="int" bitLength="8">21</minute>
-                                <second dataType="int" bitLength="8">13</second>
-                                <fractional dataType="int" bitLength="8">0</fractional>
+                                <payload>
+                                  <BACnetTagPayloadTime>
+                                    <hour dataType="int" bitLength="8">23</hour>
+                                    <minute dataType="int" bitLength="8">21</minute>
+                                    <second dataType="int" bitLength="8">13</second>
+                                    <fractional dataType="int" bitLength="8">0</fractional>
+                                  </BACnetTagPayloadTime>
+                                </payload>
                               </BACnetApplicationTagTime>
                             </BACnetApplicationTag>
                           </synchronizedTime>
@@ -7297,8 +7869,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
                           </objectIdentifier>
@@ -7369,8 +7945,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -7386,8 +7966,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="DEVICE">8</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">123</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </objectIdentifier>
@@ -7404,10 +7988,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="96" encoding="UTF-8">SimpleServer</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="96" encoding="UTF-8">SimpleServer</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetApplicationTagCharacterString>
                             </BACnetApplicationTag>
                           </objectName>
@@ -7503,10 +8091,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="64" encoding="UTF-8">filister</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -7580,7 +8172,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x05</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x05</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorClass>
@@ -7596,7 +8192,11 @@ make -f wp.mak clean</value>
                               </BACnetTagHeader>
                             </header>
                             <BACnetApplicationTagEnumerated>
-                              <data dataType="byte" bitLength="8">0x1a</data>
+                              <payload>
+                                <BACnetTagPayloadEnumerated>
+                                  <data dataType="byte" bitLength="8">0x1a</data>
+                                </BACnetTagPayloadEnumerated>
+                              </payload>
                             </BACnetApplicationTagEnumerated>
                           </BACnetApplicationTag>
                         </errorCode>
@@ -7691,10 +8291,14 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetContextTagCharacterString>
-                                <encoding>
-                                  <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
-                                </encoding>
-                                <value dataType="string" bitLength="40" encoding="UTF-8">Jesus</value>
+                                <payload>
+                                  <BACnetTagPayloadCharacterString>
+                                    <encoding>
+                                      <BACnetCharacterEncoding dataType="byte" bitLength="8" stringRepresentation="ISO_10646">0x00</BACnetCharacterEncoding>
+                                    </encoding>
+                                    <value dataType="string" bitLength="40" encoding="UTF-8">Jesus</value>
+                                  </BACnetTagPayloadCharacterString>
+                                </payload>
                               </BACnetContextTagCharacterString>
                             </BACnetContextTag>
                           </password>
@@ -7822,8 +8426,12 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </fileIdentifier>
@@ -7857,7 +8465,11 @@ make -f wp.mak clean</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -7873,7 +8485,11 @@ make -f wp.mak clean</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagUnsignedInteger>
-                                      <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                      <payload>
+                                        <BACnetTagPayloadUnsignedInteger>
+                                          <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                        </BACnetTagPayloadUnsignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagUnsignedInteger>
                                   </BACnetApplicationTag>
                                 </requestOctetCount>
@@ -7966,6 +8582,10 @@ make -f wp.mak clean</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagBoolean>
+                                <payload>
+                                  <BACnetTagPayloadBoolean>
+                                  </BACnetTagPayloadBoolean>
+                                </payload>
                               </BACnetApplicationTagBoolean>
                             </BACnetApplicationTag>
                           </endOfFile>
@@ -7999,7 +8619,11 @@ make -f wp.mak clean</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8017,7 +8641,9 @@ make -f wp.mak clean</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
+                                      <payload>
+                                        <BACnetTagPayloadOctetString>
+                                          <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
 	Passed: 260107
 	Failed: 0
 Test "BACnet Address":
@@ -8042,6 +8668,8 @@ Test "BACnet AtomicWriteFile":
 	Passed: 25
 	Failed: 0
 Test "BACnet Applicat</value>
+                                        </BACnetTagPayloadOctetString>
+                                      </payload>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8137,8 +8765,12 @@ Test "BACnet Applicat</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </fileIdentifier>
@@ -8172,7 +8804,11 @@ Test "BACnet Applicat</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">440</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">440</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8188,7 +8824,11 @@ Test "BACnet Applicat</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagUnsignedInteger>
-                                      <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                      <payload>
+                                        <BACnetTagPayloadUnsignedInteger>
+                                          <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                        </BACnetTagPayloadUnsignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagUnsignedInteger>
                                   </BACnetApplicationTag>
                                 </requestOctetCount>
@@ -8281,6 +8921,10 @@ Test "BACnet Applicat</value>
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagBoolean>
+                                <payload>
+                                  <BACnetTagPayloadBoolean>
+                                  </BACnetTagPayloadBoolean>
+                                </payload>
                               </BACnetApplicationTagBoolean>
                             </BACnetApplicationTag>
                           </endOfFile>
@@ -8314,7 +8958,11 @@ Test "BACnet Applicat</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">440</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">440</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8332,7 +8980,9 @@ Test "BACnet Applicat</value>
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
+                                      <payload>
+                                        <BACnetTagPayloadOctetString>
+                                          <value dataType="string" bitLength="3520" encoding="ASCII">ion Data":
 	Passed: 66
 	Failed: 0
 Test "BACDCode":
@@ -8362,6 +9012,8 @@ Test "BACnet Device":
 Test "BACnet I-Am":
 	Passed: 6
 	Fa</value>
+                                        </BACnetTagPayloadOctetString>
+                                      </payload>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8457,8 +9109,12 @@ Test "BACnet I-Am":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </fileIdentifier>
@@ -8492,7 +9148,11 @@ Test "BACnet I-Am":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">880</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">880</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8508,7 +9168,11 @@ Test "BACnet I-Am":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagUnsignedInteger>
-                                      <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                      <payload>
+                                        <BACnetTagPayloadUnsignedInteger>
+                                          <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                        </BACnetTagPayloadUnsignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagUnsignedInteger>
                                   </BACnetApplicationTag>
                                 </requestOctetCount>
@@ -8601,6 +9265,10 @@ Test "BACnet I-Am":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagBoolean>
+                                <payload>
+                                  <BACnetTagPayloadBoolean>
+                                  </BACnetTagPayloadBoolean>
+                                </payload>
                               </BACnetApplicationTagBoolean>
                             </BACnetApplicationTag>
                           </endOfFile>
@@ -8634,7 +9302,11 @@ Test "BACnet I-Am":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">880</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">880</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8652,7 +9324,9 @@ Test "BACnet I-Am":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
+                                      <payload>
+                                        <BACnetTagPayloadOctetString>
+                                          <value dataType="string" bitLength="3520" encoding="ASCII">iled: 0
 Test "BACnet I-Have":
 	Passed: 3469312
 	Failed: 0
@@ -8679,6 +9353,8 @@ Test "ringbuf":
 	Failed: 0
 Test "BACnet ReadProperty":
 	Passed: 17</value>
+                                        </BACnetTagPayloadOctetString>
+                                      </payload>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -8774,8 +9450,12 @@ Test "BACnet ReadProperty":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </fileIdentifier>
@@ -8809,7 +9489,11 @@ Test "BACnet ReadProperty":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8825,7 +9509,11 @@ Test "BACnet ReadProperty":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagUnsignedInteger>
-                                      <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                      <payload>
+                                        <BACnetTagPayloadUnsignedInteger>
+                                          <valueUint16 dataType="uint" bitLength="16">440</valueUint16>
+                                        </BACnetTagPayloadUnsignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagUnsignedInteger>
                                   </BACnetApplicationTag>
                                 </requestOctetCount>
@@ -8918,6 +9606,10 @@ Test "BACnet ReadProperty":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagBoolean>
+                                <payload>
+                                  <BACnetTagPayloadBoolean>
+                                  </BACnetTagPayloadBoolean>
+                                </payload>
                               </BACnetApplicationTagBoolean>
                             </BACnetApplicationTag>
                           </endOfFile>
@@ -8951,7 +9643,11 @@ Test "BACnet ReadProperty":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagSignedInteger>
-                                      <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
+                                      <payload>
+                                        <BACnetTagPayloadSignedInteger>
+                                          <valueInt16 dataType="int" bitLength="16">1320</valueInt16>
+                                        </BACnetTagPayloadSignedInteger>
+                                      </payload>
                                     </BACnetApplicationTagSignedInteger>
                                   </BACnetApplicationTag>
                                 </fileStartPosition>
@@ -8969,7 +9665,9 @@ Test "BACnet ReadProperty":
                                       </BACnetTagHeader>
                                     </header>
                                     <BACnetApplicationTagOctetString>
-                                      <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
+                                      <payload>
+                                        <BACnetTagPayloadOctetString>
+                                          <value dataType="string" bitLength="2112" encoding="ASCII">Failed: 0
 Test "BACnet ReadPropertyMultiple":
 	Passed: 73
 	Failed: 0
@@ -8985,6 +9683,8 @@ Test "BACnet Who-Has":
 Test "BACnet WriteProperty":
 	Passed: 183
 	Failed: 0</value>
+                                        </BACnetTagPayloadOctetString>
+                                      </payload>
                                     </BACnetApplicationTagOctetString>
                                   </BACnetApplicationTag>
                                 </fileData>
@@ -9080,8 +9780,12 @@ Test "BACnet WriteProperty":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagObjectIdentifier>
-                                <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
-                                <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                <payload>
+                                  <BACnetTagPayloadObjectIdentifier>
+                                    <objectType dataType="uint" bitLength="10" stringRepresentation="FILE">10</objectType>
+                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                  </BACnetTagPayloadObjectIdentifier>
+                                </payload>
                               </BACnetApplicationTagObjectIdentifier>
                             </BACnetApplicationTag>
                           </deviceIdentifier>
@@ -9112,7 +9816,11 @@ Test "BACnet WriteProperty":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagSignedInteger>
-                                <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                <payload>
+                                  <BACnetTagPayloadSignedInteger>
+                                    <valueInt8 dataType="int" bitLength="8">0</valueInt8>
+                                  </BACnetTagPayloadSignedInteger>
+                                </payload>
                               </BACnetApplicationTagSignedInteger>
                             </BACnetApplicationTag>
                           </fileStartPosition>
@@ -9130,7 +9838,9 @@ Test "BACnet WriteProperty":
                                 </BACnetTagHeader>
                               </header>
                               <BACnetApplicationTagOctetString>
-                                <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
+                                <payload>
+                                  <BACnetTagPayloadOctetString>
+                                    <value dataType="string" bitLength="3520" encoding="ASCII">Test "BACnet Abort":
 	Passed: 260107
 	Failed: 0
 Test "BACnet Address":
@@ -9155,6 +9865,8 @@ Test "BACnet AtomicWriteFile":
 	Passed: 25
 	Failed: 0
 Test "BACnet Applicat</value>
+                                  </BACnetTagPayloadOctetString>
+                                </payload>
                               </BACnetApplicationTagOctetString>
                             </BACnetApplicationTag>
                           </fileData>
@@ -9299,8 +10011,12 @@ Test "BACnet Applicat</value>
                                     </BACnetTagHeader>
                                   </header>
                                   <BACnetContextTagObjectIdentifier>
-                                    <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_INPUT">0</objectType>
-                                    <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                    <payload>
+                                      <BACnetTagPayloadObjectIdentifier>
+                                        <objectType dataType="uint" bitLength="10" stringRepresentation="ANALOG_INPUT">0</objectType>
+                                        <instanceNumber dataType="uint" bitLength="22">0</instanceNumber>
+                                      </BACnetTagPayloadObjectIdentifier>
+                                    </payload>
                                   </BACnetContextTagObjectIdentifier>
                                 </BACnetContextTag>
                               </objectIdentifier>

@@ -149,7 +149,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field")
 	}
@@ -162,7 +162,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}
@@ -259,7 +259,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("quitOnFailure"); pullErr != nil {
 		return nil, pullErr
 	}
-	_quitOnFailure, _quitOnFailureErr := BACnetContextTagParse(readBuffer, uint8(7), BACnetDataType_BOOLEAN)
+	_quitOnFailure, _quitOnFailureErr := BACnetContextTagParse(readBuffer, uint8(uint8(7)), BACnetDataType_BOOLEAN)
 	if _quitOnFailureErr != nil {
 		return nil, errors.Wrap(_quitOnFailureErr, "Error parsing 'quitOnFailure' field")
 	}
@@ -272,7 +272,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("writeSuccessful"); pullErr != nil {
 		return nil, pullErr
 	}
-	_writeSuccessful, _writeSuccessfulErr := BACnetContextTagParse(readBuffer, uint8(8), BACnetDataType_BOOLEAN)
+	_writeSuccessful, _writeSuccessfulErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType_BOOLEAN)
 	if _writeSuccessfulErr != nil {
 		return nil, errors.Wrap(_writeSuccessfulErr, "Error parsing 'writeSuccessful' field")
 	}

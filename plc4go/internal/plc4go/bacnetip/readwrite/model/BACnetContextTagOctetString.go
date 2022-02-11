@@ -29,8 +29,7 @@ import (
 // The data-structure of this message
 type BACnetContextTagOctetString struct {
 	*BACnetContextTag
-	Value             string
-	ActualLengthInBit uint16
+	Payload *BACnetTagPayloadOctetString
 }
 
 // The corresponding interface
@@ -54,11 +53,10 @@ func (m *BACnetContextTagOctetString) InitializeParent(parent *BACnetContextTag,
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
-func NewBACnetContextTagOctetString(value string, actualLengthInBit uint16, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+func NewBACnetContextTagOctetString(payload *BACnetTagPayloadOctetString, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagOctetString{
-		Value:             value,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		Payload:          payload,
+		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -94,10 +92,8 @@ func (m *BACnetContextTagOctetString) LengthInBits() uint16 {
 func (m *BACnetContextTagOctetString) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// A virtual field doesn't have any in- or output.
-
-	// Simple field (value)
-	lengthInBits += uint16(m.ActualLengthInBit)
+	// Simple field (payload)
+	lengthInBits += m.Payload.LengthInBits()
 
 	return lengthInBits
 }
@@ -106,7 +102,7 @@ func (m *BACnetContextTagOctetString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagOctetString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -116,16 +112,18 @@ func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 		return nil, utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"}
 	}
 
-	// Virtual field
-	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
-	actualLengthInBit := uint16(_actualLengthInBit)
-
-	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
 	}
-	value := _value
+	_payload, _payloadErr := BACnetTagPayloadOctetStringParse(readBuffer, uint32(header.ActualLength))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+	}
+	payload := CastBACnetTagPayloadOctetString(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagOctetString"); closeErr != nil {
 		return nil, closeErr
@@ -133,9 +131,8 @@ func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagOctetString{
-		Value:             value,
-		ActualLengthInBit: actualLengthInBit,
-		BACnetContextTag:  &BACnetContextTag{},
+		Payload:          CastBACnetTagPayloadOctetString(payload),
+		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
 	return _child.BACnetContextTag, nil
@@ -146,16 +143,17 @@ func (m *BACnetContextTagOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("BACnetContextTagOctetString"); pushErr != nil {
 			return pushErr
 		}
-		// Virtual field
-		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
-			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
-		}
 
-		// Simple Field (value)
-		value := string(m.Value)
-		_valueErr := writeBuffer.WriteString("value", uint32(m.ActualLengthInBit), "ASCII", (value))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagOctetString"); popErr != nil {

@@ -115,15 +115,15 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 	}
 
 	// Virtual field
-	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (0)))
+	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (0)))
 	isEnable := bool(_isEnable)
 
 	// Virtual field
-	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (1)))
+	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (1)))
 	isDisable := bool(_isDisable)
 
 	// Virtual field
-	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (2)))
+	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (2)))
 	isDisableInitiation := bool(_isDisableInitiation)
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); closeErr != nil {

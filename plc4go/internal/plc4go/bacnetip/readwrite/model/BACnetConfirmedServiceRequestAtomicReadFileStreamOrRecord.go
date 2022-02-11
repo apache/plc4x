@@ -119,7 +119,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, peekedTagHeader.ActualTagNumber, BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.ActualTagNumber), BACnetDataType_OPENING_TAG)
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -152,7 +152,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, peekedTagHeader.ActualTagNumber, BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.ActualTagNumber), BACnetDataType_CLOSING_TAG)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}

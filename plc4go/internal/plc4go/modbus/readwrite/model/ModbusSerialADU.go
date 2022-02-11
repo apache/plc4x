@@ -136,7 +136,7 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_pdu, _pduErr := ModbusPDUParse(readBuffer, response)
+	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}

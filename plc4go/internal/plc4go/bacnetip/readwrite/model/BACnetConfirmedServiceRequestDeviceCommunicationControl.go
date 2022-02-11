@@ -143,7 +143,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer, uint8(1))
+	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer, uint8(uint8(1)))
 	if _enableDisableErr != nil {
 		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field")
 	}

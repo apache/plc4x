@@ -143,9 +143,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
                 (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
 
-            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
-            int objectType = valueChange.getMonitoredObjectIdentifier().getObjectType().getValue();
-            long objectInstance = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
+            int objectType = valueChange.getMonitoredObjectIdentifier().getPayload().getObjectType().getValue();
+            long objectInstance = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
@@ -194,9 +194,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification valueChange =
                 (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) serviceRequest;
 
-            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
-            int objectType = valueChange.getMonitoredObjectIdentifier().getObjectType().getValue();
-            long objectInstance = valueChange.getMonitoredObjectIdentifier().getInstanceNumber();
+            long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
+            int objectType = valueChange.getMonitoredObjectIdentifier().getPayload().getObjectType().getValue();
+            long objectInstance = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.

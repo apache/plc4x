@@ -107,19 +107,19 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, 
 	}
 
 	// Virtual field
-	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (0)))
+	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (0)))
 	isSegmentedBoth := bool(_isSegmentedBoth)
 
 	// Virtual field
-	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (1)))
+	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (1)))
 	isSegmentedTransmit := bool(_isSegmentedTransmit)
 
 	// Virtual field
-	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (3)))
+	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (3)))
 	isSegmentedReceive := bool(_isSegmentedReceive)
 
 	// Virtual field
-	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (4)))
+	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (4)))
 	isNoSegmentation := bool(_isNoSegmentation)
 
 	if closeErr := readBuffer.CloseContext("BACnetSegmentation"); closeErr != nil {

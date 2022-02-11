@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type BACnetApplicationTagEnumerated struct {
 	*BACnetApplicationTag
-	Data        []byte
+	Payload     *BACnetTagPayloadEnumerated
 	ActualValue uint32
 }
 
@@ -53,9 +53,9 @@ func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicat
 	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
-func NewBACnetApplicationTagEnumerated(data []byte, actualValue uint32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, actualValue uint32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagEnumerated{
-		Data:                 data,
+		Payload:              payload,
 		ActualValue:          actualValue,
 		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
 	}
@@ -93,10 +93,8 @@ func (m *BACnetApplicationTagEnumerated) LengthInBits() uint16 {
 func (m *BACnetApplicationTagEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
+	// Simple field (payload)
+	lengthInBits += m.Payload.LengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -107,19 +105,26 @@ func (m *BACnetApplicationTagEnumerated) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(actualLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
+
+	// Simple Field (payload)
+	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
+	}
+	_payload, _payloadErr := BACnetTagPayloadEnumeratedParse(readBuffer, uint32(header.ActualLength))
+	if _payloadErr != nil {
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
+	}
+	payload := CastBACnetTagPayloadEnumerated(_payload)
+	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Virtual field
-	_actualValue := ParseVarUint(data)
+	_actualValue := payload.ActualValue
 	actualValue := uint32(_actualValue)
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagEnumerated"); closeErr != nil {
@@ -128,7 +133,7 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, actualLeng
 
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagEnumerated{
-		Data:                 data,
+		Payload:              CastBACnetTagPayloadEnumerated(payload),
 		ActualValue:          actualValue,
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
@@ -142,13 +147,16 @@ func (m *BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffer
 			return pushErr
 		}
 
-		// Array Field (data)
-		if m.Data != nil {
-			// Byte Array field (data)
-			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
-			}
+		// Simple Field (payload)
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
+		_payloadErr := m.Payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
+		if _payloadErr != nil {
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
 		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {

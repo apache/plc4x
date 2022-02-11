@@ -110,7 +110,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, pullErr
 	}
-	_command, _commandErr := SysexCommandParse(readBuffer, response)
+	_command, _commandErr := SysexCommandParse(readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field")
 	}

@@ -111,7 +111,7 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType_OPENING_TAG)
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -166,7 +166,7 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, tagNumber, BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType_CLOSING_TAG)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
