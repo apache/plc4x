@@ -191,6 +191,12 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
         AsciiBox virtualBox;
         if (value instanceof String) {
             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0);
+        } else if (value instanceof Float) {
+            Float number = (Float) value;
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%f%s", number, additionalStringRepresentation), 0);
+        } else if (value instanceof Double) {
+            Double number = (Double) value;
+            virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%f%s", number, additionalStringRepresentation), 0);
         } else if (value instanceof Number) {
             // TODO: adjust rendering
             Number number = (Number) value;
