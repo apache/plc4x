@@ -36,8 +36,15 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoIs interface {
+	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit
+	GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger
+	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit
+	GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,8 +55,27 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
 	return 0x08
 }
 
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetServiceChoice() uint8 {
+	return 0x08
+}
+
 func (m *BACnetUnconfirmedServiceRequestWhoIs) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeLowLimit
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeHighLimit
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoIs{

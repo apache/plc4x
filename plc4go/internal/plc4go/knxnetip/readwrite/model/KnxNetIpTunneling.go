@@ -34,8 +34,13 @@ type KnxNetIpTunneling struct {
 
 // The corresponding interface
 type IKnxNetIpTunneling interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetIpTunneling) ServiceType() uint8 {
 	return 0x04
 }
 
+func (m *KnxNetIpTunneling) GetServiceType() uint8 {
+	return 0x04
+}
+
 func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetIpTunneling) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetIpTunneling(version uint8) *ServiceId {
 	child := &KnxNetIpTunneling{

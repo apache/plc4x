@@ -33,9 +33,13 @@ type KnxGroupAddress struct {
 
 // The corresponding interface
 type IKnxGroupAddress interface {
+	// NumLevels returns NumLevels
 	NumLevels() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IKnxGroupAddressChild interface {
 	GetTypeName() string
 	IKnxGroupAddress
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxGroupAddress() *KnxGroupAddress {
 	return &KnxGroupAddress{}

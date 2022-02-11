@@ -34,8 +34,13 @@ type BACnetContextTagNotifyType struct {
 
 // The corresponding interface
 type IBACnetContextTagNotifyType interface {
+	// GetValue returns Value
+	GetValue() BACnetNotifyType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetContextTagNotifyType) DataType() BACnetDataType {
 	return BACnetDataType_NOTIFY_TYPE
 }
 
+func (m *BACnetContextTagNotifyType) GetDataType() BACnetDataType {
+	return BACnetDataType_NOTIFY_TYPE
+}
+
 func (m *BACnetContextTagNotifyType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagNotifyType) GetValue() BACnetNotifyType {
+	return m.Value
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagNotifyType{

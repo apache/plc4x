@@ -32,8 +32,11 @@ type BACnetErrorAcknowledgeAlarm struct {
 
 // The corresponding interface
 type IBACnetErrorAcknowledgeAlarm interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,10 +47,22 @@ func (m *BACnetErrorAcknowledgeAlarm) ServiceChoice() uint8 {
 	return 0x00
 }
 
+func (m *BACnetErrorAcknowledgeAlarm) GetServiceChoice() uint8 {
+	return 0x00
+}
+
 func (m *BACnetErrorAcknowledgeAlarm) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetErrorAcknowledgeAlarm(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorAcknowledgeAlarm{

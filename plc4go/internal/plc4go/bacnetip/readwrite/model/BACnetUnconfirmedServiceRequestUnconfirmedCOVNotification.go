@@ -38,8 +38,21 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetMonitoredDeviceIdentifier returns MonitoredDeviceIdentifier
+	GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetLifetimeInSeconds returns LifetimeInSeconds
+	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
+	// GetListOfValues returns ListOfValues
+	GetListOfValues() *BACnetPropertyValues
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,8 +63,39 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoic
 	return 0x02
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetServiceChoice() uint8 {
+	return 0x02
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.SubscriberProcessIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredDeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredObjectIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger {
+	return m.LifetimeInSeconds
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetListOfValues() *BACnetPropertyValues {
+	return m.ListOfValues
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{

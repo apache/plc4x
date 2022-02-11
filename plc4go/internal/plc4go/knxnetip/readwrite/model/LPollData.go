@@ -37,8 +37,17 @@ type LPollData struct {
 
 // The corresponding interface
 type ILPollData interface {
+	// GetSourceAddress returns SourceAddress
+	GetSourceAddress() *KnxAddress
+	// GetTargetAddress returns TargetAddress
+	GetTargetAddress() []byte
+	// GetNumberExpectedPollData returns NumberExpectedPollData
+	GetNumberExpectedPollData() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,7 +58,15 @@ func (m *LPollData) NotAckFrame() bool {
 	return bool(true)
 }
 
+func (m *LPollData) GetNotAckFrame() bool {
+	return bool(true)
+}
+
 func (m *LPollData) Polling() bool {
+	return bool(true)
+}
+
+func (m *LPollData) GetPolling() bool {
 	return bool(true)
 }
 
@@ -60,6 +77,25 @@ func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepe
 	m.LDataFrame.AcknowledgeRequested = acknowledgeRequested
 	m.LDataFrame.ErrorFlag = errorFlag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LPollData) GetSourceAddress() *KnxAddress {
+	return m.SourceAddress
+}
+
+func (m *LPollData) GetTargetAddress() []byte {
+	return m.TargetAddress
+}
+
+func (m *LPollData) GetNumberExpectedPollData() uint8 {
+	return m.NumberExpectedPollData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LPollData{

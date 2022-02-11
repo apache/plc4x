@@ -35,8 +35,15 @@ type FirmataMessageDigitalIO struct {
 
 // The corresponding interface
 type IFirmataMessageDigitalIO interface {
+	// GetPinBlock returns PinBlock
+	GetPinBlock() uint8
+	// GetData returns Data
+	GetData() []int8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *FirmataMessageDigitalIO) MessageType() uint8 {
 	return 0x9
 }
 
+func (m *FirmataMessageDigitalIO) GetMessageType() uint8 {
+	return 0x9
+}
+
 func (m *FirmataMessageDigitalIO) InitializeParent(parent *FirmataMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataMessageDigitalIO) GetPinBlock() uint8 {
+	return m.PinBlock
+}
+
+func (m *FirmataMessageDigitalIO) GetData() []int8 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageDigitalIO{

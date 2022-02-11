@@ -32,8 +32,11 @@ type SysexCommandAnalogMappingResponse struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingResponse interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandAnalogMappingResponse) CommandType() uint8 {
 	return 0x6A
 }
 
+func (m *SysexCommandAnalogMappingResponse) GetCommandType() uint8 {
+	return 0x6A
+}
+
 func (m *SysexCommandAnalogMappingResponse) Response() bool {
 	return false
 }
 
+func (m *SysexCommandAnalogMappingResponse) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandAnalogMappingResponse() *SysexCommand {
 	child := &SysexCommandAnalogMappingResponse{

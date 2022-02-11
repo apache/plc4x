@@ -35,8 +35,13 @@ type ConnectionRequestInformationTunnelConnection struct {
 
 // The corresponding interface
 type IConnectionRequestInformationTunnelConnection interface {
+	// GetKnxLayer returns KnxLayer
+	GetKnxLayer() KnxLayer
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,8 +52,23 @@ func (m *ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
 	return 0x04
 }
 
+func (m *ConnectionRequestInformationTunnelConnection) GetConnectionType() uint8 {
+	return 0x04
+}
+
 func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *ConnectionRequestInformation) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionRequestInformationTunnelConnection) GetKnxLayer() KnxLayer {
+	return m.KnxLayer
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationTunnelConnection{

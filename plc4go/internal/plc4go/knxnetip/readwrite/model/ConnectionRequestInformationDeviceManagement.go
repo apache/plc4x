@@ -32,8 +32,11 @@ type ConnectionRequestInformationDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *ConnectionRequestInformationDeviceManagement) ConnectionType() uint8 {
 	return 0x03
 }
 
+func (m *ConnectionRequestInformationDeviceManagement) GetConnectionType() uint8 {
+	return 0x03
+}
+
 func (m *ConnectionRequestInformationDeviceManagement) InitializeParent(parent *ConnectionRequestInformation) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationDeviceManagement{

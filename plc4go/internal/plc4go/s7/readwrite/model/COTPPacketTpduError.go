@@ -35,8 +35,15 @@ type COTPPacketTpduError struct {
 
 // The corresponding interface
 type ICOTPPacketTpduError interface {
+	// GetDestinationReference returns DestinationReference
+	GetDestinationReference() uint16
+	// GetRejectCause returns RejectCause
+	GetRejectCause() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *COTPPacketTpduError) TpduCode() uint8 {
 	return 0x70
 }
 
+func (m *COTPPacketTpduError) GetTpduCode() uint8 {
+	return 0x70
+}
+
 func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPPacketTpduError) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketTpduError) GetRejectCause() uint8 {
+	return m.RejectCause
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	child := &COTPPacketTpduError{

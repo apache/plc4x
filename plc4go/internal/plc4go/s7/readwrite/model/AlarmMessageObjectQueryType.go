@@ -45,10 +45,68 @@ type AlarmMessageObjectQueryType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectQueryType interface {
+	// GetLengthDataset returns LengthDataset
+	GetLengthDataset() uint8
+	// GetEventState returns EventState
+	GetEventState() *State
+	// GetAckStateGoing returns AckStateGoing
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing
+	GetAckStateComing() *State
+	// GetTimeComing returns TimeComing
+	GetTimeComing() *DateAndTime
+	// GetValueComing returns ValueComing
+	GetValueComing() *AssociatedValueType
+	// GetTimeGoing returns TimeGoing
+	GetTimeGoing() *DateAndTime
+	// GetValueGoing returns ValueGoing
+	GetValueGoing() *AssociatedValueType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
+	return m.LengthDataset
+}
+
+func (m *AlarmMessageObjectQueryType) GetEventState() *State {
+	return m.EventState
+}
+
+func (m *AlarmMessageObjectQueryType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageObjectQueryType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetTimeComing() *DateAndTime {
+	return m.TimeComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetValueComing() *AssociatedValueType {
+	return m.ValueComing
+}
+
+func (m *AlarmMessageObjectQueryType) GetTimeGoing() *DateAndTime {
+	return m.TimeGoing
+}
+
+func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
+	return m.ValueGoing
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState *State, ackStateGoing *State, ackStateComing *State, timeComing *DateAndTime, valueComing *AssociatedValueType, timeGoing *DateAndTime, valueGoing *AssociatedValueType) *AlarmMessageObjectQueryType {
 	return &AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}

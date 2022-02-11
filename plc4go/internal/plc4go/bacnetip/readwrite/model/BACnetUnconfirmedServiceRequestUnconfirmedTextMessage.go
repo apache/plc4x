@@ -32,8 +32,11 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) ServiceChoice() 
 	return 0x05
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetServiceChoice() uint8 {
+	return 0x05
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{

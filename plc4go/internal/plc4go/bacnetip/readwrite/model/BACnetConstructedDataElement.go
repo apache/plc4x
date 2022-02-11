@@ -41,9 +41,70 @@ type BACnetConstructedDataElement struct {
 
 // The corresponding interface
 type IBACnetConstructedDataElement interface {
+	// GetPeekedTagHeader returns PeekedTagHeader
+	GetPeekedTagHeader() *BACnetTagHeader
+	// GetApplicationTag returns ApplicationTag
+	GetApplicationTag() *BACnetApplicationTag
+	// GetContextTag returns ContextTag
+	GetContextTag() *BACnetContextTag
+	// GetConstructedData returns ConstructedData
+	GetConstructedData() *BACnetConstructedData
+	// GetPeekedTagNumber returns PeekedTagNumber
+	GetPeekedTagNumber() uint8
+	// GetIsApplicationTag returns IsApplicationTag
+	GetIsApplicationTag() bool
+	// GetIsConstructedData returns IsConstructedData
+	GetIsConstructedData() bool
+	// GetIsContextTag returns IsContextTag
+	GetIsContextTag() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataElement) GetPeekedTagHeader() *BACnetTagHeader {
+	return m.PeekedTagHeader
+}
+
+func (m *BACnetConstructedDataElement) GetApplicationTag() *BACnetApplicationTag {
+	return m.ApplicationTag
+}
+
+func (m *BACnetConstructedDataElement) GetContextTag() *BACnetContextTag {
+	return m.ContextTag
+}
+
+func (m *BACnetConstructedDataElement) GetConstructedData() *BACnetConstructedData {
+	return m.ConstructedData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.PeekedTagNumber
+}
+
+func (m *BACnetConstructedDataElement) GetIsApplicationTag() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsApplicationTag
+}
+
+func (m *BACnetConstructedDataElement) GetIsConstructedData() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsConstructedData
+}
+
+func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsContextTag
 }
 
 func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, peekedTagNumber uint8, isApplicationTag bool, isConstructedData bool, isContextTag bool) *BACnetConstructedDataElement {

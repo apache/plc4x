@@ -38,10 +38,50 @@ type NPDUControl struct {
 
 // The corresponding interface
 type INPDUControl interface {
+	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent
+	GetMessageTypeFieldPresent() bool
+	// GetDestinationSpecified returns DestinationSpecified
+	GetDestinationSpecified() bool
+	// GetSourceSpecified returns SourceSpecified
+	GetSourceSpecified() bool
+	// GetExpectingReply returns ExpectingReply
+	GetExpectingReply() bool
+	// GetNetworkPriority returns NetworkPriority
+	GetNetworkPriority() NPDUNetworkPriority
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NPDUControl) GetMessageTypeFieldPresent() bool {
+	return m.MessageTypeFieldPresent
+}
+
+func (m *NPDUControl) GetDestinationSpecified() bool {
+	return m.DestinationSpecified
+}
+
+func (m *NPDUControl) GetSourceSpecified() bool {
+	return m.SourceSpecified
+}
+
+func (m *NPDUControl) GetExpectingReply() bool {
+	return m.ExpectingReply
+}
+
+func (m *NPDUControl) GetNetworkPriority() NPDUNetworkPriority {
+	return m.NetworkPriority
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *NPDUControl {
 	return &NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}

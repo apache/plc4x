@@ -42,10 +42,56 @@ type AlarmMessageAckObjectPushType struct {
 
 // The corresponding interface
 type IAlarmMessageAckObjectPushType interface {
+	// GetLengthSpec returns LengthSpec
+	GetLengthSpec() uint8
+	// GetSyntaxId returns SyntaxId
+	GetSyntaxId() SyntaxIdType
+	// GetNumberOfValues returns NumberOfValues
+	GetNumberOfValues() uint8
+	// GetEventId returns EventId
+	GetEventId() uint32
+	// GetAckStateGoing returns AckStateGoing
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing
+	GetAckStateComing() *State
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageAckObjectPushType) GetLengthSpec() uint8 {
+	return m.LengthSpec
+}
+
+func (m *AlarmMessageAckObjectPushType) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *AlarmMessageAckObjectPushType) GetNumberOfValues() uint8 {
+	return m.NumberOfValues
+}
+
+func (m *AlarmMessageAckObjectPushType) GetEventId() uint32 {
+	return m.EventId
+}
+
+func (m *AlarmMessageAckObjectPushType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageAckObjectPushType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing *State, ackStateComing *State) *AlarmMessageAckObjectPushType {
 	return &AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}

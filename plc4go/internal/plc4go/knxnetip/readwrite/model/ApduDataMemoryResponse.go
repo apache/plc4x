@@ -35,8 +35,15 @@ type ApduDataMemoryResponse struct {
 
 // The corresponding interface
 type IApduDataMemoryResponse interface {
+	// GetAddress returns Address
+	GetAddress() uint16
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ApduDataMemoryResponse) ApciType() uint8 {
 	return 0x9
 }
 
+func (m *ApduDataMemoryResponse) GetApciType() uint8 {
+	return 0x9
+}
+
 func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataMemoryResponse) GetAddress() uint16 {
+	return m.Address
+}
+
+func (m *ApduDataMemoryResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
 	child := &ApduDataMemoryResponse{

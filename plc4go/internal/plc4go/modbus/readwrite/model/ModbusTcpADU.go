@@ -39,10 +39,38 @@ type ModbusTcpADU struct {
 
 // The corresponding interface
 type IModbusTcpADU interface {
+	// GetTransactionIdentifier returns TransactionIdentifier
+	GetTransactionIdentifier() uint16
+	// GetUnitIdentifier returns UnitIdentifier
+	GetUnitIdentifier() uint8
+	// GetPdu returns Pdu
+	GetPdu() *ModbusPDU
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusTcpADU) GetTransactionIdentifier() uint16 {
+	return m.TransactionIdentifier
+}
+
+func (m *ModbusTcpADU) GetUnitIdentifier() uint8 {
+	return m.UnitIdentifier
+}
+
+func (m *ModbusTcpADU) GetPdu() *ModbusPDU {
+	return m.Pdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *ModbusPDU) *ModbusTcpADU {
 	return &ModbusTcpADU{TransactionIdentifier: transactionIdentifier, UnitIdentifier: unitIdentifier, Pdu: pdu}

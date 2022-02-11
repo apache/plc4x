@@ -33,9 +33,13 @@ type ComObjectTable struct {
 
 // The corresponding interface
 type IComObjectTable interface {
+	// FirmwareType returns FirmwareType
 	FirmwareType() FirmwareType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IComObjectTableChild interface {
 	GetTypeName() string
 	IComObjectTable
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewComObjectTable() *ComObjectTable {
 	return &ComObjectTable{}

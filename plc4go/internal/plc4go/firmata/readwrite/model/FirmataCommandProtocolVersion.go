@@ -35,8 +35,15 @@ type FirmataCommandProtocolVersion struct {
 
 // The corresponding interface
 type IFirmataCommandProtocolVersion interface {
+	// GetMajorVersion returns MajorVersion
+	GetMajorVersion() uint8
+	// GetMinorVersion returns MinorVersion
+	GetMinorVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *FirmataCommandProtocolVersion) CommandCode() uint8 {
 	return 0x9
 }
 
+func (m *FirmataCommandProtocolVersion) GetCommandCode() uint8 {
+	return 0x9
+}
+
 func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataCommandProtocolVersion) GetMajorVersion() uint8 {
+	return m.MajorVersion
+}
+
+func (m *FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
+	return m.MinorVersion
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *FirmataCommand {
 	child := &FirmataCommandProtocolVersion{

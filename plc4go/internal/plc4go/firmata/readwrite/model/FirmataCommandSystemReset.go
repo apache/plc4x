@@ -32,8 +32,11 @@ type FirmataCommandSystemReset struct {
 
 // The corresponding interface
 type IFirmataCommandSystemReset interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *FirmataCommandSystemReset) CommandCode() uint8 {
 	return 0xF
 }
 
+func (m *FirmataCommandSystemReset) GetCommandCode() uint8 {
+	return 0xF
+}
+
 func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataCommandSystemReset() *FirmataCommand {
 	child := &FirmataCommandSystemReset{

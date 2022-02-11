@@ -32,8 +32,11 @@ type MFuncPropCon struct {
 
 // The corresponding interface
 type IMFuncPropCon interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MFuncPropCon) MessageCode() uint8 {
 	return 0xFA
 }
 
+func (m *MFuncPropCon) GetMessageCode() uint8 {
+	return 0xFA
+}
+
 func (m *MFuncPropCon) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMFuncPropCon() *CEMI {
 	child := &MFuncPropCon{

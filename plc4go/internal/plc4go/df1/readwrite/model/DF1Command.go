@@ -35,9 +35,17 @@ type DF1Command struct {
 
 // The corresponding interface
 type IDF1Command interface {
+	// CommandCode returns CommandCode
 	CommandCode() uint8
+	// GetStatus returns Status
+	GetStatus() uint8
+	// GetTransactionCounter returns TransactionCounter
+	GetTransactionCounter() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,6 +60,21 @@ type IDF1CommandChild interface {
 	GetTypeName() string
 	IDF1Command
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1Command) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *DF1Command) GetTransactionCounter() uint16 {
+	return m.TransactionCounter
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1Command(status uint8, transactionCounter uint16) *DF1Command {
 	return &DF1Command{Status: status, TransactionCounter: transactionCounter}

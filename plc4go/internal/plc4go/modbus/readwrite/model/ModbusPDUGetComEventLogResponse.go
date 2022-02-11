@@ -37,8 +37,19 @@ type ModbusPDUGetComEventLogResponse struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
+	// GetStatus returns Status
+	GetStatus() uint16
+	// GetEventCount returns EventCount
+	GetEventCount() uint16
+	// GetMessageCount returns MessageCount
+	GetMessageCount() uint16
+	// GetEvents returns Events
+	GetEvents() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,7 +60,15 @@ func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUGetComEventLogResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
+	return 0x0C
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetFunctionFlag() uint8 {
 	return 0x0C
 }
 
@@ -57,7 +76,34 @@ func (m *ModbusPDUGetComEventLogResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUGetComEventLogResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUGetComEventLogResponse) GetStatus() uint16 {
+	return m.Status
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetEventCount() uint16 {
+	return m.EventCount
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetMessageCount() uint16 {
+	return m.MessageCount
+}
+
+func (m *ModbusPDUGetComEventLogResponse) GetEvents() []byte {
+	return m.Events
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDU {
 	child := &ModbusPDUGetComEventLogResponse{

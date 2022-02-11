@@ -38,8 +38,19 @@ type ConnectionResponse struct {
 
 // The corresponding interface
 type IConnectionResponse interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetStatus returns Status
+	GetStatus() Status
+	// GetHpaiDataEndpoint returns HpaiDataEndpoint
+	GetHpaiDataEndpoint() *HPAIDataEndpoint
+	// GetConnectionResponseDataBlock returns ConnectionResponseDataBlock
+	GetConnectionResponseDataBlock() *ConnectionResponseDataBlock
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +61,34 @@ func (m *ConnectionResponse) MsgType() uint16 {
 	return 0x0206
 }
 
+func (m *ConnectionResponse) GetMsgType() uint16 {
+	return 0x0206
+}
+
 func (m *ConnectionResponse) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionResponse) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *ConnectionResponse) GetStatus() Status {
+	return m.Status
+}
+
+func (m *ConnectionResponse) GetHpaiDataEndpoint() *HPAIDataEndpoint {
+	return m.HpaiDataEndpoint
+}
+
+func (m *ConnectionResponse) GetConnectionResponseDataBlock() *ConnectionResponseDataBlock {
+	return m.ConnectionResponseDataBlock
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock) *KnxNetIpMessage {
 	child := &ConnectionResponse{

@@ -35,8 +35,15 @@ type ApduDataDeviceDescriptorResponse struct {
 
 // The corresponding interface
 type IApduDataDeviceDescriptorResponse interface {
+	// GetDescriptorType returns DescriptorType
+	GetDescriptorType() uint8
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ApduDataDeviceDescriptorResponse) ApciType() uint8 {
 	return 0xD
 }
 
+func (m *ApduDataDeviceDescriptorResponse) GetApciType() uint8 {
+	return 0xD
+}
+
 func (m *ApduDataDeviceDescriptorResponse) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataDeviceDescriptorResponse) GetDescriptorType() uint8 {
+	return m.DescriptorType
+}
+
+func (m *ApduDataDeviceDescriptorResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte) *ApduData {
 	child := &ApduDataDeviceDescriptorResponse{

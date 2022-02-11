@@ -40,10 +40,68 @@ type GroupObjectDescriptorRealisationTypeB struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationTypeB interface {
+	// GetUpdateEnable returns UpdateEnable
+	GetUpdateEnable() bool
+	// GetTransmitEnable returns TransmitEnable
+	GetTransmitEnable() bool
+	// GetSegmentSelectorEnable returns SegmentSelectorEnable
+	GetSegmentSelectorEnable() bool
+	// GetWriteEnable returns WriteEnable
+	GetWriteEnable() bool
+	// GetReadEnable returns ReadEnable
+	GetReadEnable() bool
+	// GetCommunicationEnable returns CommunicationEnable
+	GetCommunicationEnable() bool
+	// GetPriority returns Priority
+	GetPriority() CEMIPriority
+	// GetValueType returns ValueType
+	GetValueType() ComObjectValueType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *GroupObjectDescriptorRealisationTypeB) GetUpdateEnable() bool {
+	return m.UpdateEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetTransmitEnable() bool {
+	return m.TransmitEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetSegmentSelectorEnable() bool {
+	return m.SegmentSelectorEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetWriteEnable() bool {
+	return m.WriteEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetReadEnable() bool {
+	return m.ReadEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetCommunicationEnable() bool {
+	return m.CommunicationEnable
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetPriority() CEMIPriority {
+	return m.Priority
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) GetValueType() ComObjectValueType {
+	return m.ValueType
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewGroupObjectDescriptorRealisationTypeB(updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationTypeB {
 	return &GroupObjectDescriptorRealisationTypeB{UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}

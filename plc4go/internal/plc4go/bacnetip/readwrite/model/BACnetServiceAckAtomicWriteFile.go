@@ -34,8 +34,13 @@ type BACnetServiceAckAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
+	// GetFileStartPosition returns FileStartPosition
+	GetFileStartPosition() *BACnetContextTagSignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
 	return 0x07
 }
 
+func (m *BACnetServiceAckAtomicWriteFile) GetServiceChoice() uint8 {
+	return 0x07
+}
+
 func (m *BACnetServiceAckAtomicWriteFile) InitializeParent(parent *BACnetServiceAck) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicWriteFile) GetFileStartPosition() *BACnetContextTagSignedInteger {
+	return m.FileStartPosition
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicWriteFile{

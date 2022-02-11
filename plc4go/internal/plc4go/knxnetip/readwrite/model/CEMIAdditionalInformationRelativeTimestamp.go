@@ -38,8 +38,13 @@ type CEMIAdditionalInformationRelativeTimestamp struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformationRelativeTimestamp interface {
+	// GetRelativeTimestamp returns RelativeTimestamp
+	GetRelativeTimestamp() *RelativeTimestamp
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,8 +55,23 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) AdditionalInformationType()
 	return 0x04
 }
 
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationType() uint8 {
+	return 0x04
+}
+
 func (m *CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent *CEMIAdditionalInformation) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *RelativeTimestamp {
+	return m.RelativeTimestamp
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp *RelativeTimestamp) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationRelativeTimestamp{

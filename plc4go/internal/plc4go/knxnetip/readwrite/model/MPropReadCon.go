@@ -39,8 +39,23 @@ type MPropReadCon struct {
 
 // The corresponding interface
 type IMPropReadCon interface {
+	// GetInterfaceObjectType returns InterfaceObjectType
+	GetInterfaceObjectType() uint16
+	// GetObjectInstance returns ObjectInstance
+	GetObjectInstance() uint8
+	// GetPropertyId returns PropertyId
+	GetPropertyId() uint8
+	// GetNumberOfElements returns NumberOfElements
+	GetNumberOfElements() uint8
+	// GetStartIndex returns StartIndex
+	GetStartIndex() uint16
+	// GetData returns Data
+	GetData() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,7 +66,42 @@ func (m *MPropReadCon) MessageCode() uint8 {
 	return 0xFB
 }
 
+func (m *MPropReadCon) GetMessageCode() uint8 {
+	return 0xFB
+}
+
 func (m *MPropReadCon) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *MPropReadCon) GetInterfaceObjectType() uint16 {
+	return m.InterfaceObjectType
+}
+
+func (m *MPropReadCon) GetObjectInstance() uint8 {
+	return m.ObjectInstance
+}
+
+func (m *MPropReadCon) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *MPropReadCon) GetNumberOfElements() uint8 {
+	return m.NumberOfElements
+}
+
+func (m *MPropReadCon) GetStartIndex() uint16 {
+	return m.StartIndex
+}
+
+func (m *MPropReadCon) GetData() uint16 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) *CEMI {
 	child := &MPropReadCon{

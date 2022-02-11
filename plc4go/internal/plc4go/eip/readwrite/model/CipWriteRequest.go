@@ -38,8 +38,21 @@ type CipWriteRequest struct {
 
 // The corresponding interface
 type ICipWriteRequest interface {
+	// GetRequestPathSize returns RequestPathSize
+	GetRequestPathSize() int8
+	// GetTag returns Tag
+	GetTag() []byte
+	// GetDataType returns DataType
+	GetDataType() CIPDataTypeCode
+	// GetElementNb returns ElementNb
+	GetElementNb() uint16
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +63,38 @@ func (m *CipWriteRequest) Service() uint8 {
 	return 0x4D
 }
 
+func (m *CipWriteRequest) GetService() uint8 {
+	return 0x4D
+}
+
 func (m *CipWriteRequest) InitializeParent(parent *CipService) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CipWriteRequest) GetRequestPathSize() int8 {
+	return m.RequestPathSize
+}
+
+func (m *CipWriteRequest) GetTag() []byte {
+	return m.Tag
+}
+
+func (m *CipWriteRequest) GetDataType() CIPDataTypeCode {
+	return m.DataType
+}
+
+func (m *CipWriteRequest) GetElementNb() uint16 {
+	return m.ElementNb
+}
+
+func (m *CipWriteRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *CipService {
 	child := &CipWriteRequest{

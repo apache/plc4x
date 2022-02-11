@@ -34,8 +34,13 @@ type SearchRequest struct {
 
 // The corresponding interface
 type ISearchRequest interface {
+	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint
+	GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *SearchRequest) MsgType() uint16 {
 	return 0x0201
 }
 
+func (m *SearchRequest) GetMsgType() uint16 {
+	return 0x0201
+}
+
 func (m *SearchRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SearchRequest) GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
+	return m.HpaiIDiscoveryEndpoint
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *KnxNetIpMessage {
 	child := &SearchRequest{

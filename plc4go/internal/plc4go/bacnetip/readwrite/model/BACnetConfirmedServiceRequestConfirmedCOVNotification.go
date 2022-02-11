@@ -38,8 +38,21 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotification interface {
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetIssueConfirmed returns IssueConfirmed
+	GetIssueConfirmed() *BACnetContextTagBoolean
+	// GetLifetimeInSeconds returns LifetimeInSeconds
+	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
+	// GetListOfValues returns ListOfValues
+	GetListOfValues() *BACnetPropertyValues
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,8 +63,39 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) ServiceChoice() 
 	return 0x01
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetServiceChoice() uint8 {
+	return 0x01
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.SubscriberProcessIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredObjectIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetIssueConfirmed() *BACnetContextTagBoolean {
+	return m.IssueConfirmed
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger {
+	return m.LifetimeInSeconds
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetListOfValues() *BACnetPropertyValues {
+	return m.ListOfValues
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{

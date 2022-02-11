@@ -36,8 +36,17 @@ type ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 
 // The corresponding interface
 type IModbusPDUWriteMultipleHoldingRegistersRequest interface {
+	// GetStartingAddress returns StartingAddress
+	GetStartingAddress() uint16
+	// GetQuantity returns Quantity
+	GetQuantity() uint16
+	// GetValue returns Value
+	GetValue() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,15 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) FunctionFlag() uint8 {
+	return 0x10
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetFunctionFlag() uint8 {
 	return 0x10
 }
 
@@ -56,7 +73,30 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetStartingAddress() uint16 {
+	return m.StartingAddress
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetQuantity() uint16 {
+	return m.Quantity
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, quantity uint16, value []byte) *ModbusPDU {
 	child := &ModbusPDUWriteMultipleHoldingRegistersRequest{

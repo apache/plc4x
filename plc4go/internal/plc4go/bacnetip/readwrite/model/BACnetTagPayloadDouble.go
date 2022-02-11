@@ -33,10 +33,26 @@ type BACnetTagPayloadDouble struct {
 
 // The corresponding interface
 type IBACnetTagPayloadDouble interface {
+	// GetValue returns Value
+	GetValue() float64
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadDouble) GetValue() float64 {
+	return m.Value
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetTagPayloadDouble(value float64) *BACnetTagPayloadDouble {
 	return &BACnetTagPayloadDouble{Value: value}

@@ -36,8 +36,15 @@ type FirmataMessageSubscribeAnalogPinValue struct {
 
 // The corresponding interface
 type IFirmataMessageSubscribeAnalogPinValue interface {
+	// GetPin returns Pin
+	GetPin() uint8
+	// GetEnable returns Enable
+	GetEnable() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *FirmataMessageSubscribeAnalogPinValue) MessageType() uint8 {
 	return 0xC
 }
 
+func (m *FirmataMessageSubscribeAnalogPinValue) GetMessageType() uint8 {
+	return 0xC
+}
+
 func (m *FirmataMessageSubscribeAnalogPinValue) InitializeParent(parent *FirmataMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataMessageSubscribeAnalogPinValue) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataMessageSubscribeAnalogPinValue) GetEnable() bool {
+	return m.Enable
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool) *FirmataMessage {
 	child := &FirmataMessageSubscribeAnalogPinValue{

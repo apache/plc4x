@@ -35,8 +35,15 @@ type AdsReadWriteResponse struct {
 
 // The corresponding interface
 type IAdsReadWriteResponse interface {
+	// GetResult returns Result
+	GetResult() ReturnCode
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,11 +54,34 @@ func (m *AdsReadWriteResponse) CommandId() CommandId {
 	return CommandId_ADS_READ_WRITE
 }
 
+func (m *AdsReadWriteResponse) GetCommandId() CommandId {
+	return CommandId_ADS_READ_WRITE
+}
+
 func (m *AdsReadWriteResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *AdsReadWriteResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *AdsReadWriteResponse) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsReadWriteResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+func (m *AdsReadWriteResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadWriteResponse(result ReturnCode, data []byte) *AdsData {
 	child := &AdsReadWriteResponse{

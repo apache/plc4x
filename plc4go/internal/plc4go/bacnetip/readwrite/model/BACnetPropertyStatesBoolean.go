@@ -35,8 +35,13 @@ type BACnetPropertyStatesBoolean struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesBoolean interface {
+	// GetBooleanValue returns BooleanValue
+	GetBooleanValue() *BACnetContextTagBoolean
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +52,27 @@ func (m *BACnetPropertyStatesBoolean) PeekedTagNumber() uint8 {
 	return uint8(0)
 }
 
+func (m *BACnetPropertyStatesBoolean) GetPeekedTagNumber() uint8 {
+	return uint8(0)
+}
+
 func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetPropertyStates.OpeningTag = openingTag
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
 	m.BACnetPropertyStates.ClosingTag = closingTag
 	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyStatesBoolean) GetBooleanValue() *BACnetContextTagBoolean {
+	return m.BooleanValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
 	child := &BACnetPropertyStatesBoolean{

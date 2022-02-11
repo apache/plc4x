@@ -32,8 +32,11 @@ type MResetReq struct {
 
 // The corresponding interface
 type IMResetReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MResetReq) MessageCode() uint8 {
 	return 0xF1
 }
 
+func (m *MResetReq) GetMessageCode() uint8 {
+	return 0xF1
+}
+
 func (m *MResetReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMResetReq() *CEMI {
 	child := &MResetReq{

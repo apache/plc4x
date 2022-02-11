@@ -32,8 +32,11 @@ type BACnetClosingTag struct {
 
 // The corresponding interface
 type IBACnetClosingTag interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,12 +47,24 @@ func (m *BACnetClosingTag) DataType() BACnetDataType {
 	return BACnetDataType_CLOSING_TAG
 }
 
+func (m *BACnetClosingTag) GetDataType() BACnetDataType {
+	return BACnetDataType_CLOSING_TAG
+}
+
 func (m *BACnetClosingTag) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetClosingTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetClosingTag{

@@ -36,10 +36,44 @@ type AlarmMessagePushType struct {
 
 // The corresponding interface
 type IAlarmMessagePushType interface {
+	// GetTimeStamp returns TimeStamp
+	GetTimeStamp() *DateAndTime
+	// GetFunctionId returns FunctionId
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects
+	GetNumberOfObjects() uint8
+	// GetMessageObjects returns MessageObjects
+	GetMessageObjects() []*AlarmMessageObjectPushType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessagePushType) GetTimeStamp() *DateAndTime {
+	return m.TimeStamp
+}
+
+func (m *AlarmMessagePushType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessagePushType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessagePushType) GetMessageObjects() []*AlarmMessageObjectPushType {
+	return m.MessageObjects
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessagePushType(TimeStamp *DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []*AlarmMessageObjectPushType) *AlarmMessagePushType {
 	return &AlarmMessagePushType{TimeStamp: TimeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}

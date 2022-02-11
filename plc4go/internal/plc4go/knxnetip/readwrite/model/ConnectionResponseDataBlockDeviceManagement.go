@@ -32,8 +32,11 @@ type ConnectionResponseDataBlockDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *ConnectionResponseDataBlockDeviceManagement) ConnectionType() uint8 {
 	return 0x03
 }
 
+func (m *ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8 {
+	return 0x03
+}
+
 func (m *ConnectionResponseDataBlockDeviceManagement) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockDeviceManagement{

@@ -34,8 +34,13 @@ type AdsDeleteDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsDeleteDeviceNotificationRequest interface {
+	// GetNotificationHandle returns NotificationHandle
+	GetNotificationHandle() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,30 @@ func (m *AdsDeleteDeviceNotificationRequest) CommandId() CommandId {
 	return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
 }
 
+func (m *AdsDeleteDeviceNotificationRequest) GetCommandId() CommandId {
+	return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+}
+
 func (m *AdsDeleteDeviceNotificationRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsDeleteDeviceNotificationRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsDeleteDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
+	return m.NotificationHandle
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
 	child := &AdsDeleteDeviceNotificationRequest{

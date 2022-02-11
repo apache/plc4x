@@ -32,8 +32,11 @@ type RoutingIndication struct {
 
 // The corresponding interface
 type IRoutingIndication interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *RoutingIndication) MsgType() uint16 {
 	return 0x0530
 }
 
+func (m *RoutingIndication) GetMsgType() uint16 {
+	return 0x0530
+}
+
 func (m *RoutingIndication) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewRoutingIndication() *KnxNetIpMessage {
 	child := &RoutingIndication{

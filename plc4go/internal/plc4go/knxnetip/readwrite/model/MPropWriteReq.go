@@ -32,8 +32,11 @@ type MPropWriteReq struct {
 
 // The corresponding interface
 type IMPropWriteReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MPropWriteReq) MessageCode() uint8 {
 	return 0xF6
 }
 
+func (m *MPropWriteReq) GetMessageCode() uint8 {
+	return 0xF6
+}
+
 func (m *MPropWriteReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMPropWriteReq() *CEMI {
 	child := &MPropWriteReq{

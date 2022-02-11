@@ -34,8 +34,13 @@ type KnxNetIpRouting struct {
 
 // The corresponding interface
 type IKnxNetIpRouting interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetIpRouting) ServiceType() uint8 {
 	return 0x05
 }
 
+func (m *KnxNetIpRouting) GetServiceType() uint8 {
+	return 0x05
+}
+
 func (m *KnxNetIpRouting) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetIpRouting) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetIpRouting(version uint8) *ServiceId {
 	child := &KnxNetIpRouting{

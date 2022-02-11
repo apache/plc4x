@@ -35,9 +35,17 @@ type Apdu struct {
 
 // The corresponding interface
 type IApdu interface {
+	// Control returns Control
 	Control() uint8
+	// GetNumbered returns Numbered
+	GetNumbered() bool
+	// GetCounter returns Counter
+	GetCounter() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,6 +60,21 @@ type IApduChild interface {
 	GetTypeName() string
 	IApdu
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *Apdu) GetNumbered() bool {
+	return m.Numbered
+}
+
+func (m *Apdu) GetCounter() uint8 {
+	return m.Counter
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApdu(numbered bool, counter uint8) *Apdu {
 	return &Apdu{Numbered: numbered, Counter: counter}

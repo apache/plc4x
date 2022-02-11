@@ -41,10 +41,74 @@ type DIBDeviceInfo struct {
 
 // The corresponding interface
 type IDIBDeviceInfo interface {
+	// GetDescriptionType returns DescriptionType
+	GetDescriptionType() uint8
+	// GetKnxMedium returns KnxMedium
+	GetKnxMedium() KnxMedium
+	// GetDeviceStatus returns DeviceStatus
+	GetDeviceStatus() *DeviceStatus
+	// GetKnxAddress returns KnxAddress
+	GetKnxAddress() *KnxAddress
+	// GetProjectInstallationIdentifier returns ProjectInstallationIdentifier
+	GetProjectInstallationIdentifier() *ProjectInstallationIdentifier
+	// GetKnxNetIpDeviceSerialNumber returns KnxNetIpDeviceSerialNumber
+	GetKnxNetIpDeviceSerialNumber() []byte
+	// GetKnxNetIpDeviceMulticastAddress returns KnxNetIpDeviceMulticastAddress
+	GetKnxNetIpDeviceMulticastAddress() *IPAddress
+	// GetKnxNetIpDeviceMacAddress returns KnxNetIpDeviceMacAddress
+	GetKnxNetIpDeviceMacAddress() *MACAddress
+	// GetDeviceFriendlyName returns DeviceFriendlyName
+	GetDeviceFriendlyName() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DIBDeviceInfo) GetDescriptionType() uint8 {
+	return m.DescriptionType
+}
+
+func (m *DIBDeviceInfo) GetKnxMedium() KnxMedium {
+	return m.KnxMedium
+}
+
+func (m *DIBDeviceInfo) GetDeviceStatus() *DeviceStatus {
+	return m.DeviceStatus
+}
+
+func (m *DIBDeviceInfo) GetKnxAddress() *KnxAddress {
+	return m.KnxAddress
+}
+
+func (m *DIBDeviceInfo) GetProjectInstallationIdentifier() *ProjectInstallationIdentifier {
+	return m.ProjectInstallationIdentifier
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceSerialNumber() []byte {
+	return m.KnxNetIpDeviceSerialNumber
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceMulticastAddress() *IPAddress {
+	return m.KnxNetIpDeviceMulticastAddress
+}
+
+func (m *DIBDeviceInfo) GetKnxNetIpDeviceMacAddress() *MACAddress {
+	return m.KnxNetIpDeviceMacAddress
+}
+
+func (m *DIBDeviceInfo) GetDeviceFriendlyName() []byte {
+	return m.DeviceFriendlyName
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []byte) *DIBDeviceInfo {
 	return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}

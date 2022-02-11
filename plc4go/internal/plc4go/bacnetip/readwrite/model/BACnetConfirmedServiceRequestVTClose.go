@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestVTClose struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestVTClose interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestVTClose) ServiceChoice() uint8 {
 	return 0x16
 }
 
+func (m *BACnetConfirmedServiceRequestVTClose) GetServiceChoice() uint8 {
+	return 0x16
+}
+
 func (m *BACnetConfirmedServiceRequestVTClose) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestVTClose() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestVTClose{

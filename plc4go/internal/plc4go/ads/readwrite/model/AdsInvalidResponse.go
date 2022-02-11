@@ -32,8 +32,11 @@ type AdsInvalidResponse struct {
 
 // The corresponding interface
 type IAdsInvalidResponse interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *AdsInvalidResponse) CommandId() CommandId {
 	return CommandId_INVALID
 }
 
+func (m *AdsInvalidResponse) GetCommandId() CommandId {
+	return CommandId_INVALID
+}
+
 func (m *AdsInvalidResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *AdsInvalidResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *AdsInvalidResponse) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsInvalidResponse() *AdsData {
 	child := &AdsInvalidResponse{

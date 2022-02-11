@@ -35,8 +35,15 @@ type S7MessageResponse struct {
 
 // The corresponding interface
 type IS7MessageResponse interface {
+	// GetErrorClass returns ErrorClass
+	GetErrorClass() uint8
+	// GetErrorCode returns ErrorCode
+	GetErrorCode() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,11 +54,30 @@ func (m *S7MessageResponse) MessageType() uint8 {
 	return 0x02
 }
 
+func (m *S7MessageResponse) GetMessageType() uint8 {
+	return 0x02
+}
+
 func (m *S7MessageResponse) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
 	m.S7Message.TpduReference = tpduReference
 	m.S7Message.Parameter = parameter
 	m.S7Message.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7MessageResponse) GetErrorClass() uint8 {
+	return m.ErrorClass
+}
+
+func (m *S7MessageResponse) GetErrorCode() uint8 {
+	return m.ErrorCode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageResponse{

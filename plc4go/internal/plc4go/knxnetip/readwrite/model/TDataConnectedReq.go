@@ -32,8 +32,11 @@ type TDataConnectedReq struct {
 
 // The corresponding interface
 type ITDataConnectedReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *TDataConnectedReq) MessageCode() uint8 {
 	return 0x41
 }
 
+func (m *TDataConnectedReq) GetMessageCode() uint8 {
+	return 0x41
+}
+
 func (m *TDataConnectedReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewTDataConnectedReq() *CEMI {
 	child := &TDataConnectedReq{

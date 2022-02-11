@@ -34,8 +34,13 @@ type BACnetConstructedDataLifeSafetyZone struct {
 
 // The corresponding interface
 type IBACnetConstructedDataLifeSafetyZone interface {
+	// GetZones returns Zones
+	GetZones() []*BACnetContextTagObjectIdentifier
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *BACnetConstructedDataLifeSafetyZone) ObjectType() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_ZONE
 }
 
+func (m *BACnetConstructedDataLifeSafetyZone) GetObjectType() BACnetObjectType {
+	return BACnetObjectType_LIFE_SAFETY_ZONE
+}
+
 func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return 0
+}
+
+func (m *BACnetConstructedDataLifeSafetyZone) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
 	return 0
 }
 
@@ -55,6 +68,17 @@ func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetCon
 	m.BACnetConstructedData.ClosingTag = closingTag
 	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataLifeSafetyZone) GetZones() []*BACnetContextTagObjectIdentifier {
+	return m.Zones
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataLifeSafetyZone{

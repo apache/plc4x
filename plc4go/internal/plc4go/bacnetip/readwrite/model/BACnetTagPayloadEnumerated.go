@@ -34,9 +34,31 @@ type BACnetTagPayloadEnumerated struct {
 
 // The corresponding interface
 type IBACnetTagPayloadEnumerated interface {
+	// GetData returns Data
+	GetData() []byte
+	// GetActualValue returns ActualValue
+	GetActualValue() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadEnumerated) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadEnumerated) GetActualValue() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetTagPayloadEnumerated(data []byte, actualValue uint32) *BACnetTagPayloadEnumerated {

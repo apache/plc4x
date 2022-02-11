@@ -33,10 +33,15 @@ type S7Payload struct {
 
 // The corresponding interface
 type IS7Payload interface {
+	// MessageType returns MessageType
 	MessageType() uint8
+	// ParameterParameterType returns ParameterParameterType
 	ParameterParameterType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,6 +56,14 @@ type IS7PayloadChild interface {
 	GetTypeName() string
 	IS7Payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7Payload() *S7Payload {
 	return &S7Payload{}

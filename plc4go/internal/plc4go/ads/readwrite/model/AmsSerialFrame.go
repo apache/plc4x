@@ -39,10 +39,62 @@ type AmsSerialFrame struct {
 
 // The corresponding interface
 type IAmsSerialFrame interface {
+	// GetMagicCookie returns MagicCookie
+	GetMagicCookie() uint16
+	// GetTransmitterAddress returns TransmitterAddress
+	GetTransmitterAddress() int8
+	// GetReceiverAddress returns ReceiverAddress
+	GetReceiverAddress() int8
+	// GetFragmentNumber returns FragmentNumber
+	GetFragmentNumber() int8
+	// GetLength returns Length
+	GetLength() int8
+	// GetUserdata returns Userdata
+	GetUserdata() *AmsPacket
+	// GetCrc returns Crc
+	GetCrc() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AmsSerialFrame) GetMagicCookie() uint16 {
+	return m.MagicCookie
+}
+
+func (m *AmsSerialFrame) GetTransmitterAddress() int8 {
+	return m.TransmitterAddress
+}
+
+func (m *AmsSerialFrame) GetReceiverAddress() int8 {
+	return m.ReceiverAddress
+}
+
+func (m *AmsSerialFrame) GetFragmentNumber() int8 {
+	return m.FragmentNumber
+}
+
+func (m *AmsSerialFrame) GetLength() int8 {
+	return m.Length
+}
+
+func (m *AmsSerialFrame) GetUserdata() *AmsPacket {
+	return m.Userdata
+}
+
+func (m *AmsSerialFrame) GetCrc() uint16 {
+	return m.Crc
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata *AmsPacket, crc uint16) *AmsSerialFrame {
 	return &AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}

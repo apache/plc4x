@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicReadFile interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) ServiceChoice() uint8 {
 	return 0x06
 }
 
+func (m *BACnetConfirmedServiceACKAtomicReadFile) GetServiceChoice() uint8 {
+	return 0x06
+}
+
 func (m *BACnetConfirmedServiceACKAtomicReadFile) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKAtomicReadFile() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKAtomicReadFile{

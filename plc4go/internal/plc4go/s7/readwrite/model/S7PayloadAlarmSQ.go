@@ -34,8 +34,13 @@ type S7PayloadAlarmSQ struct {
 
 // The corresponding interface
 type IS7PayloadAlarmSQ interface {
+	// GetAlarmMessage returns AlarmMessage
+	GetAlarmMessage() *AlarmMessagePushType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *S7PayloadAlarmSQ) CpuFunctionType() uint8 {
 	return 0x00
 }
 
+func (m *S7PayloadAlarmSQ) GetCpuFunctionType() uint8 {
+	return 0x00
+}
+
 func (m *S7PayloadAlarmSQ) CpuSubfunction() uint8 {
+	return 0x11
+}
+
+func (m *S7PayloadAlarmSQ) GetCpuSubfunction() uint8 {
 	return 0x11
 }
 
@@ -54,10 +67,25 @@ func (m *S7PayloadAlarmSQ) DataLength() uint16 {
 	return 0
 }
 
+func (m *S7PayloadAlarmSQ) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadAlarmSQ) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadAlarmSQ) GetAlarmMessage() *AlarmMessagePushType {
+	return m.AlarmMessage
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadAlarmSQ(alarmMessage *AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadAlarmSQ{

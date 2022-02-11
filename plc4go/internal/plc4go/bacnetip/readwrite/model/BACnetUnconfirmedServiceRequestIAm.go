@@ -37,8 +37,19 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
+	// GetDeviceIdentifier returns DeviceIdentifier
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetMaximumApduLengthAcceptedLength returns MaximumApduLengthAcceptedLength
+	GetMaximumApduLengthAcceptedLength() *BACnetApplicationTagUnsignedInteger
+	// GetSegmentationSupported returns SegmentationSupported
+	GetSegmentationSupported() *BACnetSegmentation
+	// GetVendorId returns VendorId
+	GetVendorId() *BACnetApplicationTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,8 +60,35 @@ func (m *BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
 	return 0x00
 }
 
+func (m *BACnetUnconfirmedServiceRequestIAm) GetServiceChoice() uint8 {
+	return 0x00
+}
+
 func (m *BACnetUnconfirmedServiceRequestIAm) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestIAm) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetMaximumApduLengthAcceptedLength() *BACnetApplicationTagUnsignedInteger {
+	return m.MaximumApduLengthAcceptedLength
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetSegmentationSupported() *BACnetSegmentation {
+	return m.SegmentationSupported
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTagUnsignedInteger {
+	return m.VendorId
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestIAm{

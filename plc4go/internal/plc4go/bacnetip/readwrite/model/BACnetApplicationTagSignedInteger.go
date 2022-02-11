@@ -34,8 +34,13 @@ type BACnetApplicationTagSignedInteger struct {
 
 // The corresponding interface
 type IBACnetApplicationTagSignedInteger interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadSignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,26 @@ func (m *BACnetApplicationTagSignedInteger) ActualTagNumber() uint8 {
 	return 0x3
 }
 
+func (m *BACnetApplicationTagSignedInteger) GetActualTagNumber() uint8 {
+	return 0x3
+}
+
 func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
 	m.BACnetApplicationTag.Header = header
 	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
 	m.BACnetApplicationTag.ActualLength = actualLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagSignedInteger) GetPayload() *BACnetTagPayloadSignedInteger {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetApplicationTagSignedInteger(payload *BACnetTagPayloadSignedInteger, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagSignedInteger{

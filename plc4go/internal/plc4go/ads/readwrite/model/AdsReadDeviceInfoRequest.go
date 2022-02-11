@@ -32,8 +32,11 @@ type AdsReadDeviceInfoRequest struct {
 
 // The corresponding interface
 type IAdsReadDeviceInfoRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *AdsReadDeviceInfoRequest) CommandId() CommandId {
 	return CommandId_ADS_READ_DEVICE_INFO
 }
 
+func (m *AdsReadDeviceInfoRequest) GetCommandId() CommandId {
+	return CommandId_ADS_READ_DEVICE_INFO
+}
+
 func (m *AdsReadDeviceInfoRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsReadDeviceInfoRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadDeviceInfoRequest() *AdsData {
 	child := &AdsReadDeviceInfoRequest{

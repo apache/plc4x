@@ -35,8 +35,15 @@ type FirmataCommandSetPinMode struct {
 
 // The corresponding interface
 type IFirmataCommandSetPinMode interface {
+	// GetPin returns Pin
+	GetPin() uint8
+	// GetMode returns Mode
+	GetMode() PinMode
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *FirmataCommandSetPinMode) CommandCode() uint8 {
 	return 0x4
 }
 
+func (m *FirmataCommandSetPinMode) GetCommandCode() uint8 {
+	return 0x4
+}
+
 func (m *FirmataCommandSetPinMode) InitializeParent(parent *FirmataCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataCommandSetPinMode) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataCommandSetPinMode) GetMode() PinMode {
+	return m.Mode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *FirmataCommand {
 	child := &FirmataCommandSetPinMode{

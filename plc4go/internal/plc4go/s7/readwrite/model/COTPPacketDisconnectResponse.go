@@ -35,8 +35,15 @@ type COTPPacketDisconnectResponse struct {
 
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
+	// GetDestinationReference returns DestinationReference
+	GetDestinationReference() uint16
+	// GetSourceReference returns SourceReference
+	GetSourceReference() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *COTPPacketDisconnectResponse) TpduCode() uint8 {
 	return 0xC0
 }
 
+func (m *COTPPacketDisconnectResponse) GetTpduCode() uint8 {
+	return 0xC0
+}
+
 func (m *COTPPacketDisconnectResponse) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPPacketDisconnectResponse) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketDisconnectResponse) GetSourceReference() uint16 {
+	return m.SourceReference
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	child := &COTPPacketDisconnectResponse{

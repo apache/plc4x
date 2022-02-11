@@ -37,9 +37,21 @@ type BACnetContextTag struct {
 
 // The corresponding interface
 type IBACnetContextTag interface {
+	// DataType returns DataType
 	DataType() BACnetDataType
+	// GetHeader returns Header
+	GetHeader() *BACnetTagHeader
+	// GetTagNumber returns TagNumber
+	GetTagNumber() uint8
+	// GetActualLength returns ActualLength
+	GetActualLength() uint32
+	// GetIsNotOpeningOrClosingTag returns IsNotOpeningOrClosingTag
+	GetIsNotOpeningOrClosingTag() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,6 +65,31 @@ type IBACnetContextTagChild interface {
 	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool)
 	GetTypeName() string
 	IBACnetContextTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTag) GetHeader() *BACnetTagHeader {
+	return m.Header
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTag) GetTagNumber() uint8 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.TagNumber
+}
+
+func (m *BACnetContextTag) GetActualLength() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualLength
+}
+
+func (m *BACnetContextTag) GetIsNotOpeningOrClosingTag() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsNotOpeningOrClosingTag
 }
 
 func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

@@ -34,8 +34,13 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
+	// GetChangedValue returns ChangedValue
+	GetChangedValue() *BACnetContextTagReal
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) PeekedTa
 	return uint8(1)
 }
 
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetPeekedTagNumber() uint8 {
+	return uint8(1)
+}
+
 func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParametersChangeOfValueNewValue.OpeningTag = openingTag
 	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParametersChangeOfValueNewValue.ClosingTag = closingTag
 	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetChangedValue() *BACnetContextTagReal {
+	return m.ChangedValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue *BACnetContextTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
 	child := &BACnetNotificationParametersChangeOfValueNewValueChangedValue{

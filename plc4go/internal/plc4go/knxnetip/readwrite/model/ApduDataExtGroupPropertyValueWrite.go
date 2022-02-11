@@ -32,8 +32,11 @@ type ApduDataExtGroupPropertyValueWrite struct {
 
 // The corresponding interface
 type IApduDataExtGroupPropertyValueWrite interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtGroupPropertyValueWrite) ExtApciType() uint8 {
 	return 0x2A
 }
 
+func (m *ApduDataExtGroupPropertyValueWrite) GetExtApciType() uint8 {
+	return 0x2A
+}
+
 func (m *ApduDataExtGroupPropertyValueWrite) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtGroupPropertyValueWrite() *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueWrite{

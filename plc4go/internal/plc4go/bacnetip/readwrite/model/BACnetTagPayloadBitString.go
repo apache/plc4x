@@ -35,10 +35,38 @@ type BACnetTagPayloadBitString struct {
 
 // The corresponding interface
 type IBACnetTagPayloadBitString interface {
+	// GetUnusedBits returns UnusedBits
+	GetUnusedBits() uint8
+	// GetData returns Data
+	GetData() []bool
+	// GetUnused returns Unused
+	GetUnused() []bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadBitString) GetUnusedBits() uint8 {
+	return m.UnusedBits
+}
+
+func (m *BACnetTagPayloadBitString) GetData() []bool {
+	return m.Data
+}
+
+func (m *BACnetTagPayloadBitString) GetUnused() []bool {
+	return m.Unused
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool) *BACnetTagPayloadBitString {
 	return &BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused}

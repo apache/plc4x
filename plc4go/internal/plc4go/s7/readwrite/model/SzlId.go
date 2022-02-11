@@ -35,10 +35,38 @@ type SzlId struct {
 
 // The corresponding interface
 type ISzlId interface {
+	// GetTypeClass returns TypeClass
+	GetTypeClass() SzlModuleTypeClass
+	// GetSublistExtract returns SublistExtract
+	GetSublistExtract() uint8
+	// GetSublistList returns SublistList
+	GetSublistList() SzlSublist
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SzlId) GetTypeClass() SzlModuleTypeClass {
+	return m.TypeClass
+}
+
+func (m *SzlId) GetSublistExtract() uint8 {
+	return m.SublistExtract
+}
+
+func (m *SzlId) GetSublistList() SzlSublist {
+	return m.SublistList
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
 	return &SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}

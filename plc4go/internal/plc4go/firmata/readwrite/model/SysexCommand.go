@@ -33,10 +33,15 @@ type SysexCommand struct {
 
 // The corresponding interface
 type ISysexCommand interface {
+	// CommandType returns CommandType
 	CommandType() uint8
+	// Response returns Response
 	Response() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,6 +56,14 @@ type ISysexCommandChild interface {
 	GetTypeName() string
 	ISysexCommand
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommand() *SysexCommand {
 	return &SysexCommand{}

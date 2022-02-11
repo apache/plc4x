@@ -37,8 +37,19 @@ type BACnetNotificationParametersChangeOfValue struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValue interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetNewValue returns NewValue
+	GetNewValue() *BACnetNotificationParametersChangeOfValueNewValue
+	// GetStatusFlags returns StatusFlags
+	GetStatusFlags() *BACnetStatusFlags
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,12 +60,39 @@ func (m *BACnetNotificationParametersChangeOfValue) PeekedTagNumber() uint8 {
 	return uint8(2)
 }
 
+func (m *BACnetNotificationParametersChangeOfValue) GetPeekedTagNumber() uint8 {
+	return uint8(2)
+}
+
 func (m *BACnetNotificationParametersChangeOfValue) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
 	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfValue) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetNewValue() *BACnetNotificationParametersChangeOfValueNewValue {
+	return m.NewValue
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetStatusFlags() *BACnetStatusFlags {
+	return m.StatusFlags
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersChangeOfValue(innerOpeningTag *BACnetOpeningTag, newValue *BACnetNotificationParametersChangeOfValueNewValue, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersChangeOfValue{

@@ -42,8 +42,27 @@ type ApduDataExtPropertyDescriptionResponse struct {
 
 // The corresponding interface
 type IApduDataExtPropertyDescriptionResponse interface {
+	// GetObjectIndex returns ObjectIndex
+	GetObjectIndex() uint8
+	// GetPropertyId returns PropertyId
+	GetPropertyId() uint8
+	// GetIndex returns Index
+	GetIndex() uint8
+	// GetWriteEnabled returns WriteEnabled
+	GetWriteEnabled() bool
+	// GetPropertyDataType returns PropertyDataType
+	GetPropertyDataType() KnxPropertyDataType
+	// GetMaxNrOfElements returns MaxNrOfElements
+	GetMaxNrOfElements() uint16
+	// GetReadLevel returns ReadLevel
+	GetReadLevel() AccessLevel
+	// GetWriteLevel returns WriteLevel
+	GetWriteLevel() AccessLevel
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,7 +73,50 @@ func (m *ApduDataExtPropertyDescriptionResponse) ExtApciType() uint8 {
 	return 0x19
 }
 
+func (m *ApduDataExtPropertyDescriptionResponse) GetExtApciType() uint8 {
+	return 0x19
+}
+
 func (m *ApduDataExtPropertyDescriptionResponse) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataExtPropertyDescriptionResponse) GetObjectIndex() uint8 {
+	return m.ObjectIndex
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetIndex() uint8 {
+	return m.Index
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetWriteEnabled() bool {
+	return m.WriteEnabled
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetPropertyDataType() KnxPropertyDataType {
+	return m.PropertyDataType
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetMaxNrOfElements() uint16 {
+	return m.MaxNrOfElements
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetReadLevel() AccessLevel {
+	return m.ReadLevel
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) GetWriteLevel() AccessLevel {
+	return m.WriteLevel
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) *ApduDataExt {
 	child := &ApduDataExtPropertyDescriptionResponse{

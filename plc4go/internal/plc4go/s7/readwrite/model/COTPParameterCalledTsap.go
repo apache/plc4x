@@ -34,8 +34,13 @@ type COTPParameterCalledTsap struct {
 
 // The corresponding interface
 type ICOTPParameterCalledTsap interface {
+	// GetTsapId returns TsapId
+	GetTsapId() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *COTPParameterCalledTsap) ParameterType() uint8 {
 	return 0xC2
 }
 
+func (m *COTPParameterCalledTsap) GetParameterType() uint8 {
+	return 0xC2
+}
+
 func (m *COTPParameterCalledTsap) InitializeParent(parent *COTPParameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPParameterCalledTsap) GetTsapId() uint16 {
+	return m.TsapId
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPParameterCalledTsap(tsapId uint16) *COTPParameter {
 	child := &COTPParameterCalledTsap{

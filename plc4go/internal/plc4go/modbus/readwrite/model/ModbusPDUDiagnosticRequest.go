@@ -35,8 +35,15 @@ type ModbusPDUDiagnosticRequest struct {
 
 // The corresponding interface
 type IModbusPDUDiagnosticRequest interface {
+	// GetSubFunction returns SubFunction
+	GetSubFunction() uint16
+	// GetData returns Data
+	GetData() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,15 @@ func (m *ModbusPDUDiagnosticRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUDiagnosticRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUDiagnosticRequest) FunctionFlag() uint8 {
+	return 0x08
+}
+
+func (m *ModbusPDUDiagnosticRequest) GetFunctionFlag() uint8 {
 	return 0x08
 }
 
@@ -55,7 +70,26 @@ func (m *ModbusPDUDiagnosticRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUDiagnosticRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUDiagnosticRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUDiagnosticRequest) GetSubFunction() uint16 {
+	return m.SubFunction
+}
+
+func (m *ModbusPDUDiagnosticRequest) GetData() uint16 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDU {
 	child := &ModbusPDUDiagnosticRequest{

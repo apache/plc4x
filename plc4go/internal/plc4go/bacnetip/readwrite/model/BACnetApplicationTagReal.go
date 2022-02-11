@@ -35,8 +35,15 @@ type BACnetApplicationTagReal struct {
 
 // The corresponding interface
 type IBACnetApplicationTagReal interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadReal
+	// GetActualValue returns ActualValue
+	GetActualValue() float32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *BACnetApplicationTagReal) ActualTagNumber() uint8 {
 	return 0x4
 }
 
+func (m *BACnetApplicationTagReal) GetActualTagNumber() uint8 {
+	return 0x4
+}
+
 func (m *BACnetApplicationTagReal) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
 	m.BACnetApplicationTag.Header = header
 	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
 	m.BACnetApplicationTag.ActualLength = actualLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagReal) GetPayload() *BACnetTagPayloadReal {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagReal) GetActualValue() float32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetApplicationTagReal(payload *BACnetTagPayloadReal, actualValue float32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {

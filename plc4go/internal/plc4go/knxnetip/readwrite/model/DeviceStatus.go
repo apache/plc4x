@@ -34,10 +34,26 @@ type DeviceStatus struct {
 
 // The corresponding interface
 type IDeviceStatus interface {
+	// GetProgramMode returns ProgramMode
+	GetProgramMode() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DeviceStatus) GetProgramMode() bool {
+	return m.ProgramMode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDeviceStatus(programMode bool) *DeviceStatus {
 	return &DeviceStatus{ProgramMode: programMode}

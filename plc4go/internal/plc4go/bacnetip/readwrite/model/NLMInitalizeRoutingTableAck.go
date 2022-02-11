@@ -35,8 +35,15 @@ type NLMInitalizeRoutingTableAck struct {
 
 // The corresponding interface
 type INLMInitalizeRoutingTableAck interface {
+	// GetNumberOfPorts returns NumberOfPorts
+	GetNumberOfPorts() uint8
+	// GetPortMappings returns PortMappings
+	GetPortMappings() []*NLMInitalizeRoutingTablePortMapping
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,9 +54,28 @@ func (m *NLMInitalizeRoutingTableAck) MessageType() uint8 {
 	return 0x07
 }
 
+func (m *NLMInitalizeRoutingTableAck) GetMessageType() uint8 {
+	return 0x07
+}
+
 func (m *NLMInitalizeRoutingTableAck) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMInitalizeRoutingTableAck) GetNumberOfPorts() uint8 {
+	return m.NumberOfPorts
+}
+
+func (m *NLMInitalizeRoutingTableAck) GetPortMappings() []*NLMInitalizeRoutingTablePortMapping {
+	return m.PortMappings
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16) *NLM {
 	child := &NLMInitalizeRoutingTableAck{

@@ -35,8 +35,15 @@ type NLMRejectRouterToNetwork struct {
 
 // The corresponding interface
 type INLMRejectRouterToNetwork interface {
+	// GetRejectReason returns RejectReason
+	GetRejectReason() NLMRejectRouterToNetworkRejectReason
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,9 +54,28 @@ func (m *NLMRejectRouterToNetwork) MessageType() uint8 {
 	return 0x03
 }
 
+func (m *NLMRejectRouterToNetwork) GetMessageType() uint8 {
+	return 0x03
+}
+
 func (m *NLMRejectRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMRejectRouterToNetwork) GetRejectReason() NLMRejectRouterToNetworkRejectReason {
+	return m.RejectReason
+}
+
+func (m *NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16) *NLM {
 	child := &NLMRejectRouterToNetwork{

@@ -42,8 +42,17 @@ type S7MessageObjectRequest struct {
 
 // The corresponding interface
 type IS7MessageObjectRequest interface {
+	// GetSyntaxId returns SyntaxId
+	GetSyntaxId() SyntaxIdType
+	// GetQueryType returns QueryType
+	GetQueryType() QueryType
+	// GetAlarmType returns AlarmType
+	GetAlarmType() AlarmType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,7 +63,30 @@ func (m *S7MessageObjectRequest) CpuFunctionType() uint8 {
 	return 0x04
 }
 
+func (m *S7MessageObjectRequest) GetCpuFunctionType() uint8 {
+	return 0x04
+}
+
 func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7MessageObjectRequest) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *S7MessageObjectRequest) GetQueryType() QueryType {
+	return m.QueryType
+}
+
+func (m *S7MessageObjectRequest) GetAlarmType() AlarmType {
+	return m.AlarmType
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
 	child := &S7MessageObjectRequest{

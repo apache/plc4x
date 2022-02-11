@@ -32,8 +32,11 @@ type BACnetServiceAckGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetEnrollmentSummary interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *BACnetServiceAckGetEnrollmentSummary) ServiceChoice() uint8 {
 	return 0x04
 }
 
+func (m *BACnetServiceAckGetEnrollmentSummary) GetServiceChoice() uint8 {
+	return 0x04
+}
+
 func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetServiceAck) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetEnrollmentSummary{

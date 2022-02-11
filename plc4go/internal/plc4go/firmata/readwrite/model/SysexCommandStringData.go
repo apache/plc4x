@@ -32,8 +32,11 @@ type SysexCommandStringData struct {
 
 // The corresponding interface
 type ISysexCommandStringData interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandStringData) CommandType() uint8 {
 	return 0x71
 }
 
+func (m *SysexCommandStringData) GetCommandType() uint8 {
+	return 0x71
+}
+
 func (m *SysexCommandStringData) Response() bool {
 	return false
 }
 
+func (m *SysexCommandStringData) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandStringData) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandStringData() *SysexCommand {
 	child := &SysexCommandStringData{

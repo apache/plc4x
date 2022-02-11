@@ -36,8 +36,17 @@ type LDataReq struct {
 
 // The corresponding interface
 type ILDataReq interface {
+	// GetAdditionalInformationLength returns AdditionalInformationLength
+	GetAdditionalInformationLength() uint8
+	// GetAdditionalInformation returns AdditionalInformation
+	GetAdditionalInformation() []*CEMIAdditionalInformation
+	// GetDataFrame returns DataFrame
+	GetDataFrame() *LDataFrame
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *LDataReq) MessageCode() uint8 {
 	return 0x11
 }
 
+func (m *LDataReq) GetMessageCode() uint8 {
+	return 0x11
+}
+
 func (m *LDataReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LDataReq) GetAdditionalInformationLength() uint8 {
+	return m.AdditionalInformationLength
+}
+
+func (m *LDataReq) GetAdditionalInformation() []*CEMIAdditionalInformation {
+	return m.AdditionalInformation
+}
+
+func (m *LDataReq) GetDataFrame() *LDataFrame {
+	return m.DataFrame
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataReq{

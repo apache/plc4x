@@ -35,8 +35,15 @@ type ModbusPDUGetComEventCounterResponse struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventCounterResponse interface {
+	// GetStatus returns Status
+	GetStatus() uint16
+	// GetEventCount returns EventCount
+	GetEventCount() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,15 @@ func (m *ModbusPDUGetComEventCounterResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUGetComEventCounterResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUGetComEventCounterResponse) FunctionFlag() uint8 {
+	return 0x0B
+}
+
+func (m *ModbusPDUGetComEventCounterResponse) GetFunctionFlag() uint8 {
 	return 0x0B
 }
 
@@ -55,7 +70,26 @@ func (m *ModbusPDUGetComEventCounterResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUGetComEventCounterResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUGetComEventCounterResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUGetComEventCounterResponse) GetStatus() uint16 {
+	return m.Status
+}
+
+func (m *ModbusPDUGetComEventCounterResponse) GetEventCount() uint16 {
+	return m.EventCount
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDU {
 	child := &ModbusPDUGetComEventCounterResponse{

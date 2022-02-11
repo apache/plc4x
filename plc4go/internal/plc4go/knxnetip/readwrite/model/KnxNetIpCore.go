@@ -34,8 +34,13 @@ type KnxNetIpCore struct {
 
 // The corresponding interface
 type IKnxNetIpCore interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetIpCore) ServiceType() uint8 {
 	return 0x02
 }
 
+func (m *KnxNetIpCore) GetServiceType() uint8 {
+	return 0x02
+}
+
 func (m *KnxNetIpCore) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetIpCore) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetIpCore(version uint8) *ServiceId {
 	child := &KnxNetIpCore{

@@ -42,10 +42,80 @@ type DeviceDescriptorType2 struct {
 
 // The corresponding interface
 type IDeviceDescriptorType2 interface {
+	// GetManufacturerId returns ManufacturerId
+	GetManufacturerId() uint16
+	// GetDeviceType returns DeviceType
+	GetDeviceType() uint16
+	// GetVersion returns Version
+	GetVersion() uint8
+	// GetReadSupported returns ReadSupported
+	GetReadSupported() bool
+	// GetWriteSupported returns WriteSupported
+	GetWriteSupported() bool
+	// GetLogicalTagBase returns LogicalTagBase
+	GetLogicalTagBase() uint8
+	// GetChannelInfo1 returns ChannelInfo1
+	GetChannelInfo1() *ChannelInformation
+	// GetChannelInfo2 returns ChannelInfo2
+	GetChannelInfo2() *ChannelInformation
+	// GetChannelInfo3 returns ChannelInfo3
+	GetChannelInfo3() *ChannelInformation
+	// GetChannelInfo4 returns ChannelInfo4
+	GetChannelInfo4() *ChannelInformation
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DeviceDescriptorType2) GetManufacturerId() uint16 {
+	return m.ManufacturerId
+}
+
+func (m *DeviceDescriptorType2) GetDeviceType() uint16 {
+	return m.DeviceType
+}
+
+func (m *DeviceDescriptorType2) GetVersion() uint8 {
+	return m.Version
+}
+
+func (m *DeviceDescriptorType2) GetReadSupported() bool {
+	return m.ReadSupported
+}
+
+func (m *DeviceDescriptorType2) GetWriteSupported() bool {
+	return m.WriteSupported
+}
+
+func (m *DeviceDescriptorType2) GetLogicalTagBase() uint8 {
+	return m.LogicalTagBase
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo1() *ChannelInformation {
+	return m.ChannelInfo1
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo2() *ChannelInformation {
+	return m.ChannelInfo2
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo3() *ChannelInformation {
+	return m.ChannelInfo3
+}
+
+func (m *DeviceDescriptorType2) GetChannelInfo4() *ChannelInformation {
+	return m.ChannelInfo4
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 *ChannelInformation, channelInfo2 *ChannelInformation, channelInfo3 *ChannelInformation, channelInfo4 *ChannelInformation) *DeviceDescriptorType2 {
 	return &DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}

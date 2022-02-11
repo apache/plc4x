@@ -36,8 +36,15 @@ type APDUReject struct {
 
 // The corresponding interface
 type IAPDUReject interface {
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetRejectReason returns RejectReason
+	GetRejectReason() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *APDUReject) ApduType() uint8 {
 	return 0x6
 }
 
+func (m *APDUReject) GetApduType() uint8 {
+	return 0x6
+}
+
 func (m *APDUReject) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUReject) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUReject) GetRejectReason() uint8 {
+	return m.RejectReason
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
 	child := &APDUReject{

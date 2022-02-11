@@ -39,8 +39,21 @@ type MultipleServiceResponse struct {
 
 // The corresponding interface
 type IMultipleServiceResponse interface {
+	// GetStatus returns Status
+	GetStatus() uint8
+	// GetExtStatus returns ExtStatus
+	GetExtStatus() uint8
+	// GetServiceNb returns ServiceNb
+	GetServiceNb() uint16
+	// GetOffsets returns Offsets
+	GetOffsets() []uint16
+	// GetServicesData returns ServicesData
+	GetServicesData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,7 +64,38 @@ func (m *MultipleServiceResponse) Service() uint8 {
 	return 0x8A
 }
 
+func (m *MultipleServiceResponse) GetService() uint8 {
+	return 0x8A
+}
+
 func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *MultipleServiceResponse) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *MultipleServiceResponse) GetExtStatus() uint8 {
+	return m.ExtStatus
+}
+
+func (m *MultipleServiceResponse) GetServiceNb() uint16 {
+	return m.ServiceNb
+}
+
+func (m *MultipleServiceResponse) GetOffsets() []uint16 {
+	return m.Offsets
+}
+
+func (m *MultipleServiceResponse) GetServicesData() []byte {
+	return m.ServicesData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *CipService {
 	child := &MultipleServiceResponse{

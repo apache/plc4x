@@ -36,8 +36,17 @@ type LDataCon struct {
 
 // The corresponding interface
 type ILDataCon interface {
+	// GetAdditionalInformationLength returns AdditionalInformationLength
+	GetAdditionalInformationLength() uint8
+	// GetAdditionalInformation returns AdditionalInformation
+	GetAdditionalInformation() []*CEMIAdditionalInformation
+	// GetDataFrame returns DataFrame
+	GetDataFrame() *LDataFrame
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *LDataCon) MessageCode() uint8 {
 	return 0x2E
 }
 
+func (m *LDataCon) GetMessageCode() uint8 {
+	return 0x2E
+}
+
 func (m *LDataCon) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LDataCon) GetAdditionalInformationLength() uint8 {
+	return m.AdditionalInformationLength
+}
+
+func (m *LDataCon) GetAdditionalInformation() []*CEMIAdditionalInformation {
+	return m.AdditionalInformation
+}
+
+func (m *LDataCon) GetDataFrame() *LDataFrame {
+	return m.DataFrame
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataCon{

@@ -32,8 +32,11 @@ type ApduDataIndividualAddressWrite struct {
 
 // The corresponding interface
 type IApduDataIndividualAddressWrite interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataIndividualAddressWrite) ApciType() uint8 {
 	return 0x3
 }
 
+func (m *ApduDataIndividualAddressWrite) GetApciType() uint8 {
+	return 0x3
+}
+
 func (m *ApduDataIndividualAddressWrite) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataIndividualAddressWrite() *ApduData {
 	child := &ApduDataIndividualAddressWrite{

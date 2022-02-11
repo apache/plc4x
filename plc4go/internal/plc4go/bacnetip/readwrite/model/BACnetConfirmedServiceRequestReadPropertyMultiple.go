@@ -34,8 +34,13 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadPropertyMultiple interface {
+	// GetData returns Data
+	GetData() []*BACnetReadAccessSpecification
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,8 +51,23 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) ServiceChoice() uint
 	return 0x0E
 }
 
+func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetServiceChoice() uint8 {
+	return 0x0E
+}
+
 func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetData() []*BACnetReadAccessSpecification {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []*BACnetReadAccessSpecification) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReadPropertyMultiple{

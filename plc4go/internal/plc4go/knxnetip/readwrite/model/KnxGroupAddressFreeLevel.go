@@ -34,8 +34,13 @@ type KnxGroupAddressFreeLevel struct {
 
 // The corresponding interface
 type IKnxGroupAddressFreeLevel interface {
+	// GetSubGroup returns SubGroup
+	GetSubGroup() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxGroupAddressFreeLevel) NumLevels() uint8 {
 	return uint8(1)
 }
 
+func (m *KnxGroupAddressFreeLevel) GetNumLevels() uint8 {
+	return uint8(1)
+}
+
 func (m *KnxGroupAddressFreeLevel) InitializeParent(parent *KnxGroupAddress) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxGroupAddressFreeLevel) GetSubGroup() uint16 {
+	return m.SubGroup
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxGroupAddressFreeLevel(subGroup uint16) *KnxGroupAddress {
 	child := &KnxGroupAddressFreeLevel{

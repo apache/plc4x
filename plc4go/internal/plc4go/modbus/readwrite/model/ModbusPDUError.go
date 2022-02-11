@@ -34,8 +34,13 @@ type ModbusPDUError struct {
 
 // The corresponding interface
 type IModbusPDUError interface {
+	// GetExceptionCode returns ExceptionCode
+	GetExceptionCode() ModbusErrorCode
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *ModbusPDUError) ErrorFlag() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUError) GetErrorFlag() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUError) FunctionFlag() uint8 {
+	return 0
+}
+
+func (m *ModbusPDUError) GetFunctionFlag() uint8 {
 	return 0
 }
 
@@ -54,7 +67,22 @@ func (m *ModbusPDUError) Response() bool {
 	return false
 }
 
+func (m *ModbusPDUError) GetResponse() bool {
+	return false
+}
+
 func (m *ModbusPDUError) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUError) GetExceptionCode() ModbusErrorCode {
+	return m.ExceptionCode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDU {
 	child := &ModbusPDUError{

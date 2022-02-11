@@ -32,8 +32,11 @@ type ApduControlConnect struct {
 
 // The corresponding interface
 type IApduControlConnect interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduControlConnect) ControlType() uint8 {
 	return 0x0
 }
 
+func (m *ApduControlConnect) GetControlType() uint8 {
+	return 0x0
+}
+
 func (m *ApduControlConnect) InitializeParent(parent *ApduControl) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduControlConnect() *ApduControl {
 	child := &ApduControlConnect{

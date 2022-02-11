@@ -36,8 +36,17 @@ type BACnetUnconfirmedServiceRequestIHave struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIHave interface {
+	// GetDeviceIdentifier returns DeviceIdentifier
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier
+	GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetObjectName returns ObjectName
+	GetObjectName() *BACnetApplicationTagCharacterString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,8 +57,31 @@ func (m *BACnetUnconfirmedServiceRequestIHave) ServiceChoice() uint8 {
 	return 0x01
 }
 
+func (m *BACnetUnconfirmedServiceRequestIHave) GetServiceChoice() uint8 {
+	return 0x01
+}
+
 func (m *BACnetUnconfirmedServiceRequestIHave) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestIHave) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIHave) GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestIHave) GetObjectName() *BACnetApplicationTagCharacterString {
+	return m.ObjectName
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier *BACnetApplicationTagObjectIdentifier, objectIdentifier *BACnetApplicationTagObjectIdentifier, objectName *BACnetApplicationTagCharacterString) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestIHave{

@@ -35,10 +35,38 @@ type BACnetPropertyValues struct {
 
 // The corresponding interface
 type IBACnetPropertyValues interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetData returns Data
+	GetData() []*BACnetPropertyValue
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyValues) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetPropertyValues) GetData() []*BACnetPropertyValue {
+	return m.Data
+}
+
+func (m *BACnetPropertyValues) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag) *BACnetPropertyValues {
 	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag}

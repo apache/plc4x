@@ -38,9 +38,13 @@ type S7DataAlarmMessage struct {
 
 // The corresponding interface
 type IS7DataAlarmMessage interface {
+	// CpuFunctionType returns CpuFunctionType
 	CpuFunctionType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,6 +59,14 @@ type IS7DataAlarmMessageChild interface {
 	GetTypeName() string
 	IS7DataAlarmMessage
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7DataAlarmMessage() *S7DataAlarmMessage {
 	return &S7DataAlarmMessage{}

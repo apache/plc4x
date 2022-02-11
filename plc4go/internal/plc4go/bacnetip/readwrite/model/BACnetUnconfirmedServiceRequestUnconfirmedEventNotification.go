@@ -32,8 +32,11 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) ServiceCho
 	return 0x03
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetServiceChoice() uint8 {
+	return 0x03
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{

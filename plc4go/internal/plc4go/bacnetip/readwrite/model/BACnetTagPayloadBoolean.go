@@ -35,9 +35,40 @@ type BACnetTagPayloadBoolean struct {
 
 // The corresponding interface
 type IBACnetTagPayloadBoolean interface {
+	// GetValue returns Value
+	GetValue() bool
+	// GetIsTrue returns IsTrue
+	GetIsTrue() bool
+	// GetIsFalse returns IsFalse
+	GetIsFalse() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadBoolean) GetValue() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.Value
+}
+
+func (m *BACnetTagPayloadBoolean) GetIsTrue() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsTrue
+}
+
+func (m *BACnetTagPayloadBoolean) GetIsFalse() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsFalse
 }
 
 func NewBACnetTagPayloadBoolean(value bool, isTrue bool, isFalse bool) *BACnetTagPayloadBoolean {

@@ -32,8 +32,11 @@ type ApduDataExtReadRoutingTableRequest struct {
 
 // The corresponding interface
 type IApduDataExtReadRoutingTableRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtReadRoutingTableRequest) ExtApciType() uint8 {
 	return 0x01
 }
 
+func (m *ApduDataExtReadRoutingTableRequest) GetExtApciType() uint8 {
+	return 0x01
+}
+
 func (m *ApduDataExtReadRoutingTableRequest) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtReadRoutingTableRequest() *ApduDataExt {
 	child := &ApduDataExtReadRoutingTableRequest{

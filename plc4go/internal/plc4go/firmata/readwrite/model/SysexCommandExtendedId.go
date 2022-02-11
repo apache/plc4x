@@ -34,8 +34,13 @@ type SysexCommandExtendedId struct {
 
 // The corresponding interface
 type ISysexCommandExtendedId interface {
+	// GetId returns Id
+	GetId() []int8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,30 @@ func (m *SysexCommandExtendedId) CommandType() uint8 {
 	return 0x00
 }
 
+func (m *SysexCommandExtendedId) GetCommandType() uint8 {
+	return 0x00
+}
+
 func (m *SysexCommandExtendedId) Response() bool {
 	return false
 }
 
+func (m *SysexCommandExtendedId) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SysexCommandExtendedId) GetId() []int8 {
+	return m.Id
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandExtendedId(id []int8) *SysexCommand {
 	child := &SysexCommandExtendedId{

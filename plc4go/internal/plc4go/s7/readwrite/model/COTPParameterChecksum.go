@@ -34,8 +34,13 @@ type COTPParameterChecksum struct {
 
 // The corresponding interface
 type ICOTPParameterChecksum interface {
+	// GetCrc returns Crc
+	GetCrc() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *COTPParameterChecksum) ParameterType() uint8 {
 	return 0xC3
 }
 
+func (m *COTPParameterChecksum) GetParameterType() uint8 {
+	return 0xC3
+}
+
 func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPParameterChecksum) GetCrc() uint8 {
+	return m.Crc
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPParameterChecksum(crc uint8) *COTPParameter {
 	child := &COTPParameterChecksum{

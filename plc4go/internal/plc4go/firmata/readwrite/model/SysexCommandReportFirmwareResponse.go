@@ -36,8 +36,17 @@ type SysexCommandReportFirmwareResponse struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareResponse interface {
+	// GetMajorVersion returns MajorVersion
+	GetMajorVersion() uint8
+	// GetMinorVersion returns MinorVersion
+	GetMinorVersion() uint8
+	// GetFileName returns FileName
+	GetFileName() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *SysexCommandReportFirmwareResponse) CommandType() uint8 {
 	return 0x79
 }
 
+func (m *SysexCommandReportFirmwareResponse) GetCommandType() uint8 {
+	return 0x79
+}
+
 func (m *SysexCommandReportFirmwareResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *SysexCommandReportFirmwareResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *SysexCommandReportFirmwareResponse) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SysexCommandReportFirmwareResponse) GetMajorVersion() uint8 {
+	return m.MajorVersion
+}
+
+func (m *SysexCommandReportFirmwareResponse) GetMinorVersion() uint8 {
+	return m.MinorVersion
+}
+
+func (m *SysexCommandReportFirmwareResponse) GetFileName() []byte {
+	return m.FileName
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
 	child := &SysexCommandReportFirmwareResponse{

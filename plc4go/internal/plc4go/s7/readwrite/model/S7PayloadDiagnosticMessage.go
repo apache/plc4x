@@ -40,8 +40,25 @@ type S7PayloadDiagnosticMessage struct {
 
 // The corresponding interface
 type IS7PayloadDiagnosticMessage interface {
+	// GetEventId returns EventId
+	GetEventId() uint16
+	// GetPriorityClass returns PriorityClass
+	GetPriorityClass() uint8
+	// GetObNumber returns ObNumber
+	GetObNumber() uint8
+	// GetDatId returns DatId
+	GetDatId() uint16
+	// GetInfo1 returns Info1
+	GetInfo1() uint16
+	// GetInfo2 returns Info2
+	GetInfo2() uint32
+	// GetTimeStamp returns TimeStamp
+	GetTimeStamp() *DateAndTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,7 +69,15 @@ func (m *S7PayloadDiagnosticMessage) CpuFunctionType() uint8 {
 	return 0x00
 }
 
+func (m *S7PayloadDiagnosticMessage) GetCpuFunctionType() uint8 {
+	return 0x00
+}
+
 func (m *S7PayloadDiagnosticMessage) CpuSubfunction() uint8 {
+	return 0x03
+}
+
+func (m *S7PayloadDiagnosticMessage) GetCpuSubfunction() uint8 {
 	return 0x03
 }
 
@@ -60,10 +85,49 @@ func (m *S7PayloadDiagnosticMessage) DataLength() uint16 {
 	return 0
 }
 
+func (m *S7PayloadDiagnosticMessage) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadDiagnosticMessage) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadDiagnosticMessage) GetEventId() uint16 {
+	return m.EventId
+}
+
+func (m *S7PayloadDiagnosticMessage) GetPriorityClass() uint8 {
+	return m.PriorityClass
+}
+
+func (m *S7PayloadDiagnosticMessage) GetObNumber() uint8 {
+	return m.ObNumber
+}
+
+func (m *S7PayloadDiagnosticMessage) GetDatId() uint16 {
+	return m.DatId
+}
+
+func (m *S7PayloadDiagnosticMessage) GetInfo1() uint16 {
+	return m.Info1
+}
+
+func (m *S7PayloadDiagnosticMessage) GetInfo2() uint32 {
+	return m.Info2
+}
+
+func (m *S7PayloadDiagnosticMessage) GetTimeStamp() *DateAndTime {
+	return m.TimeStamp
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadDiagnosticMessage{

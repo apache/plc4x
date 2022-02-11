@@ -37,8 +37,17 @@ type APDUAbort struct {
 
 // The corresponding interface
 type IAPDUAbort interface {
+	// GetServer returns Server
+	GetServer() bool
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetAbortReason returns AbortReason
+	GetAbortReason() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,7 +58,30 @@ func (m *APDUAbort) ApduType() uint8 {
 	return 0x7
 }
 
+func (m *APDUAbort) GetApduType() uint8 {
+	return 0x7
+}
+
 func (m *APDUAbort) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUAbort) GetServer() bool {
+	return m.Server
+}
+
+func (m *APDUAbort) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUAbort) GetAbortReason() uint8 {
+	return m.AbortReason
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) *APDU {
 	child := &APDUAbort{

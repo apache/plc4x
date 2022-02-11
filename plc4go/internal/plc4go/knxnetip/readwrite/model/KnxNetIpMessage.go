@@ -37,9 +37,13 @@ type KnxNetIpMessage struct {
 
 // The corresponding interface
 type IKnxNetIpMessage interface {
+	// MsgType returns MsgType
 	MsgType() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,6 +58,14 @@ type IKnxNetIpMessageChild interface {
 	GetTypeName() string
 	IKnxNetIpMessage
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetIpMessage() *KnxNetIpMessage {
 	return &KnxNetIpMessage{}

@@ -36,8 +36,15 @@ type APDUError struct {
 
 // The corresponding interface
 type IAPDUError interface {
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetError returns Error
+	GetError() *BACnetError
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *APDUError) ApduType() uint8 {
 	return 0x5
 }
 
+func (m *APDUError) GetApduType() uint8 {
+	return 0x5
+}
+
 func (m *APDUError) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUError) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUError) GetError() *BACnetError {
+	return m.Error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
 	child := &APDUError{

@@ -36,8 +36,17 @@ type ComObjectTableRealisationType1 struct {
 
 // The corresponding interface
 type IComObjectTableRealisationType1 interface {
+	// GetNumEntries returns NumEntries
+	GetNumEntries() uint8
+	// GetRamFlagsTablePointer returns RamFlagsTablePointer
+	GetRamFlagsTablePointer() uint8
+	// GetComObjectDescriptors returns ComObjectDescriptors
+	GetComObjectDescriptors() []*GroupObjectDescriptorRealisationType1
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *ComObjectTableRealisationType1) FirmwareType() FirmwareType {
 	return FirmwareType_SYSTEM_1
 }
 
+func (m *ComObjectTableRealisationType1) GetFirmwareType() FirmwareType {
+	return FirmwareType_SYSTEM_1
+}
+
 func (m *ComObjectTableRealisationType1) InitializeParent(parent *ComObjectTable) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ComObjectTableRealisationType1) GetNumEntries() uint8 {
+	return m.NumEntries
+}
+
+func (m *ComObjectTableRealisationType1) GetRamFlagsTablePointer() uint8 {
+	return m.RamFlagsTablePointer
+}
+
+func (m *ComObjectTableRealisationType1) GetComObjectDescriptors() []*GroupObjectDescriptorRealisationType1 {
+	return m.ComObjectDescriptors
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []*GroupObjectDescriptorRealisationType1) *ComObjectTable {
 	child := &ComObjectTableRealisationType1{

@@ -37,10 +37,44 @@ type BACnetPropertyValue struct {
 
 // The corresponding interface
 type IBACnetPropertyValue interface {
+	// GetPropertyIdentifier returns PropertyIdentifier
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetPropertyArrayIndex returns PropertyArrayIndex
+	GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetPropertyValue returns PropertyValue
+	GetPropertyValue() *BACnetConstructedDataElement
+	// GetPriority returns Priority
+	GetPriority() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyValue) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetPropertyValue) GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.PropertyArrayIndex
+}
+
+func (m *BACnetPropertyValue) GetPropertyValue() *BACnetConstructedDataElement {
+	return m.PropertyValue
+}
+
+func (m *BACnetPropertyValue) GetPriority() *BACnetContextTagUnsignedInteger {
+	return m.Priority
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger) *BACnetPropertyValue {
 	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority}

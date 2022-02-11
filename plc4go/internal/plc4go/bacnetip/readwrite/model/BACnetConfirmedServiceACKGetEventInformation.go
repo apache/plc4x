@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKGetEventInformation struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetEventInformation interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) ServiceChoice() uint8 {
 	return 0x1D
 }
 
+func (m *BACnetConfirmedServiceACKGetEventInformation) GetServiceChoice() uint8 {
+	return 0x1D
+}
+
 func (m *BACnetConfirmedServiceACKGetEventInformation) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKGetEventInformation() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKGetEventInformation{

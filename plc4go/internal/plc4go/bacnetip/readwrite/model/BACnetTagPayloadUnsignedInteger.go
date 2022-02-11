@@ -41,9 +41,77 @@ type BACnetTagPayloadUnsignedInteger struct {
 
 // The corresponding interface
 type IBACnetTagPayloadUnsignedInteger interface {
+	// GetValueUint8 returns ValueUint8
+	GetValueUint8() *uint8
+	// GetValueUint16 returns ValueUint16
+	GetValueUint16() *uint16
+	// GetValueUint24 returns ValueUint24
+	GetValueUint24() *uint32
+	// GetValueUint32 returns ValueUint32
+	GetValueUint32() *uint32
+	// GetIsUint8 returns IsUint8
+	GetIsUint8() bool
+	// GetIsUint16 returns IsUint16
+	GetIsUint16() bool
+	// GetIsUint24 returns IsUint24
+	GetIsUint24() bool
+	// GetIsUint32 returns IsUint32
+	GetIsUint32() bool
+	// GetActualValue returns ActualValue
+	GetActualValue() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadUnsignedInteger) GetValueUint8() *uint8 {
+	return m.ValueUint8
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetValueUint16() *uint16 {
+	return m.ValueUint16
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetValueUint24() *uint32 {
+	return m.ValueUint24
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetValueUint32() *uint32 {
+	return m.ValueUint32
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsUint8
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsUint16
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsUint24
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsUint32
+}
+
+func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, isUint8 bool, isUint16 bool, isUint24 bool, isUint32 bool, actualValue uint32) *BACnetTagPayloadUnsignedInteger {

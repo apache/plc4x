@@ -34,8 +34,13 @@ type KnxNetRemoteConfigurationAndDiagnosis struct {
 
 // The corresponding interface
 type IKnxNetRemoteConfigurationAndDiagnosis interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
 	return 0x07
 }
 
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetServiceType() uint8 {
+	return 0x07
+}
+
 func (m *KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *ServiceId {
 	child := &KnxNetRemoteConfigurationAndDiagnosis{

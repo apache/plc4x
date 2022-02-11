@@ -32,8 +32,11 @@ type ApduDataExtReadRouterStatusResponse struct {
 
 // The corresponding interface
 type IApduDataExtReadRouterStatusResponse interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtReadRouterStatusResponse) ExtApciType() uint8 {
 	return 0x0E
 }
 
+func (m *ApduDataExtReadRouterStatusResponse) GetExtApciType() uint8 {
+	return 0x0E
+}
+
 func (m *ApduDataExtReadRouterStatusResponse) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtReadRouterStatusResponse() *ApduDataExt {
 	child := &ApduDataExtReadRouterStatusResponse{

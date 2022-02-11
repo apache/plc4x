@@ -33,10 +33,26 @@ type Dummy struct {
 
 // The corresponding interface
 type IDummy interface {
+	// GetDummy returns Dummy
+	GetDummy() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *Dummy) GetDummy() uint16 {
+	return m.Dummy
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDummy(dummy uint16) *Dummy {
 	return &Dummy{Dummy: dummy}

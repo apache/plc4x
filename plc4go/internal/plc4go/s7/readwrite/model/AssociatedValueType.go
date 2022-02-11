@@ -36,10 +36,44 @@ type AssociatedValueType struct {
 
 // The corresponding interface
 type IAssociatedValueType interface {
+	// GetReturnCode returns ReturnCode
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize
+	GetTransportSize() DataTransportSize
+	// GetValueLength returns ValueLength
+	GetValueLength() uint16
+	// GetData returns Data
+	GetData() []uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AssociatedValueType) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *AssociatedValueType) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *AssociatedValueType) GetValueLength() uint16 {
+	return m.ValueLength
+}
+
+func (m *AssociatedValueType) GetData() []uint8 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *AssociatedValueType {
 	return &AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}

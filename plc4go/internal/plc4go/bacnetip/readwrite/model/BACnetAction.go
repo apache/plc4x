@@ -36,9 +36,38 @@ type BACnetAction struct {
 
 // The corresponding interface
 type IBACnetAction interface {
+	// GetRawData returns RawData
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsDirect returns IsDirect
+	GetIsDirect() bool
+	// GetIsReverse returns IsReverse
+	GetIsReverse() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetAction) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetAction) GetIsDirect() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsDirect
+}
+
+func (m *BACnetAction) GetIsReverse() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsReverse
 }
 
 func NewBACnetAction(rawData *BACnetContextTagEnumerated, isDirect bool, isReverse bool) *BACnetAction {

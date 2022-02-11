@@ -32,8 +32,11 @@ type BVLCDeleteForeignDeviceTableEntry struct {
 
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,9 +47,21 @@ func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
 	return 0x08
 }
 
+func (m *BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
+	return 0x08
+}
+
 func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCDeleteForeignDeviceTableEntry(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCDeleteForeignDeviceTableEntry{

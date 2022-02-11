@@ -32,8 +32,11 @@ type BVLCReadForeignDeviceTable struct {
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTable interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,9 +47,21 @@ func (m *BVLCReadForeignDeviceTable) BvlcFunction() uint8 {
 	return 0x06
 }
 
+func (m *BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
+	return 0x06
+}
+
 func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCReadForeignDeviceTable(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCReadForeignDeviceTable{

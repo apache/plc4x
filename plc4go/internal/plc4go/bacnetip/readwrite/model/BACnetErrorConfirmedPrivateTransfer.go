@@ -32,8 +32,11 @@ type BACnetErrorConfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetErrorConfirmedPrivateTransfer interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,10 +47,22 @@ func (m *BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
 	return 0x12
 }
 
+func (m *BACnetErrorConfirmedPrivateTransfer) GetServiceChoice() uint8 {
+	return 0x12
+}
+
 func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) {
 	m.BACnetError.ErrorClass = errorClass
 	m.BACnetError.ErrorCode = errorCode
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedPrivateTransfer{

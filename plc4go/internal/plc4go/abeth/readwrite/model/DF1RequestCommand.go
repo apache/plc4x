@@ -33,9 +33,13 @@ type DF1RequestCommand struct {
 
 // The corresponding interface
 type IDF1RequestCommand interface {
+	// FunctionCode returns FunctionCode
 	FunctionCode() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IDF1RequestCommandChild interface {
 	GetTypeName() string
 	IDF1RequestCommand
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1RequestCommand() *DF1RequestCommand {
 	return &DF1RequestCommand{}

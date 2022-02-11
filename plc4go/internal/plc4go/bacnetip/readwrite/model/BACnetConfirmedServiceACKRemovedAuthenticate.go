@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKRemovedAuthenticate struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKRemovedAuthenticate interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKRemovedAuthenticate) ServiceChoice() uint8 {
 	return 0x18
 }
 
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) GetServiceChoice() uint8 {
+	return 0x18
+}
+
 func (m *BACnetConfirmedServiceACKRemovedAuthenticate) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKRemovedAuthenticate() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKRemovedAuthenticate{

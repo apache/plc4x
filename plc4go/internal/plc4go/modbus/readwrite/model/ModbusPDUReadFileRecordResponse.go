@@ -34,8 +34,13 @@ type ModbusPDUReadFileRecordResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadFileRecordResponse interface {
+	// GetItems returns Items
+	GetItems() []*ModbusPDUReadFileRecordResponseItem
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *ModbusPDUReadFileRecordResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadFileRecordResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadFileRecordResponse) FunctionFlag() uint8 {
+	return 0x14
+}
+
+func (m *ModbusPDUReadFileRecordResponse) GetFunctionFlag() uint8 {
 	return 0x14
 }
 
@@ -54,7 +67,22 @@ func (m *ModbusPDUReadFileRecordResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUReadFileRecordResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUReadFileRecordResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadFileRecordResponse) GetItems() []*ModbusPDUReadFileRecordResponseItem {
+	return m.Items
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUReadFileRecordResponse(items []*ModbusPDUReadFileRecordResponseItem) *ModbusPDU {
 	child := &ModbusPDUReadFileRecordResponse{

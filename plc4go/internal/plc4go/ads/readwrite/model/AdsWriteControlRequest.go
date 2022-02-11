@@ -36,8 +36,17 @@ type AdsWriteControlRequest struct {
 
 // The corresponding interface
 type IAdsWriteControlRequest interface {
+	// GetAdsState returns AdsState
+	GetAdsState() uint16
+	// GetDeviceState returns DeviceState
+	GetDeviceState() uint16
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *AdsWriteControlRequest) CommandId() CommandId {
 	return CommandId_ADS_WRITE_CONTROL
 }
 
+func (m *AdsWriteControlRequest) GetCommandId() CommandId {
+	return CommandId_ADS_WRITE_CONTROL
+}
+
 func (m *AdsWriteControlRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsWriteControlRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsWriteControlRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsWriteControlRequest) GetAdsState() uint16 {
+	return m.AdsState
+}
+
+func (m *AdsWriteControlRequest) GetDeviceState() uint16 {
+	return m.DeviceState
+}
+
+func (m *AdsWriteControlRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsData {
 	child := &AdsWriteControlRequest{

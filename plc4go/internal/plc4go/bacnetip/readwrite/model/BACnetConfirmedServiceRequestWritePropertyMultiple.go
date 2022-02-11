@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWritePropertyMultiple interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) ServiceChoice() uin
 	return 0x10
 }
 
+func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceChoice() uint8 {
+	return 0x10
+}
+
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestWritePropertyMultiple() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWritePropertyMultiple{

@@ -34,8 +34,13 @@ type NLMWhoIsRouterToNetwork struct {
 
 // The corresponding interface
 type INLMWhoIsRouterToNetwork interface {
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() []uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *NLMWhoIsRouterToNetwork) MessageType() uint8 {
 	return 0x00
 }
 
+func (m *NLMWhoIsRouterToNetwork) GetMessageType() uint8 {
+	return 0x00
+}
+
 func (m *NLMWhoIsRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMWhoIsRouterToNetwork) GetDestinationNetworkAddress() []uint16 {
+	return m.DestinationNetworkAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16) *NLM {
 	child := &NLMWhoIsRouterToNetwork{

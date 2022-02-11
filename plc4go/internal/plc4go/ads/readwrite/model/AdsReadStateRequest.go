@@ -32,8 +32,11 @@ type AdsReadStateRequest struct {
 
 // The corresponding interface
 type IAdsReadStateRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *AdsReadStateRequest) CommandId() CommandId {
 	return CommandId_ADS_READ_STATE
 }
 
+func (m *AdsReadStateRequest) GetCommandId() CommandId {
+	return CommandId_ADS_READ_STATE
+}
+
 func (m *AdsReadStateRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsReadStateRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadStateRequest() *AdsData {
 	child := &AdsReadStateRequest{

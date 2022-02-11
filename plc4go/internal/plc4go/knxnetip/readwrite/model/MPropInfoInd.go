@@ -32,8 +32,11 @@ type MPropInfoInd struct {
 
 // The corresponding interface
 type IMPropInfoInd interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MPropInfoInd) MessageCode() uint8 {
 	return 0xF7
 }
 
+func (m *MPropInfoInd) GetMessageCode() uint8 {
+	return 0xF7
+}
+
 func (m *MPropInfoInd) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMPropInfoInd() *CEMI {
 	child := &MPropInfoInd{

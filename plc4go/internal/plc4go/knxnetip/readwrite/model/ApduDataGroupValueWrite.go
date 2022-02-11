@@ -35,8 +35,15 @@ type ApduDataGroupValueWrite struct {
 
 // The corresponding interface
 type IApduDataGroupValueWrite interface {
+	// GetDataFirstByte returns DataFirstByte
+	GetDataFirstByte() int8
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ApduDataGroupValueWrite) ApciType() uint8 {
 	return 0x2
 }
 
+func (m *ApduDataGroupValueWrite) GetApciType() uint8 {
+	return 0x2
+}
+
 func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataGroupValueWrite) GetDataFirstByte() int8 {
+	return m.DataFirstByte
+}
+
+func (m *ApduDataGroupValueWrite) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *ApduData {
 	child := &ApduDataGroupValueWrite{

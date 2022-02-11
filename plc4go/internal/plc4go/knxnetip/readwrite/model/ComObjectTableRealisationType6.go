@@ -34,8 +34,13 @@ type ComObjectTableRealisationType6 struct {
 
 // The corresponding interface
 type IComObjectTableRealisationType6 interface {
+	// GetComObjectDescriptors returns ComObjectDescriptors
+	GetComObjectDescriptors() *GroupObjectDescriptorRealisationType6
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *ComObjectTableRealisationType6) FirmwareType() FirmwareType {
 	return FirmwareType_SYSTEM_300
 }
 
+func (m *ComObjectTableRealisationType6) GetFirmwareType() FirmwareType {
+	return FirmwareType_SYSTEM_300
+}
+
 func (m *ComObjectTableRealisationType6) InitializeParent(parent *ComObjectTable) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ComObjectTableRealisationType6) GetComObjectDescriptors() *GroupObjectDescriptorRealisationType6 {
+	return m.ComObjectDescriptors
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
 	child := &ComObjectTableRealisationType6{

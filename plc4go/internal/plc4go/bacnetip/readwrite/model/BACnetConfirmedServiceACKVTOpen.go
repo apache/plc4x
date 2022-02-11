@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKVTOpen struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTOpen interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *BACnetConfirmedServiceACKVTOpen) ServiceChoice() uint8 {
 	return 0x15
 }
 
+func (m *BACnetConfirmedServiceACKVTOpen) GetServiceChoice() uint8 {
+	return 0x15
+}
+
 func (m *BACnetConfirmedServiceACKVTOpen) InitializeParent(parent *BACnetConfirmedServiceACK) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKVTOpen() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKVTOpen{

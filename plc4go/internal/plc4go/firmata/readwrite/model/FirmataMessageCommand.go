@@ -34,8 +34,13 @@ type FirmataMessageCommand struct {
 
 // The corresponding interface
 type IFirmataMessageCommand interface {
+	// GetCommand returns Command
+	GetCommand() *FirmataCommand
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *FirmataMessageCommand) MessageType() uint8 {
 	return 0xF
 }
 
+func (m *FirmataMessageCommand) GetMessageType() uint8 {
+	return 0xF
+}
+
 func (m *FirmataMessageCommand) InitializeParent(parent *FirmataMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataMessageCommand) GetCommand() *FirmataCommand {
+	return m.Command
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataMessageCommand(command *FirmataCommand) *FirmataMessage {
 	child := &FirmataMessageCommand{

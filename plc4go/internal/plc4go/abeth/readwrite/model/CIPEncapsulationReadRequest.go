@@ -34,8 +34,13 @@ type CIPEncapsulationReadRequest struct {
 
 // The corresponding interface
 type ICIPEncapsulationReadRequest interface {
+	// GetRequest returns Request
+	GetRequest() *DF1RequestMessage
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *CIPEncapsulationReadRequest) CommandType() uint16 {
 	return 0x0107
 }
 
+func (m *CIPEncapsulationReadRequest) GetCommandType() uint16 {
+	return 0x0107
+}
+
 func (m *CIPEncapsulationReadRequest) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
 	m.CIPEncapsulationPacket.Status = status
 	m.CIPEncapsulationPacket.SenderContext = senderContext
 	m.CIPEncapsulationPacket.Options = options
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CIPEncapsulationReadRequest) GetRequest() *DF1RequestMessage {
+	return m.Request
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationReadRequest{

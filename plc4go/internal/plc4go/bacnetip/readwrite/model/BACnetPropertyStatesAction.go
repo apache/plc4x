@@ -35,8 +35,13 @@ type BACnetPropertyStatesAction struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesAction interface {
+	// GetAction returns Action
+	GetAction() *BACnetAction
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +52,27 @@ func (m *BACnetPropertyStatesAction) PeekedTagNumber() uint8 {
 	return uint8(16)
 }
 
+func (m *BACnetPropertyStatesAction) GetPeekedTagNumber() uint8 {
+	return uint8(16)
+}
+
 func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetPropertyStates.OpeningTag = openingTag
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
 	m.BACnetPropertyStates.ClosingTag = closingTag
 	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyStatesAction) GetAction() *BACnetAction {
+	return m.Action
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
 	child := &BACnetPropertyStatesAction{

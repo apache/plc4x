@@ -35,8 +35,15 @@ type DeviceConfigurationRequest struct {
 
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
+	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock
+	GetDeviceConfigurationRequestDataBlock() *DeviceConfigurationRequestDataBlock
+	// GetCemi returns Cemi
+	GetCemi() *CEMI
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *DeviceConfigurationRequest) MsgType() uint16 {
 	return 0x0310
 }
 
+func (m *DeviceConfigurationRequest) GetMsgType() uint16 {
+	return 0x0310
+}
+
 func (m *DeviceConfigurationRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DeviceConfigurationRequest) GetDeviceConfigurationRequestDataBlock() *DeviceConfigurationRequestDataBlock {
+	return m.DeviceConfigurationRequestDataBlock
+}
+
+func (m *DeviceConfigurationRequest) GetCemi() *CEMI {
+	return m.Cemi
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI) *KnxNetIpMessage {
 	child := &DeviceConfigurationRequest{

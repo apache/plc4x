@@ -38,9 +38,15 @@ type BVLC struct {
 
 // The corresponding interface
 type IBVLC interface {
+	// BvlcFunction returns BvlcFunction
 	BvlcFunction() uint8
+	// GetBvlcPayloadLength returns BvlcPayloadLength
+	GetBvlcPayloadLength() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,6 +60,18 @@ type IBVLCChild interface {
 	InitializeParent(parent *BVLC, bvlcPayloadLength uint16)
 	GetTypeName() string
 	IBVLC
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BVLC) GetBvlcPayloadLength() uint16 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.BvlcPayloadLength
 }
 
 func NewBVLC(bvlcPayloadLength uint16) *BVLC {

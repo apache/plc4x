@@ -36,8 +36,17 @@ type BACnetContextTagPropertyIdentifier struct {
 
 // The corresponding interface
 type IBACnetContextTagPropertyIdentifier interface {
+	// GetPropertyIdentifier returns PropertyIdentifier
+	GetPropertyIdentifier() BACnetPropertyIdentifier
+	// GetProprietaryValue returns ProprietaryValue
+	GetProprietaryValue() uint32
+	// GetIsProprietary returns IsProprietary
+	GetIsProprietary() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,34 @@ func (m *BACnetContextTagPropertyIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }
 
+func (m *BACnetContextTagPropertyIdentifier) GetDataType() BACnetDataType {
+	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
+}
+
 func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagPropertyIdentifier) GetPropertyIdentifier() BACnetPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetContextTagPropertyIdentifier) GetProprietaryValue() uint32 {
+	return m.ProprietaryValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagPropertyIdentifier) GetIsProprietary() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsProprietary
 }
 
 func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

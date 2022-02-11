@@ -35,8 +35,15 @@ type ConnectionStateResponse struct {
 
 // The corresponding interface
 type IConnectionStateResponse interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetStatus returns Status
+	GetStatus() Status
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ConnectionStateResponse) MsgType() uint16 {
 	return 0x0208
 }
 
+func (m *ConnectionStateResponse) GetMsgType() uint16 {
+	return 0x0208
+}
+
 func (m *ConnectionStateResponse) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionStateResponse) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *ConnectionStateResponse) GetStatus() Status {
+	return m.Status
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionStateResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
 	child := &ConnectionStateResponse{

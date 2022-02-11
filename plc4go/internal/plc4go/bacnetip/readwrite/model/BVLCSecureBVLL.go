@@ -32,8 +32,11 @@ type BVLCSecureBVLL struct {
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,9 +47,21 @@ func (m *BVLCSecureBVLL) BvlcFunction() uint8 {
 	return 0x0C
 }
 
+func (m *BVLCSecureBVLL) GetBvlcFunction() uint8 {
+	return 0x0C
+}
+
 func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCSecureBVLL(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCSecureBVLL{

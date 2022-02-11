@@ -36,8 +36,17 @@ type LDataInd struct {
 
 // The corresponding interface
 type ILDataInd interface {
+	// GetAdditionalInformationLength returns AdditionalInformationLength
+	GetAdditionalInformationLength() uint8
+	// GetAdditionalInformation returns AdditionalInformation
+	GetAdditionalInformation() []*CEMIAdditionalInformation
+	// GetDataFrame returns DataFrame
+	GetDataFrame() *LDataFrame
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *LDataInd) MessageCode() uint8 {
 	return 0x29
 }
 
+func (m *LDataInd) GetMessageCode() uint8 {
+	return 0x29
+}
+
 func (m *LDataInd) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LDataInd) GetAdditionalInformationLength() uint8 {
+	return m.AdditionalInformationLength
+}
+
+func (m *LDataInd) GetAdditionalInformation() []*CEMIAdditionalInformation {
+	return m.AdditionalInformation
+}
+
+func (m *LDataInd) GetDataFrame() *LDataFrame {
+	return m.DataFrame
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
 	child := &LDataInd{

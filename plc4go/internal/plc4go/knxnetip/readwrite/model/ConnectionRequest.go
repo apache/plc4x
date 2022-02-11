@@ -36,8 +36,17 @@ type ConnectionRequest struct {
 
 // The corresponding interface
 type IConnectionRequest interface {
+	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint
+	GetHpaiDiscoveryEndpoint() *HPAIDiscoveryEndpoint
+	// GetHpaiDataEndpoint returns HpaiDataEndpoint
+	GetHpaiDataEndpoint() *HPAIDataEndpoint
+	// GetConnectionRequestInformation returns ConnectionRequestInformation
+	GetConnectionRequestInformation() *ConnectionRequestInformation
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *ConnectionRequest) MsgType() uint16 {
 	return 0x0205
 }
 
+func (m *ConnectionRequest) GetMsgType() uint16 {
+	return 0x0205
+}
+
 func (m *ConnectionRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionRequest) GetHpaiDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
+	return m.HpaiDiscoveryEndpoint
+}
+
+func (m *ConnectionRequest) GetHpaiDataEndpoint() *HPAIDataEndpoint {
+	return m.HpaiDataEndpoint
+}
+
+func (m *ConnectionRequest) GetConnectionRequestInformation() *ConnectionRequestInformation {
+	return m.ConnectionRequestInformation
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *KnxNetIpMessage {
 	child := &ConnectionRequest{

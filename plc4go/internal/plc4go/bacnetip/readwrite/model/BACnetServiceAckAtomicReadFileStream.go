@@ -35,8 +35,15 @@ type BACnetServiceAckAtomicReadFileStream struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFileStream interface {
+	// GetFileStartPosition returns FileStartPosition
+	GetFileStartPosition() *BACnetApplicationTagSignedInteger
+	// GetFileData returns FileData
+	GetFileData() *BACnetApplicationTagOctetString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +54,31 @@ func (m *BACnetServiceAckAtomicReadFileStream) PeekedTagNumber() uint8 {
 	return 0x0
 }
 
+func (m *BACnetServiceAckAtomicReadFileStream) GetPeekedTagNumber() uint8 {
+	return 0x0
+}
+
 func (m *BACnetServiceAckAtomicReadFileStream) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.OpeningTag = openingTag
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.ClosingTag = closingTag
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicReadFileStream) GetFileStartPosition() *BACnetApplicationTagSignedInteger {
+	return m.FileStartPosition
+}
+
+func (m *BACnetServiceAckAtomicReadFileStream) GetFileData() *BACnetApplicationTagOctetString {
+	return m.FileData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetServiceAckAtomicReadFileStreamOrRecord {
 	child := &BACnetServiceAckAtomicReadFileStream{

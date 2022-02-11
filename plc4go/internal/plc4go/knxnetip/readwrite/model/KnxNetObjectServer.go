@@ -34,8 +34,13 @@ type KnxNetObjectServer struct {
 
 // The corresponding interface
 type IKnxNetObjectServer interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetObjectServer) ServiceType() uint8 {
 	return 0x08
 }
 
+func (m *KnxNetObjectServer) GetServiceType() uint8 {
+	return 0x08
+}
+
 func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetObjectServer) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetObjectServer(version uint8) *ServiceId {
 	child := &KnxNetObjectServer{

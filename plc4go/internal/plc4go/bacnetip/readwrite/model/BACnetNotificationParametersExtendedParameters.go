@@ -49,10 +49,116 @@ type BACnetNotificationParametersExtendedParameters struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersExtendedParameters interface {
+	// GetOpeningTag returns OpeningTag
+	GetOpeningTag() *BACnetOpeningTag
+	// GetNullValue returns NullValue
+	GetNullValue() *BACnetApplicationTagNull
+	// GetRealValue returns RealValue
+	GetRealValue() *BACnetApplicationTagReal
+	// GetUnsignedValue returns UnsignedValue
+	GetUnsignedValue() *BACnetApplicationTagUnsignedInteger
+	// GetBooleanValue returns BooleanValue
+	GetBooleanValue() *BACnetApplicationTagBoolean
+	// GetIntegerValue returns IntegerValue
+	GetIntegerValue() *BACnetApplicationTagSignedInteger
+	// GetDoubleValue returns DoubleValue
+	GetDoubleValue() *BACnetApplicationTagDouble
+	// GetOctetStringValue returns OctetStringValue
+	GetOctetStringValue() *BACnetApplicationTagOctetString
+	// GetCharacterStringValue returns CharacterStringValue
+	GetCharacterStringValue() *BACnetApplicationTagCharacterString
+	// GetBitStringValue returns BitStringValue
+	GetBitStringValue() *BACnetApplicationTagBitString
+	// GetEnumeratedValue returns EnumeratedValue
+	GetEnumeratedValue() *BACnetApplicationTagEnumerated
+	// GetDateValue returns DateValue
+	GetDateValue() *BACnetApplicationTagDate
+	// GetTimeValue returns TimeValue
+	GetTimeValue() *BACnetApplicationTagTime
+	// GetObjectIdentifier returns ObjectIdentifier
+	GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetReference returns Reference
+	GetReference() *BACnetDeviceObjectPropertyReference
+	// GetClosingTag returns ClosingTag
+	GetClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersExtendedParameters) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetNullValue() *BACnetApplicationTagNull {
+	return m.NullValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetRealValue() *BACnetApplicationTagReal {
+	return m.RealValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetUnsignedValue() *BACnetApplicationTagUnsignedInteger {
+	return m.UnsignedValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetBooleanValue() *BACnetApplicationTagBoolean {
+	return m.BooleanValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetIntegerValue() *BACnetApplicationTagSignedInteger {
+	return m.IntegerValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetDoubleValue() *BACnetApplicationTagDouble {
+	return m.DoubleValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetOctetStringValue() *BACnetApplicationTagOctetString {
+	return m.OctetStringValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetCharacterStringValue() *BACnetApplicationTagCharacterString {
+	return m.CharacterStringValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetBitStringValue() *BACnetApplicationTagBitString {
+	return m.BitStringValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetEnumeratedValue() *BACnetApplicationTagEnumerated {
+	return m.EnumeratedValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetDateValue() *BACnetApplicationTagDate {
+	return m.DateValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetTimeValue() *BACnetApplicationTagTime {
+	return m.TimeValue
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetObjectIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetReference() *BACnetDeviceObjectPropertyReference {
+	return m.Reference
+}
+
+func (m *BACnetNotificationParametersExtendedParameters) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReference, closingTag *BACnetClosingTag) *BACnetNotificationParametersExtendedParameters {
 	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag}

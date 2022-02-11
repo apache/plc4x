@@ -34,8 +34,13 @@ type BACnetTimeStampDateTime struct {
 
 // The corresponding interface
 type IBACnetTimeStampDateTime interface {
+	// GetDateTimeValue returns DateTimeValue
+	GetDateTimeValue() *BACnetDateTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetTimeStampDateTime) PeekedTagNumber() uint8 {
 	return uint8(2)
 }
 
+func (m *BACnetTimeStampDateTime) GetPeekedTagNumber() uint8 {
+	return uint8(2)
+}
+
 func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetTimeStamp.OpeningTag = openingTag
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
 	m.BACnetTimeStamp.ClosingTag = closingTag
 	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
+	return m.DateTimeValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
 	child := &BACnetTimeStampDateTime{

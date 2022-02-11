@@ -36,10 +36,44 @@ type BACnetReadAccessSpecification struct {
 
 // The corresponding interface
 type IBACnetReadAccessSpecification interface {
+	// GetObjectIdentifier returns ObjectIdentifier
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetOpeningTag returns OpeningTag
+	GetOpeningTag() *BACnetOpeningTag
+	// GetListOfPropertyReferences returns ListOfPropertyReferences
+	GetListOfPropertyReferences() []*BACnetPropertyReference
+	// GetClosingTag returns ClosingTag
+	GetClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetReadAccessSpecification) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetReadAccessSpecification) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetReadAccessSpecification) GetListOfPropertyReferences() []*BACnetPropertyReference {
+	return m.ListOfPropertyReferences
+}
+
+func (m *BACnetReadAccessSpecification) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetReadAccessSpecification(objectIdentifier *BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, listOfPropertyReferences []*BACnetPropertyReference, closingTag *BACnetClosingTag) *BACnetReadAccessSpecification {
 	return &BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}

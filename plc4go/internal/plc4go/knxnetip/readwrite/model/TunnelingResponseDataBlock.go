@@ -35,10 +35,38 @@ type TunnelingResponseDataBlock struct {
 
 // The corresponding interface
 type ITunnelingResponseDataBlock interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetSequenceCounter returns SequenceCounter
+	GetSequenceCounter() uint8
+	// GetStatus returns Status
+	GetStatus() Status
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *TunnelingResponseDataBlock) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *TunnelingResponseDataBlock) GetSequenceCounter() uint8 {
+	return m.SequenceCounter
+}
+
+func (m *TunnelingResponseDataBlock) GetStatus() Status {
+	return m.Status
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *TunnelingResponseDataBlock {
 	return &TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}

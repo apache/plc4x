@@ -37,9 +37,13 @@ type DF1Symbol struct {
 
 // The corresponding interface
 type IDF1Symbol interface {
+	// SymbolType returns SymbolType
 	SymbolType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,6 +58,14 @@ type IDF1SymbolChild interface {
 	GetTypeName() string
 	IDF1Symbol
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1Symbol() *DF1Symbol {
 	return &DF1Symbol{}

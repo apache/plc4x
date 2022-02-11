@@ -34,8 +34,13 @@ type TunnelingResponse struct {
 
 // The corresponding interface
 type ITunnelingResponse interface {
+	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock
+	GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *TunnelingResponse) MsgType() uint16 {
 	return 0x0421
 }
 
+func (m *TunnelingResponse) GetMsgType() uint16 {
+	return 0x0421
+}
+
 func (m *TunnelingResponse) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *TunnelingResponse) GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock {
+	return m.TunnelingResponseDataBlock
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
 	child := &TunnelingResponse{

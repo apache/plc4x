@@ -38,8 +38,21 @@ type ApduDataExtPropertyValueResponse struct {
 
 // The corresponding interface
 type IApduDataExtPropertyValueResponse interface {
+	// GetObjectIndex returns ObjectIndex
+	GetObjectIndex() uint8
+	// GetPropertyId returns PropertyId
+	GetPropertyId() uint8
+	// GetCount returns Count
+	GetCount() uint8
+	// GetIndex returns Index
+	GetIndex() uint16
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +63,38 @@ func (m *ApduDataExtPropertyValueResponse) ExtApciType() uint8 {
 	return 0x16
 }
 
+func (m *ApduDataExtPropertyValueResponse) GetExtApciType() uint8 {
+	return 0x16
+}
+
 func (m *ApduDataExtPropertyValueResponse) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataExtPropertyValueResponse) GetObjectIndex() uint8 {
+	return m.ObjectIndex
+}
+
+func (m *ApduDataExtPropertyValueResponse) GetPropertyId() uint8 {
+	return m.PropertyId
+}
+
+func (m *ApduDataExtPropertyValueResponse) GetCount() uint8 {
+	return m.Count
+}
+
+func (m *ApduDataExtPropertyValueResponse) GetIndex() uint16 {
+	return m.Index
+}
+
+func (m *ApduDataExtPropertyValueResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) *ApduDataExt {
 	child := &ApduDataExtPropertyValueResponse{

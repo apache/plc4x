@@ -47,8 +47,37 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
+	// GetProcessIdentifier returns ProcessIdentifier
+	GetProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier
+	GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetEventObjectIdentifier returns EventObjectIdentifier
+	GetEventObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetTimestamp returns Timestamp
+	GetTimestamp() *BACnetTimeStamp
+	// GetNotificationClass returns NotificationClass
+	GetNotificationClass() *BACnetContextTagUnsignedInteger
+	// GetPriority returns Priority
+	GetPriority() *BACnetContextTagUnsignedInteger
+	// GetEventType returns EventType
+	GetEventType() *BACnetContextTagEventType
+	// GetMessageText returns MessageText
+	GetMessageText() *BACnetContextTagCharacterString
+	// GetNotifyType returns NotifyType
+	GetNotifyType() *BACnetContextTagNotifyType
+	// GetAckRequired returns AckRequired
+	GetAckRequired() *BACnetContextTagBoolean
+	// GetFromState returns FromState
+	GetFromState() *BACnetContextTagEventState
+	// GetToState returns ToState
+	GetToState() *BACnetContextTagEventState
+	// GetEventValues returns EventValues
+	GetEventValues() *BACnetNotificationParameters
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -59,8 +88,71 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) ServiceChoice(
 	return 0x02
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetServiceChoice() uint8 {
+	return 0x02
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.ProcessIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.InitiatingDeviceIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.EventObjectIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetTimestamp() *BACnetTimeStamp {
+	return m.Timestamp
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetNotificationClass() *BACnetContextTagUnsignedInteger {
+	return m.NotificationClass
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetPriority() *BACnetContextTagUnsignedInteger {
+	return m.Priority
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventType() *BACnetContextTagEventType {
+	return m.EventType
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetMessageText() *BACnetContextTagCharacterString {
+	return m.MessageText
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetNotifyType() *BACnetContextTagNotifyType {
+	return m.NotifyType
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetAckRequired() *BACnetContextTagBoolean {
+	return m.AckRequired
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetFromState() *BACnetContextTagEventState {
+	return m.FromState
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetToState() *BACnetContextTagEventState {
+	return m.ToState
+}
+
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventValues() *BACnetNotificationParameters {
+	return m.EventValues
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStamp, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedEventNotification{

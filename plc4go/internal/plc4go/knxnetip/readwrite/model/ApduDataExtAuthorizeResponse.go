@@ -34,8 +34,13 @@ type ApduDataExtAuthorizeResponse struct {
 
 // The corresponding interface
 type IApduDataExtAuthorizeResponse interface {
+	// GetLevel returns Level
+	GetLevel() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *ApduDataExtAuthorizeResponse) ExtApciType() uint8 {
 	return 0x12
 }
 
+func (m *ApduDataExtAuthorizeResponse) GetExtApciType() uint8 {
+	return 0x12
+}
+
 func (m *ApduDataExtAuthorizeResponse) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataExtAuthorizeResponse) GetLevel() uint8 {
+	return m.Level
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtAuthorizeResponse(level uint8) *ApduDataExt {
 	child := &ApduDataExtAuthorizeResponse{

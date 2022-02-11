@@ -43,8 +43,27 @@ type APDUComplexAck struct {
 
 // The corresponding interface
 type IAPDUComplexAck interface {
+	// GetSegmentedMessage returns SegmentedMessage
+	GetSegmentedMessage() bool
+	// GetMoreFollows returns MoreFollows
+	GetMoreFollows() bool
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() *uint8
+	// GetProposedWindowSize returns ProposedWindowSize
+	GetProposedWindowSize() *uint8
+	// GetServiceAck returns ServiceAck
+	GetServiceAck() *BACnetServiceAck
+	// GetSegmentServiceChoice returns SegmentServiceChoice
+	GetSegmentServiceChoice() *uint8
+	// GetSegment returns Segment
+	GetSegment() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,7 +74,50 @@ func (m *APDUComplexAck) ApduType() uint8 {
 	return 0x3
 }
 
+func (m *APDUComplexAck) GetApduType() uint8 {
+	return 0x3
+}
+
 func (m *APDUComplexAck) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUComplexAck) GetSegmentedMessage() bool {
+	return m.SegmentedMessage
+}
+
+func (m *APDUComplexAck) GetMoreFollows() bool {
+	return m.MoreFollows
+}
+
+func (m *APDUComplexAck) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUComplexAck) GetSequenceNumber() *uint8 {
+	return m.SequenceNumber
+}
+
+func (m *APDUComplexAck) GetProposedWindowSize() *uint8 {
+	return m.ProposedWindowSize
+}
+
+func (m *APDUComplexAck) GetServiceAck() *BACnetServiceAck {
+	return m.ServiceAck
+}
+
+func (m *APDUComplexAck) GetSegmentServiceChoice() *uint8 {
+	return m.SegmentServiceChoice
+}
+
+func (m *APDUComplexAck) GetSegment() []byte {
+	return m.Segment
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck, segmentServiceChoice *uint8, segment []byte) *APDU {
 	child := &APDUComplexAck{

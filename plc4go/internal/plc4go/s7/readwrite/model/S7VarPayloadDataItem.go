@@ -36,10 +36,38 @@ type S7VarPayloadDataItem struct {
 
 // The corresponding interface
 type IS7VarPayloadDataItem interface {
+	// GetReturnCode returns ReturnCode
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize
+	GetTransportSize() DataTransportSize
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7VarPayloadDataItem) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *S7VarPayloadDataItem) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *S7VarPayloadDataItem) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *S7VarPayloadDataItem {
 	return &S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}

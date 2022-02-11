@@ -38,8 +38,19 @@ type BACnetConstructedDataUnspecified struct {
 
 // The corresponding interface
 type IBACnetConstructedDataUnspecified interface {
+	// GetData returns Data
+	GetData() []*BACnetConstructedDataElement
+	// GetPropertyIdentifier returns PropertyIdentifier
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetContent returns Content
+	GetContent() *BACnetApplicationTag
+	// GetHasData returns HasData
+	GetHasData() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +61,15 @@ func (m *BACnetConstructedDataUnspecified) ObjectType() BACnetObjectType {
 	return 0
 }
 
+func (m *BACnetConstructedDataUnspecified) GetObjectType() BACnetObjectType {
+	return 0
+}
+
 func (m *BACnetConstructedDataUnspecified) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return 0
+}
+
+func (m *BACnetConstructedDataUnspecified) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
 	return 0
 }
 
@@ -58,6 +77,29 @@ func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstr
 	m.BACnetConstructedData.OpeningTag = openingTag
 	m.BACnetConstructedData.ClosingTag = closingTag
 	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataUnspecified) GetData() []*BACnetConstructedDataElement {
+	return m.Data
+}
+
+func (m *BACnetConstructedDataUnspecified) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetConstructedDataUnspecified) GetContent() *BACnetApplicationTag {
+	return m.Content
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.HasData
 }
 
 func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, hasData bool, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {

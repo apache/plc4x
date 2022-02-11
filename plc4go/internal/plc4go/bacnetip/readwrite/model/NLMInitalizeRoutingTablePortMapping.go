@@ -36,10 +36,44 @@ type NLMInitalizeRoutingTablePortMapping struct {
 
 // The corresponding interface
 type INLMInitalizeRoutingTablePortMapping interface {
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() uint16
+	// GetPortId returns PortId
+	GetPortId() uint8
+	// GetPortInfoLength returns PortInfoLength
+	GetPortInfoLength() uint8
+	// GetPortInfo returns PortInfo
+	GetPortInfo() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMInitalizeRoutingTablePortMapping) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortId() uint8 {
+	return m.PortId
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfoLength() uint8 {
+	return m.PortInfoLength
+}
+
+func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfo() []byte {
+	return m.PortInfo
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *NLMInitalizeRoutingTablePortMapping {
 	return &NLMInitalizeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}

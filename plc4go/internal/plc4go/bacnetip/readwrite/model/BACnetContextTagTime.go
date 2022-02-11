@@ -34,8 +34,13 @@ type BACnetContextTagTime struct {
 
 // The corresponding interface
 type IBACnetContextTagTime interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetContextTagTime) DataType() BACnetDataType {
 	return BACnetDataType_TIME
 }
 
+func (m *BACnetContextTagTime) GetDataType() BACnetDataType {
+	return BACnetDataType_TIME
+}
+
 func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagTime) GetPayload() *BACnetTagPayloadTime {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagTime{

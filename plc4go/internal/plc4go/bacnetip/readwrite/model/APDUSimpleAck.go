@@ -36,8 +36,15 @@ type APDUSimpleAck struct {
 
 // The corresponding interface
 type IAPDUSimpleAck interface {
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetServiceChoice returns ServiceChoice
+	GetServiceChoice() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *APDUSimpleAck) ApduType() uint8 {
 	return 0x2
 }
 
+func (m *APDUSimpleAck) GetApduType() uint8 {
+	return 0x2
+}
+
 func (m *APDUSimpleAck) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUSimpleAck) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUSimpleAck) GetServiceChoice() uint8 {
+	return m.ServiceChoice
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) *APDU {
 	child := &APDUSimpleAck{

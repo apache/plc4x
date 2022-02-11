@@ -34,10 +34,26 @@ type AmsTCPPacket struct {
 
 // The corresponding interface
 type IAmsTCPPacket interface {
+	// GetUserdata returns Userdata
+	GetUserdata() *AmsPacket
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AmsTCPPacket) GetUserdata() *AmsPacket {
+	return m.Userdata
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAmsTCPPacket(userdata *AmsPacket) *AmsTCPPacket {
 	return &AmsTCPPacket{Userdata: userdata}

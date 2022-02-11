@@ -34,8 +34,13 @@ type ApduDataContainer struct {
 
 // The corresponding interface
 type IApduDataContainer interface {
+	// GetDataApdu returns DataApdu
+	GetDataApdu() *ApduData
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,10 +51,25 @@ func (m *ApduDataContainer) Control() uint8 {
 	return uint8(0)
 }
 
+func (m *ApduDataContainer) GetControl() uint8 {
+	return uint8(0)
+}
+
 func (m *ApduDataContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
 	m.Apdu.Numbered = numbered
 	m.Apdu.Counter = counter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataContainer) GetDataApdu() *ApduData {
+	return m.DataApdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8) *Apdu {
 	child := &ApduDataContainer{

@@ -32,8 +32,11 @@ type ApduDataUserMessage struct {
 
 // The corresponding interface
 type IApduDataUserMessage interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataUserMessage) ApciType() uint8 {
 	return 0xB
 }
 
+func (m *ApduDataUserMessage) GetApciType() uint8 {
+	return 0xB
+}
+
 func (m *ApduDataUserMessage) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataUserMessage() *ApduData {
 	child := &ApduDataUserMessage{

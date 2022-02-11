@@ -37,8 +37,17 @@ type S7ParameterSetupCommunication struct {
 
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
+	// GetMaxAmqCaller returns MaxAmqCaller
+	GetMaxAmqCaller() uint16
+	// GetMaxAmqCallee returns MaxAmqCallee
+	GetMaxAmqCallee() uint16
+	// GetPduLength returns PduLength
+	GetPduLength() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,11 +58,38 @@ func (m *S7ParameterSetupCommunication) ParameterType() uint8 {
 	return 0xF0
 }
 
+func (m *S7ParameterSetupCommunication) GetParameterType() uint8 {
+	return 0xF0
+}
+
 func (m *S7ParameterSetupCommunication) MessageType() uint8 {
 	return 0
 }
 
+func (m *S7ParameterSetupCommunication) GetMessageType() uint8 {
+	return 0
+}
+
 func (m *S7ParameterSetupCommunication) InitializeParent(parent *S7Parameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7ParameterSetupCommunication) GetMaxAmqCaller() uint16 {
+	return m.MaxAmqCaller
+}
+
+func (m *S7ParameterSetupCommunication) GetMaxAmqCallee() uint16 {
+	return m.MaxAmqCallee
+}
+
+func (m *S7ParameterSetupCommunication) GetPduLength() uint16 {
+	return m.PduLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7Parameter {
 	child := &S7ParameterSetupCommunication{

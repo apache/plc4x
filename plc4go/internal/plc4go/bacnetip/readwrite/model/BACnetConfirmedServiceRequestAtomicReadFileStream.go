@@ -35,8 +35,15 @@ type BACnetConfirmedServiceRequestAtomicReadFileStream struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFileStream interface {
+	// GetFileStartPosition returns FileStartPosition
+	GetFileStartPosition() *BACnetApplicationTagSignedInteger
+	// GetRequestOctetCount returns RequestOctetCount
+	GetRequestOctetCount() *BACnetApplicationTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +54,31 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) PeekedTagNumber() ui
 	return 0x0
 }
 
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) GetPeekedTagNumber() uint8 {
+	return 0x0
+}
+
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.OpeningTag = openingTag
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.ClosingTag = closingTag
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) GetFileStartPosition() *BACnetApplicationTagSignedInteger {
+	return m.FileStartPosition
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) GetRequestOctetCount() *BACnetApplicationTagUnsignedInteger {
+	return m.RequestOctetCount
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition *BACnetApplicationTagSignedInteger, requestOctetCount *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
 	child := &BACnetConfirmedServiceRequestAtomicReadFileStream{

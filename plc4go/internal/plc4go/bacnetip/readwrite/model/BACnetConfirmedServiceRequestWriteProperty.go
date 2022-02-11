@@ -39,8 +39,21 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWriteProperty interface {
+	// GetObjectIdentifier returns ObjectIdentifier
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetArrayIndex returns ArrayIndex
+	GetArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetPropertyValue returns PropertyValue
+	GetPropertyValue() *BACnetConstructedData
+	// GetPriority returns Priority
+	GetPriority() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,8 +64,39 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) ServiceChoice() uint8 {
 	return 0x0F
 }
 
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetServiceChoice() uint8 {
+	return 0x0F
+}
+
 func (m *BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.ArrayIndex
+}
+
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetPropertyValue() *BACnetConstructedData {
+	return m.PropertyValue
+}
+
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetPriority() *BACnetContextTagUnsignedInteger {
+	return m.Priority
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWriteProperty{

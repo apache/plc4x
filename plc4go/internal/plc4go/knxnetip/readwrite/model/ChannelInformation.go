@@ -34,10 +34,32 @@ type ChannelInformation struct {
 
 // The corresponding interface
 type IChannelInformation interface {
+	// GetNumChannels returns NumChannels
+	GetNumChannels() uint8
+	// GetChannelCode returns ChannelCode
+	GetChannelCode() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ChannelInformation) GetNumChannels() uint8 {
+	return m.NumChannels
+}
+
+func (m *ChannelInformation) GetChannelCode() uint16 {
+	return m.ChannelCode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewChannelInformation(numChannels uint8, channelCode uint16) *ChannelInformation {
 	return &ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}

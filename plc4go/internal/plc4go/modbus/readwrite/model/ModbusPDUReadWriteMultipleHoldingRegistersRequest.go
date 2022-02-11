@@ -38,8 +38,21 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
+	// GetReadStartingAddress returns ReadStartingAddress
+	GetReadStartingAddress() uint16
+	// GetReadQuantity returns ReadQuantity
+	GetReadQuantity() uint16
+	// GetWriteStartingAddress returns WriteStartingAddress
+	GetWriteStartingAddress() uint16
+	// GetWriteQuantity returns WriteQuantity
+	GetWriteQuantity() uint16
+	// GetValue returns Value
+	GetValue() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +63,15 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) FunctionFlag() uint8 {
+	return 0x17
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetFunctionFlag() uint8 {
 	return 0x17
 }
 
@@ -58,7 +79,38 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetReadStartingAddress() uint16 {
+	return m.ReadStartingAddress
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetReadQuantity() uint16 {
+	return m.ReadQuantity
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetWriteStartingAddress() uint16 {
+	return m.WriteStartingAddress
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetWriteQuantity() uint16 {
+	return m.WriteQuantity
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) *ModbusPDU {
 	child := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{

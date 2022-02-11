@@ -37,10 +37,50 @@ type SzlDataTreeItem struct {
 
 // The corresponding interface
 type ISzlDataTreeItem interface {
+	// GetItemIndex returns ItemIndex
+	GetItemIndex() uint16
+	// GetMlfb returns Mlfb
+	GetMlfb() []byte
+	// GetModuleTypeId returns ModuleTypeId
+	GetModuleTypeId() uint16
+	// GetAusbg returns Ausbg
+	GetAusbg() uint16
+	// GetAusbe returns Ausbe
+	GetAusbe() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SzlDataTreeItem) GetItemIndex() uint16 {
+	return m.ItemIndex
+}
+
+func (m *SzlDataTreeItem) GetMlfb() []byte {
+	return m.Mlfb
+}
+
+func (m *SzlDataTreeItem) GetModuleTypeId() uint16 {
+	return m.ModuleTypeId
+}
+
+func (m *SzlDataTreeItem) GetAusbg() uint16 {
+	return m.Ausbg
+}
+
+func (m *SzlDataTreeItem) GetAusbe() uint16 {
+	return m.Ausbe
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
 	return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}

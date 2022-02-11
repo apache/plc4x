@@ -38,8 +38,11 @@ type EipConnectionRequest struct {
 
 // The corresponding interface
 type IEipConnectionRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,12 +53,24 @@ func (m *EipConnectionRequest) Command() uint16 {
 	return 0x0065
 }
 
+func (m *EipConnectionRequest) GetCommand() uint16 {
+	return 0x0065
+}
+
 func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.EipPacket.SessionHandle = sessionHandle
 	m.EipPacket.Status = status
 	m.EipPacket.SenderContext = senderContext
 	m.EipPacket.Options = options
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &EipConnectionRequest{

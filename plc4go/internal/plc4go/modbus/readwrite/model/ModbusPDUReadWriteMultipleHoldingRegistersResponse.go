@@ -34,8 +34,13 @@ type ModbusPDUReadWriteMultipleHoldingRegistersResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
+	// GetValue returns Value
+	GetValue() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) FunctionFlag() uint8 {
+	return 0x17
+}
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetFunctionFlag() uint8 {
 	return 0x17
 }
 
@@ -54,7 +67,22 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetValue() []byte {
+	return m.Value
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{

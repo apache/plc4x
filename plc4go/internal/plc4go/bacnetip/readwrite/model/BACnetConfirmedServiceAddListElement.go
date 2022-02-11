@@ -32,8 +32,11 @@ type BACnetConfirmedServiceAddListElement struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceAddListElement interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *BACnetConfirmedServiceAddListElement) ServiceChoice() uint8 {
 	return 0x08
 }
 
+func (m *BACnetConfirmedServiceAddListElement) GetServiceChoice() uint8 {
+	return 0x08
+}
+
 func (m *BACnetConfirmedServiceAddListElement) InitializeParent(parent *BACnetConfirmedServiceACK) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceAddListElement() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceAddListElement{

@@ -42,10 +42,50 @@ type AlarmMessageObjectAckType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectAckType interface {
+	// GetSyntaxId returns SyntaxId
+	GetSyntaxId() SyntaxIdType
+	// GetNumberOfValues returns NumberOfValues
+	GetNumberOfValues() uint8
+	// GetEventId returns EventId
+	GetEventId() uint32
+	// GetAckStateGoing returns AckStateGoing
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing
+	GetAckStateComing() *State
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageObjectAckType) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *AlarmMessageObjectAckType) GetNumberOfValues() uint8 {
+	return m.NumberOfValues
+}
+
+func (m *AlarmMessageObjectAckType) GetEventId() uint32 {
+	return m.EventId
+}
+
+func (m *AlarmMessageObjectAckType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageObjectAckType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing *State, ackStateComing *State) *AlarmMessageObjectAckType {
 	return &AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}

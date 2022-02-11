@@ -36,8 +36,17 @@ type SysexCommandPinStateResponse struct {
 
 // The corresponding interface
 type ISysexCommandPinStateResponse interface {
+	// GetPin returns Pin
+	GetPin() uint8
+	// GetPinMode returns PinMode
+	GetPinMode() uint8
+	// GetPinState returns PinState
+	GetPinState() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *SysexCommandPinStateResponse) CommandType() uint8 {
 	return 0x6E
 }
 
+func (m *SysexCommandPinStateResponse) GetCommandType() uint8 {
+	return 0x6E
+}
+
 func (m *SysexCommandPinStateResponse) Response() bool {
 	return false
 }
 
+func (m *SysexCommandPinStateResponse) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *SysexCommandPinStateResponse) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *SysexCommandPinStateResponse) GetPinMode() uint8 {
+	return m.PinMode
+}
+
+func (m *SysexCommandPinStateResponse) GetPinState() uint8 {
+	return m.PinState
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommand {
 	child := &SysexCommandPinStateResponse{

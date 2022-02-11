@@ -32,8 +32,11 @@ type TDataIndividualReq struct {
 
 // The corresponding interface
 type ITDataIndividualReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *TDataIndividualReq) MessageCode() uint8 {
 	return 0x4A
 }
 
+func (m *TDataIndividualReq) GetMessageCode() uint8 {
+	return 0x4A
+}
+
 func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewTDataIndividualReq() *CEMI {
 	child := &TDataIndividualReq{

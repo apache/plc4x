@@ -35,8 +35,15 @@ type ApduDataMemoryRead struct {
 
 // The corresponding interface
 type IApduDataMemoryRead interface {
+	// GetNumBytes returns NumBytes
+	GetNumBytes() uint8
+	// GetAddress returns Address
+	GetAddress() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ApduDataMemoryRead) ApciType() uint8 {
 	return 0x8
 }
 
+func (m *ApduDataMemoryRead) GetApciType() uint8 {
+	return 0x8
+}
+
 func (m *ApduDataMemoryRead) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataMemoryRead) GetNumBytes() uint8 {
+	return m.NumBytes
+}
+
+func (m *ApduDataMemoryRead) GetAddress() uint16 {
+	return m.Address
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataMemoryRead(numBytes uint8, address uint16) *ApduData {
 	child := &ApduDataMemoryRead{

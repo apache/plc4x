@@ -33,9 +33,13 @@ type CEMI struct {
 
 // The corresponding interface
 type ICEMI interface {
+	// MessageCode returns MessageCode
 	MessageCode() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type ICEMIChild interface {
 	GetTypeName() string
 	ICEMI
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCEMI() *CEMI {
 	return &CEMI{}

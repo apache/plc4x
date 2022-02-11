@@ -32,8 +32,11 @@ type ApduControlNack struct {
 
 // The corresponding interface
 type IApduControlNack interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduControlNack) ControlType() uint8 {
 	return 0x3
 }
 
+func (m *ApduControlNack) GetControlType() uint8 {
+	return 0x3
+}
+
 func (m *ApduControlNack) InitializeParent(parent *ApduControl) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduControlNack() *ApduControl {
 	child := &ApduControlNack{

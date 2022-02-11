@@ -37,8 +37,19 @@ type LBusmonInd struct {
 
 // The corresponding interface
 type ILBusmonInd interface {
+	// GetAdditionalInformationLength returns AdditionalInformationLength
+	GetAdditionalInformationLength() uint8
+	// GetAdditionalInformation returns AdditionalInformation
+	GetAdditionalInformation() []*CEMIAdditionalInformation
+	// GetDataFrame returns DataFrame
+	GetDataFrame() *LDataFrame
+	// GetCrc returns Crc
+	GetCrc() *uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,7 +60,34 @@ func (m *LBusmonInd) MessageCode() uint8 {
 	return 0x2B
 }
 
+func (m *LBusmonInd) GetMessageCode() uint8 {
+	return 0x2B
+}
+
 func (m *LBusmonInd) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LBusmonInd) GetAdditionalInformationLength() uint8 {
+	return m.AdditionalInformationLength
+}
+
+func (m *LBusmonInd) GetAdditionalInformation() []*CEMIAdditionalInformation {
+	return m.AdditionalInformation
+}
+
+func (m *LBusmonInd) GetDataFrame() *LDataFrame {
+	return m.DataFrame
+}
+
+func (m *LBusmonInd) GetCrc() *uint8 {
+	return m.Crc
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8) *CEMI {
 	child := &LBusmonInd{

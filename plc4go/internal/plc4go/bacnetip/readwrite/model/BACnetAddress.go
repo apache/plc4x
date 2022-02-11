@@ -34,10 +34,32 @@ type BACnetAddress struct {
 
 // The corresponding interface
 type IBACnetAddress interface {
+	// GetAddress returns Address
+	GetAddress() []uint8
+	// GetPort returns Port
+	GetPort() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetAddress) GetAddress() []uint8 {
+	return m.Address
+}
+
+func (m *BACnetAddress) GetPort() uint16 {
+	return m.Port
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
 	return &BACnetAddress{Address: address, Port: port}

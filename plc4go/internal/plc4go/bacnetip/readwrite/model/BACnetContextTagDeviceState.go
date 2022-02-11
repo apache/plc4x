@@ -34,8 +34,13 @@ type BACnetContextTagDeviceState struct {
 
 // The corresponding interface
 type IBACnetContextTagDeviceState interface {
+	// GetState returns State
+	GetState() BACnetDeviceState
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetContextTagDeviceState) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_DEVICE_STATE
 }
 
+func (m *BACnetContextTagDeviceState) GetDataType() BACnetDataType {
+	return BACnetDataType_BACNET_DEVICE_STATE
+}
+
 func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagDeviceState) GetState() BACnetDeviceState {
+	return m.State
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagDeviceState{

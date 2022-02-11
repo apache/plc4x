@@ -39,10 +39,26 @@ type CipExchange struct {
 
 // The corresponding interface
 type ICipExchange interface {
+	// GetService returns Service
+	GetService() *CipService
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CipExchange) GetService() *CipService {
+	return m.Service
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCipExchange(service *CipService) *CipExchange {
 	return &CipExchange{Service: service}

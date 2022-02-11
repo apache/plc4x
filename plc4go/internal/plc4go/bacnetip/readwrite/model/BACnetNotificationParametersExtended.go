@@ -38,8 +38,21 @@ type BACnetNotificationParametersExtended struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersExtended interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetVendorId returns VendorId
+	GetVendorId() *BACnetContextTagUnsignedInteger
+	// GetExtendedEventType returns ExtendedEventType
+	GetExtendedEventType() *BACnetContextTagUnsignedInteger
+	// GetParameters returns Parameters
+	GetParameters() *BACnetNotificationParametersExtendedParameters
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,12 +63,43 @@ func (m *BACnetNotificationParametersExtended) PeekedTagNumber() uint8 {
 	return uint8(9)
 }
 
+func (m *BACnetNotificationParametersExtended) GetPeekedTagNumber() uint8 {
+	return uint8(9)
+}
+
 func (m *BACnetNotificationParametersExtended) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
 	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersExtended) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersExtended) GetVendorId() *BACnetContextTagUnsignedInteger {
+	return m.VendorId
+}
+
+func (m *BACnetNotificationParametersExtended) GetExtendedEventType() *BACnetContextTagUnsignedInteger {
+	return m.ExtendedEventType
+}
+
+func (m *BACnetNotificationParametersExtended) GetParameters() *BACnetNotificationParametersExtendedParameters {
+	return m.Parameters
+}
+
+func (m *BACnetNotificationParametersExtended) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersExtended(innerOpeningTag *BACnetOpeningTag, vendorId *BACnetContextTagUnsignedInteger, extendedEventType *BACnetContextTagUnsignedInteger, parameters *BACnetNotificationParametersExtendedParameters, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersExtended{

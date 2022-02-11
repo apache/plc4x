@@ -35,10 +35,38 @@ type DeviceConfigurationAckDataBlock struct {
 
 // The corresponding interface
 type IDeviceConfigurationAckDataBlock interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetSequenceCounter returns SequenceCounter
+	GetSequenceCounter() uint8
+	// GetStatus returns Status
+	GetStatus() Status
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DeviceConfigurationAckDataBlock) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *DeviceConfigurationAckDataBlock) GetSequenceCounter() uint8 {
+	return m.SequenceCounter
+}
+
+func (m *DeviceConfigurationAckDataBlock) GetStatus() Status {
+	return m.Status
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *DeviceConfigurationAckDataBlock {
 	return &DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}

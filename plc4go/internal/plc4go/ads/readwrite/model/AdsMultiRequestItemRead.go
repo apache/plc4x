@@ -36,8 +36,17 @@ type AdsMultiRequestItemRead struct {
 
 // The corresponding interface
 type IAdsMultiRequestItemRead interface {
+	// GetItemIndexGroup returns ItemIndexGroup
+	GetItemIndexGroup() uint32
+	// GetItemIndexOffset returns ItemIndexOffset
+	GetItemIndexOffset() uint32
+	// GetItemReadLength returns ItemReadLength
+	GetItemReadLength() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *AdsMultiRequestItemRead) IndexGroup() uint32 {
 	return uint32(61568)
 }
 
+func (m *AdsMultiRequestItemRead) GetIndexGroup() uint32 {
+	return uint32(61568)
+}
+
 func (m *AdsMultiRequestItemRead) InitializeParent(parent *AdsMultiRequestItem) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsMultiRequestItemRead) GetItemIndexGroup() uint32 {
+	return m.ItemIndexGroup
+}
+
+func (m *AdsMultiRequestItemRead) GetItemIndexOffset() uint32 {
+	return m.ItemIndexOffset
+}
+
+func (m *AdsMultiRequestItemRead) GetItemReadLength() uint32 {
+	return m.ItemReadLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemRead{

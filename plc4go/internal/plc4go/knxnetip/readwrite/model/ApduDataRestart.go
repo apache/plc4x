@@ -32,8 +32,11 @@ type ApduDataRestart struct {
 
 // The corresponding interface
 type IApduDataRestart interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataRestart) ApciType() uint8 {
 	return 0xE
 }
 
+func (m *ApduDataRestart) GetApciType() uint8 {
+	return 0xE
+}
+
 func (m *ApduDataRestart) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataRestart() *ApduData {
 	child := &ApduDataRestart{

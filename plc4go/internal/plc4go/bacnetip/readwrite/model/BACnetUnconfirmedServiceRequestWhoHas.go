@@ -38,8 +38,19 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoHas interface {
+	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit
+	GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger
+	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit
+	GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger
+	// GetObjectIdentifier returns ObjectIdentifier
+	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetObjectName returns ObjectName
+	GetObjectName() *BACnetContextTagOctetString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,8 +61,35 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) ServiceChoice() uint8 {
 	return 0x07
 }
 
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetServiceChoice() uint8 {
+	return 0x07
+}
+
 func (m *BACnetUnconfirmedServiceRequestWhoHas) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeLowLimit
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger {
+	return m.DeviceInstanceRangeHighLimit
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.ObjectIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetObjectName() *BACnetContextTagOctetString {
+	return m.ObjectName
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger, objectIdentifier *BACnetContextTagObjectIdentifier, objectName *BACnetContextTagOctetString) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoHas{

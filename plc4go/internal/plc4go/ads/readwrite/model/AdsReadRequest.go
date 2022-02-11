@@ -36,8 +36,17 @@ type AdsReadRequest struct {
 
 // The corresponding interface
 type IAdsReadRequest interface {
+	// GetIndexGroup returns IndexGroup
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset
+	GetIndexOffset() uint32
+	// GetLength returns Length
+	GetLength() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *AdsReadRequest) CommandId() CommandId {
 	return CommandId_ADS_READ
 }
 
+func (m *AdsReadRequest) GetCommandId() CommandId {
+	return CommandId_ADS_READ
+}
+
 func (m *AdsReadRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsReadRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsReadRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsReadRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsReadRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsReadRequest) GetLength() uint32 {
+	return m.Length
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *AdsData {
 	child := &AdsReadRequest{

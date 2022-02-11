@@ -34,8 +34,13 @@ type BVLCResult struct {
 
 // The corresponding interface
 type IBVLCResult interface {
+	// GetCode returns Code
+	GetCode() BVLCResultCode
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *BVLCResult) BvlcFunction() uint8 {
 	return 0x00
 }
 
+func (m *BVLCResult) GetBvlcFunction() uint8 {
+	return 0x00
+}
+
 func (m *BVLCResult) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCResult) GetCode() BVLCResultCode {
+	return m.Code
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCResult(code BVLCResultCode, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCResult{

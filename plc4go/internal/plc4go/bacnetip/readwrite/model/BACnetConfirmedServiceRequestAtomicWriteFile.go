@@ -39,8 +39,21 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
+	// GetDeviceIdentifier returns DeviceIdentifier
+	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetOpeningTag returns OpeningTag
+	GetOpeningTag() *BACnetOpeningTag
+	// GetFileStartPosition returns FileStartPosition
+	GetFileStartPosition() *BACnetApplicationTagSignedInteger
+	// GetFileData returns FileData
+	GetFileData() *BACnetApplicationTagOctetString
+	// GetClosingTag returns ClosingTag
+	GetClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,8 +64,39 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) ServiceChoice() uint8 {
 	return 0x07
 }
 
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetServiceChoice() uint8 {
+	return 0x07
+}
+
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.DeviceIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetFileStartPosition() *BACnetApplicationTagSignedInteger {
+	return m.FileStartPosition
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetFileData() *BACnetApplicationTagOctetString {
+	return m.FileData
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAtomicWriteFile{

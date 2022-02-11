@@ -34,8 +34,13 @@ type BVLCOriginalBroadcastNPDU struct {
 
 // The corresponding interface
 type IBVLCOriginalBroadcastNPDU interface {
+	// GetNpdu returns Npdu
+	GetNpdu() *NPDU
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *BVLCOriginalBroadcastNPDU) BvlcFunction() uint8 {
 	return 0x0B
 }
 
+func (m *BVLCOriginalBroadcastNPDU) GetBvlcFunction() uint8 {
+	return 0x0B
+}
+
 func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCOriginalBroadcastNPDU) GetNpdu() *NPDU {
+	return m.Npdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCOriginalBroadcastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCOriginalBroadcastNPDU{

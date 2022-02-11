@@ -36,9 +36,17 @@ type COTPPacket struct {
 
 // The corresponding interface
 type ICOTPPacket interface {
+	// TpduCode returns TpduCode
 	TpduCode() uint8
+	// GetParameters returns Parameters
+	GetParameters() []*COTPParameter
+	// GetPayload returns Payload
+	GetPayload() *S7Message
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,6 +61,21 @@ type ICOTPPacketChild interface {
 	GetTypeName() string
 	ICOTPPacket
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPPacket) GetParameters() []*COTPParameter {
+	return m.Parameters
+}
+
+func (m *COTPPacket) GetPayload() *S7Message {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	return &COTPPacket{Parameters: parameters, Payload: payload}

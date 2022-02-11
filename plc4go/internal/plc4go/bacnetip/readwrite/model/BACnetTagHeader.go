@@ -44,9 +44,95 @@ type BACnetTagHeader struct {
 
 // The corresponding interface
 type IBACnetTagHeader interface {
+	// GetTagNumber returns TagNumber
+	GetTagNumber() uint8
+	// GetTagClass returns TagClass
+	GetTagClass() TagClass
+	// GetLengthValueType returns LengthValueType
+	GetLengthValueType() uint8
+	// GetExtTagNumber returns ExtTagNumber
+	GetExtTagNumber() *uint8
+	// GetExtLength returns ExtLength
+	GetExtLength() *uint8
+	// GetExtExtLength returns ExtExtLength
+	GetExtExtLength() *uint16
+	// GetExtExtExtLength returns ExtExtExtLength
+	GetExtExtExtLength() *uint32
+	// GetActualTagNumber returns ActualTagNumber
+	GetActualTagNumber() uint8
+	// GetIsBoolean returns IsBoolean
+	GetIsBoolean() bool
+	// GetIsConstructed returns IsConstructed
+	GetIsConstructed() bool
+	// GetIsPrimitiveAndNotBoolean returns IsPrimitiveAndNotBoolean
+	GetIsPrimitiveAndNotBoolean() bool
+	// GetActualLength returns ActualLength
+	GetActualLength() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagHeader) GetTagNumber() uint8 {
+	return m.TagNumber
+}
+
+func (m *BACnetTagHeader) GetTagClass() TagClass {
+	return m.TagClass
+}
+
+func (m *BACnetTagHeader) GetLengthValueType() uint8 {
+	return m.LengthValueType
+}
+
+func (m *BACnetTagHeader) GetExtTagNumber() *uint8 {
+	return m.ExtTagNumber
+}
+
+func (m *BACnetTagHeader) GetExtLength() *uint8 {
+	return m.ExtLength
+}
+
+func (m *BACnetTagHeader) GetExtExtLength() *uint16 {
+	return m.ExtExtLength
+}
+
+func (m *BACnetTagHeader) GetExtExtExtLength() *uint32 {
+	return m.ExtExtExtLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagHeader) GetActualTagNumber() uint8 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualTagNumber
+}
+
+func (m *BACnetTagHeader) GetIsBoolean() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsBoolean
+}
+
+func (m *BACnetTagHeader) GetIsConstructed() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsConstructed
+}
+
+func (m *BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsPrimitiveAndNotBoolean
+}
+
+func (m *BACnetTagHeader) GetActualLength() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualLength
 }
 
 func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetTagHeader {

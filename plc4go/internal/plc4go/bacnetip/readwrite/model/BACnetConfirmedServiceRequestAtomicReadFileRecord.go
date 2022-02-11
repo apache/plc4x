@@ -35,8 +35,15 @@ type BACnetConfirmedServiceRequestAtomicReadFileRecord struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFileRecord interface {
+	// GetFileStartRecord returns FileStartRecord
+	GetFileStartRecord() *BACnetApplicationTagSignedInteger
+	// GetRequestRecordCount returns RequestRecordCount
+	GetRequestRecordCount() *BACnetApplicationTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +54,31 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) PeekedTagNumber() ui
 	return 0x1
 }
 
+func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetPeekedTagNumber() uint8 {
+	return 0x1
+}
+
 func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.OpeningTag = openingTag
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.ClosingTag = closingTag
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetFileStartRecord() *BACnetApplicationTagSignedInteger {
+	return m.FileStartRecord
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetRequestRecordCount() *BACnetApplicationTagUnsignedInteger {
+	return m.RequestRecordCount
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, requestRecordCount *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
 	child := &BACnetConfirmedServiceRequestAtomicReadFileRecord{

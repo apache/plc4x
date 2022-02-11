@@ -35,8 +35,15 @@ type DF1UnprotectedReadRequest struct {
 
 // The corresponding interface
 type IDF1UnprotectedReadRequest interface {
+	// GetAddress returns Address
+	GetAddress() uint16
+	// GetSize returns Size
+	GetSize() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *DF1UnprotectedReadRequest) CommandCode() uint8 {
 	return 0x01
 }
 
+func (m *DF1UnprotectedReadRequest) GetCommandCode() uint8 {
+	return 0x01
+}
+
 func (m *DF1UnprotectedReadRequest) InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16) {
 	m.DF1Command.Status = status
 	m.DF1Command.TransactionCounter = transactionCounter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1UnprotectedReadRequest) GetAddress() uint16 {
+	return m.Address
+}
+
+func (m *DF1UnprotectedReadRequest) GetSize() uint8 {
+	return m.Size
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1Command {
 	child := &DF1UnprotectedReadRequest{

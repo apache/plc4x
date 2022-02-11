@@ -35,8 +35,15 @@ type DescriptionResponse struct {
 
 // The corresponding interface
 type IDescriptionResponse interface {
+	// GetDibDeviceInfo returns DibDeviceInfo
+	GetDibDeviceInfo() *DIBDeviceInfo
+	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies
+	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *DescriptionResponse) MsgType() uint16 {
 	return 0x0204
 }
 
+func (m *DescriptionResponse) GetMsgType() uint16 {
+	return 0x0204
+}
+
 func (m *DescriptionResponse) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DescriptionResponse) GetDibDeviceInfo() *DIBDeviceInfo {
+	return m.DibDeviceInfo
+}
+
+func (m *DescriptionResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
+	return m.DibSuppSvcFamilies
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
 	child := &DescriptionResponse{

@@ -36,8 +36,15 @@ type ConnectionStateRequest struct {
 
 // The corresponding interface
 type IConnectionStateRequest interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *ConnectionStateRequest) MsgType() uint16 {
 	return 0x0207
 }
 
+func (m *ConnectionStateRequest) GetMsgType() uint16 {
+	return 0x0207
+}
+
 func (m *ConnectionStateRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionStateRequest) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *ConnectionStateRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &ConnectionStateRequest{

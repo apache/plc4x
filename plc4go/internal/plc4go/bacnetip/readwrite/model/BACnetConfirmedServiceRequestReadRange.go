@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestReadRange struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadRange interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestReadRange) ServiceChoice() uint8 {
 	return 0x1A
 }
 
+func (m *BACnetConfirmedServiceRequestReadRange) GetServiceChoice() uint8 {
+	return 0x1A
+}
+
 func (m *BACnetConfirmedServiceRequestReadRange) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestReadRange() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReadRange{

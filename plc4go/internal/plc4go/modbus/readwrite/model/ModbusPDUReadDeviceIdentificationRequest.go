@@ -32,8 +32,11 @@ type ModbusPDUReadDeviceIdentificationRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,15 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadDeviceIdentificationRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
+	return 0x2B
+}
+
+func (m *ModbusPDUReadDeviceIdentificationRequest) GetFunctionFlag() uint8 {
 	return 0x2B
 }
 
@@ -52,7 +63,19 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadDeviceIdentificationRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUReadDeviceIdentificationRequest() *ModbusPDU {
 	child := &ModbusPDUReadDeviceIdentificationRequest{

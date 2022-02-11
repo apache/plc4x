@@ -39,8 +39,23 @@ type BACnetNotificationParametersFloatingLimit struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersFloatingLimit interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetReferenceValue returns ReferenceValue
+	GetReferenceValue() *BACnetContextTagReal
+	// GetStatusFlags returns StatusFlags
+	GetStatusFlags() *BACnetStatusFlags
+	// GetSetPointValue returns SetPointValue
+	GetSetPointValue() *BACnetContextTagReal
+	// GetErrorLimit returns ErrorLimit
+	GetErrorLimit() *BACnetContextTagReal
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,12 +66,47 @@ func (m *BACnetNotificationParametersFloatingLimit) PeekedTagNumber() uint8 {
 	return uint8(4)
 }
 
+func (m *BACnetNotificationParametersFloatingLimit) GetPeekedTagNumber() uint8 {
+	return uint8(4)
+}
+
 func (m *BACnetNotificationParametersFloatingLimit) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
 	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersFloatingLimit) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersFloatingLimit) GetReferenceValue() *BACnetContextTagReal {
+	return m.ReferenceValue
+}
+
+func (m *BACnetNotificationParametersFloatingLimit) GetStatusFlags() *BACnetStatusFlags {
+	return m.StatusFlags
+}
+
+func (m *BACnetNotificationParametersFloatingLimit) GetSetPointValue() *BACnetContextTagReal {
+	return m.SetPointValue
+}
+
+func (m *BACnetNotificationParametersFloatingLimit) GetErrorLimit() *BACnetContextTagReal {
+	return m.ErrorLimit
+}
+
+func (m *BACnetNotificationParametersFloatingLimit) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag *BACnetOpeningTag, referenceValue *BACnetContextTagReal, statusFlags *BACnetStatusFlags, setPointValue *BACnetContextTagReal, errorLimit *BACnetContextTagReal, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersFloatingLimit{

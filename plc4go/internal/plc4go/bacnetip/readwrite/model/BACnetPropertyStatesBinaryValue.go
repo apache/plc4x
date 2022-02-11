@@ -35,8 +35,13 @@ type BACnetPropertyStatesBinaryValue struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesBinaryValue interface {
+	// GetBinaryValue returns BinaryValue
+	GetBinaryValue() *BACnetBinaryPV
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,12 +52,27 @@ func (m *BACnetPropertyStatesBinaryValue) PeekedTagNumber() uint8 {
 	return uint8(1)
 }
 
+func (m *BACnetPropertyStatesBinaryValue) GetPeekedTagNumber() uint8 {
+	return uint8(1)
+}
+
 func (m *BACnetPropertyStatesBinaryValue) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetPropertyStates.OpeningTag = openingTag
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
 	m.BACnetPropertyStates.ClosingTag = closingTag
 	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyStatesBinaryValue) GetBinaryValue() *BACnetBinaryPV {
+	return m.BinaryValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
 	child := &BACnetPropertyStatesBinaryValue{

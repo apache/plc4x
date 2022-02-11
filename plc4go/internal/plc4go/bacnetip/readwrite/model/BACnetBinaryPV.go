@@ -36,9 +36,38 @@ type BACnetBinaryPV struct {
 
 // The corresponding interface
 type IBACnetBinaryPV interface {
+	// GetRawData returns RawData
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsInactive returns IsInactive
+	GetIsInactive() bool
+	// GetIsActive returns IsActive
+	GetIsActive() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetBinaryPV) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetBinaryPV) GetIsInactive() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInactive
+}
+
+func (m *BACnetBinaryPV) GetIsActive() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsActive
 }
 
 func NewBACnetBinaryPV(rawData *BACnetContextTagEnumerated, isInactive bool, isActive bool) *BACnetBinaryPV {

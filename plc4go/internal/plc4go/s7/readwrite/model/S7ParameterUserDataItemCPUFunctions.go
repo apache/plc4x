@@ -41,8 +41,27 @@ type S7ParameterUserDataItemCPUFunctions struct {
 
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
+	// GetMethod returns Method
+	GetMethod() uint8
+	// GetCpuFunctionType returns CpuFunctionType
+	GetCpuFunctionType() uint8
+	// GetCpuFunctionGroup returns CpuFunctionGroup
+	GetCpuFunctionGroup() uint8
+	// GetCpuSubfunction returns CpuSubfunction
+	GetCpuSubfunction() uint8
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() uint8
+	// GetDataUnitReferenceNumber returns DataUnitReferenceNumber
+	GetDataUnitReferenceNumber() *uint8
+	// GetLastDataUnit returns LastDataUnit
+	GetLastDataUnit() *uint8
+	// GetErrorCode returns ErrorCode
+	GetErrorCode() *uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,7 +72,50 @@ func (m *S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
 	return 0x12
 }
 
+func (m *S7ParameterUserDataItemCPUFunctions) GetItemType() uint8 {
+	return 0x12
+}
+
 func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7ParameterUserDataItemCPUFunctions) GetMethod() uint8 {
+	return m.Method
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuFunctionType() uint8 {
+	return m.CpuFunctionType
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuFunctionGroup() uint8 {
+	return m.CpuFunctionGroup
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetCpuSubfunction() uint8 {
+	return m.CpuSubfunction
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetDataUnitReferenceNumber() *uint8 {
+	return m.DataUnitReferenceNumber
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetLastDataUnit() *uint8 {
+	return m.LastDataUnit
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
+	return m.ErrorCode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItem {
 	child := &S7ParameterUserDataItemCPUFunctions{

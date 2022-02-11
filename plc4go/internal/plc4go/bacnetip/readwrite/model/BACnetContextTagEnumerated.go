@@ -34,8 +34,13 @@ type BACnetContextTagEnumerated struct {
 
 // The corresponding interface
 type IBACnetContextTagEnumerated interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadEnumerated
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetContextTagEnumerated) DataType() BACnetDataType {
 	return BACnetDataType_ENUMERATED
 }
 
+func (m *BACnetContextTagEnumerated) GetDataType() BACnetDataType {
+	return BACnetDataType_ENUMERATED
+}
+
 func (m *BACnetContextTagEnumerated) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagEnumerated) GetPayload() *BACnetTagPayloadEnumerated {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagEnumerated{

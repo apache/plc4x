@@ -33,9 +33,13 @@ type FirmataCommand struct {
 
 // The corresponding interface
 type IFirmataCommand interface {
+	// CommandCode returns CommandCode
 	CommandCode() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IFirmataCommandChild interface {
 	GetTypeName() string
 	IFirmataCommand
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataCommand() *FirmataCommand {
 	return &FirmataCommand{}

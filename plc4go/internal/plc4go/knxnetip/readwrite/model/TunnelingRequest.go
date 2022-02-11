@@ -35,8 +35,15 @@ type TunnelingRequest struct {
 
 // The corresponding interface
 type ITunnelingRequest interface {
+	// GetTunnelingRequestDataBlock returns TunnelingRequestDataBlock
+	GetTunnelingRequestDataBlock() *TunnelingRequestDataBlock
+	// GetCemi returns Cemi
+	GetCemi() *CEMI
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *TunnelingRequest) MsgType() uint16 {
 	return 0x0420
 }
 
+func (m *TunnelingRequest) GetMsgType() uint16 {
+	return 0x0420
+}
+
 func (m *TunnelingRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *TunnelingRequest) GetTunnelingRequestDataBlock() *TunnelingRequestDataBlock {
+	return m.TunnelingRequestDataBlock
+}
+
+func (m *TunnelingRequest) GetCemi() *CEMI {
+	return m.Cemi
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI) *KnxNetIpMessage {
 	child := &TunnelingRequest{

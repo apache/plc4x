@@ -36,9 +36,43 @@ type BACnetTagPayloadObjectIdentifier struct {
 
 // The corresponding interface
 type IBACnetTagPayloadObjectIdentifier interface {
+	// GetObjectType returns ObjectType
+	GetObjectType() BACnetObjectType
+	// GetProprietaryValue returns ProprietaryValue
+	GetProprietaryValue() uint16
+	// GetInstanceNumber returns InstanceNumber
+	GetInstanceNumber() uint32
+	// GetIsProprietary returns IsProprietary
+	GetIsProprietary() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadObjectIdentifier) GetObjectType() BACnetObjectType {
+	return m.ObjectType
+}
+
+func (m *BACnetTagPayloadObjectIdentifier) GetProprietaryValue() uint16 {
+	return m.ProprietaryValue
+}
+
+func (m *BACnetTagPayloadObjectIdentifier) GetInstanceNumber() uint32 {
+	return m.InstanceNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsProprietary
 }
 
 func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool) *BACnetTagPayloadObjectIdentifier {

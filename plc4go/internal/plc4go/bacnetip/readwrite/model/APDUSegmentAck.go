@@ -39,8 +39,21 @@ type APDUSegmentAck struct {
 
 // The corresponding interface
 type IAPDUSegmentAck interface {
+	// GetNegativeAck returns NegativeAck
+	GetNegativeAck() bool
+	// GetServer returns Server
+	GetServer() bool
+	// GetOriginalInvokeId returns OriginalInvokeId
+	GetOriginalInvokeId() uint8
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() uint8
+	// GetProposedWindowSize returns ProposedWindowSize
+	GetProposedWindowSize() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,7 +64,38 @@ func (m *APDUSegmentAck) ApduType() uint8 {
 	return 0x4
 }
 
+func (m *APDUSegmentAck) GetApduType() uint8 {
+	return 0x4
+}
+
 func (m *APDUSegmentAck) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUSegmentAck) GetNegativeAck() bool {
+	return m.NegativeAck
+}
+
+func (m *APDUSegmentAck) GetServer() bool {
+	return m.Server
+}
+
+func (m *APDUSegmentAck) GetOriginalInvokeId() uint8 {
+	return m.OriginalInvokeId
+}
+
+func (m *APDUSegmentAck) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+func (m *APDUSegmentAck) GetProposedWindowSize() uint8 {
+	return m.ProposedWindowSize
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8) *APDU {
 	child := &APDUSegmentAck{

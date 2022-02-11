@@ -35,8 +35,15 @@ type BACnetServiceAckAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFile interface {
+	// GetEndOfFile returns EndOfFile
+	GetEndOfFile() *BACnetApplicationTagBoolean
+	// GetAccessMethod returns AccessMethod
+	GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *BACnetServiceAckAtomicReadFile) ServiceChoice() uint8 {
 	return 0x06
 }
 
+func (m *BACnetServiceAckAtomicReadFile) GetServiceChoice() uint8 {
+	return 0x06
+}
+
 func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicReadFile) GetEndOfFile() *BACnetApplicationTagBoolean {
+	return m.EndOfFile
+}
+
+func (m *BACnetServiceAckAtomicReadFile) GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord {
+	return m.AccessMethod
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicReadFile{

@@ -38,10 +38,56 @@ type AmsNetId struct {
 
 // The corresponding interface
 type IAmsNetId interface {
+	// GetOctet1 returns Octet1
+	GetOctet1() uint8
+	// GetOctet2 returns Octet2
+	GetOctet2() uint8
+	// GetOctet3 returns Octet3
+	GetOctet3() uint8
+	// GetOctet4 returns Octet4
+	GetOctet4() uint8
+	// GetOctet5 returns Octet5
+	GetOctet5() uint8
+	// GetOctet6 returns Octet6
+	GetOctet6() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AmsNetId) GetOctet1() uint8 {
+	return m.Octet1
+}
+
+func (m *AmsNetId) GetOctet2() uint8 {
+	return m.Octet2
+}
+
+func (m *AmsNetId) GetOctet3() uint8 {
+	return m.Octet3
+}
+
+func (m *AmsNetId) GetOctet4() uint8 {
+	return m.Octet4
+}
+
+func (m *AmsNetId) GetOctet5() uint8 {
+	return m.Octet5
+}
+
+func (m *AmsNetId) GetOctet6() uint8 {
+	return m.Octet6
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *AmsNetId {
 	return &AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}

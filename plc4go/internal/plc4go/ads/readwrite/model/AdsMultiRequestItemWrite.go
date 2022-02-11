@@ -36,8 +36,17 @@ type AdsMultiRequestItemWrite struct {
 
 // The corresponding interface
 type IAdsMultiRequestItemWrite interface {
+	// GetItemIndexGroup returns ItemIndexGroup
+	GetItemIndexGroup() uint32
+	// GetItemIndexOffset returns ItemIndexOffset
+	GetItemIndexOffset() uint32
+	// GetItemWriteLength returns ItemWriteLength
+	GetItemWriteLength() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,30 @@ func (m *AdsMultiRequestItemWrite) IndexGroup() uint32 {
 	return uint32(61569)
 }
 
+func (m *AdsMultiRequestItemWrite) GetIndexGroup() uint32 {
+	return uint32(61569)
+}
+
 func (m *AdsMultiRequestItemWrite) InitializeParent(parent *AdsMultiRequestItem) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsMultiRequestItemWrite) GetItemIndexGroup() uint32 {
+	return m.ItemIndexGroup
+}
+
+func (m *AdsMultiRequestItemWrite) GetItemIndexOffset() uint32 {
+	return m.ItemIndexOffset
+}
+
+func (m *AdsMultiRequestItemWrite) GetItemWriteLength() uint32 {
+	return m.ItemWriteLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemWrite{

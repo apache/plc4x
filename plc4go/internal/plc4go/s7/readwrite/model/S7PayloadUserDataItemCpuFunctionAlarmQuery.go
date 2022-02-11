@@ -44,8 +44,17 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
+	// GetSyntaxId returns SyntaxId
+	GetSyntaxId() SyntaxIdType
+	// GetQueryType returns QueryType
+	GetQueryType() QueryType
+	// GetAlarmType returns AlarmType
+	GetAlarmType() AlarmType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -56,7 +65,15 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuFunctionType() uint8 {
 	return 0x04
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuFunctionType() uint8 {
+	return 0x04
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuSubfunction() uint8 {
+	return 0x13
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuSubfunction() uint8 {
 	return 0x13
 }
 
@@ -64,10 +81,33 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) DataLength() uint16 {
 	return 0
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetQueryType() QueryType {
+	return m.QueryType
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetAlarmType() AlarmType {
+	return m.AlarmType
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmQuery{

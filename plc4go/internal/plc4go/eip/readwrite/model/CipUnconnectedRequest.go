@@ -41,8 +41,17 @@ type CipUnconnectedRequest struct {
 
 // The corresponding interface
 type ICipUnconnectedRequest interface {
+	// GetUnconnectedService returns UnconnectedService
+	GetUnconnectedService() *CipService
+	// GetBackPlane returns BackPlane
+	GetBackPlane() int8
+	// GetSlot returns Slot
+	GetSlot() int8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,7 +62,30 @@ func (m *CipUnconnectedRequest) Service() uint8 {
 	return 0x52
 }
 
+func (m *CipUnconnectedRequest) GetService() uint8 {
+	return 0x52
+}
+
 func (m *CipUnconnectedRequest) InitializeParent(parent *CipService) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CipUnconnectedRequest) GetUnconnectedService() *CipService {
+	return m.UnconnectedService
+}
+
+func (m *CipUnconnectedRequest) GetBackPlane() int8 {
+	return m.BackPlane
+}
+
+func (m *CipUnconnectedRequest) GetSlot() int8 {
+	return m.Slot
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8) *CipService {
 	child := &CipUnconnectedRequest{

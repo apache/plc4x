@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKCreateObject struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKCreateObject interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *BACnetConfirmedServiceACKCreateObject) ServiceChoice() uint8 {
 	return 0x0A
 }
 
+func (m *BACnetConfirmedServiceACKCreateObject) GetServiceChoice() uint8 {
+	return 0x0A
+}
+
 func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetConfirmedServiceACK) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKCreateObject{

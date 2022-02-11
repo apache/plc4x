@@ -34,8 +34,13 @@ type NLMDisconnectConnectionToNetwork struct {
 
 // The corresponding interface
 type INLMDisconnectConnectionToNetwork interface {
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *NLMDisconnectConnectionToNetwork) MessageType() uint8 {
 	return 0x09
 }
 
+func (m *NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
+	return 0x09
+}
+
 func (m *NLMDisconnectConnectionToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16) *NLM {
 	child := &NLMDisconnectConnectionToNetwork{

@@ -36,8 +36,17 @@ type AdsReadStateResponse struct {
 
 // The corresponding interface
 type IAdsReadStateResponse interface {
+	// GetResult returns Result
+	GetResult() ReturnCode
+	// GetAdsState returns AdsState
+	GetAdsState() uint16
+	// GetDeviceState returns DeviceState
+	GetDeviceState() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *AdsReadStateResponse) CommandId() CommandId {
 	return CommandId_ADS_READ_STATE
 }
 
+func (m *AdsReadStateResponse) GetCommandId() CommandId {
+	return CommandId_ADS_READ_STATE
+}
+
 func (m *AdsReadStateResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *AdsReadStateResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *AdsReadStateResponse) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsReadStateResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+func (m *AdsReadStateResponse) GetAdsState() uint16 {
+	return m.AdsState
+}
+
+func (m *AdsReadStateResponse) GetDeviceState() uint16 {
+	return m.DeviceState
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsData {
 	child := &AdsReadStateResponse{

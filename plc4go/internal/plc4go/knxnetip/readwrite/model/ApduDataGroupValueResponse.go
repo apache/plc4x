@@ -35,8 +35,15 @@ type ApduDataGroupValueResponse struct {
 
 // The corresponding interface
 type IApduDataGroupValueResponse interface {
+	// GetDataFirstByte returns DataFirstByte
+	GetDataFirstByte() int8
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *ApduDataGroupValueResponse) ApciType() uint8 {
 	return 0x1
 }
 
+func (m *ApduDataGroupValueResponse) GetApciType() uint8 {
+	return 0x1
+}
+
 func (m *ApduDataGroupValueResponse) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataGroupValueResponse) GetDataFirstByte() int8 {
+	return m.DataFirstByte
+}
+
+func (m *ApduDataGroupValueResponse) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte) *ApduData {
 	child := &ApduDataGroupValueResponse{

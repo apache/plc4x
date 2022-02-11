@@ -35,8 +35,15 @@ type NLMICouldBeRouterToNetwork struct {
 
 // The corresponding interface
 type INLMICouldBeRouterToNetwork interface {
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() uint16
+	// GetPerformanceIndex returns PerformanceIndex
+	GetPerformanceIndex() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,9 +54,28 @@ func (m *NLMICouldBeRouterToNetwork) MessageType() uint8 {
 	return 0x02
 }
 
+func (m *NLMICouldBeRouterToNetwork) GetMessageType() uint8 {
+	return 0x02
+}
+
 func (m *NLMICouldBeRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
 	m.NLM.VendorId = vendorId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLMICouldBeRouterToNetwork) GetDestinationNetworkAddress() uint16 {
+	return m.DestinationNetworkAddress
+}
+
+func (m *NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
+	return m.PerformanceIndex
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16) *NLM {
 	child := &NLMICouldBeRouterToNetwork{

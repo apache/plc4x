@@ -34,8 +34,13 @@ type DeviceConfigurationAck struct {
 
 // The corresponding interface
 type IDeviceConfigurationAck interface {
+	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock
+	GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *DeviceConfigurationAck) MsgType() uint16 {
 	return 0x0311
 }
 
+func (m *DeviceConfigurationAck) GetMsgType() uint16 {
+	return 0x0311
+}
+
 func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock {
+	return m.DeviceConfigurationAckDataBlock
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
 	child := &DeviceConfigurationAck{

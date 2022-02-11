@@ -36,8 +36,15 @@ type CipWriteResponse struct {
 
 // The corresponding interface
 type ICipWriteResponse interface {
+	// GetStatus returns Status
+	GetStatus() uint8
+	// GetExtStatus returns ExtStatus
+	GetExtStatus() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *CipWriteResponse) Service() uint8 {
 	return 0xCD
 }
 
+func (m *CipWriteResponse) GetService() uint8 {
+	return 0xCD
+}
+
 func (m *CipWriteResponse) InitializeParent(parent *CipService) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CipWriteResponse) GetStatus() uint8 {
+	return m.Status
+}
+
+func (m *CipWriteResponse) GetExtStatus() uint8 {
+	return m.ExtStatus
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCipWriteResponse(status uint8, extStatus uint8) *CipService {
 	child := &CipWriteResponse{

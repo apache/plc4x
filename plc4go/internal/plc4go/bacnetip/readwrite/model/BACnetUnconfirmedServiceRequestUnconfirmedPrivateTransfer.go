@@ -37,8 +37,17 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
+	// GetVendorId returns VendorId
+	GetVendorId() *BACnetContextTagUnsignedInteger
+	// GetServiceNumber returns ServiceNumber
+	GetServiceNumber() *BACnetContextTagUnsignedInteger
+	// GetServiceParameters returns ServiceParameters
+	GetServiceParameters() *BACnetPropertyValues
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,8 +58,31 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) ServiceChoic
 	return 0x04
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceChoice() uint8 {
+	return 0x04
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetVendorId() *BACnetContextTagUnsignedInteger {
+	return m.VendorId
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceNumber() *BACnetContextTagUnsignedInteger {
+	return m.ServiceNumber
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceParameters() *BACnetPropertyValues {
+	return m.ServiceParameters
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{

@@ -38,8 +38,21 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
+	// GetResult returns Result
+	GetResult() uint8
+	// GetReserved01 returns Reserved01
+	GetReserved01() uint8
+	// GetAlarmType returns AlarmType
+	GetAlarmType() AlarmType
+	// GetReserved02 returns Reserved02
+	GetReserved02() uint8
+	// GetReserved03 returns Reserved03
+	GetReserved03() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +63,15 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) CpuFuncti
 	return 0x08
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetCpuFunctionType() uint8 {
+	return 0x08
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) CpuSubfunction() uint8 {
+	return 0x02
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetCpuSubfunction() uint8 {
 	return 0x02
 }
 
@@ -58,10 +79,41 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) DataLengt
 	return 0x05
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetDataLength() uint16 {
+	return 0x05
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetResult() uint8 {
+	return m.Result
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReserved01() uint8 {
+	return m.Reserved01
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetAlarmType() AlarmType {
+	return m.AlarmType
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReserved02() uint8 {
+	return m.Reserved02
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReserved03() uint8 {
+	return m.Reserved03
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{

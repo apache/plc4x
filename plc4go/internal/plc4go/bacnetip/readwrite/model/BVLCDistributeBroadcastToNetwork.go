@@ -34,8 +34,13 @@ type BVLCDistributeBroadcastToNetwork struct {
 
 // The corresponding interface
 type IBVLCDistributeBroadcastToNetwork interface {
+	// GetNpdu returns Npdu
+	GetNpdu() *NPDU
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *BVLCDistributeBroadcastToNetwork) BvlcFunction() uint8 {
 	return 0x09
 }
 
+func (m *BVLCDistributeBroadcastToNetwork) GetBvlcFunction() uint8 {
+	return 0x09
+}
+
 func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCDistributeBroadcastToNetwork) GetNpdu() *NPDU {
+	return m.Npdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCDistributeBroadcastToNetwork{

@@ -38,8 +38,21 @@ type AdsReadDeviceInfoResponse struct {
 
 // The corresponding interface
 type IAdsReadDeviceInfoResponse interface {
+	// GetResult returns Result
+	GetResult() ReturnCode
+	// GetMajorVersion returns MajorVersion
+	GetMajorVersion() uint8
+	// GetMinorVersion returns MinorVersion
+	GetMinorVersion() uint8
+	// GetVersion returns Version
+	GetVersion() uint16
+	// GetDevice returns Device
+	GetDevice() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,11 +63,46 @@ func (m *AdsReadDeviceInfoResponse) CommandId() CommandId {
 	return CommandId_ADS_READ_DEVICE_INFO
 }
 
+func (m *AdsReadDeviceInfoResponse) GetCommandId() CommandId {
+	return CommandId_ADS_READ_DEVICE_INFO
+}
+
 func (m *AdsReadDeviceInfoResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *AdsReadDeviceInfoResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsReadDeviceInfoResponse) GetResult() ReturnCode {
+	return m.Result
+}
+
+func (m *AdsReadDeviceInfoResponse) GetMajorVersion() uint8 {
+	return m.MajorVersion
+}
+
+func (m *AdsReadDeviceInfoResponse) GetMinorVersion() uint8 {
+	return m.MinorVersion
+}
+
+func (m *AdsReadDeviceInfoResponse) GetVersion() uint16 {
+	return m.Version
+}
+
+func (m *AdsReadDeviceInfoResponse) GetDevice() []byte {
+	return m.Device
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
 	child := &AdsReadDeviceInfoResponse{

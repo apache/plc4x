@@ -41,9 +41,77 @@ type BACnetTagPayloadTime struct {
 
 // The corresponding interface
 type IBACnetTagPayloadTime interface {
+	// GetHour returns Hour
+	GetHour() int8
+	// GetMinute returns Minute
+	GetMinute() int8
+	// GetSecond returns Second
+	GetSecond() int8
+	// GetFractional returns Fractional
+	GetFractional() int8
+	// GetWildcard returns Wildcard
+	GetWildcard() int8
+	// GetHourIsWildcard returns HourIsWildcard
+	GetHourIsWildcard() bool
+	// GetMinuteIsWildcard returns MinuteIsWildcard
+	GetMinuteIsWildcard() bool
+	// GetSecondIsWildcard returns SecondIsWildcard
+	GetSecondIsWildcard() bool
+	// GetFractionalIsWildcard returns FractionalIsWildcard
+	GetFractionalIsWildcard() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadTime) GetHour() int8 {
+	return m.Hour
+}
+
+func (m *BACnetTagPayloadTime) GetMinute() int8 {
+	return m.Minute
+}
+
+func (m *BACnetTagPayloadTime) GetSecond() int8 {
+	return m.Second
+}
+
+func (m *BACnetTagPayloadTime) GetFractional() int8 {
+	return m.Fractional
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadTime) GetWildcard() int8 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.Wildcard
+}
+
+func (m *BACnetTagPayloadTime) GetHourIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.HourIsWildcard
+}
+
+func (m *BACnetTagPayloadTime) GetMinuteIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.MinuteIsWildcard
+}
+
+func (m *BACnetTagPayloadTime) GetSecondIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.SecondIsWildcard
+}
+
+func (m *BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.FractionalIsWildcard
 }
 
 func NewBACnetTagPayloadTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool) *BACnetTagPayloadTime {

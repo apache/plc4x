@@ -43,8 +43,23 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
+	// GetFrameErrorFlag returns FrameErrorFlag
+	GetFrameErrorFlag() bool
+	// GetBitErrorFlag returns BitErrorFlag
+	GetBitErrorFlag() bool
+	// GetParityErrorFlag returns ParityErrorFlag
+	GetParityErrorFlag() bool
+	// GetUnknownFlag returns UnknownFlag
+	GetUnknownFlag() bool
+	// GetLostFlag returns LostFlag
+	GetLostFlag() bool
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,8 +70,43 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) AdditionalInformationType() ui
 	return 0x03
 }
 
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType() uint8 {
+	return 0x03
+}
+
 func (m *CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent *CEMIAdditionalInformation) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetFrameErrorFlag() bool {
+	return m.FrameErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetBitErrorFlag() bool {
+	return m.BitErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetParityErrorFlag() bool {
+	return m.ParityErrorFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetUnknownFlag() bool {
+	return m.UnknownFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLostFlag() bool {
+	return m.LostFlag
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationBusmonitorInfo{

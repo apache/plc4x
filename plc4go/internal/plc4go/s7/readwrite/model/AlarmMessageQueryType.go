@@ -41,10 +41,50 @@ type AlarmMessageQueryType struct {
 
 // The corresponding interface
 type IAlarmMessageQueryType interface {
+	// GetFunctionId returns FunctionId
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects
+	GetNumberOfObjects() uint8
+	// GetReturnCode returns ReturnCode
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize
+	GetTransportSize() DataTransportSize
+	// GetMessageObjects returns MessageObjects
+	GetMessageObjects() []*AlarmMessageObjectQueryType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageQueryType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageQueryType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageQueryType) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *AlarmMessageQueryType) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+func (m *AlarmMessageQueryType) GetMessageObjects() []*AlarmMessageObjectQueryType {
+	return m.MessageObjects
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []*AlarmMessageObjectQueryType) *AlarmMessageQueryType {
 	return &AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}

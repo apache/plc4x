@@ -32,8 +32,11 @@ type MFuncPropCommandReq struct {
 
 // The corresponding interface
 type IMFuncPropCommandReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MFuncPropCommandReq) MessageCode() uint8 {
 	return 0xF8
 }
 
+func (m *MFuncPropCommandReq) GetMessageCode() uint8 {
+	return 0xF8
+}
+
 func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMFuncPropCommandReq() *CEMI {
 	child := &MFuncPropCommandReq{

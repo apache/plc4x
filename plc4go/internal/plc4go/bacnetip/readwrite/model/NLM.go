@@ -34,9 +34,15 @@ type NLM struct {
 
 // The corresponding interface
 type INLM interface {
+	// MessageType returns MessageType
 	MessageType() uint8
+	// GetVendorId returns VendorId
+	GetVendorId() *uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,6 +57,17 @@ type INLMChild interface {
 	GetTypeName() string
 	INLM
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NLM) GetVendorId() *uint16 {
+	return m.VendorId
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewNLM(vendorId *uint16) *NLM {
 	return &NLM{VendorId: vendorId}

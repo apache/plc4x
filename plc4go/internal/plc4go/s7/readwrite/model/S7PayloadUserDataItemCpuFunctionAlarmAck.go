@@ -35,8 +35,15 @@ type S7PayloadUserDataItemCpuFunctionAlarmAck struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmAck interface {
+	// GetFunctionId returns FunctionId
+	GetFunctionId() uint8
+	// GetMessageObjects returns MessageObjects
+	GetMessageObjects() []*AlarmMessageObjectAckType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,15 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) CpuFunctionType() uint8 {
 	return 0x04
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetCpuFunctionType() uint8 {
+	return 0x04
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) CpuSubfunction() uint8 {
+	return 0x0b
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetCpuSubfunction() uint8 {
 	return 0x0b
 }
 
@@ -55,10 +70,29 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) DataLength() uint16 {
 	return 0
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetMessageObjects() []*AlarmMessageObjectAckType {
+	return m.MessageObjects
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItemCpuFunctionAlarmAck(functionId uint8, messageObjects []*AlarmMessageObjectAckType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmAck{

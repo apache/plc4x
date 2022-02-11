@@ -34,10 +34,32 @@ type ProjectInstallationIdentifier struct {
 
 // The corresponding interface
 type IProjectInstallationIdentifier interface {
+	// GetProjectNumber returns ProjectNumber
+	GetProjectNumber() uint8
+	// GetInstallationNumber returns InstallationNumber
+	GetInstallationNumber() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ProjectInstallationIdentifier) GetProjectNumber() uint8 {
+	return m.ProjectNumber
+}
+
+func (m *ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
+	return m.InstallationNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
 	return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}

@@ -32,8 +32,11 @@ type SysexCommandCapabilityQuery struct {
 
 // The corresponding interface
 type ISysexCommandCapabilityQuery interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandCapabilityQuery) CommandType() uint8 {
 	return 0x6B
 }
 
+func (m *SysexCommandCapabilityQuery) GetCommandType() uint8 {
+	return 0x6B
+}
+
 func (m *SysexCommandCapabilityQuery) Response() bool {
 	return false
 }
 
+func (m *SysexCommandCapabilityQuery) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandCapabilityQuery) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandCapabilityQuery() *SysexCommand {
 	child := &SysexCommandCapabilityQuery{

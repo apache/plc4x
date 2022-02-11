@@ -33,9 +33,13 @@ type BACnetConfirmedServiceACK struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACK interface {
+	// ServiceChoice returns ServiceChoice
 	ServiceChoice() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IBACnetConfirmedServiceACKChild interface {
 	GetTypeName() string
 	IBACnetConfirmedServiceACK
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
 	return &BACnetConfirmedServiceACK{}

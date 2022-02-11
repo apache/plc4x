@@ -33,9 +33,13 @@ type ConnectionResponseDataBlock struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlock interface {
+	// ConnectionType returns ConnectionType
 	ConnectionType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IConnectionResponseDataBlockChild interface {
 	GetTypeName() string
 	IConnectionResponseDataBlock
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionResponseDataBlock() *ConnectionResponseDataBlock {
 	return &ConnectionResponseDataBlock{}

@@ -39,8 +39,21 @@ type S7ParameterModeTransition struct {
 
 // The corresponding interface
 type IS7ParameterModeTransition interface {
+	// GetMethod returns Method
+	GetMethod() uint8
+	// GetCpuFunctionType returns CpuFunctionType
+	GetCpuFunctionType() uint8
+	// GetCpuFunctionGroup returns CpuFunctionGroup
+	GetCpuFunctionGroup() uint8
+	// GetCurrentMode returns CurrentMode
+	GetCurrentMode() uint8
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,11 +64,46 @@ func (m *S7ParameterModeTransition) ParameterType() uint8 {
 	return 0x01
 }
 
+func (m *S7ParameterModeTransition) GetParameterType() uint8 {
+	return 0x01
+}
+
 func (m *S7ParameterModeTransition) MessageType() uint8 {
 	return 0x07
 }
 
+func (m *S7ParameterModeTransition) GetMessageType() uint8 {
+	return 0x07
+}
+
 func (m *S7ParameterModeTransition) InitializeParent(parent *S7Parameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7ParameterModeTransition) GetMethod() uint8 {
+	return m.Method
+}
+
+func (m *S7ParameterModeTransition) GetCpuFunctionType() uint8 {
+	return m.CpuFunctionType
+}
+
+func (m *S7ParameterModeTransition) GetCpuFunctionGroup() uint8 {
+	return m.CpuFunctionGroup
+}
+
+func (m *S7ParameterModeTransition) GetCurrentMode() uint8 {
+	return m.CurrentMode
+}
+
+func (m *S7ParameterModeTransition) GetSequenceNumber() uint8 {
+	return m.SequenceNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7Parameter {
 	child := &S7ParameterModeTransition{

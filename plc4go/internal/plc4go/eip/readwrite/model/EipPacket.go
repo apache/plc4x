@@ -37,9 +37,21 @@ type EipPacket struct {
 
 // The corresponding interface
 type IEipPacket interface {
+	// Command returns Command
 	Command() uint16
+	// GetSessionHandle returns SessionHandle
+	GetSessionHandle() uint32
+	// GetStatus returns Status
+	GetStatus() uint32
+	// GetSenderContext returns SenderContext
+	GetSenderContext() []uint8
+	// GetOptions returns Options
+	GetOptions() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,6 +66,29 @@ type IEipPacketChild interface {
 	GetTypeName() string
 	IEipPacket
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *EipPacket) GetSessionHandle() uint32 {
+	return m.SessionHandle
+}
+
+func (m *EipPacket) GetStatus() uint32 {
+	return m.Status
+}
+
+func (m *EipPacket) GetSenderContext() []uint8 {
+	return m.SenderContext
+}
+
+func (m *EipPacket) GetOptions() uint32 {
+	return m.Options
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewEipPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	return &EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}

@@ -49,9 +49,129 @@ type BACnetTagPayloadSignedInteger struct {
 
 // The corresponding interface
 type IBACnetTagPayloadSignedInteger interface {
+	// GetValueInt8 returns ValueInt8
+	GetValueInt8() *int8
+	// GetValueInt16 returns ValueInt16
+	GetValueInt16() *int16
+	// GetValueInt24 returns ValueInt24
+	GetValueInt24() *int32
+	// GetValueInt32 returns ValueInt32
+	GetValueInt32() *int32
+	// GetValueInt40 returns ValueInt40
+	GetValueInt40() *int64
+	// GetValueInt48 returns ValueInt48
+	GetValueInt48() *int64
+	// GetValueInt56 returns ValueInt56
+	GetValueInt56() *int64
+	// GetValueInt64 returns ValueInt64
+	GetValueInt64() *int64
+	// GetIsInt8 returns IsInt8
+	GetIsInt8() bool
+	// GetIsInt16 returns IsInt16
+	GetIsInt16() bool
+	// GetIsInt24 returns IsInt24
+	GetIsInt24() bool
+	// GetIsInt32 returns IsInt32
+	GetIsInt32() bool
+	// GetIsInt40 returns IsInt40
+	GetIsInt40() bool
+	// GetIsInt48 returns IsInt48
+	GetIsInt48() bool
+	// GetIsInt56 returns IsInt56
+	GetIsInt56() bool
+	// GetIsInt64 returns IsInt64
+	GetIsInt64() bool
+	// GetActualValue returns ActualValue
+	GetActualValue() uint64
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadSignedInteger) GetValueInt8() *int8 {
+	return m.ValueInt8
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt16() *int16 {
+	return m.ValueInt16
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt24() *int32 {
+	return m.ValueInt24
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt32() *int32 {
+	return m.ValueInt32
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt40() *int64 {
+	return m.ValueInt40
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt48() *int64 {
+	return m.ValueInt48
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt56() *int64 {
+	return m.ValueInt56
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetValueInt64() *int64 {
+	return m.ValueInt64
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadSignedInteger) GetIsInt8() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt8
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt16() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt16
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt24() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt24
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt32() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt32
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt40() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt40
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt48() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt48
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt56() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt56
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetIsInt64() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsInt64
+}
+
+func (m *BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetTagPayloadSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, isInt8 bool, isInt16 bool, isInt24 bool, isInt32 bool, isInt40 bool, isInt48 bool, isInt56 bool, isInt64 bool, actualValue uint64) *BACnetTagPayloadSignedInteger {

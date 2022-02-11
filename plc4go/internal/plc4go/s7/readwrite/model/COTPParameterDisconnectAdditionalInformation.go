@@ -34,8 +34,13 @@ type COTPParameterDisconnectAdditionalInformation struct {
 
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *COTPParameterDisconnectAdditionalInformation) ParameterType() uint8 {
 	return 0xE0
 }
 
+func (m *COTPParameterDisconnectAdditionalInformation) GetParameterType() uint8 {
+	return 0xE0
+}
+
 func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPParameterDisconnectAdditionalInformation) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
 	child := &COTPParameterDisconnectAdditionalInformation{

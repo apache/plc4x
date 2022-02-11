@@ -35,8 +35,15 @@ type BACnetConfirmedServiceRequestAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFile interface {
+	// GetFileIdentifier returns FileIdentifier
+	GetFileIdentifier() *BACnetApplicationTagObjectIdentifier
+	// GetAccessMethod returns AccessMethod
+	GetAccessMethod() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,8 +54,27 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) ServiceChoice() uint8 {
 	return 0x06
 }
 
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetServiceChoice() uint8 {
+	return 0x06
+}
+
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetFileIdentifier() *BACnetApplicationTagObjectIdentifier {
+	return m.FileIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+	return m.AccessMethod
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAtomicReadFile{

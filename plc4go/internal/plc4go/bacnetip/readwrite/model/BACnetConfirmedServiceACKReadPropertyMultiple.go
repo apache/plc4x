@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadPropertyMultiple interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
 	return 0x0E
 }
 
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetServiceChoice() uint8 {
+	return 0x0E
+}
+
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKReadPropertyMultiple{

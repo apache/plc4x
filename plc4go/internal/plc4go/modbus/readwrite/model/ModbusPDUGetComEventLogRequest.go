@@ -32,8 +32,11 @@ type ModbusPDUGetComEventLogRequest struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventLogRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,15 @@ func (m *ModbusPDUGetComEventLogRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUGetComEventLogRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUGetComEventLogRequest) FunctionFlag() uint8 {
+	return 0x0C
+}
+
+func (m *ModbusPDUGetComEventLogRequest) GetFunctionFlag() uint8 {
 	return 0x0C
 }
 
@@ -52,7 +63,19 @@ func (m *ModbusPDUGetComEventLogRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUGetComEventLogRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUGetComEventLogRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUGetComEventLogRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventLogRequest{

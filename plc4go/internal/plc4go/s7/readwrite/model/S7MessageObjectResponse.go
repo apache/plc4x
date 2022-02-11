@@ -36,8 +36,15 @@ type S7MessageObjectResponse struct {
 
 // The corresponding interface
 type IS7MessageObjectResponse interface {
+	// GetReturnCode returns ReturnCode
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize
+	GetTransportSize() DataTransportSize
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *S7MessageObjectResponse) CpuFunctionType() uint8 {
 	return 0x08
 }
 
+func (m *S7MessageObjectResponse) GetCpuFunctionType() uint8 {
+	return 0x08
+}
+
 func (m *S7MessageObjectResponse) InitializeParent(parent *S7DataAlarmMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7MessageObjectResponse) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *S7MessageObjectResponse) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7DataAlarmMessage {
 	child := &S7MessageObjectResponse{

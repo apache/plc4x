@@ -41,8 +41,17 @@ type DF1SymbolMessageFrame struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrame interface {
+	// GetDestinationAddress returns DestinationAddress
+	GetDestinationAddress() uint8
+	// GetSourceAddress returns SourceAddress
+	GetSourceAddress() uint8
+	// GetCommand returns Command
+	GetCommand() *DF1Command
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,7 +62,30 @@ func (m *DF1SymbolMessageFrame) SymbolType() uint8 {
 	return 0x02
 }
 
+func (m *DF1SymbolMessageFrame) GetSymbolType() uint8 {
+	return 0x02
+}
+
 func (m *DF1SymbolMessageFrame) InitializeParent(parent *DF1Symbol) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1SymbolMessageFrame) GetDestinationAddress() uint8 {
+	return m.DestinationAddress
+}
+
+func (m *DF1SymbolMessageFrame) GetSourceAddress() uint8 {
+	return m.SourceAddress
+}
+
+func (m *DF1SymbolMessageFrame) GetCommand() *DF1Command {
+	return m.Command
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1Symbol {
 	child := &DF1SymbolMessageFrame{

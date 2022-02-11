@@ -32,8 +32,11 @@ type CIPEncapsulationConnectionResponse struct {
 
 // The corresponding interface
 type ICIPEncapsulationConnectionResponse interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,12 +47,24 @@ func (m *CIPEncapsulationConnectionResponse) CommandType() uint16 {
 	return 0x0201
 }
 
+func (m *CIPEncapsulationConnectionResponse) GetCommandType() uint16 {
+	return 0x0201
+}
+
 func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
 	m.CIPEncapsulationPacket.Status = status
 	m.CIPEncapsulationPacket.SenderContext = senderContext
 	m.CIPEncapsulationPacket.Options = options
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationConnectionResponse{

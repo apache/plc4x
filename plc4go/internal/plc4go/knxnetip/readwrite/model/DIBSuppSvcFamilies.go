@@ -34,10 +34,32 @@ type DIBSuppSvcFamilies struct {
 
 // The corresponding interface
 type IDIBSuppSvcFamilies interface {
+	// GetDescriptionType returns DescriptionType
+	GetDescriptionType() uint8
+	// GetServiceIds returns ServiceIds
+	GetServiceIds() []*ServiceId
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DIBSuppSvcFamilies) GetDescriptionType() uint8 {
+	return m.DescriptionType
+}
+
+func (m *DIBSuppSvcFamilies) GetServiceIds() []*ServiceId {
+	return m.ServiceIds
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
 	return &DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}

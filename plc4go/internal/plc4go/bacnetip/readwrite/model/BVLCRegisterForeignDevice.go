@@ -34,8 +34,13 @@ type BVLCRegisterForeignDevice struct {
 
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
+	// GetTtl returns Ttl
+	GetTtl() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *BVLCRegisterForeignDevice) BvlcFunction() uint8 {
 	return 0x05
 }
 
+func (m *BVLCRegisterForeignDevice) GetBvlcFunction() uint8 {
+	return 0x05
+}
+
 func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCRegisterForeignDevice) GetTtl() uint16 {
+	return m.Ttl
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCRegisterForeignDevice(ttl uint16, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCRegisterForeignDevice{

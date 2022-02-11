@@ -36,10 +36,44 @@ type BACnetDateTime struct {
 
 // The corresponding interface
 type IBACnetDateTime interface {
+	// GetOpeningTag returns OpeningTag
+	GetOpeningTag() *BACnetOpeningTag
+	// GetDateValue returns DateValue
+	GetDateValue() *BACnetApplicationTagDate
+	// GetTimeValue returns TimeValue
+	GetTimeValue() *BACnetApplicationTagTime
+	// GetClosingTag returns ClosingTag
+	GetClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetDateTime) GetOpeningTag() *BACnetOpeningTag {
+	return m.OpeningTag
+}
+
+func (m *BACnetDateTime) GetDateValue() *BACnetApplicationTagDate {
+	return m.DateValue
+}
+
+func (m *BACnetDateTime) GetTimeValue() *BACnetApplicationTagTime {
+	return m.TimeValue
+}
+
+func (m *BACnetDateTime) GetClosingTag() *BACnetClosingTag {
+	return m.ClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag) *BACnetDateTime {
 	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag}

@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) ServiceC
 	return 0x1F
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetServiceChoice() uint8 {
+	return 0x1F
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{

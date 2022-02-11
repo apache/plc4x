@@ -34,8 +34,13 @@ type BVLCWriteBroadcastDistributionTable struct {
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTable interface {
+	// GetTable returns Table
+	GetTable() []*BVLCWriteBroadcastDistributionTableEntry
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,9 +51,24 @@ func (m *BVLCWriteBroadcastDistributionTable) BvlcFunction() uint8 {
 	return 0x01
 }
 
+func (m *BVLCWriteBroadcastDistributionTable) GetBvlcFunction() uint8 {
+	return 0x01
+}
+
 func (m *BVLCWriteBroadcastDistributionTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCWriteBroadcastDistributionTableEntry {
+	return m.Table
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCWriteBroadcastDistributionTable{

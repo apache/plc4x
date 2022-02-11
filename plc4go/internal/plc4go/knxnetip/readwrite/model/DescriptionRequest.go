@@ -34,8 +34,13 @@ type DescriptionRequest struct {
 
 // The corresponding interface
 type IDescriptionRequest interface {
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *DescriptionRequest) MsgType() uint16 {
 	return 0x0203
 }
 
+func (m *DescriptionRequest) GetMsgType() uint16 {
+	return 0x0203
+}
+
 func (m *DescriptionRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DescriptionRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DescriptionRequest{

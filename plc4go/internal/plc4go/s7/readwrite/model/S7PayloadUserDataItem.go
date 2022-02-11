@@ -35,11 +35,21 @@ type S7PayloadUserDataItem struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItem interface {
+	// CpuFunctionType returns CpuFunctionType
 	CpuFunctionType() uint8
+	// CpuSubfunction returns CpuSubfunction
 	CpuSubfunction() uint8
+	// DataLength returns DataLength
 	DataLength() uint16
+	// GetReturnCode returns ReturnCode
+	GetReturnCode() DataTransportErrorCode
+	// GetTransportSize returns TransportSize
+	GetTransportSize() DataTransportSize
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -54,6 +64,21 @@ type IS7PayloadUserDataItemChild interface {
 	GetTypeName() string
 	IS7PayloadUserDataItem
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItem) GetReturnCode() DataTransportErrorCode {
+	return m.ReturnCode
+}
+
+func (m *S7PayloadUserDataItem) GetTransportSize() DataTransportSize {
+	return m.TransportSize
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	return &S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize}

@@ -33,9 +33,13 @@ type COTPParameter struct {
 
 // The corresponding interface
 type ICOTPParameter interface {
+	// ParameterType returns ParameterType
 	ParameterType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type ICOTPParameterChild interface {
 	GetTypeName() string
 	ICOTPParameter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPParameter() *COTPParameter {
 	return &COTPParameter{}

@@ -41,8 +41,15 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
+	// GetPudicfReturnCode returns PudicfReturnCode
+	GetPudicfReturnCode() DataTransportErrorCode
+	// GetPudicftransportSize returns PudicftransportSize
+	GetPudicftransportSize() DataTransportSize
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -53,7 +60,15 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) CpuFunctionType() u
 	return 0x08
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuFunctionType() uint8 {
+	return 0x08
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) CpuSubfunction() uint8 {
+	return 0x13
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetCpuSubfunction() uint8 {
 	return 0x13
 }
 
@@ -61,10 +76,29 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) DataLength() uint16
 	return 0
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicfReturnCode() DataTransportErrorCode {
+	return m.PudicfReturnCode
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportSize() DataTransportSize {
+	return m.PudicftransportSize
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode DataTransportErrorCode, pudicftransportSize DataTransportSize, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{

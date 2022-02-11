@@ -38,8 +38,21 @@ type DF1RequestProtectedTypedLogicalRead struct {
 
 // The corresponding interface
 type IDF1RequestProtectedTypedLogicalRead interface {
+	// GetByteSize returns ByteSize
+	GetByteSize() uint8
+	// GetFileNumber returns FileNumber
+	GetFileNumber() uint8
+	// GetFileType returns FileType
+	GetFileType() uint8
+	// GetElementNumber returns ElementNumber
+	GetElementNumber() uint8
+	// GetSubElementNumber returns SubElementNumber
+	GetSubElementNumber() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,7 +63,38 @@ func (m *DF1RequestProtectedTypedLogicalRead) FunctionCode() uint8 {
 	return 0xA2
 }
 
+func (m *DF1RequestProtectedTypedLogicalRead) GetFunctionCode() uint8 {
+	return 0xA2
+}
+
 func (m *DF1RequestProtectedTypedLogicalRead) InitializeParent(parent *DF1RequestCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1RequestProtectedTypedLogicalRead) GetByteSize() uint8 {
+	return m.ByteSize
+}
+
+func (m *DF1RequestProtectedTypedLogicalRead) GetFileNumber() uint8 {
+	return m.FileNumber
+}
+
+func (m *DF1RequestProtectedTypedLogicalRead) GetFileType() uint8 {
+	return m.FileType
+}
+
+func (m *DF1RequestProtectedTypedLogicalRead) GetElementNumber() uint8 {
+	return m.ElementNumber
+}
+
+func (m *DF1RequestProtectedTypedLogicalRead) GetSubElementNumber() uint8 {
+	return m.SubElementNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestCommand {
 	child := &DF1RequestProtectedTypedLogicalRead{

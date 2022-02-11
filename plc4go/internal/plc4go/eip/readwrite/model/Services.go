@@ -35,10 +35,38 @@ type Services struct {
 
 // The corresponding interface
 type IServices interface {
+	// GetServiceNb returns ServiceNb
+	GetServiceNb() uint16
+	// GetOffsets returns Offsets
+	GetOffsets() []uint16
+	// GetServices returns Services
+	GetServices() []*CipService
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *Services) GetServiceNb() uint16 {
+	return m.ServiceNb
+}
+
+func (m *Services) GetOffsets() []uint16 {
+	return m.Offsets
+}
+
+func (m *Services) GetServices() []*CipService {
+	return m.Services
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewServices(serviceNb uint16, offsets []uint16, services []*CipService) *Services {
 	return &Services{ServiceNb: serviceNb, Offsets: offsets, Services: services}

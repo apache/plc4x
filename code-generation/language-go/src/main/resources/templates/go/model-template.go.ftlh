@@ -108,12 +108,26 @@ type I${type.name} interface {
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
+	// ${discriminatorName?cap_first} returns ${discriminatorName?cap_first}
 	${discriminatorName?cap_first}() <#if typeRef.isComplexTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 		</#if>
 	</#list>
 </#if>
+<#list type.propertyFields as field>
+    <#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first}
+	Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+</#list>
+<#list type.virtualFields as field>
+    <#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first}
+	Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+</#list>
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 <#if type.isDiscriminatedChildTypeDefinition()>
@@ -139,6 +153,31 @@ func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isComplexTy
                             <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                             <#assign enumValueTraces=tracer.extractTraces(enumValue)>
                             ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+						<#else>
+							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
+						</#if>
+					<#else>
+						${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
+					</#if>
+				<#else>
+					${helper.getNullValueForTypeReference(typeRef)}
+				</#if>
+			</@compress>
+}
+
+func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isComplexTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+			<@compress single_line=true>
+				return
+				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
+					<#if helper.isComplexTypeReference(typeRef)>
+						<#if helper.isEnumTypeReference(typeRef)>
+							<#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
+							<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+							<#assign enumTypeTraces=tracer.extractTraces(enumType)>
+							<#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)>
+							<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+							<#assign enumValueTraces=tracer.extractTraces(enumValue)>
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
 						<#else>
 							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
 						</#if>
@@ -228,6 +267,28 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}
 	</#list>
 }
 </#if>
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+<#list type.propertyFields as field>
+    <#assign typeRef=field.asTypedField().orElseThrow().type>
+func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	return m.${field.name?cap_first}
+}
+
+</#list>
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+<#list type.virtualFields as field>
+    <#assign typeRef=field.asTypedField().orElseThrow().type>
+func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.${field.name?cap_first}
+}
+
+</#list>
 
 <@compress single_line=true>
 func New${type.name}(

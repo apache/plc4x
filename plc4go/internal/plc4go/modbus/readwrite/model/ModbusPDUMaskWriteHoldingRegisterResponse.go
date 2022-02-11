@@ -36,8 +36,17 @@ type ModbusPDUMaskWriteHoldingRegisterResponse struct {
 
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterResponse interface {
+	// GetReferenceAddress returns ReferenceAddress
+	GetReferenceAddress() uint16
+	// GetAndMask returns AndMask
+	GetAndMask() uint16
+	// GetOrMask returns OrMask
+	GetOrMask() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,15 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) FunctionFlag() uint8 {
+	return 0x16
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetFunctionFlag() uint8 {
 	return 0x16
 }
 
@@ -56,7 +73,30 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetReferenceAddress() uint16 {
+	return m.ReferenceAddress
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetAndMask() uint16 {
+	return m.AndMask
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetOrMask() uint16 {
+	return m.OrMask
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
 	child := &ModbusPDUMaskWriteHoldingRegisterResponse{

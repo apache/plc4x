@@ -42,9 +42,19 @@ type S7Message struct {
 
 // The corresponding interface
 type IS7Message interface {
+	// MessageType returns MessageType
 	MessageType() uint8
+	// GetTpduReference returns TpduReference
+	GetTpduReference() uint16
+	// GetParameter returns Parameter
+	GetParameter() *S7Parameter
+	// GetPayload returns Payload
+	GetPayload() *S7Payload
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -59,6 +69,25 @@ type IS7MessageChild interface {
 	GetTypeName() string
 	IS7Message
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7Message) GetTpduReference() uint16 {
+	return m.TpduReference
+}
+
+func (m *S7Message) GetParameter() *S7Parameter {
+	return m.Parameter
+}
+
+func (m *S7Message) GetPayload() *S7Payload {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	return &S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}

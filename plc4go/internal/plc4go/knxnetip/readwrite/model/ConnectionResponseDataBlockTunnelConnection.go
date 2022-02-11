@@ -34,8 +34,13 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
+	// GetKnxAddress returns KnxAddress
+	GetKnxAddress() *KnxAddress
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,8 +51,23 @@ func (m *ConnectionResponseDataBlockTunnelConnection) ConnectionType() uint8 {
 	return 0x04
 }
 
+func (m *ConnectionResponseDataBlockTunnelConnection) GetConnectionType() uint8 {
+	return 0x04
+}
+
 func (m *ConnectionResponseDataBlockTunnelConnection) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() *KnxAddress {
+	return m.KnxAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockTunnelConnection{

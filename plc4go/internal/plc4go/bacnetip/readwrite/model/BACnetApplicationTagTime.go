@@ -34,8 +34,13 @@ type BACnetApplicationTagTime struct {
 
 // The corresponding interface
 type IBACnetApplicationTagTime interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,26 @@ func (m *BACnetApplicationTagTime) ActualTagNumber() uint8 {
 	return 0xB
 }
 
+func (m *BACnetApplicationTagTime) GetActualTagNumber() uint8 {
+	return 0xB
+}
+
 func (m *BACnetApplicationTagTime) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
 	m.BACnetApplicationTag.Header = header
 	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
 	m.BACnetApplicationTag.ActualLength = actualLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagTime) GetPayload() *BACnetTagPayloadTime {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetApplicationTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagTime{

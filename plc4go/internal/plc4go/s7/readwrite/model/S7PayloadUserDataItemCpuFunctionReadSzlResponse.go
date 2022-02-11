@@ -40,8 +40,17 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
+	// GetSzlId returns SzlId
+	GetSzlId() *SzlId
+	// GetSzlIndex returns SzlIndex
+	GetSzlIndex() uint16
+	// GetItems returns Items
+	GetItems() []*SzlDataTreeItem
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,7 +61,15 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint
 	return 0x08
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuFunctionType() uint8 {
+	return 0x08
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuSubfunction() uint8 {
+	return 0x01
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuSubfunction() uint8 {
 	return 0x01
 }
 
@@ -60,10 +77,33 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) DataLength() uint16 {
 	return 0
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetDataLength() uint16 {
+	return 0
+}
+
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlId() *SzlId {
+	return m.SzlId
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetSzlIndex() uint16 {
+	return m.SzlIndex
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []*SzlDataTreeItem {
+	return m.Items
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{

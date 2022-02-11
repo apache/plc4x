@@ -35,8 +35,15 @@ type COTPPacketData struct {
 
 // The corresponding interface
 type ICOTPPacketData interface {
+	// GetEot returns Eot
+	GetEot() bool
+	// GetTpduRef returns TpduRef
+	GetTpduRef() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *COTPPacketData) TpduCode() uint8 {
 	return 0xF0
 }
 
+func (m *COTPPacketData) GetTpduCode() uint8 {
+	return 0xF0
+}
+
 func (m *COTPPacketData) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPPacketData) GetEot() bool {
+	return m.Eot
+}
+
+func (m *COTPPacketData) GetTpduRef() uint8 {
+	return m.TpduRef
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	child := &COTPPacketData{

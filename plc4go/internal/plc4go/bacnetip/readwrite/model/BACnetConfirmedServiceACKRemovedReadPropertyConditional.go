@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKRemovedReadPropertyConditional struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKRemovedReadPropertyConditional interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) ServiceChoice(
 	return 0x0D
 }
 
+func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetServiceChoice() uint8 {
+	return 0x0D
+}
+
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{

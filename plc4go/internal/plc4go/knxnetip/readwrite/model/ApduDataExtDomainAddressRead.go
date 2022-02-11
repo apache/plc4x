@@ -32,8 +32,11 @@ type ApduDataExtDomainAddressRead struct {
 
 // The corresponding interface
 type IApduDataExtDomainAddressRead interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtDomainAddressRead) ExtApciType() uint8 {
 	return 0x21
 }
 
+func (m *ApduDataExtDomainAddressRead) GetExtApciType() uint8 {
+	return 0x21
+}
+
 func (m *ApduDataExtDomainAddressRead) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtDomainAddressRead() *ApduDataExt {
 	child := &ApduDataExtDomainAddressRead{

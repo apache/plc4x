@@ -34,8 +34,13 @@ type S7PayloadUserData struct {
 
 // The corresponding interface
 type IS7PayloadUserData interface {
+	// GetItems returns Items
+	GetItems() []*S7PayloadUserDataItem
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,30 @@ func (m *S7PayloadUserData) ParameterParameterType() uint8 {
 	return 0x00
 }
 
+func (m *S7PayloadUserData) GetParameterParameterType() uint8 {
+	return 0x00
+}
+
 func (m *S7PayloadUserData) MessageType() uint8 {
 	return 0x07
 }
 
+func (m *S7PayloadUserData) GetMessageType() uint8 {
+	return 0x07
+}
+
 func (m *S7PayloadUserData) InitializeParent(parent *S7Payload) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserData) GetItems() []*S7PayloadUserDataItem {
+	return m.Items
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7PayloadUserData(items []*S7PayloadUserDataItem) *S7Payload {
 	child := &S7PayloadUserData{

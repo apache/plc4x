@@ -32,8 +32,11 @@ type ApduDataExtDomainAddressSerialNumberWrite struct {
 
 // The corresponding interface
 type IApduDataExtDomainAddressSerialNumberWrite interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) ExtApciType() uint8 {
 	return 0x2E
 }
 
+func (m *ApduDataExtDomainAddressSerialNumberWrite) GetExtApciType() uint8 {
+	return 0x2E
+}
+
 func (m *ApduDataExtDomainAddressSerialNumberWrite) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtDomainAddressSerialNumberWrite() *ApduDataExt {
 	child := &ApduDataExtDomainAddressSerialNumberWrite{

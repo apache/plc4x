@@ -41,10 +41,74 @@ type AmsPacket struct {
 
 // The corresponding interface
 type IAmsPacket interface {
+	// GetTargetAmsNetId returns TargetAmsNetId
+	GetTargetAmsNetId() *AmsNetId
+	// GetTargetAmsPort returns TargetAmsPort
+	GetTargetAmsPort() uint16
+	// GetSourceAmsNetId returns SourceAmsNetId
+	GetSourceAmsNetId() *AmsNetId
+	// GetSourceAmsPort returns SourceAmsPort
+	GetSourceAmsPort() uint16
+	// GetCommandId returns CommandId
+	GetCommandId() CommandId
+	// GetState returns State
+	GetState() *State
+	// GetErrorCode returns ErrorCode
+	GetErrorCode() uint32
+	// GetInvokeId returns InvokeId
+	GetInvokeId() uint32
+	// GetData returns Data
+	GetData() *AdsData
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AmsPacket) GetTargetAmsNetId() *AmsNetId {
+	return m.TargetAmsNetId
+}
+
+func (m *AmsPacket) GetTargetAmsPort() uint16 {
+	return m.TargetAmsPort
+}
+
+func (m *AmsPacket) GetSourceAmsNetId() *AmsNetId {
+	return m.SourceAmsNetId
+}
+
+func (m *AmsPacket) GetSourceAmsPort() uint16 {
+	return m.SourceAmsPort
+}
+
+func (m *AmsPacket) GetCommandId() CommandId {
+	return m.CommandId
+}
+
+func (m *AmsPacket) GetState() *State {
+	return m.State
+}
+
+func (m *AmsPacket) GetErrorCode() uint32 {
+	return m.ErrorCode
+}
+
+func (m *AmsPacket) GetInvokeId() uint32 {
+	return m.InvokeId
+}
+
+func (m *AmsPacket) GetData() *AdsData {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAmsPacket(targetAmsNetId *AmsNetId, targetAmsPort uint16, sourceAmsNetId *AmsNetId, sourceAmsPort uint16, commandId CommandId, state *State, errorCode uint32, invokeId uint32, data *AdsData) *AmsPacket {
 	return &AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, CommandId: commandId, State: state, ErrorCode: errorCode, InvokeId: invokeId, Data: data}

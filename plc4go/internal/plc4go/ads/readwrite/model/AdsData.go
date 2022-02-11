@@ -33,10 +33,15 @@ type AdsData struct {
 
 // The corresponding interface
 type IAdsData interface {
+	// CommandId returns CommandId
 	CommandId() CommandId
+	// Response returns Response
 	Response() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,6 +56,14 @@ type IAdsDataChild interface {
 	GetTypeName() string
 	IAdsData
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsData() *AdsData {
 	return &AdsData{}

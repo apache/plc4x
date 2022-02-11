@@ -36,8 +36,17 @@ type COTPPacketConnectionResponse struct {
 
 // The corresponding interface
 type ICOTPPacketConnectionResponse interface {
+	// GetDestinationReference returns DestinationReference
+	GetDestinationReference() uint16
+	// GetSourceReference returns SourceReference
+	GetSourceReference() uint16
+	// GetProtocolClass returns ProtocolClass
+	GetProtocolClass() COTPProtocolClass
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,10 +57,33 @@ func (m *COTPPacketConnectionResponse) TpduCode() uint8 {
 	return 0xD0
 }
 
+func (m *COTPPacketConnectionResponse) GetTpduCode() uint8 {
+	return 0xD0
+}
+
 func (m *COTPPacketConnectionResponse) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
 	m.COTPPacket.Parameters = parameters
 	m.COTPPacket.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *COTPPacketConnectionResponse) GetDestinationReference() uint16 {
+	return m.DestinationReference
+}
+
+func (m *COTPPacketConnectionResponse) GetSourceReference() uint16 {
+	return m.SourceReference
+}
+
+func (m *COTPPacketConnectionResponse) GetProtocolClass() COTPProtocolClass {
+	return m.ProtocolClass
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
 	child := &COTPPacketConnectionResponse{

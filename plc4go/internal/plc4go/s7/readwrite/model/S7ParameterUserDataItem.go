@@ -33,9 +33,13 @@ type S7ParameterUserDataItem struct {
 
 // The corresponding interface
 type IS7ParameterUserDataItem interface {
+	// ItemType returns ItemType
 	ItemType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IS7ParameterUserDataItemChild interface {
 	GetTypeName() string
 	IS7ParameterUserDataItem
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7ParameterUserDataItem() *S7ParameterUserDataItem {
 	return &S7ParameterUserDataItem{}

@@ -33,9 +33,13 @@ type FirmataMessage struct {
 
 // The corresponding interface
 type IFirmataMessage interface {
+	// MessageType returns MessageType
 	MessageType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IFirmataMessageChild interface {
 	GetTypeName() string
 	IFirmataMessage
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataMessage() *FirmataMessage {
 	return &FirmataMessage{}

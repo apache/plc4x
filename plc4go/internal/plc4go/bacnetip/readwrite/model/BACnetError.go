@@ -35,9 +35,17 @@ type BACnetError struct {
 
 // The corresponding interface
 type IBACnetError interface {
+	// ServiceChoice returns ServiceChoice
 	ServiceChoice() uint8
+	// GetErrorClass returns ErrorClass
+	GetErrorClass() *BACnetApplicationTagEnumerated
+	// GetErrorCode returns ErrorCode
+	GetErrorCode() *BACnetApplicationTagEnumerated
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,6 +60,21 @@ type IBACnetErrorChild interface {
 	GetTypeName() string
 	IBACnetError
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetError) GetErrorClass() *BACnetApplicationTagEnumerated {
+	return m.ErrorClass
+}
+
+func (m *BACnetError) GetErrorCode() *BACnetApplicationTagEnumerated {
+	return m.ErrorCode
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetError(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	return &BACnetError{ErrorClass: errorClass, ErrorCode: errorCode}

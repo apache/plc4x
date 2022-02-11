@@ -36,10 +36,44 @@ type ModbusPDUWriteFileRecordResponseItem struct {
 
 // The corresponding interface
 type IModbusPDUWriteFileRecordResponseItem interface {
+	// GetReferenceType returns ReferenceType
+	GetReferenceType() uint8
+	// GetFileNumber returns FileNumber
+	GetFileNumber() uint16
+	// GetRecordNumber returns RecordNumber
+	GetRecordNumber() uint16
+	// GetRecordData returns RecordData
+	GetRecordData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteFileRecordResponseItem) GetReferenceType() uint8 {
+	return m.ReferenceType
+}
+
+func (m *ModbusPDUWriteFileRecordResponseItem) GetFileNumber() uint16 {
+	return m.FileNumber
+}
+
+func (m *ModbusPDUWriteFileRecordResponseItem) GetRecordNumber() uint16 {
+	return m.RecordNumber
+}
+
+func (m *ModbusPDUWriteFileRecordResponseItem) GetRecordData() []byte {
+	return m.RecordData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) *ModbusPDUWriteFileRecordResponseItem {
 	return &ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}

@@ -35,10 +35,38 @@ type AdsNotificationSample struct {
 
 // The corresponding interface
 type IAdsNotificationSample interface {
+	// GetNotificationHandle returns NotificationHandle
+	GetNotificationHandle() uint32
+	// GetSampleSize returns SampleSize
+	GetSampleSize() uint32
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsNotificationSample) GetNotificationHandle() uint32 {
+	return m.NotificationHandle
+}
+
+func (m *AdsNotificationSample) GetSampleSize() uint32 {
+	return m.SampleSize
+}
+
+func (m *AdsNotificationSample) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *AdsNotificationSample {
 	return &AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}

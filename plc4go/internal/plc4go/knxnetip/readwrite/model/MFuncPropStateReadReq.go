@@ -32,8 +32,11 @@ type MFuncPropStateReadReq struct {
 
 // The corresponding interface
 type IMFuncPropStateReadReq interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *MFuncPropStateReadReq) MessageCode() uint8 {
 	return 0xF9
 }
 
+func (m *MFuncPropStateReadReq) GetMessageCode() uint8 {
+	return 0xF9
+}
+
 func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMFuncPropStateReadReq() *CEMI {
 	child := &MFuncPropStateReadReq{

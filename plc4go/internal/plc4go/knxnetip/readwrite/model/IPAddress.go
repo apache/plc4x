@@ -33,10 +33,26 @@ type IPAddress struct {
 
 // The corresponding interface
 type IIPAddress interface {
+	// GetAddr returns Addr
+	GetAddr() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *IPAddress) GetAddr() []byte {
+	return m.Addr
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewIPAddress(addr []byte) *IPAddress {
 	return &IPAddress{Addr: addr}

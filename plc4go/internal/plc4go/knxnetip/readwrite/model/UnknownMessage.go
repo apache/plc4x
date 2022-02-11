@@ -34,8 +34,13 @@ type UnknownMessage struct {
 
 // The corresponding interface
 type IUnknownMessage interface {
+	// GetUnknownData returns UnknownData
+	GetUnknownData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *UnknownMessage) MsgType() uint16 {
 	return 0x020B
 }
 
+func (m *UnknownMessage) GetMsgType() uint16 {
+	return 0x020B
+}
+
 func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *UnknownMessage) GetUnknownData() []byte {
+	return m.UnknownData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
 	child := &UnknownMessage{

@@ -34,8 +34,13 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 
 // The corresponding interface
 type IDF1CommandResponseMessageProtectedTypedLogicalRead interface {
+	// GetData returns Data
+	GetData() []uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) CommandCode() uint8
 	return 0x4F
 }
 
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetCommandCode() uint8 {
+	return 0x4F
+}
+
 func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) InitializeParent(parent *DF1ResponseMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
 	m.DF1ResponseMessage.DestinationAddress = destinationAddress
 	m.DF1ResponseMessage.SourceAddress = sourceAddress
 	m.DF1ResponseMessage.Status = status
 	m.DF1ResponseMessage.TransactionCounter = transactionCounter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1ResponseMessage {
 	child := &DF1CommandResponseMessageProtectedTypedLogicalRead{

@@ -33,9 +33,13 @@ type CipService struct {
 
 // The corresponding interface
 type ICipService interface {
+	// Service returns Service
 	Service() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type ICipServiceChild interface {
 	GetTypeName() string
 	ICipService
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCipService() *CipService {
 	return &CipService{}

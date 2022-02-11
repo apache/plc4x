@@ -32,8 +32,11 @@ type SysexCommandSysexNonRealtime struct {
 
 // The corresponding interface
 type ISysexCommandSysexNonRealtime interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandSysexNonRealtime) CommandType() uint8 {
 	return 0x7E
 }
 
+func (m *SysexCommandSysexNonRealtime) GetCommandType() uint8 {
+	return 0x7E
+}
+
 func (m *SysexCommandSysexNonRealtime) Response() bool {
 	return false
 }
 
+func (m *SysexCommandSysexNonRealtime) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandSysexNonRealtime) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandSysexNonRealtime() *SysexCommand {
 	child := &SysexCommandSysexNonRealtime{

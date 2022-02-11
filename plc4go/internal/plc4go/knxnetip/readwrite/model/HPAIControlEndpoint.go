@@ -35,10 +35,38 @@ type HPAIControlEndpoint struct {
 
 // The corresponding interface
 type IHPAIControlEndpoint interface {
+	// GetHostProtocolCode returns HostProtocolCode
+	GetHostProtocolCode() HostProtocolCode
+	// GetIpAddress returns IpAddress
+	GetIpAddress() *IPAddress
+	// GetIpPort returns IpPort
+	GetIpPort() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *HPAIControlEndpoint) GetHostProtocolCode() HostProtocolCode {
+	return m.HostProtocolCode
+}
+
+func (m *HPAIControlEndpoint) GetIpAddress() *IPAddress {
+	return m.IpAddress
+}
+
+func (m *HPAIControlEndpoint) GetIpPort() uint16 {
+	return m.IpPort
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIControlEndpoint {
 	return &HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}

@@ -35,8 +35,15 @@ type BACnetContextTagDouble struct {
 
 // The corresponding interface
 type IBACnetContextTagDouble interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadDouble
+	// GetActualValue returns ActualValue
+	GetActualValue() float64
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,11 +54,30 @@ func (m *BACnetContextTagDouble) DataType() BACnetDataType {
 	return BACnetDataType_DOUBLE
 }
 
+func (m *BACnetContextTagDouble) GetDataType() BACnetDataType {
+	return BACnetDataType_DOUBLE
+}
+
 func (m *BACnetContextTagDouble) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagDouble) GetPayload() *BACnetTagPayloadDouble {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagDouble) GetActualValue() float64 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetContextTagDouble(payload *BACnetTagPayloadDouble, actualValue float64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

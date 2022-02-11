@@ -36,8 +36,17 @@ type AdsWriteRequest struct {
 
 // The corresponding interface
 type IAdsWriteRequest interface {
+	// GetIndexGroup returns IndexGroup
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset
+	GetIndexOffset() uint32
+	// GetData returns Data
+	GetData() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *AdsWriteRequest) CommandId() CommandId {
 	return CommandId_ADS_WRITE
 }
 
+func (m *AdsWriteRequest) GetCommandId() CommandId {
+	return CommandId_ADS_WRITE
+}
+
 func (m *AdsWriteRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsWriteRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsWriteRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsWriteRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsWriteRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsWriteRequest) GetData() []byte {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *AdsData {
 	child := &AdsWriteRequest{

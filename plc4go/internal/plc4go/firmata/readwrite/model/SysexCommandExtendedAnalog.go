@@ -32,8 +32,11 @@ type SysexCommandExtendedAnalog struct {
 
 // The corresponding interface
 type ISysexCommandExtendedAnalog interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandExtendedAnalog) CommandType() uint8 {
 	return 0x6F
 }
 
+func (m *SysexCommandExtendedAnalog) GetCommandType() uint8 {
+	return 0x6F
+}
+
 func (m *SysexCommandExtendedAnalog) Response() bool {
 	return false
 }
 
+func (m *SysexCommandExtendedAnalog) GetResponse() bool {
+	return false
+}
+
 func (m *SysexCommandExtendedAnalog) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandExtendedAnalog() *SysexCommand {
 	child := &SysexCommandExtendedAnalog{

@@ -32,8 +32,11 @@ type ApduDataExtLinkResponse struct {
 
 // The corresponding interface
 type IApduDataExtLinkResponse interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduDataExtLinkResponse) ExtApciType() uint8 {
 	return 0x26
 }
 
+func (m *ApduDataExtLinkResponse) GetExtApciType() uint8 {
+	return 0x26
+}
+
 func (m *ApduDataExtLinkResponse) InitializeParent(parent *ApduDataExt) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataExtLinkResponse() *ApduDataExt {
 	child := &ApduDataExtLinkResponse{

@@ -32,8 +32,11 @@ type BACnetConfirmedServiceACKGetAlarmSummary struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetAlarmSummary interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) ServiceChoice() uint8 {
 	return 0x03
 }
 
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) GetServiceChoice() uint8 {
+	return 0x03
+}
+
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceACKGetAlarmSummary() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKGetAlarmSummary{

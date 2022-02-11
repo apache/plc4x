@@ -34,8 +34,13 @@ type ModbusPDUReadFifoQueueRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueRequest interface {
+	// GetFifoPointerAddress returns FifoPointerAddress
+	GetFifoPointerAddress() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadFifoQueueRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
+	return 0x18
+}
+
+func (m *ModbusPDUReadFifoQueueRequest) GetFunctionFlag() uint8 {
 	return 0x18
 }
 
@@ -54,7 +67,22 @@ func (m *ModbusPDUReadFifoQueueRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUReadFifoQueueRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadFifoQueueRequest) GetFifoPointerAddress() uint16 {
+	return m.FifoPointerAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueRequest{

@@ -36,8 +36,17 @@ type BACnetContextTagBoolean struct {
 
 // The corresponding interface
 type IBACnetContextTagBoolean interface {
+	// GetValue returns Value
+	GetValue() uint8
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadBoolean
+	// GetActualValue returns ActualValue
+	GetActualValue() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,34 @@ func (m *BACnetContextTagBoolean) DataType() BACnetDataType {
 	return BACnetDataType_BOOLEAN
 }
 
+func (m *BACnetContextTagBoolean) GetDataType() BACnetDataType {
+	return BACnetDataType_BOOLEAN
+}
+
 func (m *BACnetContextTagBoolean) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagBoolean) GetValue() uint8 {
+	return m.Value
+}
+
+func (m *BACnetContextTagBoolean) GetPayload() *BACnetTagPayloadBoolean {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagBoolean) GetActualValue() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, actualValue bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

@@ -32,8 +32,11 @@ type DF1SymbolMessageFrameACK struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrameACK interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *DF1SymbolMessageFrameACK) SymbolType() uint8 {
 	return 0x06
 }
 
+func (m *DF1SymbolMessageFrameACK) GetSymbolType() uint8 {
+	return 0x06
+}
+
 func (m *DF1SymbolMessageFrameACK) InitializeParent(parent *DF1Symbol) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1SymbolMessageFrameACK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameACK{

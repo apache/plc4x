@@ -43,8 +43,29 @@ type APDUConfirmedRequest struct {
 
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
+	// GetSegmentedMessage returns SegmentedMessage
+	GetSegmentedMessage() bool
+	// GetMoreFollows returns MoreFollows
+	GetMoreFollows() bool
+	// GetSegmentedResponseAccepted returns SegmentedResponseAccepted
+	GetSegmentedResponseAccepted() bool
+	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted
+	GetMaxSegmentsAccepted() uint8
+	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted
+	GetMaxApduLengthAccepted() uint8
+	// GetInvokeId returns InvokeId
+	GetInvokeId() uint8
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() *uint8
+	// GetProposedWindowSize returns ProposedWindowSize
+	GetProposedWindowSize() *uint8
+	// GetServiceRequest returns ServiceRequest
+	GetServiceRequest() *BACnetConfirmedServiceRequest
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,7 +76,54 @@ func (m *APDUConfirmedRequest) ApduType() uint8 {
 	return 0x0
 }
 
+func (m *APDUConfirmedRequest) GetApduType() uint8 {
+	return 0x0
+}
+
 func (m *APDUConfirmedRequest) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUConfirmedRequest) GetSegmentedMessage() bool {
+	return m.SegmentedMessage
+}
+
+func (m *APDUConfirmedRequest) GetMoreFollows() bool {
+	return m.MoreFollows
+}
+
+func (m *APDUConfirmedRequest) GetSegmentedResponseAccepted() bool {
+	return m.SegmentedResponseAccepted
+}
+
+func (m *APDUConfirmedRequest) GetMaxSegmentsAccepted() uint8 {
+	return m.MaxSegmentsAccepted
+}
+
+func (m *APDUConfirmedRequest) GetMaxApduLengthAccepted() uint8 {
+	return m.MaxApduLengthAccepted
+}
+
+func (m *APDUConfirmedRequest) GetInvokeId() uint8 {
+	return m.InvokeId
+}
+
+func (m *APDUConfirmedRequest) GetSequenceNumber() *uint8 {
+	return m.SequenceNumber
+}
+
+func (m *APDUConfirmedRequest) GetProposedWindowSize() *uint8 {
+	return m.ProposedWindowSize
+}
+
+func (m *APDUConfirmedRequest) GetServiceRequest() *BACnetConfirmedServiceRequest {
+	return m.ServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest) *APDU {
 	child := &APDUConfirmedRequest{

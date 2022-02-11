@@ -32,8 +32,11 @@ type S7MessageUserData struct {
 
 // The corresponding interface
 type IS7MessageUserData interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,23 @@ func (m *S7MessageUserData) MessageType() uint8 {
 	return 0x07
 }
 
+func (m *S7MessageUserData) GetMessageType() uint8 {
+	return 0x07
+}
+
 func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
 	m.S7Message.TpduReference = tpduReference
 	m.S7Message.Parameter = parameter
 	m.S7Message.Payload = payload
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageUserData{

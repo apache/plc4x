@@ -47,9 +47,119 @@ type BACnetTagPayloadDate struct {
 
 // The corresponding interface
 type IBACnetTagPayloadDate interface {
+	// GetYearMinus1900 returns YearMinus1900
+	GetYearMinus1900() int8
+	// GetMonth returns Month
+	GetMonth() int8
+	// GetDayOfMonth returns DayOfMonth
+	GetDayOfMonth() int8
+	// GetDayOfWeek returns DayOfWeek
+	GetDayOfWeek() int8
+	// GetWildcard returns Wildcard
+	GetWildcard() int8
+	// GetYearIsWildcard returns YearIsWildcard
+	GetYearIsWildcard() bool
+	// GetYear returns Year
+	GetYear() int16
+	// GetMonthIsWildcard returns MonthIsWildcard
+	GetMonthIsWildcard() bool
+	// GetOddMonthWildcard returns OddMonthWildcard
+	GetOddMonthWildcard() bool
+	// GetEvenMonthWildcard returns EvenMonthWildcard
+	GetEvenMonthWildcard() bool
+	// GetDayOfMonthIsWildcard returns DayOfMonthIsWildcard
+	GetDayOfMonthIsWildcard() bool
+	// GetLastDayOfMonthWildcard returns LastDayOfMonthWildcard
+	GetLastDayOfMonthWildcard() bool
+	// GetOddDayOfMonthWildcard returns OddDayOfMonthWildcard
+	GetOddDayOfMonthWildcard() bool
+	// GetEvenDayOfMonthWildcard returns EvenDayOfMonthWildcard
+	GetEvenDayOfMonthWildcard() bool
+	// GetDayOfWeekIsWildcard returns DayOfWeekIsWildcard
+	GetDayOfWeekIsWildcard() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadDate) GetYearMinus1900() int8 {
+	return m.YearMinus1900
+}
+
+func (m *BACnetTagPayloadDate) GetMonth() int8 {
+	return m.Month
+}
+
+func (m *BACnetTagPayloadDate) GetDayOfMonth() int8 {
+	return m.DayOfMonth
+}
+
+func (m *BACnetTagPayloadDate) GetDayOfWeek() int8 {
+	return m.DayOfWeek
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTagPayloadDate) GetWildcard() int8 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.Wildcard
+}
+
+func (m *BACnetTagPayloadDate) GetYearIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.YearIsWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetYear() int16 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.Year
+}
+
+func (m *BACnetTagPayloadDate) GetMonthIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.MonthIsWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetOddMonthWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.OddMonthWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetEvenMonthWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.EvenMonthWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetDayOfMonthIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.DayOfMonthIsWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetLastDayOfMonthWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.LastDayOfMonthWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetOddDayOfMonthWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.OddDayOfMonthWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetEvenDayOfMonthWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.EvenDayOfMonthWildcard
+}
+
+func (m *BACnetTagPayloadDate) GetDayOfWeekIsWildcard() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.DayOfWeekIsWildcard
 }
 
 func NewBACnetTagPayloadDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, year int16, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool) *BACnetTagPayloadDate {

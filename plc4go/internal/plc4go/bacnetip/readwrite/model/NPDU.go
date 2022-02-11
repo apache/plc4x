@@ -47,9 +47,105 @@ type NPDU struct {
 
 // The corresponding interface
 type INPDU interface {
+	// GetProtocolVersionNumber returns ProtocolVersionNumber
+	GetProtocolVersionNumber() uint8
+	// GetControl returns Control
+	GetControl() *NPDUControl
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	GetDestinationNetworkAddress() *uint16
+	// GetDestinationLength returns DestinationLength
+	GetDestinationLength() *uint8
+	// GetDestinationAddress returns DestinationAddress
+	GetDestinationAddress() []uint8
+	// GetSourceNetworkAddress returns SourceNetworkAddress
+	GetSourceNetworkAddress() *uint16
+	// GetSourceLength returns SourceLength
+	GetSourceLength() *uint8
+	// GetSourceAddress returns SourceAddress
+	GetSourceAddress() []uint8
+	// GetHopCount returns HopCount
+	GetHopCount() *uint8
+	// GetNlm returns Nlm
+	GetNlm() *NLM
+	// GetApdu returns Apdu
+	GetApdu() *APDU
+	// GetSourceLengthAddon returns SourceLengthAddon
+	GetSourceLengthAddon() uint16
+	// GetDestinationLengthAddon returns DestinationLengthAddon
+	GetDestinationLengthAddon() uint16
+	// GetPayloadSubtraction returns PayloadSubtraction
+	GetPayloadSubtraction() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *NPDU) GetProtocolVersionNumber() uint8 {
+	return m.ProtocolVersionNumber
+}
+
+func (m *NPDU) GetControl() *NPDUControl {
+	return m.Control
+}
+
+func (m *NPDU) GetDestinationNetworkAddress() *uint16 {
+	return m.DestinationNetworkAddress
+}
+
+func (m *NPDU) GetDestinationLength() *uint8 {
+	return m.DestinationLength
+}
+
+func (m *NPDU) GetDestinationAddress() []uint8 {
+	return m.DestinationAddress
+}
+
+func (m *NPDU) GetSourceNetworkAddress() *uint16 {
+	return m.SourceNetworkAddress
+}
+
+func (m *NPDU) GetSourceLength() *uint8 {
+	return m.SourceLength
+}
+
+func (m *NPDU) GetSourceAddress() []uint8 {
+	return m.SourceAddress
+}
+
+func (m *NPDU) GetHopCount() *uint8 {
+	return m.HopCount
+}
+
+func (m *NPDU) GetNlm() *NLM {
+	return m.Nlm
+}
+
+func (m *NPDU) GetApdu() *APDU {
+	return m.Apdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *NPDU) GetSourceLengthAddon() uint16 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.SourceLengthAddon
+}
+
+func (m *NPDU) GetDestinationLengthAddon() uint16 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.DestinationLengthAddon
+}
+
+func (m *NPDU) GetPayloadSubtraction() uint16 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.PayloadSubtraction
 }
 
 func NewNPDU(protocolVersionNumber uint8, control *NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU, sourceLengthAddon uint16, destinationLengthAddon uint16, payloadSubtraction uint16) *NPDU {

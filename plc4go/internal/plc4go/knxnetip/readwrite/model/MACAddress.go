@@ -33,10 +33,26 @@ type MACAddress struct {
 
 // The corresponding interface
 type IMACAddress interface {
+	// GetAddr returns Addr
+	GetAddr() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *MACAddress) GetAddr() []byte {
+	return m.Addr
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMACAddress(addr []byte) *MACAddress {
 	return &MACAddress{Addr: addr}

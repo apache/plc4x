@@ -34,8 +34,13 @@ type ModbusPDUWriteFileRecordRequest struct {
 
 // The corresponding interface
 type IModbusPDUWriteFileRecordRequest interface {
+	// GetItems returns Items
+	GetItems() []*ModbusPDUWriteFileRecordRequestItem
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,15 @@ func (m *ModbusPDUWriteFileRecordRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUWriteFileRecordRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUWriteFileRecordRequest) FunctionFlag() uint8 {
+	return 0x15
+}
+
+func (m *ModbusPDUWriteFileRecordRequest) GetFunctionFlag() uint8 {
 	return 0x15
 }
 
@@ -54,7 +67,22 @@ func (m *ModbusPDUWriteFileRecordRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUWriteFileRecordRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUWriteFileRecordRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteFileRecordRequest) GetItems() []*ModbusPDUWriteFileRecordRequestItem {
+	return m.Items
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUWriteFileRecordRequest(items []*ModbusPDUWriteFileRecordRequestItem) *ModbusPDU {
 	child := &ModbusPDUWriteFileRecordRequest{

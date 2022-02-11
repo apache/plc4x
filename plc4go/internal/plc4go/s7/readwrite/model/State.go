@@ -40,10 +40,68 @@ type State struct {
 
 // The corresponding interface
 type IState interface {
+	// GetSIG_8 returns SIG_8
+	GetSIG_8() bool
+	// GetSIG_7 returns SIG_7
+	GetSIG_7() bool
+	// GetSIG_6 returns SIG_6
+	GetSIG_6() bool
+	// GetSIG_5 returns SIG_5
+	GetSIG_5() bool
+	// GetSIG_4 returns SIG_4
+	GetSIG_4() bool
+	// GetSIG_3 returns SIG_3
+	GetSIG_3() bool
+	// GetSIG_2 returns SIG_2
+	GetSIG_2() bool
+	// GetSIG_1 returns SIG_1
+	GetSIG_1() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *State) GetSIG_8() bool {
+	return m.SIG_8
+}
+
+func (m *State) GetSIG_7() bool {
+	return m.SIG_7
+}
+
+func (m *State) GetSIG_6() bool {
+	return m.SIG_6
+}
+
+func (m *State) GetSIG_5() bool {
+	return m.SIG_5
+}
+
+func (m *State) GetSIG_4() bool {
+	return m.SIG_4
+}
+
+func (m *State) GetSIG_3() bool {
+	return m.SIG_3
+}
+
+func (m *State) GetSIG_2() bool {
+	return m.SIG_2
+}
+
+func (m *State) GetSIG_1() bool {
+	return m.SIG_1
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *State {
 	return &State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}

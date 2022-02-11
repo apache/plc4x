@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestGetEventInformation struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestGetEventInformation interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) ServiceChoice() uint8
 	return 0x1D
 }
 
+func (m *BACnetConfirmedServiceRequestGetEventInformation) GetServiceChoice() uint8 {
+	return 0x1D
+}
+
 func (m *BACnetConfirmedServiceRequestGetEventInformation) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestGetEventInformation() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestGetEventInformation{

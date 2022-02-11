@@ -36,8 +36,15 @@ type DisconnectRequest struct {
 
 // The corresponding interface
 type IDisconnectRequest interface {
+	// GetCommunicationChannelId returns CommunicationChannelId
+	GetCommunicationChannelId() uint8
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint
+	GetHpaiControlEndpoint() *HPAIControlEndpoint
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *DisconnectRequest) MsgType() uint16 {
 	return 0x0209
 }
 
+func (m *DisconnectRequest) GetMsgType() uint16 {
+	return 0x0209
+}
+
 func (m *DisconnectRequest) InitializeParent(parent *KnxNetIpMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DisconnectRequest) GetCommunicationChannelId() uint8 {
+	return m.CommunicationChannelId
+}
+
+func (m *DisconnectRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
+	return m.HpaiControlEndpoint
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DisconnectRequest{

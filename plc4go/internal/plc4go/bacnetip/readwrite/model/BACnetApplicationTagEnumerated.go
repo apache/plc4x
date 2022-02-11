@@ -35,8 +35,15 @@ type BACnetApplicationTagEnumerated struct {
 
 // The corresponding interface
 type IBACnetApplicationTagEnumerated interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadEnumerated
+	// GetActualValue returns ActualValue
+	GetActualValue() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,10 +54,29 @@ func (m *BACnetApplicationTagEnumerated) ActualTagNumber() uint8 {
 	return 0x9
 }
 
+func (m *BACnetApplicationTagEnumerated) GetActualTagNumber() uint8 {
+	return 0x9
+}
+
 func (m *BACnetApplicationTagEnumerated) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
 	m.BACnetApplicationTag.Header = header
 	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
 	m.BACnetApplicationTag.ActualLength = actualLength
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagEnumerated) GetPayload() *BACnetTagPayloadEnumerated {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagEnumerated) GetActualValue() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ActualValue
 }
 
 func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, actualValue uint32, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {

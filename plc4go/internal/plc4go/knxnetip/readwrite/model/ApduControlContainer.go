@@ -34,8 +34,13 @@ type ApduControlContainer struct {
 
 // The corresponding interface
 type IApduControlContainer interface {
+	// GetControlApdu returns ControlApdu
+	GetControlApdu() *ApduControl
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,10 +51,25 @@ func (m *ApduControlContainer) Control() uint8 {
 	return uint8(1)
 }
 
+func (m *ApduControlContainer) GetControl() uint8 {
+	return uint8(1)
+}
+
 func (m *ApduControlContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
 	m.Apdu.Numbered = numbered
 	m.Apdu.Counter = counter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduControlContainer) GetControlApdu() *ApduControl {
+	return m.ControlApdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8) *Apdu {
 	child := &ApduControlContainer{

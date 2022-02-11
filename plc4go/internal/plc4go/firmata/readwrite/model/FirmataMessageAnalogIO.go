@@ -35,8 +35,15 @@ type FirmataMessageAnalogIO struct {
 
 // The corresponding interface
 type IFirmataMessageAnalogIO interface {
+	// GetPin returns Pin
+	GetPin() uint8
+	// GetData returns Data
+	GetData() []int8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,26 @@ func (m *FirmataMessageAnalogIO) MessageType() uint8 {
 	return 0xE
 }
 
+func (m *FirmataMessageAnalogIO) GetMessageType() uint8 {
+	return 0xE
+}
+
 func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataMessageAnalogIO) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataMessageAnalogIO) GetData() []int8 {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataMessageAnalogIO(pin uint8, data []int8) *FirmataMessage {
 	child := &FirmataMessageAnalogIO{

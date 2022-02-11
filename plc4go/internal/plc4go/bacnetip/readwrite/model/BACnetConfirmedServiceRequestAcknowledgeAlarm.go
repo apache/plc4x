@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) ServiceChoice() uint8 {
 	return 0x00
 }
 
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetServiceChoice() uint8 {
+	return 0x00
+}
+
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestAcknowledgeAlarm() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{

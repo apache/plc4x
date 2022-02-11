@@ -40,10 +40,68 @@ type DateAndTime struct {
 
 // The corresponding interface
 type IDateAndTime interface {
+	// GetYear returns Year
+	GetYear() uint8
+	// GetMonth returns Month
+	GetMonth() uint8
+	// GetDay returns Day
+	GetDay() uint8
+	// GetHour returns Hour
+	GetHour() uint8
+	// GetMinutes returns Minutes
+	GetMinutes() uint8
+	// GetSeconds returns Seconds
+	GetSeconds() uint8
+	// GetMsec returns Msec
+	GetMsec() uint16
+	// GetDow returns Dow
+	GetDow() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DateAndTime) GetYear() uint8 {
+	return m.Year
+}
+
+func (m *DateAndTime) GetMonth() uint8 {
+	return m.Month
+}
+
+func (m *DateAndTime) GetDay() uint8 {
+	return m.Day
+}
+
+func (m *DateAndTime) GetHour() uint8 {
+	return m.Hour
+}
+
+func (m *DateAndTime) GetMinutes() uint8 {
+	return m.Minutes
+}
+
+func (m *DateAndTime) GetSeconds() uint8 {
+	return m.Seconds
+}
+
+func (m *DateAndTime) GetMsec() uint16 {
+	return m.Msec
+}
+
+func (m *DateAndTime) GetDow() uint8 {
+	return m.Dow
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *DateAndTime {
 	return &DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}

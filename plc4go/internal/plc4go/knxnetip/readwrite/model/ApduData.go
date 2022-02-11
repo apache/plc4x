@@ -33,9 +33,13 @@ type ApduData struct {
 
 // The corresponding interface
 type IApduData interface {
+	// ApciType returns ApciType
 	ApciType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IApduDataChild interface {
 	GetTypeName() string
 	IApduData
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduData() *ApduData {
 	return &ApduData{}

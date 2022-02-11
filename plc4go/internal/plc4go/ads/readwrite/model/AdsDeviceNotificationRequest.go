@@ -36,8 +36,17 @@ type AdsDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsDeviceNotificationRequest interface {
+	// GetLength returns Length
+	GetLength() uint32
+	// GetStamps returns Stamps
+	GetStamps() uint32
+	// GetAdsStampHeaders returns AdsStampHeaders
+	GetAdsStampHeaders() []*AdsStampHeader
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,38 @@ func (m *AdsDeviceNotificationRequest) CommandId() CommandId {
 	return CommandId_ADS_DEVICE_NOTIFICATION
 }
 
+func (m *AdsDeviceNotificationRequest) GetCommandId() CommandId {
+	return CommandId_ADS_DEVICE_NOTIFICATION
+}
+
 func (m *AdsDeviceNotificationRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsDeviceNotificationRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsDeviceNotificationRequest) GetLength() uint32 {
+	return m.Length
+}
+
+func (m *AdsDeviceNotificationRequest) GetStamps() uint32 {
+	return m.Stamps
+}
+
+func (m *AdsDeviceNotificationRequest) GetAdsStampHeaders() []*AdsStampHeader {
+	return m.AdsStampHeaders
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsData {
 	child := &AdsDeviceNotificationRequest{

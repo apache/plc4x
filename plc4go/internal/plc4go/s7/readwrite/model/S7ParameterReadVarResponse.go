@@ -34,8 +34,13 @@ type S7ParameterReadVarResponse struct {
 
 // The corresponding interface
 type IS7ParameterReadVarResponse interface {
+	// GetNumItems returns NumItems
+	GetNumItems() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,30 @@ func (m *S7ParameterReadVarResponse) ParameterType() uint8 {
 	return 0x04
 }
 
+func (m *S7ParameterReadVarResponse) GetParameterType() uint8 {
+	return 0x04
+}
+
 func (m *S7ParameterReadVarResponse) MessageType() uint8 {
 	return 0x03
 }
 
+func (m *S7ParameterReadVarResponse) GetMessageType() uint8 {
+	return 0x03
+}
+
 func (m *S7ParameterReadVarResponse) InitializeParent(parent *S7Parameter) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7ParameterReadVarResponse) GetNumItems() uint8 {
+	return m.NumItems
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7ParameterReadVarResponse(numItems uint8) *S7Parameter {
 	child := &S7ParameterReadVarResponse{

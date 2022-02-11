@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestGetEnrollmentSummary interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) ServiceChoice() uint
 	return 0x04
 }
 
+func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetServiceChoice() uint8 {
+	return 0x04
+}
+
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummary() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestGetEnrollmentSummary{

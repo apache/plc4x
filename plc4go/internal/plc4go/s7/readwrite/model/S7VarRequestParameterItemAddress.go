@@ -34,8 +34,13 @@ type S7VarRequestParameterItemAddress struct {
 
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
+	// GetAddress returns Address
+	GetAddress() *S7Address
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *S7VarRequestParameterItemAddress) ItemType() uint8 {
 	return 0x12
 }
 
+func (m *S7VarRequestParameterItemAddress) GetItemType() uint8 {
+	return 0x12
+}
+
 func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7VarRequestParameterItemAddress) GetAddress() *S7Address {
+	return m.Address
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItem {
 	child := &S7VarRequestParameterItemAddress{

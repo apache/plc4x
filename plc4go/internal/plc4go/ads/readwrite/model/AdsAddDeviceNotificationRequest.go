@@ -40,8 +40,23 @@ type AdsAddDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsAddDeviceNotificationRequest interface {
+	// GetIndexGroup returns IndexGroup
+	GetIndexGroup() uint32
+	// GetIndexOffset returns IndexOffset
+	GetIndexOffset() uint32
+	// GetLength returns Length
+	GetLength() uint32
+	// GetTransmissionMode returns TransmissionMode
+	GetTransmissionMode() uint32
+	// GetMaxDelay returns MaxDelay
+	GetMaxDelay() uint32
+	// GetCycleTime returns CycleTime
+	GetCycleTime() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,11 +67,50 @@ func (m *AdsAddDeviceNotificationRequest) CommandId() CommandId {
 	return CommandId_ADS_ADD_DEVICE_NOTIFICATION
 }
 
+func (m *AdsAddDeviceNotificationRequest) GetCommandId() CommandId {
+	return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+}
+
 func (m *AdsAddDeviceNotificationRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *AdsAddDeviceNotificationRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsAddDeviceNotificationRequest) GetIndexGroup() uint32 {
+	return m.IndexGroup
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetIndexOffset() uint32 {
+	return m.IndexOffset
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetLength() uint32 {
+	return m.Length
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetTransmissionMode() uint32 {
+	return m.TransmissionMode
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetMaxDelay() uint32 {
+	return m.MaxDelay
+}
+
+func (m *AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
+	return m.CycleTime
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsData {
 	child := &AdsAddDeviceNotificationRequest{

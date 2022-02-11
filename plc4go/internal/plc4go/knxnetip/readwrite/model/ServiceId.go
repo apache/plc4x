@@ -33,9 +33,13 @@ type ServiceId struct {
 
 // The corresponding interface
 type IServiceId interface {
+	// ServiceType returns ServiceType
 	ServiceType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IServiceIdChild interface {
 	GetTypeName() string
 	IServiceId
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewServiceId() *ServiceId {
 	return &ServiceId{}

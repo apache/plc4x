@@ -32,8 +32,11 @@ type ApduControlAck struct {
 
 // The corresponding interface
 type IApduControlAck interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,7 +47,19 @@ func (m *ApduControlAck) ControlType() uint8 {
 	return 0x2
 }
 
+func (m *ApduControlAck) GetControlType() uint8 {
+	return 0x2
+}
+
 func (m *ApduControlAck) InitializeParent(parent *ApduControl) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduControlAck() *ApduControl {
 	child := &ApduControlAck{

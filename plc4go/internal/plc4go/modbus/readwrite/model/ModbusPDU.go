@@ -33,11 +33,17 @@ type ModbusPDU struct {
 
 // The corresponding interface
 type IModbusPDU interface {
+	// ErrorFlag returns ErrorFlag
 	ErrorFlag() bool
+	// FunctionFlag returns FunctionFlag
 	FunctionFlag() uint8
+	// Response returns Response
 	Response() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,6 +58,14 @@ type IModbusPDUChild interface {
 	GetTypeName() string
 	IModbusPDU
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDU() *ModbusPDU {
 	return &ModbusPDU{}

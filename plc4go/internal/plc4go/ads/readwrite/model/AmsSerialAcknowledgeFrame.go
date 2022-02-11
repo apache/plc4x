@@ -38,10 +38,56 @@ type AmsSerialAcknowledgeFrame struct {
 
 // The corresponding interface
 type IAmsSerialAcknowledgeFrame interface {
+	// GetMagicCookie returns MagicCookie
+	GetMagicCookie() uint16
+	// GetTransmitterAddress returns TransmitterAddress
+	GetTransmitterAddress() int8
+	// GetReceiverAddress returns ReceiverAddress
+	GetReceiverAddress() int8
+	// GetFragmentNumber returns FragmentNumber
+	GetFragmentNumber() int8
+	// GetLength returns Length
+	GetLength() int8
+	// GetCrc returns Crc
+	GetCrc() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AmsSerialAcknowledgeFrame) GetMagicCookie() uint16 {
+	return m.MagicCookie
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetTransmitterAddress() int8 {
+	return m.TransmitterAddress
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetReceiverAddress() int8 {
+	return m.ReceiverAddress
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetFragmentNumber() int8 {
+	return m.FragmentNumber
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetLength() int8 {
+	return m.Length
+}
+
+func (m *AmsSerialAcknowledgeFrame) GetCrc() uint16 {
+	return m.Crc
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *AmsSerialAcknowledgeFrame {
 	return &AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}

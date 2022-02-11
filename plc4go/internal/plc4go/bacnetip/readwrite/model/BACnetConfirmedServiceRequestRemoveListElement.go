@@ -32,8 +32,11 @@ type BACnetConfirmedServiceRequestRemoveListElement struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestRemoveListElement interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,8 +47,20 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) ServiceChoice() uint8 {
 	return 0x09
 }
 
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetServiceChoice() uint8 {
+	return 0x09
+}
+
 func (m *BACnetConfirmedServiceRequestRemoveListElement) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestRemoveListElement() *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestRemoveListElement{

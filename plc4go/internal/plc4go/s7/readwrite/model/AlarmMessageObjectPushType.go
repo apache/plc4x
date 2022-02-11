@@ -45,10 +45,74 @@ type AlarmMessageObjectPushType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectPushType interface {
+	// GetLengthSpec returns LengthSpec
+	GetLengthSpec() uint8
+	// GetSyntaxId returns SyntaxId
+	GetSyntaxId() SyntaxIdType
+	// GetNumberOfValues returns NumberOfValues
+	GetNumberOfValues() uint8
+	// GetEventId returns EventId
+	GetEventId() uint32
+	// GetEventState returns EventState
+	GetEventState() *State
+	// GetLocalState returns LocalState
+	GetLocalState() *State
+	// GetAckStateGoing returns AckStateGoing
+	GetAckStateGoing() *State
+	// GetAckStateComing returns AckStateComing
+	GetAckStateComing() *State
+	// GetAssociatedValues returns AssociatedValues
+	GetAssociatedValues() []*AssociatedValueType
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageObjectPushType) GetLengthSpec() uint8 {
+	return m.LengthSpec
+}
+
+func (m *AlarmMessageObjectPushType) GetSyntaxId() SyntaxIdType {
+	return m.SyntaxId
+}
+
+func (m *AlarmMessageObjectPushType) GetNumberOfValues() uint8 {
+	return m.NumberOfValues
+}
+
+func (m *AlarmMessageObjectPushType) GetEventId() uint32 {
+	return m.EventId
+}
+
+func (m *AlarmMessageObjectPushType) GetEventState() *State {
+	return m.EventState
+}
+
+func (m *AlarmMessageObjectPushType) GetLocalState() *State {
+	return m.LocalState
+}
+
+func (m *AlarmMessageObjectPushType) GetAckStateGoing() *State {
+	return m.AckStateGoing
+}
+
+func (m *AlarmMessageObjectPushType) GetAckStateComing() *State {
+	return m.AckStateComing
+}
+
+func (m *AlarmMessageObjectPushType) GetAssociatedValues() []*AssociatedValueType {
+	return m.AssociatedValues
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState *State, localState *State, ackStateGoing *State, ackStateComing *State, AssociatedValues []*AssociatedValueType) *AlarmMessageObjectPushType {
 	return &AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}

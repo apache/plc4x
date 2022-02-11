@@ -35,10 +35,38 @@ type AdsStampHeader struct {
 
 // The corresponding interface
 type IAdsStampHeader interface {
+	// GetTimestamp returns Timestamp
+	GetTimestamp() uint64
+	// GetSamples returns Samples
+	GetSamples() uint32
+	// GetAdsNotificationSamples returns AdsNotificationSamples
+	GetAdsNotificationSamples() []*AdsNotificationSample
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AdsStampHeader) GetTimestamp() uint64 {
+	return m.Timestamp
+}
+
+func (m *AdsStampHeader) GetSamples() uint32 {
+	return m.Samples
+}
+
+func (m *AdsStampHeader) GetAdsNotificationSamples() []*AdsNotificationSample {
+	return m.AdsNotificationSamples
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []*AdsNotificationSample) *AdsStampHeader {
 	return &AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}

@@ -34,8 +34,13 @@ type ApduDataOther struct {
 
 // The corresponding interface
 type IApduDataOther interface {
+	// GetExtendedApdu returns ExtendedApdu
+	GetExtendedApdu() *ApduDataExt
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *ApduDataOther) ApciType() uint8 {
 	return 0xF
 }
 
+func (m *ApduDataOther) GetApciType() uint8 {
+	return 0xF
+}
+
 func (m *ApduDataOther) InitializeParent(parent *ApduData) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ApduDataOther) GetExtendedApdu() *ApduDataExt {
+	return m.ExtendedApdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewApduDataOther(extendedApdu *ApduDataExt) *ApduData {
 	child := &ApduDataOther{

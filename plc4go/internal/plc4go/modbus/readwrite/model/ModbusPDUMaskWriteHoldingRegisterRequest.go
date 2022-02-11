@@ -36,8 +36,17 @@ type ModbusPDUMaskWriteHoldingRegisterRequest struct {
 
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterRequest interface {
+	// GetReferenceAddress returns ReferenceAddress
+	GetReferenceAddress() uint16
+	// GetAndMask returns AndMask
+	GetAndMask() uint16
+	// GetOrMask returns OrMask
+	GetOrMask() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,15 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) FunctionFlag() uint8 {
+	return 0x16
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetFunctionFlag() uint8 {
 	return 0x16
 }
 
@@ -56,7 +73,30 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetReferenceAddress() uint16 {
+	return m.ReferenceAddress
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetAndMask() uint16 {
+	return m.AndMask
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetOrMask() uint16 {
+	return m.OrMask
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
 	child := &ModbusPDUMaskWriteHoldingRegisterRequest{

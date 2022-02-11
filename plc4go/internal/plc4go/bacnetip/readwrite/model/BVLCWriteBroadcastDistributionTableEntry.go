@@ -35,10 +35,38 @@ type BVLCWriteBroadcastDistributionTableEntry struct {
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTableEntry interface {
+	// GetIp returns Ip
+	GetIp() []uint8
+	// GetPort returns Port
+	GetPort() uint16
+	// GetBroadcastDistributionMap returns BroadcastDistributionMap
+	GetBroadcastDistributionMap() []uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetIp() []uint8 {
+	return m.Ip
+}
+
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetPort() uint16 {
+	return m.Port
+}
+
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetBroadcastDistributionMap() []uint8 {
+	return m.BroadcastDistributionMap
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBVLCWriteBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *BVLCWriteBroadcastDistributionTableEntry {
 	return &BVLCWriteBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}

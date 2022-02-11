@@ -31,10 +31,21 @@ type GroupObjectDescriptorRealisationType6 struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationType6 interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewGroupObjectDescriptorRealisationType6() *GroupObjectDescriptorRealisationType6 {
 	return &GroupObjectDescriptorRealisationType6{}

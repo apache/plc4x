@@ -35,8 +35,13 @@ type APDUUnconfirmedRequest struct {
 
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
+	// GetServiceRequest returns ServiceRequest
+	GetServiceRequest() *BACnetUnconfirmedServiceRequest
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +52,22 @@ func (m *APDUUnconfirmedRequest) ApduType() uint8 {
 	return 0x1
 }
 
+func (m *APDUUnconfirmedRequest) GetApduType() uint8 {
+	return 0x1
+}
+
 func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *APDUUnconfirmedRequest) GetServiceRequest() *BACnetUnconfirmedServiceRequest {
+	return m.ServiceRequest
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest) *APDU {
 	child := &APDUUnconfirmedRequest{

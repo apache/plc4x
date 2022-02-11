@@ -32,8 +32,11 @@ type SysexCommandReportFirmwareRequest struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareRequest interface {
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -44,11 +47,27 @@ func (m *SysexCommandReportFirmwareRequest) CommandType() uint8 {
 	return 0x79
 }
 
+func (m *SysexCommandReportFirmwareRequest) GetCommandType() uint8 {
+	return 0x79
+}
+
 func (m *SysexCommandReportFirmwareRequest) Response() bool {
 	return bool(false)
 }
 
+func (m *SysexCommandReportFirmwareRequest) GetResponse() bool {
+	return bool(false)
+}
+
 func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 	child := &SysexCommandReportFirmwareRequest{

@@ -37,10 +37,44 @@ type ModbusSerialADU struct {
 
 // The corresponding interface
 type IModbusSerialADU interface {
+	// GetTransactionId returns TransactionId
+	GetTransactionId() uint16
+	// GetLength returns Length
+	GetLength() uint16
+	// GetAddress returns Address
+	GetAddress() uint8
+	// GetPdu returns Pdu
+	GetPdu() *ModbusPDU
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusSerialADU) GetTransactionId() uint16 {
+	return m.TransactionId
+}
+
+func (m *ModbusSerialADU) GetLength() uint16 {
+	return m.Length
+}
+
+func (m *ModbusSerialADU) GetAddress() uint8 {
+	return m.Address
+}
+
+func (m *ModbusSerialADU) GetPdu() *ModbusPDU {
+	return m.Pdu
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu *ModbusPDU) *ModbusSerialADU {
 	return &ModbusSerialADU{TransactionId: transactionId, Length: length, Address: address, Pdu: pdu}

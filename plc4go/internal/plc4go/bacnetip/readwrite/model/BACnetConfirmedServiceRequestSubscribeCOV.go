@@ -37,8 +37,19 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetIssueConfirmed returns IssueConfirmed
+	GetIssueConfirmed() *BACnetContextTagBoolean
+	// GetLifetimeInSeconds returns LifetimeInSeconds
+	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,8 +60,35 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) ServiceChoice() uint8 {
 	return 0x05
 }
 
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetServiceChoice() uint8 {
+	return 0x05
+}
+
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.SubscriberProcessIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredObjectIdentifier
+}
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetIssueConfirmed() *BACnetContextTagBoolean {
+	return m.IssueConfirmed
+}
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger {
+	return m.LifetimeInSeconds
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, issueConfirmed *BACnetContextTagBoolean, lifetimeInSeconds *BACnetContextTagUnsignedInteger) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestSubscribeCOV{

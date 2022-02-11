@@ -38,9 +38,21 @@ type CIPEncapsulationPacket struct {
 
 // The corresponding interface
 type ICIPEncapsulationPacket interface {
+	// CommandType returns CommandType
 	CommandType() uint16
+	// GetSessionHandle returns SessionHandle
+	GetSessionHandle() uint32
+	// GetStatus returns Status
+	GetStatus() uint32
+	// GetSenderContext returns SenderContext
+	GetSenderContext() []uint8
+	// GetOptions returns Options
+	GetOptions() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -55,6 +67,29 @@ type ICIPEncapsulationPacketChild interface {
 	GetTypeName() string
 	ICIPEncapsulationPacket
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *CIPEncapsulationPacket) GetSessionHandle() uint32 {
+	return m.SessionHandle
+}
+
+func (m *CIPEncapsulationPacket) GetStatus() uint32 {
+	return m.Status
+}
+
+func (m *CIPEncapsulationPacket) GetSenderContext() []uint8 {
+	return m.SenderContext
+}
+
+func (m *CIPEncapsulationPacket) GetOptions() uint32 {
+	return m.Options
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	return &CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}

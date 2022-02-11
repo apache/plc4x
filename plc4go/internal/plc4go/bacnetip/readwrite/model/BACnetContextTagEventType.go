@@ -36,8 +36,17 @@ type BACnetContextTagEventType struct {
 
 // The corresponding interface
 type IBACnetContextTagEventType interface {
+	// GetEventType returns EventType
+	GetEventType() BACnetEventType
+	// GetProprietaryValue returns ProprietaryValue
+	GetProprietaryValue() uint32
+	// GetIsProprietary returns IsProprietary
+	GetIsProprietary() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,34 @@ func (m *BACnetContextTagEventType) DataType() BACnetDataType {
 	return BACnetDataType_EVENT_TYPE
 }
 
+func (m *BACnetContextTagEventType) GetDataType() BACnetDataType {
+	return BACnetDataType_EVENT_TYPE
+}
+
 func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagEventType) GetEventType() BACnetEventType {
+	return m.EventType
+}
+
+func (m *BACnetContextTagEventType) GetProprietaryValue() uint32 {
+	return m.ProprietaryValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagEventType) GetIsProprietary() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsProprietary
 }
 
 func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

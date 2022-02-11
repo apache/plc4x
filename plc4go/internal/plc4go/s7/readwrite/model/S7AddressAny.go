@@ -40,8 +40,23 @@ type S7AddressAny struct {
 
 // The corresponding interface
 type IS7AddressAny interface {
+	// GetTransportSize returns TransportSize
+	GetTransportSize() TransportSize
+	// GetNumberOfElements returns NumberOfElements
+	GetNumberOfElements() uint16
+	// GetDbNumber returns DbNumber
+	GetDbNumber() uint16
+	// GetArea returns Area
+	GetArea() MemoryArea
+	// GetByteAddress returns ByteAddress
+	GetByteAddress() uint16
+	// GetBitAddress returns BitAddress
+	GetBitAddress() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -52,7 +67,42 @@ func (m *S7AddressAny) AddressType() uint8 {
 	return 0x10
 }
 
+func (m *S7AddressAny) GetAddressType() uint8 {
+	return 0x10
+}
+
 func (m *S7AddressAny) InitializeParent(parent *S7Address) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *S7AddressAny) GetTransportSize() TransportSize {
+	return m.TransportSize
+}
+
+func (m *S7AddressAny) GetNumberOfElements() uint16 {
+	return m.NumberOfElements
+}
+
+func (m *S7AddressAny) GetDbNumber() uint16 {
+	return m.DbNumber
+}
+
+func (m *S7AddressAny) GetArea() MemoryArea {
+	return m.Area
+}
+
+func (m *S7AddressAny) GetByteAddress() uint16 {
+	return m.ByteAddress
+}
+
+func (m *S7AddressAny) GetBitAddress() uint8 {
+	return m.BitAddress
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7Address {
 	child := &S7AddressAny{

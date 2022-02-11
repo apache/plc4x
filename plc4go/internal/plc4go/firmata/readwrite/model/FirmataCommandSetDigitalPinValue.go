@@ -36,8 +36,15 @@ type FirmataCommandSetDigitalPinValue struct {
 
 // The corresponding interface
 type IFirmataCommandSetDigitalPinValue interface {
+	// GetPin returns Pin
+	GetPin() uint8
+	// GetOn returns On
+	GetOn() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +55,26 @@ func (m *FirmataCommandSetDigitalPinValue) CommandCode() uint8 {
 	return 0x5
 }
 
+func (m *FirmataCommandSetDigitalPinValue) GetCommandCode() uint8 {
+	return 0x5
+}
+
 func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataCommand) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *FirmataCommandSetDigitalPinValue) GetPin() uint8 {
+	return m.Pin
+}
+
+func (m *FirmataCommandSetDigitalPinValue) GetOn() bool {
+	return m.On
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
 	child := &FirmataCommandSetDigitalPinValue{

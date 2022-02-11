@@ -36,8 +36,17 @@ type BACnetContextTagObjectIdentifier struct {
 
 // The corresponding interface
 type IBACnetContextTagObjectIdentifier interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadObjectIdentifier
+	// GetObjectType returns ObjectType
+	GetObjectType() BACnetObjectType
+	// GetInstanceNumber returns InstanceNumber
+	GetInstanceNumber() uint32
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,11 +57,35 @@ func (m *BACnetContextTagObjectIdentifier) DataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }
 
+func (m *BACnetContextTagObjectIdentifier) GetDataType() BACnetDataType {
+	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+}
+
 func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
 	m.BACnetContextTag.Header = header
 	m.BACnetContextTag.TagNumber = tagNumber
 	m.BACnetContextTag.ActualLength = actualLength
 	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagObjectIdentifier) GetPayload() *BACnetTagPayloadObjectIdentifier {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetContextTagObjectIdentifier) GetObjectType() BACnetObjectType {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.ObjectType
+}
+
+func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.InstanceNumber
 }
 
 func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, objectType BACnetObjectType, instanceNumber uint32, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {

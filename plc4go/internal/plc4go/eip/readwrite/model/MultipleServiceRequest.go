@@ -39,8 +39,13 @@ type MultipleServiceRequest struct {
 
 // The corresponding interface
 type IMultipleServiceRequest interface {
+	// GetData returns Data
+	GetData() *Services
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -51,7 +56,22 @@ func (m *MultipleServiceRequest) Service() uint8 {
 	return 0x0A
 }
 
+func (m *MultipleServiceRequest) GetService() uint8 {
+	return 0x0A
+}
+
 func (m *MultipleServiceRequest) InitializeParent(parent *CipService) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *MultipleServiceRequest) GetData() *Services {
+	return m.Data
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewMultipleServiceRequest(data *Services) *CipService {
 	child := &MultipleServiceRequest{

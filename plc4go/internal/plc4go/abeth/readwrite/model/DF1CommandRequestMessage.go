@@ -34,8 +34,13 @@ type DF1CommandRequestMessage struct {
 
 // The corresponding interface
 type IDF1CommandRequestMessage interface {
+	// GetCommand returns Command
+	GetCommand() *DF1RequestCommand
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *DF1CommandRequestMessage) CommandCode() uint8 {
 	return 0x0F
 }
 
+func (m *DF1CommandRequestMessage) GetCommandCode() uint8 {
+	return 0x0F
+}
+
 func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) {
 	m.DF1RequestMessage.DestinationAddress = destinationAddress
 	m.DF1RequestMessage.SourceAddress = sourceAddress
 	m.DF1RequestMessage.Status = status
 	m.DF1RequestMessage.TransactionCounter = transactionCounter
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *DF1CommandRequestMessage) GetCommand() *DF1RequestCommand {
+	return m.Command
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
 	child := &DF1CommandRequestMessage{

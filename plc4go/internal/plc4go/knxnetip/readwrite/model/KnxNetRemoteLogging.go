@@ -34,8 +34,13 @@ type KnxNetRemoteLogging struct {
 
 // The corresponding interface
 type IKnxNetRemoteLogging interface {
+	// GetVersion returns Version
+	GetVersion() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *KnxNetRemoteLogging) ServiceType() uint8 {
 	return 0x06
 }
 
+func (m *KnxNetRemoteLogging) GetServiceType() uint8 {
+	return 0x06
+}
+
 func (m *KnxNetRemoteLogging) InitializeParent(parent *ServiceId) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *KnxNetRemoteLogging) GetVersion() uint8 {
+	return m.Version
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewKnxNetRemoteLogging(version uint8) *ServiceId {
 	child := &KnxNetRemoteLogging{

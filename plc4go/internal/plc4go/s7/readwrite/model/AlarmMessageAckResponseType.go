@@ -35,10 +35,38 @@ type AlarmMessageAckResponseType struct {
 
 // The corresponding interface
 type IAlarmMessageAckResponseType interface {
+	// GetFunctionId returns FunctionId
+	GetFunctionId() uint8
+	// GetNumberOfObjects returns NumberOfObjects
+	GetNumberOfObjects() uint8
+	// GetMessageObjects returns MessageObjects
+	GetMessageObjects() []uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *AlarmMessageAckResponseType) GetFunctionId() uint8 {
+	return m.FunctionId
+}
+
+func (m *AlarmMessageAckResponseType) GetNumberOfObjects() uint8 {
+	return m.NumberOfObjects
+}
+
+func (m *AlarmMessageAckResponseType) GetMessageObjects() []uint8 {
+	return m.MessageObjects
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *AlarmMessageAckResponseType {
 	return &AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}

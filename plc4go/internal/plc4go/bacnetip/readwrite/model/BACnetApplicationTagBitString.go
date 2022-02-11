@@ -34,8 +34,13 @@ type BACnetApplicationTagBitString struct {
 
 // The corresponding interface
 type IBACnetApplicationTagBitString interface {
+	// GetPayload returns Payload
+	GetPayload() *BACnetTagPayloadBitString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,11 +51,26 @@ func (m *BACnetApplicationTagBitString) ActualTagNumber() uint8 {
 	return 0x8
 }
 
+func (m *BACnetApplicationTagBitString) GetActualTagNumber() uint8 {
+	return 0x8
+}
+
 func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
 	m.BACnetApplicationTag.Header = header
 	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
 	m.BACnetApplicationTag.ActualLength = actualLength
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagBitString) GetPayload() *BACnetTagPayloadBitString {
+	return m.Payload
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetApplicationTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
 	child := &BACnetApplicationTagBitString{

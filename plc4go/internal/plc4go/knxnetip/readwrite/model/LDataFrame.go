@@ -38,10 +38,25 @@ type LDataFrame struct {
 
 // The corresponding interface
 type ILDataFrame interface {
+	// NotAckFrame returns NotAckFrame
 	NotAckFrame() bool
+	// Polling returns Polling
 	Polling() bool
+	// GetFrameType returns FrameType
+	GetFrameType() bool
+	// GetNotRepeated returns NotRepeated
+	GetNotRepeated() bool
+	// GetPriority returns Priority
+	GetPriority() CEMIPriority
+	// GetAcknowledgeRequested returns AcknowledgeRequested
+	GetAcknowledgeRequested() bool
+	// GetErrorFlag returns ErrorFlag
+	GetErrorFlag() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -56,6 +71,33 @@ type ILDataFrameChild interface {
 	GetTypeName() string
 	ILDataFrame
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *LDataFrame) GetFrameType() bool {
+	return m.FrameType
+}
+
+func (m *LDataFrame) GetNotRepeated() bool {
+	return m.NotRepeated
+}
+
+func (m *LDataFrame) GetPriority() CEMIPriority {
+	return m.Priority
+}
+
+func (m *LDataFrame) GetAcknowledgeRequested() bool {
+	return m.AcknowledgeRequested
+}
+
+func (m *LDataFrame) GetErrorFlag() bool {
+	return m.ErrorFlag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	return &LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}

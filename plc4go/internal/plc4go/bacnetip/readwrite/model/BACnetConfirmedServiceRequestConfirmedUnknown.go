@@ -34,8 +34,13 @@ type BACnetConfirmedServiceRequestConfirmedUnknown struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedUnknown interface {
+	// GetUnknownBytes returns UnknownBytes
+	GetUnknownBytes() []byte
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,8 +51,23 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) ServiceChoice() uint8 {
 	return 0
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetServiceChoice() uint8 {
+	return 0
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedUnknown) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetUnknownBytes() []byte {
+	return m.UnknownBytes
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedUnknown{

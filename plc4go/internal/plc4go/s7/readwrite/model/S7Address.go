@@ -33,9 +33,13 @@ type S7Address struct {
 
 // The corresponding interface
 type IS7Address interface {
+	// AddressType returns AddressType
 	AddressType() uint8
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,6 +54,14 @@ type IS7AddressChild interface {
 	GetTypeName() string
 	IS7Address
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewS7Address() *S7Address {
 	return &S7Address{}

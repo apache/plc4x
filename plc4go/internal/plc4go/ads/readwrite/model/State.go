@@ -42,10 +42,74 @@ type State struct {
 
 // The corresponding interface
 type IState interface {
+	// GetInitCommand returns InitCommand
+	GetInitCommand() bool
+	// GetUpdCommand returns UpdCommand
+	GetUpdCommand() bool
+	// GetTimestampAdded returns TimestampAdded
+	GetTimestampAdded() bool
+	// GetHighPriorityCommand returns HighPriorityCommand
+	GetHighPriorityCommand() bool
+	// GetSystemCommand returns SystemCommand
+	GetSystemCommand() bool
+	// GetAdsCommand returns AdsCommand
+	GetAdsCommand() bool
+	// GetNoReturn returns NoReturn
+	GetNoReturn() bool
+	// GetResponse returns Response
+	GetResponse() bool
+	// GetBroadcast returns Broadcast
+	GetBroadcast() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *State) GetInitCommand() bool {
+	return m.InitCommand
+}
+
+func (m *State) GetUpdCommand() bool {
+	return m.UpdCommand
+}
+
+func (m *State) GetTimestampAdded() bool {
+	return m.TimestampAdded
+}
+
+func (m *State) GetHighPriorityCommand() bool {
+	return m.HighPriorityCommand
+}
+
+func (m *State) GetSystemCommand() bool {
+	return m.SystemCommand
+}
+
+func (m *State) GetAdsCommand() bool {
+	return m.AdsCommand
+}
+
+func (m *State) GetNoReturn() bool {
+	return m.NoReturn
+}
+
+func (m *State) GetResponse() bool {
+	return m.Response
+}
+
+func (m *State) GetBroadcast() bool {
+	return m.Broadcast
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewState(initCommand bool, updCommand bool, timestampAdded bool, highPriorityCommand bool, systemCommand bool, adsCommand bool, noReturn bool, response bool, broadcast bool) *State {
 	return &State{InitCommand: initCommand, UpdCommand: updCommand, TimestampAdded: timestampAdded, HighPriorityCommand: highPriorityCommand, SystemCommand: systemCommand, AdsCommand: adsCommand, NoReturn: noReturn, Response: response, Broadcast: broadcast}

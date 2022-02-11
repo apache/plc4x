@@ -35,8 +35,15 @@ type ModbusPDUWriteMultipleCoilsResponse struct {
 
 // The corresponding interface
 type IModbusPDUWriteMultipleCoilsResponse interface {
+	// GetStartingAddress returns StartingAddress
+	GetStartingAddress() uint16
+	// GetQuantity returns Quantity
+	GetQuantity() uint16
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -47,7 +54,15 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) ErrorFlag() bool {
 	return bool(false)
 }
 
+func (m *ModbusPDUWriteMultipleCoilsResponse) GetErrorFlag() bool {
+	return bool(false)
+}
+
 func (m *ModbusPDUWriteMultipleCoilsResponse) FunctionFlag() uint8 {
+	return 0x0F
+}
+
+func (m *ModbusPDUWriteMultipleCoilsResponse) GetFunctionFlag() uint8 {
 	return 0x0F
 }
 
@@ -55,7 +70,26 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) Response() bool {
 	return bool(true)
 }
 
+func (m *ModbusPDUWriteMultipleCoilsResponse) GetResponse() bool {
+	return bool(true)
+}
+
 func (m *ModbusPDUWriteMultipleCoilsResponse) InitializeParent(parent *ModbusPDU) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteMultipleCoilsResponse) GetStartingAddress() uint16 {
+	return m.StartingAddress
+}
+
+func (m *ModbusPDUWriteMultipleCoilsResponse) GetQuantity() uint16 {
+	return m.Quantity
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16) *ModbusPDU {
 	child := &ModbusPDUWriteMultipleCoilsResponse{
