@@ -127,7 +127,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     </#list>
 </#if>
 <#if parserArguments?has_content>
-  <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name))>
+  <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
 </#if>
 <#if filteredParserArguments?has_content>
 
