@@ -837,6 +837,14 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 }
 
 func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
+	m := struct {
+		PropertyType      KnxPropertyDataType
+		DataLengthInBytes uint8
+	}{
+		PropertyType:      propertyType,
+		DataLengthInBytes: dataLengthInBytes,
+	}
+	_ = m
 	writeBuffer.PushContext("KnxProperty")
 	switch {
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
@@ -1382,7 +1390,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 		}
 	default: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(dataLengthInBytes); i++ {
+		for i := uint32(0); i < uint32(m.DataLengthInBytes); i++ {
 			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")

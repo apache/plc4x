@@ -55,10 +55,10 @@ type ICEMIAdditionalInformationBusmonitorInfo interface {
 	GetLostFlag() bool
 	// GetSequenceNumber returns SequenceNumber
 	GetSequenceNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -108,6 +108,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetSequenceNumber() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCEMIAdditionalInformationBusmonitorInfo factory function for CEMIAdditionalInformationBusmonitorInfo
 func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationBusmonitorInfo{
 		FrameErrorFlag:            frameErrorFlag,
@@ -145,12 +146,12 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 	return "CEMIAdditionalInformationBusmonitorInfo"
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -176,8 +177,8 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {

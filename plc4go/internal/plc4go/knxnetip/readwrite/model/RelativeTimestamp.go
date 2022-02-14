@@ -35,10 +35,10 @@ type RelativeTimestamp struct {
 type IRelativeTimestamp interface {
 	// GetTimestamp returns Timestamp
 	GetTimestamp() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *RelativeTimestamp) GetTimestamp() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewRelativeTimestamp factory function for RelativeTimestamp
 func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
 	return &RelativeTimestamp{Timestamp: timestamp}
 }
@@ -75,11 +76,11 @@ func (m *RelativeTimestamp) GetTypeName() string {
 	return "RelativeTimestamp"
 }
 
-func (m *RelativeTimestamp) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *RelativeTimestamp) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *RelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *RelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -88,8 +89,8 @@ func (m *RelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *RelativeTimestamp) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *RelativeTimestamp) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, error) {

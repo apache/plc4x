@@ -30,16 +30,19 @@ import (
 type ApduDataDeviceDescriptorRead struct {
 	*ApduData
 	DescriptorType uint8
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataDeviceDescriptorRead interface {
 	// GetDescriptorType returns DescriptorType
 	GetDescriptorType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *ApduDataDeviceDescriptorRead) GetDescriptorType() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataDeviceDescriptorRead(descriptorType uint8) *ApduData {
+// NewApduDataDeviceDescriptorRead factory function for ApduDataDeviceDescriptorRead
+func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *ApduData {
 	child := &ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
-		ApduData:       NewApduData(),
+		ApduData:       NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -100,12 +104,12 @@ func (m *ApduDataDeviceDescriptorRead) GetTypeName() string {
 	return "ApduDataDeviceDescriptorRead"
 }
 
-func (m *ApduDataDeviceDescriptorRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataDeviceDescriptorRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataDeviceDescriptorRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataDeviceDescriptorRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -113,8 +117,8 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *ApduDataDeviceDescriptorRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataDeviceDescriptorRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

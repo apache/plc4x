@@ -48,10 +48,10 @@ type IS7MessageObjectRequest interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType
 	GetAlarmType() AlarmType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -88,6 +88,7 @@ func (m *S7MessageObjectRequest) GetAlarmType() AlarmType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7MessageObjectRequest factory function for S7MessageObjectRequest
 func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
 	child := &S7MessageObjectRequest{
 		SyntaxId:           syntaxId,
@@ -122,12 +123,12 @@ func (m *S7MessageObjectRequest) GetTypeName() string {
 	return "S7MessageObjectRequest"
 }
 
-func (m *S7MessageObjectRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageObjectRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageObjectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageObjectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (variableSpec)
 	lengthInBits += 8
@@ -153,8 +154,8 @@ func (m *S7MessageObjectRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7MessageObjectRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageObjectRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {

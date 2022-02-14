@@ -52,10 +52,10 @@ type IS7AddressAny interface {
 	GetByteAddress() uint16
 	// GetBitAddress returns BitAddress
 	GetBitAddress() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -104,6 +104,7 @@ func (m *S7AddressAny) GetBitAddress() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7AddressAny factory function for S7AddressAny
 func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7Address {
 	child := &S7AddressAny{
 		TransportSize:    transportSize,
@@ -141,12 +142,12 @@ func (m *S7AddressAny) GetTypeName() string {
 	return "S7AddressAny"
 }
 
-func (m *S7AddressAny) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7AddressAny) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7AddressAny) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -172,8 +173,8 @@ func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7AddressAny) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7AddressAny) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {

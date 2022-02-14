@@ -36,10 +36,10 @@ type CIPEncapsulationReadRequest struct {
 type ICIPEncapsulationReadRequest interface {
 	// GetRequest returns Request
 	GetRequest() *DF1RequestMessage
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,6 +73,7 @@ func (m *CIPEncapsulationReadRequest) GetRequest() *DF1RequestMessage {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCIPEncapsulationReadRequest factory function for CIPEncapsulationReadRequest
 func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationReadRequest{
 		Request:                request,
@@ -105,21 +106,21 @@ func (m *CIPEncapsulationReadRequest) GetTypeName() string {
 	return "CIPEncapsulationReadRequest"
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationReadRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CIPEncapsulationReadRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (request)
-	lengthInBits += m.Request.LengthInBits()
+	lengthInBits += m.Request.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationReadRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationReadRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {

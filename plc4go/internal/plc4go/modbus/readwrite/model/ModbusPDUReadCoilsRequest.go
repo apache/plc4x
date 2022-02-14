@@ -39,10 +39,10 @@ type IModbusPDUReadCoilsRequest interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity
 	GetQuantity() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUReadCoilsRequest) GetQuantity() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadCoilsRequest factory function for ModbusPDUReadCoilsRequest
 func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *ModbusPDU {
 	child := &ModbusPDUReadCoilsRequest{
 		StartingAddress: startingAddress,
@@ -124,12 +125,12 @@ func (m *ModbusPDUReadCoilsRequest) GetTypeName() string {
 	return "ModbusPDUReadCoilsRequest"
 }
 
-func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadCoilsRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadCoilsRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadCoilsRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUReadCoilsRequest) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadCoilsRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

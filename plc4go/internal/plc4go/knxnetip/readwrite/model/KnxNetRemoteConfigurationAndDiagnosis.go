@@ -36,10 +36,10 @@ type KnxNetRemoteConfigurationAndDiagnosis struct {
 type IKnxNetRemoteConfigurationAndDiagnosis interface {
 	// GetVersion returns Version
 	GetVersion() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxNetRemoteConfigurationAndDiagnosis factory function for KnxNetRemoteConfigurationAndDiagnosis
 func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *ServiceId {
 	child := &KnxNetRemoteConfigurationAndDiagnosis{
 		Version:   version,
@@ -100,12 +101,12 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
 	return "KnxNetRemoteConfigurationAndDiagnosis"
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -113,8 +114,8 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {

@@ -46,10 +46,10 @@ type IS7PayloadUserDataItemCpuFunctionMsgSubscription interface {
 	GetAlarmtype() *AlarmStateType
 	// GetReserve returns Reserve
 	GetReserve() *uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -109,6 +109,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetReserve() *uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscription factory function for S7PayloadUserDataItemCpuFunctionMsgSubscription
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscription(Subscription uint8, magicKey string, Alarmtype *AlarmStateType, Reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionMsgSubscription{
 		Subscription:          Subscription,
@@ -144,12 +145,12 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscription"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (Subscription)
 	lengthInBits += 8
@@ -173,8 +174,8 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBitsConditiona
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

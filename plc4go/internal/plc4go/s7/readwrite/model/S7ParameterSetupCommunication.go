@@ -43,10 +43,10 @@ type IS7ParameterSetupCommunication interface {
 	GetMaxAmqCallee() uint16
 	// GetPduLength returns PduLength
 	GetPduLength() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *S7ParameterSetupCommunication) GetPduLength() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterSetupCommunication factory function for S7ParameterSetupCommunication
 func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7Parameter {
 	child := &S7ParameterSetupCommunication{
 		MaxAmqCaller: maxAmqCaller,
@@ -125,12 +126,12 @@ func (m *S7ParameterSetupCommunication) GetTypeName() string {
 	return "S7ParameterSetupCommunication"
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterSetupCommunication) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterSetupCommunication) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -147,8 +148,8 @@ func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {

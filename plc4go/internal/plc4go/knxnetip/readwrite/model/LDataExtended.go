@@ -51,10 +51,10 @@ type ILDataExtended interface {
 	GetDestinationAddress() []byte
 	// GetApdu returns Apdu
 	GetApdu() *Apdu
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -117,6 +117,7 @@ func (m *LDataExtended) GetApdu() *Apdu {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewLDataExtended factory function for LDataExtended
 func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LDataExtended{
 		GroupAddress:        groupAddress,
@@ -154,12 +155,12 @@ func (m *LDataExtended) GetTypeName() string {
 	return "LDataExtended"
 }
 
-func (m *LDataExtended) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataExtended) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -171,7 +172,7 @@ func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 4
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.LengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.DestinationAddress) > 0 {
@@ -182,13 +183,13 @@ func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (apdu)
-	lengthInBits += m.Apdu.LengthInBits()
+	lengthInBits += m.Apdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *LDataExtended) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataExtended) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
@@ -323,7 +324,7 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
+		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes()) - uint8(uint8(1)))
 		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")

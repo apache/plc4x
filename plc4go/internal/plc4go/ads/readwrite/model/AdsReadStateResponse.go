@@ -42,10 +42,10 @@ type IAdsReadStateResponse interface {
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState
 	GetDeviceState() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,6 +90,7 @@ func (m *AdsReadStateResponse) GetDeviceState() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsReadStateResponse factory function for AdsReadStateResponse
 func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsData {
 	child := &AdsReadStateResponse{
 		Result:      result,
@@ -124,12 +125,12 @@ func (m *AdsReadStateResponse) GetTypeName() string {
 	return "AdsReadStateResponse"
 }
 
-func (m *AdsReadStateResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadStateResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -143,8 +144,8 @@ func (m *AdsReadStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsReadStateResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadStateResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsReadStateResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

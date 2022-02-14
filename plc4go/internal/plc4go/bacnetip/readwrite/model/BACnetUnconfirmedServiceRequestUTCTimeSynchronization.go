@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 	*BACnetUnconfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,9 +65,10 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) InitializeParent
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() *BACnetUnconfirmedServiceRequest {
+// NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization factory function for BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetUnconfirmedServiceRequest
@@ -93,18 +97,18 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetTypeName() st
 	return "BACnetUnconfirmedServiceRequestUTCTimeSynchronization"
 }
 
-func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {

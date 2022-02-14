@@ -36,10 +36,10 @@ type KnxNetIpRouting struct {
 type IKnxNetIpRouting interface {
 	// GetVersion returns Version
 	GetVersion() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *KnxNetIpRouting) GetVersion() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxNetIpRouting factory function for KnxNetIpRouting
 func NewKnxNetIpRouting(version uint8) *ServiceId {
 	child := &KnxNetIpRouting{
 		Version:   version,
@@ -100,12 +101,12 @@ func (m *KnxNetIpRouting) GetTypeName() string {
 	return "KnxNetIpRouting"
 }
 
-func (m *KnxNetIpRouting) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpRouting) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpRouting) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxNetIpRouting) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -113,8 +114,8 @@ func (m *KnxNetIpRouting) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpRouting) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpRouting) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxNetIpRoutingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {

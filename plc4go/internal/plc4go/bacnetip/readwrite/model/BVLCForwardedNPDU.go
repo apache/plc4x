@@ -32,6 +32,9 @@ type BVLCForwardedNPDU struct {
 	Ip   []uint8
 	Port uint16
 	Npdu *NPDU
+
+	// Arguments.
+	BvlcPayloadLength uint16
 }
 
 // The corresponding interface
@@ -42,10 +45,10 @@ type IBVLCForwardedNPDU interface {
 	GetPort() uint16
 	// GetNpdu returns Npdu
 	GetNpdu() *NPDU
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,7 @@ func (m *BVLCForwardedNPDU) GetBvlcFunction() uint8 {
 	return 0x04
 }
 
-func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -84,12 +85,13 @@ func (m *BVLCForwardedNPDU) GetNpdu() *NPDU {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBVLCForwardedNPDU factory function for BVLCForwardedNPDU
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCForwardedNPDU{
 		Ip:   ip,
 		Port: port,
 		Npdu: npdu,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -118,12 +120,12 @@ func (m *BVLCForwardedNPDU) GetTypeName() string {
 	return "BVLCForwardedNPDU"
 }
 
-func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCForwardedNPDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCForwardedNPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -134,13 +136,13 @@ func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (npdu)
-	lengthInBits += m.Npdu.LengthInBits()
+	lengthInBits += m.Npdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCForwardedNPDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {

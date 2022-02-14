@@ -30,14 +30,17 @@ import (
 // The data-structure of this message
 type ApduDataGroupValueRead struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataGroupValueRead interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,9 +66,10 @@ func (m *ApduDataGroupValueRead) InitializeParent(parent *ApduData) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataGroupValueRead() *ApduData {
+// NewApduDataGroupValueRead factory function for ApduDataGroupValueRead
+func NewApduDataGroupValueRead(dataLength uint8) *ApduData {
 	child := &ApduDataGroupValueRead{
-		ApduData: NewApduData(),
+		ApduData: NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -94,12 +98,12 @@ func (m *ApduDataGroupValueRead) GetTypeName() string {
 	return "ApduDataGroupValueRead"
 }
 
-func (m *ApduDataGroupValueRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataGroupValueRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataGroupValueRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataGroupValueRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 6
@@ -107,8 +111,8 @@ func (m *ApduDataGroupValueRead) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataGroupValueRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

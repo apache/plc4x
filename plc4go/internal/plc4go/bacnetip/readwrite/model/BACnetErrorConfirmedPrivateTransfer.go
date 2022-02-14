@@ -32,10 +32,10 @@ type BACnetErrorConfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetErrorConfirmedPrivateTransfer interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetErr
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorConfirmedPrivateTransfer factory function for BACnetErrorConfirmedPrivateTransfer
 func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedPrivateTransfer{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorConfirmedPrivateTransfer) GetTypeName() string {
 	return "BACnetErrorConfirmedPrivateTransfer"
 }
 
-func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorConfirmedPrivateTransfer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorConfirmedPrivateTransfer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

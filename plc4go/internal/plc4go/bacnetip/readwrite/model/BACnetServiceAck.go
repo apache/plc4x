@@ -35,10 +35,10 @@ type BACnetServiceAck struct {
 type IBACnetServiceAck interface {
 	// ServiceChoice returns ServiceChoice
 	ServiceChoice() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IBACnetServiceAckChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetServiceAck factory function for BACnetServiceAck
 func NewBACnetServiceAck() *BACnetServiceAck {
 	return &BACnetServiceAck{}
 }
@@ -84,15 +85,15 @@ func (m *BACnetServiceAck) GetTypeName() string {
 	return "BACnetServiceAck"
 }
 
-func (m *BACnetServiceAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAck) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetServiceAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetServiceAck) ParentLengthInBits() uint16 {
+func (m *BACnetServiceAck) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *BACnetServiceAck) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetServiceAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {

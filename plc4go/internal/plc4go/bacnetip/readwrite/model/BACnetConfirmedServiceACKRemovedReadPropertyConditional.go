@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKRemovedReadPropertyConditional struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKRemovedReadPropertyConditional interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) InitializePare
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKRemovedReadPropertyConditional factory function for BACnetConfirmedServiceACKRemovedReadPropertyConditional
 func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -93,18 +94,18 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetTypeName() 
 	return "BACnetConfirmedServiceACKRemovedReadPropertyConditional"
 }
 
-func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemoveListElement struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestRemoveListElement interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,9 +65,10 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) InitializeParent(parent
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestRemoveListElement() *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestRemoveListElement factory function for BACnetConfirmedServiceRequestRemoveListElement
+func NewBACnetConfirmedServiceRequestRemoveListElement(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestRemoveListElement{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -93,18 +97,18 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestRemoveListElement"
 }
 
-func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

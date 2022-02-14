@@ -42,10 +42,10 @@ type IModbusPDUMaskWriteHoldingRegisterResponse interface {
 	GetAndMask() uint16
 	// GetOrMask returns OrMask
 	GetOrMask() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -98,6 +98,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetOrMask() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUMaskWriteHoldingRegisterResponse factory function for ModbusPDUMaskWriteHoldingRegisterResponse
 func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
 	child := &ModbusPDUMaskWriteHoldingRegisterResponse{
 		ReferenceAddress: referenceAddress,
@@ -132,12 +133,12 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetTypeName() string {
 	return "ModbusPDUMaskWriteHoldingRegisterResponse"
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -151,8 +152,8 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

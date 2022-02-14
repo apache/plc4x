@@ -28,6 +28,9 @@ import (
 
 // The data-structure of this message
 type COTPParameter struct {
+
+	// Arguments.
+	Rest  uint8
 	Child ICOTPParameterChild
 }
 
@@ -35,10 +38,10 @@ type COTPParameter struct {
 type ICOTPParameter interface {
 	// ParameterType returns ParameterType
 	ParameterType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type ICOTPParameterChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPParameter() *COTPParameter {
-	return &COTPParameter{}
+// NewCOTPParameter factory function for COTPParameter
+func NewCOTPParameter(rest uint8) *COTPParameter {
+	return &COTPParameter{Rest: rest}
 }
 
 func CastCOTPParameter(structType interface{}) *COTPParameter {
@@ -84,15 +88,15 @@ func (m *COTPParameter) GetTypeName() string {
 	return "COTPParameter"
 }
 
-func (m *COTPParameter) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameter) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameter) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *COTPParameter) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *COTPParameter) ParentLengthInBits() uint16 {
+func (m *COTPParameter) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
@@ -103,8 +107,8 @@ func (m *COTPParameter) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *COTPParameter) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameter) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
@@ -174,7 +178,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	parameterLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 	_parameterLengthErr := writeBuffer.WriteUint8("parameterLength", 8, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")

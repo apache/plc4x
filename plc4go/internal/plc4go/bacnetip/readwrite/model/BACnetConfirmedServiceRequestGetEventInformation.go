@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestGetEventInformation struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestGetEventInformation interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,9 +65,10 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) InitializeParent(pare
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestGetEventInformation() *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestGetEventInformation factory function for BACnetConfirmedServiceRequestGetEventInformation
+func NewBACnetConfirmedServiceRequestGetEventInformation(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestGetEventInformation{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -93,18 +97,18 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string 
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 
-func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

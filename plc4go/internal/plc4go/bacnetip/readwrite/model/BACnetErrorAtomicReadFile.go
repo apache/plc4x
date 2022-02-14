@@ -32,10 +32,10 @@ type BACnetErrorAtomicReadFile struct {
 
 // The corresponding interface
 type IBACnetErrorAtomicReadFile interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorAtomicReadFile) InitializeParent(parent *BACnetError, errorC
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorAtomicReadFile factory function for BACnetErrorAtomicReadFile
 func NewBACnetErrorAtomicReadFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorAtomicReadFile{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorAtomicReadFile) GetTypeName() string {
 	return "BACnetErrorAtomicReadFile"
 }
 
-func (m *BACnetErrorAtomicReadFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorAtomicReadFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorAtomicReadFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

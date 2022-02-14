@@ -38,10 +38,10 @@ type IChannelInformation interface {
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode
 	GetChannelCode() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *ChannelInformation) GetChannelCode() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewChannelInformation factory function for ChannelInformation
 func NewChannelInformation(numChannels uint8, channelCode uint16) *ChannelInformation {
 	return &ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
 }
@@ -82,11 +83,11 @@ func (m *ChannelInformation) GetTypeName() string {
 	return "ChannelInformation"
 }
 
-func (m *ChannelInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ChannelInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ChannelInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (numChannels)
@@ -98,8 +99,8 @@ func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ChannelInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ChannelInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, error) {

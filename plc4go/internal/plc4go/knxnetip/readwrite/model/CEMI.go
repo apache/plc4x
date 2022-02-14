@@ -28,6 +28,9 @@ import (
 
 // The data-structure of this message
 type CEMI struct {
+
+	// Arguments.
+	Size  uint16
 	Child ICEMIChild
 }
 
@@ -35,10 +38,10 @@ type CEMI struct {
 type ICEMI interface {
 	// MessageCode returns MessageCode
 	MessageCode() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type ICEMIChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCEMI() *CEMI {
-	return &CEMI{}
+// NewCEMI factory function for CEMI
+func NewCEMI(size uint16) *CEMI {
+	return &CEMI{Size: size}
 }
 
 func CastCEMI(structType interface{}) *CEMI {
@@ -84,15 +88,15 @@ func (m *CEMI) GetTypeName() string {
 	return "CEMI"
 }
 
-func (m *CEMI) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMI) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMI) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CEMI) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CEMI) ParentLengthInBits() uint16 {
+func (m *CEMI) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageCode)
 	lengthInBits += 8
@@ -100,8 +104,8 @@ func (m *CEMI) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CEMI) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMI) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type MFuncPropCommandReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMFuncPropCommandReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewMFuncPropCommandReq() *CEMI {
+// NewMFuncPropCommandReq factory function for MFuncPropCommandReq
+func NewMFuncPropCommandReq(size uint16) *CEMI {
 	child := &MFuncPropCommandReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *MFuncPropCommandReq) GetTypeName() string {
 	return "MFuncPropCommandReq"
 }
 
-func (m *MFuncPropCommandReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MFuncPropCommandReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MFuncPropCommandReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MFuncPropCommandReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MFuncPropCommandReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

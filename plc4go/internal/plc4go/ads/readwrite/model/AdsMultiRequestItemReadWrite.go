@@ -45,10 +45,10 @@ type IAdsMultiRequestItemReadWrite interface {
 	GetItemReadLength() uint32
 	// GetItemWriteLength returns ItemWriteLength
 	GetItemWriteLength() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -89,6 +89,7 @@ func (m *AdsMultiRequestItemReadWrite) GetItemWriteLength() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsMultiRequestItemReadWrite factory function for AdsMultiRequestItemReadWrite
 func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemReadWrite{
 		ItemIndexGroup:      itemIndexGroup,
@@ -124,12 +125,12 @@ func (m *AdsMultiRequestItemReadWrite) GetTypeName() string {
 	return "AdsMultiRequestItemReadWrite"
 }
 
-func (m *AdsMultiRequestItemReadWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsMultiRequestItemReadWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsMultiRequestItemReadWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsMultiRequestItemReadWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -146,8 +147,8 @@ func (m *AdsMultiRequestItemReadWrite) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *AdsMultiRequestItemReadWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsMultiRequestItemReadWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsMultiRequestItemReadWriteParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {

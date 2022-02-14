@@ -42,10 +42,10 @@ type IComObjectTableRealisationType2 interface {
 	GetRamFlagsTablePointer() uint8
 	// GetComObjectDescriptors returns ComObjectDescriptors
 	GetComObjectDescriptors() []*GroupObjectDescriptorRealisationType2
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *ComObjectTableRealisationType2) GetComObjectDescriptors() []*GroupObjec
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewComObjectTableRealisationType2 factory function for ComObjectTableRealisationType2
 func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []*GroupObjectDescriptorRealisationType2) *ComObjectTable {
 	child := &ComObjectTableRealisationType2{
 		NumEntries:           numEntries,
@@ -116,12 +117,12 @@ func (m *ComObjectTableRealisationType2) GetTypeName() string {
 	return "ComObjectTableRealisationType2"
 }
 
-func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ComObjectTableRealisationType2) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ComObjectTableRealisationType2) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ComObjectTableRealisationType2) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -133,15 +134,15 @@ func (m *ComObjectTableRealisationType2) LengthInBitsConditional(lastItem bool) 
 	if len(m.ComObjectDescriptors) > 0 {
 		for i, element := range m.ComObjectDescriptors {
 			last := i == len(m.ComObjectDescriptors)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *ComObjectTableRealisationType2) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ComObjectTableRealisationType2) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {

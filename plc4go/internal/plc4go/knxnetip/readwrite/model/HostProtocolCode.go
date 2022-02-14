@@ -86,12 +86,12 @@ func CastHostProtocolCode(structType interface{}) HostProtocolCode {
 	return castFunc(structType)
 }
 
-func (m HostProtocolCode) LengthInBits() uint16 {
+func (m HostProtocolCode) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m HostProtocolCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m HostProtocolCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {

@@ -39,10 +39,10 @@ type IS7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
 	GetFunctionId() uint8
 	// GetMessageObjects returns MessageObjects
 	GetMessageObjects() []uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -94,6 +94,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetMessageObjects() [
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for S7PayloadUserDataItemCpuFunctionAlarmAckResponse
 func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messageObjects []uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
 		FunctionId:            functionId,
@@ -127,12 +128,12 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetTypeName() string 
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -148,8 +149,8 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBitsCondition
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
@@ -218,7 +219,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numberOfObjects := uint8(uint8(len(m.MessageObjects)))
+		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
 		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")

@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type MResetReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMResetReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *MResetReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewMResetReq() *CEMI {
+// NewMResetReq factory function for MResetReq
+func NewMResetReq(size uint16) *CEMI {
 	child := &MResetReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *MResetReq) GetTypeName() string {
 	return "MResetReq"
 }
 
-func (m *MResetReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MResetReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MResetReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MResetReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MResetReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MResetReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

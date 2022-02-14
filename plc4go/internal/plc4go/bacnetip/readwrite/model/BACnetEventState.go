@@ -116,12 +116,12 @@ func CastBACnetEventState(structType interface{}) BACnetEventState {
 	return castFunc(structType)
 }
 
-func (m BACnetEventState) LengthInBits() uint16 {
+func (m BACnetEventState) GetLengthInBits() uint16 {
 	return 9
 }
 
-func (m BACnetEventState) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetEventState) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error) {

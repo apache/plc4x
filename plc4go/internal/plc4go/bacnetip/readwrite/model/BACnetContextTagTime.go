@@ -30,16 +30,20 @@ import (
 type BACnetContextTagTime struct {
 	*BACnetContextTag
 	Payload *BACnetTagPayloadTime
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagTime interface {
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadTime
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,11 +59,8 @@ func (m *BACnetContextTagTime) GetDataType() BACnetDataType {
 	return BACnetDataType_TIME
 }
 
-func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagTime) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,10 +74,11 @@ func (m *BACnetContextTagTime) GetPayload() *BACnetTagPayloadTime {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagTime factory function for BACnetContextTagTime
+func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagTime{
 		Payload:          payload,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -105,21 +107,21 @@ func (m *BACnetContextTagTime) GetTypeName() string {
 	return "BACnetContextTagTime"
 }
 
-func (m *BACnetContextTagTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagTime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagTime) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagTimeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {

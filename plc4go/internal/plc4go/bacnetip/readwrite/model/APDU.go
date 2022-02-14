@@ -28,17 +28,20 @@ import (
 
 // The data-structure of this message
 type APDU struct {
-	Child IAPDUChild
+
+	// Arguments.
+	ApduLength uint16
+	Child      IAPDUChild
 }
 
 // The corresponding interface
 type IAPDU interface {
 	// ApduType returns ApduType
 	ApduType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type IAPDUChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDU() *APDU {
-	return &APDU{}
+// NewAPDU factory function for APDU
+func NewAPDU(apduLength uint16) *APDU {
+	return &APDU{ApduLength: apduLength}
 }
 
 func CastAPDU(structType interface{}) *APDU {
@@ -84,15 +88,15 @@ func (m *APDU) GetTypeName() string {
 	return "APDU"
 }
 
-func (m *APDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDU) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *APDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *APDU) ParentLengthInBits() uint16 {
+func (m *APDU) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4
@@ -100,8 +104,8 @@ func (m *APDU) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *APDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

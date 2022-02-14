@@ -31,6 +31,9 @@ type FirmataMessageAnalogIO struct {
 	*FirmataMessage
 	Pin  uint8
 	Data []int8
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IFirmataMessageAnalogIO interface {
 	GetPin() uint8
 	// GetData returns Data
 	GetData() []int8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *FirmataMessageAnalogIO) GetData() []int8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataMessageAnalogIO(pin uint8, data []int8) *FirmataMessage {
+// NewFirmataMessageAnalogIO factory function for FirmataMessageAnalogIO
+func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *FirmataMessage {
 	child := &FirmataMessageAnalogIO{
 		Pin:            pin,
 		Data:           data,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
 	child.Child = child
 	return child.FirmataMessage
@@ -108,12 +112,12 @@ func (m *FirmataMessageAnalogIO) GetTypeName() string {
 	return "FirmataMessageAnalogIO"
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageAnalogIO) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageAnalogIO) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 4
@@ -126,8 +130,8 @@ func (m *FirmataMessageAnalogIO) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *FirmataMessageAnalogIO) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageAnalogIO) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {

@@ -42,10 +42,10 @@ type IS7VarPayloadDataItem interface {
 	GetTransportSize() DataTransportSize
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *S7VarPayloadDataItem) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7VarPayloadDataItem factory function for S7VarPayloadDataItem
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *S7VarPayloadDataItem {
 	return &S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
 }
@@ -90,11 +91,11 @@ func (m *S7VarPayloadDataItem) GetTypeName() string {
 	return "S7VarPayloadDataItem"
 }
 
-func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarPayloadDataItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *S7VarPayloadDataItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -112,7 +113,7 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
+	_timesPadding := uint8(int32(int32(len(m.GetData()))) % int32(int32(2)))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -120,8 +121,8 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarPayloadDataItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataItem, error) {
@@ -224,8 +225,8 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() interface{} { return uint16(uint16(1)) }, func() interface{} {
-		return uint16(uint16(utils.InlineIf(m.TransportSize.SizeInBits(), func() interface{} { return uint16(uint16(8)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
+	dataLength := uint16(uint16(uint16(len(m.GetData()))) * uint16(uint16(utils.InlineIf(bool(bool((m.GetTransportSize()) == (DataTransportSize_BIT))), func() interface{} { return uint16(uint16(1)) }, func() interface{} {
+		return uint16(uint16(utils.InlineIf(m.GetTransportSize().SizeInBits(), func() interface{} { return uint16(uint16(8)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
 	}).(uint16))))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
@@ -246,7 +247,7 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
+		_timesPadding := uint8(int32(int32(len(m.GetData()))) % int32(int32(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(0x00)
 			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))

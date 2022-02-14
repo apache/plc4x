@@ -40,9 +40,9 @@ type NPDU struct {
 	HopCount                  *uint8
 	Nlm                       *NLM
 	Apdu                      *APDU
-	SourceLengthAddon         uint16
-	DestinationLengthAddon    uint16
-	PayloadSubtraction        uint16
+
+	// Arguments.
+	NpduLength uint16
 }
 
 // The corresponding interface
@@ -75,10 +75,10 @@ type INPDU interface {
 	GetDestinationLengthAddon() uint16
 	// GetPayloadSubtraction returns PayloadSubtraction
 	GetPayloadSubtraction() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -134,22 +134,62 @@ func (m *NPDU) GetApdu() *APDU {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *NPDU) GetSourceLengthAddon() uint16 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.SourceLengthAddon
+	destinationNetworkAddress := m.DestinationNetworkAddress
+	_ = destinationNetworkAddress
+	destinationLength := m.DestinationLength
+	_ = destinationLength
+	sourceNetworkAddress := m.SourceNetworkAddress
+	_ = sourceNetworkAddress
+	sourceLength := m.SourceLength
+	_ = sourceLength
+	hopCount := m.HopCount
+	_ = hopCount
+	nlm := m.Nlm
+	_ = nlm
+	apdu := m.Apdu
+	_ = apdu
+	return utils.InlineIf(m.GetControl().GetSourceSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetSourceLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 }
 
 func (m *NPDU) GetDestinationLengthAddon() uint16 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.DestinationLengthAddon
+	destinationNetworkAddress := m.DestinationNetworkAddress
+	_ = destinationNetworkAddress
+	destinationLength := m.DestinationLength
+	_ = destinationLength
+	sourceNetworkAddress := m.SourceNetworkAddress
+	_ = sourceNetworkAddress
+	sourceLength := m.SourceLength
+	_ = sourceLength
+	hopCount := m.HopCount
+	_ = hopCount
+	nlm := m.Nlm
+	_ = nlm
+	apdu := m.Apdu
+	_ = apdu
+	return utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetDestinationLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 }
 
 func (m *NPDU) GetPayloadSubtraction() uint16 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.PayloadSubtraction
+	destinationNetworkAddress := m.DestinationNetworkAddress
+	_ = destinationNetworkAddress
+	destinationLength := m.DestinationLength
+	_ = destinationLength
+	sourceNetworkAddress := m.SourceNetworkAddress
+	_ = sourceNetworkAddress
+	sourceLength := m.SourceLength
+	_ = sourceLength
+	hopCount := m.HopCount
+	_ = hopCount
+	nlm := m.Nlm
+	_ = nlm
+	apdu := m.Apdu
+	_ = apdu
+	return uint16(uint16(2)) + uint16(uint16(uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon()))+uint16(uint16(utils.InlineIf(bool(bool(m.GetControl().GetDestinationSpecified()) || bool(m.GetControl().GetSourceSpecified())), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
 }
 
-func NewNPDU(protocolVersionNumber uint8, control *NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU, sourceLengthAddon uint16, destinationLengthAddon uint16, payloadSubtraction uint16) *NPDU {
-	return &NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, SourceLengthAddon: sourceLengthAddon, DestinationLengthAddon: destinationLengthAddon, PayloadSubtraction: payloadSubtraction}
+// NewNPDU factory function for NPDU
+func NewNPDU(protocolVersionNumber uint8, control *NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU, npduLength uint16) *NPDU {
+	return &NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
 }
 
 func CastNPDU(structType interface{}) *NPDU {
@@ -169,18 +209,18 @@ func (m *NPDU) GetTypeName() string {
 	return "NPDU"
 }
 
-func (m *NPDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NPDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NPDU) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *NPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (protocolVersionNumber)
 	lengthInBits += 8
 
 	// Simple field (control)
-	lengthInBits += m.Control.LengthInBits()
+	lengthInBits += m.Control.GetLengthInBits()
 
 	// Optional Field (destinationNetworkAddress)
 	if m.DestinationNetworkAddress != nil {
@@ -225,19 +265,19 @@ func (m *NPDU) LengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (nlm)
 	if m.Nlm != nil {
-		lengthInBits += (*m.Nlm).LengthInBits()
+		lengthInBits += (*m.Nlm).GetLengthInBits()
 	}
 
 	// Optional Field (apdu)
 	if m.Apdu != nil {
-		lengthInBits += (*m.Apdu).LengthInBits()
+		lengthInBits += (*m.Apdu).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *NPDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NPDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
@@ -267,7 +307,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var destinationNetworkAddress *uint16 = nil
-	if control.DestinationSpecified {
+	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint16("destinationNetworkAddress", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
@@ -277,7 +317,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
 	var destinationLength *uint8 = nil
-	if control.DestinationSpecified {
+	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint8("destinationLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field")
@@ -290,9 +330,9 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		return nil, pullErr
 	}
 	// Count array
-	destinationAddress := make([]uint8, utils.InlineIf(control.DestinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.DestinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
@@ -306,7 +346,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
-	if control.SourceSpecified {
+	if control.GetSourceSpecified() {
 		_val, _err := readBuffer.ReadUint16("sourceNetworkAddress", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field")
@@ -316,7 +356,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
 	var sourceLength *uint8 = nil
-	if control.SourceSpecified {
+	if control.GetSourceSpecified() {
 		_val, _err := readBuffer.ReadUint8("sourceLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field")
@@ -329,9 +369,9 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		return nil, pullErr
 	}
 	// Count array
-	sourceAddress := make([]uint8, utils.InlineIf(control.SourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.SourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
+		for curItem := uint16(0); curItem < uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
@@ -345,7 +385,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
-	if control.DestinationSpecified {
+	if control.GetDestinationSpecified() {
 		_val, _err := readBuffer.ReadUint8("hopCount", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field")
@@ -354,20 +394,23 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Virtual field
-	_sourceLengthAddon := utils.InlineIf(control.SourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_sourceLengthAddon := utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 	sourceLengthAddon := uint16(_sourceLengthAddon)
+	_ = sourceLengthAddon
 
 	// Virtual field
-	_destinationLengthAddon := utils.InlineIf(control.DestinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_destinationLengthAddon := utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
 	destinationLengthAddon := uint16(_destinationLengthAddon)
+	_ = destinationLengthAddon
 
 	// Virtual field
-	_payloadSubtraction := uint16(uint16(2)) + uint16(uint16(uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon))+uint16(uint16(utils.InlineIf(bool(bool(control.DestinationSpecified) || bool(control.SourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
+	_payloadSubtraction := uint16(uint16(2)) + uint16(uint16(uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon))+uint16(uint16(utils.InlineIf(bool(bool(control.GetDestinationSpecified()) || bool(control.GetSourceSpecified())), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
 	payloadSubtraction := uint16(_payloadSubtraction)
+	_ = payloadSubtraction
 
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
 	var nlm *NLM = nil
-	if control.MessageTypeFieldPresent {
+	if control.GetMessageTypeFieldPresent() {
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
 			return nil, pullErr
@@ -388,7 +431,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
 	var apdu *APDU = nil
-	if !(control.MessageTypeFieldPresent) {
+	if !(control.GetMessageTypeFieldPresent()) {
 		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 			return nil, pullErr
@@ -412,7 +455,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Create the instance
-	return NewNPDU(protocolVersionNumber, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu, sourceLengthAddon, destinationLengthAddon, payloadSubtraction), nil
+	return NewNPDU(protocolVersionNumber, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu, npduLength), nil
 }
 
 func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -521,15 +564,15 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _sourceLengthAddonErr := writeBuffer.WriteVirtual("sourceLengthAddon", m.SourceLengthAddon); _sourceLengthAddonErr != nil {
+	if _sourceLengthAddonErr := writeBuffer.WriteVirtual("sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
 		return errors.Wrap(_sourceLengthAddonErr, "Error serializing 'sourceLengthAddon' field")
 	}
 	// Virtual field
-	if _destinationLengthAddonErr := writeBuffer.WriteVirtual("destinationLengthAddon", m.DestinationLengthAddon); _destinationLengthAddonErr != nil {
+	if _destinationLengthAddonErr := writeBuffer.WriteVirtual("destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
 		return errors.Wrap(_destinationLengthAddonErr, "Error serializing 'destinationLengthAddon' field")
 	}
 	// Virtual field
-	if _payloadSubtractionErr := writeBuffer.WriteVirtual("payloadSubtraction", m.PayloadSubtraction); _payloadSubtractionErr != nil {
+	if _payloadSubtractionErr := writeBuffer.WriteVirtual("payloadSubtraction", m.GetPayloadSubtraction()); _payloadSubtractionErr != nil {
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}
 

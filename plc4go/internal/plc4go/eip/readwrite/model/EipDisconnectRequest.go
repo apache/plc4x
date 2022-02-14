@@ -32,10 +32,10 @@ type EipDisconnectRequest struct {
 
 // The corresponding interface
 type IEipDisconnectRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -66,6 +66,7 @@ func (m *EipDisconnectRequest) InitializeParent(parent *EipPacket, sessionHandle
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewEipDisconnectRequest factory function for EipDisconnectRequest
 func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &EipDisconnectRequest{
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
@@ -97,18 +98,18 @@ func (m *EipDisconnectRequest) GetTypeName() string {
 	return "EipDisconnectRequest"
 }
 
-func (m *EipDisconnectRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *EipDisconnectRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipDisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *EipDisconnectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *EipDisconnectRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *EipDisconnectRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {

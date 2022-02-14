@@ -30,16 +30,20 @@ import (
 type BACnetConstructedDataLifeSafetyZone struct {
 	*BACnetConstructedData
 	Zones []*BACnetContextTagObjectIdentifier
+
+	// Arguments.
+	TagNumber                  uint8
+	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
 }
 
 // The corresponding interface
 type IBACnetConstructedDataLifeSafetyZone interface {
 	// GetZones returns Zones
 	GetZones() []*BACnetContextTagObjectIdentifier
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,10 +67,9 @@ func (m *BACnetConstructedDataLifeSafetyZone) GetPropertyIdentifierEnum() BACnet
 	return 0
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
+func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
 	m.BACnetConstructedData.ClosingTag = closingTag
-	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,10 +83,11 @@ func (m *BACnetConstructedDataLifeSafetyZone) GetZones() []*BACnetContextTagObje
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
+// NewBACnetConstructedDataLifeSafetyZone factory function for BACnetConstructedDataLifeSafetyZone
+func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataLifeSafetyZone{
 		Zones:                 zones,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
 	}
 	child.Child = child
 	return child.BACnetConstructedData
@@ -112,25 +116,25 @@ func (m *BACnetConstructedDataLifeSafetyZone) GetTypeName() string {
 	return "BACnetConstructedDataLifeSafetyZone"
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConstructedDataLifeSafetyZone) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConstructedDataLifeSafetyZone) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Zones) > 0 {
 		for _, element := range m.Zones {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConstructedDataLifeSafetyZone) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {

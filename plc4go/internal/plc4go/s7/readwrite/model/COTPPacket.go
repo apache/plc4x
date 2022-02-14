@@ -31,7 +31,10 @@ import (
 type COTPPacket struct {
 	Parameters []*COTPParameter
 	Payload    *S7Message
-	Child      ICOTPPacketChild
+
+	// Arguments.
+	CotpLen uint16
+	Child   ICOTPPacketChild
 }
 
 // The corresponding interface
@@ -42,10 +45,10 @@ type ICOTPPacket interface {
 	GetParameters() []*COTPParameter
 	// GetPayload returns Payload
 	GetPayload() *S7Message
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,8 +80,9 @@ func (m *COTPPacket) GetPayload() *S7Message {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message) *COTPPacket {
-	return &COTPPacket{Parameters: parameters, Payload: payload}
+// NewCOTPPacket factory function for COTPPacket
+func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
+	return &COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
 }
 
 func CastCOTPPacket(structType interface{}) *COTPPacket {
@@ -98,15 +102,15 @@ func (m *COTPPacket) GetTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *COTPPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *COTPPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *COTPPacket) ParentLengthInBits() uint16 {
+func (m *COTPPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -117,20 +121,20 @@ func (m *COTPPacket) ParentLengthInBits() uint16 {
 	// Array field
 	if len(m.Parameters) > 0 {
 		for _, element := range m.Parameters {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Optional Field (payload)
 	if m.Payload != nil {
-		lengthInBits += (*m.Payload).LengthInBits()
+		lengthInBits += (*m.Payload).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *COTPPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
@@ -241,7 +245,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() interface{} { return uint8(m.Payload.LengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.GetPayload()) != (nil))), func() interface{} { return uint8((*m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint8(uint8(0)) }).(uint8)))+uint8(uint8(1)))))
 	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")

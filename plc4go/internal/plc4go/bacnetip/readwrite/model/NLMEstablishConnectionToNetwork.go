@@ -31,6 +31,9 @@ type NLMEstablishConnectionToNetwork struct {
 	*NLM
 	DestinationNetworkAddress uint16
 	TerminationTime           uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type INLMEstablishConnectionToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime
 	GetTerminationTime() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16) *NLM {
+// NewNLMEstablishConnectionToNetwork factory function for NLMEstablishConnectionToNetwork
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16, apduLength uint16) *NLM {
 	child := &NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
 	child.Child = child
 	return child.NLM
@@ -110,12 +114,12 @@ func (m *NLMEstablishConnectionToNetwork) GetTypeName() string {
 	return "NLMEstablishConnectionToNetwork"
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -126,8 +130,8 @@ func (m *NLMEstablishConnectionToNetwork) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *NLMEstablishConnectionToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMEstablishConnectionToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {

@@ -92,12 +92,12 @@ func CastAlarmType(structType interface{}) AlarmType {
 	return castFunc(structType)
 }
 
-func (m AlarmType) LengthInBits() uint16 {
+func (m AlarmType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m AlarmType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m AlarmType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {

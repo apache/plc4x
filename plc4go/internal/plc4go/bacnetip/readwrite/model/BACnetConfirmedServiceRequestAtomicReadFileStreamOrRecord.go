@@ -31,7 +31,6 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 	PeekedTagHeader *BACnetTagHeader
 	OpeningTag      *BACnetOpeningTag
 	ClosingTag      *BACnetClosingTag
-	PeekedTagNumber uint8
 	Child           IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild
 }
 
@@ -47,10 +46,10 @@ type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
 	GetClosingTag() *BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber
 	GetPeekedTagNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,7 +61,7 @@ type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface 
 
 type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8)
+	InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
 	GetTypeName() string
 	IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 }
@@ -86,12 +85,12 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetClosingTa
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.PeekedTagNumber
+	return m.GetPeekedTagHeader().GetActualTagNumber()
 }
 
-func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
-	return &BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag, PeekedTagNumber: peekedTagNumber}
+// NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord factory function for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+	return &BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
@@ -111,30 +110,30 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetTypeName(
 	return "BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) ParentLengthInBits() uint16 {
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
@@ -154,7 +153,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.ActualTagNumber), BACnetDataType_OPENING_TAG)
+	_openingTag, _openingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType_OPENING_TAG)
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -164,8 +163,9 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	}
 
 	// Virtual field
-	_peekedTagNumber := peekedTagHeader.ActualTagNumber
+	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
 	peekedTagNumber := uint8(_peekedTagNumber)
+	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
@@ -187,7 +187,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.ActualTagNumber), BACnetDataType_CLOSING_TAG)
+	_closingTag, _closingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()), BACnetDataType_CLOSING_TAG)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, peekedTagHeader, openingTag, closingTag, peekedTagNumber)
+	_parent.Child.InitializeParent(_parent, peekedTagHeader, openingTag, closingTag)
 	return _parent, nil
 }
 
@@ -226,7 +226,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) SerializePar
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.PeekedTagNumber); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 

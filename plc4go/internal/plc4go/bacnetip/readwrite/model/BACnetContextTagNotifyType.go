@@ -30,16 +30,21 @@ import (
 type BACnetContextTagNotifyType struct {
 	*BACnetContextTag
 	Value BACnetNotifyType
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
+	ActualLength             uint32
 }
 
 // The corresponding interface
 type IBACnetContextTagNotifyType interface {
 	// GetValue returns Value
 	GetValue() BACnetNotifyType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,11 +60,8 @@ func (m *BACnetContextTagNotifyType) GetDataType() BACnetDataType {
 	return BACnetDataType_NOTIFY_TYPE
 }
 
-func (m *BACnetContextTagNotifyType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagNotifyType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,10 +75,11 @@ func (m *BACnetContextTagNotifyType) GetValue() BACnetNotifyType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagNotifyType factory function for BACnetContextTagNotifyType
+func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagNotifyType{
 		Value:            value,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -105,12 +108,12 @@ func (m *BACnetContextTagNotifyType) GetTypeName() string {
 	return "BACnetContextTagNotifyType"
 }
 
-func (m *BACnetContextTagNotifyType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagNotifyType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagNotifyType) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagNotifyType) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -118,8 +121,8 @@ func (m *BACnetContextTagNotifyType) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *BACnetContextTagNotifyType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagNotifyType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {

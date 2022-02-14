@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type LRawReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ILRawReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *LRawReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewLRawReq() *CEMI {
+// NewLRawReq factory function for LRawReq
+func NewLRawReq(size uint16) *CEMI {
 	child := &LRawReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *LRawReq) GetTypeName() string {
 	return "LRawReq"
 }
 
-func (m *LRawReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LRawReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LRawReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LRawReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LRawReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LRawReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LRawReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

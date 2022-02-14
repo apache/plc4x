@@ -110,12 +110,12 @@ func CastKnxMedium(structType interface{}) KnxMedium {
 	return castFunc(structType)
 }
 
-func (m KnxMedium) LengthInBits() uint16 {
+func (m KnxMedium) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m KnxMedium) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxMedium) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {

@@ -30,16 +30,19 @@ import (
 type S7PayloadWriteVarResponse struct {
 	*S7Payload
 	Items []*S7VarPayloadStatusItem
+
+	// Arguments.
+	Parameter S7Parameter
 }
 
 // The corresponding interface
 type IS7PayloadWriteVarResponse interface {
 	// GetItems returns Items
 	GetItems() []*S7VarPayloadStatusItem
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,10 +79,11 @@ func (m *S7PayloadWriteVarResponse) GetItems() []*S7VarPayloadStatusItem {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem) *S7Payload {
+// NewS7PayloadWriteVarResponse factory function for S7PayloadWriteVarResponse
+func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, parameter S7Parameter) *S7Payload {
 	child := &S7PayloadWriteVarResponse{
 		Items:     items,
-		S7Payload: NewS7Payload(),
+		S7Payload: NewS7Payload(parameter),
 	}
 	child.Child = child
 	return child.S7Payload
@@ -108,26 +112,26 @@ func (m *S7PayloadWriteVarResponse) GetTypeName() string {
 	return "S7PayloadWriteVarResponse"
 }
 
-func (m *S7PayloadWriteVarResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadWriteVarResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadWriteVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadWriteVarResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7PayloadWriteVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadWriteVarResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
@@ -140,9 +144,9 @@ func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uin
 		return nil, pullErr
 	}
 	// Count array
-	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
+	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).GetNumItems())
 	{
-		for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
+		for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).GetNumItems()); curItem++ {
 			_item, _err := S7VarPayloadStatusItemParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field")

@@ -28,17 +28,20 @@ import (
 
 // The data-structure of this message
 type ApduData struct {
-	Child IApduDataChild
+
+	// Arguments.
+	DataLength uint8
+	Child      IApduDataChild
 }
 
 // The corresponding interface
 type IApduData interface {
 	// ApciType returns ApciType
 	ApciType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type IApduDataChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduData() *ApduData {
-	return &ApduData{}
+// NewApduData factory function for ApduData
+func NewApduData(dataLength uint8) *ApduData {
+	return &ApduData{DataLength: dataLength}
 }
 
 func CastApduData(structType interface{}) *ApduData {
@@ -84,15 +88,15 @@ func (m *ApduData) GetTypeName() string {
 	return "ApduData"
 }
 
-func (m *ApduData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduData) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ApduData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ApduData) ParentLengthInBits() uint16 {
+func (m *ApduData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4
@@ -100,8 +104,8 @@ func (m *ApduData) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ApduData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

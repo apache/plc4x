@@ -40,10 +40,10 @@ type IS7MessageObjectResponse interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize
 	GetTransportSize() DataTransportSize
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7MessageObjectResponse factory function for S7MessageObjectResponse
 func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7DataAlarmMessage {
 	child := &S7MessageObjectResponse{
 		ReturnCode:         returnCode,
@@ -109,12 +110,12 @@ func (m *S7MessageObjectResponse) GetTypeName() string {
 	return "S7MessageObjectResponse"
 }
 
-func (m *S7MessageObjectResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageObjectResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageObjectResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageObjectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -128,8 +129,8 @@ func (m *S7MessageObjectResponse) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *S7MessageObjectResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageObjectResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {

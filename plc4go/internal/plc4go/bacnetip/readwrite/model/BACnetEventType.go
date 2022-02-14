@@ -200,12 +200,12 @@ func CastBACnetEventType(structType interface{}) BACnetEventType {
 	return castFunc(structType)
 }
 
-func (m BACnetEventType) LengthInBits() uint16 {
+func (m BACnetEventType) GetLengthInBits() uint16 {
 	return 9
 }
 
-func (m BACnetEventType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetEventType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetEventTypeParse(readBuffer utils.ReadBuffer) (BACnetEventType, error) {

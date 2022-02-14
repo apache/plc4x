@@ -32,6 +32,9 @@ type LDataReq struct {
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
@@ -42,10 +45,10 @@ type ILDataReq interface {
 	GetAdditionalInformation() []*CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame
 	GetDataFrame() *LDataFrame
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,12 +85,13 @@ func (m *LDataReq) GetDataFrame() *LDataFrame {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
+// NewLDataReq factory function for LDataReq
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *CEMI {
 	child := &LDataReq{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		CEMI:                        NewCEMI(),
+		CEMI:                        NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -116,12 +120,12 @@ func (m *LDataReq) GetTypeName() string {
 	return "LDataReq"
 }
 
-func (m *LDataReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -129,18 +133,18 @@ func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.LengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *LDataReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

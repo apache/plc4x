@@ -36,10 +36,10 @@ type ModbusPDUReadExceptionStatusResponse struct {
 type IModbusPDUReadExceptionStatusResponse interface {
 	// GetValue returns Value
 	GetValue() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) GetValue() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadExceptionStatusResponse factory function for ModbusPDUReadExceptionStatusResponse
 func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDU {
 	child := &ModbusPDUReadExceptionStatusResponse{
 		Value:     value,
@@ -116,12 +117,12 @@ func (m *ModbusPDUReadExceptionStatusResponse) GetTypeName() string {
 	return "ModbusPDUReadExceptionStatusResponse"
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -129,8 +130,8 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadExceptionStatusResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

@@ -32,10 +32,10 @@ type BACnetErrorRemovedReadPropertyConditional struct {
 
 // The corresponding interface
 type IBACnetErrorRemovedReadPropertyConditional interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BAC
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorRemovedReadPropertyConditional factory function for BACnetErrorRemovedReadPropertyConditional
 func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorRemovedReadPropertyConditional{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorRemovedReadPropertyConditional) GetTypeName() string {
 	return "BACnetErrorRemovedReadPropertyConditional"
 }
 
-func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorRemovedReadPropertyConditional) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorRemovedReadPropertyConditional) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorRemovedReadPropertyConditional) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

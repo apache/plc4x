@@ -30,7 +30,6 @@ import (
 type BACnetApplicationTagCharacterString struct {
 	*BACnetApplicationTag
 	Payload *BACnetTagPayloadCharacterString
-	Value   string
 }
 
 // The corresponding interface
@@ -39,10 +38,10 @@ type IBACnetApplicationTagCharacterString interface {
 	GetPayload() *BACnetTagPayloadCharacterString
 	// GetValue returns Value
 	GetValue() string
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -58,10 +57,8 @@ func (m *BACnetApplicationTagCharacterString) GetActualTagNumber() uint8 {
 	return 0x7
 }
 
-func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) {
+func (m *BACnetApplicationTagCharacterString) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header
-	m.BACnetApplicationTag.ActualTagNumber = actualTagNumber
-	m.BACnetApplicationTag.ActualLength = actualLength
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,15 +72,14 @@ func (m *BACnetApplicationTagCharacterString) GetPayload() *BACnetTagPayloadChar
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetApplicationTagCharacterString) GetValue() string {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.Value
+	return m.GetPayload().GetValue()
 }
 
-func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterString, value string, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
+// NewBACnetApplicationTagCharacterString factory function for BACnetApplicationTagCharacterString
+func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterString, header *BACnetTagHeader) *BACnetApplicationTag {
 	child := &BACnetApplicationTagCharacterString{
 		Payload:              payload,
-		Value:                value,
-		BACnetApplicationTag: NewBACnetApplicationTag(header, actualTagNumber, actualLength),
+		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
 	child.Child = child
 	return child.BACnetApplicationTag
@@ -112,23 +108,23 @@ func (m *BACnetApplicationTagCharacterString) GetTypeName() string {
 	return "BACnetApplicationTagCharacterString"
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetApplicationTagCharacterString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetApplicationTagCharacterString) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *BACnetApplicationTagCharacterString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetApplicationTagCharacterString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTag, error) {
@@ -140,7 +136,7 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, heade
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-	_payload, _payloadErr := BACnetTagPayloadCharacterStringParse(readBuffer, uint32(header.ActualLength))
+	_payload, _payloadErr := BACnetTagPayloadCharacterStringParse(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
@@ -150,8 +146,9 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, heade
 	}
 
 	// Virtual field
-	_value := payload.Value
+	_value := payload.GetValue()
 	value := string(_value)
+	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagCharacterString"); closeErr != nil {
 		return nil, closeErr
@@ -160,7 +157,6 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, heade
 	// Create a partially initialized instance
 	_child := &BACnetApplicationTagCharacterString{
 		Payload:              CastBACnetTagPayloadCharacterString(payload),
-		Value:                value,
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
@@ -185,7 +181,7 @@ func (m *BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.WriteB
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _valueErr := writeBuffer.WriteVirtual("value", m.Value); _valueErr != nil {
+		if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 

@@ -35,10 +35,10 @@ type Dummy struct {
 type IDummy interface {
 	// GetDummy returns Dummy
 	GetDummy() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *Dummy) GetDummy() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDummy factory function for Dummy
 func NewDummy(dummy uint16) *Dummy {
 	return &Dummy{Dummy: dummy}
 }
@@ -75,11 +76,11 @@ func (m *Dummy) GetTypeName() string {
 	return "Dummy"
 }
 
-func (m *Dummy) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *Dummy) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *Dummy) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *Dummy) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dummy)
@@ -88,8 +89,8 @@ func (m *Dummy) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *Dummy) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *Dummy) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {

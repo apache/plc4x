@@ -62,10 +62,10 @@ type IDeviceDescriptorType2 interface {
 	GetChannelInfo3() *ChannelInformation
 	// GetChannelInfo4 returns ChannelInfo4
 	GetChannelInfo4() *ChannelInformation
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -117,6 +117,7 @@ func (m *DeviceDescriptorType2) GetChannelInfo4() *ChannelInformation {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDeviceDescriptorType2 factory function for DeviceDescriptorType2
 func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 *ChannelInformation, channelInfo2 *ChannelInformation, channelInfo3 *ChannelInformation, channelInfo4 *ChannelInformation) *DeviceDescriptorType2 {
 	return &DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}
 }
@@ -138,11 +139,11 @@ func (m *DeviceDescriptorType2) GetTypeName() string {
 	return "DeviceDescriptorType2"
 }
 
-func (m *DeviceDescriptorType2) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceDescriptorType2) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceDescriptorType2) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DeviceDescriptorType2) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (manufacturerId)
@@ -164,22 +165,22 @@ func (m *DeviceDescriptorType2) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 6
 
 	// Simple field (channelInfo1)
-	lengthInBits += m.ChannelInfo1.LengthInBits()
+	lengthInBits += m.ChannelInfo1.GetLengthInBits()
 
 	// Simple field (channelInfo2)
-	lengthInBits += m.ChannelInfo2.LengthInBits()
+	lengthInBits += m.ChannelInfo2.GetLengthInBits()
 
 	// Simple field (channelInfo3)
-	lengthInBits += m.ChannelInfo3.LengthInBits()
+	lengthInBits += m.ChannelInfo3.GetLengthInBits()
 
 	// Simple field (channelInfo4)
-	lengthInBits += m.ChannelInfo4.LengthInBits()
+	lengthInBits += m.ChannelInfo4.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DeviceDescriptorType2) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceDescriptorType2) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorType2, error) {

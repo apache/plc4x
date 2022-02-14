@@ -31,8 +31,11 @@ type BACnetNotificationParameters struct {
 	OpeningTag      *BACnetOpeningTag
 	PeekedTagHeader *BACnetTagHeader
 	ClosingTag      *BACnetClosingTag
-	PeekedTagNumber uint8
-	Child           IBACnetNotificationParametersChild
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
+	Child      IBACnetNotificationParametersChild
 }
 
 // The corresponding interface
@@ -47,10 +50,10 @@ type IBACnetNotificationParameters interface {
 	GetClosingTag() *BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber
 	GetPeekedTagNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,7 +65,7 @@ type IBACnetNotificationParametersParent interface {
 
 type IBACnetNotificationParametersChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8)
+	InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
 	GetTypeName() string
 	IBACnetNotificationParameters
 }
@@ -86,12 +89,12 @@ func (m *BACnetNotificationParameters) GetClosingTag() *BACnetClosingTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetNotificationParameters) GetPeekedTagNumber() uint8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.PeekedTagNumber
+	return m.GetPeekedTagHeader().GetActualTagNumber()
 }
 
-func NewBACnetNotificationParameters(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
-	return &BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, PeekedTagNumber: peekedTagNumber}
+// NewBACnetNotificationParameters factory function for BACnetNotificationParameters
+func NewBACnetNotificationParameters(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParameters {
+	return &BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectType: objectType}
 }
 
 func CastBACnetNotificationParameters(structType interface{}) *BACnetNotificationParameters {
@@ -111,30 +114,30 @@ func (m *BACnetNotificationParameters) GetTypeName() string {
 	return "BACnetNotificationParameters"
 }
 
-func (m *BACnetNotificationParameters) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParameters) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParameters) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetNotificationParameters) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetNotificationParameters) ParentLengthInBits() uint16 {
+func (m *BACnetNotificationParameters) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParameters) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParameters) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetNotificationParameters, error) {
@@ -164,8 +167,9 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
-	_peekedTagNumber := peekedTagHeader.ActualTagNumber
+	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
 	peekedTagNumber := uint8(_peekedTagNumber)
+	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetNotificationParameters
@@ -215,7 +219,7 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag, peekedTagNumber)
+	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag)
 	return _parent, nil
 }
 
@@ -240,7 +244,7 @@ func (m *BACnetNotificationParameters) SerializeParent(writeBuffer utils.WriteBu
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.PeekedTagNumber); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 

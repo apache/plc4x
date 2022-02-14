@@ -162,12 +162,12 @@ func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
 	return castFunc(structType)
 }
 
-func (m COTPTpduSize) LengthInBits() uint16 {
+func (m COTPTpduSize) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m COTPTpduSize) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m COTPTpduSize) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {

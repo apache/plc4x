@@ -32,10 +32,10 @@ type BVLCReadForeignDeviceTable struct {
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTable interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -51,9 +51,7 @@ func (m *BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
 	return 0x06
 }
 
-func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -63,9 +61,10 @@ func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC, bvlcPayloadL
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCReadForeignDeviceTable(bvlcPayloadLength uint16) *BVLC {
+// NewBVLCReadForeignDeviceTable factory function for BVLCReadForeignDeviceTable
+func NewBVLCReadForeignDeviceTable() *BVLC {
 	child := &BVLCReadForeignDeviceTable{
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -94,18 +93,18 @@ func (m *BVLCReadForeignDeviceTable) GetTypeName() string {
 	return "BVLCReadForeignDeviceTable"
 }
 
-func (m *BVLCReadForeignDeviceTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCReadForeignDeviceTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCReadForeignDeviceTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCReadForeignDeviceTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCReadForeignDeviceTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCReadForeignDeviceTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

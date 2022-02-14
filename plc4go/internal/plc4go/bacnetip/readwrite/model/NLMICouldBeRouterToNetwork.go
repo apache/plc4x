@@ -31,6 +31,9 @@ type NLMICouldBeRouterToNetwork struct {
 	*NLM
 	DestinationNetworkAddress uint16
 	PerformanceIndex          uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type INLMICouldBeRouterToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetPerformanceIndex returns PerformanceIndex
 	GetPerformanceIndex() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16) *NLM {
+// NewNLMICouldBeRouterToNetwork factory function for NLMICouldBeRouterToNetwork
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16, apduLength uint16) *NLM {
 	child := &NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
 	child.Child = child
 	return child.NLM
@@ -110,12 +114,12 @@ func (m *NLMICouldBeRouterToNetwork) GetTypeName() string {
 	return "NLMICouldBeRouterToNetwork"
 }
 
-func (m *NLMICouldBeRouterToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMICouldBeRouterToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMICouldBeRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMICouldBeRouterToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationNetworkAddress)
 	lengthInBits += 16
@@ -126,8 +130,8 @@ func (m *NLMICouldBeRouterToNetwork) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *NLMICouldBeRouterToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMICouldBeRouterToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {

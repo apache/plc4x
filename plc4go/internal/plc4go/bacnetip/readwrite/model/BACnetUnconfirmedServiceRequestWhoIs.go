@@ -32,6 +32,9 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
 	*BACnetUnconfirmedServiceRequest
 	DeviceInstanceRangeLowLimit  *BACnetContextTagUnsignedInteger
 	DeviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type IBACnetUnconfirmedServiceRequestWhoIs interface {
 	GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger
 	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit
 	GetDeviceInstanceRangeHighLimit() *BACnetContextTagUnsignedInteger
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeHighLimit()
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
+// NewBACnetUnconfirmedServiceRequestWhoIs factory function for BACnetUnconfirmedServiceRequestWhoIs
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger, len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWhoIs{
 		DeviceInstanceRangeLowLimit:     deviceInstanceRangeLowLimit,
 		DeviceInstanceRangeHighLimit:    deviceInstanceRangeHighLimit,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetUnconfirmedServiceRequest
@@ -110,28 +114,28 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoIs"
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Optional Field (deviceInstanceRangeLowLimit)
 	if m.DeviceInstanceRangeLowLimit != nil {
-		lengthInBits += (*m.DeviceInstanceRangeLowLimit).LengthInBits()
+		lengthInBits += (*m.DeviceInstanceRangeLowLimit).GetLengthInBits()
 	}
 
 	// Optional Field (deviceInstanceRangeHighLimit)
 	if m.DeviceInstanceRangeHighLimit != nil {
-		lengthInBits += (*m.DeviceInstanceRangeHighLimit).LengthInBits()
+		lengthInBits += (*m.DeviceInstanceRangeHighLimit).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {

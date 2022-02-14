@@ -28,17 +28,20 @@ import (
 
 // The data-structure of this message
 type FirmataMessage struct {
-	Child IFirmataMessageChild
+
+	// Arguments.
+	Response bool
+	Child    IFirmataMessageChild
 }
 
 // The corresponding interface
 type IFirmataMessage interface {
 	// MessageType returns MessageType
 	MessageType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type IFirmataMessageChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataMessage() *FirmataMessage {
-	return &FirmataMessage{}
+// NewFirmataMessage factory function for FirmataMessage
+func NewFirmataMessage(response bool) *FirmataMessage {
+	return &FirmataMessage{Response: response}
 }
 
 func CastFirmataMessage(structType interface{}) *FirmataMessage {
@@ -84,15 +88,15 @@ func (m *FirmataMessage) GetTypeName() string {
 	return "FirmataMessage"
 }
 
-func (m *FirmataMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *FirmataMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *FirmataMessage) ParentLengthInBits() uint16 {
+func (m *FirmataMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 4
@@ -100,8 +104,8 @@ func (m *FirmataMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *FirmataMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {

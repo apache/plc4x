@@ -35,6 +35,9 @@ type MultipleServiceResponse struct {
 	ServiceNb    uint16
 	Offsets      []uint16
 	ServicesData []byte
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
@@ -49,10 +52,10 @@ type IMultipleServiceResponse interface {
 	GetOffsets() []uint16
 	// GetServicesData returns ServicesData
 	GetServicesData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -97,14 +100,15 @@ func (m *MultipleServiceResponse) GetServicesData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *CipService {
+// NewMultipleServiceResponse factory function for MultipleServiceResponse
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *CipService {
 	child := &MultipleServiceResponse{
 		Status:       status,
 		ExtStatus:    extStatus,
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
-		CipService:   NewCipService(),
+		CipService:   NewCipService(serviceLen),
 	}
 	child.Child = child
 	return child.CipService
@@ -133,12 +137,12 @@ func (m *MultipleServiceResponse) GetTypeName() string {
 	return "MultipleServiceResponse"
 }
 
-func (m *MultipleServiceResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MultipleServiceResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MultipleServiceResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MultipleServiceResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -165,8 +169,8 @@ func (m *MultipleServiceResponse) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *MultipleServiceResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MultipleServiceResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {

@@ -34,6 +34,9 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
 	ListOfValues                *BACnetPropertyValues
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -48,10 +51,10 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
 	// GetListOfValues returns ListOfValues
 	GetListOfValues() *BACnetPropertyValues
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -97,14 +100,15 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetListOfVal
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
+// NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification factory function for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
 		SubscriberProcessIdentifier:     subscriberProcessIdentifier,
 		MonitoredDeviceIdentifier:       monitoredDeviceIdentifier,
 		MonitoredObjectIdentifier:       monitoredObjectIdentifier,
 		LifetimeInSeconds:               lifetimeInSeconds,
 		ListOfValues:                    listOfValues,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetUnconfirmedServiceRequest
@@ -133,33 +137,33 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetTypeName(
 	return "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.LengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
 
 	// Simple field (monitoredDeviceIdentifier)
-	lengthInBits += m.MonitoredDeviceIdentifier.LengthInBits()
+	lengthInBits += m.MonitoredDeviceIdentifier.GetLengthInBits()
 
 	// Simple field (monitoredObjectIdentifier)
-	lengthInBits += m.MonitoredObjectIdentifier.LengthInBits()
+	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
 
 	// Simple field (lifetimeInSeconds)
-	lengthInBits += m.LifetimeInSeconds.LengthInBits()
+	lengthInBits += m.LifetimeInSeconds.GetLengthInBits()
 
 	// Simple field (listOfValues)
-	lengthInBits += m.ListOfValues.LengthInBits()
+	lengthInBits += m.ListOfValues.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
@@ -223,7 +227,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), monitoredObjectIdentifier.ObjectType)
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), monitoredObjectIdentifier.GetObjectType())
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}

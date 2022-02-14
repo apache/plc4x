@@ -31,6 +31,10 @@ type BACnetPropertyValues struct {
 	InnerOpeningTag *BACnetOpeningTag
 	Data            []*BACnetPropertyValue
 	InnerClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
@@ -41,10 +45,10 @@ type IBACnetPropertyValues interface {
 	GetData() []*BACnetPropertyValue
 	// GetInnerClosingTag returns InnerClosingTag
 	GetInnerClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,8 +72,9 @@ func (m *BACnetPropertyValues) GetInnerClosingTag() *BACnetClosingTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag) *BACnetPropertyValues {
-	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag}
+// NewBACnetPropertyValues factory function for BACnetPropertyValues
+func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPropertyValue, innerClosingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetPropertyValues {
+	return &BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectType: objectType}
 }
 
 func CastBACnetPropertyValues(structType interface{}) *BACnetPropertyValues {
@@ -89,31 +94,31 @@ func (m *BACnetPropertyValues) GetTypeName() string {
 	return "BACnetPropertyValues"
 }
 
-func (m *BACnetPropertyValues) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyValues) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyValues) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetPropertyValues) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
 
 	// Array field
 	if len(m.Data) > 0 {
 		for _, element := range m.Data {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyValues) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyValues) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType) (*BACnetPropertyValues, error) {
@@ -172,7 +177,7 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag), nil
+	return NewBACnetPropertyValues(innerOpeningTag, data, innerClosingTag, tagNumber, objectType), nil
 }
 
 func (m *BACnetPropertyValues) Serialize(writeBuffer utils.WriteBuffer) error {

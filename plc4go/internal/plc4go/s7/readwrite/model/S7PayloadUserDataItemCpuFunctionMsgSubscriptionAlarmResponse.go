@@ -48,10 +48,10 @@ type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	GetReserved02() uint8
 	// GetReserved03 returns Reserved03
 	GetReserved03() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -115,6 +115,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReserv
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse factory function for S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
 		Result:                result,
@@ -151,12 +152,12 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetTypeNa
 	return "S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 8
@@ -176,8 +177,8 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) LengthInB
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

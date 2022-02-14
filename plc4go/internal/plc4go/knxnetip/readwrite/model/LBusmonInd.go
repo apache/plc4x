@@ -33,6 +33,9 @@ type LBusmonInd struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Crc                         *uint8
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
@@ -45,10 +48,10 @@ type ILBusmonInd interface {
 	GetDataFrame() *LDataFrame
 	// GetCrc returns Crc
 	GetCrc() *uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -89,13 +92,14 @@ func (m *LBusmonInd) GetCrc() *uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8) *CEMI {
+// NewLBusmonInd factory function for LBusmonInd
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8, size uint16) *CEMI {
 	child := &LBusmonInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
-		CEMI:                        NewCEMI(),
+		CEMI:                        NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -124,12 +128,12 @@ func (m *LBusmonInd) GetTypeName() string {
 	return "LBusmonInd"
 }
 
-func (m *LBusmonInd) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LBusmonInd) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LBusmonInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LBusmonInd) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -137,12 +141,12 @@ func (m *LBusmonInd) LengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.LengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits()
 
 	// Optional Field (crc)
 	if m.Crc != nil {
@@ -152,8 +156,8 @@ func (m *LBusmonInd) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *LBusmonInd) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LBusmonInd) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

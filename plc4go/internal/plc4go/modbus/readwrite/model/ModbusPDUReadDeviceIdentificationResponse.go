@@ -32,10 +32,10 @@ type ModbusPDUReadDeviceIdentificationResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,6 +77,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *Mod
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadDeviceIdentificationResponse factory function for ModbusPDUReadDeviceIdentificationResponse
 func NewModbusPDUReadDeviceIdentificationResponse() *ModbusPDU {
 	child := &ModbusPDUReadDeviceIdentificationResponse{
 		ModbusPDU: NewModbusPDU(),
@@ -108,18 +109,18 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationResponse"
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

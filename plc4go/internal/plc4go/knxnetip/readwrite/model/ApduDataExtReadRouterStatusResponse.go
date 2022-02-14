@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataExtReadRouterStatusResponse struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtReadRouterStatusResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataExtReadRouterStatusResponse) InitializeParent(parent *ApduDataE
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtReadRouterStatusResponse() *ApduDataExt {
+// NewApduDataExtReadRouterStatusResponse factory function for ApduDataExtReadRouterStatusResponse
+func NewApduDataExtReadRouterStatusResponse(length uint8) *ApduDataExt {
 	child := &ApduDataExtReadRouterStatusResponse{
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -92,18 +96,18 @@ func (m *ApduDataExtReadRouterStatusResponse) GetTypeName() string {
 	return "ApduDataExtReadRouterStatusResponse"
 }
 
-func (m *ApduDataExtReadRouterStatusResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtReadRouterStatusResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtReadRouterStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtReadRouterStatusResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtReadRouterStatusResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtReadRouterStatusResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtReadRouterStatusResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

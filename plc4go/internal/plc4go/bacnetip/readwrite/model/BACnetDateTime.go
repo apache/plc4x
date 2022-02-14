@@ -32,6 +32,9 @@ type BACnetDateTime struct {
 	DateValue  *BACnetApplicationTagDate
 	TimeValue  *BACnetApplicationTagTime
 	ClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
@@ -44,10 +47,10 @@ type IBACnetDateTime interface {
 	GetTimeValue() *BACnetApplicationTagTime
 	// GetClosingTag returns ClosingTag
 	GetClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,8 +78,9 @@ func (m *BACnetDateTime) GetClosingTag() *BACnetClosingTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag) *BACnetDateTime {
-	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag}
+// NewBACnetDateTime factory function for BACnetDateTime
+func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetDateTime {
+	return &BACnetDateTime{OpeningTag: openingTag, DateValue: dateValue, TimeValue: timeValue, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetDateTime(structType interface{}) *BACnetDateTime {
@@ -96,30 +100,30 @@ func (m *BACnetDateTime) GetTypeName() string {
 	return "BACnetDateTime"
 }
 
-func (m *BACnetDateTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetDateTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetDateTime) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetDateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Simple field (dateValue)
-	lengthInBits += m.DateValue.LengthInBits()
+	lengthInBits += m.DateValue.GetLengthInBits()
 
 	// Simple field (timeValue)
-	lengthInBits += m.TimeValue.LengthInBits()
+	lengthInBits += m.TimeValue.GetLengthInBits()
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetDateTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetDateTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetDateTime, error) {
@@ -184,7 +188,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	}
 
 	// Create the instance
-	return NewBACnetDateTime(openingTag, dateValue, timeValue, closingTag), nil
+	return NewBACnetDateTime(openingTag, dateValue, timeValue, closingTag, tagNumber), nil
 }
 
 func (m *BACnetDateTime) Serialize(writeBuffer utils.WriteBuffer) error {

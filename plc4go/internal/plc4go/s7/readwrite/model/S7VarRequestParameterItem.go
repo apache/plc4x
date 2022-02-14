@@ -35,10 +35,10 @@ type S7VarRequestParameterItem struct {
 type IS7VarRequestParameterItem interface {
 	// ItemType returns ItemType
 	ItemType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IS7VarRequestParameterItemChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7VarRequestParameterItem factory function for S7VarRequestParameterItem
 func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
 	return &S7VarRequestParameterItem{}
 }
@@ -84,15 +85,15 @@ func (m *S7VarRequestParameterItem) GetTypeName() string {
 	return "S7VarRequestParameterItem"
 }
 
-func (m *S7VarRequestParameterItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarRequestParameterItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarRequestParameterItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7VarRequestParameterItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7VarRequestParameterItem) ParentLengthInBits() uint16 {
+func (m *S7VarRequestParameterItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *S7VarRequestParameterItem) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarRequestParameterItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItem, error) {

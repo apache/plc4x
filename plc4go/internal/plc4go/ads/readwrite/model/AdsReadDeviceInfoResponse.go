@@ -48,10 +48,10 @@ type IAdsReadDeviceInfoResponse interface {
 	GetVersion() uint16
 	// GetDevice returns Device
 	GetDevice() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -104,6 +104,7 @@ func (m *AdsReadDeviceInfoResponse) GetDevice() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsReadDeviceInfoResponse factory function for AdsReadDeviceInfoResponse
 func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
 	child := &AdsReadDeviceInfoResponse{
 		Result:       result,
@@ -140,12 +141,12 @@ func (m *AdsReadDeviceInfoResponse) GetTypeName() string {
 	return "AdsReadDeviceInfoResponse"
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadDeviceInfoResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadDeviceInfoResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -167,8 +168,8 @@ func (m *AdsReadDeviceInfoResponse) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadDeviceInfoResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

@@ -35,10 +35,10 @@ type MACAddress struct {
 type IMACAddress interface {
 	// GetAddr returns Addr
 	GetAddr() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *MACAddress) GetAddr() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewMACAddress factory function for MACAddress
 func NewMACAddress(addr []byte) *MACAddress {
 	return &MACAddress{Addr: addr}
 }
@@ -75,11 +76,11 @@ func (m *MACAddress) GetTypeName() string {
 	return "MACAddress"
 }
 
-func (m *MACAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MACAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MACAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *MACAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -90,8 +91,8 @@ func (m *MACAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *MACAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MACAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {

@@ -28,17 +28,20 @@ import (
 
 // The data-structure of this message
 type CipService struct {
-	Child ICipServiceChild
+
+	// Arguments.
+	ServiceLen uint16
+	Child      ICipServiceChild
 }
 
 // The corresponding interface
 type ICipService interface {
 	// Service returns Service
 	Service() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,8 +66,9 @@ type ICipServiceChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipService() *CipService {
-	return &CipService{}
+// NewCipService factory function for CipService
+func NewCipService(serviceLen uint16) *CipService {
+	return &CipService{ServiceLen: serviceLen}
 }
 
 func CastCipService(structType interface{}) *CipService {
@@ -84,15 +88,15 @@ func (m *CipService) GetTypeName() string {
 	return "CipService"
 }
 
-func (m *CipService) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipService) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipService) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CipService) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CipService) ParentLengthInBits() uint16 {
+func (m *CipService) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (service)
 	lengthInBits += 8
@@ -100,8 +104,8 @@ func (m *CipService) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CipService) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipService) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {

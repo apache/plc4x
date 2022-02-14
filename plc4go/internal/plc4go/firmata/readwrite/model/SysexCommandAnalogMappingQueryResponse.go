@@ -36,10 +36,10 @@ type SysexCommandAnalogMappingQueryResponse struct {
 type ISysexCommandAnalogMappingQueryResponse interface {
 	// GetPin returns Pin
 	GetPin() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *SysexCommandAnalogMappingQueryResponse) GetPin() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandAnalogMappingQueryResponse factory function for SysexCommandAnalogMappingQueryResponse
 func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommand {
 	child := &SysexCommandAnalogMappingQueryResponse{
 		Pin:          pin,
@@ -108,12 +109,12 @@ func (m *SysexCommandAnalogMappingQueryResponse) GetTypeName() string {
 	return "SysexCommandAnalogMappingQueryResponse"
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -121,8 +122,8 @@ func (m *SysexCommandAnalogMappingQueryResponse) LengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *SysexCommandAnalogMappingQueryResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandAnalogMappingQueryResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandAnalogMappingQueryResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

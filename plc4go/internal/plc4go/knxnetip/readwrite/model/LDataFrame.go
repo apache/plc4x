@@ -52,10 +52,10 @@ type ILDataFrame interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag
 	GetErrorFlag() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -99,6 +99,7 @@ func (m *LDataFrame) GetErrorFlag() bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewLDataFrame factory function for LDataFrame
 func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	return &LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
@@ -120,15 +121,15 @@ func (m *LDataFrame) GetTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *LDataFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataFrame) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *LDataFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *LDataFrame) ParentLengthInBits() uint16 {
+func (m *LDataFrame) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -153,8 +154,8 @@ func (m *LDataFrame) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *LDataFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {

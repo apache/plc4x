@@ -50,10 +50,10 @@ type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType
 	GetAlarmType() AlarmType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -109,6 +109,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetAlarmType() AlarmType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionAlarmQuery factory function for S7PayloadUserDataItemCpuFunctionAlarmQuery
 func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionAlarmQuery{
 		SyntaxId:              syntaxId,
@@ -143,12 +144,12 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQuery"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (functionId)
 	lengthInBits += 8
@@ -180,8 +181,8 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBitsConditional(las
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

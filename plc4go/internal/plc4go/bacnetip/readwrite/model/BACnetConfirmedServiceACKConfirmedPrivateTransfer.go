@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKConfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKConfirmedPrivateTransfer interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) InitializeParent(par
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKConfirmedPrivateTransfer factory function for BACnetConfirmedServiceACKConfirmedPrivateTransfer
 func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -93,18 +94,18 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetTypeName() string
 	return "BACnetConfirmedServiceACKConfirmedPrivateTransfer"
 }
 
-func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

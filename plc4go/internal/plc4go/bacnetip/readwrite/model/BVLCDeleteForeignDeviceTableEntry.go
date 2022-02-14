@@ -32,10 +32,10 @@ type BVLCDeleteForeignDeviceTableEntry struct {
 
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -51,9 +51,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
 	return 0x08
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -63,9 +61,10 @@ func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcP
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCDeleteForeignDeviceTableEntry(bvlcPayloadLength uint16) *BVLC {
+// NewBVLCDeleteForeignDeviceTableEntry factory function for BVLCDeleteForeignDeviceTableEntry
+func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
 	child := &BVLCDeleteForeignDeviceTableEntry{
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -94,18 +93,18 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
 	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

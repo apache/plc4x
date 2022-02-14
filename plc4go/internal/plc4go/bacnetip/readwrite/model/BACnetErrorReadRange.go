@@ -32,10 +32,10 @@ type BACnetErrorReadRange struct {
 
 // The corresponding interface
 type IBACnetErrorReadRange interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorReadRange) InitializeParent(parent *BACnetError, errorClass 
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorReadRange factory function for BACnetErrorReadRange
 func NewBACnetErrorReadRange(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorReadRange{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorReadRange) GetTypeName() string {
 	return "BACnetErrorReadRange"
 }
 
-func (m *BACnetErrorReadRange) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorReadRange) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorReadRange) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorReadRange) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorReadRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorReadRange) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

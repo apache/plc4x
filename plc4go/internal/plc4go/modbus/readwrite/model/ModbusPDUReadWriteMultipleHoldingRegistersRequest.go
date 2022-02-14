@@ -48,10 +48,10 @@ type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	GetWriteQuantity() uint16
 	// GetValue returns Value
 	GetValue() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -112,6 +112,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetValue() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadWriteMultipleHoldingRegistersRequest factory function for ModbusPDUReadWriteMultipleHoldingRegistersRequest
 func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) *ModbusPDU {
 	child := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{
 		ReadStartingAddress:  readStartingAddress,
@@ -148,12 +149,12 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetTypeName() string
 	return "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -178,8 +179,8 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBitsConditio
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
@@ -280,7 +281,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffe
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")

@@ -39,10 +39,10 @@ type IModbusPDUReadHoldingRegistersRequest interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity
 	GetQuantity() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) GetQuantity() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadHoldingRegistersRequest factory function for ModbusPDUReadHoldingRegistersRequest
 func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16) *ModbusPDU {
 	child := &ModbusPDUReadHoldingRegistersRequest{
 		StartingAddress: startingAddress,
@@ -124,12 +125,12 @@ func (m *ModbusPDUReadHoldingRegistersRequest) GetTypeName() string {
 	return "ModbusPDUReadHoldingRegistersRequest"
 }
 
-func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadHoldingRegistersRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadHoldingRegistersRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadHoldingRegistersRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

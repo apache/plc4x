@@ -28,11 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetStatusFlags struct {
-	RawBits      *BACnetContextTagBitString
-	InAlarm      bool
-	Fault        bool
-	Overriden    bool
-	OutOfService bool
+	RawBits *BACnetContextTagBitString
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
@@ -47,10 +46,10 @@ type IBACnetStatusFlags interface {
 	GetOverriden() bool
 	// GetOutOfService returns OutOfService
 	GetOutOfService() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -66,27 +65,24 @@ func (m *BACnetStatusFlags) GetRawBits() *BACnetContextTagBitString {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetStatusFlags) GetInAlarm() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.InAlarm
+	return m.GetRawBits().GetPayload().GetData()[0]
 }
 
 func (m *BACnetStatusFlags) GetFault() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.Fault
+	return m.GetRawBits().GetPayload().GetData()[1]
 }
 
 func (m *BACnetStatusFlags) GetOverriden() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.Overriden
+	return m.GetRawBits().GetPayload().GetData()[2]
 }
 
 func (m *BACnetStatusFlags) GetOutOfService() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.OutOfService
+	return m.GetRawBits().GetPayload().GetData()[3]
 }
 
-func NewBACnetStatusFlags(rawBits *BACnetContextTagBitString, inAlarm bool, fault bool, overriden bool, outOfService bool) *BACnetStatusFlags {
-	return &BACnetStatusFlags{RawBits: rawBits, InAlarm: inAlarm, Fault: fault, Overriden: overriden, OutOfService: outOfService}
+// NewBACnetStatusFlags factory function for BACnetStatusFlags
+func NewBACnetStatusFlags(rawBits *BACnetContextTagBitString, tagNumber uint8) *BACnetStatusFlags {
+	return &BACnetStatusFlags{RawBits: rawBits, TagNumber: tagNumber}
 }
 
 func CastBACnetStatusFlags(structType interface{}) *BACnetStatusFlags {
@@ -106,15 +102,15 @@ func (m *BACnetStatusFlags) GetTypeName() string {
 	return "BACnetStatusFlags"
 }
 
-func (m *BACnetStatusFlags) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetStatusFlags) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetStatusFlags) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetStatusFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (rawBits)
-	lengthInBits += m.RawBits.LengthInBits()
+	lengthInBits += m.RawBits.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -127,8 +123,8 @@ func (m *BACnetStatusFlags) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetStatusFlags) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetStatusFlags) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetStatusFlags, error) {
@@ -150,27 +146,31 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 	}
 
 	// Virtual field
-	_inAlarm := rawBits.Payload.Data[0]
+	_inAlarm := rawBits.GetPayload().GetData()[0]
 	inAlarm := bool(_inAlarm)
+	_ = inAlarm
 
 	// Virtual field
-	_fault := rawBits.Payload.Data[1]
+	_fault := rawBits.GetPayload().GetData()[1]
 	fault := bool(_fault)
+	_ = fault
 
 	// Virtual field
-	_overriden := rawBits.Payload.Data[2]
+	_overriden := rawBits.GetPayload().GetData()[2]
 	overriden := bool(_overriden)
+	_ = overriden
 
 	// Virtual field
-	_outOfService := rawBits.Payload.Data[3]
+	_outOfService := rawBits.GetPayload().GetData()[3]
 	outOfService := bool(_outOfService)
+	_ = outOfService
 
 	if closeErr := readBuffer.CloseContext("BACnetStatusFlags"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetStatusFlags(rawBits, inAlarm, fault, overriden, outOfService), nil
+	return NewBACnetStatusFlags(rawBits, tagNumber), nil
 }
 
 func (m *BACnetStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -190,19 +190,19 @@ func (m *BACnetStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_rawBitsErr, "Error serializing 'rawBits' field")
 	}
 	// Virtual field
-	if _inAlarmErr := writeBuffer.WriteVirtual("inAlarm", m.InAlarm); _inAlarmErr != nil {
+	if _inAlarmErr := writeBuffer.WriteVirtual("inAlarm", m.GetInAlarm()); _inAlarmErr != nil {
 		return errors.Wrap(_inAlarmErr, "Error serializing 'inAlarm' field")
 	}
 	// Virtual field
-	if _faultErr := writeBuffer.WriteVirtual("fault", m.Fault); _faultErr != nil {
+	if _faultErr := writeBuffer.WriteVirtual("fault", m.GetFault()); _faultErr != nil {
 		return errors.Wrap(_faultErr, "Error serializing 'fault' field")
 	}
 	// Virtual field
-	if _overridenErr := writeBuffer.WriteVirtual("overriden", m.Overriden); _overridenErr != nil {
+	if _overridenErr := writeBuffer.WriteVirtual("overriden", m.GetOverriden()); _overridenErr != nil {
 		return errors.Wrap(_overridenErr, "Error serializing 'overriden' field")
 	}
 	// Virtual field
-	if _outOfServiceErr := writeBuffer.WriteVirtual("outOfService", m.OutOfService); _outOfServiceErr != nil {
+	if _outOfServiceErr := writeBuffer.WriteVirtual("outOfService", m.GetOutOfService()); _outOfServiceErr != nil {
 		return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
 	}
 

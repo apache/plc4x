@@ -41,10 +41,10 @@ type IAdsStampHeader interface {
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples
 	GetAdsNotificationSamples() []*AdsNotificationSample
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *AdsStampHeader) GetAdsNotificationSamples() []*AdsNotificationSample {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsStampHeader factory function for AdsStampHeader
 func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []*AdsNotificationSample) *AdsStampHeader {
 	return &AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}
 }
@@ -89,11 +90,11 @@ func (m *AdsStampHeader) GetTypeName() string {
 	return "AdsStampHeader"
 }
 
-func (m *AdsStampHeader) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsStampHeader) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AdsStampHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -106,15 +107,15 @@ func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.AdsNotificationSamples) > 0 {
 		for i, element := range m.AdsNotificationSamples {
 			last := i == len(m.AdsNotificationSamples)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AdsStampHeader) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsStampHeader) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {

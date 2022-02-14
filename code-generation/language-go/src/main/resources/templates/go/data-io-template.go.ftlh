@@ -85,7 +85,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
                         <#assign enumValue=helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)>
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
 					<#else>
 						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
 					</#if>
@@ -204,6 +204,18 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 }
 
 func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+	<#if parserArguments?has_content>
+	m := struct {
+    	<#list parserArguments as parserArgument>
+			${parserArgument.name?cap_first} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+		</#list>
+	}{
+		<#list parserArguments as parserArgument>
+			${parserArgument.name?cap_first}: ${parserArgument.name},
+		</#list>
+	}
+	_ = m
+	</#if>
 	writeBuffer.PushContext("${type.name}")
 	switch {
 	<#assign defaultSet=false>
@@ -221,7 +233,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
                         <#assign enumValue=helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)>
                         <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                         <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+                        ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
 					<#else>
 						${helper.toParseExpression(null, parserArguments[discriminatorValueTerm?index].type, discriminatorValueTerm, parserArguments)}
 					</#if>

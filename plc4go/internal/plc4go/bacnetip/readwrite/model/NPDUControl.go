@@ -48,10 +48,10 @@ type INPDUControl interface {
 	GetExpectingReply() bool
 	// GetNetworkPriority returns NetworkPriority
 	GetNetworkPriority() NPDUNetworkPriority
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -83,6 +83,7 @@ func (m *NPDUControl) GetNetworkPriority() NPDUNetworkPriority {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewNPDUControl factory function for NPDUControl
 func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *NPDUControl {
 	return &NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
 }
@@ -104,11 +105,11 @@ func (m *NPDUControl) GetTypeName() string {
 	return "NPDUControl"
 }
 
-func (m *NPDUControl) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NPDUControl) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NPDUControl) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *NPDUControl) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (messageTypeFieldPresent)
@@ -135,8 +136,8 @@ func (m *NPDUControl) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *NPDUControl) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NPDUControl) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {

@@ -31,16 +31,19 @@ import (
 type BACnetPropertyStatesBoolean struct {
 	*BACnetPropertyStates
 	BooleanValue *BACnetContextTagBoolean
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetPropertyStatesBoolean interface {
 	// GetBooleanValue returns BooleanValue
 	GetBooleanValue() *BACnetContextTagBoolean
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -56,11 +59,10 @@ func (m *BACnetPropertyStatesBoolean) GetPeekedTagNumber() uint8 {
 	return uint8(0)
 }
 
-func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetPropertyStates.OpeningTag = openingTag
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
 	m.BACnetPropertyStates.ClosingTag = closingTag
-	m.BACnetPropertyStates.PeekedTagNumber = peekedTagNumber
 }
 
 ///////////////////////////////////////////////////////////
@@ -74,10 +76,11 @@ func (m *BACnetPropertyStatesBoolean) GetBooleanValue() *BACnetContextTagBoolean
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetPropertyStates {
+// NewBACnetPropertyStatesBoolean factory function for BACnetPropertyStatesBoolean
+func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
 	child := &BACnetPropertyStatesBoolean{
 		BooleanValue:         booleanValue,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	child.Child = child
 	return child.BACnetPropertyStates
@@ -106,23 +109,23 @@ func (m *BACnetPropertyStatesBoolean) GetTypeName() string {
 	return "BACnetPropertyStatesBoolean"
 }
 
-func (m *BACnetPropertyStatesBoolean) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyStatesBoolean) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyStatesBoolean) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetPropertyStatesBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Optional Field (booleanValue)
 	if m.BooleanValue != nil {
-		lengthInBits += (*m.BooleanValue).LengthInBits()
+		lengthInBits += (*m.BooleanValue).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyStatesBoolean) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyStatesBoolean) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStates, error) {

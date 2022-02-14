@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataExtOpenRoutingTableRequest struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtOpenRoutingTableRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataExtOpenRoutingTableRequest) InitializeParent(parent *ApduDataEx
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtOpenRoutingTableRequest() *ApduDataExt {
+// NewApduDataExtOpenRoutingTableRequest factory function for ApduDataExtOpenRoutingTableRequest
+func NewApduDataExtOpenRoutingTableRequest(length uint8) *ApduDataExt {
 	child := &ApduDataExtOpenRoutingTableRequest{
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -92,18 +96,18 @@ func (m *ApduDataExtOpenRoutingTableRequest) GetTypeName() string {
 	return "ApduDataExtOpenRoutingTableRequest"
 }
 
-func (m *ApduDataExtOpenRoutingTableRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtOpenRoutingTableRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtOpenRoutingTableRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtOpenRoutingTableRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtOpenRoutingTableRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtOpenRoutingTableRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

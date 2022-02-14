@@ -170,12 +170,12 @@ func CastFirmwareType(structType interface{}) FirmwareType {
 	return castFunc(structType)
 }
 
-func (m FirmwareType) LengthInBits() uint16 {
+func (m FirmwareType) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m FirmwareType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m FirmwareType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {

@@ -41,10 +41,10 @@ type ISzlId interface {
 	GetSublistExtract() uint8
 	// GetSublistList returns SublistList
 	GetSublistList() SzlSublist
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *SzlId) GetSublistList() SzlSublist {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSzlId factory function for SzlId
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
 	return &SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
 }
@@ -89,11 +90,11 @@ func (m *SzlId) GetTypeName() string {
 	return "SzlId"
 }
 
-func (m *SzlId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SzlId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *SzlId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeClass)
@@ -108,8 +109,8 @@ func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SzlId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SzlId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {

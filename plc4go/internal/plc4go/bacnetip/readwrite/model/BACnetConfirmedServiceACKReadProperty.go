@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKReadProperty struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadProperty interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetConfirmedServiceACKReadProperty) InitializeParent(parent *BACnetC
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKReadProperty factory function for BACnetConfirmedServiceACKReadProperty
 func NewBACnetConfirmedServiceACKReadProperty() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKReadProperty{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -92,18 +93,18 @@ func (m *BACnetConfirmedServiceACKReadProperty) GetTypeName() string {
 	return "BACnetConfirmedServiceACKReadProperty"
 }
 
-func (m *BACnetConfirmedServiceACKReadProperty) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKReadProperty) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKReadProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKReadProperty) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKReadProperty) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

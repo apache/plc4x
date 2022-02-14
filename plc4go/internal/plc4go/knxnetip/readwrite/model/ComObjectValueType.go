@@ -242,12 +242,12 @@ func CastComObjectValueType(structType interface{}) ComObjectValueType {
 	return castFunc(structType)
 }
 
-func (m ComObjectValueType) LengthInBits() uint16 {
+func (m ComObjectValueType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m ComObjectValueType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ComObjectValueType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {

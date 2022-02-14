@@ -30,16 +30,19 @@ import (
 type BACnetTimeStampDateTime struct {
 	*BACnetTimeStamp
 	DateTimeValue *BACnetDateTime
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetTimeStampDateTime interface {
 	// GetDateTimeValue returns DateTimeValue
 	GetDateTimeValue() *BACnetDateTime
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,11 +58,10 @@ func (m *BACnetTimeStampDateTime) GetPeekedTagNumber() uint8 {
 	return uint8(2)
 }
 
-func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetTimeStampDateTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetTimeStamp.OpeningTag = openingTag
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
 	m.BACnetTimeStamp.ClosingTag = closingTag
-	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,10 +75,11 @@ func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
+// NewBACnetTimeStampDateTime factory function for BACnetTimeStampDateTime
+func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStamp {
 	child := &BACnetTimeStampDateTime{
 		DateTimeValue:   dateTimeValue,
-		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	child.Child = child
 	return child.BACnetTimeStamp
@@ -105,21 +108,21 @@ func (m *BACnetTimeStampDateTime) GetTypeName() string {
 	return "BACnetTimeStampDateTime"
 }
 
-func (m *BACnetTimeStampDateTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTimeStampDateTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTimeStampDateTime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetTimeStampDateTime) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dateTimeValue)
-	lengthInBits += m.DateTimeValue.LengthInBits()
+	lengthInBits += m.DateTimeValue.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetTimeStampDateTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStamp, error) {

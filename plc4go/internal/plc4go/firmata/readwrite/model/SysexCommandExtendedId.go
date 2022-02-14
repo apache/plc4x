@@ -36,10 +36,10 @@ type SysexCommandExtendedId struct {
 type ISysexCommandExtendedId interface {
 	// GetId returns Id
 	GetId() []int8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *SysexCommandExtendedId) GetId() []int8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandExtendedId factory function for SysexCommandExtendedId
 func NewSysexCommandExtendedId(id []int8) *SysexCommand {
 	child := &SysexCommandExtendedId{
 		Id:           id,
@@ -108,12 +109,12 @@ func (m *SysexCommandExtendedId) GetTypeName() string {
 	return "SysexCommandExtendedId"
 }
 
-func (m *SysexCommandExtendedId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandExtendedId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandExtendedId) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandExtendedId) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Id) > 0 {
@@ -123,8 +124,8 @@ func (m *SysexCommandExtendedId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SysexCommandExtendedId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandExtendedId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

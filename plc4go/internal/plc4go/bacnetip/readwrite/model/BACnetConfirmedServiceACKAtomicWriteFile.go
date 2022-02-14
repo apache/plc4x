@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicWriteFile interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) InitializeParent(parent *BACn
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKAtomicWriteFile factory function for BACnetConfirmedServiceACKAtomicWriteFile
 func NewBACnetConfirmedServiceACKAtomicWriteFile() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKAtomicWriteFile{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -93,18 +94,18 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetTypeName() string {
 	return "BACnetConfirmedServiceACKAtomicWriteFile"
 }
 
-func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

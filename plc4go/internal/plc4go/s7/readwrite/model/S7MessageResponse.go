@@ -39,10 +39,10 @@ type IS7MessageResponse interface {
 	GetErrorClass() uint8
 	// GetErrorCode returns ErrorCode
 	GetErrorCode() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -79,6 +79,7 @@ func (m *S7MessageResponse) GetErrorCode() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7MessageResponse factory function for S7MessageResponse
 func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageResponse{
 		ErrorClass: errorClass,
@@ -112,12 +113,12 @@ func (m *S7MessageResponse) GetTypeName() string {
 	return "S7MessageResponse"
 }
 
-func (m *S7MessageResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -128,8 +129,8 @@ func (m *S7MessageResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7MessageResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7Message, error) {

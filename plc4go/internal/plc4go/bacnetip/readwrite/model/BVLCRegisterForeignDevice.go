@@ -36,10 +36,10 @@ type BVLCRegisterForeignDevice struct {
 type IBVLCRegisterForeignDevice interface {
 	// GetTtl returns Ttl
 	GetTtl() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,9 +55,7 @@ func (m *BVLCRegisterForeignDevice) GetBvlcFunction() uint8 {
 	return 0x05
 }
 
-func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -70,10 +68,11 @@ func (m *BVLCRegisterForeignDevice) GetTtl() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCRegisterForeignDevice(ttl uint16, bvlcPayloadLength uint16) *BVLC {
+// NewBVLCRegisterForeignDevice factory function for BVLCRegisterForeignDevice
+func NewBVLCRegisterForeignDevice(ttl uint16) *BVLC {
 	child := &BVLCRegisterForeignDevice{
 		Ttl:  ttl,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -102,12 +101,12 @@ func (m *BVLCRegisterForeignDevice) GetTypeName() string {
 	return "BVLCRegisterForeignDevice"
 }
 
-func (m *BVLCRegisterForeignDevice) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCRegisterForeignDevice) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCRegisterForeignDevice) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCRegisterForeignDevice) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (ttl)
 	lengthInBits += 16
@@ -115,8 +114,8 @@ func (m *BVLCRegisterForeignDevice) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *BVLCRegisterForeignDevice) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCRegisterForeignDevice) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

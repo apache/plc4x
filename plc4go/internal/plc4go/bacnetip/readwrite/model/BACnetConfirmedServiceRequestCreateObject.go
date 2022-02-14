@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestCreateObject struct {
 	*BACnetConfirmedServiceRequest
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestCreateObject interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,9 +65,10 @@ func (m *BACnetConfirmedServiceRequestCreateObject) InitializeParent(parent *BAC
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestCreateObject() *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestCreateObject factory function for BACnetConfirmedServiceRequestCreateObject
+func NewBACnetConfirmedServiceRequestCreateObject(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestCreateObject{
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -93,18 +97,18 @@ func (m *BACnetConfirmedServiceRequestCreateObject) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObject"
 }
 
-func (m *BACnetConfirmedServiceRequestCreateObject) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestCreateObject) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestCreateObject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestCreateObject) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestCreateObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

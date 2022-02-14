@@ -36,10 +36,10 @@ type TunnelingResponse struct {
 type ITunnelingResponse interface {
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock
 	GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *TunnelingResponse) GetTunnelingResponseDataBlock() *TunnelingResponseDa
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewTunnelingResponse factory function for TunnelingResponse
 func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
 	child := &TunnelingResponse{
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
@@ -100,21 +101,21 @@ func (m *TunnelingResponse) GetTypeName() string {
 	return "TunnelingResponse"
 }
 
-func (m *TunnelingResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TunnelingResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TunnelingResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TunnelingResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (tunnelingResponseDataBlock)
-	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
+	lengthInBits += m.TunnelingResponseDataBlock.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *TunnelingResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TunnelingResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

@@ -31,6 +31,9 @@ type NLMInitalizeRoutingTableAck struct {
 	*NLM
 	NumberOfPorts uint8
 	PortMappings  []*NLMInitalizeRoutingTablePortMapping
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type INLMInitalizeRoutingTableAck interface {
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings
 	GetPortMappings() []*NLMInitalizeRoutingTablePortMapping
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *NLMInitalizeRoutingTableAck) GetPortMappings() []*NLMInitalizeRoutingTa
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16) *NLM {
+// NewNLMInitalizeRoutingTableAck factory function for NLMInitalizeRoutingTableAck
+func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLM {
 	child := &NLMInitalizeRoutingTableAck{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		NLM:           NewNLM(vendorId),
+		NLM:           NewNLM(vendorId, apduLength),
 	}
 	child.Child = child
 	return child.NLM
@@ -110,12 +114,12 @@ func (m *NLMInitalizeRoutingTableAck) GetTypeName() string {
 	return "NLMInitalizeRoutingTableAck"
 }
 
-func (m *NLMInitalizeRoutingTableAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMInitalizeRoutingTableAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMInitalizeRoutingTableAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMInitalizeRoutingTableAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -124,15 +128,15 @@ func (m *NLMInitalizeRoutingTableAck) LengthInBitsConditional(lastItem bool) uin
 	if len(m.PortMappings) > 0 {
 		for i, element := range m.PortMappings {
 			last := i == len(m.PortMappings)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *NLMInitalizeRoutingTableAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMInitalizeRoutingTableAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {

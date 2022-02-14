@@ -35,6 +35,9 @@ type APDUSegmentAck struct {
 	OriginalInvokeId   uint8
 	SequenceNumber     uint8
 	ProposedWindowSize uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -49,10 +52,10 @@ type IAPDUSegmentAck interface {
 	GetSequenceNumber() uint8
 	// GetProposedWindowSize returns ProposedWindowSize
 	GetProposedWindowSize() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -97,14 +100,15 @@ func (m *APDUSegmentAck) GetProposedWindowSize() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8) *APDU {
+// NewAPDUSegmentAck factory function for APDUSegmentAck
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8, apduLength uint16) *APDU {
 	child := &APDUSegmentAck{
 		NegativeAck:        negativeAck,
 		Server:             server,
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		APDU:               NewAPDU(),
+		APDU:               NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -133,12 +137,12 @@ func (m *APDUSegmentAck) GetTypeName() string {
 	return "APDUSegmentAck"
 }
 
-func (m *APDUSegmentAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUSegmentAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUSegmentAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUSegmentAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -161,8 +165,8 @@ func (m *APDUSegmentAck) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUSegmentAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUSegmentAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

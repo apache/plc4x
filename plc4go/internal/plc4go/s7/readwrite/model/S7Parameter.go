@@ -37,10 +37,10 @@ type IS7Parameter interface {
 	MessageType() uint8
 	// ParameterType returns ParameterType
 	ParameterType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -65,6 +65,7 @@ type IS7ParameterChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7Parameter factory function for S7Parameter
 func NewS7Parameter() *S7Parameter {
 	return &S7Parameter{}
 }
@@ -86,15 +87,15 @@ func (m *S7Parameter) GetTypeName() string {
 	return "S7Parameter"
 }
 
-func (m *S7Parameter) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7Parameter) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7Parameter) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7Parameter) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7Parameter) ParentLengthInBits() uint16 {
+func (m *S7Parameter) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
@@ -102,8 +103,8 @@ func (m *S7Parameter) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7Parameter) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7Parameter) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {

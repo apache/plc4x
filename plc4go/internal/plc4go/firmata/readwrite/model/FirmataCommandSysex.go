@@ -31,16 +31,19 @@ import (
 type FirmataCommandSysex struct {
 	*FirmataCommand
 	Command *SysexCommand
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataCommandSysex interface {
 	// GetCommand returns Command
 	GetCommand() *SysexCommand
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,10 +72,11 @@ func (m *FirmataCommandSysex) GetCommand() *SysexCommand {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataCommandSysex(command *SysexCommand) *FirmataCommand {
+// NewFirmataCommandSysex factory function for FirmataCommandSysex
+func NewFirmataCommandSysex(command *SysexCommand, response bool) *FirmataCommand {
 	child := &FirmataCommandSysex{
 		Command:        command,
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
 	child.Child = child
 	return child.FirmataCommand
@@ -101,15 +105,15 @@ func (m *FirmataCommandSysex) GetTypeName() string {
 	return "FirmataCommandSysex"
 }
 
-func (m *FirmataCommandSysex) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSysex) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSysex) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSysex) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -117,8 +121,8 @@ func (m *FirmataCommandSysex) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *FirmataCommandSysex) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSysex) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {

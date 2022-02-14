@@ -8259,12 +8259,12 @@ func CastKnxManufacturer(structType interface{}) KnxManufacturer {
 	return castFunc(structType)
 }
 
-func (m KnxManufacturer) LengthInBits() uint16 {
+func (m KnxManufacturer) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m KnxManufacturer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxManufacturer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxManufacturerParse(readBuffer utils.ReadBuffer) (KnxManufacturer, error) {

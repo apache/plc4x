@@ -32,10 +32,10 @@ type ApduControlConnect struct {
 
 // The corresponding interface
 type IApduControlConnect interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *ApduControlConnect) InitializeParent(parent *ApduControl) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewApduControlConnect factory function for ApduControlConnect
 func NewApduControlConnect() *ApduControl {
 	child := &ApduControlConnect{
 		ApduControl: NewApduControl(),
@@ -92,18 +93,18 @@ func (m *ApduControlConnect) GetTypeName() string {
 	return "ApduControlConnect"
 }
 
-func (m *ApduControlConnect) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlConnect) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlConnect) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlConnect) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduControlConnect) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlConnect) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {

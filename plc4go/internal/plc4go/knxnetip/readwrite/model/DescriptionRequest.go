@@ -36,10 +36,10 @@ type DescriptionRequest struct {
 type IDescriptionRequest interface {
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint
 	GetHpaiControlEndpoint() *HPAIControlEndpoint
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *DescriptionRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDescriptionRequest factory function for DescriptionRequest
 func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DescriptionRequest{
 		HpaiControlEndpoint: hpaiControlEndpoint,
@@ -100,21 +101,21 @@ func (m *DescriptionRequest) GetTypeName() string {
 	return "DescriptionRequest"
 }
 
-func (m *DescriptionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DescriptionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DescriptionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DescriptionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DescriptionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

@@ -5988,6 +5988,12 @@ func KnxDatapointParse(readBuffer utils.ReadBuffer, datapointType KnxDatapointTy
 }
 
 func KnxDatapointSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, datapointType KnxDatapointType) error {
+	m := struct {
+		DatapointType KnxDatapointType
+	}{
+		DatapointType: datapointType,
+	}
+	_ = m
 	writeBuffer.PushContext("KnxDatapoint")
 	switch {
 	case datapointType == KnxDatapointType_BOOL: // BOOL

@@ -39,10 +39,10 @@ type IModbusPDUReadDiscreteInputsRequest interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity
 	GetQuantity() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUReadDiscreteInputsRequest) GetQuantity() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadDiscreteInputsRequest factory function for ModbusPDUReadDiscreteInputsRequest
 func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint16) *ModbusPDU {
 	child := &ModbusPDUReadDiscreteInputsRequest{
 		StartingAddress: startingAddress,
@@ -124,12 +125,12 @@ func (m *ModbusPDUReadDiscreteInputsRequest) GetTypeName() string {
 	return "ModbusPDUReadDiscreteInputsRequest"
 }
 
-func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadDiscreteInputsRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadDiscreteInputsRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadDiscreteInputsRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadDiscreteInputsRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

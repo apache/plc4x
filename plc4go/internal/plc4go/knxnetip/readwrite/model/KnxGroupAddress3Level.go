@@ -42,10 +42,10 @@ type IKnxGroupAddress3Level interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup
 	GetSubGroup() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *KnxGroupAddress3Level) GetSubGroup() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxGroupAddress3Level factory function for KnxGroupAddress3Level
 func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxGroupAddress {
 	child := &KnxGroupAddress3Level{
 		MainGroup:       mainGroup,
@@ -116,12 +117,12 @@ func (m *KnxGroupAddress3Level) GetTypeName() string {
 	return "KnxGroupAddress3Level"
 }
 
-func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxGroupAddress3Level) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxGroupAddress3Level) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxGroupAddress3Level) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -135,8 +136,8 @@ func (m *KnxGroupAddress3Level) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxGroupAddress3Level) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxGroupAddress3Level) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {

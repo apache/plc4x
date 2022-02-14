@@ -31,10 +31,10 @@ type GroupObjectDescriptorRealisationType6 struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationType6 interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -47,6 +47,7 @@ type IGroupObjectDescriptorRealisationType6 interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewGroupObjectDescriptorRealisationType6 factory function for GroupObjectDescriptorRealisationType6
 func NewGroupObjectDescriptorRealisationType6() *GroupObjectDescriptorRealisationType6 {
 	return &GroupObjectDescriptorRealisationType6{}
 }
@@ -68,18 +69,18 @@ func (m *GroupObjectDescriptorRealisationType6) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType6"
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *GroupObjectDescriptorRealisationType6) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {

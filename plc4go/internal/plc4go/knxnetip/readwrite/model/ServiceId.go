@@ -35,10 +35,10 @@ type ServiceId struct {
 type IServiceId interface {
 	// ServiceType returns ServiceType
 	ServiceType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IServiceIdChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewServiceId factory function for ServiceId
 func NewServiceId() *ServiceId {
 	return &ServiceId{}
 }
@@ -84,15 +85,15 @@ func (m *ServiceId) GetTypeName() string {
 	return "ServiceId"
 }
 
-func (m *ServiceId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ServiceId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ServiceId) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ServiceId) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ServiceId) ParentLengthInBits() uint16 {
+func (m *ServiceId) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *ServiceId) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ServiceId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ServiceId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {

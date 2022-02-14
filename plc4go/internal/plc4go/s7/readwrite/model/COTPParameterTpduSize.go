@@ -30,16 +30,19 @@ import (
 type COTPParameterTpduSize struct {
 	*COTPParameter
 	TpduSize COTPTpduSize
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
 	// GetTpduSize returns TpduSize
 	GetTpduSize() COTPTpduSize
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize) *COTPParameter {
+// NewCOTPParameterTpduSize factory function for COTPParameterTpduSize
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *COTPParameter {
 	child := &COTPParameterTpduSize{
 		TpduSize:      tpduSize,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
 	child.Child = child
 	return child.COTPParameter
@@ -100,12 +104,12 @@ func (m *COTPParameterTpduSize) GetTypeName() string {
 	return "COTPParameterTpduSize"
 }
 
-func (m *COTPParameterTpduSize) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterTpduSize) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterTpduSize) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (tpduSize)
 	lengthInBits += 8
@@ -113,8 +117,8 @@ func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterTpduSize) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {

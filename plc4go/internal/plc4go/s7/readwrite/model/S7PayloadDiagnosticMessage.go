@@ -54,10 +54,10 @@ type IS7PayloadDiagnosticMessage interface {
 	GetInfo2() uint32
 	// GetTimeStamp returns TimeStamp
 	GetTimeStamp() *DateAndTime
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -129,6 +129,7 @@ func (m *S7PayloadDiagnosticMessage) GetTimeStamp() *DateAndTime {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadDiagnosticMessage factory function for S7PayloadDiagnosticMessage
 func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadDiagnosticMessage{
 		EventId:               EventId,
@@ -167,12 +168,12 @@ func (m *S7PayloadDiagnosticMessage) GetTypeName() string {
 	return "S7PayloadDiagnosticMessage"
 }
 
-func (m *S7PayloadDiagnosticMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadDiagnosticMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadDiagnosticMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadDiagnosticMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (EventId)
 	lengthInBits += 16
@@ -193,13 +194,13 @@ func (m *S7PayloadDiagnosticMessage) LengthInBitsConditional(lastItem bool) uint
 	lengthInBits += 32
 
 	// Simple field (TimeStamp)
-	lengthInBits += m.TimeStamp.LengthInBits()
+	lengthInBits += m.TimeStamp.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *S7PayloadDiagnosticMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadDiagnosticMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

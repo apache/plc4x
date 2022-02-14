@@ -38,10 +38,10 @@ type IProjectInstallationIdentifier interface {
 	GetProjectNumber() uint8
 	// GetInstallationNumber returns InstallationNumber
 	GetInstallationNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewProjectInstallationIdentifier factory function for ProjectInstallationIdentifier
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
 	return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
 }
@@ -82,11 +83,11 @@ func (m *ProjectInstallationIdentifier) GetTypeName() string {
 	return "ProjectInstallationIdentifier"
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ProjectInstallationIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ProjectInstallationIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (projectNumber)
@@ -98,8 +99,8 @@ func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ProjectInstallationIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {

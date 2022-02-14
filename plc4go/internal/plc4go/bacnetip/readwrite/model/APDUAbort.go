@@ -33,6 +33,9 @@ type APDUAbort struct {
 	Server           bool
 	OriginalInvokeId uint8
 	AbortReason      uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -43,10 +46,10 @@ type IAPDUAbort interface {
 	GetOriginalInvokeId() uint8
 	// GetAbortReason returns AbortReason
 	GetAbortReason() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -83,12 +86,13 @@ func (m *APDUAbort) GetAbortReason() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) *APDU {
+// NewAPDUAbort factory function for APDUAbort
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, apduLength uint16) *APDU {
 	child := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -117,12 +121,12 @@ func (m *APDUAbort) GetTypeName() string {
 	return "APDUAbort"
 }
 
-func (m *APDUAbort) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUAbort) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUAbort) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -139,8 +143,8 @@ func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUAbort) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUAbort) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

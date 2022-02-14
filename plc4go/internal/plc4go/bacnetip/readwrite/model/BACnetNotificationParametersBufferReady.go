@@ -34,6 +34,10 @@ type BACnetNotificationParametersBufferReady struct {
 	PreviousNotification *BACnetContextTagUnsignedInteger
 	CurrentNotification  *BACnetContextTagUnsignedInteger
 	InnerClosingTag      *BACnetClosingTag
+
+	// Arguments.
+	TagNumber  uint8
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
@@ -48,10 +52,10 @@ type IBACnetNotificationParametersBufferReady interface {
 	GetCurrentNotification() *BACnetContextTagUnsignedInteger
 	// GetInnerClosingTag returns InnerClosingTag
 	GetInnerClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -67,11 +71,10 @@ func (m *BACnetNotificationParametersBufferReady) GetPeekedTagNumber() uint8 {
 	return uint8(10)
 }
 
-func (m *BACnetNotificationParametersBufferReady) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetNotificationParametersBufferReady) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
-	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
 
 ///////////////////////////////////////////////////////////
@@ -101,14 +104,15 @@ func (m *BACnetNotificationParametersBufferReady) GetInnerClosingTag() *BACnetCl
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTag, bufferProperty *BACnetDeviceObjectPropertyReference, previousNotification *BACnetContextTagUnsignedInteger, currentNotification *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
+// NewBACnetNotificationParametersBufferReady factory function for BACnetNotificationParametersBufferReady
+func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTag, bufferProperty *BACnetDeviceObjectPropertyReference, previousNotification *BACnetContextTagUnsignedInteger, currentNotification *BACnetContextTagUnsignedInteger, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, objectType BACnetObjectType) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersBufferReady{
 		InnerOpeningTag:              innerOpeningTag,
 		BufferProperty:               bufferProperty,
 		PreviousNotification:         previousNotification,
 		CurrentNotification:          currentNotification,
 		InnerClosingTag:              innerClosingTag,
-		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetNotificationParameters: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectType),
 	}
 	child.Child = child
 	return child.BACnetNotificationParameters
@@ -137,33 +141,33 @@ func (m *BACnetNotificationParametersBufferReady) GetTypeName() string {
 	return "BACnetNotificationParametersBufferReady"
 }
 
-func (m *BACnetNotificationParametersBufferReady) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersBufferReady) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersBufferReady) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetNotificationParametersBufferReady) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.LengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
 
 	// Simple field (bufferProperty)
-	lengthInBits += m.BufferProperty.LengthInBits()
+	lengthInBits += m.BufferProperty.GetLengthInBits()
 
 	// Simple field (previousNotification)
-	lengthInBits += m.PreviousNotification.LengthInBits()
+	lengthInBits += m.PreviousNotification.GetLengthInBits()
 
 	// Simple field (currentNotification)
-	lengthInBits += m.CurrentNotification.LengthInBits()
+	lengthInBits += m.CurrentNotification.GetLengthInBits()
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.LengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersBufferReady) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersBufferReady) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {

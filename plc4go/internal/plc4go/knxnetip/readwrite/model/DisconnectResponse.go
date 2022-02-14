@@ -39,10 +39,10 @@ type IDisconnectResponse interface {
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status
 	GetStatus() Status
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *DisconnectResponse) GetStatus() Status {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDisconnectResponse factory function for DisconnectResponse
 func NewDisconnectResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
 	child := &DisconnectResponse{
 		CommunicationChannelId: communicationChannelId,
@@ -108,12 +109,12 @@ func (m *DisconnectResponse) GetTypeName() string {
 	return "DisconnectResponse"
 }
 
-func (m *DisconnectResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DisconnectResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DisconnectResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DisconnectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -124,8 +125,8 @@ func (m *DisconnectResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DisconnectResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DisconnectResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

@@ -39,10 +39,10 @@ type IModbusPDUGetComEventCounterResponse interface {
 	GetStatus() uint16
 	// GetEventCount returns EventCount
 	GetEventCount() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUGetComEventCounterResponse) GetEventCount() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUGetComEventCounterResponse factory function for ModbusPDUGetComEventCounterResponse
 func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDU {
 	child := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
@@ -124,12 +125,12 @@ func (m *ModbusPDUGetComEventCounterResponse) GetTypeName() string {
 	return "ModbusPDUGetComEventCounterResponse"
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUGetComEventCounterResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUGetComEventCounterResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

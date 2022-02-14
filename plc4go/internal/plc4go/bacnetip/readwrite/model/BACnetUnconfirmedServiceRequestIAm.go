@@ -33,6 +33,9 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	MaximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger
 	SegmentationSupported           *BACnetSegmentation
 	VendorId                        *BACnetApplicationTagUnsignedInteger
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -45,10 +48,10 @@ type IBACnetUnconfirmedServiceRequestIAm interface {
 	GetSegmentationSupported() *BACnetSegmentation
 	// GetVendorId returns VendorId
 	GetVendorId() *BACnetApplicationTagUnsignedInteger
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,13 +93,14 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetVendorId() *BACnetApplicationTag
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger) *BACnetUnconfirmedServiceRequest {
+// NewBACnetUnconfirmedServiceRequestIAm factory function for BACnetUnconfirmedServiceRequestIAm
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier *BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength *BACnetApplicationTagUnsignedInteger, segmentationSupported *BACnetSegmentation, vendorId *BACnetApplicationTagUnsignedInteger, len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestIAm{
 		DeviceIdentifier:                deviceIdentifier,
 		MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
 		SegmentationSupported:           segmentationSupported,
 		VendorId:                        vendorId,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetUnconfirmedServiceRequest
@@ -125,30 +129,30 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.LengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
 
 	// Simple field (maximumApduLengthAcceptedLength)
-	lengthInBits += m.MaximumApduLengthAcceptedLength.LengthInBits()
+	lengthInBits += m.MaximumApduLengthAcceptedLength.GetLengthInBits()
 
 	// Simple field (segmentationSupported)
-	lengthInBits += m.SegmentationSupported.LengthInBits()
+	lengthInBits += m.SegmentationSupported.GetLengthInBits()
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.LengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestIAm) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {

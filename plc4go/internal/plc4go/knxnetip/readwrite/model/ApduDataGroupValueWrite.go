@@ -31,6 +31,9 @@ type ApduDataGroupValueWrite struct {
 	*ApduData
 	DataFirstByte int8
 	Data          []byte
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IApduDataGroupValueWrite interface {
 	GetDataFirstByte() int8
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *ApduDataGroupValueWrite) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte) *ApduData {
+// NewApduDataGroupValueWrite factory function for ApduDataGroupValueWrite
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *ApduData {
 	child := &ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
-		ApduData:      NewApduData(),
+		ApduData:      NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -108,12 +112,12 @@ func (m *ApduDataGroupValueWrite) GetTypeName() string {
 	return "ApduDataGroupValueWrite"
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataGroupValueWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataGroupValueWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -126,8 +130,8 @@ func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataGroupValueWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

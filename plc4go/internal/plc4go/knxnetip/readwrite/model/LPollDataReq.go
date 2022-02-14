@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type LPollDataReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ILPollDataReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *LPollDataReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewLPollDataReq() *CEMI {
+// NewLPollDataReq factory function for LPollDataReq
+func NewLPollDataReq(size uint16) *CEMI {
 	child := &LPollDataReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *LPollDataReq) GetTypeName() string {
 	return "LPollDataReq"
 }
 
-func (m *LPollDataReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LPollDataReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LPollDataReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LPollDataReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LPollDataReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LPollDataReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

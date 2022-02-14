@@ -35,10 +35,10 @@ type ConnectionRequestInformation struct {
 type IConnectionRequestInformation interface {
 	// ConnectionType returns ConnectionType
 	ConnectionType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IConnectionRequestInformationChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionRequestInformation factory function for ConnectionRequestInformation
 func NewConnectionRequestInformation() *ConnectionRequestInformation {
 	return &ConnectionRequestInformation{}
 }
@@ -84,15 +85,15 @@ func (m *ConnectionRequestInformation) GetTypeName() string {
 	return "ConnectionRequestInformation"
 }
 
-func (m *ConnectionRequestInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionRequestInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionRequestInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ConnectionRequestInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ConnectionRequestInformation) ParentLengthInBits() uint16 {
+func (m *ConnectionRequestInformation) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -103,8 +104,8 @@ func (m *ConnectionRequestInformation) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionRequestInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformation, error) {
@@ -160,7 +161,7 @@ func (m *ConnectionRequestInformation) SerializeParent(writeBuffer utils.WriteBu
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")

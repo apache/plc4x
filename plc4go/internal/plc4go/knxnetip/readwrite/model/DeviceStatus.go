@@ -36,10 +36,10 @@ type DeviceStatus struct {
 type IDeviceStatus interface {
 	// GetProgramMode returns ProgramMode
 	GetProgramMode() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,6 +55,7 @@ func (m *DeviceStatus) GetProgramMode() bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDeviceStatus factory function for DeviceStatus
 func NewDeviceStatus(programMode bool) *DeviceStatus {
 	return &DeviceStatus{ProgramMode: programMode}
 }
@@ -76,11 +77,11 @@ func (m *DeviceStatus) GetTypeName() string {
 	return "DeviceStatus"
 }
 
-func (m *DeviceStatus) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceStatus) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DeviceStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -92,8 +93,8 @@ func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DeviceStatus) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceStatus) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {

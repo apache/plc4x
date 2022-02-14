@@ -39,10 +39,10 @@ type IKnxGroupAddress2Level interface {
 	GetMainGroup() uint8
 	// GetSubGroup returns SubGroup
 	GetSubGroup() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *KnxGroupAddress2Level) GetSubGroup() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxGroupAddress2Level factory function for KnxGroupAddress2Level
 func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *KnxGroupAddress {
 	child := &KnxGroupAddress2Level{
 		MainGroup:       mainGroup,
@@ -108,12 +109,12 @@ func (m *KnxGroupAddress2Level) GetTypeName() string {
 	return "KnxGroupAddress2Level"
 }
 
-func (m *KnxGroupAddress2Level) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxGroupAddress2Level) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxGroupAddress2Level) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *KnxGroupAddress2Level) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -124,8 +125,8 @@ func (m *KnxGroupAddress2Level) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxGroupAddress2Level) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxGroupAddress2Level) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {

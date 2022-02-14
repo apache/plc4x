@@ -44,10 +44,10 @@ type IBACnetReadAccessSpecification interface {
 	GetListOfPropertyReferences() []*BACnetPropertyReference
 	// GetClosingTag returns ClosingTag
 	GetClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *BACnetReadAccessSpecification) GetClosingTag() *BACnetClosingTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetReadAccessSpecification factory function for BACnetReadAccessSpecification
 func NewBACnetReadAccessSpecification(objectIdentifier *BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, listOfPropertyReferences []*BACnetPropertyReference, closingTag *BACnetClosingTag) *BACnetReadAccessSpecification {
 	return &BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}
 }
@@ -96,34 +97,34 @@ func (m *BACnetReadAccessSpecification) GetTypeName() string {
 	return "BACnetReadAccessSpecification"
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetReadAccessSpecification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetReadAccessSpecification) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Array field
 	if len(m.ListOfPropertyReferences) > 0 {
 		for _, element := range m.ListOfPropertyReferences {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetReadAccessSpecification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetReadAccessSpecification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetReadAccessSpecification, error) {

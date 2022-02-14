@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressResponse struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataIndividualAddressResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataIndividualAddressResponse) InitializeParent(parent *ApduData) {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataIndividualAddressResponse() *ApduData {
+// NewApduDataIndividualAddressResponse factory function for ApduDataIndividualAddressResponse
+func NewApduDataIndividualAddressResponse(dataLength uint8) *ApduData {
 	child := &ApduDataIndividualAddressResponse{
-		ApduData: NewApduData(),
+		ApduData: NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -92,18 +96,18 @@ func (m *ApduDataIndividualAddressResponse) GetTypeName() string {
 	return "ApduDataIndividualAddressResponse"
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataIndividualAddressResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataIndividualAddressResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataIndividualAddressResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

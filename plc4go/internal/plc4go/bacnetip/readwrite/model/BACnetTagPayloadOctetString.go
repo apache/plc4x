@@ -28,8 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetTagPayloadOctetString struct {
-	Value             string
-	ActualLengthInBit uint16
+	Value string
+
+	// Arguments.
+	ActualLength uint32
 }
 
 // The corresponding interface
@@ -38,10 +40,10 @@ type IBACnetTagPayloadOctetString interface {
 	GetValue() string
 	// GetActualLengthInBit returns ActualLengthInBit
 	GetActualLengthInBit() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -57,12 +59,12 @@ func (m *BACnetTagPayloadOctetString) GetValue() string {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagPayloadOctetString) GetActualLengthInBit() uint16 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualLengthInBit
+	return uint16(m.ActualLength) * uint16(uint16(8))
 }
 
-func NewBACnetTagPayloadOctetString(value string, actualLengthInBit uint16) *BACnetTagPayloadOctetString {
-	return &BACnetTagPayloadOctetString{Value: value, ActualLengthInBit: actualLengthInBit}
+// NewBACnetTagPayloadOctetString factory function for BACnetTagPayloadOctetString
+func NewBACnetTagPayloadOctetString(value string, actualLength uint32) *BACnetTagPayloadOctetString {
+	return &BACnetTagPayloadOctetString{Value: value, ActualLength: actualLength}
 }
 
 func CastBACnetTagPayloadOctetString(structType interface{}) *BACnetTagPayloadOctetString {
@@ -82,23 +84,23 @@ func (m *BACnetTagPayloadOctetString) GetTypeName() string {
 	return "BACnetTagPayloadOctetString"
 }
 
-func (m *BACnetTagPayloadOctetString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadOctetString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadOctetString) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadOctetString) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (value)
-	lengthInBits += uint16(m.ActualLengthInBit)
+	lengthInBits += uint16(m.GetActualLengthInBit())
 
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadOctetString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadOctetString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadOctetString, error) {
@@ -109,6 +111,7 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	// Virtual field
 	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
 	actualLengthInBit := uint16(_actualLengthInBit)
+	_ = actualLengthInBit
 
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit))
@@ -122,7 +125,7 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadOctetString(value, actualLengthInBit), nil
+	return NewBACnetTagPayloadOctetString(value, actualLength), nil
 }
 
 func (m *BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -130,13 +133,13 @@ func (m *BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 		return pushErr
 	}
 	// Virtual field
-	if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
+	if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.GetActualLengthInBit()); _actualLengthInBitErr != nil {
 		return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 	}
 
 	// Simple Field (value)
 	value := string(m.Value)
-	_valueErr := writeBuffer.WriteString("value", uint32(m.ActualLengthInBit), "ASCII", (value))
+	_valueErr := writeBuffer.WriteString("value", uint32(m.GetActualLengthInBit()), "ASCII", (value))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

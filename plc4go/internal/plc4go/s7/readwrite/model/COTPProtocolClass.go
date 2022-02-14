@@ -104,12 +104,12 @@ func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
 	return castFunc(structType)
 }
 
-func (m COTPProtocolClass) LengthInBits() uint16 {
+func (m COTPProtocolClass) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m COTPProtocolClass) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m COTPProtocolClass) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {

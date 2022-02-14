@@ -88,6 +88,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				uint8(tpduId),
 				nil,
 				s7MessageRequest,
+				0,
 			),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)

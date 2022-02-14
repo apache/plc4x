@@ -32,10 +32,10 @@ type BACnetServiceAckGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetEnrollmentSummary interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetSe
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetServiceAckGetEnrollmentSummary factory function for BACnetServiceAckGetEnrollmentSummary
 func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetEnrollmentSummary{
 		BACnetServiceAck: NewBACnetServiceAck(),
@@ -92,18 +93,18 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
 	return "BACnetServiceAckGetEnrollmentSummary"
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {

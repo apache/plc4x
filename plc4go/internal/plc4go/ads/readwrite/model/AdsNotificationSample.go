@@ -41,10 +41,10 @@ type IAdsNotificationSample interface {
 	GetSampleSize() uint32
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *AdsNotificationSample) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsNotificationSample factory function for AdsNotificationSample
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *AdsNotificationSample {
 	return &AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
 }
@@ -89,11 +90,11 @@ func (m *AdsNotificationSample) GetTypeName() string {
 	return "AdsNotificationSample"
 }
 
-func (m *AdsNotificationSample) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsNotificationSample) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AdsNotificationSample) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (notificationHandle)
@@ -110,8 +111,8 @@ func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsNotificationSample) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsNotificationSample) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSample, error) {

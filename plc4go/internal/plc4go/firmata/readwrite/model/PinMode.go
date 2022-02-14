@@ -146,12 +146,12 @@ func CastPinMode(structType interface{}) PinMode {
 	return castFunc(structType)
 }
 
-func (m PinMode) LengthInBits() uint16 {
+func (m PinMode) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m PinMode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m PinMode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {

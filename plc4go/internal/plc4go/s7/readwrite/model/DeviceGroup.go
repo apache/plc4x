@@ -92,12 +92,12 @@ func CastDeviceGroup(structType interface{}) DeviceGroup {
 	return castFunc(structType)
 }
 
-func (m DeviceGroup) LengthInBits() uint16 {
+func (m DeviceGroup) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m DeviceGroup) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m DeviceGroup) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {

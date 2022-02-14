@@ -50,10 +50,10 @@ type IAmsNetId interface {
 	GetOctet5() uint8
 	// GetOctet6 returns Octet6
 	GetOctet6() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -89,6 +89,7 @@ func (m *AmsNetId) GetOctet6() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAmsNetId factory function for AmsNetId
 func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *AmsNetId {
 	return &AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
 }
@@ -110,11 +111,11 @@ func (m *AmsNetId) GetTypeName() string {
 	return "AmsNetId"
 }
 
-func (m *AmsNetId) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsNetId) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsNetId) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsNetId) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (octet1)
@@ -138,8 +139,8 @@ func (m *AmsNetId) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AmsNetId) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsNetId) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {

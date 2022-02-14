@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueResponse struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtGroupPropertyValueResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataExtGroupPropertyValueResponse) InitializeParent(parent *ApduDat
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtGroupPropertyValueResponse() *ApduDataExt {
+// NewApduDataExtGroupPropertyValueResponse factory function for ApduDataExtGroupPropertyValueResponse
+func NewApduDataExtGroupPropertyValueResponse(length uint8) *ApduDataExt {
 	child := &ApduDataExtGroupPropertyValueResponse{
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -92,18 +96,18 @@ func (m *ApduDataExtGroupPropertyValueResponse) GetTypeName() string {
 	return "ApduDataExtGroupPropertyValueResponse"
 }
 
-func (m *ApduDataExtGroupPropertyValueResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtGroupPropertyValueResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtGroupPropertyValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtGroupPropertyValueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtGroupPropertyValueResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtGroupPropertyValueResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

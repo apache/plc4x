@@ -34,6 +34,9 @@ type MPropReadReq struct {
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
@@ -48,10 +51,10 @@ type IMPropReadReq interface {
 	GetNumberOfElements() uint8
 	// GetStartIndex returns StartIndex
 	GetStartIndex() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -96,14 +99,15 @@ func (m *MPropReadReq) GetStartIndex() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16) *CEMI {
+// NewMPropReadReq factory function for MPropReadReq
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *CEMI {
 	child := &MPropReadReq{
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		CEMI:                NewCEMI(),
+		CEMI:                NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -132,12 +136,12 @@ func (m *MPropReadReq) GetTypeName() string {
 	return "MPropReadReq"
 }
 
-func (m *MPropReadReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MPropReadReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MPropReadReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MPropReadReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -157,8 +161,8 @@ func (m *MPropReadReq) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *MPropReadReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MPropReadReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

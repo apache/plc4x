@@ -28,10 +28,8 @@ import (
 
 // The data-structure of this message
 type BACnetApplicationTag struct {
-	Header          *BACnetTagHeader
-	ActualTagNumber uint8
-	ActualLength    uint32
-	Child           IBACnetApplicationTagChild
+	Header *BACnetTagHeader
+	Child  IBACnetApplicationTagChild
 }
 
 // The corresponding interface
@@ -44,10 +42,10 @@ type IBACnetApplicationTag interface {
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength
 	GetActualLength() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -59,7 +57,7 @@ type IBACnetApplicationTagParent interface {
 
 type IBACnetApplicationTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32)
+	InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader)
 	GetTypeName() string
 	IBACnetApplicationTag
 }
@@ -75,17 +73,16 @@ func (m *BACnetApplicationTag) GetHeader() *BACnetTagHeader {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetApplicationTag) GetActualTagNumber() uint8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualTagNumber
+	return m.GetHeader().GetActualTagNumber()
 }
 
 func (m *BACnetApplicationTag) GetActualLength() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualLength
+	return m.GetHeader().GetActualLength()
 }
 
-func NewBACnetApplicationTag(header *BACnetTagHeader, actualTagNumber uint8, actualLength uint32) *BACnetApplicationTag {
-	return &BACnetApplicationTag{Header: header, ActualTagNumber: actualTagNumber, ActualLength: actualLength}
+// NewBACnetApplicationTag factory function for BACnetApplicationTag
+func NewBACnetApplicationTag(header *BACnetTagHeader) *BACnetApplicationTag {
+	return &BACnetApplicationTag{Header: header}
 }
 
 func CastBACnetApplicationTag(structType interface{}) *BACnetApplicationTag {
@@ -105,19 +102,19 @@ func (m *BACnetApplicationTag) GetTypeName() string {
 	return "BACnetApplicationTag"
 }
 
-func (m *BACnetApplicationTag) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetApplicationTag) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetApplicationTag) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetApplicationTag) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetApplicationTag) ParentLengthInBits() uint16 {
+func (m *BACnetApplicationTag) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.LengthInBits()
+	lengthInBits += m.Header.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -126,8 +123,8 @@ func (m *BACnetApplicationTag) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetApplicationTag) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetApplicationTag) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
@@ -149,17 +146,19 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	}
 
 	// Validation
-	if !(bool((header.TagClass) == (TagClass_APPLICATION_TAGS))) {
+	if !(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {
 		return nil, utils.ParseAssertError{"should be a application tag"}
 	}
 
 	// Virtual field
-	_actualTagNumber := header.ActualTagNumber
+	_actualTagNumber := header.GetActualTagNumber()
 	actualTagNumber := uint8(_actualTagNumber)
+	_ = actualTagNumber
 
 	// Virtual field
-	_actualLength := header.ActualLength
+	_actualLength := header.GetActualLength()
 	actualLength := uint32(_actualLength)
+	_ = actualLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetApplicationTag
@@ -204,7 +203,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header, actualTagNumber, actualLength)
+	_parent.Child.InitializeParent(_parent, header)
 	return _parent, nil
 }
 
@@ -229,11 +228,11 @@ func (m *BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
+	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 

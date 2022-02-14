@@ -32,6 +32,9 @@ type FirmataCommandSetDigitalPinValue struct {
 	*FirmataCommand
 	Pin uint8
 	On  bool
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type IFirmataCommandSetDigitalPinValue interface {
 	GetPin() uint8
 	// GetOn returns On
 	GetOn() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,11 +79,12 @@ func (m *FirmataCommandSetDigitalPinValue) GetOn() bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool) *FirmataCommand {
+// NewFirmataCommandSetDigitalPinValue factory function for FirmataCommandSetDigitalPinValue
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *FirmataCommand {
 	child := &FirmataCommandSetDigitalPinValue{
 		Pin:            pin,
 		On:             on,
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
 	child.Child = child
 	return child.FirmataCommand
@@ -109,12 +113,12 @@ func (m *FirmataCommandSetDigitalPinValue) GetTypeName() string {
 	return "FirmataCommandSetDigitalPinValue"
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -128,8 +132,8 @@ func (m *FirmataCommandSetDigitalPinValue) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *FirmataCommandSetDigitalPinValue) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSetDigitalPinValue) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {

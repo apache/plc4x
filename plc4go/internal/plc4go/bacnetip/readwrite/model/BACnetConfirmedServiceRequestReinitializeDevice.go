@@ -32,6 +32,9 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	*BACnetConfirmedServiceRequest
 	ReinitializedStateOfDevice *BACnetContextTagDeviceState
 	Password                   *BACnetContextTagCharacterString
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type IBACnetConfirmedServiceRequestReinitializeDevice interface {
 	GetReinitializedStateOfDevice() *BACnetContextTagDeviceState
 	// GetPassword returns Password
 	GetPassword() *BACnetContextTagCharacterString
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() *BACnetC
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString) *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for BACnetConfirmedServiceRequestReinitializeDevice
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice *BACnetContextTagDeviceState, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestReinitializeDevice{
 		ReinitializedStateOfDevice:    reinitializedStateOfDevice,
 		Password:                      password,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -110,26 +114,26 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (reinitializedStateOfDevice)
-	lengthInBits += m.ReinitializedStateOfDevice.LengthInBits()
+	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits()
 
 	// Optional Field (password)
 	if m.Password != nil {
-		lengthInBits += (*m.Password).LengthInBits()
+		lengthInBits += (*m.Password).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

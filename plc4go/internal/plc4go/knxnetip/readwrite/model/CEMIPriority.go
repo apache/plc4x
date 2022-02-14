@@ -98,12 +98,12 @@ func CastCEMIPriority(structType interface{}) CEMIPriority {
 	return castFunc(structType)
 }
 
-func (m CEMIPriority) LengthInBits() uint16 {
+func (m CEMIPriority) GetLengthInBits() uint16 {
 	return 2
 }
 
-func (m CEMIPriority) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m CEMIPriority) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {

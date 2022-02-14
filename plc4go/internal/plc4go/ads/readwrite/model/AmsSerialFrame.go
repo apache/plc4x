@@ -53,10 +53,10 @@ type IAmsSerialFrame interface {
 	GetUserdata() *AmsPacket
 	// GetCrc returns Crc
 	GetCrc() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -96,6 +96,7 @@ func (m *AmsSerialFrame) GetCrc() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAmsSerialFrame factory function for AmsSerialFrame
 func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata *AmsPacket, crc uint16) *AmsSerialFrame {
 	return &AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
 }
@@ -117,11 +118,11 @@ func (m *AmsSerialFrame) GetTypeName() string {
 	return "AmsSerialFrame"
 }
 
-func (m *AmsSerialFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsSerialFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsSerialFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -140,7 +141,7 @@ func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (userdata)
-	lengthInBits += m.Userdata.LengthInBits()
+	lengthInBits += m.Userdata.GetLengthInBits()
 
 	// Simple field (crc)
 	lengthInBits += 16
@@ -148,8 +149,8 @@ func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AmsSerialFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsSerialFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialFrame, error) {

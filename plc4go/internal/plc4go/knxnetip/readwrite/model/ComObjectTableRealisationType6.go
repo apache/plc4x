@@ -36,10 +36,10 @@ type ComObjectTableRealisationType6 struct {
 type IComObjectTableRealisationType6 interface {
 	// GetComObjectDescriptors returns ComObjectDescriptors
 	GetComObjectDescriptors() *GroupObjectDescriptorRealisationType6
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *ComObjectTableRealisationType6) GetComObjectDescriptors() *GroupObjectD
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewComObjectTableRealisationType6 factory function for ComObjectTableRealisationType6
 func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
 	child := &ComObjectTableRealisationType6{
 		ComObjectDescriptors: comObjectDescriptors,
@@ -100,21 +101,21 @@ func (m *ComObjectTableRealisationType6) GetTypeName() string {
 	return "ComObjectTableRealisationType6"
 }
 
-func (m *ComObjectTableRealisationType6) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ComObjectTableRealisationType6) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ComObjectTableRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ComObjectTableRealisationType6) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (comObjectDescriptors)
-	lengthInBits += m.ComObjectDescriptors.LengthInBits()
+	lengthInBits += m.ComObjectDescriptors.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ComObjectTableRealisationType6) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {

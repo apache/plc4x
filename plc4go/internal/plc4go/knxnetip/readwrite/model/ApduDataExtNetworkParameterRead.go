@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataExtNetworkParameterRead struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtNetworkParameterRead interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataExtNetworkParameterRead) InitializeParent(parent *ApduDataExt) 
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtNetworkParameterRead() *ApduDataExt {
+// NewApduDataExtNetworkParameterRead factory function for ApduDataExtNetworkParameterRead
+func NewApduDataExtNetworkParameterRead(length uint8) *ApduDataExt {
 	child := &ApduDataExtNetworkParameterRead{
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -92,18 +96,18 @@ func (m *ApduDataExtNetworkParameterRead) GetTypeName() string {
 	return "ApduDataExtNetworkParameterRead"
 }
 
-func (m *ApduDataExtNetworkParameterRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtNetworkParameterRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtNetworkParameterRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtNetworkParameterRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtNetworkParameterRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtNetworkParameterRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

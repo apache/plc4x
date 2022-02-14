@@ -32,6 +32,9 @@ type CipWriteResponse struct {
 	*CipService
 	Status    uint8
 	ExtStatus uint8
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type ICipWriteResponse interface {
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus
 	GetExtStatus() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,11 +79,12 @@ func (m *CipWriteResponse) GetExtStatus() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipWriteResponse(status uint8, extStatus uint8) *CipService {
+// NewCipWriteResponse factory function for CipWriteResponse
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *CipService {
 	child := &CipWriteResponse{
 		Status:     status,
 		ExtStatus:  extStatus,
-		CipService: NewCipService(),
+		CipService: NewCipService(serviceLen),
 	}
 	child.Child = child
 	return child.CipService
@@ -109,12 +113,12 @@ func (m *CipWriteResponse) GetTypeName() string {
 	return "CipWriteResponse"
 }
 
-func (m *CipWriteResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipWriteResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipWriteResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -128,8 +132,8 @@ func (m *CipWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipWriteResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipWriteResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {

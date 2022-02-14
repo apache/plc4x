@@ -41,10 +41,10 @@ type IBACnetError interface {
 	GetErrorClass() *BACnetApplicationTagEnumerated
 	// GetErrorCode returns ErrorCode
 	GetErrorCode() *BACnetApplicationTagEnumerated
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *BACnetError) GetErrorCode() *BACnetApplicationTagEnumerated {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetError factory function for BACnetError
 func NewBACnetError(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	return &BACnetError{ErrorClass: errorClass, ErrorCode: errorCode}
 }
@@ -97,30 +98,30 @@ func (m *BACnetError) GetTypeName() string {
 	return "BACnetError"
 }
 
-func (m *BACnetError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetError) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetError) ParentLengthInBits() uint16 {
+func (m *BACnetError) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
 	// Simple field (errorClass)
-	lengthInBits += m.ErrorClass.LengthInBits()
+	lengthInBits += m.ErrorClass.GetLengthInBits()
 
 	// Simple field (errorCode)
-	lengthInBits += m.ErrorCode.LengthInBits()
+	lengthInBits += m.ErrorCode.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

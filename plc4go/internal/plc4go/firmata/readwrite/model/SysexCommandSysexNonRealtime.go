@@ -32,10 +32,10 @@ type SysexCommandSysexNonRealtime struct {
 
 // The corresponding interface
 type ISysexCommandSysexNonRealtime interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandSysexNonRealtime) InitializeParent(parent *SysexCommand) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandSysexNonRealtime factory function for SysexCommandSysexNonRealtime
 func NewSysexCommandSysexNonRealtime() *SysexCommand {
 	child := &SysexCommandSysexNonRealtime{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandSysexNonRealtime) GetTypeName() string {
 	return "SysexCommandSysexNonRealtime"
 }
 
-func (m *SysexCommandSysexNonRealtime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandSysexNonRealtime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandSysexNonRealtime) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandSysexNonRealtime) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandSysexNonRealtime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandSysexNonRealtime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

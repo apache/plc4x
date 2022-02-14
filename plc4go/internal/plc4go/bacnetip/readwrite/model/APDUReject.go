@@ -32,6 +32,9 @@ type APDUReject struct {
 	*APDU
 	OriginalInvokeId uint8
 	RejectReason     uint8
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type IAPDUReject interface {
 	GetOriginalInvokeId() uint8
 	// GetRejectReason returns RejectReason
 	GetRejectReason() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,11 +79,12 @@ func (m *APDUReject) GetRejectReason() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) *APDU {
+// NewAPDUReject factory function for APDUReject
+func NewAPDUReject(originalInvokeId uint8, rejectReason uint8, apduLength uint16) *APDU {
 	child := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -109,12 +113,12 @@ func (m *APDUReject) GetTypeName() string {
 	return "APDUReject"
 }
 
-func (m *APDUReject) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUReject) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUReject) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -128,8 +132,8 @@ func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUReject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUReject) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

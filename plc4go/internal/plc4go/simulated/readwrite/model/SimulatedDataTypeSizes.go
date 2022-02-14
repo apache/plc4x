@@ -362,12 +362,12 @@ func CastSimulatedDataTypeSizes(structType interface{}) SimulatedDataTypeSizes {
 	return castFunc(structType)
 }
 
-func (m SimulatedDataTypeSizes) LengthInBits() uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m SimulatedDataTypeSizes) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m SimulatedDataTypeSizes) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {

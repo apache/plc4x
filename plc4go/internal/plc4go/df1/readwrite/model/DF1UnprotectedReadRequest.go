@@ -39,10 +39,10 @@ type IDF1UnprotectedReadRequest interface {
 	GetAddress() uint16
 	// GetSize returns Size
 	GetSize() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -78,6 +78,7 @@ func (m *DF1UnprotectedReadRequest) GetSize() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1UnprotectedReadRequest factory function for DF1UnprotectedReadRequest
 func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1Command {
 	child := &DF1UnprotectedReadRequest{
 		Address:    address,
@@ -111,12 +112,12 @@ func (m *DF1UnprotectedReadRequest) GetTypeName() string {
 	return "DF1UnprotectedReadRequest"
 }
 
-func (m *DF1UnprotectedReadRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1UnprotectedReadRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1UnprotectedReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1UnprotectedReadRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -127,8 +128,8 @@ func (m *DF1UnprotectedReadRequest) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *DF1UnprotectedReadRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1UnprotectedReadRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (*DF1Command, error) {

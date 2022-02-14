@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKGetAlarmSummary struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetAlarmSummary interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) InitializeParent(parent *BACn
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKGetAlarmSummary factory function for BACnetConfirmedServiceACKGetAlarmSummary
 func NewBACnetConfirmedServiceACKGetAlarmSummary() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKGetAlarmSummary{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -93,18 +94,18 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) GetTypeName() string {
 	return "BACnetConfirmedServiceACKGetAlarmSummary"
 }
 
-func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKGetAlarmSummaryParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

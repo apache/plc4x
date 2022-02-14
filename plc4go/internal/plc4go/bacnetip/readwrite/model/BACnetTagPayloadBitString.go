@@ -31,6 +31,9 @@ type BACnetTagPayloadBitString struct {
 	UnusedBits uint8
 	Data       []bool
 	Unused     []bool
+
+	// Arguments.
+	ActualLength uint32
 }
 
 // The corresponding interface
@@ -41,10 +44,10 @@ type IBACnetTagPayloadBitString interface {
 	GetData() []bool
 	// GetUnused returns Unused
 	GetUnused() []bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,8 +71,9 @@ func (m *BACnetTagPayloadBitString) GetUnused() []bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool) *BACnetTagPayloadBitString {
-	return &BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused}
+// NewBACnetTagPayloadBitString factory function for BACnetTagPayloadBitString
+func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *BACnetTagPayloadBitString {
+	return &BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
 }
 
 func CastBACnetTagPayloadBitString(structType interface{}) *BACnetTagPayloadBitString {
@@ -89,11 +93,11 @@ func (m *BACnetTagPayloadBitString) GetTypeName() string {
 	return "BACnetTagPayloadBitString"
 }
 
-func (m *BACnetTagPayloadBitString) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadBitString) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadBitString) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadBitString) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (unusedBits)
@@ -112,8 +116,8 @@ func (m *BACnetTagPayloadBitString) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadBitString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadBitString) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadBitString, error) {
@@ -171,7 +175,7 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBitString(unusedBits, data, unused), nil
+	return NewBACnetTagPayloadBitString(unusedBits, data, unused, actualLength), nil
 }
 
 func (m *BACnetTagPayloadBitString) Serialize(writeBuffer utils.WriteBuffer) error {

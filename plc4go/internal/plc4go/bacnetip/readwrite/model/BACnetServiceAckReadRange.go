@@ -32,10 +32,10 @@ type BACnetServiceAckReadRange struct {
 
 // The corresponding interface
 type IBACnetServiceAckReadRange interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetServiceAckReadRange) InitializeParent(parent *BACnetServiceAck) {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
 func NewBACnetServiceAckReadRange() *BACnetServiceAck {
 	child := &BACnetServiceAckReadRange{
 		BACnetServiceAck: NewBACnetServiceAck(),
@@ -92,18 +93,18 @@ func (m *BACnetServiceAckReadRange) GetTypeName() string {
 	return "BACnetServiceAckReadRange"
 }
 
-func (m *BACnetServiceAckReadRange) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckReadRange) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckReadRange) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckReadRange) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckReadRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckReadRange) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {

@@ -522,10 +522,10 @@
                               <BACnetApplicationTagDate>
                                 <payload>
                                   <BACnetTagPayloadDate>
-                                    <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
-                                    <month dataType="int" bitLength="8">9</month>
-                                    <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
-                                    <dayOfWeek dataType="int" bitLength="8">6</dayOfWeek>
+                                    <yearMinus1900 dataType="uint" bitLength="8">106</yearMinus1900>
+                                    <month dataType="uint" bitLength="8">9</month>
+                                    <dayOfMonth dataType="uint" bitLength="8">23</dayOfMonth>
+                                    <dayOfWeek dataType="uint" bitLength="8">6</dayOfWeek>
                                   </BACnetTagPayloadDate>
                                 </payload>
                               </BACnetApplicationTagDate>
@@ -545,10 +545,10 @@
                               <BACnetApplicationTagTime>
                                 <payload>
                                   <BACnetTagPayloadTime>
-                                    <hour dataType="int" bitLength="8">23</hour>
-                                    <minute dataType="int" bitLength="8">9</minute>
-                                    <second dataType="int" bitLength="8">54</second>
-                                    <fractional dataType="int" bitLength="8">0</fractional>
+                                    <hour dataType="uint" bitLength="8">23</hour>
+                                    <minute dataType="uint" bitLength="8">9</minute>
+                                    <second dataType="uint" bitLength="8">54</second>
+                                    <fractional dataType="uint" bitLength="8">0</fractional>
                                   </BACnetTagPayloadTime>
                                 </payload>
                               </BACnetApplicationTagTime>
@@ -7767,10 +7767,10 @@ make -f wp.mak clean</value>
                               <BACnetApplicationTagDate>
                                 <payload>
                                   <BACnetTagPayloadDate>
-                                    <yearMinus1900 dataType="int" bitLength="8">106</yearMinus1900>
-                                    <month dataType="int" bitLength="8">9</month>
-                                    <dayOfMonth dataType="int" bitLength="8">23</dayOfMonth>
-                                    <dayOfWeek dataType="int" bitLength="8">-1</dayOfWeek>
+                                    <yearMinus1900 dataType="uint" bitLength="8">106</yearMinus1900>
+                                    <month dataType="uint" bitLength="8">9</month>
+                                    <dayOfMonth dataType="uint" bitLength="8">23</dayOfMonth>
+                                    <dayOfWeek dataType="uint" bitLength="8">255</dayOfWeek>
                                   </BACnetTagPayloadDate>
                                 </payload>
                               </BACnetApplicationTagDate>
@@ -7790,10 +7790,10 @@ make -f wp.mak clean</value>
                               <BACnetApplicationTagTime>
                                 <payload>
                                   <BACnetTagPayloadTime>
-                                    <hour dataType="int" bitLength="8">23</hour>
-                                    <minute dataType="int" bitLength="8">21</minute>
-                                    <second dataType="int" bitLength="8">13</second>
-                                    <fractional dataType="int" bitLength="8">0</fractional>
+                                    <hour dataType="uint" bitLength="8">23</hour>
+                                    <minute dataType="uint" bitLength="8">21</minute>
+                                    <second dataType="uint" bitLength="8">13</second>
+                                    <fractional dataType="uint" bitLength="8">0</fractional>
                                   </BACnetTagPayloadTime>
                                 </payload>
                               </BACnetApplicationTagTime>

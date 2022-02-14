@@ -33,6 +33,9 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	VendorId          *BACnetContextTagUnsignedInteger
 	ServiceNumber     *BACnetContextTagUnsignedInteger
 	ServiceParameters *BACnetPropertyValues
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -43,10 +46,10 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	GetServiceNumber() *BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters
 	GetServiceParameters() *BACnetPropertyValues
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,12 +87,13 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServicePa
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
+// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues, len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
 		VendorId:                        vendorId,
 		ServiceNumber:                   serviceNumber,
 		ServiceParameters:               serviceParameters,
-		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(),
+		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetUnconfirmedServiceRequest
@@ -118,29 +122,29 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetTypeName(
 	return "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.LengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits()
 
 	// Simple field (serviceNumber)
-	lengthInBits += m.ServiceNumber.LengthInBits()
+	lengthInBits += m.ServiceNumber.GetLengthInBits()
 
 	// Optional Field (serviceParameters)
 	if m.ServiceParameters != nil {
-		lengthInBits += (*m.ServiceParameters).LengthInBits()
+		lengthInBits += (*m.ServiceParameters).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {

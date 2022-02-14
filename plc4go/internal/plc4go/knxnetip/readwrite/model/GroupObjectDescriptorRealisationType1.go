@@ -57,10 +57,10 @@ type IGroupObjectDescriptorRealisationType1 interface {
 	GetPriority() CEMIPriority
 	// GetValueType returns ValueType
 	GetValueType() ComObjectValueType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -104,6 +104,7 @@ func (m *GroupObjectDescriptorRealisationType1) GetValueType() ComObjectValueTyp
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewGroupObjectDescriptorRealisationType1 factory function for GroupObjectDescriptorRealisationType1
 func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationType1 {
 	return &GroupObjectDescriptorRealisationType1{DataPointer: dataPointer, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
 }
@@ -125,11 +126,11 @@ func (m *GroupObjectDescriptorRealisationType1) GetTypeName() string {
 	return "GroupObjectDescriptorRealisationType1"
 }
 
-func (m *GroupObjectDescriptorRealisationType1) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *GroupObjectDescriptorRealisationType1) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *GroupObjectDescriptorRealisationType1) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *GroupObjectDescriptorRealisationType1) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dataPointer)
@@ -162,8 +163,8 @@ func (m *GroupObjectDescriptorRealisationType1) LengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *GroupObjectDescriptorRealisationType1) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *GroupObjectDescriptorRealisationType1) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (*GroupObjectDescriptorRealisationType1, error) {

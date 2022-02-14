@@ -33,7 +33,10 @@ type DF1ResponseMessage struct {
 	SourceAddress      uint8
 	Status             uint8
 	TransactionCounter uint16
-	Child              IDF1ResponseMessageChild
+
+	// Arguments.
+	PayloadLength uint16
+	Child         IDF1ResponseMessageChild
 }
 
 // The corresponding interface
@@ -48,10 +51,10 @@ type IDF1ResponseMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter
 	GetTransactionCounter() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,8 +94,9 @@ func (m *DF1ResponseMessage) GetTransactionCounter() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1ResponseMessage {
-	return &DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
+// NewDF1ResponseMessage factory function for DF1ResponseMessage
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *DF1ResponseMessage {
+	return &DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
 }
 
 func CastDF1ResponseMessage(structType interface{}) *DF1ResponseMessage {
@@ -112,15 +116,15 @@ func (m *DF1ResponseMessage) GetTypeName() string {
 	return "DF1ResponseMessage"
 }
 
-func (m *DF1ResponseMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1ResponseMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1ResponseMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1ResponseMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1ResponseMessage) ParentLengthInBits() uint16 {
+func (m *DF1ResponseMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -146,8 +150,8 @@ func (m *DF1ResponseMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1ResponseMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1ResponseMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1ResponseMessage, error) {

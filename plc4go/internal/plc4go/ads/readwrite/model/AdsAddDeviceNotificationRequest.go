@@ -52,10 +52,10 @@ type IAdsAddDeviceNotificationRequest interface {
 	GetMaxDelay() uint32
 	// GetCycleTime returns CycleTime
 	GetCycleTime() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -112,6 +112,7 @@ func (m *AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsAddDeviceNotificationRequest factory function for AdsAddDeviceNotificationRequest
 func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsData {
 	child := &AdsAddDeviceNotificationRequest{
 		IndexGroup:       indexGroup,
@@ -149,12 +150,12 @@ func (m *AdsAddDeviceNotificationRequest) GetTypeName() string {
 	return "AdsAddDeviceNotificationRequest"
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -183,8 +184,8 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

@@ -176,12 +176,12 @@ func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
 	return castFunc(structType)
 }
 
-func (m CIPDataTypeCode) LengthInBits() uint16 {
+func (m CIPDataTypeCode) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m CIPDataTypeCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {

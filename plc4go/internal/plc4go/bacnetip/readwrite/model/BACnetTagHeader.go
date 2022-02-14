@@ -28,18 +28,13 @@ import (
 
 // The data-structure of this message
 type BACnetTagHeader struct {
-	TagNumber                uint8
-	TagClass                 TagClass
-	LengthValueType          uint8
-	ExtTagNumber             *uint8
-	ExtLength                *uint8
-	ExtExtLength             *uint16
-	ExtExtExtLength          *uint32
-	ActualTagNumber          uint8
-	IsBoolean                bool
-	IsConstructed            bool
-	IsPrimitiveAndNotBoolean bool
-	ActualLength             uint32
+	TagNumber       uint8
+	TagClass        TagClass
+	LengthValueType uint8
+	ExtTagNumber    *uint8
+	ExtLength       *uint8
+	ExtExtLength    *uint16
+	ExtExtExtLength *uint32
 }
 
 // The corresponding interface
@@ -68,10 +63,10 @@ type IBACnetTagHeader interface {
 	GetIsPrimitiveAndNotBoolean() bool
 	// GetActualLength returns ActualLength
 	GetActualLength() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -111,32 +106,72 @@ func (m *BACnetTagHeader) GetExtExtExtLength() *uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagHeader) GetActualTagNumber() uint8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualTagNumber
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() interface{} { return uint8(m.GetTagNumber()) }, func() interface{} { return uint8((*m.GetExtTagNumber())) }).(uint8)
 }
 
 func (m *BACnetTagHeader) GetIsBoolean() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsBoolean
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS)))
 }
 
 func (m *BACnetTagHeader) GetIsConstructed() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsConstructed
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6)))
 }
 
 func (m *BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsPrimitiveAndNotBoolean
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean()))
 }
 
 func (m *BACnetTagHeader) GetActualLength() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualLength
+	extTagNumber := m.ExtTagNumber
+	_ = extTagNumber
+	extLength := m.ExtLength
+	_ = extLength
+	extExtLength := m.ExtExtLength
+	_ = extExtLength
+	extExtExtLength := m.ExtExtExtLength
+	_ = extExtExtLength
+	return utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
+		return uint32(uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
+			return uint32(uint32(utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
+		}).(uint32)))
+	}).(uint32)
 }
 
-func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isBoolean bool, isConstructed bool, isPrimitiveAndNotBoolean bool, actualLength uint32) *BACnetTagHeader {
-	return &BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength, ActualTagNumber: actualTagNumber, IsBoolean: isBoolean, IsConstructed: isConstructed, IsPrimitiveAndNotBoolean: isPrimitiveAndNotBoolean, ActualLength: actualLength}
+// NewBACnetTagHeader factory function for BACnetTagHeader
+func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTagHeader {
+	return &BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
 }
 
 func CastBACnetTagHeader(structType interface{}) *BACnetTagHeader {
@@ -156,11 +191,11 @@ func (m *BACnetTagHeader) GetTypeName() string {
 	return "BACnetTagHeader"
 }
 
-func (m *BACnetTagHeader) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagHeader) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagHeader) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (tagNumber)
@@ -205,8 +240,8 @@ func (m *BACnetTagHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetTagHeader) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagHeader) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error) {
@@ -254,18 +289,22 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	// Virtual field
 	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() interface{} { return uint8(tagNumber) }, func() interface{} { return uint8((*extTagNumber)) }).(uint8)
 	actualTagNumber := uint8(_actualTagNumber)
+	_ = actualTagNumber
 
 	// Virtual field
 	_isBoolean := bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS)))
 	isBoolean := bool(_isBoolean)
+	_ = isBoolean
 
 	// Virtual field
 	_isConstructed := bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))
 	isConstructed := bool(_isConstructed)
+	_ = isConstructed
 
 	// Virtual field
 	_isPrimitiveAndNotBoolean := bool(!(isConstructed)) && bool(!(isBoolean))
 	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
+	_ = isPrimitiveAndNotBoolean
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
@@ -304,13 +343,14 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 		}).(uint32)))
 	}).(uint32)
 	actualLength := uint32(_actualLength)
+	_ = actualLength
 
 	if closeErr := readBuffer.CloseContext("BACnetTagHeader"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isBoolean, isConstructed, isPrimitiveAndNotBoolean, actualLength), nil
+	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength), nil
 }
 
 func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -354,19 +394,19 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
+	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
-	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.IsBoolean); _isBooleanErr != nil {
+	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.GetIsBoolean()); _isBooleanErr != nil {
 		return errors.Wrap(_isBooleanErr, "Error serializing 'isBoolean' field")
 	}
 	// Virtual field
-	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.IsConstructed); _isConstructedErr != nil {
+	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.GetIsConstructed()); _isConstructedErr != nil {
 		return errors.Wrap(_isConstructedErr, "Error serializing 'isConstructed' field")
 	}
 	// Virtual field
-	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.IsPrimitiveAndNotBoolean); _isPrimitiveAndNotBooleanErr != nil {
+	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.GetIsPrimitiveAndNotBoolean()); _isPrimitiveAndNotBooleanErr != nil {
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
 
@@ -400,7 +440,7 @@ func (m *BACnetTagHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 

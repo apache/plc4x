@@ -36,10 +36,10 @@ type ModbusPDUReadCoilsResponse struct {
 type IModbusPDUReadCoilsResponse interface {
 	// GetValue returns Value
 	GetValue() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUReadCoilsResponse) GetValue() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadCoilsResponse factory function for ModbusPDUReadCoilsResponse
 func NewModbusPDUReadCoilsResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadCoilsResponse{
 		Value:     value,
@@ -116,12 +117,12 @@ func (m *ModbusPDUReadCoilsResponse) GetTypeName() string {
 	return "ModbusPDUReadCoilsResponse"
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -134,8 +135,8 @@ func (m *ModbusPDUReadCoilsResponse) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadCoilsResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadCoilsResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
@@ -176,7 +177,7 @@ func (m *ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")

@@ -31,7 +31,11 @@ type BACnetContextTagEventType struct {
 	*BACnetContextTag
 	EventType        BACnetEventType
 	ProprietaryValue uint32
-	IsProprietary    bool
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
+	ActualLength             uint32
 }
 
 // The corresponding interface
@@ -42,10 +46,10 @@ type IBACnetContextTagEventType interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary
 	GetIsProprietary() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,11 +65,8 @@ func (m *BACnetContextTagEventType) GetDataType() BACnetDataType {
 	return BACnetDataType_EVENT_TYPE
 }
 
-func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagEventType) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,16 +84,15 @@ func (m *BACnetContextTagEventType) GetProprietaryValue() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetContextTagEventType) GetIsProprietary() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsProprietary
+	return bool((m.GetEventType()) == (BACnetEventType_VENDOR_PROPRIETARY_VALUE))
 }
 
-func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagEventType factory function for BACnetContextTagEventType
+func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagEventType{
 		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
-		IsProprietary:    isProprietary,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -121,15 +121,15 @@ func (m *BACnetContextTagEventType) GetTypeName() string {
 	return "BACnetContextTagEventType"
 }
 
-func (m *BACnetContextTagEventType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagEventType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagEventType) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagEventType) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Manual Field (eventType)
-	lengthInBits += uint16(int32(m.ActualLength) * int32(int32(8)))
+	lengthInBits += uint16(int32(m.GetActualLength()) * int32(int32(8)))
 
 	// Manual Field (proprietaryValue)
 	lengthInBits += uint16(int32(0))
@@ -139,8 +139,8 @@ func (m *BACnetContextTagEventType) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *BACnetContextTagEventType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagEventType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
@@ -168,6 +168,7 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	// Virtual field
 	_isProprietary := bool((eventType) == (BACnetEventType_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
+	_ = isProprietary
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEventType"); closeErr != nil {
 		return nil, closeErr
@@ -177,7 +178,6 @@ func BACnetContextTagEventTypeParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	_child := &BACnetContextTagEventType{
 		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
-		IsProprietary:    isProprietary,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -191,18 +191,18 @@ func (m *BACnetContextTagEventType) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Manual Field (eventType)
-		_eventTypeErr := WriteEventType(writeBuffer, m.EventType)
+		_eventTypeErr := WriteEventType(writeBuffer, m.GetEventType())
 		if _eventTypeErr != nil {
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
 		}
 
 		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryEventType(writeBuffer, m.EventType, m.ProprietaryValue)
+		_proprietaryValueErr := WriteProprietaryEventType(writeBuffer, m.GetEventType(), m.GetProprietaryValue())
 		if _proprietaryValueErr != nil {
 			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 		}
 		// Virtual field
-		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.IsProprietary); _isProprietaryErr != nil {
+		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 			return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 		}
 

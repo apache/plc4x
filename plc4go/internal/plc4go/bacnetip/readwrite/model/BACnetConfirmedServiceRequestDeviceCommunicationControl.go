@@ -33,6 +33,9 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	TimeDuration  *BACnetContextTagUnsignedInteger
 	EnableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
 	Password      *BACnetContextTagCharacterString
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -43,10 +46,10 @@ type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
 	// GetPassword returns Password
 	GetPassword() *BACnetContextTagCharacterString
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,12 +87,13 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword() 
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString) *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for BACnetConfirmedServiceRequestDeviceCommunicationControl
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		TimeDuration:                  timeDuration,
 		EnableDisable:                 enableDisable,
 		Password:                      password,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -118,31 +122,31 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() 
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 
-func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Optional Field (timeDuration)
 	if m.TimeDuration != nil {
-		lengthInBits += (*m.TimeDuration).LengthInBits()
+		lengthInBits += (*m.TimeDuration).GetLengthInBits()
 	}
 
 	// Simple field (enableDisable)
-	lengthInBits += m.EnableDisable.LengthInBits()
+	lengthInBits += m.EnableDisable.GetLengthInBits()
 
 	// Optional Field (password)
 	if m.Password != nil {
-		lengthInBits += (*m.Password).LengthInBits()
+		lengthInBits += (*m.Password).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

@@ -32,10 +32,10 @@ type BACnetErrorPasswordFailure struct {
 
 // The corresponding interface
 type IBACnetErrorPasswordFailure interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorPasswordFailure) InitializeParent(parent *BACnetError, error
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorPasswordFailure factory function for BACnetErrorPasswordFailure
 func NewBACnetErrorPasswordFailure(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorPasswordFailure{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorPasswordFailure) GetTypeName() string {
 	return "BACnetErrorPasswordFailure"
 }
 
-func (m *BACnetErrorPasswordFailure) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorPasswordFailure) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorPasswordFailure) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorPasswordFailure) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorPasswordFailure) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorPasswordFailure) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorPasswordFailureParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

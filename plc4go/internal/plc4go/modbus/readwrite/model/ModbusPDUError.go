@@ -36,10 +36,10 @@ type ModbusPDUError struct {
 type IModbusPDUError interface {
 	// GetExceptionCode returns ExceptionCode
 	GetExceptionCode() ModbusErrorCode
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUError) GetExceptionCode() ModbusErrorCode {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUError factory function for ModbusPDUError
 func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDU {
 	child := &ModbusPDUError{
 		ExceptionCode: exceptionCode,
@@ -116,12 +117,12 @@ func (m *ModbusPDUError) GetTypeName() string {
 	return "ModbusPDUError"
 }
 
-func (m *ModbusPDUError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (exceptionCode)
 	lengthInBits += 8
@@ -129,8 +130,8 @@ func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ModbusPDUError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

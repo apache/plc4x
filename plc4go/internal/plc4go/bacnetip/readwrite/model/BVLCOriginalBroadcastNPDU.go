@@ -30,16 +30,19 @@ import (
 type BVLCOriginalBroadcastNPDU struct {
 	*BVLC
 	Npdu *NPDU
+
+	// Arguments.
+	BvlcPayloadLength uint16
 }
 
 // The corresponding interface
 type IBVLCOriginalBroadcastNPDU interface {
 	// GetNpdu returns Npdu
 	GetNpdu() *NPDU
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,9 +58,7 @@ func (m *BVLCOriginalBroadcastNPDU) GetBvlcFunction() uint8 {
 	return 0x0B
 }
 
-func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -70,10 +71,11 @@ func (m *BVLCOriginalBroadcastNPDU) GetNpdu() *NPDU {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBVLCOriginalBroadcastNPDU factory function for BVLCOriginalBroadcastNPDU
 func NewBVLCOriginalBroadcastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCOriginalBroadcastNPDU{
 		Npdu: npdu,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -102,21 +104,21 @@ func (m *BVLCOriginalBroadcastNPDU) GetTypeName() string {
 	return "BVLCOriginalBroadcastNPDU"
 }
 
-func (m *BVLCOriginalBroadcastNPDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCOriginalBroadcastNPDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCOriginalBroadcastNPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCOriginalBroadcastNPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (npdu)
-	lengthInBits += m.Npdu.LengthInBits()
+	lengthInBits += m.Npdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCOriginalBroadcastNPDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {

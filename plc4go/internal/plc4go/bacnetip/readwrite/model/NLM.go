@@ -29,7 +29,10 @@ import (
 // The data-structure of this message
 type NLM struct {
 	VendorId *uint16
-	Child    INLMChild
+
+	// Arguments.
+	ApduLength uint16
+	Child      INLMChild
 }
 
 // The corresponding interface
@@ -38,10 +41,10 @@ type INLM interface {
 	MessageType() uint8
 	// GetVendorId returns VendorId
 	GetVendorId() *uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,8 +72,9 @@ func (m *NLM) GetVendorId() *uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLM(vendorId *uint16) *NLM {
-	return &NLM{VendorId: vendorId}
+// NewNLM factory function for NLM
+func NewNLM(vendorId *uint16, apduLength uint16) *NLM {
+	return &NLM{VendorId: vendorId, ApduLength: apduLength}
 }
 
 func CastNLM(structType interface{}) *NLM {
@@ -90,15 +94,15 @@ func (m *NLM) GetTypeName() string {
 	return "NLM"
 }
 
-func (m *NLM) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLM) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLM) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *NLM) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *NLM) ParentLengthInBits() uint16 {
+func (m *NLM) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -111,8 +115,8 @@ func (m *NLM) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *NLM) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLM) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {

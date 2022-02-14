@@ -91,9 +91,14 @@ type ${type.name} struct {
 	${field.name?cap_first} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 	</#list>
 </#if>
-<#if type.virtualFields?has_content>
-    <#list type.virtualFields as field>
-        ${field.name?cap_first} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
+<#if parserArguments?has_content>
+    <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
+</#if>
+<#if filteredParserArguments?has_content>
+
+	// Arguments.
+    <#list filteredParserArguments as parserArgument>
+	${parserArgument.name?cap_first} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
     </#list>
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
@@ -123,10 +128,10 @@ type I${type.name} interface {
 	// Get${field.name?cap_first} returns ${field.name?cap_first}
 	Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -152,7 +157,7 @@ func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isComplexTy
                             <#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)>
                             <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
                             <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
 						<#else>
 							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
 						</#if>
@@ -177,7 +182,7 @@ func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isComple
 							<#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)>
 							<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
 							<#assign enumValueTraces=tracer.extractTraces(enumValue)>
-							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+							${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
 						<#else>
 							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
 						</#if>
@@ -212,14 +217,6 @@ type I${type.name}Child interface {
 		${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
 	</#list>
-	<#if type.virtualFields?has_content>, </#if>
-	<#list type.virtualFields as field>
-		${field.name}
-		<#if field.loopType??>[]</#if>
-		<#if helper.needsPointerAccess(field)>*</#if>
-		${helper.getLanguageTypeNameForField(field)}
-		<#sep>, </#sep>
-		</#list>
 	)
 </@compress>
 
@@ -247,22 +244,10 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}
         ${helper.getLanguageTypeNameForField(parentField)}
         <#sep>, </#sep>
     </#list>
-    <#assign parentTypeHasVritualFields=type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>
-	<#if parentTypeHasVritualFields>, </#if>
-	<#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>
-		${parentField.name}
-		<#if parentField.loopType??>[]</#if>
-		<#if helper.needsPointerAccess(parentField)>*</#if>
-		${helper.getLanguageTypeNameForField(parentField)}
-		<#sep>, </#sep>
-	</#list>
 	)
 	{
 </@compress>
 	<#list type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
-	m.${type.parentType.name}.${field.name?cap_first} = ${field.name}
-	</#list>
-	<#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as field>
 	m.${type.parentType.name}.${field.name?cap_first} = ${field.name}
 	</#list>
 }
@@ -284,50 +269,69 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#i
 <#list type.virtualFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.${field.name?cap_first}
+    <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
+	${field.name} := m.${field.name?cap_first}
+	_ = ${field.name}
+    </#list>
+	return ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)}
 }
 
 </#list>
 
+<#if type.parentType?has_content && type.parentType.allParserArguments.isPresent()>
+    <#assign filteredParentParserArguments = type.parentType.allParserArguments.orElseThrow()?filter(arg -> !type.parentType.asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+</#if>
+
+// New${type.name} factory function for ${type.name}
 <@compress single_line=true>
 func New${type.name}(
 	<#list type.propertyFields as field>
 		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
 	</#list>
-	<#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if>
-	<#list type.virtualFields as field>
-		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
-	</#list>
 	<#if type.parentType?has_content>
-		<#if (type.propertyFields?has_content || type.virtualFields?has_content ) && type.parentPropertyFields?has_content>, </#if>
+		<#if type.propertyFields?has_content && type.parentPropertyFields?has_content>, </#if>
 		<#list type.parentPropertyFields as parentField>
 			${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
 			<#sep>, </#sep>
 		</#list>
-        <#if (type.propertyFields?has_content || type.virtualFields?has_content || type.parentPropertyFields?has_content) && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if>
-        <#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>
-            ${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+	</#if>
+    <#if filteredParserArguments?has_content>
+        <#if type.allPropertyFields?has_content>, </#if>
+        <#list filteredParserArguments as parserArgument>
+			${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
             <#sep>, </#sep>
         </#list>
-	</#if>
+    </#if>
 	) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
 </@compress>
+
 <#if type.parentType?has_content>
 	child := &${type.name}{
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-	<#list type.virtualFields as field>
-		${field.name?cap_first}: ${field.name},
-	</#list>
-    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if type.parentPropertyFields?has_content && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if><#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>${parentField.name}<#sep>, </#list>),
+    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
 	child.Child = child
 	return child.${type.parentType.name}
 <#else>
-	return &${type.name}{<#list type.propertyFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list><#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
+	<@compress single_line=true>
+	return &${type.name}{
+		<#list type.propertyFields as field>
+			${field.name?cap_first}: ${field.name}
+			<#sep>, </#sep>
+		</#list>
+        <#if filteredParserArguments?has_content>
+            <#if type.propertyFields?has_content>, </#if>
+            <#list filteredParserArguments as parserArgument>
+                ${parserArgument.name?cap_first}: ${parserArgument.name}
+                <#sep>, </#sep>
+            </#list>
+        </#if>
+	}
+    </@compress>
+
 </#if>
 }
 
@@ -356,17 +360,17 @@ func (m *${type.name}) GetTypeName() string {
 	return "${type.name}"
 }
 
-func (m *${type.name}) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *${type.name}) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
 <#-- TODO: use serializer args instead of a fixed bool for one case -->
-func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 	<#if type.isDiscriminatedParentTypeDefinition()>
-	return m.Child.LengthInBits()
+	return m.Child.GetLengthInBits()
 	<#else>
 		<#if type.isDiscriminatedChildTypeDefinition()>
-	lengthInBits := uint16(m.ParentLengthInBits())
+	lengthInBits := uint16(m.GetParentLengthInBits())
 		<#else>
 	lengthInBits := uint16(0)
 		</#if>
@@ -387,10 +391,10 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 				<#if arrayField.isCountArrayField()>
 		for i, element := range m.${arrayField.name?cap_first} {
 			last := i == len(m.${arrayField.name?cap_first}) -1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 				<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 				</#if>
 		}
 				</#if>
@@ -469,7 +473,7 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#elseif helper.isEnumField(field)>
 		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
 					<#else>
-		lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
+		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits()
 					</#if>
 	}
 					<#break>
@@ -505,14 +509,14 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#elseif helper.isEnumField(field)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
 					<#else>
-	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
+	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits()
 					</#if>
 					<#break>
 				<#case "switch">
 					<#assign switchField = field.asSwitchField().orElseThrow()>
 
 	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+	lengthInBits += m.Child.GetLengthInBits()
 					<#break>
 				<#case "unknown">
 					<#assign unknownField = field.asUnknownField().orElseThrow()>
@@ -535,7 +539,7 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (m *${type.name}) ParentLengthInBits() uint16 {
+func (m *${type.name}) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -554,10 +558,10 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 					<#if arrayField.isCountArrayField()>
 		for i, element := range m.${arrayField.name?cap_first} {
 			last := i >= len(m.${arrayField.name?cap_first}) -1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 					<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 					</#if>
 		}
 				</#if>
@@ -598,7 +602,7 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(discriminatorField)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
 				<#else>
-	lengthInBits += ${discriminatorField.name}.getLengthInBits();
+	lengthInBits += ${discriminatorField.name}.GetLengthInBits();
 				</#if>
 				<#break>
 			<#case "enum">
@@ -637,7 +641,7 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(field)>
 		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
 				<#else>
-		lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
+		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits()
 				</#if>
 	}
 				<#break>
@@ -673,7 +677,7 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(field)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
 				<#else>
-	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
+	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits()
 				</#if>
 				<#break>
 			<#case "unknown">
@@ -696,8 +700,8 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 }
 </#if>
 
-func (m *${type.name}) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *${type.name}) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 <#assign hasParserArguments=parserArguments?has_content/>
@@ -1278,7 +1282,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 											<#assign enumValue=helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)>
 											<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
 											<#assign enumValueTraces=tracer.extractTraces(enumValue)>
-											${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+											${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
 										<#else>
 											${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 										</#if>
@@ -1321,6 +1325,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Virtual field
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
+	_ = ${virtualField.name}
 				<#break>
             <#case "validation">
                 <#assign validationField = field.asValidationField().orElseThrow()>
@@ -1398,11 +1403,6 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				${field.name}
 				<#sep>, </#sep>
 			</#list>
-			<#if type.virtualFields?has_content>, </#if>
-			<#list type.virtualFields as field>
-				${field.name}
-				<#sep>, </#sep>
-			</#list>
 			)
 		</@compress>
 
@@ -1413,16 +1413,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		<#list type.propertyFields as field>
 		${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>)</#if>,
 		</#list>
-        <#list type.virtualFields as field>
-            ${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>)</#if>,
-        </#list>
         ${type.parentType.name}: &${type.parentType.name}{},
 	}
 	_child.${type.parentType.name}.Child = _child
 	return _child.${type.parentType.name}, nil
 	<#else>
 	// Create the instance
-	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name}<#sep>, </#sep></#list>), nil
+	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isComplexTypeReference() && !helper.isEnumTypeReference(arg.type)>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
 	</#if>
 }
 
@@ -1450,7 +1447,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 	${key}ArraySizeInBytes := func(items []*${typeName}) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
-			sizeInBytes += uint32(v.LengthInBytes())
+			sizeInBytes += uint32(v.GetLengthInBytes())
 		}
 		return sizeInBytes
 	}
@@ -1721,7 +1718,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
                 	<#assign typedField = field.asTypedField().orElseThrow()>
                 	<#assign namedField = field.asNamedField().orElseThrow()>
 	// Virtual field
-	if _${namedField.name}Err := writeBuffer.WriteVirtual("${namedField.name}", m.${namedField.name?cap_first}); _${namedField.name}Err != nil {
+	if _${namedField.name}Err := writeBuffer.WriteVirtual("${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
 		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>

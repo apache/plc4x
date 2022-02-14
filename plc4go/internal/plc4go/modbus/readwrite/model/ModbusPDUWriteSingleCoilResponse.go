@@ -39,10 +39,10 @@ type IModbusPDUWriteSingleCoilResponse interface {
 	GetAddress() uint16
 	// GetValue returns Value
 	GetValue() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) GetValue() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUWriteSingleCoilResponse factory function for ModbusPDUWriteSingleCoilResponse
 func NewModbusPDUWriteSingleCoilResponse(address uint16, value uint16) *ModbusPDU {
 	child := &ModbusPDUWriteSingleCoilResponse{
 		Address:   address,
@@ -124,12 +125,12 @@ func (m *ModbusPDUWriteSingleCoilResponse) GetTypeName() string {
 	return "ModbusPDUWriteSingleCoilResponse"
 }
 
-func (m *ModbusPDUWriteSingleCoilResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUWriteSingleCoilResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUWriteSingleCoilResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUWriteSingleCoilResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUWriteSingleCoilResponse) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *ModbusPDUWriteSingleCoilResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUWriteSingleCoilResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

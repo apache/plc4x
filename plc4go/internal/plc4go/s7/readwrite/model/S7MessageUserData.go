@@ -32,10 +32,10 @@ type S7MessageUserData struct {
 
 // The corresponding interface
 type IS7MessageUserData interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -65,6 +65,7 @@ func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference ui
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7MessageUserData factory function for S7MessageUserData
 func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageUserData{
 		S7Message: NewS7Message(tpduReference, parameter, payload),
@@ -96,18 +97,18 @@ func (m *S7MessageUserData) GetTypeName() string {
 	return "S7MessageUserData"
 }
 
-func (m *S7MessageUserData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7MessageUserData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7MessageUserData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7MessageUserData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *S7MessageUserData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7MessageUserData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7Message, error) {

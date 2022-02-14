@@ -32,10 +32,10 @@ type SysexCommandCapabilityQuery struct {
 
 // The corresponding interface
 type ISysexCommandCapabilityQuery interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandCapabilityQuery) InitializeParent(parent *SysexCommand) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandCapabilityQuery factory function for SysexCommandCapabilityQuery
 func NewSysexCommandCapabilityQuery() *SysexCommand {
 	child := &SysexCommandCapabilityQuery{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandCapabilityQuery) GetTypeName() string {
 	return "SysexCommandCapabilityQuery"
 }
 
-func (m *SysexCommandCapabilityQuery) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandCapabilityQuery) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandCapabilityQuery) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandCapabilityQuery) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandCapabilityQuery) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandCapabilityQuery) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

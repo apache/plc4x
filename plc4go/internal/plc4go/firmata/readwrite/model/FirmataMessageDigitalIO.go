@@ -31,6 +31,9 @@ type FirmataMessageDigitalIO struct {
 	*FirmataMessage
 	PinBlock uint8
 	Data     []int8
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IFirmataMessageDigitalIO interface {
 	GetPinBlock() uint8
 	// GetData returns Data
 	GetData() []int8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *FirmataMessageDigitalIO) GetData() []int8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8) *FirmataMessage {
+// NewFirmataMessageDigitalIO factory function for FirmataMessageDigitalIO
+func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *FirmataMessage {
 	child := &FirmataMessageDigitalIO{
 		PinBlock:       pinBlock,
 		Data:           data,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
 	child.Child = child
 	return child.FirmataMessage
@@ -108,12 +112,12 @@ func (m *FirmataMessageDigitalIO) GetTypeName() string {
 	return "FirmataMessageDigitalIO"
 }
 
-func (m *FirmataMessageDigitalIO) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageDigitalIO) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageDigitalIO) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageDigitalIO) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pinBlock)
 	lengthInBits += 4
@@ -126,8 +130,8 @@ func (m *FirmataMessageDigitalIO) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *FirmataMessageDigitalIO) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageDigitalIO) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {

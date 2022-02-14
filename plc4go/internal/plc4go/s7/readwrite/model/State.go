@@ -56,10 +56,10 @@ type IState interface {
 	GetSIG_2() bool
 	// GetSIG_1 returns SIG_1
 	GetSIG_1() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -103,6 +103,7 @@ func (m *State) GetSIG_1() bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewState factory function for State
 func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *State {
 	return &State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
 }
@@ -124,11 +125,11 @@ func (m *State) GetTypeName() string {
 	return "State"
 }
 
-func (m *State) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *State) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *State) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (SIG_8)
@@ -158,8 +159,8 @@ func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *State) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *State) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func StateParse(readBuffer utils.ReadBuffer) (*State, error) {

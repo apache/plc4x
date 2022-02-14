@@ -32,6 +32,9 @@ type LDataCon struct {
 	AdditionalInformationLength uint8
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
@@ -42,10 +45,10 @@ type ILDataCon interface {
 	GetAdditionalInformation() []*CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame
 	GetDataFrame() *LDataFrame
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,12 +85,13 @@ func (m *LDataCon) GetDataFrame() *LDataFrame {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame) *CEMI {
+// NewLDataCon factory function for LDataCon
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *CEMI {
 	child := &LDataCon{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
-		CEMI:                        NewCEMI(),
+		CEMI:                        NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -116,12 +120,12 @@ func (m *LDataCon) GetTypeName() string {
 	return "LDataCon"
 }
 
-func (m *LDataCon) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataCon) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataCon) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -129,18 +133,18 @@ func (m *LDataCon) LengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.AdditionalInformation) > 0 {
 		for _, element := range m.AdditionalInformation {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	// Simple field (dataFrame)
-	lengthInBits += m.DataFrame.LengthInBits()
+	lengthInBits += m.DataFrame.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *LDataCon) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataCon) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

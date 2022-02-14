@@ -39,10 +39,10 @@ type IBACnetServiceAckAtomicReadFile interface {
 	GetEndOfFile() *BACnetApplicationTagBoolean
 	// GetAccessMethod returns AccessMethod
 	GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *BACnetServiceAckAtomicReadFile) GetAccessMethod() *BACnetServiceAckAtom
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetServiceAckAtomicReadFile factory function for BACnetServiceAckAtomicReadFile
 func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicReadFile{
 		EndOfFile:        endOfFile,
@@ -108,24 +109,24 @@ func (m *BACnetServiceAckAtomicReadFile) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFile"
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (endOfFile)
-	lengthInBits += m.EndOfFile.LengthInBits()
+	lengthInBits += m.EndOfFile.GetLengthInBits()
 
 	// Simple field (accessMethod)
-	lengthInBits += m.AccessMethod.LengthInBits()
+	lengthInBits += m.AccessMethod.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {

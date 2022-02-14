@@ -28,9 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetTagPayloadBoolean struct {
-	Value   bool
-	IsTrue  bool
-	IsFalse bool
+
+	// Arguments.
+	ActualLength uint32
 }
 
 // The corresponding interface
@@ -41,10 +41,10 @@ type IBACnetTagPayloadBoolean interface {
 	GetIsTrue() bool
 	// GetIsFalse returns IsFalse
 	GetIsFalse() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -57,22 +57,20 @@ type IBACnetTagPayloadBoolean interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagPayloadBoolean) GetValue() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.Value
+	return bool((m.ActualLength) == (1))
 }
 
 func (m *BACnetTagPayloadBoolean) GetIsTrue() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsTrue
+	return m.GetValue()
 }
 
 func (m *BACnetTagPayloadBoolean) GetIsFalse() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsFalse
+	return !(m.GetValue())
 }
 
-func NewBACnetTagPayloadBoolean(value bool, isTrue bool, isFalse bool) *BACnetTagPayloadBoolean {
-	return &BACnetTagPayloadBoolean{Value: value, IsTrue: isTrue, IsFalse: isFalse}
+// NewBACnetTagPayloadBoolean factory function for BACnetTagPayloadBoolean
+func NewBACnetTagPayloadBoolean(actualLength uint32) *BACnetTagPayloadBoolean {
+	return &BACnetTagPayloadBoolean{ActualLength: actualLength}
 }
 
 func CastBACnetTagPayloadBoolean(structType interface{}) *BACnetTagPayloadBoolean {
@@ -92,11 +90,11 @@ func (m *BACnetTagPayloadBoolean) GetTypeName() string {
 	return "BACnetTagPayloadBoolean"
 }
 
-func (m *BACnetTagPayloadBoolean) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadBoolean) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadBoolean) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -108,8 +106,8 @@ func (m *BACnetTagPayloadBoolean) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadBoolean) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadBoolean) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadBoolean, error) {
@@ -120,21 +118,24 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	// Virtual field
 	_value := bool((actualLength) == (1))
 	value := bool(_value)
+	_ = value
 
 	// Virtual field
 	_isTrue := value
 	isTrue := bool(_isTrue)
+	_ = isTrue
 
 	// Virtual field
 	_isFalse := !(value)
 	isFalse := bool(_isFalse)
+	_ = isFalse
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBoolean"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadBoolean(value, isTrue, isFalse), nil
+	return NewBACnetTagPayloadBoolean(actualLength), nil
 }
 
 func (m *BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -142,15 +143,15 @@ func (m *BACnetTagPayloadBoolean) Serialize(writeBuffer utils.WriteBuffer) error
 		return pushErr
 	}
 	// Virtual field
-	if _valueErr := writeBuffer.WriteVirtual("value", m.Value); _valueErr != nil {
+	if _valueErr := writeBuffer.WriteVirtual("value", m.GetValue()); _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
-	if _isTrueErr := writeBuffer.WriteVirtual("isTrue", m.IsTrue); _isTrueErr != nil {
+	if _isTrueErr := writeBuffer.WriteVirtual("isTrue", m.GetIsTrue()); _isTrueErr != nil {
 		return errors.Wrap(_isTrueErr, "Error serializing 'isTrue' field")
 	}
 	// Virtual field
-	if _isFalseErr := writeBuffer.WriteVirtual("isFalse", m.IsFalse); _isFalseErr != nil {
+	if _isFalseErr := writeBuffer.WriteVirtual("isFalse", m.GetIsFalse()); _isFalseErr != nil {
 		return errors.Wrap(_isFalseErr, "Error serializing 'isFalse' field")
 	}
 

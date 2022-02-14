@@ -44,10 +44,10 @@ type IAlarmMessageAckPushType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects
 	GetMessageObjects() []*AlarmMessageAckObjectPushType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *AlarmMessageAckPushType) GetMessageObjects() []*AlarmMessageAckObjectPu
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAlarmMessageAckPushType factory function for AlarmMessageAckPushType
 func NewAlarmMessageAckPushType(TimeStamp *DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []*AlarmMessageAckObjectPushType) *AlarmMessageAckPushType {
 	return &AlarmMessageAckPushType{TimeStamp: TimeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
@@ -96,15 +97,15 @@ func (m *AlarmMessageAckPushType) GetTypeName() string {
 	return "AlarmMessageAckPushType"
 }
 
-func (m *AlarmMessageAckPushType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckPushType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckPushType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (TimeStamp)
-	lengthInBits += m.TimeStamp.LengthInBits()
+	lengthInBits += m.TimeStamp.GetLengthInBits()
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -116,15 +117,15 @@ func (m *AlarmMessageAckPushType) LengthInBitsConditional(lastItem bool) uint16 
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckPushType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckPushType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckPushType, error) {

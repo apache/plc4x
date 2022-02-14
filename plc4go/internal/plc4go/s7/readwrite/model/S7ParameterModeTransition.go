@@ -49,10 +49,10 @@ type IS7ParameterModeTransition interface {
 	GetCurrentMode() uint8
 	// GetSequenceNumber returns SequenceNumber
 	GetSequenceNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -105,6 +105,7 @@ func (m *S7ParameterModeTransition) GetSequenceNumber() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterModeTransition factory function for S7ParameterModeTransition
 func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7Parameter {
 	child := &S7ParameterModeTransition{
 		Method:           method,
@@ -141,12 +142,12 @@ func (m *S7ParameterModeTransition) GetTypeName() string {
 	return "S7ParameterModeTransition"
 }
 
-func (m *S7ParameterModeTransition) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterModeTransition) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterModeTransition) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterModeTransition) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -172,8 +173,8 @@ func (m *S7ParameterModeTransition) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *S7ParameterModeTransition) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterModeTransition) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
@@ -269,7 +270,7 @@ func (m *S7ParameterModeTransition) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")

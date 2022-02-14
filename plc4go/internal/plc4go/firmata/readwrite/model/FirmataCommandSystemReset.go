@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type FirmataCommandSystemReset struct {
 	*FirmataCommand
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataCommandSystemReset interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataCommandSystemReset() *FirmataCommand {
+// NewFirmataCommandSystemReset factory function for FirmataCommandSystemReset
+func NewFirmataCommandSystemReset(response bool) *FirmataCommand {
 	child := &FirmataCommandSystemReset{
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
 	child.Child = child
 	return child.FirmataCommand
@@ -92,18 +96,18 @@ func (m *FirmataCommandSystemReset) GetTypeName() string {
 	return "FirmataCommandSystemReset"
 }
 
-func (m *FirmataCommandSystemReset) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSystemReset) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSystemReset) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSystemReset) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *FirmataCommandSystemReset) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSystemReset) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {

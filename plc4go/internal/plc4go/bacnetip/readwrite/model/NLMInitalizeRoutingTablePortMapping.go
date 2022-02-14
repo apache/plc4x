@@ -44,10 +44,10 @@ type INLMInitalizeRoutingTablePortMapping interface {
 	GetPortInfoLength() uint8
 	// GetPortInfo returns PortInfo
 	GetPortInfo() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfo() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewNLMInitalizeRoutingTablePortMapping factory function for NLMInitalizeRoutingTablePortMapping
 func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *NLMInitalizeRoutingTablePortMapping {
 	return &NLMInitalizeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
 }
@@ -96,11 +97,11 @@ func (m *NLMInitalizeRoutingTablePortMapping) GetTypeName() string {
 	return "NLMInitalizeRoutingTablePortMapping"
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationNetworkAddress)
@@ -120,8 +121,8 @@ func (m *NLMInitalizeRoutingTablePortMapping) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *NLMInitalizeRoutingTablePortMapping) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLMInitalizeRoutingTablePortMapping, error) {

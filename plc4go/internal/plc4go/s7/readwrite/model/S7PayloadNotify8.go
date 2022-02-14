@@ -36,10 +36,10 @@ type S7PayloadNotify8 struct {
 type IS7PayloadNotify8 interface {
 	// GetAlarmMessage returns AlarmMessage
 	GetAlarmMessage() *AlarmMessagePushType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -87,6 +87,7 @@ func (m *S7PayloadNotify8) GetAlarmMessage() *AlarmMessagePushType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadNotify8 factory function for S7PayloadNotify8
 func NewS7PayloadNotify8(alarmMessage *AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadNotify8{
 		AlarmMessage:          alarmMessage,
@@ -119,21 +120,21 @@ func (m *S7PayloadNotify8) GetTypeName() string {
 	return "S7PayloadNotify8"
 }
 
-func (m *S7PayloadNotify8) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadNotify8) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadNotify8) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadNotify8) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (alarmMessage)
-	lengthInBits += m.AlarmMessage.LengthInBits()
+	lengthInBits += m.AlarmMessage.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *S7PayloadNotify8) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadNotify8) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadNotify8Parse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

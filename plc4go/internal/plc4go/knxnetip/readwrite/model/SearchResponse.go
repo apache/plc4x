@@ -42,10 +42,10 @@ type ISearchResponse interface {
 	GetDibDeviceInfo() *DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies
 	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *SearchResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSearchResponse factory function for SearchResponse
 func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
 	child := &SearchResponse{
 		HpaiControlEndpoint: hpaiControlEndpoint,
@@ -116,27 +117,27 @@ func (m *SearchResponse) GetTypeName() string {
 	return "SearchResponse"
 }
 
-func (m *SearchResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SearchResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SearchResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SearchResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.GetLengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *SearchResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SearchResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

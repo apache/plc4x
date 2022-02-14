@@ -32,10 +32,10 @@ type CIPEncapsulationConnectionRequest struct {
 
 // The corresponding interface
 type ICIPEncapsulationConnectionRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -66,6 +66,7 @@ func (m *CIPEncapsulationConnectionRequest) InitializeParent(parent *CIPEncapsul
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCIPEncapsulationConnectionRequest factory function for CIPEncapsulationConnectionRequest
 func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationConnectionRequest{
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
@@ -97,18 +98,18 @@ func (m *CIPEncapsulationConnectionRequest) GetTypeName() string {
 	return "CIPEncapsulationConnectionRequest"
 }
 
-func (m *CIPEncapsulationConnectionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationConnectionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CIPEncapsulationConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationConnectionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationConnectionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationConnectionRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {

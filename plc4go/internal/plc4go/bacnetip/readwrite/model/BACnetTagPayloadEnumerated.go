@@ -28,8 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetTagPayloadEnumerated struct {
-	Data        []byte
-	ActualValue uint32
+	Data []byte
+
+	// Arguments.
+	ActualLength uint32
 }
 
 // The corresponding interface
@@ -38,10 +40,10 @@ type IBACnetTagPayloadEnumerated interface {
 	GetData() []byte
 	// GetActualValue returns ActualValue
 	GetActualValue() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -57,12 +59,12 @@ func (m *BACnetTagPayloadEnumerated) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagPayloadEnumerated) GetActualValue() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualValue
+	return ParseVarUint(m.GetData())
 }
 
-func NewBACnetTagPayloadEnumerated(data []byte, actualValue uint32) *BACnetTagPayloadEnumerated {
-	return &BACnetTagPayloadEnumerated{Data: data, ActualValue: actualValue}
+// NewBACnetTagPayloadEnumerated factory function for BACnetTagPayloadEnumerated
+func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *BACnetTagPayloadEnumerated {
+	return &BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
 }
 
 func CastBACnetTagPayloadEnumerated(structType interface{}) *BACnetTagPayloadEnumerated {
@@ -82,11 +84,11 @@ func (m *BACnetTagPayloadEnumerated) GetTypeName() string {
 	return "BACnetTagPayloadEnumerated"
 }
 
-func (m *BACnetTagPayloadEnumerated) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadEnumerated) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadEnumerated) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -99,8 +101,8 @@ func (m *BACnetTagPayloadEnumerated) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadEnumerated) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadEnumerated) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadEnumerated, error) {
@@ -117,13 +119,14 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	// Virtual field
 	_actualValue := ParseVarUint(data)
 	actualValue := uint32(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadEnumerated"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadEnumerated(data, actualValue), nil
+	return NewBACnetTagPayloadEnumerated(data, actualLength), nil
 }
 
 func (m *BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -140,7 +143,7 @@ func (m *BACnetTagPayloadEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 	}
 	// Virtual field
-	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}
 

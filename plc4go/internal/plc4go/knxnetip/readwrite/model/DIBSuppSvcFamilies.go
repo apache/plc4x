@@ -38,10 +38,10 @@ type IDIBSuppSvcFamilies interface {
 	GetDescriptionType() uint8
 	// GetServiceIds returns ServiceIds
 	GetServiceIds() []*ServiceId
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *DIBSuppSvcFamilies) GetServiceIds() []*ServiceId {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDIBSuppSvcFamilies factory function for DIBSuppSvcFamilies
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
 	return &DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
 }
@@ -82,11 +83,11 @@ func (m *DIBSuppSvcFamilies) GetTypeName() string {
 	return "DIBSuppSvcFamilies"
 }
 
-func (m *DIBSuppSvcFamilies) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DIBSuppSvcFamilies) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DIBSuppSvcFamilies) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DIBSuppSvcFamilies) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -98,15 +99,15 @@ func (m *DIBSuppSvcFamilies) LengthInBitsConditional(lastItem bool) uint16 {
 	// Array field
 	if len(m.ServiceIds) > 0 {
 		for _, element := range m.ServiceIds {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *DIBSuppSvcFamilies) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DIBSuppSvcFamilies) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
@@ -163,7 +164,7 @@ func (m *DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")

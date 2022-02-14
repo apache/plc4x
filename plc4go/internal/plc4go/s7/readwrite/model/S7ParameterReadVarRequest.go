@@ -36,10 +36,10 @@ type S7ParameterReadVarRequest struct {
 type IS7ParameterReadVarRequest interface {
 	// GetItems returns Items
 	GetItems() []*S7VarRequestParameterItem
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *S7ParameterReadVarRequest) GetItems() []*S7VarRequestParameterItem {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterReadVarRequest factory function for S7ParameterReadVarRequest
 func NewS7ParameterReadVarRequest(items []*S7VarRequestParameterItem) *S7Parameter {
 	child := &S7ParameterReadVarRequest{
 		Items:       items,
@@ -108,12 +109,12 @@ func (m *S7ParameterReadVarRequest) GetTypeName() string {
 	return "S7ParameterReadVarRequest"
 }
 
-func (m *S7ParameterReadVarRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterReadVarRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterReadVarRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterReadVarRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -122,15 +123,15 @@ func (m *S7ParameterReadVarRequest) LengthInBitsConditional(lastItem bool) uint1
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7ParameterReadVarRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterReadVarRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterReadVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
@@ -184,7 +185,7 @@ func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) err
 		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numItems := uint8(uint8(len(m.Items)))
+		numItems := uint8(uint8(len(m.GetItems())))
 		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")

@@ -40,10 +40,10 @@ type S7DataAlarmMessage struct {
 type IS7DataAlarmMessage interface {
 	// CpuFunctionType returns CpuFunctionType
 	CpuFunctionType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ type IS7DataAlarmMessageChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7DataAlarmMessage factory function for S7DataAlarmMessage
 func NewS7DataAlarmMessage() *S7DataAlarmMessage {
 	return &S7DataAlarmMessage{}
 }
@@ -89,15 +90,15 @@ func (m *S7DataAlarmMessage) GetTypeName() string {
 	return "S7DataAlarmMessage"
 }
 
-func (m *S7DataAlarmMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7DataAlarmMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7DataAlarmMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7DataAlarmMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7DataAlarmMessage) ParentLengthInBits() uint16 {
+func (m *S7DataAlarmMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (functionId)
@@ -109,8 +110,8 @@ func (m *S7DataAlarmMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7DataAlarmMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7DataAlarmMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {

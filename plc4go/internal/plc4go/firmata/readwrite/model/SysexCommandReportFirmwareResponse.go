@@ -42,10 +42,10 @@ type ISysexCommandReportFirmwareResponse interface {
 	GetMinorVersion() uint8
 	// GetFileName returns FileName
 	GetFileName() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,6 +90,7 @@ func (m *SysexCommandReportFirmwareResponse) GetFileName() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandReportFirmwareResponse factory function for SysexCommandReportFirmwareResponse
 func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
 	child := &SysexCommandReportFirmwareResponse{
 		MajorVersion: majorVersion,
@@ -124,12 +125,12 @@ func (m *SysexCommandReportFirmwareResponse) GetTypeName() string {
 	return "SysexCommandReportFirmwareResponse"
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -144,8 +145,8 @@ func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *SysexCommandReportFirmwareResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandReportFirmwareResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

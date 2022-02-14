@@ -35,10 +35,10 @@ type AdsMultiRequestItem struct {
 type IAdsMultiRequestItem interface {
 	// IndexGroup returns IndexGroup
 	IndexGroup() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IAdsMultiRequestItemChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsMultiRequestItem factory function for AdsMultiRequestItem
 func NewAdsMultiRequestItem() *AdsMultiRequestItem {
 	return &AdsMultiRequestItem{}
 }
@@ -84,22 +85,22 @@ func (m *AdsMultiRequestItem) GetTypeName() string {
 	return "AdsMultiRequestItem"
 }
 
-func (m *AdsMultiRequestItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsMultiRequestItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsMultiRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *AdsMultiRequestItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *AdsMultiRequestItem) ParentLengthInBits() uint16 {
+func (m *AdsMultiRequestItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *AdsMultiRequestItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsMultiRequestItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {

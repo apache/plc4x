@@ -35,10 +35,10 @@ type IPAddress struct {
 type IIPAddress interface {
 	// GetAddr returns Addr
 	GetAddr() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *IPAddress) GetAddr() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewIPAddress factory function for IPAddress
 func NewIPAddress(addr []byte) *IPAddress {
 	return &IPAddress{Addr: addr}
 }
@@ -75,11 +76,11 @@ func (m *IPAddress) GetTypeName() string {
 	return "IPAddress"
 }
 
-func (m *IPAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *IPAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *IPAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -90,8 +91,8 @@ func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *IPAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *IPAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {

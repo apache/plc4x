@@ -32,10 +32,10 @@ type SysexCommandAnalogMappingQueryRequest struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingQueryRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) InitializeParent(parent *SysexCo
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandAnalogMappingQueryRequest factory function for SysexCommandAnalogMappingQueryRequest
 func NewSysexCommandAnalogMappingQueryRequest() *SysexCommand {
 	child := &SysexCommandAnalogMappingQueryRequest{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandAnalogMappingQueryRequest) GetTypeName() string {
 	return "SysexCommandAnalogMappingQueryRequest"
 }
 
-func (m *SysexCommandAnalogMappingQueryRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandAnalogMappingQueryRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandAnalogMappingQueryRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandAnalogMappingQueryRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandAnalogMappingQueryRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandAnalogMappingQueryRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

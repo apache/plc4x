@@ -32,10 +32,10 @@ type BACnetServiceAckGetAlarmSummary struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetAlarmSummary interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetServiceAckGetAlarmSummary) InitializeParent(parent *BACnetService
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetServiceAckGetAlarmSummary factory function for BACnetServiceAckGetAlarmSummary
 func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetAlarmSummary{
 		BACnetServiceAck: NewBACnetServiceAck(),
@@ -92,18 +93,18 @@ func (m *BACnetServiceAckGetAlarmSummary) GetTypeName() string {
 	return "BACnetServiceAckGetAlarmSummary"
 }
 
-func (m *BACnetServiceAckGetAlarmSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckGetAlarmSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckGetAlarmSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckGetAlarmSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckGetAlarmSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckGetAlarmSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {

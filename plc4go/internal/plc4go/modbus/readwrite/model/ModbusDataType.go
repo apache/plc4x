@@ -362,12 +362,12 @@ func CastModbusDataType(structType interface{}) ModbusDataType {
 	return castFunc(structType)
 }
 
-func (m ModbusDataType) LengthInBits() uint16 {
+func (m ModbusDataType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m ModbusDataType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ModbusDataType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {

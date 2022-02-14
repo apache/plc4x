@@ -36,10 +36,10 @@ type SearchRequest struct {
 type ISearchRequest interface {
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint
 	GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *SearchRequest) GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSearchRequest factory function for SearchRequest
 func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *KnxNetIpMessage {
 	child := &SearchRequest{
 		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
@@ -100,21 +101,21 @@ func (m *SearchRequest) GetTypeName() string {
 	return "SearchRequest"
 }
 
-func (m *SearchRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SearchRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SearchRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SearchRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiIDiscoveryEndpoint)
-	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiIDiscoveryEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *SearchRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SearchRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

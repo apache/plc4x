@@ -18522,12 +18522,12 @@ func CastComObjectTableAddresses(structType interface{}) ComObjectTableAddresses
 	return castFunc(structType)
 }
 
-func (m ComObjectTableAddresses) LengthInBits() uint16 {
+func (m ComObjectTableAddresses) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m ComObjectTableAddresses) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ComObjectTableAddresses) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectTableAddressesParse(readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {

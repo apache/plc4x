@@ -31,16 +31,19 @@ import (
 type APDUUnconfirmedRequest struct {
 	*APDU
 	ServiceRequest *BACnetUnconfirmedServiceRequest
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
 	// GetServiceRequest returns ServiceRequest
 	GetServiceRequest() *BACnetUnconfirmedServiceRequest
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,10 +72,11 @@ func (m *APDUUnconfirmedRequest) GetServiceRequest() *BACnetUnconfirmedServiceRe
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest) *APDU {
+// NewAPDUUnconfirmedRequest factory function for APDUUnconfirmedRequest
+func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, apduLength uint16) *APDU {
 	child := &APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
-		APDU:           NewAPDU(),
+		APDU:           NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -101,24 +105,24 @@ func (m *APDUUnconfirmedRequest) GetTypeName() string {
 	return "APDUUnconfirmedRequest"
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUUnconfirmedRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUUnconfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.ServiceRequest.LengthInBits()
+	lengthInBits += m.ServiceRequest.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUUnconfirmedRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

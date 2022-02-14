@@ -30,16 +30,19 @@ import (
 type ApduDataExtAuthorizeResponse struct {
 	*ApduDataExt
 	Level uint8
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtAuthorizeResponse interface {
 	// GetLevel returns Level
 	GetLevel() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *ApduDataExtAuthorizeResponse) GetLevel() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtAuthorizeResponse(level uint8) *ApduDataExt {
+// NewApduDataExtAuthorizeResponse factory function for ApduDataExtAuthorizeResponse
+func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *ApduDataExt {
 	child := &ApduDataExtAuthorizeResponse{
 		Level:       level,
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -100,12 +104,12 @@ func (m *ApduDataExtAuthorizeResponse) GetTypeName() string {
 	return "ApduDataExtAuthorizeResponse"
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -113,8 +117,8 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtAuthorizeResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtAuthorizeResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

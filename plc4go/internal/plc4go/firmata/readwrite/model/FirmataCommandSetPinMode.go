@@ -31,6 +31,9 @@ type FirmataCommandSetPinMode struct {
 	*FirmataCommand
 	Pin  uint8
 	Mode PinMode
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IFirmataCommandSetPinMode interface {
 	GetPin() uint8
 	// GetMode returns Mode
 	GetMode() PinMode
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *FirmataCommandSetPinMode) GetMode() PinMode {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode) *FirmataCommand {
+// NewFirmataCommandSetPinMode factory function for FirmataCommandSetPinMode
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *FirmataCommand {
 	child := &FirmataCommandSetPinMode{
 		Pin:            pin,
 		Mode:           mode,
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
 	child.Child = child
 	return child.FirmataCommand
@@ -108,12 +112,12 @@ func (m *FirmataCommandSetPinMode) GetTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 
-func (m *FirmataCommandSetPinMode) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandSetPinMode) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandSetPinMode) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandSetPinMode) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -124,8 +128,8 @@ func (m *FirmataCommandSetPinMode) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *FirmataCommandSetPinMode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {

@@ -37,10 +37,10 @@ type ISysexCommand interface {
 	CommandType() uint8
 	// Response returns Response
 	Response() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -65,6 +65,7 @@ type ISysexCommandChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommand factory function for SysexCommand
 func NewSysexCommand() *SysexCommand {
 	return &SysexCommand{}
 }
@@ -86,15 +87,15 @@ func (m *SysexCommand) GetTypeName() string {
 	return "SysexCommand"
 }
 
-func (m *SysexCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *SysexCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *SysexCommand) ParentLengthInBits() uint16 {
+func (m *SysexCommand) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 8
@@ -102,8 +103,8 @@ func (m *SysexCommand) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *SysexCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

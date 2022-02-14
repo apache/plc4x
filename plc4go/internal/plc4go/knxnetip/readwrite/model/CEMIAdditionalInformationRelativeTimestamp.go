@@ -40,10 +40,10 @@ type CEMIAdditionalInformationRelativeTimestamp struct {
 type ICEMIAdditionalInformationRelativeTimestamp interface {
 	// GetRelativeTimestamp returns RelativeTimestamp
 	GetRelativeTimestamp() *RelativeTimestamp
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,6 +73,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetRelativeTimestamp() *Rel
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCEMIAdditionalInformationRelativeTimestamp factory function for CEMIAdditionalInformationRelativeTimestamp
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp *RelativeTimestamp) *CEMIAdditionalInformation {
 	child := &CEMIAdditionalInformationRelativeTimestamp{
 		RelativeTimestamp:         relativeTimestamp,
@@ -105,24 +106,24 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 	return "CEMIAdditionalInformationRelativeTimestamp"
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
 
 	// Simple field (relativeTimestamp)
-	lengthInBits += m.RelativeTimestamp.LengthInBits()
+	lengthInBits += m.RelativeTimestamp.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {

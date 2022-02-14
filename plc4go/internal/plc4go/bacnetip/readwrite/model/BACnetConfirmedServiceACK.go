@@ -35,10 +35,10 @@ type BACnetConfirmedServiceACK struct {
 type IBACnetConfirmedServiceACK interface {
 	// ServiceChoice returns ServiceChoice
 	ServiceChoice() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IBACnetConfirmedServiceACKChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACK factory function for BACnetConfirmedServiceACK
 func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
 	return &BACnetConfirmedServiceACK{}
 }
@@ -84,15 +85,15 @@ func (m *BACnetConfirmedServiceACK) GetTypeName() string {
 	return "BACnetConfirmedServiceACK"
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetConfirmedServiceACK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetConfirmedServiceACK) ParentLengthInBits() uint16 {
+func (m *BACnetConfirmedServiceACK) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *BACnetConfirmedServiceACK) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

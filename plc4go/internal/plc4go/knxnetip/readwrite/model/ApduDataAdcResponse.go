@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataAdcResponse struct {
 	*ApduData
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataAdcResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataAdcResponse) InitializeParent(parent *ApduData) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataAdcResponse() *ApduData {
+// NewApduDataAdcResponse factory function for ApduDataAdcResponse
+func NewApduDataAdcResponse(dataLength uint8) *ApduData {
 	child := &ApduDataAdcResponse{
-		ApduData: NewApduData(),
+		ApduData: NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -92,18 +96,18 @@ func (m *ApduDataAdcResponse) GetTypeName() string {
 	return "ApduDataAdcResponse"
 }
 
-func (m *ApduDataAdcResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataAdcResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataAdcResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataAdcResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataAdcResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataAdcResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataAdcResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

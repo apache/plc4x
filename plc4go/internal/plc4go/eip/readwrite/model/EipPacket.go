@@ -47,10 +47,10 @@ type IEipPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options
 	GetOptions() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,6 +90,7 @@ func (m *EipPacket) GetOptions() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewEipPacket factory function for EipPacket
 func NewEipPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	return &EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
@@ -111,15 +112,15 @@ func (m *EipPacket) GetTypeName() string {
 	return "EipPacket"
 }
 
-func (m *EipPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *EipPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *EipPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *EipPacket) ParentLengthInBits() uint16 {
+func (m *EipPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (command)
 	lengthInBits += 16
@@ -144,8 +145,8 @@ func (m *EipPacket) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *EipPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *EipPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
@@ -251,7 +252,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(24)))
+	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(24)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")

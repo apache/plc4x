@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type TDataIndividualReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ITDataIndividualReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewTDataIndividualReq() *CEMI {
+// NewTDataIndividualReq factory function for TDataIndividualReq
+func NewTDataIndividualReq(size uint16) *CEMI {
 	child := &TDataIndividualReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *TDataIndividualReq) GetTypeName() string {
 	return "TDataIndividualReq"
 }
 
-func (m *TDataIndividualReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TDataIndividualReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TDataIndividualReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TDataIndividualReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *TDataIndividualReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TDataIndividualReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

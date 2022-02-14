@@ -36,10 +36,10 @@ type DF1CommandRequestMessage struct {
 type IDF1CommandRequestMessage interface {
 	// GetCommand returns Command
 	GetCommand() *DF1RequestCommand
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,6 +73,7 @@ func (m *DF1CommandRequestMessage) GetCommand() *DF1RequestCommand {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1CommandRequestMessage factory function for DF1CommandRequestMessage
 func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
 	child := &DF1CommandRequestMessage{
 		Command:           command,
@@ -105,21 +106,21 @@ func (m *DF1CommandRequestMessage) GetTypeName() string {
 	return "DF1CommandRequestMessage"
 }
 
-func (m *DF1CommandRequestMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1CommandRequestMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1CommandRequestMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1CommandRequestMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DF1CommandRequestMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1CommandRequestMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {

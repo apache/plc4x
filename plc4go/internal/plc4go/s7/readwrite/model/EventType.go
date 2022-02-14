@@ -98,12 +98,12 @@ func CastEventType(structType interface{}) EventType {
 	return castFunc(structType)
 }
 
-func (m EventType) LengthInBits() uint16 {
+func (m EventType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m EventType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m EventType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {

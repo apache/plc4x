@@ -29,8 +29,11 @@ import (
 // The data-structure of this message
 type BACnetContextTagDouble struct {
 	*BACnetContextTag
-	Payload     *BACnetTagPayloadDouble
-	ActualValue float64
+	Payload *BACnetTagPayloadDouble
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IBACnetContextTagDouble interface {
 	GetPayload() *BACnetTagPayloadDouble
 	// GetActualValue returns ActualValue
 	GetActualValue() float64
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -58,11 +61,8 @@ func (m *BACnetContextTagDouble) GetDataType() BACnetDataType {
 	return BACnetDataType_DOUBLE
 }
 
-func (m *BACnetContextTagDouble) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagDouble) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -76,15 +76,14 @@ func (m *BACnetContextTagDouble) GetPayload() *BACnetTagPayloadDouble {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetContextTagDouble) GetActualValue() float64 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualValue
+	return m.GetPayload().GetValue()
 }
 
-func NewBACnetContextTagDouble(payload *BACnetTagPayloadDouble, actualValue float64, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagDouble factory function for BACnetContextTagDouble
+func NewBACnetContextTagDouble(payload *BACnetTagPayloadDouble, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagDouble{
 		Payload:          payload,
-		ActualValue:      actualValue,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -113,23 +112,23 @@ func (m *BACnetContextTagDouble) GetTypeName() string {
 	return "BACnetContextTagDouble"
 }
 
-func (m *BACnetContextTagDouble) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagDouble) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagDouble) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagDouble) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *BACnetContextTagDouble) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagDouble) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagDoubleParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
@@ -156,8 +155,9 @@ func BACnetContextTagDoubleParse(readBuffer utils.ReadBuffer, tagNumberArgument 
 	}
 
 	// Virtual field
-	_actualValue := payload.Value
+	_actualValue := payload.GetValue()
 	actualValue := float64(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagDouble"); closeErr != nil {
 		return nil, closeErr
@@ -166,7 +166,6 @@ func BACnetContextTagDoubleParse(readBuffer utils.ReadBuffer, tagNumberArgument 
 	// Create a partially initialized instance
 	_child := &BACnetContextTagDouble{
 		Payload:          CastBACnetTagPayloadDouble(payload),
-		ActualValue:      actualValue,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -191,7 +190,7 @@ func (m *BACnetContextTagDouble) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 

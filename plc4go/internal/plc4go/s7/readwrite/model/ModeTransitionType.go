@@ -128,12 +128,12 @@ func CastModeTransitionType(structType interface{}) ModeTransitionType {
 	return castFunc(structType)
 }
 
-func (m ModeTransitionType) LengthInBits() uint16 {
+func (m ModeTransitionType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m ModeTransitionType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ModeTransitionType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {

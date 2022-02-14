@@ -32,10 +32,10 @@ type ConnectionResponseDataBlockDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) InitializeParent(parent *C
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionResponseDataBlockDeviceManagement factory function for ConnectionResponseDataBlockDeviceManagement
 func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockDeviceManagement{
 		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
@@ -93,18 +94,18 @@ func (m *ConnectionResponseDataBlockDeviceManagement) GetTypeName() string {
 	return "ConnectionResponseDataBlockDeviceManagement"
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {

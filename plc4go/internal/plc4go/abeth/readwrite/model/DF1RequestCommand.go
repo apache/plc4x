@@ -35,10 +35,10 @@ type DF1RequestCommand struct {
 type IDF1RequestCommand interface {
 	// FunctionCode returns FunctionCode
 	FunctionCode() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IDF1RequestCommandChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1RequestCommand factory function for DF1RequestCommand
 func NewDF1RequestCommand() *DF1RequestCommand {
 	return &DF1RequestCommand{}
 }
@@ -84,15 +85,15 @@ func (m *DF1RequestCommand) GetTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *DF1RequestCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1RequestCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1RequestCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1RequestCommand) ParentLengthInBits() uint16 {
+func (m *DF1RequestCommand) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *DF1RequestCommand) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1RequestCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1RequestCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, error) {

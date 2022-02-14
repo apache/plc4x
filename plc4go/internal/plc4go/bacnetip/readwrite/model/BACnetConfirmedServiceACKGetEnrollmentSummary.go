@@ -32,10 +32,10 @@ type BACnetConfirmedServiceACKGetEnrollmentSummary struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetEnrollmentSummary interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) InitializeParent(parent 
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceACKGetEnrollmentSummary factory function for BACnetConfirmedServiceACKGetEnrollmentSummary
 func NewBACnetConfirmedServiceACKGetEnrollmentSummary() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKGetEnrollmentSummary{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -93,18 +94,18 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) GetTypeName() string {
 	return "BACnetConfirmedServiceACKGetEnrollmentSummary"
 }
 
-func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

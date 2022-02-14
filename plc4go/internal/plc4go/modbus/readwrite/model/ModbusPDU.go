@@ -39,10 +39,10 @@ type IModbusPDU interface {
 	FunctionFlag() uint8
 	// Response returns Response
 	Response() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -67,6 +67,7 @@ type IModbusPDUChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDU factory function for ModbusPDU
 func NewModbusPDU() *ModbusPDU {
 	return &ModbusPDU{}
 }
@@ -88,15 +89,15 @@ func (m *ModbusPDU) GetTypeName() string {
 	return "ModbusPDU"
 }
 
-func (m *ModbusPDU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDU) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ModbusPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ModbusPDU) ParentLengthInBits() uint16 {
+func (m *ModbusPDU) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
@@ -106,8 +107,8 @@ func (m *ModbusPDU) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ModbusPDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

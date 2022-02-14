@@ -42,10 +42,10 @@ type IAdsMultiRequestItemWrite interface {
 	GetItemIndexOffset() uint32
 	// GetItemWriteLength returns ItemWriteLength
 	GetItemWriteLength() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *AdsMultiRequestItemWrite) GetItemWriteLength() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsMultiRequestItemWrite factory function for AdsMultiRequestItemWrite
 func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *AdsMultiRequestItem {
 	child := &AdsMultiRequestItemWrite{
 		ItemIndexGroup:      itemIndexGroup,
@@ -116,12 +117,12 @@ func (m *AdsMultiRequestItemWrite) GetTypeName() string {
 	return "AdsMultiRequestItemWrite"
 }
 
-func (m *AdsMultiRequestItemWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsMultiRequestItemWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsMultiRequestItemWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsMultiRequestItemWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -135,8 +136,8 @@ func (m *AdsMultiRequestItemWrite) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *AdsMultiRequestItemWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsMultiRequestItemWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {

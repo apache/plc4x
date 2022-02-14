@@ -32,10 +32,10 @@ type DF1SymbolMessageFrameNAK struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrameNAK interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1SymbolMessageFrameNAK factory function for DF1SymbolMessageFrameNAK
 func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameNAK{
 		DF1Symbol: NewDF1Symbol(),
@@ -92,18 +93,18 @@ func (m *DF1SymbolMessageFrameNAK) GetTypeName() string {
 	return "DF1SymbolMessageFrameNAK"
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *DF1SymbolMessageFrameNAK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1SymbolMessageFrameNAK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {

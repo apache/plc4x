@@ -39,10 +39,10 @@ type IBACnetPropertyReference interface {
 	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
 	// GetArrayIndex returns ArrayIndex
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *BACnetPropertyReference) GetArrayIndex() *BACnetContextTagUnsignedInteg
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetPropertyReference factory function for BACnetPropertyReference
 func NewBACnetPropertyReference(propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger) *BACnetPropertyReference {
 	return &BACnetPropertyReference{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
 }
@@ -83,26 +84,26 @@ func (m *BACnetPropertyReference) GetTypeName() string {
 	return "BACnetPropertyReference"
 }
 
-func (m *BACnetPropertyReference) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyReference) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyReference) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetPropertyReference) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += (*m.ArrayIndex).LengthInBits()
+		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyReference) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyReference) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyReferenceParse(readBuffer utils.ReadBuffer) (*BACnetPropertyReference, error) {

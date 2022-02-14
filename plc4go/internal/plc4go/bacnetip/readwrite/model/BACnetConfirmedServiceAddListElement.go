@@ -32,10 +32,10 @@ type BACnetConfirmedServiceAddListElement struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceAddListElement interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetConfirmedServiceAddListElement) InitializeParent(parent *BACnetCo
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetConfirmedServiceAddListElement factory function for BACnetConfirmedServiceAddListElement
 func NewBACnetConfirmedServiceAddListElement() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceAddListElement{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
@@ -92,18 +93,18 @@ func (m *BACnetConfirmedServiceAddListElement) GetTypeName() string {
 	return "BACnetConfirmedServiceAddListElement"
 }
 
-func (m *BACnetConfirmedServiceAddListElement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceAddListElement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceAddListElement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceAddListElement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceAddListElement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceAddListElement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceAddListElementParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {

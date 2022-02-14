@@ -36,10 +36,10 @@ type ModbusPDUReadFifoQueueResponse struct {
 type IModbusPDUReadFifoQueueResponse interface {
 	// GetFifoValue returns FifoValue
 	GetFifoValue() []uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUReadFifoQueueResponse) GetFifoValue() []uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadFifoQueueResponse factory function for ModbusPDUReadFifoQueueResponse
 func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueResponse{
 		FifoValue: fifoValue,
@@ -116,12 +117,12 @@ func (m *ModbusPDUReadFifoQueueResponse) GetTypeName() string {
 	return "ModbusPDUReadFifoQueueResponse"
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -137,8 +138,8 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
@@ -199,14 +200,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
+		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) + uint16(uint16(2)))
 		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
+		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.GetFifoValue())))*uint16(uint16(2)))) / uint16(uint16(2)))
 		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, (fifoCount))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")

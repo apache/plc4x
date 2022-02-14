@@ -30,16 +30,19 @@ import (
 type CIPEncapsulationReadResponse struct {
 	*CIPEncapsulationPacket
 	Response *DF1ResponseMessage
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type ICIPEncapsulationReadResponse interface {
 	// GetResponse returns Response
 	GetResponse() *DF1ResponseMessage
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,7 +76,8 @@ func (m *CIPEncapsulationReadResponse) GetResponse() *DF1ResponseMessage {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCIPEncapsulationReadResponse(response *DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
+// NewCIPEncapsulationReadResponse factory function for CIPEncapsulationReadResponse
+func NewCIPEncapsulationReadResponse(response *DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationReadResponse{
 		Response:               response,
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
@@ -105,21 +109,21 @@ func (m *CIPEncapsulationReadResponse) GetTypeName() string {
 	return "CIPEncapsulationReadResponse"
 }
 
-func (m *CIPEncapsulationReadResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationReadResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CIPEncapsulationReadResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (response)
-	lengthInBits += m.Response.LengthInBits()
+	lengthInBits += m.Response.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationReadResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationReadResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) (*CIPEncapsulationPacket, error) {

@@ -30,16 +30,19 @@ import (
 type COTPParameterChecksum struct {
 	*COTPParameter
 	Crc uint8
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterChecksum interface {
 	// GetCrc returns Crc
 	GetCrc() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *COTPParameterChecksum) GetCrc() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPParameterChecksum(crc uint8) *COTPParameter {
+// NewCOTPParameterChecksum factory function for COTPParameterChecksum
+func NewCOTPParameterChecksum(crc uint8, rest uint8) *COTPParameter {
 	child := &COTPParameterChecksum{
 		Crc:           crc,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
 	child.Child = child
 	return child.COTPParameter
@@ -100,12 +104,12 @@ func (m *COTPParameterChecksum) GetTypeName() string {
 	return "COTPParameterChecksum"
 }
 
-func (m *COTPParameterChecksum) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterChecksum) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterChecksum) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -113,8 +117,8 @@ func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *COTPParameterChecksum) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterChecksum) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {

@@ -31,16 +31,19 @@ import (
 type CipRRData struct {
 	*EipPacket
 	Exchange *CipExchange
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type ICipRRData interface {
 	// GetExchange returns Exchange
 	GetExchange() *CipExchange
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -74,7 +77,8 @@ func (m *CipRRData) GetExchange() *CipExchange {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
+// NewCipRRData factory function for CipRRData
+func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *EipPacket {
 	child := &CipRRData{
 		Exchange:  exchange,
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
@@ -106,12 +110,12 @@ func (m *CipRRData) GetTypeName() string {
 	return "CipRRData"
 }
 
-func (m *CipRRData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipRRData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipRRData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipRRData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 32
@@ -120,13 +124,13 @@ func (m *CipRRData) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (exchange)
-	lengthInBits += m.Exchange.LengthInBits()
+	lengthInBits += m.Exchange.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *CipRRData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipRRData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error) {

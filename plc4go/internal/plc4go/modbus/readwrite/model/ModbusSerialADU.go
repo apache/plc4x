@@ -33,6 +33,9 @@ type ModbusSerialADU struct {
 	Length        uint16
 	Address       uint8
 	Pdu           *ModbusPDU
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -45,10 +48,10 @@ type IModbusSerialADU interface {
 	GetAddress() uint8
 	// GetPdu returns Pdu
 	GetPdu() *ModbusPDU
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,8 +79,9 @@ func (m *ModbusSerialADU) GetPdu() *ModbusPDU {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu *ModbusPDU) *ModbusSerialADU {
-	return &ModbusSerialADU{TransactionId: transactionId, Length: length, Address: address, Pdu: pdu}
+// NewModbusSerialADU factory function for ModbusSerialADU
+func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu *ModbusPDU, response bool) *ModbusSerialADU {
+	return &ModbusSerialADU{TransactionId: transactionId, Length: length, Address: address, Pdu: pdu, Response: response}
 }
 
 func CastModbusSerialADU(structType interface{}) *ModbusSerialADU {
@@ -97,11 +101,11 @@ func (m *ModbusSerialADU) GetTypeName() string {
 	return "ModbusSerialADU"
 }
 
-func (m *ModbusSerialADU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusSerialADU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusSerialADU) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusSerialADU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionId)
@@ -117,13 +121,13 @@ func (m *ModbusSerialADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.Pdu.LengthInBits()
+	lengthInBits += m.Pdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ModbusSerialADU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusSerialADU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSerialADU, error) {
@@ -184,7 +188,7 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 	}
 
 	// Create the instance
-	return NewModbusSerialADU(transactionId, length, address, pdu), nil
+	return NewModbusSerialADU(transactionId, length, address, pdu, response), nil
 }
 
 func (m *ModbusSerialADU) Serialize(writeBuffer utils.WriteBuffer) error {

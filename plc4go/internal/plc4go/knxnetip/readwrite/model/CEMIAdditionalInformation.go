@@ -35,10 +35,10 @@ type CEMIAdditionalInformation struct {
 type ICEMIAdditionalInformation interface {
 	// AdditionalInformationType returns AdditionalInformationType
 	AdditionalInformationType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type ICEMIAdditionalInformationChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCEMIAdditionalInformation factory function for CEMIAdditionalInformation
 func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
 	return &CEMIAdditionalInformation{}
 }
@@ -84,15 +85,15 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 	return "CEMIAdditionalInformation"
 }
 
-func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CEMIAdditionalInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CEMIAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CEMIAdditionalInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
+func (m *CEMIAdditionalInformation) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CEMIAdditionalInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {

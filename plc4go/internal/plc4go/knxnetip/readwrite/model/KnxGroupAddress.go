@@ -35,10 +35,10 @@ type KnxGroupAddress struct {
 type IKnxGroupAddress interface {
 	// NumLevels returns NumLevels
 	NumLevels() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IKnxGroupAddressChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxGroupAddress factory function for KnxGroupAddress
 func NewKnxGroupAddress() *KnxGroupAddress {
 	return &KnxGroupAddress{}
 }
@@ -84,22 +85,22 @@ func (m *KnxGroupAddress) GetTypeName() string {
 	return "KnxGroupAddress"
 }
 
-func (m *KnxGroupAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxGroupAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxGroupAddress) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *KnxGroupAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *KnxGroupAddress) ParentLengthInBits() uint16 {
+func (m *KnxGroupAddress) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *KnxGroupAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxGroupAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {

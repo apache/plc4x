@@ -31,6 +31,9 @@ type Services struct {
 	ServiceNb uint16
 	Offsets   []uint16
 	Services  []*CipService
+
+	// Arguments.
+	ServicesLen uint16
 }
 
 // The corresponding interface
@@ -41,10 +44,10 @@ type IServices interface {
 	GetOffsets() []uint16
 	// GetServices returns Services
 	GetServices() []*CipService
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,8 +71,9 @@ func (m *Services) GetServices() []*CipService {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewServices(serviceNb uint16, offsets []uint16, services []*CipService) *Services {
-	return &Services{ServiceNb: serviceNb, Offsets: offsets, Services: services}
+// NewServices factory function for Services
+func NewServices(serviceNb uint16, offsets []uint16, services []*CipService, servicesLen uint16) *Services {
+	return &Services{ServiceNb: serviceNb, Offsets: offsets, Services: services, ServicesLen: servicesLen}
 }
 
 func CastServices(structType interface{}) *Services {
@@ -89,11 +93,11 @@ func (m *Services) GetTypeName() string {
 	return "Services"
 }
 
-func (m *Services) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *Services) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *Services) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *Services) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (serviceNb)
@@ -108,15 +112,15 @@ func (m *Services) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.Services) > 0 {
 		for i, element := range m.Services {
 			last := i == len(m.Services)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *Services) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *Services) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, error) {
@@ -174,7 +178,7 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	}
 
 	// Create the instance
-	return NewServices(serviceNb, offsets, services), nil
+	return NewServices(serviceNb, offsets, services, servicesLen), nil
 }
 
 func (m *Services) Serialize(writeBuffer utils.WriteBuffer) error {

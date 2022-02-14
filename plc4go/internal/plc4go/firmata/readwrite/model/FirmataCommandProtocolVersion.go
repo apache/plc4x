@@ -31,6 +31,9 @@ type FirmataCommandProtocolVersion struct {
 	*FirmataCommand
 	MajorVersion uint8
 	MinorVersion uint8
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IFirmataCommandProtocolVersion interface {
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion
 	GetMinorVersion() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8) *FirmataCommand {
+// NewFirmataCommandProtocolVersion factory function for FirmataCommandProtocolVersion
+func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *FirmataCommand {
 	child := &FirmataCommandProtocolVersion{
 		MajorVersion:   majorVersion,
 		MinorVersion:   minorVersion,
-		FirmataCommand: NewFirmataCommand(),
+		FirmataCommand: NewFirmataCommand(response),
 	}
 	child.Child = child
 	return child.FirmataCommand
@@ -108,12 +112,12 @@ func (m *FirmataCommandProtocolVersion) GetTypeName() string {
 	return "FirmataCommandProtocolVersion"
 }
 
-func (m *FirmataCommandProtocolVersion) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataCommandProtocolVersion) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataCommandProtocolVersion) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataCommandProtocolVersion) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (majorVersion)
 	lengthInBits += 8
@@ -124,8 +128,8 @@ func (m *FirmataCommandProtocolVersion) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *FirmataCommandProtocolVersion) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataCommandProtocolVersion) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {

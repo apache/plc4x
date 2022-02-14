@@ -98,12 +98,12 @@ func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
 	return castFunc(structType)
 }
 
-func (m SzlModuleTypeClass) LengthInBits() uint16 {
+func (m SzlModuleTypeClass) GetLengthInBits() uint16 {
 	return 4
 }
 
-func (m SzlModuleTypeClass) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m SzlModuleTypeClass) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {

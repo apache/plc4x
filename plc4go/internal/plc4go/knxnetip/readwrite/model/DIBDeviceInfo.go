@@ -59,10 +59,10 @@ type IDIBDeviceInfo interface {
 	GetKnxNetIpDeviceMacAddress() *MACAddress
 	// GetDeviceFriendlyName returns DeviceFriendlyName
 	GetDeviceFriendlyName() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -110,6 +110,7 @@ func (m *DIBDeviceInfo) GetDeviceFriendlyName() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDIBDeviceInfo factory function for DIBDeviceInfo
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []byte) *DIBDeviceInfo {
 	return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
@@ -131,11 +132,11 @@ func (m *DIBDeviceInfo) GetTypeName() string {
 	return "DIBDeviceInfo"
 }
 
-func (m *DIBDeviceInfo) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DIBDeviceInfo) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *DIBDeviceInfo) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -148,13 +149,13 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (deviceStatus)
-	lengthInBits += m.DeviceStatus.LengthInBits()
+	lengthInBits += m.DeviceStatus.GetLengthInBits()
 
 	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.LengthInBits()
+	lengthInBits += m.KnxAddress.GetLengthInBits()
 
 	// Simple field (projectInstallationIdentifier)
-	lengthInBits += m.ProjectInstallationIdentifier.LengthInBits()
+	lengthInBits += m.ProjectInstallationIdentifier.GetLengthInBits()
 
 	// Array field
 	if len(m.KnxNetIpDeviceSerialNumber) > 0 {
@@ -162,10 +163,10 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Simple field (knxNetIpDeviceMulticastAddress)
-	lengthInBits += m.KnxNetIpDeviceMulticastAddress.LengthInBits()
+	lengthInBits += m.KnxNetIpDeviceMulticastAddress.GetLengthInBits()
 
 	// Simple field (knxNetIpDeviceMacAddress)
-	lengthInBits += m.KnxNetIpDeviceMacAddress.LengthInBits()
+	lengthInBits += m.KnxNetIpDeviceMacAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.DeviceFriendlyName) > 0 {
@@ -175,8 +176,8 @@ func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DIBDeviceInfo) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DIBDeviceInfo) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (*DIBDeviceInfo, error) {
@@ -302,7 +303,7 @@ func (m *DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")

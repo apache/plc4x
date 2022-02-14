@@ -35,10 +35,10 @@ type ConnectionResponseDataBlock struct {
 type IConnectionResponseDataBlock interface {
 	// ConnectionType returns ConnectionType
 	ConnectionType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IConnectionResponseDataBlockChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionResponseDataBlock factory function for ConnectionResponseDataBlock
 func NewConnectionResponseDataBlock() *ConnectionResponseDataBlock {
 	return &ConnectionResponseDataBlock{}
 }
@@ -84,15 +85,15 @@ func (m *ConnectionResponseDataBlock) GetTypeName() string {
 	return "ConnectionResponseDataBlock"
 }
 
-func (m *ConnectionResponseDataBlock) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionResponseDataBlock) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionResponseDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ConnectionResponseDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ConnectionResponseDataBlock) ParentLengthInBits() uint16 {
+func (m *ConnectionResponseDataBlock) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -103,8 +104,8 @@ func (m *ConnectionResponseDataBlock) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ConnectionResponseDataBlock) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionResponseDataBlock) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
@@ -160,7 +161,7 @@ func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuf
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")

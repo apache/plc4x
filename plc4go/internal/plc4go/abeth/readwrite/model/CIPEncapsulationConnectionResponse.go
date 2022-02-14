@@ -32,10 +32,10 @@ type CIPEncapsulationConnectionResponse struct {
 
 // The corresponding interface
 type ICIPEncapsulationConnectionResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -66,6 +66,7 @@ func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsu
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCIPEncapsulationConnectionResponse factory function for CIPEncapsulationConnectionResponse
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationConnectionResponse{
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
@@ -97,18 +98,18 @@ func (m *CIPEncapsulationConnectionResponse) GetTypeName() string {
 	return "CIPEncapsulationConnectionResponse"
 }
 
-func (m *CIPEncapsulationConnectionResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationConnectionResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CIPEncapsulationConnectionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationConnectionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationConnectionResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationConnectionResponseParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {

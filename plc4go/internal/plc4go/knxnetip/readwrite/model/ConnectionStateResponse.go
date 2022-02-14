@@ -39,10 +39,10 @@ type IConnectionStateResponse interface {
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status
 	GetStatus() Status
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *ConnectionStateResponse) GetStatus() Status {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionStateResponse factory function for ConnectionStateResponse
 func NewConnectionStateResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
 	child := &ConnectionStateResponse{
 		CommunicationChannelId: communicationChannelId,
@@ -108,12 +109,12 @@ func (m *ConnectionStateResponse) GetTypeName() string {
 	return "ConnectionStateResponse"
 }
 
-func (m *ConnectionStateResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionStateResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -124,8 +125,8 @@ func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *ConnectionStateResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionStateResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

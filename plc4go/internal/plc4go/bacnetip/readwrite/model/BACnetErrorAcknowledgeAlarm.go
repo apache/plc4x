@@ -32,10 +32,10 @@ type BACnetErrorAcknowledgeAlarm struct {
 
 // The corresponding interface
 type IBACnetErrorAcknowledgeAlarm interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorAcknowledgeAlarm) InitializeParent(parent *BACnetError, erro
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorAcknowledgeAlarm factory function for BACnetErrorAcknowledgeAlarm
 func NewBACnetErrorAcknowledgeAlarm(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorAcknowledgeAlarm{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorAcknowledgeAlarm) GetTypeName() string {
 	return "BACnetErrorAcknowledgeAlarm"
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorAcknowledgeAlarm) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

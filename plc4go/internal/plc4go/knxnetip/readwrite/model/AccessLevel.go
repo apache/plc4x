@@ -181,12 +181,12 @@ func CastAccessLevel(structType interface{}) AccessLevel {
 	return castFunc(structType)
 }
 
-func (m AccessLevel) LengthInBits() uint16 {
+func (m AccessLevel) GetLengthInBits() uint16 {
 	return 4
 }
 
-func (m AccessLevel) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m AccessLevel) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {

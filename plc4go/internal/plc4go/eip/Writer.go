@@ -93,7 +93,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				}
 				return
 			}
-			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, field.GetType(), elements, data)
+			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, field.GetType(), elements, data, 0)
 		}
 
 		if len(items) == 1 {
@@ -105,11 +105,14 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						items[0],
 						m.configuration.backplane,
 						m.configuration.slot,
+						0,
 					),
+					0,
 				),
 				*m.sessionHandle,
 				0,
 				*m.senderContext,
+				0,
 				0,
 			)
 			// Start a new request-transaction (Is ended in the response-handler)
@@ -181,7 +184,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			offset := 2 + nb*2
 			for i := uint16(0); i < nb; i++ {
 				offsets[i] = offset
-				offset += items[i].LengthInBytes()
+				offset += items[i].GetLengthInBytes()
 			}
 
 			serviceArr := make([]*readWriteModel.CipService, nb)
@@ -189,21 +192,24 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				serviceArr[i] = items[i]
 			}
 
-			data := readWriteModel.NewServices(nb, offsets, serviceArr)
+			data := readWriteModel.NewServices(nb, offsets, serviceArr, 0)
 
 			// Assemble the finished paket
 			log.Trace().Msg("Assemble paket")
 			pkt := readWriteModel.NewCipRRData(
 				readWriteModel.NewCipExchange(
 					readWriteModel.NewCipUnconnectedRequest(
-						readWriteModel.NewMultipleServiceRequest(data),
+						readWriteModel.NewMultipleServiceRequest(data, 0),
 						m.configuration.backplane,
 						m.configuration.slot,
+						0,
 					),
+					0,
 				),
 				*m.sessionHandle,
 				0,
 				*m.senderContext,
+				0,
 				0,
 			)
 			// Start a new request-transaction (Is ended in the response-handler)
@@ -336,7 +342,7 @@ func (m Writer) ToPlc4xWriteResponse(response *readWriteModel.CipService, writeR
 				return nil, err
 			}
 		}
-		services := readWriteModel.NewServices(nb, multipleServiceResponse.Offsets, arr)
+		services := readWriteModel.NewServices(nb, multipleServiceResponse.Offsets, arr, 0)
 		for i, fieldName := range writeRequest.GetFieldNames() {
 			if writeResponse, ok := services.Services[i].Child.(*readWriteModel.CipWriteResponse); ok {
 				code := decodeResponseCode(writeResponse.Status)

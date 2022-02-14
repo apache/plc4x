@@ -31,6 +31,9 @@ type COTPPacketTpduError struct {
 	*COTPPacket
 	DestinationReference uint16
 	RejectCause          uint8
+
+	// Arguments.
+	CotpLen uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type ICOTPPacketTpduError interface {
 	GetDestinationReference() uint16
 	// GetRejectCause returns RejectCause
 	GetRejectCause() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -78,11 +81,12 @@ func (m *COTPPacketTpduError) GetRejectCause() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+// NewCOTPPacketTpduError factory function for COTPPacketTpduError
+func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
 	child := &COTPPacketTpduError{
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
-		COTPPacket:           NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	child.Child = child
 	return child.COTPPacket
@@ -111,12 +115,12 @@ func (m *COTPPacketTpduError) GetTypeName() string {
 	return "COTPPacketTpduError"
 }
 
-func (m *COTPPacketTpduError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacketTpduError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPPacketTpduError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -127,8 +131,8 @@ func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *COTPPacketTpduError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacketTpduError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPPacketTpduErrorParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {

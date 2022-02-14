@@ -30,16 +30,19 @@ import (
 type FirmataMessageCommand struct {
 	*FirmataMessage
 	Command *FirmataCommand
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
 type IFirmataMessageCommand interface {
 	// GetCommand returns Command
 	GetCommand() *FirmataCommand
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *FirmataMessageCommand) GetCommand() *FirmataCommand {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewFirmataMessageCommand(command *FirmataCommand) *FirmataMessage {
+// NewFirmataMessageCommand factory function for FirmataMessageCommand
+func NewFirmataMessageCommand(command *FirmataCommand, response bool) *FirmataMessage {
 	child := &FirmataMessageCommand{
 		Command:        command,
-		FirmataMessage: NewFirmataMessage(),
+		FirmataMessage: NewFirmataMessage(response),
 	}
 	child.Child = child
 	return child.FirmataMessage
@@ -100,21 +104,21 @@ func (m *FirmataMessageCommand) GetTypeName() string {
 	return "FirmataMessageCommand"
 }
 
-func (m *FirmataMessageCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *FirmataMessageCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *FirmataMessageCommand) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *FirmataMessageCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *FirmataMessageCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *FirmataMessageCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {

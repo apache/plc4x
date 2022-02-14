@@ -30,16 +30,19 @@ import (
 type DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 	*DF1ResponseMessage
 	Data []uint8
+
+	// Arguments.
+	PayloadLength uint16
 }
 
 // The corresponding interface
 type IDF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	// GetData returns Data
 	GetData() []uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,10 +76,11 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1ResponseMessage {
+// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for DF1CommandResponseMessageProtectedTypedLogicalRead
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *DF1ResponseMessage {
 	child := &DF1CommandResponseMessageProtectedTypedLogicalRead{
 		Data:               data,
-		DF1ResponseMessage: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter),
+		DF1ResponseMessage: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
 	}
 	child.Child = child
 	return child.DF1ResponseMessage
@@ -105,12 +109,12 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetTypeName() strin
 	return "DF1CommandResponseMessageProtectedTypedLogicalRead"
 }
 
-func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -120,8 +124,8 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) LengthInBitsConditi
 	return lengthInBits
 }
 
-func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1ResponseMessage, error) {

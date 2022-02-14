@@ -63,10 +63,10 @@ type IAlarmMessageObjectPushType interface {
 	GetAckStateComing() *State
 	// GetAssociatedValues returns AssociatedValues
 	GetAssociatedValues() []*AssociatedValueType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -114,6 +114,7 @@ func (m *AlarmMessageObjectPushType) GetAssociatedValues() []*AssociatedValueTyp
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAlarmMessageObjectPushType factory function for AlarmMessageObjectPushType
 func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState *State, localState *State, ackStateGoing *State, ackStateComing *State, AssociatedValues []*AssociatedValueType) *AlarmMessageObjectPushType {
 	return &AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
 }
@@ -135,11 +136,11 @@ func (m *AlarmMessageObjectPushType) GetTypeName() string {
 	return "AlarmMessageObjectPushType"
 }
 
-func (m *AlarmMessageObjectPushType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageObjectPushType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectPushType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageObjectPushType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (variableSpec)
@@ -158,30 +159,30 @@ func (m *AlarmMessageObjectPushType) LengthInBitsConditional(lastItem bool) uint
 	lengthInBits += 32
 
 	// Simple field (eventState)
-	lengthInBits += m.EventState.LengthInBits()
+	lengthInBits += m.EventState.GetLengthInBits()
 
 	// Simple field (localState)
-	lengthInBits += m.LocalState.LengthInBits()
+	lengthInBits += m.LocalState.GetLengthInBits()
 
 	// Simple field (ackStateGoing)
-	lengthInBits += m.AckStateGoing.LengthInBits()
+	lengthInBits += m.AckStateGoing.GetLengthInBits()
 
 	// Simple field (ackStateComing)
-	lengthInBits += m.AckStateComing.LengthInBits()
+	lengthInBits += m.AckStateComing.GetLengthInBits()
 
 	// Array field
 	if len(m.AssociatedValues) > 0 {
 		for i, element := range m.AssociatedValues {
 			last := i == len(m.AssociatedValues)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectPushType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageObjectPushType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectPushType, error) {

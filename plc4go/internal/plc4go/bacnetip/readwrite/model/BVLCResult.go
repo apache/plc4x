@@ -36,10 +36,10 @@ type BVLCResult struct {
 type IBVLCResult interface {
 	// GetCode returns Code
 	GetCode() BVLCResultCode
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,9 +55,7 @@ func (m *BVLCResult) GetBvlcFunction() uint8 {
 	return 0x00
 }
 
-func (m *BVLCResult) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCResult) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -70,10 +68,11 @@ func (m *BVLCResult) GetCode() BVLCResultCode {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCResult(code BVLCResultCode, bvlcPayloadLength uint16) *BVLC {
+// NewBVLCResult factory function for BVLCResult
+func NewBVLCResult(code BVLCResultCode) *BVLC {
 	child := &BVLCResult{
 		Code: code,
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -102,12 +101,12 @@ func (m *BVLCResult) GetTypeName() string {
 	return "BVLCResult"
 }
 
-func (m *BVLCResult) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCResult) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCResult) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCResult) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (code)
 	lengthInBits += 16
@@ -115,8 +114,8 @@ func (m *BVLCResult) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BVLCResult) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCResult) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

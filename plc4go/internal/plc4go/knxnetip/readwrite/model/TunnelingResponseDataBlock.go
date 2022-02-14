@@ -41,10 +41,10 @@ type ITunnelingResponseDataBlock interface {
 	GetSequenceCounter() uint8
 	// GetStatus returns Status
 	GetStatus() Status
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *TunnelingResponseDataBlock) GetStatus() Status {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewTunnelingResponseDataBlock factory function for TunnelingResponseDataBlock
 func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *TunnelingResponseDataBlock {
 	return &TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
@@ -89,11 +90,11 @@ func (m *TunnelingResponseDataBlock) GetTypeName() string {
 	return "TunnelingResponseDataBlock"
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TunnelingResponseDataBlock) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *TunnelingResponseDataBlock) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -111,8 +112,8 @@ func (m *TunnelingResponseDataBlock) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *TunnelingResponseDataBlock) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TunnelingResponseDataBlock) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingResponseDataBlock, error) {
@@ -168,7 +169,7 @@ func (m *TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
+	structureLength := uint8(uint8(m.GetLengthInBytes()))
 	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")

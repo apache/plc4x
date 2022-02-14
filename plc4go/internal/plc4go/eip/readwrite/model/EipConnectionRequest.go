@@ -38,10 +38,10 @@ type EipConnectionRequest struct {
 
 // The corresponding interface
 type IEipConnectionRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -72,6 +72,7 @@ func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewEipConnectionRequest factory function for EipConnectionRequest
 func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &EipConnectionRequest{
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
@@ -103,12 +104,12 @@ func (m *EipConnectionRequest) GetTypeName() string {
 	return "EipConnectionRequest"
 }
 
-func (m *EipConnectionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *EipConnectionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (protocolVersion)
 	lengthInBits += 16
@@ -119,8 +120,8 @@ func (m *EipConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *EipConnectionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *EipConnectionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {

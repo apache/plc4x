@@ -33,7 +33,10 @@ type BACnetConstructedDataUnspecified struct {
 	Data               []*BACnetConstructedDataElement
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	Content            *BACnetApplicationTag
-	HasData            bool
+
+	// Arguments.
+	TagNumber                  uint8
+	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
 }
 
 // The corresponding interface
@@ -46,10 +49,10 @@ type IBACnetConstructedDataUnspecified interface {
 	GetContent() *BACnetApplicationTag
 	// GetHasData returns HasData
 	GetHasData() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -73,10 +76,9 @@ func (m *BACnetConstructedDataUnspecified) GetPropertyIdentifierEnum() BACnetPro
 	return 0
 }
 
-func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
+func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
 	m.BACnetConstructedData.ClosingTag = closingTag
-	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,17 +100,20 @@ func (m *BACnetConstructedDataUnspecified) GetContent() *BACnetApplicationTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.HasData
+	propertyIdentifier := m.PropertyIdentifier
+	_ = propertyIdentifier
+	content := m.Content
+	_ = content
+	return bool((len(m.GetData())) == (0))
 }
 
-func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, hasData bool, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
+// NewBACnetConstructedDataUnspecified factory function for BACnetConstructedDataUnspecified
+func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataUnspecified{
 		Data:                  data,
 		PropertyIdentifier:    propertyIdentifier,
 		Content:               content,
-		HasData:               hasData,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
 	}
 	child.Child = child
 	return child.BACnetConstructedData
@@ -137,17 +142,17 @@ func (m *BACnetConstructedDataUnspecified) GetTypeName() string {
 	return "BACnetConstructedDataUnspecified"
 }
 
-func (m *BACnetConstructedDataUnspecified) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConstructedDataUnspecified) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConstructedDataUnspecified) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConstructedDataUnspecified) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
 		for _, element := range m.Data {
-			lengthInBits += element.LengthInBits()
+			lengthInBits += element.GetLengthInBits()
 		}
 	}
 
@@ -155,19 +160,19 @@ func (m *BACnetConstructedDataUnspecified) LengthInBitsConditional(lastItem bool
 
 	// Optional Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
-		lengthInBits += (*m.PropertyIdentifier).LengthInBits()
+		lengthInBits += (*m.PropertyIdentifier).GetLengthInBits()
 	}
 
 	// Optional Field (content)
 	if m.Content != nil {
-		lengthInBits += (*m.Content).LengthInBits()
+		lengthInBits += (*m.Content).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConstructedDataUnspecified) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConstructedDataUnspecified) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
@@ -198,6 +203,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 	// Virtual field
 	_hasData := bool((len(data)) == (0))
 	hasData := bool(_hasData)
+	_ = hasData
 
 	// Optional Field (propertyIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var propertyIdentifier *BACnetContextTagPropertyIdentifier = nil
@@ -250,7 +256,6 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 		Data:                  data,
 		PropertyIdentifier:    CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		Content:               CastBACnetApplicationTag(content),
-		HasData:               hasData,
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
@@ -279,7 +284,7 @@ func (m *BACnetConstructedDataUnspecified) Serialize(writeBuffer utils.WriteBuff
 			}
 		}
 		// Virtual field
-		if _hasDataErr := writeBuffer.WriteVirtual("hasData", m.HasData); _hasDataErr != nil {
+		if _hasDataErr := writeBuffer.WriteVirtual("hasData", m.GetHasData()); _hasDataErr != nil {
 			return errors.Wrap(_hasDataErr, "Error serializing 'hasData' field")
 		}
 

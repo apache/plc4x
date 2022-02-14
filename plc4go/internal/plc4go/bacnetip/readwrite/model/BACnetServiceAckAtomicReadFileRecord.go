@@ -42,10 +42,10 @@ type IBACnetServiceAckAtomicReadFileRecord interface {
 	GetReturnedRecordCount() *BACnetApplicationTagUnsignedInteger
 	// GetFileRecordData returns FileRecordData
 	GetFileRecordData() []*BACnetApplicationTagOctetString
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,11 +61,10 @@ func (m *BACnetServiceAckAtomicReadFileRecord) GetPeekedTagNumber() uint8 {
 	return 0x1
 }
 
-func (m *BACnetServiceAckAtomicReadFileRecord) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetServiceAckAtomicReadFileRecord) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.OpeningTag = openingTag
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.ClosingTag = closingTag
-	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,12 +86,13 @@ func (m *BACnetServiceAckAtomicReadFileRecord) GetFileRecordData() []*BACnetAppl
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, returnedRecordCount *BACnetApplicationTagUnsignedInteger, fileRecordData []*BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetServiceAckAtomicReadFileStreamOrRecord {
+// NewBACnetServiceAckAtomicReadFileRecord factory function for BACnetServiceAckAtomicReadFileRecord
+func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, returnedRecordCount *BACnetApplicationTagUnsignedInteger, fileRecordData []*BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetServiceAckAtomicReadFileStreamOrRecord {
 	child := &BACnetServiceAckAtomicReadFileRecord{
 		FileStartRecord:     fileStartRecord,
 		ReturnedRecordCount: returnedRecordCount,
 		FileRecordData:      fileRecordData,
-		BACnetServiceAckAtomicReadFileStreamOrRecord: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag, peekedTagNumber),
+		BACnetServiceAckAtomicReadFileStreamOrRecord: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 	}
 	child.Child = child
 	return child.BACnetServiceAckAtomicReadFileStreamOrRecord
@@ -121,32 +121,32 @@ func (m *BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {
 	return "BACnetServiceAckAtomicReadFileRecord"
 }
 
-func (m *BACnetServiceAckAtomicReadFileRecord) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetServiceAckAtomicReadFileRecord) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetServiceAckAtomicReadFileRecord) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetServiceAckAtomicReadFileRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (fileStartRecord)
-	lengthInBits += m.FileStartRecord.LengthInBits()
+	lengthInBits += m.FileStartRecord.GetLengthInBits()
 
 	// Simple field (returnedRecordCount)
-	lengthInBits += m.ReturnedRecordCount.LengthInBits()
+	lengthInBits += m.ReturnedRecordCount.GetLengthInBits()
 
 	// Array field
 	if len(m.FileRecordData) > 0 {
 		for i, element := range m.FileRecordData {
 			last := i == len(m.FileRecordData)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetServiceAckAtomicReadFileRecord) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetServiceAckAtomicReadFileRecord) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
@@ -185,9 +185,9 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (*BA
 		return nil, pullErr
 	}
 	// Count array
-	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.Payload.ActualValue)
+	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.GetPayload().GetActualValue())
 	{
-		for curItem := uint16(0); curItem < uint16(returnedRecordCount.Payload.ActualValue); curItem++ {
+		for curItem := uint16(0); curItem < uint16(returnedRecordCount.GetPayload().GetActualValue()); curItem++ {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field")

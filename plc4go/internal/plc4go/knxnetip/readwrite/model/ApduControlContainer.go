@@ -30,16 +30,19 @@ import (
 type ApduControlContainer struct {
 	*Apdu
 	ControlApdu *ApduControl
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduControlContainer interface {
 	// GetControlApdu returns ControlApdu
 	GetControlApdu() *ApduControl
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -71,10 +74,11 @@ func (m *ApduControlContainer) GetControlApdu() *ApduControl {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8) *Apdu {
+// NewApduControlContainer factory function for ApduControlContainer
+func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8, dataLength uint8) *Apdu {
 	child := &ApduControlContainer{
 		ControlApdu: controlApdu,
-		Apdu:        NewApdu(numbered, counter),
+		Apdu:        NewApdu(numbered, counter, dataLength),
 	}
 	child.Child = child
 	return child.Apdu
@@ -103,21 +107,21 @@ func (m *ApduControlContainer) GetTypeName() string {
 	return "ApduControlContainer"
 }
 
-func (m *ApduControlContainer) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlContainer) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlContainer) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlContainer) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (controlApdu)
-	lengthInBits += m.ControlApdu.LengthInBits()
+	lengthInBits += m.ControlApdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ApduControlContainer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlContainer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {

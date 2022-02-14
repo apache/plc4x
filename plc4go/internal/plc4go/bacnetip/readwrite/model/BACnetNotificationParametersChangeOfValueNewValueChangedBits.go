@@ -30,16 +30,19 @@ import (
 type BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 	*BACnetNotificationParametersChangeOfValueNewValue
 	ChangedBits *BACnetContextTagBitString
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 	// GetChangedBits returns ChangedBits
 	GetChangedBits() *BACnetContextTagBitString
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,11 +58,10 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetPeeked
 	return uint8(0)
 }
 
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParametersChangeOfValueNewValue.OpeningTag = openingTag
 	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParametersChangeOfValueNewValue.ClosingTag = closingTag
-	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagNumber = peekedTagNumber
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,10 +75,11 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetChange
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits *BACnetContextTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
+// NewBACnetNotificationParametersChangeOfValueNewValueChangedBits factory function for BACnetNotificationParametersChangeOfValueNewValueChangedBits
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits *BACnetContextTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
 	child := &BACnetNotificationParametersChangeOfValueNewValueChangedBits{
 		ChangedBits: changedBits,
-		BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, peekedTagNumber),
+		BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
 	child.Child = child
 	return child.BACnetNotificationParametersChangeOfValueNewValue
@@ -105,21 +108,21 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetTypeNa
 	return "BACnetNotificationParametersChangeOfValueNewValueChangedBits"
 }
 
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (changedBits)
-	lengthInBits += m.ChangedBits.LengthInBits()
+	lengthInBits += m.ChangedBits.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfValueNewValue, error) {

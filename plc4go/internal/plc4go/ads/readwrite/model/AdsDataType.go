@@ -671,12 +671,12 @@ func CastAdsDataType(structType interface{}) AdsDataType {
 	return castFunc(structType)
 }
 
-func (m AdsDataType) LengthInBits() uint16 {
+func (m AdsDataType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m AdsDataType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m AdsDataType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {

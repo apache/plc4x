@@ -33,6 +33,9 @@ type BACnetPropertyValue struct {
 	PropertyArrayIndex *BACnetContextTagUnsignedInteger
 	PropertyValue      *BACnetConstructedDataElement
 	Priority           *BACnetContextTagUnsignedInteger
+
+	// Arguments.
+	ObjectType BACnetObjectType
 }
 
 // The corresponding interface
@@ -45,10 +48,10 @@ type IBACnetPropertyValue interface {
 	GetPropertyValue() *BACnetConstructedDataElement
 	// GetPriority returns Priority
 	GetPriority() *BACnetContextTagUnsignedInteger
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,8 +79,9 @@ func (m *BACnetPropertyValue) GetPriority() *BACnetContextTagUnsignedInteger {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetPropertyValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger) *BACnetPropertyValue {
-	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority}
+// NewBACnetPropertyValue factory function for BACnetPropertyValue
+func NewBACnetPropertyValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger, objectType BACnetObjectType) *BACnetPropertyValue {
+	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectType: objectType}
 }
 
 func CastBACnetPropertyValue(structType interface{}) *BACnetPropertyValue {
@@ -97,36 +101,36 @@ func (m *BACnetPropertyValue) GetTypeName() string {
 	return "BACnetPropertyValue"
 }
 
-func (m *BACnetPropertyValue) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetPropertyValue) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetPropertyValue) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetPropertyValue) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (propertyArrayIndex)
 	if m.PropertyArrayIndex != nil {
-		lengthInBits += (*m.PropertyArrayIndex).LengthInBits()
+		lengthInBits += (*m.PropertyArrayIndex).GetLengthInBits()
 	}
 
 	// Optional Field (propertyValue)
 	if m.PropertyValue != nil {
-		lengthInBits += (*m.PropertyValue).LengthInBits()
+		lengthInBits += (*m.PropertyValue).GetLengthInBits()
 	}
 
 	// Optional Field (priority)
 	if m.Priority != nil {
-		lengthInBits += (*m.Priority).LengthInBits()
+		lengthInBits += (*m.Priority).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetPropertyValue) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetPropertyValue) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObjectType) (*BACnetPropertyValue, error) {
@@ -215,7 +219,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	}
 
 	// Create the instance
-	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority), nil
+	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority, objectType), nil
 }
 
 func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {

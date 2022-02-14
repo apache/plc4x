@@ -32,10 +32,10 @@ type LDataFrameACK struct {
 
 // The corresponding interface
 type ILDataFrameACK interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, not
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewLDataFrameACK factory function for LDataFrameACK
 func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LDataFrameACK{
 		LDataFrame: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
@@ -106,18 +107,18 @@ func (m *LDataFrameACK) GetTypeName() string {
 	return "LDataFrameACK"
 }
 
-func (m *LDataFrameACK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LDataFrameACK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LDataFrameACK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LDataFrameACK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *LDataFrameACK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LDataFrameACK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {

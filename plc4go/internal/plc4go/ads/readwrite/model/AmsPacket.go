@@ -59,10 +59,10 @@ type IAmsPacket interface {
 	GetInvokeId() uint32
 	// GetData returns Data
 	GetData() *AdsData
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -110,6 +110,7 @@ func (m *AmsPacket) GetData() *AdsData {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAmsPacket factory function for AmsPacket
 func NewAmsPacket(targetAmsNetId *AmsNetId, targetAmsPort uint16, sourceAmsNetId *AmsNetId, sourceAmsPort uint16, commandId CommandId, state *State, errorCode uint32, invokeId uint32, data *AdsData) *AmsPacket {
 	return &AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, CommandId: commandId, State: state, ErrorCode: errorCode, InvokeId: invokeId, Data: data}
 }
@@ -131,21 +132,21 @@ func (m *AmsPacket) GetTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *AmsPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)
-	lengthInBits += m.TargetAmsNetId.LengthInBits()
+	lengthInBits += m.TargetAmsNetId.GetLengthInBits()
 
 	// Simple field (targetAmsPort)
 	lengthInBits += 16
 
 	// Simple field (sourceAmsNetId)
-	lengthInBits += m.SourceAmsNetId.LengthInBits()
+	lengthInBits += m.SourceAmsNetId.GetLengthInBits()
 
 	// Simple field (sourceAmsPort)
 	lengthInBits += 16
@@ -154,7 +155,7 @@ func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (state)
-	lengthInBits += m.State.LengthInBits()
+	lengthInBits += m.State.GetLengthInBits()
 
 	// Implicit Field (length)
 	lengthInBits += 32
@@ -166,13 +167,13 @@ func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 32
 
 	// Simple field (data)
-	lengthInBits += m.Data.LengthInBits()
+	lengthInBits += m.Data.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AmsPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
@@ -271,7 +272,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-	_data, _dataErr := AdsDataParse(readBuffer, commandId, bool(state.Response))
+	_data, _dataErr := AdsDataParse(readBuffer, commandId, bool(state.GetResponse()))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
@@ -356,7 +357,7 @@ func (m *AmsPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint32(m.Data.LengthInBytes())
+	length := uint32(m.GetData().GetLengthInBytes())
 	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")

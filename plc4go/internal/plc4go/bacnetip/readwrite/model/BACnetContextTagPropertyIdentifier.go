@@ -31,7 +31,11 @@ type BACnetContextTagPropertyIdentifier struct {
 	*BACnetContextTag
 	PropertyIdentifier BACnetPropertyIdentifier
 	ProprietaryValue   uint32
-	IsProprietary      bool
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
+	ActualLength             uint32
 }
 
 // The corresponding interface
@@ -42,10 +46,10 @@ type IBACnetContextTagPropertyIdentifier interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary
 	GetIsProprietary() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,11 +65,8 @@ func (m *BACnetContextTagPropertyIdentifier) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }
 
-func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagPropertyIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -83,16 +84,15 @@ func (m *BACnetContextTagPropertyIdentifier) GetProprietaryValue() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetContextTagPropertyIdentifier) GetIsProprietary() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsProprietary
+	return bool((m.GetPropertyIdentifier()) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 }
 
-func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, isProprietary bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagPropertyIdentifier factory function for BACnetContextTagPropertyIdentifier
+func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifier, proprietaryValue uint32, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagPropertyIdentifier{
 		PropertyIdentifier: propertyIdentifier,
 		ProprietaryValue:   proprietaryValue,
-		IsProprietary:      isProprietary,
-		BACnetContextTag:   NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag:   NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -121,15 +121,15 @@ func (m *BACnetContextTagPropertyIdentifier) GetTypeName() string {
 	return "BACnetContextTagPropertyIdentifier"
 }
 
-func (m *BACnetContextTagPropertyIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagPropertyIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagPropertyIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagPropertyIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Manual Field (propertyIdentifier)
-	lengthInBits += uint16(int32(m.ActualLength) * int32(int32(8)))
+	lengthInBits += uint16(int32(m.GetActualLength()) * int32(int32(8)))
 
 	// Manual Field (proprietaryValue)
 	lengthInBits += uint16(int32(0))
@@ -139,8 +139,8 @@ func (m *BACnetContextTagPropertyIdentifier) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *BACnetContextTagPropertyIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagPropertyIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
@@ -168,6 +168,7 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 	// Virtual field
 	_isProprietary := bool((propertyIdentifier) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
+	_ = isProprietary
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagPropertyIdentifier"); closeErr != nil {
 		return nil, closeErr
@@ -177,7 +178,6 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 	_child := &BACnetContextTagPropertyIdentifier{
 		PropertyIdentifier: propertyIdentifier,
 		ProprietaryValue:   proprietaryValue,
-		IsProprietary:      isProprietary,
 		BACnetContextTag:   &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -191,18 +191,18 @@ func (m *BACnetContextTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBu
 		}
 
 		// Manual Field (propertyIdentifier)
-		_propertyIdentifierErr := WritePropertyIdentifier(writeBuffer, m.PropertyIdentifier)
+		_propertyIdentifierErr := WritePropertyIdentifier(writeBuffer, m.GetPropertyIdentifier())
 		if _propertyIdentifierErr != nil {
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 		}
 
 		// Manual Field (proprietaryValue)
-		_proprietaryValueErr := WriteProprietaryPropertyIdentifier(writeBuffer, m.PropertyIdentifier, m.ProprietaryValue)
+		_proprietaryValueErr := WriteProprietaryPropertyIdentifier(writeBuffer, m.GetPropertyIdentifier(), m.GetProprietaryValue())
 		if _proprietaryValueErr != nil {
 			return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 		}
 		// Virtual field
-		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.IsProprietary); _isProprietaryErr != nil {
+		if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 			return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 		}
 

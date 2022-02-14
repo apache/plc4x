@@ -51,10 +51,10 @@ type IAlarmMessageQueryType interface {
 	GetTransportSize() DataTransportSize
 	// GetMessageObjects returns MessageObjects
 	GetMessageObjects() []*AlarmMessageObjectQueryType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -86,6 +86,7 @@ func (m *AlarmMessageQueryType) GetMessageObjects() []*AlarmMessageObjectQueryTy
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAlarmMessageQueryType factory function for AlarmMessageQueryType
 func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []*AlarmMessageObjectQueryType) *AlarmMessageQueryType {
 	return &AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
 }
@@ -107,11 +108,11 @@ func (m *AlarmMessageQueryType) GetTypeName() string {
 	return "AlarmMessageQueryType"
 }
 
-func (m *AlarmMessageQueryType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageQueryType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageQueryType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -133,15 +134,15 @@ func (m *AlarmMessageQueryType) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageQueryType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageQueryType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQueryType, error) {

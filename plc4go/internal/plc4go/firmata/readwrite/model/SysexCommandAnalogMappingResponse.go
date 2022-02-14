@@ -32,10 +32,10 @@ type SysexCommandAnalogMappingResponse struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexComman
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandAnalogMappingResponse factory function for SysexCommandAnalogMappingResponse
 func NewSysexCommandAnalogMappingResponse() *SysexCommand {
 	child := &SysexCommandAnalogMappingResponse{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandAnalogMappingResponse) GetTypeName() string {
 	return "SysexCommandAnalogMappingResponse"
 }
 
-func (m *SysexCommandAnalogMappingResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandAnalogMappingResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandAnalogMappingResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandAnalogMappingResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandAnalogMappingResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandAnalogMappingResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

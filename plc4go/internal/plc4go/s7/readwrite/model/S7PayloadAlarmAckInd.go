@@ -36,10 +36,10 @@ type S7PayloadAlarmAckInd struct {
 type IS7PayloadAlarmAckInd interface {
 	// GetAlarmMessage returns AlarmMessage
 	GetAlarmMessage() *AlarmMessageAckPushType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -87,6 +87,7 @@ func (m *S7PayloadAlarmAckInd) GetAlarmMessage() *AlarmMessageAckPushType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadAlarmAckInd factory function for S7PayloadAlarmAckInd
 func NewS7PayloadAlarmAckInd(alarmMessage *AlarmMessageAckPushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadAlarmAckInd{
 		AlarmMessage:          alarmMessage,
@@ -119,21 +120,21 @@ func (m *S7PayloadAlarmAckInd) GetTypeName() string {
 	return "S7PayloadAlarmAckInd"
 }
 
-func (m *S7PayloadAlarmAckInd) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadAlarmAckInd) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadAlarmAckInd) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadAlarmAckInd) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (alarmMessage)
-	lengthInBits += m.AlarmMessage.LengthInBits()
+	lengthInBits += m.AlarmMessage.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *S7PayloadAlarmAckInd) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadAlarmAckInd) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

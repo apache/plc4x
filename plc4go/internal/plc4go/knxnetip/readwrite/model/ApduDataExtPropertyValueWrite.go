@@ -34,6 +34,9 @@ type ApduDataExtPropertyValueWrite struct {
 	Count       uint8
 	Index       uint16
 	Data        []byte
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
@@ -48,10 +51,10 @@ type IApduDataExtPropertyValueWrite interface {
 	GetIndex() uint16
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -96,14 +99,15 @@ func (m *ApduDataExtPropertyValueWrite) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) *ApduDataExt {
+// NewApduDataExtPropertyValueWrite factory function for ApduDataExtPropertyValueWrite
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *ApduDataExt {
 	child := &ApduDataExtPropertyValueWrite{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Count:       count,
 		Index:       index,
 		Data:        data,
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -132,12 +136,12 @@ func (m *ApduDataExtPropertyValueWrite) GetTypeName() string {
 	return "ApduDataExtPropertyValueWrite"
 }
 
-func (m *ApduDataExtPropertyValueWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtPropertyValueWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtPropertyValueWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtPropertyValueWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -159,8 +163,8 @@ func (m *ApduDataExtPropertyValueWrite) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *ApduDataExtPropertyValueWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtPropertyValueWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtPropertyValueWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

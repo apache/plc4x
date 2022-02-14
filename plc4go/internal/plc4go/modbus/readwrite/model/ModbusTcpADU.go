@@ -35,6 +35,9 @@ type ModbusTcpADU struct {
 	TransactionIdentifier uint16
 	UnitIdentifier        uint8
 	Pdu                   *ModbusPDU
+
+	// Arguments.
+	Response bool
 }
 
 // The corresponding interface
@@ -45,10 +48,10 @@ type IModbusTcpADU interface {
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu
 	GetPdu() *ModbusPDU
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -72,8 +75,9 @@ func (m *ModbusTcpADU) GetPdu() *ModbusPDU {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *ModbusPDU) *ModbusTcpADU {
-	return &ModbusTcpADU{TransactionIdentifier: transactionIdentifier, UnitIdentifier: unitIdentifier, Pdu: pdu}
+// NewModbusTcpADU factory function for ModbusTcpADU
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *ModbusPDU, response bool) *ModbusTcpADU {
+	return &ModbusTcpADU{TransactionIdentifier: transactionIdentifier, UnitIdentifier: unitIdentifier, Pdu: pdu, Response: response}
 }
 
 func CastModbusTcpADU(structType interface{}) *ModbusTcpADU {
@@ -93,11 +97,11 @@ func (m *ModbusTcpADU) GetTypeName() string {
 	return "ModbusTcpADU"
 }
 
-func (m *ModbusTcpADU) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusTcpADU) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusTcpADU) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusTcpADU) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionIdentifier)
@@ -113,13 +117,13 @@ func (m *ModbusTcpADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.Pdu.LengthInBits()
+	lengthInBits += m.Pdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ModbusTcpADU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusTcpADU) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
@@ -175,7 +179,7 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 	}
 
 	// Create the instance
-	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
+	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu, response), nil
 }
 
 func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -197,7 +201,7 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
+	length := uint16(uint16(m.GetPdu().GetLengthInBytes()) + uint16(uint16(1)))
 	_lengthErr := writeBuffer.WriteUint16("length", 16, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")

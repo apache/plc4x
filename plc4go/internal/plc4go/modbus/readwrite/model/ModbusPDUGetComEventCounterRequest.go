@@ -32,10 +32,10 @@ type ModbusPDUGetComEventCounterRequest struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventCounterRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,6 +77,7 @@ func (m *ModbusPDUGetComEventCounterRequest) InitializeParent(parent *ModbusPDU)
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUGetComEventCounterRequest factory function for ModbusPDUGetComEventCounterRequest
 func NewModbusPDUGetComEventCounterRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventCounterRequest{
 		ModbusPDU: NewModbusPDU(),
@@ -108,18 +109,18 @@ func (m *ModbusPDUGetComEventCounterRequest) GetTypeName() string {
 	return "ModbusPDUGetComEventCounterRequest"
 }
 
-func (m *ModbusPDUGetComEventCounterRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUGetComEventCounterRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUGetComEventCounterRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUGetComEventCounterRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUGetComEventCounterRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUGetComEventCounterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

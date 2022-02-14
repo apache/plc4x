@@ -36,10 +36,10 @@ type SysexCommandPinStateQuery struct {
 type ISysexCommandPinStateQuery interface {
 	// GetPin returns Pin
 	GetPin() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *SysexCommandPinStateQuery) GetPin() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandPinStateQuery factory function for SysexCommandPinStateQuery
 func NewSysexCommandPinStateQuery(pin uint8) *SysexCommand {
 	child := &SysexCommandPinStateQuery{
 		Pin:          pin,
@@ -108,12 +109,12 @@ func (m *SysexCommandPinStateQuery) GetTypeName() string {
 	return "SysexCommandPinStateQuery"
 }
 
-func (m *SysexCommandPinStateQuery) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandPinStateQuery) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandPinStateQuery) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandPinStateQuery) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -121,8 +122,8 @@ func (m *SysexCommandPinStateQuery) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *SysexCommandPinStateQuery) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

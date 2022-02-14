@@ -28,29 +28,24 @@ import (
 
 // The data-structure of this message
 type BACnetTagPayloadTime struct {
-	Hour                 int8
-	Minute               int8
-	Second               int8
-	Fractional           int8
-	Wildcard             int8
-	HourIsWildcard       bool
-	MinuteIsWildcard     bool
-	SecondIsWildcard     bool
-	FractionalIsWildcard bool
+	Hour       uint8
+	Minute     uint8
+	Second     uint8
+	Fractional uint8
 }
 
 // The corresponding interface
 type IBACnetTagPayloadTime interface {
 	// GetHour returns Hour
-	GetHour() int8
+	GetHour() uint8
 	// GetMinute returns Minute
-	GetMinute() int8
+	GetMinute() uint8
 	// GetSecond returns Second
-	GetSecond() int8
+	GetSecond() uint8
 	// GetFractional returns Fractional
-	GetFractional() int8
+	GetFractional() uint8
 	// GetWildcard returns Wildcard
-	GetWildcard() int8
+	GetWildcard() uint8
 	// GetHourIsWildcard returns HourIsWildcard
 	GetHourIsWildcard() bool
 	// GetMinuteIsWildcard returns MinuteIsWildcard
@@ -59,10 +54,10 @@ type IBACnetTagPayloadTime interface {
 	GetSecondIsWildcard() bool
 	// GetFractionalIsWildcard returns FractionalIsWildcard
 	GetFractionalIsWildcard() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -70,52 +65,48 @@ type IBACnetTagPayloadTime interface {
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagPayloadTime) GetHour() int8 {
+func (m *BACnetTagPayloadTime) GetHour() uint8 {
 	return m.Hour
 }
 
-func (m *BACnetTagPayloadTime) GetMinute() int8 {
+func (m *BACnetTagPayloadTime) GetMinute() uint8 {
 	return m.Minute
 }
 
-func (m *BACnetTagPayloadTime) GetSecond() int8 {
+func (m *BACnetTagPayloadTime) GetSecond() uint8 {
 	return m.Second
 }
 
-func (m *BACnetTagPayloadTime) GetFractional() int8 {
+func (m *BACnetTagPayloadTime) GetFractional() uint8 {
 	return m.Fractional
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagPayloadTime) GetWildcard() int8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.Wildcard
+func (m *BACnetTagPayloadTime) GetWildcard() uint8 {
+	return 0xFF
 }
 
 func (m *BACnetTagPayloadTime) GetHourIsWildcard() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.HourIsWildcard
+	return bool((m.GetHour()) == (m.GetWildcard()))
 }
 
 func (m *BACnetTagPayloadTime) GetMinuteIsWildcard() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.MinuteIsWildcard
+	return bool((m.GetMinute()) == (m.GetWildcard()))
 }
 
 func (m *BACnetTagPayloadTime) GetSecondIsWildcard() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.SecondIsWildcard
+	return bool((m.GetSecond()) == (m.GetWildcard()))
 }
 
 func (m *BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.FractionalIsWildcard
+	return bool((m.GetFractional()) == (m.GetWildcard()))
 }
 
-func NewBACnetTagPayloadTime(hour int8, minute int8, second int8, fractional int8, wildcard int8, hourIsWildcard bool, minuteIsWildcard bool, secondIsWildcard bool, fractionalIsWildcard bool) *BACnetTagPayloadTime {
-	return &BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional, Wildcard: wildcard, HourIsWildcard: hourIsWildcard, MinuteIsWildcard: minuteIsWildcard, SecondIsWildcard: secondIsWildcard, FractionalIsWildcard: fractionalIsWildcard}
+// NewBACnetTagPayloadTime factory function for BACnetTagPayloadTime
+func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *BACnetTagPayloadTime {
+	return &BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
 }
 
 func CastBACnetTagPayloadTime(structType interface{}) *BACnetTagPayloadTime {
@@ -135,11 +126,11 @@ func (m *BACnetTagPayloadTime) GetTypeName() string {
 	return "BACnetTagPayloadTime"
 }
 
-func (m *BACnetTagPayloadTime) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadTime) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadTime) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadTime) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -167,8 +158,8 @@ func (m *BACnetTagPayloadTime) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadTime) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadTime) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTime, error) {
@@ -178,10 +169,11 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 
 	// Virtual field
 	_wildcard := 0xFF
-	wildcard := int8(_wildcard)
+	wildcard := uint8(_wildcard)
+	_ = wildcard
 
 	// Simple Field (hour)
-	_hour, _hourErr := readBuffer.ReadInt8("hour", 8)
+	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 	}
@@ -190,9 +182,10 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	// Virtual field
 	_hourIsWildcard := bool((hour) == (wildcard))
 	hourIsWildcard := bool(_hourIsWildcard)
+	_ = hourIsWildcard
 
 	// Simple Field (minute)
-	_minute, _minuteErr := readBuffer.ReadInt8("minute", 8)
+	_minute, _minuteErr := readBuffer.ReadUint8("minute", 8)
 	if _minuteErr != nil {
 		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field")
 	}
@@ -201,9 +194,10 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	// Virtual field
 	_minuteIsWildcard := bool((minute) == (wildcard))
 	minuteIsWildcard := bool(_minuteIsWildcard)
+	_ = minuteIsWildcard
 
 	// Simple Field (second)
-	_second, _secondErr := readBuffer.ReadInt8("second", 8)
+	_second, _secondErr := readBuffer.ReadUint8("second", 8)
 	if _secondErr != nil {
 		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field")
 	}
@@ -212,9 +206,10 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	// Virtual field
 	_secondIsWildcard := bool((second) == (wildcard))
 	secondIsWildcard := bool(_secondIsWildcard)
+	_ = secondIsWildcard
 
 	// Simple Field (fractional)
-	_fractional, _fractionalErr := readBuffer.ReadInt8("fractional", 8)
+	_fractional, _fractionalErr := readBuffer.ReadUint8("fractional", 8)
 	if _fractionalErr != nil {
 		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field")
 	}
@@ -223,13 +218,14 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	// Virtual field
 	_fractionalIsWildcard := bool((fractional) == (wildcard))
 	fractionalIsWildcard := bool(_fractionalIsWildcard)
+	_ = fractionalIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadTime"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadTime(hour, minute, second, fractional, wildcard, hourIsWildcard, minuteIsWildcard, secondIsWildcard, fractionalIsWildcard), nil
+	return NewBACnetTagPayloadTime(hour, minute, second, fractional), nil
 }
 
 func (m *BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -237,51 +233,51 @@ func (m *BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
 		return pushErr
 	}
 	// Virtual field
-	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.Wildcard); _wildcardErr != nil {
+	if _wildcardErr := writeBuffer.WriteVirtual("wildcard", m.GetWildcard()); _wildcardErr != nil {
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
 	// Simple Field (hour)
-	hour := int8(m.Hour)
-	_hourErr := writeBuffer.WriteInt8("hour", 8, (hour))
+	hour := uint8(m.Hour)
+	_hourErr := writeBuffer.WriteUint8("hour", 8, (hour))
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 	// Virtual field
-	if _hourIsWildcardErr := writeBuffer.WriteVirtual("hourIsWildcard", m.HourIsWildcard); _hourIsWildcardErr != nil {
+	if _hourIsWildcardErr := writeBuffer.WriteVirtual("hourIsWildcard", m.GetHourIsWildcard()); _hourIsWildcardErr != nil {
 		return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 	}
 
 	// Simple Field (minute)
-	minute := int8(m.Minute)
-	_minuteErr := writeBuffer.WriteInt8("minute", 8, (minute))
+	minute := uint8(m.Minute)
+	_minuteErr := writeBuffer.WriteUint8("minute", 8, (minute))
 	if _minuteErr != nil {
 		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 	}
 	// Virtual field
-	if _minuteIsWildcardErr := writeBuffer.WriteVirtual("minuteIsWildcard", m.MinuteIsWildcard); _minuteIsWildcardErr != nil {
+	if _minuteIsWildcardErr := writeBuffer.WriteVirtual("minuteIsWildcard", m.GetMinuteIsWildcard()); _minuteIsWildcardErr != nil {
 		return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
 	}
 
 	// Simple Field (second)
-	second := int8(m.Second)
-	_secondErr := writeBuffer.WriteInt8("second", 8, (second))
+	second := uint8(m.Second)
+	_secondErr := writeBuffer.WriteUint8("second", 8, (second))
 	if _secondErr != nil {
 		return errors.Wrap(_secondErr, "Error serializing 'second' field")
 	}
 	// Virtual field
-	if _secondIsWildcardErr := writeBuffer.WriteVirtual("secondIsWildcard", m.SecondIsWildcard); _secondIsWildcardErr != nil {
+	if _secondIsWildcardErr := writeBuffer.WriteVirtual("secondIsWildcard", m.GetSecondIsWildcard()); _secondIsWildcardErr != nil {
 		return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
 	}
 
 	// Simple Field (fractional)
-	fractional := int8(m.Fractional)
-	_fractionalErr := writeBuffer.WriteInt8("fractional", 8, (fractional))
+	fractional := uint8(m.Fractional)
+	_fractionalErr := writeBuffer.WriteUint8("fractional", 8, (fractional))
 	if _fractionalErr != nil {
 		return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
 	}
 	// Virtual field
-	if _fractionalIsWildcardErr := writeBuffer.WriteVirtual("fractionalIsWildcard", m.FractionalIsWildcard); _fractionalIsWildcardErr != nil {
+	if _fractionalIsWildcardErr := writeBuffer.WriteVirtual("fractionalIsWildcard", m.GetFractionalIsWildcard()); _fractionalIsWildcardErr != nil {
 		return errors.Wrap(_fractionalIsWildcardErr, "Error serializing 'fractionalIsWildcard' field")
 	}
 

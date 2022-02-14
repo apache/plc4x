@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type TDataConnectedReq struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type ITDataConnectedReq interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *TDataConnectedReq) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewTDataConnectedReq() *CEMI {
+// NewTDataConnectedReq factory function for TDataConnectedReq
+func NewTDataConnectedReq(size uint16) *CEMI {
 	child := &TDataConnectedReq{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *TDataConnectedReq) GetTypeName() string {
 	return "TDataConnectedReq"
 }
 
-func (m *TDataConnectedReq) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TDataConnectedReq) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TDataConnectedReq) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *TDataConnectedReq) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *TDataConnectedReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TDataConnectedReq) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

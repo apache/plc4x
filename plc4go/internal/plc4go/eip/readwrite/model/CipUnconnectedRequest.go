@@ -37,6 +37,9 @@ type CipUnconnectedRequest struct {
 	UnconnectedService *CipService
 	BackPlane          int8
 	Slot               int8
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
@@ -47,10 +50,10 @@ type ICipUnconnectedRequest interface {
 	GetBackPlane() int8
 	// GetSlot returns Slot
 	GetSlot() int8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -87,12 +90,13 @@ func (m *CipUnconnectedRequest) GetSlot() int8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8) *CipService {
+// NewCipUnconnectedRequest factory function for CipUnconnectedRequest
+func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8, serviceLen uint16) *CipService {
 	child := &CipUnconnectedRequest{
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		CipService:         NewCipService(),
+		CipService:         NewCipService(serviceLen),
 	}
 	child.Child = child
 	return child.CipService
@@ -121,12 +125,12 @@ func (m *CipUnconnectedRequest) GetTypeName() string {
 	return "CipUnconnectedRequest"
 }
 
-func (m *CipUnconnectedRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipUnconnectedRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipUnconnectedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipUnconnectedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -150,7 +154,7 @@ func (m *CipUnconnectedRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (unconnectedService)
-	lengthInBits += m.UnconnectedService.LengthInBits()
+	lengthInBits += m.UnconnectedService.GetLengthInBits()
 
 	// Const Field (route)
 	lengthInBits += 16
@@ -164,8 +168,8 @@ func (m *CipUnconnectedRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipUnconnectedRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipUnconnectedRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
@@ -370,7 +374,7 @@ func (m *CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		messageSize := uint16(uint16(uint16(uint16(m.LengthInBytes()))-uint16(uint16(10))) - uint16(uint16(4)))
+		messageSize := uint16(uint16(uint16(uint16(m.GetLengthInBytes()))-uint16(uint16(10))) - uint16(uint16(4)))
 		_messageSizeErr := writeBuffer.WriteUint16("messageSize", 16, (messageSize))
 		if _messageSizeErr != nil {
 			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")

@@ -32,10 +32,10 @@ type SysexCommandSamplingInterval struct {
 
 // The corresponding interface
 type ISysexCommandSamplingInterval interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandSamplingInterval factory function for SysexCommandSamplingInterval
 func NewSysexCommandSamplingInterval() *SysexCommand {
 	child := &SysexCommandSamplingInterval{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandSamplingInterval) GetTypeName() string {
 	return "SysexCommandSamplingInterval"
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandSamplingInterval) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandSamplingInterval) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandSamplingInterval) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandSamplingInterval) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

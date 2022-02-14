@@ -39,6 +39,9 @@ type APDUConfirmedRequest struct {
 	SequenceNumber            *uint8
 	ProposedWindowSize        *uint8
 	ServiceRequest            *BACnetConfirmedServiceRequest
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -61,10 +64,10 @@ type IAPDUConfirmedRequest interface {
 	GetProposedWindowSize() *uint8
 	// GetServiceRequest returns ServiceRequest
 	GetServiceRequest() *BACnetConfirmedServiceRequest
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -125,7 +128,8 @@ func (m *APDUConfirmedRequest) GetServiceRequest() *BACnetConfirmedServiceReques
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest) *APDU {
+// NewAPDUConfirmedRequest factory function for APDUConfirmedRequest
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, apduLength uint16) *APDU {
 	child := &APDUConfirmedRequest{
 		SegmentedMessage:          segmentedMessage,
 		MoreFollows:               moreFollows,
@@ -136,7 +140,7 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		SequenceNumber:            sequenceNumber,
 		ProposedWindowSize:        proposedWindowSize,
 		ServiceRequest:            serviceRequest,
-		APDU:                      NewAPDU(),
+		APDU:                      NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -165,12 +169,12 @@ func (m *APDUConfirmedRequest) GetTypeName() string {
 	return "APDUConfirmedRequest"
 }
 
-func (m *APDUConfirmedRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUConfirmedRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUConfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUConfirmedRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -204,13 +208,13 @@ func (m *APDUConfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.ServiceRequest.LengthInBits()
+	lengthInBits += m.ServiceRequest.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *APDUConfirmedRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUConfirmedRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

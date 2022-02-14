@@ -36,10 +36,10 @@ type AdsDeleteDeviceNotificationRequest struct {
 type IAdsDeleteDeviceNotificationRequest interface {
 	// GetNotificationHandle returns NotificationHandle
 	GetNotificationHandle() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsDeleteDeviceNotificationRequest factory function for AdsDeleteDeviceNotificationRequest
 func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
 	child := &AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
@@ -108,12 +109,12 @@ func (m *AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 	return "AdsDeleteDeviceNotificationRequest"
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -121,8 +122,8 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsDeleteDeviceNotificationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

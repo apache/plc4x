@@ -40,10 +40,10 @@ type TPKTPacket struct {
 type ITPKTPacket interface {
 	// GetPayload returns Payload
 	GetPayload() *COTPPacket
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -59,6 +59,7 @@ func (m *TPKTPacket) GetPayload() *COTPPacket {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewTPKTPacket factory function for TPKTPacket
 func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
 	return &TPKTPacket{Payload: payload}
 }
@@ -80,11 +81,11 @@ func (m *TPKTPacket) GetTypeName() string {
 	return "TPKTPacket"
 }
 
-func (m *TPKTPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *TPKTPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *TPKTPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -97,13 +98,13 @@ func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 16
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *TPKTPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *TPKTPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
@@ -182,7 +183,7 @@ func (m *TPKTPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
+	len := uint16(uint16(m.GetPayload().GetLengthInBytes()) + uint16(uint16(4)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")

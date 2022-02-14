@@ -29,9 +29,11 @@ import (
 // The data-structure of this message
 type BACnetContextTagObjectIdentifier struct {
 	*BACnetContextTag
-	Payload        *BACnetTagPayloadObjectIdentifier
-	ObjectType     BACnetObjectType
-	InstanceNumber uint32
+	Payload *BACnetTagPayloadObjectIdentifier
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
@@ -42,10 +44,10 @@ type IBACnetContextTagObjectIdentifier interface {
 	GetObjectType() BACnetObjectType
 	// GetInstanceNumber returns InstanceNumber
 	GetInstanceNumber() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,11 +63,8 @@ func (m *BACnetContextTagObjectIdentifier) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }
 
-func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -79,21 +78,18 @@ func (m *BACnetContextTagObjectIdentifier) GetPayload() *BACnetTagPayloadObjectI
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetContextTagObjectIdentifier) GetObjectType() BACnetObjectType {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ObjectType
+	return m.GetPayload().GetObjectType()
 }
 
 func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.InstanceNumber
+	return m.GetPayload().GetInstanceNumber()
 }
 
-func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, objectType BACnetObjectType, instanceNumber uint32, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagObjectIdentifier factory function for BACnetContextTagObjectIdentifier
+func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagObjectIdentifier{
 		Payload:          payload,
-		ObjectType:       objectType,
-		InstanceNumber:   instanceNumber,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -122,15 +118,15 @@ func (m *BACnetContextTagObjectIdentifier) GetTypeName() string {
 	return "BACnetContextTagObjectIdentifier"
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.LengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -139,8 +135,8 @@ func (m *BACnetContextTagObjectIdentifier) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *BACnetContextTagObjectIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagObjectIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {
@@ -167,12 +163,14 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	}
 
 	// Virtual field
-	_objectType := payload.ObjectType
+	_objectType := payload.GetObjectType()
 	objectType := BACnetObjectType(_objectType)
+	_ = objectType
 
 	// Virtual field
-	_instanceNumber := payload.InstanceNumber
+	_instanceNumber := payload.GetInstanceNumber()
 	instanceNumber := uint32(_instanceNumber)
+	_ = instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagObjectIdentifier"); closeErr != nil {
 		return nil, closeErr
@@ -181,8 +179,6 @@ func BACnetContextTagObjectIdentifierParse(readBuffer utils.ReadBuffer, tagNumbe
 	// Create a partially initialized instance
 	_child := &BACnetContextTagObjectIdentifier{
 		Payload:          CastBACnetTagPayloadObjectIdentifier(payload),
-		ObjectType:       objectType,
-		InstanceNumber:   instanceNumber,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
@@ -207,11 +203,11 @@ func (m *BACnetContextTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
-		if _objectTypeErr := writeBuffer.WriteVirtual("objectType", m.ObjectType); _objectTypeErr != nil {
+		if _objectTypeErr := writeBuffer.WriteVirtual("objectType", m.GetObjectType()); _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 		// Virtual field
-		if _instanceNumberErr := writeBuffer.WriteVirtual("instanceNumber", m.InstanceNumber); _instanceNumberErr != nil {
+		if _instanceNumberErr := writeBuffer.WriteVirtual("instanceNumber", m.GetInstanceNumber()); _instanceNumberErr != nil {
 			return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 		}
 

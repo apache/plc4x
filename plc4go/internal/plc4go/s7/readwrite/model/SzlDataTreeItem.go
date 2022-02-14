@@ -47,10 +47,10 @@ type ISzlDataTreeItem interface {
 	GetAusbg() uint16
 	// GetAusbe returns Ausbe
 	GetAusbe() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *SzlDataTreeItem) GetAusbe() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSzlDataTreeItem factory function for SzlDataTreeItem
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
 	return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
 }
@@ -103,11 +104,11 @@ func (m *SzlDataTreeItem) GetTypeName() string {
 	return "SzlDataTreeItem"
 }
 
-func (m *SzlDataTreeItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SzlDataTreeItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *SzlDataTreeItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (itemIndex)
@@ -130,8 +131,8 @@ func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *SzlDataTreeItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SzlDataTreeItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (*SzlDataTreeItem, error) {

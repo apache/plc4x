@@ -31,6 +31,9 @@ type NLMInitalizeRoutingTable struct {
 	*NLM
 	NumberOfPorts uint8
 	PortMappings  []*NLMInitalizeRoutingTablePortMapping
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type INLMInitalizeRoutingTable interface {
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings
 	GetPortMappings() []*NLMInitalizeRoutingTablePortMapping
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *NLMInitalizeRoutingTable) GetPortMappings() []*NLMInitalizeRoutingTable
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16) *NLM {
+// NewNLMInitalizeRoutingTable factory function for NLMInitalizeRoutingTable
+func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLM {
 	child := &NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		NLM:           NewNLM(vendorId),
+		NLM:           NewNLM(vendorId, apduLength),
 	}
 	child.Child = child
 	return child.NLM
@@ -110,12 +114,12 @@ func (m *NLMInitalizeRoutingTable) GetTypeName() string {
 	return "NLMInitalizeRoutingTable"
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMInitalizeRoutingTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMInitalizeRoutingTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numberOfPorts)
 	lengthInBits += 8
@@ -124,15 +128,15 @@ func (m *NLMInitalizeRoutingTable) LengthInBitsConditional(lastItem bool) uint16
 	if len(m.PortMappings) > 0 {
 		for i, element := range m.PortMappings {
 			last := i == len(m.PortMappings)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *NLMInitalizeRoutingTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMInitalizeRoutingTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {

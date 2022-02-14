@@ -30,16 +30,19 @@ import (
 type BACnetConfirmedServiceRequestConfirmedUnknown struct {
 	*BACnetConfirmedServiceRequest
 	UnknownBytes []byte
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedUnknown interface {
 	// GetUnknownBytes returns UnknownBytes
 	GetUnknownBytes() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,10 +72,11 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetUnknownBytes() []byte
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte) *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestConfirmedUnknown factory function for BACnetConfirmedServiceRequestConfirmedUnknown
+func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedUnknown{
 		UnknownBytes:                  unknownBytes,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -101,12 +105,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestConfirmedUnknown"
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
@@ -116,8 +120,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBitsConditional(
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedUnknown) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

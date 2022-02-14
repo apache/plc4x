@@ -4268,7 +4268,7 @@ public class RandomPackagesTest {
                     assertEquals(2005, BACnetApplicationTagDate.getPayload().getYear());
                     assertEquals(9, BACnetApplicationTagDate.getPayload().getMonth());
                     assertEquals(1, BACnetApplicationTagDate.getPayload().getDayOfMonth());
-                    assertEquals(-1, BACnetApplicationTagDate.getPayload().getDayOfWeek());
+                    assertEquals(255, BACnetApplicationTagDate.getPayload().getDayOfWeek());
                 }),
             DynamicTest.dynamicTest("No. 101 - Confirmed-REQ   readProperty[ 74] device,61 utc-offset",
                 () -> {

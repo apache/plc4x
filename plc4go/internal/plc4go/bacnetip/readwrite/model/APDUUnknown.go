@@ -30,16 +30,19 @@ import (
 type APDUUnknown struct {
 	*APDU
 	UnknownBytes []byte
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
 type IAPDUUnknown interface {
 	// GetUnknownBytes returns UnknownBytes
 	GetUnknownBytes() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *APDUUnknown) GetUnknownBytes() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUUnknown(unknownBytes []byte) *APDU {
+// NewAPDUUnknown factory function for APDUUnknown
+func NewAPDUUnknown(unknownBytes []byte, apduLength uint16) *APDU {
 	child := &APDUUnknown{
 		UnknownBytes: unknownBytes,
-		APDU:         NewAPDU(),
+		APDU:         NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -100,12 +104,12 @@ func (m *APDUUnknown) GetTypeName() string {
 	return "APDUUnknown"
 }
 
-func (m *APDUUnknown) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUUnknown) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUUnknown) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUUnknown) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {
@@ -115,8 +119,8 @@ func (m *APDUUnknown) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUUnknown) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUUnknown) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

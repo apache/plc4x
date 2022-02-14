@@ -42,10 +42,10 @@ type IAdsWriteControlRequest interface {
 	GetDeviceState() uint16
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,6 +90,7 @@ func (m *AdsWriteControlRequest) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsWriteControlRequest factory function for AdsWriteControlRequest
 func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsData {
 	child := &AdsWriteControlRequest{
 		AdsState:    adsState,
@@ -124,12 +125,12 @@ func (m *AdsWriteControlRequest) GetTypeName() string {
 	return "AdsWriteControlRequest"
 }
 
-func (m *AdsWriteControlRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsWriteControlRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsWriteControlRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsWriteControlRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (adsState)
 	lengthInBits += 16
@@ -148,8 +149,8 @@ func (m *AdsWriteControlRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsWriteControlRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsWriteControlRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
@@ -220,7 +221,7 @@ func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error 
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		length := uint32(uint32(len(m.Data)))
+		length := uint32(uint32(len(m.GetData())))
 		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")

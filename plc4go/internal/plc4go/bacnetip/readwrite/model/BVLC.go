@@ -32,8 +32,7 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // The data-structure of this message
 type BVLC struct {
-	BvlcPayloadLength uint16
-	Child             IBVLCChild
+	Child IBVLCChild
 }
 
 // The corresponding interface
@@ -42,10 +41,10 @@ type IBVLC interface {
 	BvlcFunction() uint8
 	// GetBvlcPayloadLength returns BvlcPayloadLength
 	GetBvlcPayloadLength() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -57,7 +56,7 @@ type IBVLCParent interface {
 
 type IBVLCChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BVLC, bvlcPayloadLength uint16)
+	InitializeParent(parent *BVLC)
 	GetTypeName() string
 	IBVLC
 }
@@ -70,12 +69,12 @@ type IBVLCChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BVLC) GetBvlcPayloadLength() uint16 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.BvlcPayloadLength
+	return uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4))
 }
 
-func NewBVLC(bvlcPayloadLength uint16) *BVLC {
-	return &BVLC{BvlcPayloadLength: bvlcPayloadLength}
+// NewBVLC factory function for BVLC
+func NewBVLC() *BVLC {
+	return &BVLC{}
 }
 
 func CastBVLC(structType interface{}) *BVLC {
@@ -95,15 +94,15 @@ func (m *BVLC) GetTypeName() string {
 	return "BVLC"
 }
 
-func (m *BVLC) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLC) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLC) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BVLC) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BVLC) ParentLengthInBits() uint16 {
+func (m *BVLC) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetType)
@@ -119,8 +118,8 @@ func (m *BVLC) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BVLC) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLC) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
@@ -153,6 +152,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	// Virtual field
 	_bvlcPayloadLength := uint16(bvlcLength) - uint16(uint16(4))
 	bvlcPayloadLength := uint16(_bvlcPayloadLength)
+	_ = bvlcPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BVLC
@@ -197,7 +197,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, bvlcPayloadLength)
+	_parent.Child.InitializeParent(_parent)
 	return _parent, nil
 }
 
@@ -225,13 +225,13 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	bvlcLength := uint16(uint16(m.LengthInBytes()))
+	bvlcLength := uint16(uint16(m.GetLengthInBytes()))
 	_bvlcLengthErr := writeBuffer.WriteUint16("bvlcLength", 16, (bvlcLength))
 	if _bvlcLengthErr != nil {
 		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}
 	// Virtual field
-	if _bvlcPayloadLengthErr := writeBuffer.WriteVirtual("bvlcPayloadLength", m.BvlcPayloadLength); _bvlcPayloadLengthErr != nil {
+	if _bvlcPayloadLengthErr := writeBuffer.WriteVirtual("bvlcPayloadLength", m.GetBvlcPayloadLength()); _bvlcPayloadLengthErr != nil {
 		return errors.Wrap(_bvlcPayloadLengthErr, "Error serializing 'bvlcPayloadLength' field")
 	}
 

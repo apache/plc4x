@@ -45,10 +45,10 @@ type IS7PayloadUserDataItem interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize
 	GetTransportSize() DataTransportSize
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -80,6 +80,7 @@ func (m *S7PayloadUserDataItem) GetTransportSize() DataTransportSize {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItem factory function for S7PayloadUserDataItem
 func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	return &S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize}
 }
@@ -101,15 +102,15 @@ func (m *S7PayloadUserDataItem) GetTypeName() string {
 	return "S7PayloadUserDataItem"
 }
 
-func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7PayloadUserDataItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7PayloadUserDataItem) ParentLengthInBits() uint16 {
+func (m *S7PayloadUserDataItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -124,8 +125,8 @@ func (m *S7PayloadUserDataItem) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
@@ -257,7 +258,7 @@ func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
+	dataLength := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4)))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")

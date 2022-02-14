@@ -94,7 +94,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	result := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
 		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
-		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
+		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
 		if err := m.messageCodec.SendRequest(
 			pingRequest,
 			func(message interface{}) bool {

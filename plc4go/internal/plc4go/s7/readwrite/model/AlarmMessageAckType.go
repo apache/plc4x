@@ -41,10 +41,10 @@ type IAlarmMessageAckType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects
 	GetMessageObjects() []*AlarmMessageObjectAckType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *AlarmMessageAckType) GetMessageObjects() []*AlarmMessageObjectAckType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAlarmMessageAckType factory function for AlarmMessageAckType
 func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []*AlarmMessageObjectAckType) *AlarmMessageAckType {
 	return &AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
@@ -89,11 +90,11 @@ func (m *AlarmMessageAckType) GetTypeName() string {
 	return "AlarmMessageAckType"
 }
 
-func (m *AlarmMessageAckType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageAckType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageAckType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageAckType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -106,15 +107,15 @@ func (m *AlarmMessageAckType) LengthInBitsConditional(lastItem bool) uint16 {
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageAckType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageAckType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType, error) {

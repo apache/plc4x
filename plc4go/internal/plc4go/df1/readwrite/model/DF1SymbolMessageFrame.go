@@ -47,10 +47,10 @@ type IDF1SymbolMessageFrame interface {
 	GetSourceAddress() uint8
 	// GetCommand returns Command
 	GetCommand() *DF1Command
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -87,6 +87,7 @@ func (m *DF1SymbolMessageFrame) GetCommand() *DF1Command {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1SymbolMessageFrame factory function for DF1SymbolMessageFrame
 func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1Symbol {
 	child := &DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
@@ -121,12 +122,12 @@ func (m *DF1SymbolMessageFrame) GetTypeName() string {
 	return "DF1SymbolMessageFrame"
 }
 
-func (m *DF1SymbolMessageFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1SymbolMessageFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1SymbolMessageFrame) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1SymbolMessageFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationAddress)
 	lengthInBits += 8
@@ -135,7 +136,7 @@ func (m *DF1SymbolMessageFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (command)
-	lengthInBits += m.Command.LengthInBits()
+	lengthInBits += m.Command.GetLengthInBits()
 
 	// Const Field (messageEnd)
 	lengthInBits += 8
@@ -149,8 +150,8 @@ func (m *DF1SymbolMessageFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *DF1SymbolMessageFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1SymbolMessageFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
@@ -279,7 +280,7 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Checksum Field (checksum) (Calculated)
 		{
-			_checksum, _checksumErr := CrcCheck(m.DestinationAddress, m.SourceAddress, m.Command)
+			_checksum, _checksumErr := CrcCheck(m.GetDestinationAddress(), m.GetSourceAddress(), m.GetCommand())
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")
 			}

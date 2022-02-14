@@ -37,10 +37,10 @@ type IAdsData interface {
 	CommandId() CommandId
 	// Response returns Response
 	Response() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -65,6 +65,7 @@ type IAdsDataChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsData factory function for AdsData
 func NewAdsData() *AdsData {
 	return &AdsData{}
 }
@@ -86,22 +87,22 @@ func (m *AdsData) GetTypeName() string {
 	return "AdsData"
 }
 
-func (m *AdsData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *AdsData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *AdsData) ParentLengthInBits() uint16 {
+func (m *AdsData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *AdsData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

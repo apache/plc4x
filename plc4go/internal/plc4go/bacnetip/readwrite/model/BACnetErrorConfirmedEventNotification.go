@@ -32,10 +32,10 @@ type BACnetErrorConfirmedEventNotification struct {
 
 // The corresponding interface
 type IBACnetErrorConfirmedEventNotification interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -64,6 +64,7 @@ func (m *BACnetErrorConfirmedEventNotification) InitializeParent(parent *BACnetE
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetErrorConfirmedEventNotification factory function for BACnetErrorConfirmedEventNotification
 func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedEventNotification{
 		BACnetError: NewBACnetError(errorClass, errorCode),
@@ -95,18 +96,18 @@ func (m *BACnetErrorConfirmedEventNotification) GetTypeName() string {
 	return "BACnetErrorConfirmedEventNotification"
 }
 
-func (m *BACnetErrorConfirmedEventNotification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetErrorConfirmedEventNotification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetErrorConfirmedEventNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetErrorConfirmedEventNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BACnetErrorConfirmedEventNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetErrorConfirmedEventNotification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetErrorConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {

@@ -60,10 +60,10 @@ type IBACnetActionCommand interface {
 	GetQuitOnFailure() *BACnetContextTagBoolean
 	// GetWriteSuccessful returns WriteSuccessful
 	GetWriteSuccessful() *BACnetContextTagBoolean
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -111,6 +111,7 @@ func (m *BACnetActionCommand) GetWriteSuccessful() *BACnetContextTagBoolean {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetActionCommand factory function for BACnetActionCommand
 func NewBACnetActionCommand(deviceIdentifier *BACnetContextTagObjectIdentifier, objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedData, priority *BACnetContextTagUnsignedInteger, postDelay *BACnetContextTagBoolean, quitOnFailure *BACnetContextTagBoolean, writeSuccessful *BACnetContextTagBoolean) *BACnetActionCommand {
 	return &BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
 }
@@ -132,55 +133,55 @@ func (m *BACnetActionCommand) GetTypeName() string {
 	return "BACnetActionCommand"
 }
 
-func (m *BACnetActionCommand) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetActionCommand) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetActionCommand) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetActionCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (deviceIdentifier)
 	if m.DeviceIdentifier != nil {
-		lengthInBits += (*m.DeviceIdentifier).LengthInBits()
+		lengthInBits += (*m.DeviceIdentifier).GetLengthInBits()
 	}
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.LengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.LengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += (*m.ArrayIndex).LengthInBits()
+		lengthInBits += (*m.ArrayIndex).GetLengthInBits()
 	}
 
 	// Optional Field (propertyValue)
 	if m.PropertyValue != nil {
-		lengthInBits += (*m.PropertyValue).LengthInBits()
+		lengthInBits += (*m.PropertyValue).GetLengthInBits()
 	}
 
 	// Optional Field (priority)
 	if m.Priority != nil {
-		lengthInBits += (*m.Priority).LengthInBits()
+		lengthInBits += (*m.Priority).GetLengthInBits()
 	}
 
 	// Optional Field (postDelay)
 	if m.PostDelay != nil {
-		lengthInBits += (*m.PostDelay).LengthInBits()
+		lengthInBits += (*m.PostDelay).GetLengthInBits()
 	}
 
 	// Simple field (quitOnFailure)
-	lengthInBits += m.QuitOnFailure.LengthInBits()
+	lengthInBits += m.QuitOnFailure.GetLengthInBits()
 
 	// Simple field (writeSuccessful)
-	lengthInBits += m.WriteSuccessful.LengthInBits()
+	lengthInBits += m.WriteSuccessful.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetActionCommand) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetActionCommand) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand, error) {
@@ -263,7 +264,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.ObjectType, propertyIdentifier)
+		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

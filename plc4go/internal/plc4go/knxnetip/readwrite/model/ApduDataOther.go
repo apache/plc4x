@@ -30,16 +30,19 @@ import (
 type ApduDataOther struct {
 	*ApduData
 	ExtendedApdu *ApduDataExt
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
 type IApduDataOther interface {
 	// GetExtendedApdu returns ExtendedApdu
 	GetExtendedApdu() *ApduDataExt
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *ApduDataOther) GetExtendedApdu() *ApduDataExt {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataOther(extendedApdu *ApduDataExt) *ApduData {
+// NewApduDataOther factory function for ApduDataOther
+func NewApduDataOther(extendedApdu *ApduDataExt, dataLength uint8) *ApduData {
 	child := &ApduDataOther{
 		ExtendedApdu: extendedApdu,
-		ApduData:     NewApduData(),
+		ApduData:     NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -100,21 +104,21 @@ func (m *ApduDataOther) GetTypeName() string {
 	return "ApduDataOther"
 }
 
-func (m *ApduDataOther) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataOther) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataOther) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataOther) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (extendedApdu)
-	lengthInBits += m.ExtendedApdu.LengthInBits()
+	lengthInBits += m.ExtendedApdu.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ApduDataOther) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataOther) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

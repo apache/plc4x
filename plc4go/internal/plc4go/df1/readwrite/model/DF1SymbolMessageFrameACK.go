@@ -32,10 +32,10 @@ type DF1SymbolMessageFrameACK struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrameACK interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *DF1SymbolMessageFrameACK) InitializeParent(parent *DF1Symbol) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1SymbolMessageFrameACK factory function for DF1SymbolMessageFrameACK
 func NewDF1SymbolMessageFrameACK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameACK{
 		DF1Symbol: NewDF1Symbol(),
@@ -92,18 +93,18 @@ func (m *DF1SymbolMessageFrameACK) GetTypeName() string {
 	return "DF1SymbolMessageFrameACK"
 }
 
-func (m *DF1SymbolMessageFrameACK) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1SymbolMessageFrameACK) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1SymbolMessageFrameACK) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1SymbolMessageFrameACK) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *DF1SymbolMessageFrameACK) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1SymbolMessageFrameACK) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1SymbolMessageFrameACKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {

@@ -30,16 +30,19 @@ import (
 type COTPParameterDisconnectAdditionalInformation struct {
 	*COTPParameter
 	Data []byte
+
+	// Arguments.
+	Rest uint8
 }
 
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,10 +71,11 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
+// NewCOTPParameterDisconnectAdditionalInformation factory function for COTPParameterDisconnectAdditionalInformation
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *COTPParameter {
 	child := &COTPParameterDisconnectAdditionalInformation{
 		Data:          data,
-		COTPParameter: NewCOTPParameter(),
+		COTPParameter: NewCOTPParameter(rest),
 	}
 	child.Child = child
 	return child.COTPParameter
@@ -100,12 +104,12 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
 	return "COTPParameterDisconnectAdditionalInformation"
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -115,8 +119,8 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(l
 	return lengthInBits
 }
 
-func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {

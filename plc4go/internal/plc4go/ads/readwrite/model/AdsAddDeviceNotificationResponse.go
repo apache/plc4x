@@ -39,10 +39,10 @@ type IAdsAddDeviceNotificationResponse interface {
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle
 	GetNotificationHandle() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -83,6 +83,7 @@ func (m *AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsAddDeviceNotificationResponse factory function for AdsAddDeviceNotificationResponse
 func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32) *AdsData {
 	child := &AdsAddDeviceNotificationResponse{
 		Result:             result,
@@ -116,12 +117,12 @@ func (m *AdsAddDeviceNotificationResponse) GetTypeName() string {
 	return "AdsAddDeviceNotificationResponse"
 }
 
-func (m *AdsAddDeviceNotificationResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsAddDeviceNotificationResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsAddDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsAddDeviceNotificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -132,8 +133,8 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsAddDeviceNotificationResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsAddDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

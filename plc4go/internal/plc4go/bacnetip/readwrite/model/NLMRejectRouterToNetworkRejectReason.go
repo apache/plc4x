@@ -116,12 +116,12 @@ func CastNLMRejectRouterToNetworkRejectReason(structType interface{}) NLMRejectR
 	return castFunc(structType)
 }
 
-func (m NLMRejectRouterToNetworkRejectReason) LengthInBits() uint16 {
+func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m NLMRejectRouterToNetworkRejectReason) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {

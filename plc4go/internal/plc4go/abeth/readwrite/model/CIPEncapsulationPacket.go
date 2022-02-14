@@ -48,10 +48,10 @@ type ICIPEncapsulationPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options
 	GetOptions() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *CIPEncapsulationPacket) GetOptions() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewCIPEncapsulationPacket factory function for CIPEncapsulationPacket
 func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	return &CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
@@ -112,15 +113,15 @@ func (m *CIPEncapsulationPacket) GetTypeName() string {
 	return "CIPEncapsulationPacket"
 }
 
-func (m *CIPEncapsulationPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CIPEncapsulationPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CIPEncapsulationPacket) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *CIPEncapsulationPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *CIPEncapsulationPacket) ParentLengthInBits() uint16 {
+func (m *CIPEncapsulationPacket) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandType)
 	lengthInBits += 16
@@ -148,8 +149,8 @@ func (m *CIPEncapsulationPacket) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *CIPEncapsulationPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CIPEncapsulationPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulationPacket, error) {
@@ -271,7 +272,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(28)))
+	len := uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(28)))
 	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")

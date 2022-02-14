@@ -39,10 +39,10 @@ type IModbusPDUDiagnosticRequest interface {
 	GetSubFunction() uint16
 	// GetData returns Data
 	GetData() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUDiagnosticRequest) GetData() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUDiagnosticRequest factory function for ModbusPDUDiagnosticRequest
 func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDU {
 	child := &ModbusPDUDiagnosticRequest{
 		SubFunction: subFunction,
@@ -124,12 +125,12 @@ func (m *ModbusPDUDiagnosticRequest) GetTypeName() string {
 	return "ModbusPDUDiagnosticRequest"
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUDiagnosticRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

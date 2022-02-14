@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type ApduDataExtIndividualAddressSerialNumberWrite struct {
 	*ApduDataExt
+
+	// Arguments.
+	Length uint8
 }
 
 // The corresponding interface
 type IApduDataExtIndividualAddressSerialNumberWrite interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) InitializeParent(parent 
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataExtIndividualAddressSerialNumberWrite() *ApduDataExt {
+// NewApduDataExtIndividualAddressSerialNumberWrite factory function for ApduDataExtIndividualAddressSerialNumberWrite
+func NewApduDataExtIndividualAddressSerialNumberWrite(length uint8) *ApduDataExt {
 	child := &ApduDataExtIndividualAddressSerialNumberWrite{
-		ApduDataExt: NewApduDataExt(),
+		ApduDataExt: NewApduDataExt(length),
 	}
 	child.Child = child
 	return child.ApduDataExt
@@ -92,18 +96,18 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetTypeName() string {
 	return "ApduDataExtIndividualAddressSerialNumberWrite"
 }
 
-func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {

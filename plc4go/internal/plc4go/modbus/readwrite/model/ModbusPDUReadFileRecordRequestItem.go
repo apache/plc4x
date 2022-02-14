@@ -44,10 +44,10 @@ type IModbusPDUReadFileRecordRequestItem interface {
 	GetRecordNumber() uint16
 	// GetRecordLength returns RecordLength
 	GetRecordLength() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) GetRecordLength() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadFileRecordRequestItem factory function for ModbusPDUReadFileRecordRequestItem
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *ModbusPDUReadFileRecordRequestItem {
 	return &ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
 }
@@ -96,11 +97,11 @@ func (m *ModbusPDUReadFileRecordRequestItem) GetTypeName() string {
 	return "ModbusPDUReadFileRecordRequestItem"
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)
@@ -118,8 +119,8 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFileRecordRequestItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {

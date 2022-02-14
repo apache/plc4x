@@ -32,11 +32,9 @@ type BACnetTagPayloadUnsignedInteger struct {
 	ValueUint16 *uint16
 	ValueUint24 *uint32
 	ValueUint32 *uint32
-	IsUint8     bool
-	IsUint16    bool
-	IsUint24    bool
-	IsUint32    bool
-	ActualValue uint32
+
+	// Arguments.
+	ActualLength uint32
 }
 
 // The corresponding interface
@@ -59,10 +57,10 @@ type IBACnetTagPayloadUnsignedInteger interface {
 	GetIsUint32() bool
 	// GetActualValue returns ActualValue
 	GetActualValue() uint32
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -90,32 +88,74 @@ func (m *BACnetTagPayloadUnsignedInteger) GetValueUint32() *uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsUint8
+	valueUint8 := m.ValueUint8
+	_ = valueUint8
+	valueUint16 := m.ValueUint16
+	_ = valueUint16
+	valueUint24 := m.ValueUint24
+	_ = valueUint24
+	valueUint32 := m.ValueUint32
+	_ = valueUint32
+	return bool((m.ActualLength) == (1))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsUint16
+	valueUint8 := m.ValueUint8
+	_ = valueUint8
+	valueUint16 := m.ValueUint16
+	_ = valueUint16
+	valueUint24 := m.ValueUint24
+	_ = valueUint24
+	valueUint32 := m.ValueUint32
+	_ = valueUint32
+	return bool((m.ActualLength) == (2))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsUint24
+	valueUint8 := m.ValueUint8
+	_ = valueUint8
+	valueUint16 := m.ValueUint16
+	_ = valueUint16
+	valueUint24 := m.ValueUint24
+	_ = valueUint24
+	valueUint32 := m.ValueUint32
+	_ = valueUint32
+	return bool((m.ActualLength) == (3))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsUint32
+	valueUint8 := m.ValueUint8
+	_ = valueUint8
+	valueUint16 := m.ValueUint16
+	_ = valueUint16
+	valueUint24 := m.ValueUint24
+	_ = valueUint24
+	valueUint32 := m.ValueUint32
+	_ = valueUint32
+	return bool((m.ActualLength) == (4))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualValue
+	valueUint8 := m.ValueUint8
+	_ = valueUint8
+	valueUint16 := m.ValueUint16
+	_ = valueUint16
+	valueUint24 := m.ValueUint24
+	_ = valueUint24
+	valueUint32 := m.ValueUint32
+	_ = valueUint32
+	return utils.InlineIf(m.GetIsUint8(), func() interface{} { return uint32((*m.GetValueUint8())) }, func() interface{} {
+		return uint32(uint32(utils.InlineIf(m.GetIsUint16(), func() interface{} { return uint32((*m.GetValueUint16())) }, func() interface{} {
+			return uint32(uint32(utils.InlineIf(m.GetIsUint24(), func() interface{} { return uint32((*m.GetValueUint24())) }, func() interface{} {
+				return uint32(uint32(utils.InlineIf(m.GetIsUint32(), func() interface{} { return uint32((*m.GetValueUint32())) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
+			}).(uint32)))
+		}).(uint32)))
+	}).(uint32)
 }
 
-func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, isUint8 bool, isUint16 bool, isUint24 bool, isUint32 bool, actualValue uint32) *BACnetTagPayloadUnsignedInteger {
-	return &BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, IsUint8: isUint8, IsUint16: isUint16, IsUint24: isUint24, IsUint32: isUint32, ActualValue: actualValue}
+// NewBACnetTagPayloadUnsignedInteger factory function for BACnetTagPayloadUnsignedInteger
+func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, actualLength uint32) *BACnetTagPayloadUnsignedInteger {
+	return &BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ActualLength: actualLength}
 }
 
 func CastBACnetTagPayloadUnsignedInteger(structType interface{}) *BACnetTagPayloadUnsignedInteger {
@@ -135,11 +175,11 @@ func (m *BACnetTagPayloadUnsignedInteger) GetTypeName() string {
 	return "BACnetTagPayloadUnsignedInteger"
 }
 
-func (m *BACnetTagPayloadUnsignedInteger) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadUnsignedInteger) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadUnsignedInteger) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadUnsignedInteger) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -175,8 +215,8 @@ func (m *BACnetTagPayloadUnsignedInteger) LengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadUnsignedInteger) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadUnsignedInteger) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetTagPayloadUnsignedInteger, error) {
@@ -187,6 +227,7 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 	// Virtual field
 	_isUint8 := bool((actualLength) == (1))
 	isUint8 := bool(_isUint8)
+	_ = isUint8
 
 	// Optional Field (valueUint8) (Can be skipped, if a given expression evaluates to false)
 	var valueUint8 *uint8 = nil
@@ -201,6 +242,7 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 	// Virtual field
 	_isUint16 := bool((actualLength) == (2))
 	isUint16 := bool(_isUint16)
+	_ = isUint16
 
 	// Optional Field (valueUint16) (Can be skipped, if a given expression evaluates to false)
 	var valueUint16 *uint16 = nil
@@ -215,6 +257,7 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 	// Virtual field
 	_isUint24 := bool((actualLength) == (3))
 	isUint24 := bool(_isUint24)
+	_ = isUint24
 
 	// Optional Field (valueUint24) (Can be skipped, if a given expression evaluates to false)
 	var valueUint24 *uint32 = nil
@@ -229,6 +272,7 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 	// Virtual field
 	_isUint32 := bool((actualLength) == (4))
 	isUint32 := bool(_isUint32)
+	_ = isUint32
 
 	// Optional Field (valueUint32) (Can be skipped, if a given expression evaluates to false)
 	var valueUint32 *uint32 = nil
@@ -249,13 +293,14 @@ func BACnetTagPayloadUnsignedIntegerParse(readBuffer utils.ReadBuffer, actualLen
 		}).(uint32)))
 	}).(uint32)
 	actualValue := uint32(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadUnsignedInteger"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, isUint8, isUint16, isUint24, isUint32, actualValue), nil
+	return NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, actualLength), nil
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -263,7 +308,7 @@ func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		return pushErr
 	}
 	// Virtual field
-	if _isUint8Err := writeBuffer.WriteVirtual("isUint8", m.IsUint8); _isUint8Err != nil {
+	if _isUint8Err := writeBuffer.WriteVirtual("isUint8", m.GetIsUint8()); _isUint8Err != nil {
 		return errors.Wrap(_isUint8Err, "Error serializing 'isUint8' field")
 	}
 
@@ -277,7 +322,7 @@ func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _isUint16Err := writeBuffer.WriteVirtual("isUint16", m.IsUint16); _isUint16Err != nil {
+	if _isUint16Err := writeBuffer.WriteVirtual("isUint16", m.GetIsUint16()); _isUint16Err != nil {
 		return errors.Wrap(_isUint16Err, "Error serializing 'isUint16' field")
 	}
 
@@ -291,7 +336,7 @@ func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _isUint24Err := writeBuffer.WriteVirtual("isUint24", m.IsUint24); _isUint24Err != nil {
+	if _isUint24Err := writeBuffer.WriteVirtual("isUint24", m.GetIsUint24()); _isUint24Err != nil {
 		return errors.Wrap(_isUint24Err, "Error serializing 'isUint24' field")
 	}
 
@@ -305,7 +350,7 @@ func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _isUint32Err := writeBuffer.WriteVirtual("isUint32", m.IsUint32); _isUint32Err != nil {
+	if _isUint32Err := writeBuffer.WriteVirtual("isUint32", m.GetIsUint32()); _isUint32Err != nil {
 		return errors.Wrap(_isUint32Err, "Error serializing 'isUint32' field")
 	}
 
@@ -319,7 +364,7 @@ func (m *BACnetTagPayloadUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+	if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}
 

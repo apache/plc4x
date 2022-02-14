@@ -43,10 +43,10 @@ type ILPollData interface {
 	GetTargetAddress() []byte
 	// GetNumberExpectedPollData returns NumberExpectedPollData
 	GetNumberExpectedPollData() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -97,6 +97,7 @@ func (m *LPollData) GetNumberExpectedPollData() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewLPollData factory function for LPollData
 func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LPollData{
 		SourceAddress:          sourceAddress,
@@ -131,15 +132,15 @@ func (m *LPollData) GetTypeName() string {
 	return "LPollData"
 }
 
-func (m *LPollData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *LPollData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *LPollData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (sourceAddress)
-	lengthInBits += m.SourceAddress.LengthInBits()
+	lengthInBits += m.SourceAddress.GetLengthInBits()
 
 	// Array field
 	if len(m.TargetAddress) > 0 {
@@ -155,8 +156,8 @@ func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *LPollData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *LPollData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {

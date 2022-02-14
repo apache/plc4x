@@ -43,6 +43,9 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 	FromState                  *BACnetContextTagEventState
 	ToState                    *BACnetContextTagEventState
 	EventValues                *BACnetNotificationParameters
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -73,10 +76,10 @@ type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	GetToState() *BACnetContextTagEventState
 	// GetEventValues returns EventValues
 	GetEventValues() *BACnetNotificationParameters
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -154,7 +157,8 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventValues
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStamp, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters) *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestConfirmedEventNotification factory function for BACnetConfirmedServiceRequestConfirmedEventNotification
+func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, eventObjectIdentifier *BACnetContextTagObjectIdentifier, timestamp *BACnetTimeStamp, notificationClass *BACnetContextTagUnsignedInteger, priority *BACnetContextTagUnsignedInteger, eventType *BACnetContextTagEventType, messageText *BACnetContextTagCharacterString, notifyType *BACnetContextTagNotifyType, ackRequired *BACnetContextTagBoolean, fromState *BACnetContextTagEventState, toState *BACnetContextTagEventState, eventValues *BACnetNotificationParameters, len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestConfirmedEventNotification{
 		ProcessIdentifier:             processIdentifier,
 		InitiatingDeviceIdentifier:    initiatingDeviceIdentifier,
@@ -169,7 +173,7 @@ func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifie
 		FromState:                     fromState,
 		ToState:                       toState,
 		EventValues:                   eventValues,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -198,65 +202,65 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetTypeName() 
 	return "BACnetConfirmedServiceRequestConfirmedEventNotification"
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (processIdentifier)
-	lengthInBits += m.ProcessIdentifier.LengthInBits()
+	lengthInBits += m.ProcessIdentifier.GetLengthInBits()
 
 	// Simple field (initiatingDeviceIdentifier)
-	lengthInBits += m.InitiatingDeviceIdentifier.LengthInBits()
+	lengthInBits += m.InitiatingDeviceIdentifier.GetLengthInBits()
 
 	// Simple field (eventObjectIdentifier)
-	lengthInBits += m.EventObjectIdentifier.LengthInBits()
+	lengthInBits += m.EventObjectIdentifier.GetLengthInBits()
 
 	// Simple field (timestamp)
-	lengthInBits += m.Timestamp.LengthInBits()
+	lengthInBits += m.Timestamp.GetLengthInBits()
 
 	// Simple field (notificationClass)
-	lengthInBits += m.NotificationClass.LengthInBits()
+	lengthInBits += m.NotificationClass.GetLengthInBits()
 
 	// Simple field (priority)
-	lengthInBits += m.Priority.LengthInBits()
+	lengthInBits += m.Priority.GetLengthInBits()
 
 	// Simple field (eventType)
-	lengthInBits += m.EventType.LengthInBits()
+	lengthInBits += m.EventType.GetLengthInBits()
 
 	// Optional Field (messageText)
 	if m.MessageText != nil {
-		lengthInBits += (*m.MessageText).LengthInBits()
+		lengthInBits += (*m.MessageText).GetLengthInBits()
 	}
 
 	// Simple field (notifyType)
-	lengthInBits += m.NotifyType.LengthInBits()
+	lengthInBits += m.NotifyType.GetLengthInBits()
 
 	// Optional Field (ackRequired)
 	if m.AckRequired != nil {
-		lengthInBits += (*m.AckRequired).LengthInBits()
+		lengthInBits += (*m.AckRequired).GetLengthInBits()
 	}
 
 	// Optional Field (fromState)
 	if m.FromState != nil {
-		lengthInBits += (*m.FromState).LengthInBits()
+		lengthInBits += (*m.FromState).GetLengthInBits()
 	}
 
 	// Simple field (toState)
-	lengthInBits += m.ToState.LengthInBits()
+	lengthInBits += m.ToState.GetLengthInBits()
 
 	// Optional Field (eventValues)
 	if m.EventValues != nil {
-		lengthInBits += (*m.EventValues).LengthInBits()
+		lengthInBits += (*m.EventValues).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
@@ -451,7 +455,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 		if pullErr := readBuffer.PullContext("eventValues"); pullErr != nil {
 			return nil, pullErr
 		}
-		_val, _err := BACnetNotificationParametersParse(readBuffer, uint8(12), eventObjectIdentifier.ObjectType)
+		_val, _err := BACnetNotificationParametersParse(readBuffer, uint8(12), eventObjectIdentifier.GetObjectType())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			readBuffer.Reset(currentPos)

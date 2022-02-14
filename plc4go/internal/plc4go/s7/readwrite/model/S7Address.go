@@ -35,10 +35,10 @@ type S7Address struct {
 type IS7Address interface {
 	// AddressType returns AddressType
 	AddressType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IS7AddressChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7Address factory function for S7Address
 func NewS7Address() *S7Address {
 	return &S7Address{}
 }
@@ -84,15 +85,15 @@ func (m *S7Address) GetTypeName() string {
 	return "S7Address"
 }
 
-func (m *S7Address) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7Address) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7Address) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7Address) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7Address) ParentLengthInBits() uint16 {
+func (m *S7Address) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *S7Address) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7Address) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7Address) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {

@@ -28,14 +28,17 @@ import (
 // The data-structure of this message
 type MPropWriteCon struct {
 	*CEMI
+
+	// Arguments.
+	Size uint16
 }
 
 // The corresponding interface
 type IMPropWriteCon interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,9 +64,10 @@ func (m *MPropWriteCon) InitializeParent(parent *CEMI) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewMPropWriteCon() *CEMI {
+// NewMPropWriteCon factory function for MPropWriteCon
+func NewMPropWriteCon(size uint16) *CEMI {
 	child := &MPropWriteCon{
-		CEMI: NewCEMI(),
+		CEMI: NewCEMI(size),
 	}
 	child.Child = child
 	return child.CEMI
@@ -92,18 +96,18 @@ func (m *MPropWriteCon) GetTypeName() string {
 	return "MPropWriteCon"
 }
 
-func (m *MPropWriteCon) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *MPropWriteCon) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *MPropWriteCon) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *MPropWriteCon) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *MPropWriteCon) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *MPropWriteCon) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {

@@ -35,10 +35,10 @@ type BACnetTagPayloadDouble struct {
 type IBACnetTagPayloadDouble interface {
 	// GetValue returns Value
 	GetValue() float64
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *BACnetTagPayloadDouble) GetValue() float64 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetTagPayloadDouble factory function for BACnetTagPayloadDouble
 func NewBACnetTagPayloadDouble(value float64) *BACnetTagPayloadDouble {
 	return &BACnetTagPayloadDouble{Value: value}
 }
@@ -75,11 +76,11 @@ func (m *BACnetTagPayloadDouble) GetTypeName() string {
 	return "BACnetTagPayloadDouble"
 }
 
-func (m *BACnetTagPayloadDouble) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadDouble) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadDouble) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadDouble) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (value)
@@ -88,8 +89,8 @@ func (m *BACnetTagPayloadDouble) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadDouble) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadDouble) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadDouble, error) {

@@ -162,13 +162,13 @@ func Cast${type.name}(structType interface{}) ${type.name} {
 	return castFunc(structType)
 }
 
-func (m ${type.name}) LengthInBits() uint16 {
+func (m ${type.name}) GetLengthInBits() uint16 {
 	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	return <#if type.type.isStringTypeReference()>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
-func (m ${type.name}) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m ${type.name}) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 <#if type.type?has_content && helper.isSimpleTypeReference(type.type)>

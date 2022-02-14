@@ -32,6 +32,9 @@ type APDUError struct {
 	*APDU
 	OriginalInvokeId uint8
 	Error            *BACnetError
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -40,10 +43,10 @@ type IAPDUError interface {
 	GetOriginalInvokeId() uint8
 	// GetError returns Error
 	GetError() *BACnetError
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,11 +79,12 @@ func (m *APDUError) GetError() *BACnetError {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUError(originalInvokeId uint8, error *BACnetError) *APDU {
+// NewAPDUError factory function for APDUError
+func NewAPDUError(originalInvokeId uint8, error *BACnetError, apduLength uint16) *APDU {
 	child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            error,
-		APDU:             NewAPDU(),
+		APDU:             NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -109,12 +113,12 @@ func (m *APDUError) GetTypeName() string {
 	return "APDUError"
 }
 
-func (m *APDUError) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUError) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUError) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -123,13 +127,13 @@ func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (error)
-	lengthInBits += m.Error.LengthInBits()
+	lengthInBits += m.Error.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *APDUError) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUError) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

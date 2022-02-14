@@ -517,12 +517,12 @@ func CastDeviceDescriptor(structType interface{}) DeviceDescriptor {
 	return castFunc(structType)
 }
 
-func (m DeviceDescriptor) LengthInBits() uint16 {
+func (m DeviceDescriptor) GetLengthInBits() uint16 {
 	return 16
 }
 
-func (m DeviceDescriptor) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m DeviceDescriptor) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {

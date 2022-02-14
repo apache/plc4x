@@ -32,10 +32,10 @@ type BVLCReadBroadcastDistributionTable struct {
 
 // The corresponding interface
 type IBVLCReadBroadcastDistributionTable interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -51,9 +51,7 @@ func (m *BVLCReadBroadcastDistributionTable) GetBvlcFunction() uint8 {
 	return 0x02
 }
 
-func (m *BVLCReadBroadcastDistributionTable) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCReadBroadcastDistributionTable) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -63,9 +61,10 @@ func (m *BVLCReadBroadcastDistributionTable) InitializeParent(parent *BVLC, bvlc
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCReadBroadcastDistributionTable(bvlcPayloadLength uint16) *BVLC {
+// NewBVLCReadBroadcastDistributionTable factory function for BVLCReadBroadcastDistributionTable
+func NewBVLCReadBroadcastDistributionTable() *BVLC {
 	child := &BVLCReadBroadcastDistributionTable{
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -94,18 +93,18 @@ func (m *BVLCReadBroadcastDistributionTable) GetTypeName() string {
 	return "BVLCReadBroadcastDistributionTable"
 }
 
-func (m *BVLCReadBroadcastDistributionTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCReadBroadcastDistributionTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCReadBroadcastDistributionTable) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCReadBroadcastDistributionTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCReadBroadcastDistributionTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCReadBroadcastDistributionTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

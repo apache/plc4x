@@ -35,10 +35,10 @@ type ApduControl struct {
 type IApduControl interface {
 	// ControlType returns ControlType
 	ControlType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IApduControlChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewApduControl factory function for ApduControl
 func NewApduControl() *ApduControl {
 	return &ApduControl{}
 }
@@ -84,15 +85,15 @@ func (m *ApduControl) GetTypeName() string {
 	return "ApduControl"
 }
 
-func (m *ApduControl) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControl) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControl) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ApduControl) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ApduControl) ParentLengthInBits() uint16 {
+func (m *ApduControl) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2
@@ -100,8 +101,8 @@ func (m *ApduControl) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *ApduControl) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControl) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduControlParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {

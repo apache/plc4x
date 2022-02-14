@@ -32,10 +32,10 @@ type SysexCommandReportFirmwareRequest struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexComman
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewSysexCommandReportFirmwareRequest factory function for SysexCommandReportFirmwareRequest
 func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 	child := &SysexCommandReportFirmwareRequest{
 		SysexCommand: NewSysexCommand(),
@@ -100,18 +101,18 @@ func (m *SysexCommandReportFirmwareRequest) GetTypeName() string {
 	return "SysexCommandReportFirmwareRequest"
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *SysexCommandReportFirmwareRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *SysexCommandReportFirmwareRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {

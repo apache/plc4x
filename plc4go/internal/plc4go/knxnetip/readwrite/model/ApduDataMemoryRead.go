@@ -31,6 +31,9 @@ type ApduDataMemoryRead struct {
 	*ApduData
 	NumBytes uint8
 	Address  uint16
+
+	// Arguments.
+	DataLength uint8
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IApduDataMemoryRead interface {
 	GetNumBytes() uint8
 	// GetAddress returns Address
 	GetAddress() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,11 +78,12 @@ func (m *ApduDataMemoryRead) GetAddress() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewApduDataMemoryRead(numBytes uint8, address uint16) *ApduData {
+// NewApduDataMemoryRead factory function for ApduDataMemoryRead
+func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *ApduData {
 	child := &ApduDataMemoryRead{
 		NumBytes: numBytes,
 		Address:  address,
-		ApduData: NewApduData(),
+		ApduData: NewApduData(dataLength),
 	}
 	child.Child = child
 	return child.ApduData
@@ -108,12 +112,12 @@ func (m *ApduDataMemoryRead) GetTypeName() string {
 	return "ApduDataMemoryRead"
 }
 
-func (m *ApduDataMemoryRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduDataMemoryRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduDataMemoryRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduDataMemoryRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -124,8 +128,8 @@ func (m *ApduDataMemoryRead) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduDataMemoryRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {

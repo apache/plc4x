@@ -36,10 +36,10 @@ type AdsWriteResponse struct {
 type IAdsWriteResponse interface {
 	// GetResult returns Result
 	GetResult() ReturnCode
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *AdsWriteResponse) GetResult() ReturnCode {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsWriteResponse factory function for AdsWriteResponse
 func NewAdsWriteResponse(result ReturnCode) *AdsData {
 	child := &AdsWriteResponse{
 		Result:  result,
@@ -108,12 +109,12 @@ func (m *AdsWriteResponse) GetTypeName() string {
 	return "AdsWriteResponse"
 }
 
-func (m *AdsWriteResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsWriteResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsWriteResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -121,8 +122,8 @@ func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AdsWriteResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsWriteResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

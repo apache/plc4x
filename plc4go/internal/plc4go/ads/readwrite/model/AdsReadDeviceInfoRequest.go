@@ -32,10 +32,10 @@ type AdsReadDeviceInfoRequest struct {
 
 // The corresponding interface
 type IAdsReadDeviceInfoRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsReadDeviceInfoRequest factory function for AdsReadDeviceInfoRequest
 func NewAdsReadDeviceInfoRequest() *AdsData {
 	child := &AdsReadDeviceInfoRequest{
 		AdsData: NewAdsData(),
@@ -100,18 +101,18 @@ func (m *AdsReadDeviceInfoRequest) GetTypeName() string {
 	return "AdsReadDeviceInfoRequest"
 }
 
-func (m *AdsReadDeviceInfoRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsReadDeviceInfoRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsReadDeviceInfoRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsReadDeviceInfoRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsReadDeviceInfoRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

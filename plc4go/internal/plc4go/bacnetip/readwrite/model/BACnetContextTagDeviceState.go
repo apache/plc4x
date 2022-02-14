@@ -30,16 +30,20 @@ import (
 type BACnetContextTagDeviceState struct {
 	*BACnetContextTag
 	State BACnetDeviceState
+
+	// Arguments.
+	TagNumberArgument        uint8
+	IsNotOpeningOrClosingTag bool
 }
 
 // The corresponding interface
 type IBACnetContextTagDeviceState interface {
 	// GetState returns State
 	GetState() BACnetDeviceState
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,11 +59,8 @@ func (m *BACnetContextTagDeviceState) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_DEVICE_STATE
 }
 
-func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) {
+func (m *BACnetContextTagDeviceState) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader) {
 	m.BACnetContextTag.Header = header
-	m.BACnetContextTag.TagNumber = tagNumber
-	m.BACnetContextTag.ActualLength = actualLength
-	m.BACnetContextTag.IsNotOpeningOrClosingTag = isNotOpeningOrClosingTag
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,10 +74,11 @@ func (m *BACnetContextTagDeviceState) GetState() BACnetDeviceState {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
+// NewBACnetContextTagDeviceState factory function for BACnetContextTagDeviceState
+func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
 	child := &BACnetContextTagDeviceState{
 		State:            state,
-		BACnetContextTag: NewBACnetContextTag(header, tagNumber, actualLength, isNotOpeningOrClosingTag),
+		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
 	child.Child = child
 	return child.BACnetContextTag
@@ -105,12 +107,12 @@ func (m *BACnetContextTagDeviceState) GetTypeName() string {
 	return "BACnetContextTagDeviceState"
 }
 
-func (m *BACnetContextTagDeviceState) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTagDeviceState) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTagDeviceState) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetContextTagDeviceState) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (state)
 	lengthInBits += 8
@@ -118,8 +120,8 @@ func (m *BACnetContextTagDeviceState) LengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *BACnetContextTagDeviceState) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTagDeviceState) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool) (*BACnetContextTag, error) {

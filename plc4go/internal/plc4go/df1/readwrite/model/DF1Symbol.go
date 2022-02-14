@@ -39,10 +39,10 @@ type DF1Symbol struct {
 type IDF1Symbol interface {
 	// SymbolType returns SymbolType
 	SymbolType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -67,6 +67,7 @@ type IDF1SymbolChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1Symbol factory function for DF1Symbol
 func NewDF1Symbol() *DF1Symbol {
 	return &DF1Symbol{}
 }
@@ -88,15 +89,15 @@ func (m *DF1Symbol) GetTypeName() string {
 	return "DF1Symbol"
 }
 
-func (m *DF1Symbol) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1Symbol) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1Symbol) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1Symbol) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1Symbol) ParentLengthInBits() uint16 {
+func (m *DF1Symbol) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (messageStart)
@@ -107,8 +108,8 @@ func (m *DF1Symbol) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1Symbol) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1Symbol) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {

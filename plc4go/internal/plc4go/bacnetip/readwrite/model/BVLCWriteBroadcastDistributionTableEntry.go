@@ -41,10 +41,10 @@ type IBVLCWriteBroadcastDistributionTableEntry interface {
 	GetPort() uint16
 	// GetBroadcastDistributionMap returns BroadcastDistributionMap
 	GetBroadcastDistributionMap() []uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) GetBroadcastDistributionMap()
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBVLCWriteBroadcastDistributionTableEntry factory function for BVLCWriteBroadcastDistributionTableEntry
 func NewBVLCWriteBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *BVLCWriteBroadcastDistributionTableEntry {
 	return &BVLCWriteBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
 }
@@ -89,11 +90,11 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) GetTypeName() string {
 	return "BVLCWriteBroadcastDistributionTableEntry"
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -112,8 +113,8 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *BVLCWriteBroadcastDistributionTableEntry) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCWriteBroadcastDistributionTableEntry) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCWriteBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (*BVLCWriteBroadcastDistributionTableEntry, error) {

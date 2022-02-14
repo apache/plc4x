@@ -6394,12 +6394,12 @@ func CastKnxDatapointType(structType interface{}) KnxDatapointType {
 	return castFunc(structType)
 }
 
-func (m KnxDatapointType) LengthInBits() uint16 {
+func (m KnxDatapointType) GetLengthInBits() uint16 {
 	return 32
 }
 
-func (m KnxDatapointType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxDatapointType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {

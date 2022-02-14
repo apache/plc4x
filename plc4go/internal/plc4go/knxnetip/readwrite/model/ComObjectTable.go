@@ -35,10 +35,10 @@ type ComObjectTable struct {
 type IComObjectTable interface {
 	// FirmwareType returns FirmwareType
 	FirmwareType() FirmwareType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IComObjectTableChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewComObjectTable factory function for ComObjectTable
 func NewComObjectTable() *ComObjectTable {
 	return &ComObjectTable{}
 }
@@ -84,22 +85,22 @@ func (m *ComObjectTable) GetTypeName() string {
 	return "ComObjectTable"
 }
 
-func (m *ComObjectTable) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ComObjectTable) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ComObjectTable) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *ComObjectTable) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *ComObjectTable) ParentLengthInBits() uint16 {
+func (m *ComObjectTable) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *ComObjectTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ComObjectTable) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {

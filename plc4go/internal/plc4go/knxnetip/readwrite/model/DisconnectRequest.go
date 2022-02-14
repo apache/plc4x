@@ -40,10 +40,10 @@ type IDisconnectRequest interface {
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint
 	GetHpaiControlEndpoint() *HPAIControlEndpoint
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *DisconnectRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDisconnectRequest factory function for DisconnectRequest
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
 	child := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
@@ -109,12 +110,12 @@ func (m *DisconnectRequest) GetTypeName() string {
 	return "DisconnectRequest"
 }
 
-func (m *DisconnectRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DisconnectRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DisconnectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -123,13 +124,13 @@ func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DisconnectRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DisconnectRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

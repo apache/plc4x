@@ -32,6 +32,9 @@ type CipReadRequest struct {
 	RequestPathSize int8
 	Tag             []byte
 	ElementNb       uint16
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
@@ -42,10 +45,10 @@ type ICipReadRequest interface {
 	GetTag() []byte
 	// GetElementNb returns ElementNb
 	GetElementNb() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,12 +85,13 @@ func (m *CipReadRequest) GetElementNb() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16) *CipService {
+// NewCipReadRequest factory function for CipReadRequest
+func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, serviceLen uint16) *CipService {
 	child := &CipReadRequest{
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
-		CipService:      NewCipService(),
+		CipService:      NewCipService(serviceLen),
 	}
 	child.Child = child
 	return child.CipService
@@ -116,12 +120,12 @@ func (m *CipReadRequest) GetTypeName() string {
 	return "CipReadRequest"
 }
 
-func (m *CipReadRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipReadRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipReadRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -137,8 +141,8 @@ func (m *CipReadRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipReadRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipReadRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {

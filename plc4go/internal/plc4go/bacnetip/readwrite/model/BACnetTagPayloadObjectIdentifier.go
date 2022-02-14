@@ -31,7 +31,6 @@ type BACnetTagPayloadObjectIdentifier struct {
 	ObjectType       BACnetObjectType
 	ProprietaryValue uint16
 	InstanceNumber   uint32
-	IsProprietary    bool
 }
 
 // The corresponding interface
@@ -44,10 +43,10 @@ type IBACnetTagPayloadObjectIdentifier interface {
 	GetInstanceNumber() uint32
 	// GetIsProprietary returns IsProprietary
 	GetIsProprietary() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -71,12 +70,12 @@ func (m *BACnetTagPayloadObjectIdentifier) GetInstanceNumber() uint32 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsProprietary
+	return bool((m.GetObjectType()) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
 }
 
-func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32, isProprietary bool) *BACnetTagPayloadObjectIdentifier {
-	return &BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber, IsProprietary: isProprietary}
+// NewBACnetTagPayloadObjectIdentifier factory function for BACnetTagPayloadObjectIdentifier
+func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *BACnetTagPayloadObjectIdentifier {
+	return &BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
 }
 
 func CastBACnetTagPayloadObjectIdentifier(structType interface{}) *BACnetTagPayloadObjectIdentifier {
@@ -96,11 +95,11 @@ func (m *BACnetTagPayloadObjectIdentifier) GetTypeName() string {
 	return "BACnetTagPayloadObjectIdentifier"
 }
 
-func (m *BACnetTagPayloadObjectIdentifier) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetTagPayloadObjectIdentifier) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetTagPayloadObjectIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetTagPayloadObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (objectType)
@@ -117,8 +116,8 @@ func (m *BACnetTagPayloadObjectIdentifier) LengthInBitsConditional(lastItem bool
 	return lengthInBits
 }
 
-func (m *BACnetTagPayloadObjectIdentifier) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetTagPayloadObjectIdentifier) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadObjectIdentifier, error) {
@@ -141,6 +140,7 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	// Virtual field
 	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
 	isProprietary := bool(_isProprietary)
+	_ = isProprietary
 
 	// Simple Field (instanceNumber)
 	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
@@ -154,7 +154,7 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	}
 
 	// Create the instance
-	return NewBACnetTagPayloadObjectIdentifier(objectType, proprietaryValue, instanceNumber, isProprietary), nil
+	return NewBACnetTagPayloadObjectIdentifier(objectType, proprietaryValue, instanceNumber), nil
 }
 
 func (m *BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -163,18 +163,18 @@ func (m *BACnetTagPayloadObjectIdentifier) Serialize(writeBuffer utils.WriteBuff
 	}
 
 	// Manual Field (objectType)
-	_objectTypeErr := WriteObjectType(writeBuffer, m.ObjectType)
+	_objectTypeErr := WriteObjectType(writeBuffer, m.GetObjectType())
 	if _objectTypeErr != nil {
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
 
 	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryObjectType(writeBuffer, m.ObjectType, m.ProprietaryValue)
+	_proprietaryValueErr := WriteProprietaryObjectType(writeBuffer, m.GetObjectType(), m.GetProprietaryValue())
 	if _proprietaryValueErr != nil {
 		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
 	}
 	// Virtual field
-	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.IsProprietary); _isProprietaryErr != nil {
+	if _isProprietaryErr := writeBuffer.WriteVirtual("isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 

@@ -48,10 +48,10 @@ type IDF1RequestProtectedTypedLogicalRead interface {
 	GetElementNumber() uint8
 	// GetSubElementNumber returns SubElementNumber
 	GetSubElementNumber() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -96,6 +96,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) GetSubElementNumber() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1RequestProtectedTypedLogicalRead factory function for DF1RequestProtectedTypedLogicalRead
 func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestCommand {
 	child := &DF1RequestProtectedTypedLogicalRead{
 		ByteSize:          byteSize,
@@ -132,12 +133,12 @@ func (m *DF1RequestProtectedTypedLogicalRead) GetTypeName() string {
 	return "DF1RequestProtectedTypedLogicalRead"
 }
 
-func (m *DF1RequestProtectedTypedLogicalRead) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1RequestProtectedTypedLogicalRead) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1RequestProtectedTypedLogicalRead) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DF1RequestProtectedTypedLogicalRead) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (byteSize)
 	lengthInBits += 8
@@ -157,8 +158,8 @@ func (m *DF1RequestProtectedTypedLogicalRead) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *DF1RequestProtectedTypedLogicalRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1RequestProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, error) {

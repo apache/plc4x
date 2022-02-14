@@ -36,10 +36,10 @@ type AmsTCPPacket struct {
 type IAmsTCPPacket interface {
 	// GetUserdata returns Userdata
 	GetUserdata() *AmsPacket
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -55,6 +55,7 @@ func (m *AmsTCPPacket) GetUserdata() *AmsPacket {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAmsTCPPacket factory function for AmsTCPPacket
 func NewAmsTCPPacket(userdata *AmsPacket) *AmsTCPPacket {
 	return &AmsTCPPacket{Userdata: userdata}
 }
@@ -76,11 +77,11 @@ func (m *AmsTCPPacket) GetTypeName() string {
 	return "AmsTCPPacket"
 }
 
-func (m *AmsTCPPacket) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsTCPPacket) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsTCPPacket) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsTCPPacket) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -90,13 +91,13 @@ func (m *AmsTCPPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 32
 
 	// Simple field (userdata)
-	lengthInBits += m.Userdata.LengthInBits()
+	lengthInBits += m.Userdata.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AmsTCPPacket) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsTCPPacket) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (*AmsTCPPacket, error) {
@@ -160,7 +161,7 @@ func (m *AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint32(m.Userdata.LengthInBytes())
+	length := uint32(m.GetUserdata().GetLengthInBytes())
 	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")

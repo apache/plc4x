@@ -36,10 +36,10 @@ type DeviceConfigurationAck struct {
 type IDeviceConfigurationAck interface {
 	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock
 	GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() *DeviceCon
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDeviceConfigurationAck factory function for DeviceConfigurationAck
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
 	child := &DeviceConfigurationAck{
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
@@ -100,21 +101,21 @@ func (m *DeviceConfigurationAck) GetTypeName() string {
 	return "DeviceConfigurationAck"
 }
 
-func (m *DeviceConfigurationAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceConfigurationAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceConfigurationAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DeviceConfigurationAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceConfigurationAckDataBlock)
-	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
+	lengthInBits += m.DeviceConfigurationAckDataBlock.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DeviceConfigurationAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceConfigurationAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

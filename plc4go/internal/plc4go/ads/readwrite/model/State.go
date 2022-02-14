@@ -60,10 +60,10 @@ type IState interface {
 	GetResponse() bool
 	// GetBroadcast returns Broadcast
 	GetBroadcast() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -111,6 +111,7 @@ func (m *State) GetBroadcast() bool {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewState factory function for State
 func NewState(initCommand bool, updCommand bool, timestampAdded bool, highPriorityCommand bool, systemCommand bool, adsCommand bool, noReturn bool, response bool, broadcast bool) *State {
 	return &State{InitCommand: initCommand, UpdCommand: updCommand, TimestampAdded: timestampAdded, HighPriorityCommand: highPriorityCommand, SystemCommand: systemCommand, AdsCommand: adsCommand, NoReturn: noReturn, Response: response, Broadcast: broadcast}
 }
@@ -132,11 +133,11 @@ func (m *State) GetTypeName() string {
 	return "State"
 }
 
-func (m *State) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *State) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *State) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (initCommand)
@@ -172,8 +173,8 @@ func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *State) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *State) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func StateParse(readBuffer utils.ReadBuffer) (*State, error) {

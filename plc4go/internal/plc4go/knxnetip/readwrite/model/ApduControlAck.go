@@ -32,10 +32,10 @@ type ApduControlAck struct {
 
 // The corresponding interface
 type IApduControlAck interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *ApduControlAck) InitializeParent(parent *ApduControl) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewApduControlAck factory function for ApduControlAck
 func NewApduControlAck() *ApduControl {
 	child := &ApduControlAck{
 		ApduControl: NewApduControl(),
@@ -92,18 +93,18 @@ func (m *ApduControlAck) GetTypeName() string {
 	return "ApduControlAck"
 }
 
-func (m *ApduControlAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ApduControlAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ApduControlAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ApduControlAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ApduControlAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ApduControlAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ApduControlAckParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {

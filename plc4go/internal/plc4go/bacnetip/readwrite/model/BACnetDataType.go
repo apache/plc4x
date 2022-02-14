@@ -194,12 +194,12 @@ func CastBACnetDataType(structType interface{}) BACnetDataType {
 	return castFunc(structType)
 }
 
-func (m BACnetDataType) LengthInBits() uint16 {
+func (m BACnetDataType) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m BACnetDataType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m BACnetDataType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetDataTypeParse(readBuffer utils.ReadBuffer) (BACnetDataType, error) {

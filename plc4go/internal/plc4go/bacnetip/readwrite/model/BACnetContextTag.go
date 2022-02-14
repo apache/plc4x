@@ -28,11 +28,11 @@ import (
 
 // The data-structure of this message
 type BACnetContextTag struct {
-	Header                   *BACnetTagHeader
-	TagNumber                uint8
-	ActualLength             uint32
-	IsNotOpeningOrClosingTag bool
-	Child                    IBACnetContextTagChild
+	Header *BACnetTagHeader
+
+	// Arguments.
+	TagNumberArgument uint8
+	Child             IBACnetContextTagChild
 }
 
 // The corresponding interface
@@ -47,10 +47,10 @@ type IBACnetContextTag interface {
 	GetActualLength() uint32
 	// GetIsNotOpeningOrClosingTag returns IsNotOpeningOrClosingTag
 	GetIsNotOpeningOrClosingTag() bool
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,7 +62,7 @@ type IBACnetContextTagParent interface {
 
 type IBACnetContextTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool)
+	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader)
 	GetTypeName() string
 	IBACnetContextTag
 }
@@ -78,22 +78,20 @@ func (m *BACnetContextTag) GetHeader() *BACnetTagHeader {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetContextTag) GetTagNumber() uint8 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.TagNumber
+	return m.GetHeader().GetTagNumber()
 }
 
 func (m *BACnetContextTag) GetActualLength() uint32 {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.ActualLength
+	return m.GetHeader().GetActualLength()
 }
 
 func (m *BACnetContextTag) GetIsNotOpeningOrClosingTag() bool {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.IsNotOpeningOrClosingTag
+	return bool(bool((m.GetHeader().GetLengthValueType()) != (6))) && bool(bool((m.GetHeader().GetLengthValueType()) != (7)))
 }
 
-func NewBACnetContextTag(header *BACnetTagHeader, tagNumber uint8, actualLength uint32, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	return &BACnetContextTag{Header: header, TagNumber: tagNumber, ActualLength: actualLength, IsNotOpeningOrClosingTag: isNotOpeningOrClosingTag}
+// NewBACnetContextTag factory function for BACnetContextTag
+func NewBACnetContextTag(header *BACnetTagHeader, tagNumberArgument uint8) *BACnetContextTag {
+	return &BACnetContextTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
@@ -113,19 +111,19 @@ func (m *BACnetContextTag) GetTypeName() string {
 	return "BACnetContextTag"
 }
 
-func (m *BACnetContextTag) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetContextTag) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetContextTag) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetContextTag) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetContextTag) ParentLengthInBits() uint16 {
+func (m *BACnetContextTag) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.LengthInBits()
+	lengthInBits += m.Header.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
@@ -136,8 +134,8 @@ func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetContextTag) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetContextTag) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
@@ -159,26 +157,29 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Validation
-	if !(bool((header.ActualTagNumber) == (tagNumberArgument))) {
+	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
 		return nil, utils.ParseAssertError{"tagnumber doesn't match"}
 	}
 
 	// Validation
-	if !(bool((header.TagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
+	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
 		return nil, utils.ParseAssertError{"should be a context tag"}
 	}
 
 	// Virtual field
-	_tagNumber := header.TagNumber
+	_tagNumber := header.GetTagNumber()
 	tagNumber := uint8(_tagNumber)
+	_ = tagNumber
 
 	// Virtual field
-	_actualLength := header.ActualLength
+	_actualLength := header.GetActualLength()
 	actualLength := uint32(_actualLength)
+	_ = actualLength
 
 	// Virtual field
-	_isNotOpeningOrClosingTag := bool(bool((header.LengthValueType) != (6))) && bool(bool((header.LengthValueType) != (7)))
+	_isNotOpeningOrClosingTag := bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))
 	isNotOpeningOrClosingTag := bool(_isNotOpeningOrClosingTag)
+	_ = isNotOpeningOrClosingTag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetContextTag
@@ -237,7 +238,7 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header, tagNumber, actualLength, isNotOpeningOrClosingTag)
+	_parent.Child.InitializeParent(_parent, header)
 	return _parent, nil
 }
 
@@ -262,15 +263,15 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.TagNumber); _tagNumberErr != nil {
+	if _tagNumberErr := writeBuffer.WriteVirtual("tagNumber", m.GetTagNumber()); _tagNumberErr != nil {
 		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 	// Virtual field
-	if _isNotOpeningOrClosingTagErr := writeBuffer.WriteVirtual("isNotOpeningOrClosingTag", m.IsNotOpeningOrClosingTag); _isNotOpeningOrClosingTagErr != nil {
+	if _isNotOpeningOrClosingTagErr := writeBuffer.WriteVirtual("isNotOpeningOrClosingTag", m.GetIsNotOpeningOrClosingTag()); _isNotOpeningOrClosingTagErr != nil {
 		return errors.Wrap(_isNotOpeningOrClosingTagErr, "Error serializing 'isNotOpeningOrClosingTag' field")
 	}
 

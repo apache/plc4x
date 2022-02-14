@@ -92,12 +92,12 @@ func CastKnxLayer(structType interface{}) KnxLayer {
 	return castFunc(structType)
 }
 
-func (m KnxLayer) LengthInBits() uint16 {
+func (m KnxLayer) GetLengthInBits() uint16 {
 	return 8
 }
 
-func (m KnxLayer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m KnxLayer) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {

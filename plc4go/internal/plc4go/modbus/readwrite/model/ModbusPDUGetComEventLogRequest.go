@@ -32,10 +32,10 @@ type ModbusPDUGetComEventLogRequest struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventLogRequest interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,6 +77,7 @@ func (m *ModbusPDUGetComEventLogRequest) InitializeParent(parent *ModbusPDU) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUGetComEventLogRequest factory function for ModbusPDUGetComEventLogRequest
 func NewModbusPDUGetComEventLogRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventLogRequest{
 		ModbusPDU: NewModbusPDU(),
@@ -108,18 +109,18 @@ func (m *ModbusPDUGetComEventLogRequest) GetTypeName() string {
 	return "ModbusPDUGetComEventLogRequest"
 }
 
-func (m *ModbusPDUGetComEventLogRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUGetComEventLogRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUGetComEventLogRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUGetComEventLogRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUGetComEventLogRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

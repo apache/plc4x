@@ -45,6 +45,9 @@ type BACnetNotificationParametersExtendedParameters struct {
 	ObjectIdentifier     *BACnetApplicationTagObjectIdentifier
 	Reference            *BACnetDeviceObjectPropertyReference
 	ClosingTag           *BACnetClosingTag
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // The corresponding interface
@@ -81,10 +84,10 @@ type IBACnetNotificationParametersExtendedParameters interface {
 	GetReference() *BACnetDeviceObjectPropertyReference
 	// GetClosingTag returns ClosingTag
 	GetClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -160,8 +163,9 @@ func (m *BACnetNotificationParametersExtendedParameters) GetClosingTag() *BACnet
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReference, closingTag *BACnetClosingTag) *BACnetNotificationParametersExtendedParameters {
-	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag}
+// NewBACnetNotificationParametersExtendedParameters factory function for BACnetNotificationParametersExtendedParameters
+func NewBACnetNotificationParametersExtendedParameters(openingTag *BACnetOpeningTag, nullValue *BACnetApplicationTagNull, realValue *BACnetApplicationTagReal, unsignedValue *BACnetApplicationTagUnsignedInteger, booleanValue *BACnetApplicationTagBoolean, integerValue *BACnetApplicationTagSignedInteger, doubleValue *BACnetApplicationTagDouble, octetStringValue *BACnetApplicationTagOctetString, characterStringValue *BACnetApplicationTagCharacterString, bitStringValue *BACnetApplicationTagBitString, enumeratedValue *BACnetApplicationTagEnumerated, dateValue *BACnetApplicationTagDate, timeValue *BACnetApplicationTagTime, objectIdentifier *BACnetApplicationTagObjectIdentifier, reference *BACnetDeviceObjectPropertyReference, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersExtendedParameters {
+	return &BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetNotificationParametersExtendedParameters(structType interface{}) *BACnetNotificationParametersExtendedParameters {
@@ -181,94 +185,94 @@ func (m *BACnetNotificationParametersExtendedParameters) GetTypeName() string {
 	return "BACnetNotificationParametersExtendedParameters"
 }
 
-func (m *BACnetNotificationParametersExtendedParameters) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetNotificationParametersExtendedParameters) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetNotificationParametersExtendedParameters) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetNotificationParametersExtendedParameters) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// Optional Field (nullValue)
 	if m.NullValue != nil {
-		lengthInBits += (*m.NullValue).LengthInBits()
+		lengthInBits += (*m.NullValue).GetLengthInBits()
 	}
 
 	// Optional Field (realValue)
 	if m.RealValue != nil {
-		lengthInBits += (*m.RealValue).LengthInBits()
+		lengthInBits += (*m.RealValue).GetLengthInBits()
 	}
 
 	// Optional Field (unsignedValue)
 	if m.UnsignedValue != nil {
-		lengthInBits += (*m.UnsignedValue).LengthInBits()
+		lengthInBits += (*m.UnsignedValue).GetLengthInBits()
 	}
 
 	// Optional Field (booleanValue)
 	if m.BooleanValue != nil {
-		lengthInBits += (*m.BooleanValue).LengthInBits()
+		lengthInBits += (*m.BooleanValue).GetLengthInBits()
 	}
 
 	// Optional Field (integerValue)
 	if m.IntegerValue != nil {
-		lengthInBits += (*m.IntegerValue).LengthInBits()
+		lengthInBits += (*m.IntegerValue).GetLengthInBits()
 	}
 
 	// Optional Field (doubleValue)
 	if m.DoubleValue != nil {
-		lengthInBits += (*m.DoubleValue).LengthInBits()
+		lengthInBits += (*m.DoubleValue).GetLengthInBits()
 	}
 
 	// Optional Field (octetStringValue)
 	if m.OctetStringValue != nil {
-		lengthInBits += (*m.OctetStringValue).LengthInBits()
+		lengthInBits += (*m.OctetStringValue).GetLengthInBits()
 	}
 
 	// Optional Field (characterStringValue)
 	if m.CharacterStringValue != nil {
-		lengthInBits += (*m.CharacterStringValue).LengthInBits()
+		lengthInBits += (*m.CharacterStringValue).GetLengthInBits()
 	}
 
 	// Optional Field (bitStringValue)
 	if m.BitStringValue != nil {
-		lengthInBits += (*m.BitStringValue).LengthInBits()
+		lengthInBits += (*m.BitStringValue).GetLengthInBits()
 	}
 
 	// Optional Field (enumeratedValue)
 	if m.EnumeratedValue != nil {
-		lengthInBits += (*m.EnumeratedValue).LengthInBits()
+		lengthInBits += (*m.EnumeratedValue).GetLengthInBits()
 	}
 
 	// Optional Field (dateValue)
 	if m.DateValue != nil {
-		lengthInBits += (*m.DateValue).LengthInBits()
+		lengthInBits += (*m.DateValue).GetLengthInBits()
 	}
 
 	// Optional Field (timeValue)
 	if m.TimeValue != nil {
-		lengthInBits += (*m.TimeValue).LengthInBits()
+		lengthInBits += (*m.TimeValue).GetLengthInBits()
 	}
 
 	// Optional Field (objectIdentifier)
 	if m.ObjectIdentifier != nil {
-		lengthInBits += (*m.ObjectIdentifier).LengthInBits()
+		lengthInBits += (*m.ObjectIdentifier).GetLengthInBits()
 	}
 
 	// Optional Field (reference)
 	if m.Reference != nil {
-		lengthInBits += (*m.Reference).LengthInBits()
+		lengthInBits += (*m.Reference).GetLengthInBits()
 	}
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetNotificationParametersExtendedParameters) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetNotificationParametersExtendedParameters) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetNotificationParametersExtendedParameters, error) {
@@ -601,7 +605,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	}
 
 	// Create the instance
-	return NewBACnetNotificationParametersExtendedParameters(openingTag, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag), nil
+	return NewBACnetNotificationParametersExtendedParameters(openingTag, nullValue, realValue, unsignedValue, booleanValue, integerValue, doubleValue, octetStringValue, characterStringValue, bitStringValue, enumeratedValue, dateValue, timeValue, objectIdentifier, reference, closingTag, tagNumber), nil
 }
 
 func (m *BACnetNotificationParametersExtendedParameters) Serialize(writeBuffer utils.WriteBuffer) error {

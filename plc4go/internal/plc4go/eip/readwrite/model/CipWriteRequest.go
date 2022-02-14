@@ -34,6 +34,9 @@ type CipWriteRequest struct {
 	DataType        CIPDataTypeCode
 	ElementNb       uint16
 	Data            []byte
+
+	// Arguments.
+	ServiceLen uint16
 }
 
 // The corresponding interface
@@ -48,10 +51,10 @@ type ICipWriteRequest interface {
 	GetElementNb() uint16
 	// GetData returns Data
 	GetData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -96,14 +99,15 @@ func (m *CipWriteRequest) GetData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) *CipService {
+// NewCipWriteRequest factory function for CipWriteRequest
+func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *CipService {
 	child := &CipWriteRequest{
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		DataType:        dataType,
 		ElementNb:       elementNb,
 		Data:            data,
-		CipService:      NewCipService(),
+		CipService:      NewCipService(serviceLen),
 	}
 	child.Child = child
 	return child.CipService
@@ -132,12 +136,12 @@ func (m *CipWriteRequest) GetTypeName() string {
 	return "CipWriteRequest"
 }
 
-func (m *CipWriteRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *CipWriteRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *CipWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (requestPathSize)
 	lengthInBits += 8
@@ -161,8 +165,8 @@ func (m *CipWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipWriteRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *CipWriteRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func CipWriteRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {

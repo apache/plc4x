@@ -39,6 +39,9 @@ type APDUComplexAck struct {
 	ServiceAck           *BACnetServiceAck
 	SegmentServiceChoice *uint8
 	Segment              []byte
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -59,10 +62,10 @@ type IAPDUComplexAck interface {
 	GetSegmentServiceChoice() *uint8
 	// GetSegment returns Segment
 	GetSegment() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -119,7 +122,8 @@ func (m *APDUComplexAck) GetSegment() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck, segmentServiceChoice *uint8, segment []byte) *APDU {
+// NewAPDUComplexAck factory function for APDUComplexAck
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck, segmentServiceChoice *uint8, segment []byte, apduLength uint16) *APDU {
 	child := &APDUComplexAck{
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
@@ -129,7 +133,7 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		ServiceAck:           serviceAck,
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
-		APDU:                 NewAPDU(),
+		APDU:                 NewAPDU(apduLength),
 	}
 	child.Child = child
 	return child.APDU
@@ -158,12 +162,12 @@ func (m *APDUComplexAck) GetTypeName() string {
 	return "APDUComplexAck"
 }
 
-func (m *APDUComplexAck) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *APDUComplexAck) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *APDUComplexAck) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *APDUComplexAck) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -189,7 +193,7 @@ func (m *APDUComplexAck) LengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (serviceAck)
 	if m.ServiceAck != nil {
-		lengthInBits += (*m.ServiceAck).LengthInBits()
+		lengthInBits += (*m.ServiceAck).GetLengthInBits()
 	}
 
 	// Optional Field (segmentServiceChoice)
@@ -205,8 +209,8 @@ func (m *APDUComplexAck) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *APDUComplexAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *APDUComplexAck) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {

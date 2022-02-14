@@ -36,10 +36,10 @@ type S7ParameterReadVarResponse struct {
 type IS7ParameterReadVarResponse interface {
 	// GetNumItems returns NumItems
 	GetNumItems() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *S7ParameterReadVarResponse) GetNumItems() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterReadVarResponse factory function for S7ParameterReadVarResponse
 func NewS7ParameterReadVarResponse(numItems uint8) *S7Parameter {
 	child := &S7ParameterReadVarResponse{
 		NumItems:    numItems,
@@ -108,12 +109,12 @@ func (m *S7ParameterReadVarResponse) GetTypeName() string {
 	return "S7ParameterReadVarResponse"
 }
 
-func (m *S7ParameterReadVarResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterReadVarResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterReadVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterReadVarResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -121,8 +122,8 @@ func (m *S7ParameterReadVarResponse) LengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterReadVarResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {

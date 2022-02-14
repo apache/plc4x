@@ -57,10 +57,10 @@ type IS7ParameterUserDataItemCPUFunctions interface {
 	GetLastDataUnit() *uint8
 	// GetErrorCode returns ErrorCode
 	GetErrorCode() *uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -117,6 +117,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterUserDataItemCPUFunctions factory function for S7ParameterUserDataItemCPUFunctions
 func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItem {
 	child := &S7ParameterUserDataItemCPUFunctions{
 		Method:                  method,
@@ -156,12 +157,12 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
 	return "S7ParameterUserDataItemCPUFunctions"
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -199,8 +200,8 @@ func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
@@ -307,7 +308,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		itemLength := uint8(uint8(uint8(m.GetLengthInBytes())) - uint8(uint8(2)))
 		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")

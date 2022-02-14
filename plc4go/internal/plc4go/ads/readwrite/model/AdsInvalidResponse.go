@@ -32,10 +32,10 @@ type AdsInvalidResponse struct {
 
 // The corresponding interface
 type IAdsInvalidResponse interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *AdsInvalidResponse) InitializeParent(parent *AdsData) {}
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAdsInvalidResponse factory function for AdsInvalidResponse
 func NewAdsInvalidResponse() *AdsData {
 	child := &AdsInvalidResponse{
 		AdsData: NewAdsData(),
@@ -100,18 +101,18 @@ func (m *AdsInvalidResponse) GetTypeName() string {
 	return "AdsInvalidResponse"
 }
 
-func (m *AdsInvalidResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AdsInvalidResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AdsInvalidResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *AdsInvalidResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *AdsInvalidResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AdsInvalidResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AdsInvalidResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {

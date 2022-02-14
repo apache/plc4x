@@ -35,6 +35,9 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	FileStartPosition *BACnetApplicationTagSignedInteger
 	FileData          *BACnetApplicationTagOctetString
 	ClosingTag        *BACnetClosingTag
+
+	// Arguments.
+	Len uint16
 }
 
 // The corresponding interface
@@ -49,10 +52,10 @@ type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
 	GetFileData() *BACnetApplicationTagOctetString
 	// GetClosingTag returns ClosingTag
 	GetClosingTag() *BACnetClosingTag
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -98,14 +101,15 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() *BACnetCl
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequest {
+// NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for BACnetConfirmedServiceRequestAtomicWriteFile
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier *BACnetApplicationTagObjectIdentifier, openingTag *BACnetOpeningTag, fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, closingTag *BACnetClosingTag, len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestAtomicWriteFile{
 		DeviceIdentifier:              deviceIdentifier,
 		OpeningTag:                    openingTag,
 		FileStartPosition:             fileStartPosition,
 		FileData:                      fileData,
 		ClosingTag:                    closingTag,
-		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
 	child.Child = child
 	return child.BACnetConfirmedServiceRequest
@@ -134,37 +138,37 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicWriteFile"
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.LengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
 
 	// Optional Field (openingTag)
 	if m.OpeningTag != nil {
-		lengthInBits += (*m.OpeningTag).LengthInBits()
+		lengthInBits += (*m.OpeningTag).GetLengthInBits()
 	}
 
 	// Simple field (fileStartPosition)
-	lengthInBits += m.FileStartPosition.LengthInBits()
+	lengthInBits += m.FileStartPosition.GetLengthInBits()
 
 	// Simple field (fileData)
-	lengthInBits += m.FileData.LengthInBits()
+	lengthInBits += m.FileData.GetLengthInBits()
 
 	// Optional Field (closingTag)
 	if m.ClosingTag != nil {
-		lengthInBits += (*m.ClosingTag).LengthInBits()
+		lengthInBits += (*m.ClosingTag).GetLengthInBits()
 	}
 
 	return lengthInBits
 }
 
-func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {

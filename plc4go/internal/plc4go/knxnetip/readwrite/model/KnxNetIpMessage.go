@@ -39,10 +39,10 @@ type KnxNetIpMessage struct {
 type IKnxNetIpMessage interface {
 	// MsgType returns MsgType
 	MsgType() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -67,6 +67,7 @@ type IKnxNetIpMessageChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxNetIpMessage factory function for KnxNetIpMessage
 func NewKnxNetIpMessage() *KnxNetIpMessage {
 	return &KnxNetIpMessage{}
 }
@@ -88,15 +89,15 @@ func (m *KnxNetIpMessage) GetTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *KnxNetIpMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxNetIpMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxNetIpMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *KnxNetIpMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
+func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -113,8 +114,8 @@ func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxNetIpMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
@@ -235,7 +236,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	totalLength := uint16(uint16(m.LengthInBytes()))
+	totalLength := uint16(uint16(m.GetLengthInBytes()))
 	_totalLengthErr := writeBuffer.WriteUint16("totalLength", 16, (totalLength))
 	if _totalLengthErr != nil {
 		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")

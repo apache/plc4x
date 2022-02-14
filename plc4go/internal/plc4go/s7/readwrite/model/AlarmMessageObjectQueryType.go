@@ -61,10 +61,10 @@ type IAlarmMessageObjectQueryType interface {
 	GetTimeGoing() *DateAndTime
 	// GetValueGoing returns ValueGoing
 	GetValueGoing() *AssociatedValueType
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -108,6 +108,7 @@ func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAlarmMessageObjectQueryType factory function for AlarmMessageObjectQueryType
 func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState *State, ackStateGoing *State, ackStateComing *State, timeComing *DateAndTime, valueComing *AssociatedValueType, timeGoing *DateAndTime, valueGoing *AssociatedValueType) *AlarmMessageObjectQueryType {
 	return &AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
 }
@@ -129,11 +130,11 @@ func (m *AlarmMessageObjectQueryType) GetTypeName() string {
 	return "AlarmMessageObjectQueryType"
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AlarmMessageObjectQueryType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AlarmMessageObjectQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (lengthDataset)
@@ -146,31 +147,31 @@ func (m *AlarmMessageObjectQueryType) LengthInBitsConditional(lastItem bool) uin
 	lengthInBits += 8
 
 	// Simple field (eventState)
-	lengthInBits += m.EventState.LengthInBits()
+	lengthInBits += m.EventState.GetLengthInBits()
 
 	// Simple field (ackStateGoing)
-	lengthInBits += m.AckStateGoing.LengthInBits()
+	lengthInBits += m.AckStateGoing.GetLengthInBits()
 
 	// Simple field (ackStateComing)
-	lengthInBits += m.AckStateComing.LengthInBits()
+	lengthInBits += m.AckStateComing.GetLengthInBits()
 
 	// Simple field (timeComing)
-	lengthInBits += m.TimeComing.LengthInBits()
+	lengthInBits += m.TimeComing.GetLengthInBits()
 
 	// Simple field (valueComing)
-	lengthInBits += m.ValueComing.LengthInBits()
+	lengthInBits += m.ValueComing.GetLengthInBits()
 
 	// Simple field (timeGoing)
-	lengthInBits += m.TimeGoing.LengthInBits()
+	lengthInBits += m.TimeGoing.GetLengthInBits()
 
 	// Simple field (valueGoing)
-	lengthInBits += m.ValueGoing.LengthInBits()
+	lengthInBits += m.ValueGoing.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageObjectQueryType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AlarmMessageObjectQueryType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageObjectQueryType, error) {

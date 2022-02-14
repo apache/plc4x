@@ -35,10 +35,10 @@ type S7ParameterUserDataItem struct {
 type IS7ParameterUserDataItem interface {
 	// ItemType returns ItemType
 	ItemType() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -63,6 +63,7 @@ type IS7ParameterUserDataItemChild interface {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterUserDataItem factory function for S7ParameterUserDataItem
 func NewS7ParameterUserDataItem() *S7ParameterUserDataItem {
 	return &S7ParameterUserDataItem{}
 }
@@ -84,15 +85,15 @@ func (m *S7ParameterUserDataItem) GetTypeName() string {
 	return "S7ParameterUserDataItem"
 }
 
-func (m *S7ParameterUserDataItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterUserDataItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterUserDataItem) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *S7ParameterUserDataItem) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *S7ParameterUserDataItem) ParentLengthInBits() uint16 {
+func (m *S7ParameterUserDataItem) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
@@ -100,8 +101,8 @@ func (m *S7ParameterUserDataItem) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *S7ParameterUserDataItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterUserDataItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItem, error) {

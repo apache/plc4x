@@ -50,10 +50,10 @@ type IAmsSerialAcknowledgeFrame interface {
 	GetLength() int8
 	// GetCrc returns Crc
 	GetCrc() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -89,6 +89,7 @@ func (m *AmsSerialAcknowledgeFrame) GetCrc() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAmsSerialAcknowledgeFrame factory function for AmsSerialAcknowledgeFrame
 func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *AmsSerialAcknowledgeFrame {
 	return &AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
 }
@@ -110,11 +111,11 @@ func (m *AmsSerialAcknowledgeFrame) GetTypeName() string {
 	return "AmsSerialAcknowledgeFrame"
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -138,8 +139,8 @@ func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint1
 	return lengthInBits
 }
 
-func (m *AmsSerialAcknowledgeFrame) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {

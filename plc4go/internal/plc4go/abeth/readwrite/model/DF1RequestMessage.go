@@ -48,10 +48,10 @@ type IDF1RequestMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter
 	GetTransactionCounter() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *DF1RequestMessage) GetTransactionCounter() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDF1RequestMessage factory function for DF1RequestMessage
 func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
 	return &DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
 }
@@ -112,15 +113,15 @@ func (m *DF1RequestMessage) GetTypeName() string {
 	return "DF1RequestMessage"
 }
 
-func (m *DF1RequestMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DF1RequestMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DF1RequestMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *DF1RequestMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *DF1RequestMessage) ParentLengthInBits() uint16 {
+func (m *DF1RequestMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationAddress)
@@ -143,8 +144,8 @@ func (m *DF1RequestMessage) ParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *DF1RequestMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DF1RequestMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {

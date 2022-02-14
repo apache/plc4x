@@ -39,10 +39,10 @@ type IDescriptionResponse interface {
 	GetDibDeviceInfo() *DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies
 	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *DescriptionResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewDescriptionResponse factory function for DescriptionResponse
 func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
 	child := &DescriptionResponse{
 		DibDeviceInfo:      dibDeviceInfo,
@@ -108,24 +109,24 @@ func (m *DescriptionResponse) GetTypeName() string {
 	return "DescriptionResponse"
 }
 
-func (m *DescriptionResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DescriptionResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DescriptionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.GetLengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DescriptionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DescriptionResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

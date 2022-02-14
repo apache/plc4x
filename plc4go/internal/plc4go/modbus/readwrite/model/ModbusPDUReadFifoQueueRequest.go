@@ -36,10 +36,10 @@ type ModbusPDUReadFifoQueueRequest struct {
 type IModbusPDUReadFifoQueueRequest interface {
 	// GetFifoPointerAddress returns FifoPointerAddress
 	GetFifoPointerAddress() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUReadFifoQueueRequest) GetFifoPointerAddress() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadFifoQueueRequest factory function for ModbusPDUReadFifoQueueRequest
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
 	child := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
@@ -116,12 +117,12 @@ func (m *ModbusPDUReadFifoQueueRequest) GetTypeName() string {
 	return "ModbusPDUReadFifoQueueRequest"
 }
 
-func (m *ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadFifoQueueRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadFifoQueueRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadFifoQueueRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -129,8 +130,8 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadFifoQueueRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

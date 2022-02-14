@@ -36,10 +36,10 @@ type S7ParameterWriteVarResponse struct {
 type IS7ParameterWriteVarResponse interface {
 	// GetNumItems returns NumItems
 	GetNumItems() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -76,6 +76,7 @@ func (m *S7ParameterWriteVarResponse) GetNumItems() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7ParameterWriteVarResponse factory function for S7ParameterWriteVarResponse
 func NewS7ParameterWriteVarResponse(numItems uint8) *S7Parameter {
 	child := &S7ParameterWriteVarResponse{
 		NumItems:    numItems,
@@ -108,12 +109,12 @@ func (m *S7ParameterWriteVarResponse) GetTypeName() string {
 	return "S7ParameterWriteVarResponse"
 }
 
-func (m *S7ParameterWriteVarResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7ParameterWriteVarResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7ParameterWriteVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7ParameterWriteVarResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -121,8 +122,8 @@ func (m *S7ParameterWriteVarResponse) LengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *S7ParameterWriteVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7ParameterWriteVarResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7ParameterWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {

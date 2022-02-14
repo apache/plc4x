@@ -31,6 +31,9 @@ type NLMRejectRouterToNetwork struct {
 	*NLM
 	RejectReason              NLMRejectRouterToNetworkRejectReason
 	DestinationNetworkAddress uint16
+
+	// Arguments.
+	ApduLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type INLMRejectRouterToNetwork interface {
 	GetRejectReason() NLMRejectRouterToNetworkRejectReason
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress
 	GetDestinationNetworkAddress() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -77,11 +80,12 @@ func (m *NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16) *NLM {
+// NewNLMRejectRouterToNetwork factory function for NLMRejectRouterToNetwork
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLM {
 	child := &NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		NLM:                       NewNLM(vendorId),
+		NLM:                       NewNLM(vendorId, apduLength),
 	}
 	child.Child = child
 	return child.NLM
@@ -110,12 +114,12 @@ func (m *NLMRejectRouterToNetwork) GetTypeName() string {
 	return "NLMRejectRouterToNetwork"
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *NLMRejectRouterToNetwork) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *NLMRejectRouterToNetwork) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (rejectReason)
 	lengthInBits += 8
@@ -126,8 +130,8 @@ func (m *NLMRejectRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *NLMRejectRouterToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {

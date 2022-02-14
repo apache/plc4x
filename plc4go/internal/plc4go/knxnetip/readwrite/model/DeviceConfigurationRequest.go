@@ -31,6 +31,9 @@ type DeviceConfigurationRequest struct {
 	*KnxNetIpMessage
 	DeviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock
 	Cemi                                *CEMI
+
+	// Arguments.
+	TotalLength uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type IDeviceConfigurationRequest interface {
 	GetDeviceConfigurationRequestDataBlock() *DeviceConfigurationRequestDataBlock
 	// GetCemi returns Cemi
 	GetCemi() *CEMI
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,7 +78,8 @@ func (m *DeviceConfigurationRequest) GetCemi() *CEMI {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI) *KnxNetIpMessage {
+// NewDeviceConfigurationRequest factory function for DeviceConfigurationRequest
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI, totalLength uint16) *KnxNetIpMessage {
 	child := &DeviceConfigurationRequest{
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
@@ -108,24 +112,24 @@ func (m *DeviceConfigurationRequest) GetTypeName() string {
 	return "DeviceConfigurationRequest"
 }
 
-func (m *DeviceConfigurationRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *DeviceConfigurationRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *DeviceConfigurationRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *DeviceConfigurationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (deviceConfigurationRequestDataBlock)
-	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
+	lengthInBits += m.DeviceConfigurationRequestDataBlock.GetLengthInBits()
 
 	// Simple field (cemi)
-	lengthInBits += m.Cemi.LengthInBits()
+	lengthInBits += m.Cemi.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *DeviceConfigurationRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
@@ -150,7 +154,7 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.LengthInBytes())))))
+	_cemi, _cemiErr := CEMIParse(readBuffer, uint16(uint16(totalLength)-uint16(uint16(uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes())))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}

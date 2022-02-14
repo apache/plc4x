@@ -39,10 +39,10 @@ type IS7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	GetSzlId() *SzlId
 	// GetSzlIndex returns SzlIndex
 	GetSzlIndex() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -94,6 +94,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetSzlIndex() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for S7PayloadUserDataItemCpuFunctionReadSzlRequest
 func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId *SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
 		SzlId:                 szlId,
@@ -127,15 +128,15 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (szlId)
-	lengthInBits += m.SzlId.LengthInBits()
+	lengthInBits += m.SzlId.GetLengthInBits()
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
@@ -143,8 +144,8 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBitsConditional
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {

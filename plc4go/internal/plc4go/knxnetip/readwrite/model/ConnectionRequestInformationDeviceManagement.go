@@ -32,10 +32,10 @@ type ConnectionRequestInformationDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -62,6 +62,7 @@ func (m *ConnectionRequestInformationDeviceManagement) InitializeParent(parent *
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionRequestInformationDeviceManagement factory function for ConnectionRequestInformationDeviceManagement
 func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationDeviceManagement{
 		ConnectionRequestInformation: NewConnectionRequestInformation(),
@@ -93,18 +94,18 @@ func (m *ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 	return "ConnectionRequestInformationDeviceManagement"
 }
 
-func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionRequestInformationDeviceManagement) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionRequestInformationDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionRequestInformationDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionRequestInformationDeviceManagement) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionRequestInformationDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformation, error) {

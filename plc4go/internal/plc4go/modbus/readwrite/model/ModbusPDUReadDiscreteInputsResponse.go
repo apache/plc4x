@@ -36,10 +36,10 @@ type ModbusPDUReadDiscreteInputsResponse struct {
 type IModbusPDUReadDiscreteInputsResponse interface {
 	// GetValue returns Value
 	GetValue() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -84,6 +84,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) GetValue() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUReadDiscreteInputsResponse factory function for ModbusPDUReadDiscreteInputsResponse
 func NewModbusPDUReadDiscreteInputsResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReadDiscreteInputsResponse{
 		Value:     value,
@@ -116,12 +117,12 @@ func (m *ModbusPDUReadDiscreteInputsResponse) GetTypeName() string {
 	return "ModbusPDUReadDiscreteInputsResponse"
 }
 
-func (m *ModbusPDUReadDiscreteInputsResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUReadDiscreteInputsResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadDiscreteInputsResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUReadDiscreteInputsResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -134,8 +135,8 @@ func (m *ModbusPDUReadDiscreteInputsResponse) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadDiscreteInputsResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUReadDiscreteInputsResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
@@ -176,7 +177,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.WriteB
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
+		byteCount := uint8(uint8(len(m.GetValue())))
 		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")

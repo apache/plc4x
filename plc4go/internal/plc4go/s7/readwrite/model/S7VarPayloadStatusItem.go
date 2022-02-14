@@ -35,10 +35,10 @@ type S7VarPayloadStatusItem struct {
 type IS7VarPayloadStatusItem interface {
 	// GetReturnCode returns ReturnCode
 	GetReturnCode() DataTransportErrorCode
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -54,6 +54,7 @@ func (m *S7VarPayloadStatusItem) GetReturnCode() DataTransportErrorCode {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7VarPayloadStatusItem factory function for S7VarPayloadStatusItem
 func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadStatusItem {
 	return &S7VarPayloadStatusItem{ReturnCode: returnCode}
 }
@@ -75,11 +76,11 @@ func (m *S7VarPayloadStatusItem) GetTypeName() string {
 	return "S7VarPayloadStatusItem"
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7VarPayloadStatusItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *S7VarPayloadStatusItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -88,8 +89,8 @@ func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7VarPayloadStatusItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {

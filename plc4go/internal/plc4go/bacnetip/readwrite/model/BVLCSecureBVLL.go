@@ -32,10 +32,10 @@ type BVLCSecureBVLL struct {
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -51,9 +51,7 @@ func (m *BVLCSecureBVLL) GetBvlcFunction() uint8 {
 	return 0x0C
 }
 
-func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
-	m.BVLC.BvlcPayloadLength = bvlcPayloadLength
-}
+func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {}
 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
@@ -63,9 +61,10 @@ func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC, bvlcPayloadLength uint16
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewBVLCSecureBVLL(bvlcPayloadLength uint16) *BVLC {
+// NewBVLCSecureBVLL factory function for BVLCSecureBVLL
+func NewBVLCSecureBVLL() *BVLC {
 	child := &BVLCSecureBVLL{
-		BVLC: NewBVLC(bvlcPayloadLength),
+		BVLC: NewBVLC(),
 	}
 	child.Child = child
 	return child.BVLC
@@ -94,18 +93,18 @@ func (m *BVLCSecureBVLL) GetTypeName() string {
 	return "BVLCSecureBVLL"
 }
 
-func (m *BVLCSecureBVLL) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BVLCSecureBVLL) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BVLCSecureBVLL) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *BVLCSecureBVLL) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	return lengthInBits
 }
 
-func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BVLCSecureBVLL) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {

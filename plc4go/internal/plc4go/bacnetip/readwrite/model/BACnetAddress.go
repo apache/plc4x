@@ -38,10 +38,10 @@ type IBACnetAddress interface {
 	GetAddress() []uint8
 	// GetPort returns Port
 	GetPort() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,6 +61,7 @@ func (m *BACnetAddress) GetPort() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewBACnetAddress factory function for BACnetAddress
 func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
 	return &BACnetAddress{Address: address, Port: port}
 }
@@ -82,11 +83,11 @@ func (m *BACnetAddress) GetTypeName() string {
 	return "BACnetAddress"
 }
 
-func (m *BACnetAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *BACnetAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -100,8 +101,8 @@ func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *BACnetAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {

@@ -28,10 +28,13 @@ import (
 
 // The data-structure of this message
 type BACnetConstructedData struct {
-	OpeningTag             *BACnetOpeningTag
-	ClosingTag             *BACnetClosingTag
-	PropertyIdentifierEnum BACnetPropertyIdentifier
-	Child                  IBACnetConstructedDataChild
+	OpeningTag *BACnetOpeningTag
+	ClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber                  uint8
+	PropertyIdentifierArgument BACnetContextTagPropertyIdentifier
+	Child                      IBACnetConstructedDataChild
 }
 
 // The corresponding interface
@@ -46,10 +49,10 @@ type IBACnetConstructedData interface {
 	GetClosingTag() *BACnetClosingTag
 	// GetPropertyIdentifierEnum returns PropertyIdentifierEnum
 	GetPropertyIdentifierEnum() BACnetPropertyIdentifier
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -61,7 +64,7 @@ type IBACnetConstructedDataParent interface {
 
 type IBACnetConstructedDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier)
+	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
 	GetTypeName() string
 	IBACnetConstructedData
 }
@@ -81,12 +84,12 @@ func (m *BACnetConstructedData) GetClosingTag() *BACnetClosingTag {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConstructedData) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	// TODO: calculation should happen here instead accessing the stored field
-	return m.PropertyIdentifierEnum
+	return m.PropertyIdentifierArgument.GetPropertyIdentifier()
 }
 
-func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
-	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag, PropertyIdentifierEnum: propertyIdentifierEnum}
+// NewBACnetConstructedData factory function for BACnetConstructedData
+func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {
+	return &BACnetConstructedData{OpeningTag: openingTag, ClosingTag: closingTag, TagNumber: tagNumber, PropertyIdentifierArgument: propertyIdentifierArgument}
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
@@ -106,30 +109,30 @@ func (m *BACnetConstructedData) GetTypeName() string {
 	return "BACnetConstructedData"
 }
 
-func (m *BACnetConstructedData) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *BACnetConstructedData) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *BACnetConstructedData) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
+func (m *BACnetConstructedData) GetLengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.GetLengthInBits()
 }
 
-func (m *BACnetConstructedData) ParentLengthInBits() uint16 {
+func (m *BACnetConstructedData) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.LengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits()
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.LengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *BACnetConstructedData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *BACnetConstructedData) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
@@ -151,8 +154,9 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	}
 
 	// Virtual field
-	_propertyIdentifierEnum := propertyIdentifierArgument.PropertyIdentifier
+	_propertyIdentifierEnum := propertyIdentifierArgument.GetPropertyIdentifier()
 	propertyIdentifierEnum := BACnetPropertyIdentifier(_propertyIdentifierEnum)
+	_ = propertyIdentifierEnum
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetConstructedData
@@ -192,7 +196,7 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, closingTag, propertyIdentifierEnum)
+	_parent.Child.InitializeParent(_parent, openingTag, closingTag)
 	return _parent, nil
 }
 
@@ -217,7 +221,7 @@ func (m *BACnetConstructedData) SerializeParent(writeBuffer utils.WriteBuffer, c
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
-	if _propertyIdentifierEnumErr := writeBuffer.WriteVirtual("propertyIdentifierEnum", m.PropertyIdentifierEnum); _propertyIdentifierEnumErr != nil {
+	if _propertyIdentifierEnumErr := writeBuffer.WriteVirtual("propertyIdentifierEnum", m.GetPropertyIdentifierEnum()); _propertyIdentifierEnumErr != nil {
 		return errors.Wrap(_propertyIdentifierEnumErr, "Error serializing 'propertyIdentifierEnum' field")
 	}
 

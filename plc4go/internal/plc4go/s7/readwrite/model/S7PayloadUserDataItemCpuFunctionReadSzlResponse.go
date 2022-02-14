@@ -46,10 +46,10 @@ type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	GetSzlIndex() uint16
 	// GetItems returns Items
 	GetItems() []*SzlDataTreeItem
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -105,6 +105,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []*SzlDataT
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for S7PayloadUserDataItemCpuFunctionReadSzlResponse
 func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
 		SzlId:                 szlId,
@@ -139,15 +140,15 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionReadSzlResponse"
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (szlId)
-	lengthInBits += m.SzlId.LengthInBits()
+	lengthInBits += m.SzlId.GetLengthInBits()
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
@@ -162,15 +163,15 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBitsConditiona
 	if len(m.Items) > 0 {
 		for i, element := range m.Items {
 			last := i == len(m.Items)-1
-			lengthInBits += element.LengthInBitsConditional(last)
+			lengthInBits += element.GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
@@ -280,7 +281,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer 
 		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		szlItemCount := uint16(uint16(len(m.Items)))
+		szlItemCount := uint16(uint16(len(m.GetItems())))
 		_szlItemCountErr := writeBuffer.WriteUint16("szlItemCount", 16, (szlItemCount))
 		if _szlItemCountErr != nil {
 			return errors.Wrap(_szlItemCountErr, "Error serializing 'szlItemCount' field")

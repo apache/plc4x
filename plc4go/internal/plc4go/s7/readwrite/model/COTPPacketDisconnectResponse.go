@@ -31,6 +31,9 @@ type COTPPacketDisconnectResponse struct {
 	*COTPPacket
 	DestinationReference uint16
 	SourceReference      uint16
+
+	// Arguments.
+	CotpLen uint16
 }
 
 // The corresponding interface
@@ -39,10 +42,10 @@ type ICOTPPacketDisconnectResponse interface {
 	GetDestinationReference() uint16
 	// GetSourceReference returns SourceReference
 	GetSourceReference() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -78,11 +81,12 @@ func (m *COTPPacketDisconnectResponse) GetSourceReference() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+// NewCOTPPacketDisconnectResponse factory function for COTPPacketDisconnectResponse
+func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
 	child := &COTPPacketDisconnectResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
-		COTPPacket:           NewCOTPPacket(parameters, payload),
+		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
 	child.Child = child
 	return child.COTPPacket
@@ -111,12 +115,12 @@ func (m *COTPPacketDisconnectResponse) GetTypeName() string {
 	return "COTPPacketDisconnectResponse"
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *COTPPacketDisconnectResponse) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *COTPPacketDisconnectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -127,8 +131,8 @@ func (m *COTPPacketDisconnectResponse) LengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *COTPPacketDisconnectResponse) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {

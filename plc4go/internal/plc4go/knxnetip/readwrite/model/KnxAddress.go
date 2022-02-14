@@ -41,10 +41,10 @@ type IKnxAddress interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup
 	GetSubGroup() uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,6 +68,7 @@ func (m *KnxAddress) GetSubGroup() uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewKnxAddress factory function for KnxAddress
 func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxAddress {
 	return &KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
 }
@@ -89,11 +90,11 @@ func (m *KnxAddress) GetTypeName() string {
 	return "KnxAddress"
 }
 
-func (m *KnxAddress) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *KnxAddress) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *KnxAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (mainGroup)
@@ -108,8 +109,8 @@ func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *KnxAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *KnxAddress) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {

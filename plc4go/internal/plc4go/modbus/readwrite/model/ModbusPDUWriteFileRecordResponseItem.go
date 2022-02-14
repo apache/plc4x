@@ -44,10 +44,10 @@ type IModbusPDUWriteFileRecordResponseItem interface {
 	GetRecordNumber() uint16
 	// GetRecordData returns RecordData
 	GetRecordData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *ModbusPDUWriteFileRecordResponseItem) GetRecordData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUWriteFileRecordResponseItem factory function for ModbusPDUWriteFileRecordResponseItem
 func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) *ModbusPDUWriteFileRecordResponseItem {
 	return &ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
 }
@@ -96,11 +97,11 @@ func (m *ModbusPDUWriteFileRecordResponseItem) GetTypeName() string {
 	return "ModbusPDUWriteFileRecordResponseItem"
 }
 
-func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUWriteFileRecordResponseItem) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *ModbusPDUWriteFileRecordResponseItem) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)
@@ -123,8 +124,8 @@ func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUWriteFileRecordResponseItem) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*ModbusPDUWriteFileRecordResponseItem, error) {
@@ -201,7 +202,7 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.Write
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
+	recordLength := uint16(uint16(uint16(len(m.GetRecordData()))) / uint16(uint16(2)))
 	_recordLengthErr := writeBuffer.WriteUint16("recordLength", 16, (recordLength))
 	if _recordLengthErr != nil {
 		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")

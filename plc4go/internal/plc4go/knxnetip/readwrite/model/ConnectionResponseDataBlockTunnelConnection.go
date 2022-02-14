@@ -36,10 +36,10 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 type IConnectionResponseDataBlockTunnelConnection interface {
 	// GetKnxAddress returns KnxAddress
 	GetKnxAddress() *KnxAddress
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -69,6 +69,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() *KnxAddres
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionResponseDataBlockTunnelConnection factory function for ConnectionResponseDataBlockTunnelConnection
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockTunnelConnection{
 		KnxAddress:                  knxAddress,
@@ -101,21 +102,21 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 	return "ConnectionResponseDataBlockTunnelConnection"
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.LengthInBits()
+	lengthInBits += m.KnxAddress.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {

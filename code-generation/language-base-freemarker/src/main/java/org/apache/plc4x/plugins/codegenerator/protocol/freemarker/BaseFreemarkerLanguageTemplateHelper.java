@@ -510,7 +510,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (isSimpleTypeReference(typeReference)) {
             return false;
         }
-        TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typedField.getType());
+        TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
         return typeDefinition instanceof EnumTypeDefinition;
     }
 

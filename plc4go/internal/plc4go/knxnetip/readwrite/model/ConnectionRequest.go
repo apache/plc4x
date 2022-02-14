@@ -42,10 +42,10 @@ type IConnectionRequest interface {
 	GetHpaiDataEndpoint() *HPAIDataEndpoint
 	// GetConnectionRequestInformation returns ConnectionRequestInformation
 	GetConnectionRequestInformation() *ConnectionRequestInformation
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -82,6 +82,7 @@ func (m *ConnectionRequest) GetConnectionRequestInformation() *ConnectionRequest
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewConnectionRequest factory function for ConnectionRequest
 func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *KnxNetIpMessage {
 	child := &ConnectionRequest{
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
@@ -116,27 +117,27 @@ func (m *ConnectionRequest) GetTypeName() string {
 	return "ConnectionRequest"
 }
 
-func (m *ConnectionRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ConnectionRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
-	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits()
 
 	// Simple field (hpaiDataEndpoint)
-	lengthInBits += m.HpaiDataEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDataEndpoint.GetLengthInBits()
 
 	// Simple field (connectionRequestInformation)
-	lengthInBits += m.ConnectionRequestInformation.LengthInBits()
+	lengthInBits += m.ConnectionRequestInformation.GetLengthInBits()
 
 	return lengthInBits
 }
 
-func (m *ConnectionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ConnectionRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {

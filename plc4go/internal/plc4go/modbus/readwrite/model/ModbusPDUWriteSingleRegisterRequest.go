@@ -39,10 +39,10 @@ type IModbusPDUWriteSingleRegisterRequest interface {
 	GetAddress() uint16
 	// GetValue returns Value
 	GetValue() uint16
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -91,6 +91,7 @@ func (m *ModbusPDUWriteSingleRegisterRequest) GetValue() uint16 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewModbusPDUWriteSingleRegisterRequest factory function for ModbusPDUWriteSingleRegisterRequest
 func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *ModbusPDU {
 	child := &ModbusPDUWriteSingleRegisterRequest{
 		Address:   address,
@@ -124,12 +125,12 @@ func (m *ModbusPDUWriteSingleRegisterRequest) GetTypeName() string {
 	return "ModbusPDUWriteSingleRegisterRequest"
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -140,8 +141,8 @@ func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *ModbusPDUWriteSingleRegisterRequest) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func ModbusPDUWriteSingleRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {

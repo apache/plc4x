@@ -30,16 +30,19 @@ import (
 type UnknownMessage struct {
 	*KnxNetIpMessage
 	UnknownData []byte
+
+	// Arguments.
+	TotalLength uint16
 }
 
 // The corresponding interface
 type IUnknownMessage interface {
 	// GetUnknownData returns UnknownData
 	GetUnknownData() []byte
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -68,7 +71,8 @@ func (m *UnknownMessage) GetUnknownData() []byte {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
-func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
+// NewUnknownMessage factory function for UnknownMessage
+func NewUnknownMessage(unknownData []byte, totalLength uint16) *KnxNetIpMessage {
 	child := &UnknownMessage{
 		UnknownData:     unknownData,
 		KnxNetIpMessage: NewKnxNetIpMessage(),
@@ -100,12 +104,12 @@ func (m *UnknownMessage) GetTypeName() string {
 	return "UnknownMessage"
 }
 
-func (m *UnknownMessage) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *UnknownMessage) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.ParentLengthInBits())
+func (m *UnknownMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -115,8 +119,8 @@ func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *UnknownMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *UnknownMessage) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {

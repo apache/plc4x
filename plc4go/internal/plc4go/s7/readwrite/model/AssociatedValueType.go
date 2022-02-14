@@ -44,10 +44,10 @@ type IAssociatedValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data
 	GetData() []uint8
-	// LengthInBytes returns the length in bytes
-	LengthInBytes() uint16
-	// LengthInBits returns the length in bits
-	LengthInBits() uint16
+	// GetLengthInBytes returns the length in bytes
+	GetLengthInBytes() uint16
+	// GetLengthInBits returns the length in bits
+	GetLengthInBits() uint16
 	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -75,6 +75,7 @@ func (m *AssociatedValueType) GetData() []uint8 {
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
+// NewAssociatedValueType factory function for AssociatedValueType
 func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *AssociatedValueType {
 	return &AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
 }
@@ -96,11 +97,11 @@ func (m *AssociatedValueType) GetTypeName() string {
 	return "AssociatedValueType"
 }
 
-func (m *AssociatedValueType) LengthInBits() uint16 {
-	return m.LengthInBitsConditional(false)
+func (m *AssociatedValueType) GetLengthInBits() uint16 {
+	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AssociatedValueType) LengthInBitsConditional(lastItem bool) uint16 {
+func (m *AssociatedValueType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -120,8 +121,8 @@ func (m *AssociatedValueType) LengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *AssociatedValueType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+func (m *AssociatedValueType) GetLengthInBytes() uint16 {
+	return m.GetLengthInBits() / 8
 }
 
 func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType, error) {
@@ -218,7 +219,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Manual Field (valueLength)
-	_valueLengthErr := LeftShift3(writeBuffer, m.ValueLength)
+	_valueLengthErr := LeftShift3(writeBuffer, m.GetValueLength())
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}
