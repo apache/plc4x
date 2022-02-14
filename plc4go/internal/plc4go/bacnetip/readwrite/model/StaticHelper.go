@@ -305,3 +305,45 @@ func ParseVarUint(data []byte) uint32 {
 func WriteVarUint(value uint32) []byte {
 	return big.NewInt(int64(value)).Bytes()
 }
+
+func NewBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACnetTagHeader {
+	tagClass := TagClass_APPLICATION_TAGS
+	if isContext {
+		tagClass = TagClass_CONTEXT_SPECIFIC_TAGS
+	}
+
+	var tagNumber uint8
+	var extTagNumber *uint8
+	if id <= 14 {
+		tagNumber = id
+	} else {
+		tagNumber = 0xF
+		extTagNumber = &id
+	}
+
+	var lengthValueType uint8
+	var extLength *uint8
+	var extExtLength *uint16
+	var extExtExtLength *uint32
+	if value <= 4 {
+		lengthValueType = uint8(value)
+	} else {
+		lengthValueType = 5
+		// Depending on the length, we will either write it as an 8 bit, 32 bit, or 64 bit integer
+		if value <= 253 {
+			_extLength := uint8(value)
+			extLength = &_extLength
+		} else if value <= 65535 {
+			_extLength := uint8(254)
+			extLength = &_extLength
+			_extExtLength := uint16(value)
+			extExtLength = &_extExtLength
+		} else {
+			_extLength := uint8(255)
+			extLength = &_extLength
+			extExtExtLength = &value
+		}
+	}
+
+	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength)
+}

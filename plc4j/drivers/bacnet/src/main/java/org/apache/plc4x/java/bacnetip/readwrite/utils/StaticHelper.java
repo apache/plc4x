@@ -344,4 +344,42 @@ public class StaticHelper {
     public static long parseVarUint(byte[] data) {
         return new BigInteger(data).longValue();
     }
+
+    public static BACnetTagHeader newBACnetTagHeaderBalanced(boolean isContext, short id, long value) {
+        TagClass tagClass = TagClass.APPLICATION_TAGS;
+        if (isContext) {
+            tagClass = TagClass.CONTEXT_SPECIFIC_TAGS;
+        }
+
+        byte tagNumber;
+        Short extTagNumber = null;
+        if (id <= 14) {
+            tagNumber = (byte) id;
+        } else {
+            tagNumber = 0xF;
+            extTagNumber = id;
+        }
+
+        byte lengthValueType;
+        Short extLength = null;
+        Integer extExtLength = null;
+        Long extExtExtLength = null;
+        if (value <= 4) {
+            lengthValueType = (byte) value;
+        } else {
+            lengthValueType = 5;
+            // Depending on the length, we will either write it as an 8 bit, 32 bit, or 64 bit integer
+            if (value <= 253) {
+                extLength = (short) value;
+            } else if (value <= 65535) {
+                extLength = 254;
+                extExtLength = (int) value;
+            } else {
+                extLength = 255;
+                extExtExtLength = value;
+            }
+        }
+
+        return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);
+    }
 }
