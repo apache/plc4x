@@ -647,7 +647,7 @@
     ]
 ]
 
-[enum int 8 COTPTpduSize(uint 16 sizeInBytes)
+[enum uint 8 COTPTpduSize(uint 16 sizeInBytes)
     ['0x07' SIZE_128 ['128']]
     ['0x08' SIZE_256 ['256']]
     ['0x09' SIZE_512 ['512']]
@@ -657,7 +657,7 @@
     ['0x0d' SIZE_8192 ['8192']]
 ]
 
-[enum int 8 COTPProtocolClass
+[enum uint 8 COTPProtocolClass
     ['0x00' CLASS_0]
     ['0x10' CLASS_1]
     ['0x20' CLASS_2]
@@ -665,7 +665,7 @@
     ['0x40' CLASS_4]
 ]
 
-[enum int 8 DataTransportSize(bit sizeInBits)
+[enum uint 8 DataTransportSize(bit sizeInBits)
     ['0x00' NULL            ['false']]
     ['0x03' BIT             ['true']]
     ['0x04' BYTE_WORD_DWORD ['true']]
@@ -675,13 +675,13 @@
     ['0x09' OCTET_STRING    ['false']]
 ]
 
-[enum int 8 DeviceGroup
+[enum uint 8 DeviceGroup
     ['0x01' PG_OR_PC]
     ['0x02' OS      ]
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 TransportSize(uint 8 code, uint 8 shortName, uint 8 sizeInBytes, TransportSize baseType, DataTransportSize dataTransportSize, vstring dataProtocolId, bit supported_S7_300, bit supported_S7_400, bit supported_S7_1200, bit supported_S7_1500, bit supported_LOGO)
+[enum uint 8 TransportSize(uint 8 code, uint 8 shortName, uint 8 sizeInBytes, TransportSize baseType, DataTransportSize dataTransportSize, vstring dataProtocolId, bit supported_S7_300, bit supported_S7_400, bit supported_S7_1200, bit supported_S7_1500, bit supported_LOGO)
     // Bit Strings
     ['0x01' BOOL           ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' BYTE           ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]

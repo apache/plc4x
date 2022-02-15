@@ -27,23 +27,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultSimpleField extends DefaultField implements SimpleField {
-
-    private final TypeReference type;
-    private final String name;
+public class DefaultSimpleField extends DefaultTypedNamedField implements SimpleField {
 
     public DefaultSimpleField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultSimpleField{} " + super.toString();
     }
-
-    public String getName() {
-        return name;
-    }
-
 }

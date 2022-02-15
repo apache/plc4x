@@ -24,17 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultUnknownField extends DefaultField implements UnknownField {
-
-    private final TypeReference type;
+public class DefaultUnknownField extends DefaultTypedField implements UnknownField {
 
     public DefaultUnknownField(Map<String, Term> attributes, TypeReference type) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
+        super(attributes, type);
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultUnknownField{} " + super.toString();
     }
-
 }

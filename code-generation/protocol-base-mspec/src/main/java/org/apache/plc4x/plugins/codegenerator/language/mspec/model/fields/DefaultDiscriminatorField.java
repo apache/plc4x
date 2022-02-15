@@ -24,23 +24,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultDiscriminatorField extends DefaultField implements DiscriminatorField {
-
-    private final TypeReference type;
-    private final String name;
+public class DefaultDiscriminatorField extends DefaultTypedNamedField implements DiscriminatorField {
 
     public DefaultDiscriminatorField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
     }
 
-    public TypeReference getType() {
-        return type;
+    @Override
+    public String toString() {
+        return "DefaultDiscriminatorField{} " + super.toString();
     }
-
-    public String getName() {
-        return name;
-    }
-
 }

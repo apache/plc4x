@@ -65,4 +65,26 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
         return constants.get(constantName);
     }
 
+    @Override
+    public String toString() {
+        return "DefaultEnumTypeDefinition{" +
+            "type=" + type +
+            ", enumValues=" + enumValues +
+            ", constants=" + constants +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultEnumTypeDefinition that = (DefaultEnumTypeDefinition) o;
+        return Objects.equals(type, that.type) && Objects.equals(enumValues, that.enumValues) && Objects.equals(constants, that.constants);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), type, enumValues, constants);
+    }
 }

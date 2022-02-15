@@ -18,29 +18,29 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 
-public class DefaultVirtualField extends DefaultTypedNamedField implements VirtualField {
+public class DefaultTypedNamedField extends DefaultTypedField {
 
-    private final Term valueExpression;
+    protected final String name;
 
-    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
-        super(attributes, type, name);
-        this.valueExpression = Objects.requireNonNull(valueExpression);
+    public DefaultTypedNamedField(Map<String, Term> attributes, TypeReference type, String name) {
+        super(attributes, type);
+        this.name = name;
     }
 
-    public Term getValueExpression() {
-        return valueExpression;
+    public String getName() {
+        return name;
     }
 
     @Override
     public String toString() {
-        return "DefaultVirtualField{" +
-            "valueExpression=" + valueExpression +
+        return "DefaultTypedNamedField{" +
+            "name='" + name + '\'' +
             "} " + super.toString();
     }
 
@@ -49,12 +49,12 @@ public class DefaultVirtualField extends DefaultTypedNamedField implements Virtu
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        DefaultVirtualField that = (DefaultVirtualField) o;
-        return Objects.equals(valueExpression, that.valueExpression);
+        DefaultTypedNamedField that = (DefaultTypedNamedField) o;
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), valueExpression);
+        return Objects.hash(super.hashCode(), name);
     }
 }

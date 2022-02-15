@@ -639,8 +639,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 lengthType = (baseType.getParentType() == null) ? baseType : (ComplexTypeDefinition) baseType.getParentType();
                 lengthExpression = "_message";
             } else {
-                final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty((ComplexTypeDefinition) baseType, variableLiteral.getName());
-                if (!typeReferenceForProperty.isPresent()) {
+                final Optional<TypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(variableLiteral.getName());
+                if (typeReferenceForProperty.isEmpty()) {
                     throw new FreemarkerException("Unknown type for property " + variableLiteral.getName());
                 }
                 lengthType = getTypeDefinitionForTypeReference(typeReferenceForProperty.get());
@@ -692,17 +692,17 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
         // Try to find the type of the addressed property.
         Optional<TypeReference> propertyTypeOptional =
-            getTypeReferenceForProperty((ComplexTypeDefinition) baseType, name);
+            ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(name);
 
         // If we couldn't find the type, we didn't find the property.
-        if (!propertyTypeOptional.isPresent()) {
+        if (propertyTypeOptional.isEmpty()) {
             final List<Argument> arguments = baseType.getAllParserArguments().orElse(Collections.emptyList());
             for (Argument argument : arguments) {
-                if(argument.getName().equals(name)) {
+                if (argument.getName().equals(name)) {
                     propertyTypeOptional = Optional.of(argument.getType());
                 }
             }
-            if(!propertyTypeOptional.isPresent()) {
+            if (propertyTypeOptional.isEmpty()) {
                 throw new FreemarkerException("Could not find property with name '" + name + "' in type " + baseType.getName());
             }
         }
@@ -720,7 +720,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If it references a complex, type we need to get that type's definition first.
         final TypeDefinition propertyTypeDefinition = getTypeDefinitions().get(((ComplexTypeReference) propertyType).getName());
         // If we're not accessing any child property, no need to handle anything special.
-        if (!variableLiteral.getChild().isPresent()) {
+        if (variableLiteral.getChild().isEmpty()) {
             return name;
         }
         // If there is a child we need to check if this is a discriminator property.
@@ -856,9 +856,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         tracer = tracer.dive("STATIC_CALL");
         List<Term> terms = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("'STATIC_CALL' needs at least one args"));
         String functionName = terms.get(0).asLiteral()
-            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
             .asStringLiteral()
-            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
             .getValue();
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));
@@ -969,7 +969,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
         // If this expression references enum constants we need to do things differently
         final Optional<TypeReference> typeReferenceForProperty =
-            getTypeReferenceForProperty((ComplexTypeDefinition) baseType, variableLiteral.getName());
+            ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(variableLiteral.getName());
         if (typeReferenceForProperty.isPresent()) {
             final TypeReference typeReference = typeReferenceForProperty.get();
             if (typeReference instanceof ComplexTypeReference) {
@@ -1059,9 +1059,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         tracer = tracer.dive("toStaticCallSerializationExpression");
         List<Term> args = vl.getArgs().orElseThrow(() -> new FreemarkerException("'STATIC_CALL' needs at least one attribute"));
         String functionName = args.get(0).asLiteral()
-            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
             .asStringLiteral()
-            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
             .getValue();
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));

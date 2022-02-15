@@ -121,7 +121,7 @@ public class ${type.name} {
                 int itemCount = (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                 ${arrayField.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, arrayField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, arrayField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -134,7 +134,7 @@ public class ${type.name} {
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${arrayField.name}EndPos) {
                 value.add(
-                <#if helper.isSimpleTypeReference(arrayField.type)>
+                <#if arrayField.type.isSimpleTypeReference()>
                     new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}(${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})
                 <#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
                     <#if arrayField.params.isPresent()>,
@@ -152,7 +152,7 @@ public class ${type.name} {
             // Terminated array
             List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
-                ${arrayField.name}.add(<#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                ${arrayField.name}.add(<#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if arrayField.loopExpression.contains("curPos")>
@@ -214,7 +214,7 @@ public class ${type.name} {
             ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
                         <#else>
             // Simple Field (${simpleField.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
@@ -416,7 +416,7 @@ public class ${type.name} {
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
                             </#if>
                         </#if>
-                        <#if helper.isSimpleTypeReference(simpleField.type)>
+                        <#if simpleField.type.isSimpleTypeReference()>
             ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)};
                         <#else>
             ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticSerialize(writeBuffer, ${simpleField.name});

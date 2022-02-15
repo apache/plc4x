@@ -713,7 +713,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .isPresent()
         ) {
             tracer = tracer.dive("optional fields 2");
-            return tracer + "(" + (suppressPointerAccess ? "" : "*") + "m.Get"+capitalize(variableLiteral.getName()) + "())" +
+            return tracer + "(" + (suppressPointerAccess ? "" : "*") + "m.Get" + capitalize(variableLiteral.getName()) + "())" +
                 variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
         }
         // If we are accessing implicit fields, we need to rely on local variable instead.
@@ -751,9 +751,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             // TODO: Should this return something?
         }
         // If the variable has a child element and we're able to find a type for this ... get the type.
-        else if ((variableLiteral.getChild().isPresent()) && (getTypeReferenceForProperty(((ComplexTypeDefinition) thisType), variableLiteralName).isPresent())) {
+        else if ((variableLiteral.getChild().isPresent()) && ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(variableLiteralName).isPresent()) {
             tracer = tracer.dive("child element");
-            final Optional<ComplexTypeReference> typeReferenceForProperty = getTypeReferenceForProperty(((ComplexTypeDefinition) thisType), variableLiteralName)
+            final Optional<ComplexTypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(variableLiteralName)
                 .flatMap(TypeReferenceConversions::asComplexTypeReference);
             if (typeReferenceForProperty.isPresent()) {
                 tracer = tracer.dive("complex");

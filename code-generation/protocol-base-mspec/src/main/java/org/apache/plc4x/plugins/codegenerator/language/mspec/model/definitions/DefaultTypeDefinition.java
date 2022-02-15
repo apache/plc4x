@@ -56,11 +56,11 @@ public abstract class DefaultTypeDefinition {
 
     public Optional<List<Argument>> getAllParserArguments() {
         List<Argument> allArguments = new ArrayList<>();
-        if(getParentType() != null) {
+        if (getParentType() != null) {
             final TypeDefinition parentType = getParentType();
             allArguments.addAll(parentType.getParserArguments().orElse(Collections.emptyList()));
         }
-        if(parserArguments != null) {
+        if (parserArguments != null) {
             allArguments.addAll(parserArguments);
         }
         return Optional.of(allArguments);
@@ -74,4 +74,26 @@ public abstract class DefaultTypeDefinition {
         this.parentType = parentType;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultTypeDefinition{" +
+            "name='" + name + '\'' +
+            ", attributes=" + attributes +
+            ", parserArguments=" + parserArguments +
+            ", parentType=" + parentType +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultTypeDefinition that = (DefaultTypeDefinition) o;
+        return name.equals(that.name) && Objects.equals(attributes, that.attributes) && Objects.equals(parserArguments, that.parserArguments) && Objects.equals(parentType, that.parentType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, attributes, parserArguments, parentType);
+    }
 }

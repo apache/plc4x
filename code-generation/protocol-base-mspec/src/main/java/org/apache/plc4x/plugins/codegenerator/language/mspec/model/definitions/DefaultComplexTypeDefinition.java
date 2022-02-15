@@ -119,4 +119,25 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
         return ((ComplexTypeDefinition) getParentType()).getAllPropertyFields();
     }
 
+    @Override
+    public String toString() {
+        return "DefaultComplexTypeDefinition{" +
+            "isAbstract=" + isAbstract +
+            ", fields=" + fields +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultComplexTypeDefinition that = (DefaultComplexTypeDefinition) o;
+        return isAbstract == that.isAbstract && Objects.equals(fields, that.fields);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isAbstract, fields);
+    }
 }

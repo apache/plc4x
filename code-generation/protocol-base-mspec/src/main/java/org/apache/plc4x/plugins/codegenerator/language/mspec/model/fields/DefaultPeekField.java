@@ -26,29 +26,37 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultPeekField extends DefaultField implements PeekField {
+public class DefaultPeekField extends DefaultTypedNamedField implements PeekField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term offsetExpression;
 
     public DefaultPeekField(Map<String, Term> attributes, TypeReference type, String name, Term offsetExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
         this.offsetExpression = offsetExpression;
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Optional<Term> getOffsetExpression() {
         return Optional.ofNullable(offsetExpression);
     }
 
+    @Override
+    public String toString() {
+        return "DefaultPeekField{" +
+            "offsetExpression=" + offsetExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultPeekField that = (DefaultPeekField) o;
+        return Objects.equals(offsetExpression, that.offsetExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), offsetExpression);
+    }
 }

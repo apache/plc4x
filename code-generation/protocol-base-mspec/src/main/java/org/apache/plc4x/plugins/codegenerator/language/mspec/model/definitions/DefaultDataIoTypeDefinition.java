@@ -52,4 +52,25 @@ public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implement
         return this.type;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultDataIoTypeDefinition{" +
+            "switchField=" + switchField +
+            ", type=" + type +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultDataIoTypeDefinition that = (DefaultDataIoTypeDefinition) o;
+        return Objects.equals(switchField, that.switchField) && Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), switchField, type);
+    }
 }

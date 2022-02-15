@@ -64,7 +64,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 	case "${typeDefinition.name}":
 	<#if typeDefinition.parserArguments.isPresent()>
 		<#list typeDefinition.parserArguments.orElseThrow() as parserArgument>
-			<#if helper.isSimpleTypeReference(parserArgument.type)>
+			<#if parserArgument.type.isSimpleTypeReference()>
 		${parserArgument.name}, err := utils.StrTo${helper.getLanguageTypeNameForTypeReference(parserArgument.type)?cap_first}(arguments[${parserArgument?index}])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
@@ -74,7 +74,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

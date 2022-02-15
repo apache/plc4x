@@ -27,29 +27,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultManualField extends DefaultField implements ManualField {
+public class DefaultManualField extends DefaultTypedNamedField implements ManualField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
 
     public DefaultManualField(Map<String, Term> attributes, TypeReference type, String name, Term parseExpression, Term serializeExpression, Term lengthExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getParseExpression() {
@@ -64,4 +52,26 @@ public class DefaultManualField extends DefaultField implements ManualField {
         return lengthExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultManualField{" +
+            "parseExpression=" + parseExpression +
+            ", serializeExpression=" + serializeExpression +
+            ", lengthExpression=" + lengthExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultManualField that = (DefaultManualField) o;
+        return Objects.equals(parseExpression, that.parseExpression) && Objects.equals(serializeExpression, that.serializeExpression) && Objects.equals(lengthExpression, that.lengthExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), parseExpression, serializeExpression, lengthExpression);
+    }
 }

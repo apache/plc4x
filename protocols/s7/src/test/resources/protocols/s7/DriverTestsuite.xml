@@ -42,7 +42,7 @@
               <destinationReference dataType="uint" bitLength="16">0</destinationReference>
               <sourceReference dataType="uint" bitLength="16">15</sourceReference>
               <protocolClass>
-                <COTPProtocolClass dataType="int" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
+                <COTPProtocolClass dataType="uint" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
               </protocolClass>
             </COTPPacketConnectionRequest>
             <parameters isList="true">
@@ -65,7 +65,7 @@
                 <parameterLength dataType="uint" bitLength="8">1</parameterLength>
                 <COTPParameterTpduSize>
                   <tpduSize>
-                    <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
+                    <COTPTpduSize dataType="uint" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
                   </tpduSize>
                 </COTPParameterTpduSize>
               </COTPParameter>
@@ -88,7 +88,7 @@
               <destinationReference dataType="uint" bitLength="16">15</destinationReference>
               <sourceReference dataType="uint" bitLength="16">11</sourceReference>
               <protocolClass>
-                <COTPProtocolClass dataType="int" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
+                <COTPProtocolClass dataType="uint" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
               </protocolClass>
             </COTPPacketConnectionResponse>
             <parameters isList="true">
@@ -97,7 +97,7 @@
                 <parameterLength dataType="uint" bitLength="8">1</parameterLength>
                 <COTPParameterTpduSize>
                   <tpduSize>
-                    <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
+                    <COTPTpduSize dataType="uint" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
                   </tpduSize>
                 </COTPParameterTpduSize>
               </COTPParameter>

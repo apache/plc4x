@@ -27,27 +27,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultArrayField extends DefaultField implements ArrayField {
+public class DefaultArrayField extends DefaultTypedNamedField implements ArrayField {
 
-    private final TypeReference type;
-    private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
 
     public DefaultArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes,type,name);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public LoopType getLoopType() {
@@ -58,4 +46,25 @@ public class DefaultArrayField extends DefaultField implements ArrayField {
         return loopExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultArrayField{" +
+            "loopType=" + loopType +
+            ", loopExpression=" + loopExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultArrayField that = (DefaultArrayField) o;
+        return loopType == that.loopType && Objects.equals(loopExpression, that.loopExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), loopType, loopExpression);
+    }
 }

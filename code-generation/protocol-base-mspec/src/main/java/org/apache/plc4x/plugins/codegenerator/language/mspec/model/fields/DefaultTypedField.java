@@ -18,29 +18,29 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 
-public class DefaultVirtualField extends DefaultTypedNamedField implements VirtualField {
+public abstract class DefaultTypedField extends DefaultField {
 
-    private final Term valueExpression;
+    protected final TypeReference type;
 
-    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
-        super(attributes, type, name);
-        this.valueExpression = Objects.requireNonNull(valueExpression);
+    public DefaultTypedField(Map<String, Term> attributes, TypeReference type) {
+        super(attributes);
+        this.type = type;
     }
 
-    public Term getValueExpression() {
-        return valueExpression;
+    public TypeReference getType() {
+        return type;
     }
 
     @Override
     public String toString() {
-        return "DefaultVirtualField{" +
-            "valueExpression=" + valueExpression +
+        return "DefaultTypedField{" +
+            "type=" + type +
             "} " + super.toString();
     }
 
@@ -49,12 +49,12 @@ public class DefaultVirtualField extends DefaultTypedNamedField implements Virtu
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        DefaultVirtualField that = (DefaultVirtualField) o;
-        return Objects.equals(valueExpression, that.valueExpression);
+        DefaultTypedField that = (DefaultTypedField) o;
+        return Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), valueExpression);
+        return Objects.hash(super.hashCode(), type);
     }
 }

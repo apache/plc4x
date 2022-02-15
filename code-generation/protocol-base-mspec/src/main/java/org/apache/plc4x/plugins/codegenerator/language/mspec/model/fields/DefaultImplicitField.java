@@ -24,29 +24,37 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultImplicitField extends DefaultField implements ImplicitField {
+public class DefaultImplicitField extends DefaultTypedNamedField implements ImplicitField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term serializeExpression;
 
     public DefaultImplicitField(Map<String, Term> attributes, TypeReference type, String name, Term serializeExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes,type,name);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getSerializeExpression() {
         return serializeExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultImplicitField{" +
+            "serializeExpression=" + serializeExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultImplicitField that = (DefaultImplicitField) o;
+        return Objects.equals(serializeExpression, that.serializeExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), serializeExpression);
+    }
 }

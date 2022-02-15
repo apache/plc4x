@@ -27,27 +27,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultPaddingField extends DefaultField implements PaddingField {
+public class DefaultPaddingField extends DefaultTypedNamedField implements PaddingField {
 
-    private final TypeReference type;
-    private final String name;
     private final Term paddingValue;
     private final Term paddingCondition;
 
     public DefaultPaddingField(Map<String, Term> attributes, TypeReference type, String name, Term paddingValue, Term paddingCondition) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
         this.paddingValue = Objects.requireNonNull(paddingValue);
         this.paddingCondition = Objects.requireNonNull(paddingCondition);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Term getPaddingValue() {
@@ -58,4 +46,25 @@ public class DefaultPaddingField extends DefaultField implements PaddingField {
         return paddingCondition;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultPaddingField{" +
+            "paddingValue=" + paddingValue +
+            ", paddingCondition=" + paddingCondition +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultPaddingField that = (DefaultPaddingField) o;
+        return Objects.equals(paddingValue, that.paddingValue) && Objects.equals(paddingCondition, that.paddingCondition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), paddingValue, paddingCondition);
+    }
 }

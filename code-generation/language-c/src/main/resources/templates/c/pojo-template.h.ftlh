@@ -66,7 +66,7 @@
 </#if>
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?values as discriminatorType>
-        <#if helper.isComplexTypeReference(discriminatorType)>
+        <#if discriminatorType.isComplexTypeReference()>
 #include "${helper.camelCaseToSnakeCase(discriminatorType.name)}.h"
         </#if>
     </#list>
@@ -92,7 +92,7 @@ extern "C" {
 struct ${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
-        <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+        <#if !helper.getDiscriminatorTypes()[discriminatorName].isComplexTypeReference()>
   ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
         <#else>
   enum ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
@@ -142,7 +142,7 @@ struct ${helper.getCTypeName(type.name)} {
             <#if case.propertyFields?has_content>
     struct { /* ${case.name} */
                 <#list case.propertyFields as caseField>
-                    <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !caseField.isOptionalField() && !caseField.isArrayField() && !caseField.isManualArrayField()>
+                    <#if (caseField.type.isSimpleTypeReference() || helper.isEnumField(caseField)) && !caseField.isOptionalField() && !caseField.isArrayField() && !caseField.isManualArrayField()>
       ${helper.getLanguageTypeNameForField(caseField)} ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
                     <#elseif caseField.isArrayField() || caseField.isManualArrayField()>
       plc4c_list* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
@@ -154,7 +154,7 @@ struct ${helper.getCTypeName(type.name)} {
             </#if>
         </#list>
   };
-    <#elseif (helper.isSimpleTypeReference(field.type) || helper.isEnumField(field)) && !field.isOptionalField() && !field.isArrayField() && !field.isManualArrayField()>
+    <#elseif (field.type.isSimpleTypeReference() || helper.isEnumField(field)) && !field.isOptionalField() && !field.isArrayField() && !field.isManualArrayField()>
         <#assign namedField = field.asNamedField().orElseThrow()>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(namedField.name)}${helper.getTypeSizeForField(field.asTypedField().orElseThrow())}<#if field.loopType??>${helper.getLoopExpressionSuffix(field.asTypedField().orElseThrow())}</#if>;
     <#elseif field.isArrayField() || field.isManualArrayField()>
@@ -174,7 +174,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, <#if parserArguments?has_content><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, <#if parserArguments?has_content><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !parserArgument.type.isSimpleTypeReference()>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** message);
 
 <#--
     Define the serialize-method for elements of this tpye

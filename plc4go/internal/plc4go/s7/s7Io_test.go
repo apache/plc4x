@@ -187,7 +187,7 @@ func TestS7MessageBytes(t *testing.T) {
           <parameterLength dataType="uint" bitLength="8">1</parameterLength>
           <COTPParameterTpduSize>
             <tpduSize>
-              <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_4096">12</COTPTpduSize>
+              <COTPTpduSize dataType="uint" bitLength="8" stringRepresentation="SIZE_4096">12</COTPTpduSize>
             </tpduSize>
           </COTPParameterTpduSize>
         </COTPParameter>
@@ -265,7 +265,7 @@ func TestS7MessageBytes(t *testing.T) {
                 "tpduSize": {
                   "COTPTpduSize": 12,
                   "COTPTpduSize__plc4x_bitLength": 8,
-                  "COTPTpduSize__plc4x_dataType": "int",
+                  "COTPTpduSize__plc4x_dataType": "uint",
                   "COTPTpduSize__plc4x_stringRepresentation": "SIZE_4096"
                 }
               },
@@ -604,7 +604,7 @@ func TestS7MessageBytes(t *testing.T) {
           <parameterLength dataType="uint" bitLength="8">1</parameterLength>
           <COTPParameterTpduSize>
             <tpduSize>
-              <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_4096">12</COTPTpduSize>
+              <COTPTpduSize dataType="uint" bitLength="8" stringRepresentation="SIZE_4096">12</COTPTpduSize>
             </tpduSize>
           </COTPParameterTpduSize>
         </COTPParameter>
@@ -703,7 +703,7 @@ func TestS7MessageBytes(t *testing.T) {
                 "tpduSize": {
                   "COTPTpduSize": 12,
                   "COTPTpduSize__plc4x_bitLength": 8,
-                  "COTPTpduSize__plc4x_dataType": "int",
+                  "COTPTpduSize__plc4x_dataType": "uint",
                   "COTPTpduSize__plc4x_stringRepresentation": "SIZE_4096"
                 }
               },

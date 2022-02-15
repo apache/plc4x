@@ -116,7 +116,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                     </#switch>
                 </#if>
             </#list>
-            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
+            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
             return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
         <#else>
 			return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

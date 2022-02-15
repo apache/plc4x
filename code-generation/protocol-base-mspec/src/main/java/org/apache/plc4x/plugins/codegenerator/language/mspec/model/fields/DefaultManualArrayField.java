@@ -25,10 +25,8 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultManualArrayField extends DefaultField implements ManualArrayField {
+public class DefaultManualArrayField extends DefaultTypedNamedField implements ManualArrayField {
 
-    private final TypeReference type;
-    private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
     private final Term parseExpression;
@@ -36,22 +34,12 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     private final Term lengthExpression;
 
     public DefaultManualArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression) {
-        super(attributes);
-        this.type = Objects.requireNonNull(type);
-        this.name = Objects.requireNonNull(name);
+        super(attributes, type, name);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);
-    }
-
-    public TypeReference getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public LoopType getLoopType() {
@@ -74,4 +62,28 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
         return lengthExpression;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultManualArrayField{" +
+            "loopType=" + loopType +
+            ", loopExpression=" + loopExpression +
+            ", parseExpression=" + parseExpression +
+            ", serializeExpression=" + serializeExpression +
+            ", lengthExpression=" + lengthExpression +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultManualArrayField that = (DefaultManualArrayField) o;
+        return loopType == that.loopType && Objects.equals(loopExpression, that.loopExpression) && Objects.equals(parseExpression, that.parseExpression) && Objects.equals(serializeExpression, that.serializeExpression) && Objects.equals(lengthExpression, that.lengthExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), loopType, loopExpression, parseExpression, serializeExpression, lengthExpression);
+    }
 }

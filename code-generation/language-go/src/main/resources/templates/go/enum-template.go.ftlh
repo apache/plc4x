@@ -96,7 +96,7 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	switch e  {
 		<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 		case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */
-		    <#if helper.isComplexTypeReference(type.getConstantType(constantName))>
+		    <#if type.getConstantType(constantName).isComplexTypeReference()>
 		        <#if helper.isEnumTypeReference(type.getConstantType(constantName))>
 			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if>
 			    <#else>
@@ -171,7 +171,7 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-<#if type.type?has_content && helper.isSimpleTypeReference(type.type)>
+<#if type.type?has_content && type.type.isSimpleTypeReference()>
 	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {

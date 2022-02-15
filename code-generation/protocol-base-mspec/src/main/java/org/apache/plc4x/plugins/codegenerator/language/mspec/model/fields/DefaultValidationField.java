@@ -56,4 +56,25 @@ public class DefaultValidationField implements ValidationField, Field {
     public Optional<Term> getAttribute(String s) {
         return Optional.empty();
     }
+
+    @Override
+    public String toString() {
+        return "DefaultValidationField{" +
+            "validationExpression=" + validationExpression +
+            ", description='" + description + '\'' +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultValidationField that = (DefaultValidationField) o;
+        return Objects.equals(validationExpression, that.validationExpression) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(validationExpression, description);
+    }
 }

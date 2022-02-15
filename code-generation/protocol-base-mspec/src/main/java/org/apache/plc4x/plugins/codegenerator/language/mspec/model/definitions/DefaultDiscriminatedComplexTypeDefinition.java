@@ -51,4 +51,24 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
         return discriminatorValueTerms;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultDiscriminatedComplexTypeDefinition{" +
+            "discriminatorValueTerms=" + discriminatorValueTerms +
+            "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DefaultDiscriminatedComplexTypeDefinition that = (DefaultDiscriminatedComplexTypeDefinition) o;
+        return Objects.equals(discriminatorValueTerms, that.discriminatorValueTerms);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), discriminatorValueTerms);
+    }
 }
