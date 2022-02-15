@@ -26,10 +26,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.Expressi
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DefaultArgument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
@@ -39,19 +36,26 @@ import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MessageFormatListener extends MSpecBaseListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageFormatListener.class);
 
     private Deque<List<Field>> parserContexts;
 
     private Deque<List<EnumValue>> enumContexts;
 
-    private Map<String, TypeDefinition> types;
+    protected Map<String, TypeDefinition> types;
+
+    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers = new HashMap<>();
 
     private Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
 
@@ -61,10 +65,6 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     public Deque<List<EnumValue>> getEnumContexts() {
         return enumContexts;
-    }
-
-    public Map<String, TypeDefinition> getTypes() {
-        return types;
     }
 
     @Override
@@ -114,13 +114,12 @@ public class MessageFormatListener extends MSpecBaseListener {
             }
             DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, attributes, enumValues,
                 parserArguments);
-            types.put(typeName, enumType);
+            dispatchType(typeName, enumType);
             enumContexts.pop();
         } else if (ctx.dataIoTypeSwitch != null) {  // Handle data-io types.
             SwitchField switchField = getSwitchField();
-            DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(
-                typeName, attributes, parserArguments, switchField);
-            types.put(typeName, type);
+            DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(typeName, attributes, parserArguments, switchField);
+            dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
             if (switchField != null) {
@@ -137,7 +136,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             boolean abstractType = switchField != null;
             DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(
                 typeName, attributes, parserArguments, abstractType, parserContexts.peek());
-            types.put(typeName, type);
+            dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
             if (switchField != null) {
@@ -229,7 +228,9 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
-        ComplexTypeReference type = new DefaultComplexTypeReference(ctx.type.complexTypeReference.getText(), null);
+        String typeRefName = ctx.type.complexTypeReference.getText();
+        DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, null);
+        setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
         String name = getIdString(ctx.name);
         String fieldName = null;
         if (ctx.fieldName != null) {
@@ -429,6 +430,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
                 discriminatorValues, parserContexts.pop());
+        dispatchType(typeName, type);
 
         // Add the type to the switch field definition.
         DefaultSwitchField switchField = getSwitchField();
@@ -436,9 +438,6 @@ public class MessageFormatListener extends MSpecBaseListener {
             throw new RuntimeException("This shouldn't have happened");
         }
         switchField.addCase(type);
-
-        // Add the type to the type list.
-        types.put(typeName, type);
     }
 
     @Override
@@ -533,7 +532,10 @@ public class MessageFormatListener extends MSpecBaseListener {
         if (ctx.simpleTypeReference != null) {
             return getSimpleTypeReference(ctx.simpleTypeReference);
         } else {
-            return new DefaultComplexTypeReference(ctx.complexTypeReference.getText(), getParams(ctx.params));
+            String typeRefName = ctx.complexTypeReference.getText();
+            DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
+            setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
+            return type;
         }
     }
 
@@ -650,6 +652,37 @@ public class MessageFormatListener extends MSpecBaseListener {
             return ctx.expr.getText();
         }
         return null;
+    }
+
+    private void dispatchType(String typeName, TypeDefinition type) {
+        LOGGER.debug("dispatching {}:{}", typeName, type);
+        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
+        LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
+        Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
+        while (consumerIterator.hasNext()) {
+            Consumer<TypeDefinition> setter = consumerIterator.next();
+            LOGGER.debug("setting {} for {}", typeName, setter);
+            setter.accept(type);
+            consumerIterator.remove();
+        }
+        typeDefinitionConsumers.remove(typeName);
+        types.put(typeName, type);
+    }
+
+    private void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
+        LOGGER.debug("set or schedule {}", typeRefName);
+        TypeDefinition typeDefinition = types.get(typeRefName);
+        if (typeDefinition != null) {
+            LOGGER.debug("{} present so setting for {}", typeRefName, setTypeDefinition);
+            setTypeDefinition.accept(typeDefinition);
+        } else {
+            // put up order
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new LinkedList<>()).size(), typeRefName);
+            }
+            typeDefinitionConsumers.putIfAbsent(typeRefName, new LinkedList<>());
+            typeDefinitionConsumers.get(typeRefName).add(setTypeDefinition);
+        }
     }
 
 }

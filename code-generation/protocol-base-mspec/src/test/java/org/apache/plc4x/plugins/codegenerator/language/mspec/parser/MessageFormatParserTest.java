@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.junit.jupiter.api.Test;
 
@@ -36,13 +37,13 @@ class MessageFormatParserTest {
 
     @Test
     void parseSomething() {
-        Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
+        TypeContext parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
         System.out.println(parse);
     }
 
     @Test
     void parseSomethingElse() {
-        Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example2"));
+        TypeContext parse = SUT.parse(getClass().getResourceAsStream("/mspec.example2"));
         System.out.println(parse);
     }
 

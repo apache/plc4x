@@ -20,11 +20,10 @@ package org.apache.plc4x.protocol.canopen;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
-import java.util.Map;
 
 public class CANOpenProtocol implements Protocol {
 
@@ -34,9 +33,9 @@ public class CANOpenProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+    public TypeContext getTypeContext() throws GenerationException {
         InputStream schemaInputStream = CANOpenProtocol.class.getResourceAsStream("/protocols/can/canopen.mspec");
-        if(schemaInputStream == null) {
+        if (schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
         return new MessageFormatParser().parse(schemaInputStream);

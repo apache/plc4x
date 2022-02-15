@@ -21,6 +21,7 @@ package org.apache.plc4x.protocol.socketcan;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
+import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
@@ -35,7 +36,7 @@ public class SocketCANProtocol implements Protocol {
     }
 
     @Override
-    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+    public TypeContext getTypeContext() throws GenerationException {
         InputStream schemaInputStream = SocketCANProtocol.class.getResourceAsStream("/protocols/can/socketcan.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
