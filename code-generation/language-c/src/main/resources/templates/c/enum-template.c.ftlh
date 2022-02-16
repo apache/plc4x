@@ -118,8 +118,22 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_in
     <#list type.constantNames as constantName>
 
 ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} ${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(${helper.getCTypeName(type.name)} value) {
+        <#assign uniqueEnumValues=helper.getUniqueEnumValues(type.enumValues)/>
+        <#if helper.getCTypeName(type.name) == "bool">
+  if (!value) {
+            <#assign enumValue=uniqueEnumValues[0]>
+    return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) == '-1'>-1<#elseif type.getConstantType(constantName).isComplexTypeReference()><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if>;
+  } else {
+            <#if uniqueEnumValues?size &gt; 1>
+            <#assign enumValue=uniqueEnumValues[1]>
+    return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) == '-1'>-1<#elseif type.getConstantType(constantName).isComplexTypeReference()><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if>;
+            <#else>
+    return 0;
+            </#if>
+  }
+        <#else>
   switch(value) {
-        <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+        <#list uniqueEnumValues as enumValue>
     case ${helper.getCTypeName(type.name)}_${enumValue.name}: { /* '${enumValue.value}' */
       return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) == '-1'>-1<#elseif type.getConstantType(constantName).isComplexTypeReference()><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if>;
     }<#sep>
@@ -129,22 +143,36 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
       return 0;
     }
   }
+        </#if>
 }
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value) {
+    <#assign uniqueEnumValues=helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName)>
     <#if type.getConstantType(constantName).isStringTypeReference() || type.getConstantType(constantName).isVstringTypeReference()>
         <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
     if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}) == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
         </#list>
+    <#elseif type.getConstantType(constantName).isBooleanTypeReference()>
+        if (!value) {
+        <#assign enumValue=uniqueEnumValues[0]>
+            return ${helper.getCTypeName(type.name)}_${enumValue.name};
+        } else {
+        <#if uniqueEnumValues?size &gt; 1>
+        <#assign enumValue=uniqueEnumValues[1]>
+            return ${helper.getCTypeName(type.name)}_${enumValue.name};
+        <#else>
+            return -1;
+        </#if>
+        }
     <#else>
     switch(value) {
-    <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+        <#list uniqueEnumValues as enumValue>
         case ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}: {
             return ${helper.getCTypeName(type.name)}_${enumValue.name};
         }
-    </#list>
+        </#list>
         default: {
             return -1;
         }
