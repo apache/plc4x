@@ -128,7 +128,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     public Map<ConstField, ComplexTypeDefinition> getAllConstFields() {
-        Map<ConstField, ComplexTypeDefinition> constFields = new LinkedHashMap<>();
+        // We need to use IdentityHashMap here as we want the duplicates here
+        Map<ConstField, ComplexTypeDefinition> constFields = new IdentityHashMap<>();
         ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
         complexTypeDefinition.getConstFields()
             .forEach(constField -> constFields.put(constField, complexTypeDefinition));
