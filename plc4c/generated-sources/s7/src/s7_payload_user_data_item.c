@@ -135,7 +135,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     return _res;
   }
 
-        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDiagnosticMessage */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message;
                     

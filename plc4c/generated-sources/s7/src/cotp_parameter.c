@@ -79,7 +79,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     return _res;
   }
 
-        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( parameterType == 0xC0 ) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
                     

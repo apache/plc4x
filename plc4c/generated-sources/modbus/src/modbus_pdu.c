@@ -148,7 +148,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( errorFlag == true ) { /* ModbusPDUError */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error;
                     

@@ -81,7 +81,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     return _res;
   }
 
-        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( tpduCode == 0xF0 ) { /* COTPPacketData */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
                     

@@ -62,7 +62,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     return NO_MEMORY;
   }
 
-        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04 ) && ( messageType == 0x03 ) ) { /* S7PayloadReadVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response;
                     
