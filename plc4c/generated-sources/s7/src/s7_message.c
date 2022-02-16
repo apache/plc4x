@@ -121,11 +121,11 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(messageType == 0x01) { /* S7MessageRequest */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( messageType == 0x01 ) { /* S7MessageRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
   } else 
-  if(messageType == 0x02) { /* S7MessageResponse */
+if( messageType == 0x02 ) { /* S7MessageResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response;
                     
     // Simple Field (errorClass)
@@ -147,7 +147,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
     (*_message)->s7_message_response_error_code = errorCode;
 
   } else 
-  if(messageType == 0x03) { /* S7MessageResponseData */
+if( messageType == 0x03 ) { /* S7MessageResponseData */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data;
                     
     // Simple Field (errorClass)
@@ -169,7 +169,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
     (*_message)->s7_message_response_data_error_code = errorCode;
 
   } else 
-  if(messageType == 0x07) { /* S7MessageUserData */
+if( messageType == 0x07 ) { /* S7MessageUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data;
   }
 

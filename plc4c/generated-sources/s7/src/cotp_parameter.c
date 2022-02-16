@@ -79,8 +79,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(parameterType == 0xC0) { /* COTPParameterTpduSize */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( parameterType == 0xC0 ) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Simple Field (tpduSize)
@@ -92,7 +92,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
 
   } else 
-  if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
+if( parameterType == 0xC1 ) { /* COTPParameterCallingTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap;
                     
     // Simple Field (tsapId)
@@ -104,7 +104,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
 
   } else 
-  if(parameterType == 0xC2) { /* COTPParameterCalledTsap */
+if( parameterType == 0xC2 ) { /* COTPParameterCalledTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap;
                     
     // Simple Field (tsapId)
@@ -116,7 +116,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
 
   } else 
-  if(parameterType == 0xC3) { /* COTPParameterChecksum */
+if( parameterType == 0xC3 ) { /* COTPParameterChecksum */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_checksum;
                     
     // Simple Field (crc)
@@ -128,7 +128,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_checksum_crc = crc;
 
   } else 
-  if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
+if( parameterType == 0xE0 ) { /* COTPParameterDisconnectAdditionalInformation */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information;
                     
     // Array field (data)

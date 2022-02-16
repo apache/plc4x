@@ -76,8 +76,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(parameterType == 0xF0) { /* S7ParameterSetupCommunication */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( parameterType == 0xF0 ) { /* S7ParameterSetupCommunication */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication;
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -123,7 +123,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_setup_communication_pdu_length = pduLength;
 
   } else 
-  if((parameterType == 0x04) && (messageType == 0x01)) { /* S7ParameterReadVarRequest */
+if( ( parameterType == 0x04 ) && ( messageType == 0x01 ) ) { /* S7ParameterReadVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -157,7 +157,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_read_var_request_items = items;
 
   } else 
-  if((parameterType == 0x04) && (messageType == 0x03)) { /* S7ParameterReadVarResponse */
+if( ( parameterType == 0x04 ) && ( messageType == 0x03 ) ) { /* S7ParameterReadVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response;
                     
     // Simple Field (numItems)
@@ -169,7 +169,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_read_var_response_num_items = numItems;
 
   } else 
-  if((parameterType == 0x05) && (messageType == 0x01)) { /* S7ParameterWriteVarRequest */
+if( ( parameterType == 0x05 ) && ( messageType == 0x01 ) ) { /* S7ParameterWriteVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -203,7 +203,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_write_var_request_items = items;
 
   } else 
-  if((parameterType == 0x05) && (messageType == 0x03)) { /* S7ParameterWriteVarResponse */
+if( ( parameterType == 0x05 ) && ( messageType == 0x03 ) ) { /* S7ParameterWriteVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response;
                     
     // Simple Field (numItems)
@@ -215,7 +215,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_write_var_response_num_items = numItems;
 
   } else 
-  if((parameterType == 0x00) && (messageType == 0x07)) { /* S7ParameterUserData */
+if( ( parameterType == 0x00 ) && ( messageType == 0x07 ) ) { /* S7ParameterUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -249,7 +249,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_user_data_items = items;
 
   } else 
-  if((parameterType == 0x01) && (messageType == 0x07)) { /* S7ParameterModeTransition */
+if( ( parameterType == 0x01 ) && ( messageType == 0x07 ) ) { /* S7ParameterModeTransition */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition;
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)

@@ -64,8 +64,8 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* re
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(addressType == 0x10) { /* S7AddressAny */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( addressType == 0x10 ) { /* S7AddressAny */
     (*_message)->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
                     
     // Enum field (transportSize)

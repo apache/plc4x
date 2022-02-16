@@ -64,8 +64,8 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
     return _res;
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(itemType == 0x12) { /* S7VarRequestParameterItemAddress */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( itemType == 0x12 ) { /* S7VarRequestParameterItemAddress */
     (*_message)->_type = plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
                     
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

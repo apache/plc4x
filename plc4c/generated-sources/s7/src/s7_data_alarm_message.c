@@ -98,8 +98,8 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ + " but got " + numberMessageObj);
   }
 
-  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(cpuFunctionType == 0x04) { /* S7MessageObjectRequest */
+        // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request;
                     
     // Const Field (variableSpec)
@@ -185,7 +185,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read
     (*_message)->s7_message_object_request_alarm_type = *alarmType;
 
   } else 
-  if(cpuFunctionType == 0x08) { /* S7MessageObjectResponse */
+if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response;
                     
     // Simple Field (returnCode)

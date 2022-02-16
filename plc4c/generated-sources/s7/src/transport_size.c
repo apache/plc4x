@@ -41,7 +41,7 @@ plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4c_spi_read_buffer
         return NO_MEMORY;
     }
 
-    _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) *_message);
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) *_message);
 
     return _res;
 }
@@ -49,7 +49,7 @@ plc4c_return_code plc4c_s7_read_write_transport_size_parse(plc4c_spi_read_buffer
 plc4c_return_code plc4c_s7_read_write_transport_size_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_transport_size* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_write_signed_byte(writeBuffer, 8, *_message);
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
 
     return _res;
 }
