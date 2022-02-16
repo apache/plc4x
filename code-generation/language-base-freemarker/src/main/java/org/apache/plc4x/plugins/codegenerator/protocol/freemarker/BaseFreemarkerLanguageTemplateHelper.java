@@ -28,6 +28,8 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
@@ -35,6 +37,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class BaseFreemarkerLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
 
     protected final TypeDefinition thisType;
     protected final String protocolName;
@@ -467,4 +471,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return () -> new FreemarkerException(message);
     }
 
+    public void info(String message, Object... objects) {
+        LOGGER.info(message, objects);
+    }
 }
