@@ -29,7 +29,7 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.config.RawSocketChannelConfig;
-import org.apache.plc4x.java.utils.rawsockets.netty.utils.ArpLookup;
+import org.apache.plc4x.java.utils.rawsockets.netty.utils.ArpUtils;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IllegalRawDataException;
@@ -162,7 +162,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // If desired: Try to get the mac address of the remote station by sending an ARP request.
         if(config.isResolveMacAddress()) {
             if ((this.remoteMacAddress == null) && (this.remoteAddress instanceof InetSocketAddress)) {
-                this.remoteMacAddress = ArpLookup.resolveMacAddress(nif, (InetSocketAddress) this.remoteAddress,
+                this.remoteMacAddress = ArpUtils.resolveMacAddress(nif, (InetSocketAddress) this.remoteAddress,
                     (InetSocketAddress) this.localAddress, localMacAddress).orElse(null);
             }
         }
