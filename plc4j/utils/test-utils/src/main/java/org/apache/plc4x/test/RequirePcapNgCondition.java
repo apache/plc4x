@@ -41,7 +41,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         // Windows: WinPcap version 4.1.3 (packet.dll version 4.1.0.2980), based on libpcap version 1.0 branch 1_0_rel0b (20091008)
         try {
             String libVersion = Pcaps.libVersion();
-            Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
+            Pattern pattern = Pattern.compile("^.*libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
             if (matcher.matches()) {
                 String versionString = matcher.group("version");

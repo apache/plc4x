@@ -37,7 +37,7 @@ public class RequirePcapCondition implements ExecutionCondition {
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
         try {
             String libVersion = Pcaps.libVersion();
-            Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
+            Pattern pattern = Pattern.compile("^.*libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
             if (matcher.matches()) {
                 String versionString = matcher.group("version");
