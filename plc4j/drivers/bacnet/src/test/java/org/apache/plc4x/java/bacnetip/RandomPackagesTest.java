@@ -30,6 +30,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferBoxBased;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
+import org.apache.plc4x.test.RequirePcapNg;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.*;
 import org.pcap4j.core.*;
@@ -57,39 +58,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
+@RequirePcapNg
 public class RandomPackagesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
-
-    @BeforeAll
-    static void setUp() {
-        // Note: for mac only don't commit
-        //System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
-        assumeTrue(() -> {
-            try {
-                String version = Pcaps.libVersion();
-                LOGGER.info("Pcap version: " + version);
-                String libpcap_version_string = StringUtils.removeStart(version, "libpcap version ");
-                // Remove any trailing extra info
-                libpcap_version_string = StringUtils.split(libpcap_version_string, " ")[0];
-                Semver libpcap_version = new Semver(libpcap_version_string);
-                if (SystemUtils.IS_OS_MAC) {
-                    Semver minimumVersion = new Semver("1.10.1");
-
-                    if (libpcap_version.isLowerThan(minimumVersion)) {
-                        LOGGER.info("pcap with at least " + minimumVersion + " required.");
-                        return false;
-                    }
-                }
-            } catch (Exception | Error e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }, "no pcap version on system");
-    }
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
