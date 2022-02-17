@@ -113,9 +113,6 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <boost.version>1.78.0</boost.version>
-    <boost.version.underline-short>1_78</boost.version.underline-short>
-    <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.12.6</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
@@ -565,6 +562,24 @@
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
         <version>${equalsverifier.version}</version>
+        <!--
+          For some reason these are not available in maven-central,
+          but it doesn't matter if they are not available.
+        -->
+        <exclusions>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-16</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier-17</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -755,6 +770,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
+            <exclude>**/.cmake/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -818,11 +834,14 @@
             <exclude>**/CMakeCache.txt</exclude>
             <exclude>**/DartConfiguration.tcl</exclude>
 
+            <!-- .Net stuff -->
+            <exclude>plc4net/plc4net.sln.DotSettings.user</exclude>
+
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>
 
             <!-- Temporarily exclude generated code from thrift in python modules -->
-            <exclude>generated/**</exclude>
+            <!--exclude>generated/**</exclude-->
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
@@ -1330,12 +1349,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.thrift.tools</groupId>
-          <artifactId>maven-thrift-plugin</artifactId>
-          <version>0.1.11</version>
-        </plugin>
-
-        <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
           <version>3.22.1-b1</version>
@@ -1564,14 +1577,6 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
-        <boost.build.executable>./b2</boost.build.executable>
-        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>./configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift</thrift.compiler.executable>
-        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <profile>
@@ -1588,14 +1593,6 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-linux-${os.arch}.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
-        <boost.build.executable>./b2</boost.build.executable>
-        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>./configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift</thrift.compiler.executable>
-        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1612,14 +1609,6 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-macos-universal.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
-        <boost.build.executable>./b2</boost.build.executable>
-        <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>./configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift</thrift.compiler.executable>
-        <gradlew.executable>./gradlew</gradlew.executable>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1636,16 +1625,6 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-windows-x86_64.zip</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
-        <!--boost.url>https://github.com/boostorg/boost/archive/refs/tags/boost-${boost.version}.tar.gz</boost.url-->
-        <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
-        <boost.build.executable>b2</boost.build.executable>
-        <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
-        <thrift.bootstrap.executable>bootstrap.sh</thrift.bootstrap.executable>
-        <thrift.configure.executable>configure</thrift.configure.executable>
-        <thrift.make.executable>make</thrift.make.executable>
-        <thrift.compiler.executable>thrift.exe</thrift.compiler.executable>
-        <gradlew.executable>gradlew.bat</gradlew.executable>
       </properties>
     </profile>
 
