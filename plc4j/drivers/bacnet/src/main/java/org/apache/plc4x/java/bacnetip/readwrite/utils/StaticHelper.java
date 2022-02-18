@@ -345,7 +345,7 @@ public class StaticHelper {
         return new BigInteger(data).longValue();
     }
 
-    public static BACnetTagHeader newBACnetTagHeaderBalanced(boolean isContext, short id, long value) {
+    public static BACnetTagHeader createBACnetTagHeaderBalanced(boolean isContext, short id, long value) {
         TagClass tagClass = TagClass.APPLICATION_TAGS;
         if (isContext) {
             tagClass = TagClass.CONTEXT_SPECIFIC_TAGS;
@@ -382,4 +382,25 @@ public class StaticHelper {
 
         return new BACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength);
     }
+
+    public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
+        BACnetTagHeader header = new BACnetTagHeader((byte) 0xC, TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
+        if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
+            objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        }
+        BACnetTagPayloadObjectIdentifier payload = new BACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance);
+        return new BACnetApplicationTagObjectIdentifier(header, payload);
+    }
+
+    public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, int objectType, long instance) {
+        BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
+        BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
+        if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
+            objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        }
+        BACnetTagPayloadObjectIdentifier payload = new BACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance);
+        return new BACnetContextTagObjectIdentifier(header, payload, (short) tagNum, true);
+    }
+
 }

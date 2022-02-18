@@ -306,7 +306,7 @@ func WriteVarUint(value uint32) []byte {
 	return big.NewInt(int64(value)).Bytes()
 }
 
-func NewBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACnetTagHeader {
+func CreateBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACnetTagHeader {
 	tagClass := TagClass_APPLICATION_TAGS
 	if isContext {
 		tagClass = TagClass_CONTEXT_SPECIFIC_TAGS
@@ -346,4 +346,28 @@ func NewBACnetTagHeaderBalanced(isContext bool, id uint8, value uint32) *BACnetT
 	}
 
 	return NewBACnetTagHeader(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength)
+}
+
+func CreateBACnetApplicationTagObjectIdentifier(objectType uint16, instance uint32) *BACnetApplicationTagObjectIdentifier {
+	header := NewBACnetTagHeader(0xC, TagClass_APPLICATION_TAGS, 4, nil, nil, nil, nil)
+	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	if objectType >= 128 || !BACnetObjectTypeKnows(objectType) {
+		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+	}
+	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance)
+	var result interface{}
+	result = NewBACnetApplicationTagObjectIdentifier(payload, header)
+	return result.(*BACnetApplicationTagObjectIdentifier)
+}
+
+func CreateBACnetContextTagObjectIdentifier(tagNum uint8, objectType uint16, instance uint32) *BACnetContextTagObjectIdentifier {
+	header := NewBACnetTagHeader(tagNum, TagClass_CONTEXT_SPECIFIC_TAGS, 4, nil, nil, nil, nil)
+	objectTypeEnum := BACnetObjectTypeByValue(objectType)
+	if objectType >= 128 {
+		objectTypeEnum = BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+	}
+	payload := NewBACnetTagPayloadObjectIdentifier(objectTypeEnum, objectType, instance)
+	var result interface{}
+	result = NewBACnetContextTagObjectIdentifier(payload, header, tagNum, true)
+	return result.(*BACnetContextTagObjectIdentifier)
 }
