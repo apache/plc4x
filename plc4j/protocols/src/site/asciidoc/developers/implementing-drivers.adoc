@@ -150,7 +150,7 @@ It is what comes with Netty out of the box and should be used if possible.
 This is a special form of connector that allows implementing protocols below the TCP level.
 This is also where things start getting a little more complicated.
 As Java doesn't support communication below TCP and UDP, this option makes use of the `Java Native Interface (JNI)` to access native libs that then implement the functionality on OS level.
-The library used for this is called `libpcap` (for Linux and Mac) or `winpcap` for Windows.
+The library used for this is called `libpcap` (for Linux and Mac) or `npcap` for Windows.
 Also as creating of raw sockets requires elevated user permissions the application has to be run as `root` or (preferred option) the library has to be setup to run with root privileges (`setuid`).
 
 When setup correctly the raw socket connector allows implementing protocols right down to manually constructing `Ehternet` frames.

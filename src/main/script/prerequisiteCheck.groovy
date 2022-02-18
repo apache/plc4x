@@ -607,5 +607,5 @@ println ""
 
 // Things we could possibly check:
 // - DNS Providers that return a default ip on unknown host-names
-// - Availability and version of LibPCAP/WinPCAP
+// - Availability and version of LibPCAP/NPCAP
 
