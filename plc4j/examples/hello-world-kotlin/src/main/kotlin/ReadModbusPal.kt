@@ -21,14 +21,15 @@ fun main() {
 
             val response = readRequest.execute().get(1, TimeUnit.MINUTES)
             response.fieldNames.forEach { fieldName ->
-                if (response.getResponseCode(fieldName) !== PlcResponseCode.OK) {
-                    println("Error[$fieldName]: $response.getResponseCode(fieldName).name")
+                val responseCode = response.getResponseCode(fieldName)
+                if (responseCode !== PlcResponseCode.OK) {
+                    println("Error[$fieldName]: ${responseCode.name}")
                     return
                 }
                 val numValues = response.getNumberOfValues(fieldName)
                 // If it's just one element, output just one single line.
                 if (numValues == 1) {
-                    println("Value[$fieldName]: response.getObject(fieldName)")
+                    println("Value[$fieldName]: ${response.getObject(fieldName)}")
                 } else {
                     println("Value[$fieldName]:")
                     for (i in 0 until numValues) {
