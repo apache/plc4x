@@ -748,16 +748,30 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                WriteResponse responseMessage = null;
+                ExtensionObjectDefinition responseMessage = null;
                 try {
-                    responseMessage = (WriteResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    responseMessage = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    future.completeExceptionally(e);
                 }
-                PlcWriteResponse response = writeResponse(request, responseMessage);
+                if (responseMessage instanceof WriteResponse) {
+                    PlcWriteResponse response = writeResponse(request, (WriteResponse) responseMessage);
+                    // Pass the response back to the application.
+                    future.complete(response);
+                } else {
+                    if (responseMessage instanceof ServiceFault) {
+                        ExtensionObjectDefinition header = ((ServiceFault) responseMessage).getResponseHeader();
+                        LOGGER.error("Read request ended up with ServiceFault: {}", header);
+                    } else {
+                        LOGGER.error("Remote party returned an error '{}'", responseMessage);
+                    }
 
-                // Pass the response back to the application.
-                future.complete(response);
+                    Map<String, PlcResponseCode> status = new LinkedHashMap<>();
+                    for (String key : request.getFieldNames()) {
+                        status.put(key, PlcResponseCode.REMOTE_ERROR);
+                    }
+                    future.complete(new DefaultPlcWriteResponse(writeRequest, status));
+                }
             };
 
             /* Functional Consumer example using inner class */
