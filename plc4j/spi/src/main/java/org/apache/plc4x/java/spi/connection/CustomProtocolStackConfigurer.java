@@ -24,6 +24,7 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -50,6 +51,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> protocolIO;
     private final Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
     private final Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover;
+    private final MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
     private final Object[] parserArgs;
 
     public static <BPC extends Message> CustomProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Function<Configuration, ? extends MessageInput<BPC>> messageInput) {
@@ -64,7 +66,8 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   Function<Configuration, ? extends DriverContext> driverContext,
                                   Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> protocolIO,
                                   Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator,
-                                  Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover) {
+                                  Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover,
+                                  MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
         this.basePacketClass = basePacketClass;
         this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
@@ -73,6 +76,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         this.protocolIO = protocolIO;
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPacketRemover = corruptPacketRemover;
+        this.encryptionHandler = encryptionHandler;
     }
 
     private ChannelHandler getMessageCodec(Configuration configuration) {
@@ -86,6 +90,9 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
         Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
         pipeline.addLast(getMessageCodec(configuration));
+        if (this.encryptionHandler != null) {
+            pipeline.addLast(this.encryptionHandler);
+        }
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, this.protocol.apply(configuration));
         DriverContext driverContext = this.driverContext.apply(configuration);
         if (driverContext != null) {
@@ -111,6 +118,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover;
+        private MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
 
         public CustomProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> messageInput) {
             this.basePacketClass = basePacketClass;
@@ -157,10 +165,15 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             return this;
         }
 
+        public CustomProtocolStackBuilder<BASE_PACKET_CLASS> withEncryptionHandler(MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
+            this.encryptionHandler = encryptionHandler;
+            return this;
+        }
+
         public CustomProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             return new CustomProtocolStackConfigurer<>(
-                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageInput, packetSizeEstimator, corruptPacketRemover);
+                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageInput, packetSizeEstimator, corruptPacketRemover, encryptionHandler);
         }
 
     }
