@@ -45,7 +45,7 @@ TIP: Currently Maven 3.6 and above is required for being able to build all parts
 | Profile        | Description                                              | Requirements
 |                | Builds Java API, drivers, integrations, examples        a|
 * Git
-* LibPCAP (Optional)
+* LibPCAP
 | `with-cpp`     | Builds C++ API, drivers, integrations, examples         a|
 * gcc
 * g++

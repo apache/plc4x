@@ -29,19 +29,11 @@ In order to install it, please download end execute the installer from https://g
 
 === LibPCAP
 
-A special version of LibPCAP is available for Windows, which is called WinPCAP.
-It is available from https://www.winpcap.org/[here].
+A special version of LibPCAP is available for Windows, which is called Npcap.
+It is available from https://npcap.com/[here].
 
-However this is a based on a very old version (1.0) of LibPCAP and in order to read PCAPNG files we require a libpcap version 1.1.0 or greater.
-A patched windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
-(At this location is a patched version based on libpcap 1.7.4)
-
-So in order to install things correctly:
-
-1. install the version WinPCP from above location.
-2. Then download the patched version from the sourceforge link and unpack it somewhere.
-3. After that copy bin\x64\wpcap.dll from archive to \Windows\System32
-4. Copy bin\wpcap.dll from archive to \Windows\SysWOW64
+Additional tasks to enable Java to find the pcap executables may need to be done.
+Follow the instructions https://github.com/kaitoy/pcap4j#about-native-library-loading[here]
 
 After this all should be working.
 
