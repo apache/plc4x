@@ -273,38 +273,40 @@
 [dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
     [typeSwitch dataType,numberOfValues
         ['BOOL','1' BOOL
-            [reserved uint 7 '0x00']
-            [simple   bit    value]
+            [reserved uint 15 '0x0000']
+            [simple   bit     value   ]
         ]
         ['BOOL' List
             [array bit value count 'numberOfValues']
         ]
         ['BYTE','1' BitString
-            [simple uint 8 value]
+            [reserved uint 8 '0x00']
+            [simple   uint 8 value ]
         ]
         ['BYTE' List
-            [array uint 8 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 8']
         ]
         ['WORD','1' BitString
             [simple uint 16 value]
         ]
         ['WORD' List
-            [array uint 16 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 16']
         ]
         ['DWORD','1' BitString
             [simple uint 32 value]
         ]
         ['DWORD' List
-            [array uint 32 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 32']
         ]
         ['LWORD','1' BitString
             [simple uint 64 value]
         ]
         ['LWORD' List
-            [array uint 64 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 64']
         ]
         ['SINT','1' SINT
-            [simple int 8 value]
+            [reserved uint 8 '0x00']
+            [simple   int 8  value ]
         ]
         ['SINT' List
             [array int 8 value count 'numberOfValues']
@@ -328,7 +330,8 @@
             [array int 64 value count 'numberOfValues']
         ]
         ['USINT','1' USINT
-            [simple uint 8 value]
+            [reserved uint 8 '0x00']
+            [simple   uint 8 value ]
         ]
         ['USINT' List
             [array uint 8 value count 'numberOfValues']
@@ -379,16 +382,16 @@
 ]
 
 [enum uint 8 ModbusDataType(uint 8 dataTypeSize)
-    ['1' BOOL ['1']]
-    ['2' BYTE ['1']]
+    ['1' BOOL ['2']]
+    ['2' BYTE ['2']]
     ['3' WORD ['2']]
     ['4' DWORD ['4']]
     ['5' LWORD ['8']]
-    ['6' SINT ['1']]
+    ['6' SINT ['2']]
     ['7' INT ['2']]
     ['8' DINT ['4']]
     ['9' LINT ['8']]
-    ['10' USINT ['1']]
+    ['10' USINT ['2']]
     ['11' UINT ['2']]
     ['12' UDINT ['4']]
     ['13' ULINT ['8']]
