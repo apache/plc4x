@@ -30,7 +30,7 @@ import (
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 	*BACnetUnconfirmedServiceRequest
 	SubscriberProcessIdentifier *BACnetContextTagUnsignedInteger
-	MonitoredDeviceIdentifier   *BACnetContextTagObjectIdentifier
+	InitiatingDeviceIdentifier  *BACnetContextTagObjectIdentifier
 	MonitoredObjectIdentifier   *BACnetContextTagObjectIdentifier
 	LifetimeInSeconds           *BACnetContextTagUnsignedInteger
 	ListOfValues                *BACnetPropertyValues
@@ -43,8 +43,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
 	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
-	// GetMonitoredDeviceIdentifier returns MonitoredDeviceIdentifier
-	GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier
+	GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
 	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetLifetimeInSeconds returns LifetimeInSeconds
@@ -80,8 +80,8 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetSubscribe
 	return m.SubscriberProcessIdentifier
 }
 
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier {
-	return m.MonitoredDeviceIdentifier
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.InitiatingDeviceIdentifier
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
@@ -101,10 +101,10 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetListOfVal
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification factory function for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, len uint16) *BACnetUnconfirmedServiceRequest {
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues, len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
 		SubscriberProcessIdentifier:     subscriberProcessIdentifier,
-		MonitoredDeviceIdentifier:       monitoredDeviceIdentifier,
+		InitiatingDeviceIdentifier:      initiatingDeviceIdentifier,
 		MonitoredObjectIdentifier:       monitoredObjectIdentifier,
 		LifetimeInSeconds:               lifetimeInSeconds,
 		ListOfValues:                    listOfValues,
@@ -147,8 +147,8 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInB
 	// Simple field (subscriberProcessIdentifier)
 	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
 
-	// Simple field (monitoredDeviceIdentifier)
-	lengthInBits += m.MonitoredDeviceIdentifier.GetLengthInBits()
+	// Simple field (initiatingDeviceIdentifier)
+	lengthInBits += m.InitiatingDeviceIdentifier.GetLengthInBits()
 
 	// Simple field (monitoredObjectIdentifier)
 	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
@@ -184,16 +184,16 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		return nil, closeErr
 	}
 
-	// Simple Field (monitoredDeviceIdentifier)
-	if pullErr := readBuffer.PullContext("monitoredDeviceIdentifier"); pullErr != nil {
+	// Simple Field (initiatingDeviceIdentifier)
+	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_monitoredDeviceIdentifier, _monitoredDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-	if _monitoredDeviceIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredDeviceIdentifierErr, "Error parsing 'monitoredDeviceIdentifier' field")
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	if _initiatingDeviceIdentifierErr != nil {
+		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field")
 	}
-	monitoredDeviceIdentifier := CastBACnetContextTagObjectIdentifier(_monitoredDeviceIdentifier)
-	if closeErr := readBuffer.CloseContext("monitoredDeviceIdentifier"); closeErr != nil {
+	initiatingDeviceIdentifier := CastBACnetContextTagObjectIdentifier(_initiatingDeviceIdentifier)
+	if closeErr := readBuffer.CloseContext("initiatingDeviceIdentifier"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -243,7 +243,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
 		SubscriberProcessIdentifier:     CastBACnetContextTagUnsignedInteger(subscriberProcessIdentifier),
-		MonitoredDeviceIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredDeviceIdentifier),
+		InitiatingDeviceIdentifier:      CastBACnetContextTagObjectIdentifier(initiatingDeviceIdentifier),
 		MonitoredObjectIdentifier:       CastBACnetContextTagObjectIdentifier(monitoredObjectIdentifier),
 		LifetimeInSeconds:               CastBACnetContextTagUnsignedInteger(lifetimeInSeconds),
 		ListOfValues:                    CastBACnetPropertyValues(listOfValues),
@@ -271,16 +271,16 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(wr
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Simple Field (monitoredDeviceIdentifier)
-		if pushErr := writeBuffer.PushContext("monitoredDeviceIdentifier"); pushErr != nil {
+		// Simple Field (initiatingDeviceIdentifier)
+		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
 			return pushErr
 		}
-		_monitoredDeviceIdentifierErr := m.MonitoredDeviceIdentifier.Serialize(writeBuffer)
-		if popErr := writeBuffer.PopContext("monitoredDeviceIdentifier"); popErr != nil {
+		_initiatingDeviceIdentifierErr := m.InitiatingDeviceIdentifier.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
 			return popErr
 		}
-		if _monitoredDeviceIdentifierErr != nil {
-			return errors.Wrap(_monitoredDeviceIdentifierErr, "Error serializing 'monitoredDeviceIdentifier' field")
+		if _initiatingDeviceIdentifierErr != nil {
+			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
 		}
 
 		// Simple Field (monitoredObjectIdentifier)

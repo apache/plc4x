@@ -4963,7 +4963,7 @@ make -f wp.mak clean</value>
                               </BACnetContextTagUnsignedInteger>
                             </BACnetContextTag>
                           </subscriberProcessIdentifier>
-                          <monitoredDeviceIdentifier>
+                          <initiatingDeviceIdentifier>
                             <BACnetContextTag>
                               <header>
                                 <BACnetTagHeader>
@@ -4983,7 +4983,7 @@ make -f wp.mak clean</value>
                                 </payload>
                               </BACnetContextTagObjectIdentifier>
                             </BACnetContextTag>
-                          </monitoredDeviceIdentifier>
+                          </initiatingDeviceIdentifier>
                           <monitoredObjectIdentifier>
                             <BACnetContextTag>
                               <header>

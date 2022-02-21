@@ -615,8 +615,9 @@ const (
 	KnxManufacturer_M_TECGET                                             KnxManufacturer = 577
 	KnxManufacturer_M_XEROPOINT                                          KnxManufacturer = 578
 	KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES                    KnxManufacturer = 579
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 580
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 581
+	KnxManufacturer_M_COMFORTCLICK                                       KnxManufacturer = 580
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 581
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 582
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1204,6 +1205,7 @@ func init() {
 		KnxManufacturer_M_TECGET,
 		KnxManufacturer_M_XEROPOINT,
 		KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES,
+		KnxManufacturer_M_COMFORTCLICK,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3353,10 +3355,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 580:
 		{ /* '580' */
-			return 43954
+			return 638
 		}
 	case 581:
 		{ /* '581' */
+			return 43954
+		}
+	case 582:
+		{ /* '582' */
 			return 43959
 		}
 	case 59:
@@ -5699,10 +5705,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 580:
 		{ /* '580' */
-			return "ABB - reserved"
+			return "ComfortClick"
 		}
 	case 581:
 		{ /* '581' */
+			return "ABB - reserved"
+		}
+	case 582:
+		{ /* '582' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 59:
@@ -6973,8 +6983,10 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 58:
 		return KnxManufacturer_M_DAETWYLER
 	case 580:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_COMFORTCLICK
 	case 581:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 582:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 59:
 		return KnxManufacturer_M_ELECTRAK
@@ -8142,6 +8154,8 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES
 	case "M_DAETWYLER":
 		return KnxManufacturer_M_DAETWYLER
+	case "M_COMFORTCLICK":
+		return KnxManufacturer_M_COMFORTCLICK
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9351,6 +9365,8 @@ func (e KnxManufacturer) name() string {
 		return "M_HONEYWELL_BUILDING_TECHNOLOGIES"
 	case KnxManufacturer_M_DAETWYLER:
 		return "M_DAETWYLER"
+	case KnxManufacturer_M_COMFORTCLICK:
+		return "M_COMFORTCLICK"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
