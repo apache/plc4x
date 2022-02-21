@@ -121,6 +121,16 @@ plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu_null() {
 }
 
 
+// Constant values.
+static const uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE_const = 0x0E;
+uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE() {
+  return PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE_const;
+}
+static const uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE_const = 0x0E;
+uint8_t PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE() {
+  return PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE_const;
+}
+
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* readBuffer, bool response, plc4c_modbus_read_write_modbus_pdu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
@@ -1178,9 +1188,135 @@ if( ( errorFlag == false ) && ( functionFlag == 0x11 ) && ( response == true ) )
   } else 
 if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == false ) ) { /* ModbusPDUReadDeviceIdentificationRequest */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_request;
+                    
+    // Const Field (meiType)
+    uint8_t meiType = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &meiType);
+    if(_res != OK) {
+      return _res;
+    }
+    if(meiType != PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE()) {
+      return PARSE_ERROR;
+      // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE + " but got " + meiType);
+    }
+
+
+                    
+    // Simple Field (level)
+    plc4c_modbus_read_write_modbus_device_information_level* level;
+    _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_request_level = *level;
+
+
+                    
+    // Simple Field (objectId)
+    uint8_t objectId = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &objectId);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_request_object_id = objectId;
+
   } else 
 if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) ) { /* ModbusPDUReadDeviceIdentificationResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_response;
+                    
+    // Const Field (meiType)
+    uint8_t meiType = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &meiType);
+    if(_res != OK) {
+      return _res;
+    }
+    if(meiType != PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE()) {
+      return PARSE_ERROR;
+      // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE + " but got " + meiType);
+    }
+
+
+                    
+    // Simple Field (level)
+    plc4c_modbus_read_write_modbus_device_information_level* level;
+    _res = plc4c_modbus_read_write_modbus_device_information_level_parse(readBuffer, (void*) &level);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_level = *level;
+
+
+                    
+    // Simple Field (individualAccess)
+    bool individualAccess = false;
+    _res = plc4c_spi_read_bit(readBuffer, (bool*) &individualAccess);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_individual_access = individualAccess;
+
+
+                    
+    // Simple Field (conformityLevel)
+    plc4c_modbus_read_write_modbus_device_information_conformity_level* conformityLevel;
+    _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_parse(readBuffer, (void*) &conformityLevel);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_conformity_level = *conformityLevel;
+
+
+                    
+    // Simple Field (moreFollows)
+    plc4c_modbus_read_write_modbus_device_information_more_follows* moreFollows;
+    _res = plc4c_modbus_read_write_modbus_device_information_more_follows_parse(readBuffer, (void*) &moreFollows);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_more_follows = *moreFollows;
+
+
+                    
+    // Simple Field (nextObjectId)
+    uint8_t nextObjectId = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &nextObjectId);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_next_object_id = nextObjectId;
+
+
+                    
+    // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    uint8_t numberOfObjects = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numberOfObjects);
+    if(_res != OK) {
+      return _res;
+    }
+
+
+                    
+    // Array field (objects)
+    plc4c_list* objects = NULL;
+    plc4c_utils_list_create(&objects);
+    if(objects == NULL) {
+      return NO_MEMORY;
+    }
+    {
+      // Count array
+      uint16_t itemCount = (uint16_t) numberOfObjects;
+      for(int curItem = 0; curItem < itemCount; curItem++) {
+        bool lastItem = curItem == (itemCount - 1);
+        plc4c_modbus_read_write_modbus_device_information_object* _value = NULL;
+        _res = plc4c_modbus_read_write_modbus_device_information_object_parse(readBuffer, (void*) &_value);
+        if(_res != OK) {
+          return _res;
+        }
+        plc4c_utils_list_insert_head_value(objects, _value);
+      }
+    }
+    (*_message)->modbus_pdu_read_device_identification_response_objects = objects;
+
   }
 
   return OK;
@@ -1881,9 +2017,76 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_request: {
 
+      // Const Field (meiType)
+      plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_REQUEST_MEI_TYPE());
+
+      // Simple Field (level)
+      _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_request_level);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (objectId)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->modbus_pdu_read_device_identification_request_object_id);
+      if(_res != OK) {
+        return _res;
+      }
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_response: {
+
+      // Const Field (meiType)
+      plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_READ_DEVICE_IDENTIFICATION_RESPONSE_MEI_TYPE());
+
+      // Simple Field (level)
+      _res = plc4c_modbus_read_write_modbus_device_information_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_level);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (individualAccess)
+      _res = plc4c_spi_write_bit(writeBuffer, _message->modbus_pdu_read_device_identification_response_individual_access);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (conformityLevel)
+      _res = plc4c_modbus_read_write_modbus_device_information_conformity_level_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_conformity_level);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (moreFollows)
+      _res = plc4c_modbus_read_write_modbus_device_information_more_follows_serialize(writeBuffer, &_message->modbus_pdu_read_device_identification_response_more_follows);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (nextObjectId)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->modbus_pdu_read_device_identification_response_next_object_id);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_device_identification_response_objects));
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Array field (objects)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_device_identification_response_objects);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_modbus_read_write_modbus_device_information_object* _value = (plc4c_modbus_read_write_modbus_device_information_object*) plc4c_utils_list_get_value(_message->modbus_pdu_read_device_identification_response_objects, curItem);
+          _res = plc4c_modbus_read_write_modbus_device_information_object_serialize(writeBuffer, (void*) _value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
 
       break;
     }
@@ -2356,9 +2559,57 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_request: {
 
+      // Const Field (meiType)
+      lengthInBits += 8;
+
+
+      // Simple field (level)
+      lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(&_message->modbus_pdu_read_device_identification_request_level);
+
+
+      // Simple field (objectId)
+      lengthInBits += 8;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_response: {
+
+      // Const Field (meiType)
+      lengthInBits += 8;
+
+
+      // Simple field (level)
+      lengthInBits += plc4c_modbus_read_write_modbus_device_information_level_length_in_bits(&_message->modbus_pdu_read_device_identification_response_level);
+
+
+      // Simple field (individualAccess)
+      lengthInBits += 1;
+
+
+      // Simple field (conformityLevel)
+      lengthInBits += plc4c_modbus_read_write_modbus_device_information_conformity_level_length_in_bits(&_message->modbus_pdu_read_device_identification_response_conformity_level);
+
+
+      // Simple field (moreFollows)
+      lengthInBits += plc4c_modbus_read_write_modbus_device_information_more_follows_length_in_bits(&_message->modbus_pdu_read_device_identification_response_more_follows);
+
+
+      // Simple field (nextObjectId)
+      lengthInBits += 8;
+
+
+      // Implicit Field (numberOfObjects)
+      lengthInBits += 8;
+
+
+      // Array field
+      if(_message->modbus_pdu_read_device_identification_response_objects != NULL) {
+        plc4c_list_element* curElement = _message->modbus_pdu_read_device_identification_response_objects->tail;
+        while (curElement != NULL) {
+          lengthInBits += plc4c_modbus_read_write_modbus_device_information_object_length_in_bits((plc4c_modbus_read_write_modbus_device_information_object*) curElement->value);
+          curElement = curElement->next;
+        }
+      }
 
       break;
     }
