@@ -99,25 +99,6 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
         possibleAddresses = possibleAddresses.stream().filter(
             distinctByKey(InetAddress::getHostAddress)).collect(Collectors.toList());
 
-        // Create the ModbusPDUReadDeviceIdentificationRequest
-        ModbusTcpADU deviceIdentification = new ModbusTcpADU(0, (short) 1,
-            new ModbusPDUReadDeviceIdentificationRequest(ModbusDeviceInformationLevel.INDIVIDUAL, (short) 0), false);
-        byte[] deviceIdentificationBytes = null;
-        try {
-            // Serialize the request to its byte form.
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(deviceIdentification.getLengthInBytes());
-            deviceIdentification.serialize(writeBuffer);
-            deviceIdentificationBytes = writeBuffer.getBytes();
-        } catch (SerializationException e) {
-            logger.error("Error creating the device identification request", e);
-        }
-        if (deviceIdentificationBytes == null) {
-            future.complete(new DefaultPlcDiscoveryResponse(
-                discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
-            return;
-        }
-        byte[] finalDeviceIdentificationBytes = deviceIdentificationBytes;
-
         Queue<PlcDiscoveryItem> discoveryItems = new ConcurrentLinkedQueue<>();
         possibleAddresses.stream().parallel().forEach(possibleAddress -> {
             try {
@@ -129,69 +110,92 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
 
                 // Send the request to the target device
                 final OutputStream outputStream = socket.getOutputStream();
-                outputStream.write(finalDeviceIdentificationBytes);
-                outputStream.flush();
-
-                // Wait for a response.
                 final InputStream inputStream = new BufferedInputStream(socket.getInputStream());
-                byte[] responseBytes = null;
-                final long endTime = System.currentTimeMillis() + 2000;
-                while (responseBytes == null) {
-                    // If we've got enough bytes to find out the size of the packet, try to check this.
-                    if (inputStream.available() >= 6) {
-                        inputStream.mark(6);
-                        inputStream.skip(4);
-                        byte[] packetLengthBytes = new byte[2];
-                        int bytesRead = inputStream.read(packetLengthBytes);
-                        inputStream.reset();
-                        // Only if we really read 2 bytes, does it make sense to continue using it.
-                        if (bytesRead != 2) {
-                            continue;
-                        }
-                        final short packetLength = (short) (ByteBuffer.wrap(packetLengthBytes).getShort() + 6);
-                        if (inputStream.available() >= packetLength) {
-                            responseBytes = new byte[packetLength];
-                            bytesRead = inputStream.read(responseBytes);
-                            if (bytesRead != packetLength) {
-                                responseBytes = null;
+
+                // Iterate over all possible unit-identifiers
+                int transactionIdentifier = 1;
+                for(short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
+                    ModbusTcpADU packet = new ModbusTcpADU(transactionIdentifier++, unitIdentifier,
+                        new ModbusPDUReadCoilsRequest(1, 1), false);
+                    byte[] deviceIdentificationBytes = null;
+                    try {
+                        // Serialize the request to its byte form.
+                        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(packet.getLengthInBytes());
+                        packet.serialize(writeBuffer);
+                        deviceIdentificationBytes = writeBuffer.getBytes();
+                    } catch (SerializationException e) {
+                        logger.error("Error creating the device identification request", e);
+                    }
+                    if (deviceIdentificationBytes == null) {
+                        future.complete(new DefaultPlcDiscoveryResponse(
+                            discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
+                        return;
+                    }
+                    byte[] finalDeviceIdentificationBytes = deviceIdentificationBytes;
+
+                    outputStream.write(finalDeviceIdentificationBytes);
+                    outputStream.flush();
+
+                    // Wait for a response.
+                    byte[] responseBytes = null;
+                    final long endTime = System.currentTimeMillis() + 100;
+                    while (responseBytes == null) {
+                        // If we've got enough bytes to find out the size of the packet, try to check this.
+                        if (inputStream.available() >= 6) {
+                            inputStream.mark(6);
+                            inputStream.skip(4);
+                            byte[] packetLengthBytes = new byte[2];
+                            int bytesRead = inputStream.read(packetLengthBytes);
+                            inputStream.reset();
+                            // Only if we really read 2 bytes, does it make sense to continue using it.
+                            if (bytesRead != 2) {
+                                continue;
+                            }
+                            final short packetLength = (short) (ByteBuffer.wrap(packetLengthBytes).getShort() + 6);
+                            if (inputStream.available() >= packetLength) {
+                                responseBytes = new byte[packetLength];
+                                bytesRead = inputStream.read(responseBytes);
+                                if (bytesRead != packetLength) {
+                                    responseBytes = null;
+                                    break;
+                                }
+                            }
+                        } else {
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                            if (System.currentTimeMillis() > endTime) {
                                 break;
                             }
                         }
-                    } else {
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-                        if (System.currentTimeMillis() > endTime) {
-                            break;
-                        }
                     }
-                }
-                if (responseBytes != null) {
-                    ReadBuffer readBuffer = new ReadBufferByteBased(responseBytes);
-                    try {
-                        ModbusTcpADU response = ModbusTcpADU.staticParse(readBuffer, true);
-                        PlcDiscoveryItem discoveryItem = null;
-                        if (!response.getPdu().getErrorFlag()) {
-                            //final ModbusPDUReadDeviceIdentificationResponse identificationResponse =
-                            //    (ModbusPDUReadDeviceIdentificationResponse) response.getPdu();
-                            // TODO: Unfortunately we need to find a device that's actually correctly responding to this request in order to implement this.
-                            discoveryItem = new DefaultPlcDiscoveryItem(
-                                "modbus", "tcp", possibleAddress.getHostAddress(), Collections.emptyMap(), "known");
-                            discoveryItems.add(discoveryItem);
-                        } else {
-                            discoveryItem = new DefaultPlcDiscoveryItem(
-                                "modbus", "tcp", possibleAddress.getHostAddress(), Collections.emptyMap(), "unknown");
-                            discoveryItems.add(discoveryItem);
+                    if (responseBytes != null) {
+                        ReadBuffer readBuffer = new ReadBufferByteBased(responseBytes);
+                        try {
+                            ModbusTcpADU response = ModbusTcpADU.staticParse(readBuffer, true);
+                            PlcDiscoveryItem discoveryItem;
+                            if (!response.getPdu().getErrorFlag()) {
+                                //final ModbusPDUReadDeviceIdentificationResponse identificationResponse =
+                                //    (ModbusPDUReadDeviceIdentificationResponse) response.getPdu();
+                                // TODO: Unfortunately we need to find a device that's actually correctly responding to this request in order to implement this.
+                                discoveryItem = new DefaultPlcDiscoveryItem(
+                                    "modbus", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "known");
+                                discoveryItems.add(discoveryItem);
+
+                                // Give a handler the chance to react on the found device.
+                                if(handler != null) {
+                                    handler.handle(discoveryItem);
+                                }
+                                break;
+                            /*} else {
+                                final ModbusPDUError errorPdu = (ModbusPDUError) response.getPdu();
+                                logger.info("Got error at address: {} with unit-identifier {} error {}", possibleAddress, unitIdentifier, errorPdu.getExceptionCode().toString());*/
+                            }
+                        } catch (ParseException e) {
+                            // Ignore.
                         }
-                        // Give a handler the chance to react on the found device.
-                        if(handler != null) {
-                            handler.handle(discoveryItem);
-                        }
-                        logger.info("Success at address: {}", possibleAddress);
-                    } catch (ParseException e) {
-                        // Ignore.
                     }
                 }
             } catch (IOException e) {
