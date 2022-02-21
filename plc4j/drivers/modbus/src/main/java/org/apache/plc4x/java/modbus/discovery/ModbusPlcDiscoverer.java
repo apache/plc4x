@@ -44,6 +44,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -65,21 +66,28 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
         // Get a list of all reachable IP addresses from the current system.
         // TODO: add an option to fine tune the network device or ip subnet to scan and maybe some timeouts and delays to prevent flooding.
-        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
+        final CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
+        Thread discoveryThread = new Thread(() -> {
+            executeDiscovery(future, discoveryRequest, handler);
+        });
+        discoveryThread.start();
+        return future;
+    }
+
+    private void executeDiscovery(CompletableFuture<PlcDiscoveryResponse> future, PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
         List<InetAddress> possibleAddresses = new ArrayList<>();
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-                //if (!dev.isLoopBack()) {
-                    logger.info("Scanning network {} for alive IP addresses", dev.getName());
-                    final Set<InetAddress> inetAddresses = ArpUtils.scanNetworkDevice(dev);
-                    logger.debug("Found {} addresses: {}", inetAddresses.size(), inetAddresses);
-                    possibleAddresses.addAll(inetAddresses);
-                //}
+                logger.info("Scanning network {} for alive IP addresses", dev.getName());
+                final Set<InetAddress> inetAddresses = ArpUtils.scanNetworkDevice(dev);
+                logger.debug("Found {} addresses: {}", inetAddresses.size(), inetAddresses);
+                possibleAddresses.addAll(inetAddresses);
             }
         } catch (PcapNativeException e) {
             logger.error("Error collecting list of possible IP addresses", e);
-            return CompletableFuture.completedFuture(new DefaultPlcDiscoveryResponse(
+            future.complete(new DefaultPlcDiscoveryResponse(
                 discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
+            return;
         }
         try {
             possibleAddresses.add(InetAddress.getByName("localhost"));
@@ -103,13 +111,14 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
         } catch (SerializationException e) {
             logger.error("Error creating the device identification request", e);
         }
-        if( deviceIdentificationBytes == null) {
-            return CompletableFuture.completedFuture(new DefaultPlcDiscoveryResponse(
+        if (deviceIdentificationBytes == null) {
+            future.complete(new DefaultPlcDiscoveryResponse(
                 discoveryRequest, PlcResponseCode.INTERNAL_ERROR, Collections.emptyList()));
+            return;
         }
         byte[] finalDeviceIdentificationBytes = deviceIdentificationBytes;
 
-        List<PlcDiscoveryItem> discoveryItems = new ArrayList<>();
+        Queue<PlcDiscoveryItem> discoveryItems = new ConcurrentLinkedQueue<>();
         possibleAddresses.stream().parallel().forEach(possibleAddress -> {
             try {
                 logger.info("Trying address: {}", possibleAddress);
@@ -129,21 +138,21 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 final long endTime = System.currentTimeMillis() + 2000;
                 while (responseBytes == null) {
                     // If we've got enough bytes to find out the size of the packet, try to check this.
-                    if(inputStream.available() >= 6) {
+                    if (inputStream.available() >= 6) {
                         inputStream.mark(6);
                         inputStream.skip(4);
                         byte[] packetLengthBytes = new byte[2];
                         int bytesRead = inputStream.read(packetLengthBytes);
                         inputStream.reset();
                         // Only if we really read 2 bytes, does it make sense to continue using it.
-                        if(bytesRead != 2) {
+                        if (bytesRead != 2) {
                             continue;
                         }
                         final short packetLength = (short) (ByteBuffer.wrap(packetLengthBytes).getShort() + 6);
-                        if(inputStream.available() >= packetLength) {
+                        if (inputStream.available() >= packetLength) {
                             responseBytes = new byte[packetLength];
                             bytesRead = inputStream.read(responseBytes);
-                            if(bytesRead != packetLength) {
+                            if (bytesRead != packetLength) {
                                 responseBytes = null;
                                 break;
                             }
@@ -154,26 +163,31 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
-                        if(System.currentTimeMillis() > endTime) {
+                        if (System.currentTimeMillis() > endTime) {
                             break;
                         }
                     }
                 }
-                if(responseBytes != null) {
+                if (responseBytes != null) {
                     ReadBuffer readBuffer = new ReadBufferByteBased(responseBytes);
                     try {
                         ModbusTcpADU response = ModbusTcpADU.staticParse(readBuffer, true);
-                        if(!response.getPdu().getErrorFlag()) {
+                        PlcDiscoveryItem discoveryItem = null;
+                        if (!response.getPdu().getErrorFlag()) {
                             //final ModbusPDUReadDeviceIdentificationResponse identificationResponse =
                             //    (ModbusPDUReadDeviceIdentificationResponse) response.getPdu();
                             // TODO: Unfortunately we need to find a device that's actually correctly responding to this request in order to implement this.
-                            PlcDiscoveryItem discoveryItem = new DefaultPlcDiscoveryItem(
+                            discoveryItem = new DefaultPlcDiscoveryItem(
                                 "modbus", "tcp", possibleAddress.getHostAddress(), Collections.emptyMap(), "known");
                             discoveryItems.add(discoveryItem);
                         } else {
-                            PlcDiscoveryItem discoveryItem = new DefaultPlcDiscoveryItem(
+                            discoveryItem = new DefaultPlcDiscoveryItem(
                                 "modbus", "tcp", possibleAddress.getHostAddress(), Collections.emptyMap(), "unknown");
                             discoveryItems.add(discoveryItem);
+                        }
+                        // Give a handler the chance to react on the found device.
+                        if(handler != null) {
+                            handler.handle(discoveryItem);
                         }
                         logger.info("Success at address: {}", possibleAddress);
                     } catch (ParseException e) {
@@ -185,9 +199,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
             }
         });
 
-        future.complete(new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, discoveryItems));
-
-        return future;
+        future.complete(new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, Arrays.asList(discoveryItems.toArray(new PlcDiscoveryItem[0]))));
     }
 
 }
