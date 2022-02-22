@@ -33,7 +33,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	switch {
 	case dataType == ModbusDataType_BOOL && numberOfValues == uint16(1): // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
+		if _, _err := readBuffer.ReadUint16("reserved", 15); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
@@ -57,6 +57,11 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BitString
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -67,12 +72,12 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_BYTE: // List
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint8("value", 8)
+		for i := 0; i < int((numberOfValues)*(8)); i++ {
+			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUSINT(_item))
+			value = append(value, values.NewPlcBOOL(_item))
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
@@ -87,12 +92,12 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_WORD: // List
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint16("value", 16)
+		for i := 0; i < int((numberOfValues)*(16)); i++ {
+			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBOOL(_item))
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
@@ -107,12 +112,12 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_DWORD: // List
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint32("value", 32)
+		for i := 0; i < int((numberOfValues)*(32)); i++ {
+			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUDINT(_item))
+			value = append(value, values.NewPlcBOOL(_item))
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
@@ -127,16 +132,21 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_LWORD: // List
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadUint64("value", 64)
+		for i := 0; i < int((numberOfValues)*(64)); i++ {
+			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcULINT(_item))
+			value = append(value, values.NewPlcBOOL(_item))
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
@@ -217,6 +227,11 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -394,7 +409,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 	switch {
 	case dataType == ModbusDataType_BOOL && numberOfValues == uint16(1): // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint16("reserved", 15, uint16(0x0000)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -411,14 +426,19 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BitString
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_BYTE: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+		for i := uint32(0); i < uint32((m.NumberOfValues)*(8)); i++ {
+			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -430,8 +450,8 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 		}
 	case dataType == ModbusDataType_WORD: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
+		for i := uint32(0); i < uint32((m.NumberOfValues)*(16)); i++ {
+			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -443,8 +463,8 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 		}
 	case dataType == ModbusDataType_DWORD: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
+		for i := uint32(0); i < uint32((m.NumberOfValues)*(32)); i++ {
+			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -456,13 +476,18 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 		}
 	case dataType == ModbusDataType_LWORD: // List
 		// Array Field (value)
-		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
+		for i := uint32(0); i < uint32((m.NumberOfValues)*(64)); i++ {
+			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
@@ -515,6 +540,11 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 			}
 		}
 	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")

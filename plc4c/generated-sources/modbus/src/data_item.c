@@ -38,13 +38,13 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
-                    uint8_t _reserved = 0;
-                    _res = plc4c_spi_read_unsigned_byte(readBuffer, 7, (uint8_t*) &_reserved);
+                    uint16_t _reserved = 0;
+                    _res = plc4c_spi_read_unsigned_short(readBuffer, 15, (uint16_t*) &_reserved);
                     if(_res != OK) {
                         return _res;
                     }
-                    if(_reserved != 0x00) {
-                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+                    if(_reserved != 0x0000) {
+                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0000, _reserved);
                     }
                 }
 
@@ -78,6 +78,18 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_BYTE) && (numberOfValues == 1)) { /* BitString */
 
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    uint8_t _reserved = 0;
+                    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
+                    if(_res != OK) {
+                        return _res;
+                    }
+                    if(_reserved != 0x00) {
+                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+                    }
+                }
+
                 // Simple Field (value)
                 uint8_t value = 0;
                 _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &value);
@@ -93,14 +105,14 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         // Count array
         plc4c_list* value;
         plc4c_utils_list_create(&value);
-        int itemCount = (int) numberOfValues;
+        int itemCount = (int) (numberOfValues) * (8);
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint8_t* _val = malloc(sizeof(uint8_t) * 1);
-            _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _val);
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint8_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -122,14 +134,14 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         // Count array
         plc4c_list* value;
         plc4c_utils_list_create(&value);
-        int itemCount = (int) numberOfValues;
+        int itemCount = (int) (numberOfValues) * (16);
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint16_t* _val = malloc(sizeof(uint16_t) * 1);
-            _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) _val);
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint16_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -151,14 +163,14 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         // Count array
         plc4c_list* value;
         plc4c_utils_list_create(&value);
-        int itemCount = (int) numberOfValues;
+        int itemCount = (int) (numberOfValues) * (32);
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint32_t* _val = malloc(sizeof(uint32_t) * 1);
-            _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) _val);
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint32_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -180,19 +192,31 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         // Count array
         plc4c_list* value;
         plc4c_utils_list_create(&value);
-        int itemCount = (int) numberOfValues;
+        int itemCount = (int) (numberOfValues) * (64);
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            uint64_t* _val = malloc(sizeof(uint64_t) * 1);
-            _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) _val);
+            bool* _val = malloc(sizeof(bool) * 1);
+            _res = plc4c_spi_read_bit(readBuffer, (bool*) _val);
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_uint64_t_data(*_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_SINT) && (numberOfValues == 1)) { /* SINT */
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    uint8_t _reserved = 0;
+                    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
+                    if(_res != OK) {
+                        return _res;
+                    }
+                    if(_reserved != 0x00) {
+                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+                    }
+                }
 
                 // Simple Field (value)
                 int8_t value = 0;
@@ -313,6 +337,18 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
         *data_item = plc4c_data_create_list_data(*value);
 
     } else         if((dataType == plc4c_modbus_read_write_modbus_data_type_USINT) && (numberOfValues == 1)) { /* USINT */
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    uint8_t _reserved = 0;
+                    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
+                    if(_res != OK) {
+                        return _res;
+                    }
+                    if(_reserved != 0x00) {
+                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+                    }
+                }
 
                 // Simple Field (value)
                 uint8_t value = 0;
