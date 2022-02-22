@@ -18,16 +18,38 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatListener;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class ExpressionStringListener extends ExpressionBaseListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionStringListener.class);
+
+    private final LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer;
+
+    private final String rootTypeName;
+
     private Stack<List<Term>> parserContexts;
 
+    private Stack<CompletableFuture<TypeReference>> futureStack;
+
     private Term root;
+
+    public ExpressionStringListener(LazyTypeDefinitionConsumer lazyTypeDefinitionConsumer, String rootTypeName) {
+        this.lazyTypeDefinitionConsumer = lazyTypeDefinitionConsumer;
+        this.rootTypeName = rootTypeName;
+    }
 
     public Term getRoot() {
         return root;
@@ -88,7 +110,46 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void enterIdentifierSegment(ExpressionParser.IdentifierSegmentContext ctx) {
+        String propertyName = ctx.name.getText();
+
+        CompletableFuture<TypeReference> typeReferenceFuture = new CompletableFuture<>();
+        if (futureStack == null) {
+            schedulePropertyResolution(propertyName, typeReferenceFuture, rootTypeName);
+            futureStack = new Stack<>();
+        } else {
+            futureStack.peek().whenComplete((typeReference, throwable) -> {
+                if (throwable != null) {
+                    LOGGER.debug("Error processing variables", throwable);
+                    return;
+                }
+                String typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+                schedulePropertyResolution(propertyName, typeReferenceFuture, typeName);
+            });
+        }
+        futureStack.push(typeReferenceFuture);
         parserContexts.push(new LinkedList<>());
+    }
+
+    private void schedulePropertyResolution(String propertyName, CompletableFuture<TypeReference> typeReferenceFuture, String typeName) {
+        lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition)->{
+            if (!typeDefinition.isComplexTypeDefinition()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("is not a complex type"));
+                return;
+            }
+            final ComplexTypeDefinition complexTypeDefinition = typeDefinition
+                .asComplexTypeDefinition()
+                .orElseThrow();
+            final Optional<PropertyField> propertyFieldByName = complexTypeDefinition
+                .getPropertyFieldByName(propertyName);
+            if (propertyFieldByName.isEmpty()) {
+                typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on "+typeName));
+                return;
+            }
+            TypeReference propertyTypeReference = propertyFieldByName
+                .orElseThrow()
+                .getType();
+            typeReferenceFuture.complete(propertyTypeReference);
+        });
     }
 
     @Override
@@ -108,16 +169,30 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         }
 
         String name = ctx.name.getText();
+        // TODO: Based on the current context type-definition, get the type of the property with name ctx.name.getText()
 
         int index = VariableLiteral.NO_INDEX;
         if (indexContext != null) {
+            // TODO: Add a check, that the field providing the property is an "array" or "manualArray" field.
             index = indexContext.getFirst().getNumber().intValue();
         }
         VariableLiteral rest = null;
         if (restContext != null) {
+            // TODO: Add a check, that the field providing the property references a complex type (or uses one of the built-ins)
             rest = restContext.getFirst();
         }
-        parserContexts.peek().add(new DefaultVariableLiteral(name, argsContext, index, rest));
+
+        final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
+        futureStack.pop().whenComplete((typeReference, throwable) -> {
+            // TODO: check throwable
+            String typeName= typeReference.asComplexTypeReference().orElseThrow().getName();
+            lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
+        });
+        if (futureStack.empty()) {
+            futureStack = null;
+        }
+
+        parserContexts.peek().add(variableLiteral);
     }
 
     @Override

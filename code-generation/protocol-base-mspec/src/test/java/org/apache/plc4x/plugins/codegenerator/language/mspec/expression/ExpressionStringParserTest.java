@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.*;
 
 class ExpressionStringParserTest {
 
-    ExpressionStringParser SUT = new ExpressionStringParser();
+    ExpressionStringParser SUT = new ExpressionStringParser((typeRefName, setTypeDefinition) -> {}, "hurz");
 
     @Test
     void parseSimple() {

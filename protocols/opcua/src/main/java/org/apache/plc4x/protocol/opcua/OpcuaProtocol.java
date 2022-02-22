@@ -80,7 +80,7 @@ public class OpcuaProtocol implements Protocol {
         typeDefinitionMap.putAll(typeContext.getTypeDefinitions());
 
         if (typeContext.getUnresolvedTypeReferences().size() > 0) {
-            throw new GenerationException("Unresolved types left");
+            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
         }
 
         return new TypeContext() {
