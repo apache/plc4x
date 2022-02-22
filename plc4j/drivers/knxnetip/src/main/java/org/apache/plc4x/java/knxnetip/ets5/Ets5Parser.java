@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.knxnetip.ets5;
 
 import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
@@ -44,6 +45,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Ets5Parser {
 
@@ -63,23 +66,24 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 Document projectHeaderDoc;
                 Document projectDoc;
-                FileHeader projectFileHeader = zipFile.getFileHeader("P-05CD/project.xml");
+                String projectNumber = this.getProjectNumber(zipFile);
+                FileHeader projectFileHeader = zipFile.getFileHeader(projectNumber + "/project.xml");
                 if (projectFileHeader == null) {
                     // This is the case of a knxproj file which is password-protected
-                    final FileHeader encryptedProjectFileHeader = zipFile.getFileHeader("P-05CD.zip");
+                    final FileHeader encryptedProjectFileHeader = zipFile.getFileHeader(projectNumber + ".zip");
                     if(encryptedProjectFileHeader == null) {
-                        throw new PlcRuntimeException("Error accessing project header file. Project file 'P-05CD/project.xml' and 'P-05CD.zip' don't exist.");
+                        throw new PlcRuntimeException(String.format("Error accessing project header file. Project file '%s/project.xml' and '%s.zip' don't exist.", projectNumber, projectNumber));
                     }
                     // Dump the encrypted zip to a temp file.
                     Path tempDir = Files.createTempDirectory(null);
-                    zipFile.extractFile("P-05CD.zip", tempDir.toFile().getAbsolutePath());
-                    File tempFile = new File(tempDir.toFile(), "P-05CD.zip");
+                    zipFile.extractFile(projectNumber + ".zip", tempDir.toFile().getAbsolutePath());
+                    File tempFile = new File(tempDir.toFile(), projectNumber + ".zip");
 
                     // Unzip the archive inside the archive.
                     try (ZipFile projectZipFile = new ZipFile(tempFile, password.toCharArray())) {
                         final FileHeader compressedProjectFileHeader = projectZipFile.getFileHeader("project.xml");
                         if (compressedProjectFileHeader == null) {
-                            throw new PlcRuntimeException("Error accessing project header file: Project file 'project.xml' inside 'P-05CD.zip'.");
+                            throw new PlcRuntimeException(String.format("Error accessing project header file: Project file 'project.xml' inside '%s.zip'.", projectNumber));
                         }
                         projectHeaderDoc = builder.parse(projectZipFile.getInputStream(compressedProjectFileHeader));
                         FileHeader projectFileFileHeader = projectZipFile.getFileHeader("0.xml");
@@ -90,7 +94,7 @@ public class Ets5Parser {
                     }
                 } else {
                     projectHeaderDoc = builder.parse(zipFile.getInputStream(projectFileHeader));
-                    FileHeader projectFileFileHeader = zipFile.getFileHeader("P-05CD/0.xml");
+                    FileHeader projectFileFileHeader = zipFile.getFileHeader(projectNumber + "/0.xml");
                     if (projectFileFileHeader == null) {
                         throw new PlcRuntimeException("Error accessing project file.");
                     }
@@ -208,6 +212,22 @@ public class Ets5Parser {
             return (byte) 1;
         }
         throw new PlcRuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
+    }
+
+    private String getProjectNumber(ZipFile zipFile) throws ZipException
+    {
+        // The following is defined within the KNX spec: Project Scheme 2.1 public documentation
+        //
+        // P-iiii/project.xml Created by user; contains the global data for project iiii (internal project ID, formatted as 4 hex digits).
+        Pattern pattern = Pattern.compile( "^P-[0-9A-F]{4}", Pattern.CASE_INSENSITIVE);
+        for ( var fileHeader : zipFile.getFileHeaders ( ) ) {
+            Matcher matcher = pattern.matcher(fileHeader.getFileName());
+            if (matcher.find()) {
+                return matcher.group();
+            }
+        }
+        
+        throw new PlcRuntimeException("Error determining project number.");
     }
 
 }
