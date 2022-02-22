@@ -19,7 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatListener;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
