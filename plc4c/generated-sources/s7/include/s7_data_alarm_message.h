@@ -55,10 +55,10 @@ typedef enum plc4c_s7_read_write_s7_data_alarm_message_type plc4c_s7_read_write_
 plc4c_s7_read_write_s7_data_alarm_message_discriminator plc4c_s7_read_write_s7_data_alarm_message_get_discriminator(plc4c_s7_read_write_s7_data_alarm_message_type type);
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH();
-uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC();
-uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ();
 uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID();
+uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ();
+uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC();
+uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH();
 
 struct plc4c_s7_read_write_s7_data_alarm_message {
   /* This is an abstract type so this property saves the type of this typed union */
