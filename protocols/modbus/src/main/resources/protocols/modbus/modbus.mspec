@@ -238,7 +238,7 @@
 
         // Remark: Even if the Modbus spec states that supporting this type of request is mandatory
         // I have not come across a single device that really supported it. Some devices just reacted
-        // with an error, however the Modbus support of my S7 1200 just terminates the connection.
+        // with an error.
         ['false','0x2B','false'     ModbusPDUReadDeviceIdentificationRequest
             [const  uint 8                       meiType  0x0E]
             [simple ModbusDeviceInformationLevel level        ]

@@ -112,7 +112,21 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 final OutputStream outputStream = socket.getOutputStream();
                 final InputStream inputStream = new BufferedInputStream(socket.getInputStream());
 
-                // Iterate over all possible unit-identifiers
+                // As we not only need to provide the IP but also the unit-identifier, we need
+                // to iterate over all possible values until we find one that works.
+                // Unfortunately the way devices react to invalid requests differ:
+                // - My heating system doesn't sends an error response for an invalid uint-identifier
+                // - The Modbus Server on a S7 simply accepts any unit-identifier
+                // - Modbus pal only responds to correct unit-identifiers and doesn't send anything
+                //   for invalid ones.
+                //
+                // So-far the only way I have found to reliably check if a Modbus device exists,
+                // was by trying to read a coil or register. Even if Modbus generally supports
+                // commands for diagnosing connections, it turns out none of these were actually
+                // supported by any device I came across. The spec is a bit unclear here, but
+                // it seems as if these are only supported on Serial (Modbus RTU)
+                // TODO: We should probably not only try to read a coil, but try any of the types and if one works, that's a match.
+                // Possibly we can fine tune this to speed up things.
                 int transactionIdentifier = 1;
                 for(short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
                     ModbusTcpADU packet = new ModbusTcpADU(transactionIdentifier++, unitIdentifier,
@@ -177,11 +191,8 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                             ModbusTcpADU response = ModbusTcpADU.staticParse(readBuffer, true);
                             PlcDiscoveryItem discoveryItem;
                             if (!response.getPdu().getErrorFlag()) {
-                                //final ModbusPDUReadDeviceIdentificationResponse identificationResponse =
-                                //    (ModbusPDUReadDeviceIdentificationResponse) response.getPdu();
-                                // TODO: Unfortunately we need to find a device that's actually correctly responding to this request in order to implement this.
                                 discoveryItem = new DefaultPlcDiscoveryItem(
-                                    "modbus", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "known");
+                                    "modbus", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown");
                                 discoveryItems.add(discoveryItem);
 
                                 // Give a handler the chance to react on the found device.
@@ -189,9 +200,6 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                                     handler.handle(discoveryItem);
                                 }
                                 break;
-                            /*} else {
-                                final ModbusPDUError errorPdu = (ModbusPDUError) response.getPdu();
-                                logger.info("Got error at address: {} with unit-identifier {} error {}", possibleAddress, unitIdentifier, errorPdu.getExceptionCode().toString());*/
                             }
                         } catch (ParseException e) {
                             // Ignore.
