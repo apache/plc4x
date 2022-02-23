@@ -759,6 +759,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     }
 
     public void dispatchType(String typeName, TypeDefinition type) {
+        types.put(typeName, type);
         LOGGER.debug("dispatching {}:{}", typeName, type);
         List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
@@ -770,7 +771,6 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             consumerIterator.remove();
         }
         typeDefinitionConsumers.remove(typeName);
-        types.put(typeName, type);
     }
 
     @Override
