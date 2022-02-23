@@ -80,7 +80,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
 <#else>
     @Override
     public ${type.name} parse(ReadBuffer readBuffer, Object... args) throws ParseException {
-        return (${type.name}) new ${type.parentType.name}IO().parse(readBuffer, args);
+        return (${type.name}) new ${type.parentType.orElseThrow().name}IO().parse(readBuffer, args);
     }
 
 </#if>
@@ -276,7 +276,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
 
 </#if>
 <#if type.isDiscriminatedChildTypeDefinition()>
-    public static class ${type.name}Builder implements ${type.parentType.name}IO.${type.parentType.name}Builder {
+    public static class ${type.name}Builder implements ${type.parentType.orElseThrow().name}IO.${type.parentType.orElseThrow().name}Builder {
         <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>
         private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
@@ -289,7 +289,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
             </#list>
         }
 
-        public ${type.name} build(<#list type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
+        public ${type.name} build(<#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
             return new ${type.name}(<#list type.allPropertyFields as field>${field.name}<#sep>, </#sep></#list>);
         }
     }

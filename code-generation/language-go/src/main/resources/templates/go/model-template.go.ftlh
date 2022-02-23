@@ -82,8 +82,8 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // The data-structure of this message
 type ${type.name} struct {
-<#if type.parentType??>
-	*${type.parentType.name}
+<#if type.parentType.isPresent()>
+	*${type.parentType.orElseThrow().name}
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
@@ -230,11 +230,11 @@ func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLan
 }
 		</#if>
 	</#list-->
-<#elseif type.parentType??>
+<#elseif type.parentType.isPresent()>
 
 <@compress single_line=true>
-func (m *${type.name}) InitializeParent(parent *${type.parentType.name}
-	<#assign parentTypeHasPropertyFields=type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content>
+func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().name}
+	<#assign parentTypeHasPropertyFields=type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content>
 	<#if parentTypeHasPropertyFields>, </#if>
     <#list type.parentPropertyFields as parentField>
         ${parentField.name}
@@ -246,8 +246,8 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}
 	)
 	{
 </@compress>
-	<#list type.parentType.asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
-	m.${type.parentType.name}.${field.name?cap_first} = ${field.name}
+	<#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
+	m.${type.parentType.orElseThrow().name}.${field.name?cap_first} = ${field.name}
 	</#list>
 }
 </#if>
@@ -277,8 +277,8 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#i
 
 </#list>
 
-<#if type.parentType?has_content && type.parentType.allParserArguments.isPresent()>
-    <#assign filteredParentParserArguments = type.parentType.allParserArguments.orElseThrow()?filter(arg -> !type.parentType.asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+<#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
+    <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
 </#if>
 
 // New${type.name} factory function for ${type.name}
@@ -288,7 +288,7 @@ func New${type.name}(
 		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
 	</#list>
-	<#if type.parentType?has_content>
+	<#if type.parentType.isPresent()>
 		<#if type.propertyFields?has_content && type.parentPropertyFields?has_content>, </#if>
 		<#list type.parentPropertyFields as parentField>
 			${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
@@ -302,18 +302,18 @@ func New${type.name}(
             <#sep>, </#sep>
         </#list>
     </#if>
-	) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+	) *<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if> {
 </@compress>
 
-<#if type.parentType?has_content>
+<#if type.parentType.isPresent()>
 	child := &${type.name}{
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
+    	${type.parentType.orElseThrow().name}: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
 	child.Child = child
-	return child.${type.parentType.name}
+	return child.${type.parentType.orElseThrow().name}
 <#else>
 	<@compress single_line=true>
 	return &${type.name}{
@@ -342,11 +342,11 @@ func Cast${type.name}(structType interface{}) *${type.name} {
 		if casted, ok := typ.(*${type.name}); ok {
 			return casted
 		}
-	<#if type.parentType?has_content>
-		if casted, ok := typ.(${type.parentType.name}); ok {
+	<#if type.parentType.isPresent()>
+		if casted, ok := typ.(${type.parentType.orElseThrow().name}); ok {
 			return Cast${type.name}(casted.Child)
 		}
-		if casted, ok := typ.(*${type.parentType.name}); ok {
+		if casted, ok := typ.(*${type.parentType.orElseThrow().name}); ok {
 			return Cast${type.name}(casted.Child)
 		}
 	</#if>
@@ -705,7 +705,7 @@ func (m *${type.name}) GetLengthInBytes() uint16 {
 
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if>, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if>, error) {
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -768,8 +768,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                                 <#-- Usually you don't use child directly unless they are parameterized #-->
-                                    <#assign typeName=typeDefinition.parentType.name>
-                                    <#assign typeDefinition=typeDefinition.parentType>
+                                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+                                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
                                 </#if>
                                 <#assign hasRefParams=complexTypeReference.params.isPresent()>
                                 <#assign refParams>
@@ -832,8 +832,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                                 <#-- Usually you don't use child directly unless they are parameterized #-->
-                                    <#assign typeName=typeDefinition.parentType.name>
-                                    <#assign typeDefinition=typeDefinition.parentType>
+                                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+                                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
                                 </#if>
                                 <#assign hasRefParams=complexTypeReference.params.isPresent()>
                                 <#assign refParams>
@@ -1083,8 +1083,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#-- Usually you don't use child directly unless they are parameterized #-->
-                    <#assign typeName=typeDefinition.parentType.name>
-                    <#assign typeDefinition=typeDefinition.parentType>
+                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
                 </#if>
 				<#assign hasRefParams=complexTypeReference.params.isPresent()>
 				<#assign refParams>
@@ -1137,8 +1137,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#-- Usually you don't use child directly unless they are parameterized #-->
-                    <#assign typeName=typeDefinition.parentType.name>
-                    <#assign typeDefinition=typeDefinition.parentType>
+                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
                 </#if>
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
 				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
@@ -1213,8 +1213,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
         <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
         <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
         <#-- Usually you don't use child directly unless they are parameterized #-->
-            <#assign typeName=typeDefinition.parentType.name>
-            <#assign typeDefinition=typeDefinition.parentType>
+            <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+            <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
         </#if>
         <#assign hasRefParams=complexTypeReference.params.isPresent()>
         <#assign refParams>
@@ -1367,8 +1367,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                         <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                         <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                         <#-- Usually you don't use child directly unless they are parameterized #-->
-                            <#assign typeName=typeDefinition.parentType.name>
-                            <#assign typeDefinition=typeDefinition.parentType>
+                            <#assign typeName=typeDefinition.parentType.orElseThrow().name>
+                            <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
                         </#if>
                         <#assign hasRefParams=complexTypeReference.params.isPresent()>
                         <#assign refParams>
@@ -1406,16 +1406,16 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		</@compress>
 
 	return _parent, nil
-	<#elseif type.parentType?has_content>
+	<#elseif type.parentType.isPresent()>
 	// Create a partially initialized instance
 	_child := &${type.name}{
 		<#list type.propertyFields as field>
 		${field.name?cap_first}: <#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>Cast${helper.getLanguageTypeNameForField(field)}(</#if>${field.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField() && !field.isManualArrayField()>)</#if>,
 		</#list>
-        ${type.parentType.name}: &${type.parentType.name}{},
+        ${type.parentType.orElseThrow().name}: &${type.parentType.orElseThrow().name}{},
 	}
-	_child.${type.parentType.name}.Child = _child
-	return _child.${type.parentType.name}, nil
+	_child.${type.parentType.orElseThrow().name}.Child = _child
+	return _child.${type.parentType.orElseThrow().name}, nil
 	<#else>
 	// Create the instance
 	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isComplexTypeReference() && !helper.isEnumTypeReference(arg.type)>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
