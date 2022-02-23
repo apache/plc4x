@@ -727,7 +727,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
 
         // If it references a complex, type we need to get that type's definition first.
-        final TypeDefinition propertyTypeDefinition = getTypeDefinitions().get(((ComplexTypeReference) propertyType).getName());
+        final TypeDefinition propertyTypeDefinition = getTypeDefinitions().get(((NonSimpleTypeReference) propertyType).getName());
         // If we're not accessing any child property, no need to handle anything special.
         if (variableLiteral.getChild().isEmpty()) {
             return name;
