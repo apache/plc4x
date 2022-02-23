@@ -227,7 +227,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
         String typeRefName = ctx.type.complexTypeReference.getText();
-        DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, null);
+        DefaultEnumTypeReference type = new DefaultEnumTypeReference(typeRefName, null);
         setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
         String name = getIdString(ctx.name);
         String fieldName = null;
@@ -533,6 +533,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             return getSimpleTypeReference(ctx.simpleTypeReference);
         } else {
             String typeRefName = ctx.complexTypeReference.getText();
+            // FIXME: TODO: we need to check if we reference a enum
             DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
             setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
             return type;
@@ -675,8 +676,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         TypeDefinition typeDefinition = types.get(typeRefName);
         if (typeDefinition != null) {
             LOGGER.debug("{} present so setting for {}", typeRefName, setTypeDefinition);
-            // TODO: This should actually only be a complex-type, right?
-            setTypeDefinition.accept((ComplexTypeDefinition) typeDefinition);
+            setTypeDefinition.accept(typeDefinition);
         } else {
             // put up order
             if (LOGGER.isDebugEnabled()) {
