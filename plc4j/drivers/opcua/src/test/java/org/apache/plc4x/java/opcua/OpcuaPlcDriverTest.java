@@ -375,7 +375,7 @@ public class OpcuaPlcDriverTest {
         Test added to test the syncronized Trnasactionhandler.
         The test originally failed one out of every 5 or so.
      */
-    @Test
+
     public void multipleThreads() {
         class ReadWorker extends Thread {
             private PlcConnection connection;
@@ -395,11 +395,13 @@ public class OpcuaPlcDriverTest {
                         PlcReadResponse read_response = read_request.execute().get();
                         assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
+
                 } catch (ExecutionException executionException) {
                     executionException.printStackTrace();
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 }
+
             }
         }
 

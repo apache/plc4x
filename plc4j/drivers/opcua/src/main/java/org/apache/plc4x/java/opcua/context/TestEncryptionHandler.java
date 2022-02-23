@@ -37,21 +37,21 @@ public class TestEncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBu
     private static final Logger logger = LoggerFactory.getLogger(TestEncryptionHandler.class);
 
     public TestEncryptionHandler() {
+        super(ByteBuf.class, ByteBuf.class);
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        logger.error("Encryption Handler ---------------------- encode...");
+        in.retain();
         out.add(in);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        logger.error("Encryption Handler ---------------------- decode...");
+        in.retain();
         out.add(in);
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.warn("exception caught", cause);
-        ctx.close();
-    }
 }
