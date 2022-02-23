@@ -96,14 +96,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * Methods related to type-references.
      **********************************************************************************/
 
+    /**
+     * @deprecated use {@link TypeReference#isEnumTypeReference}
+     */
+    @Deprecated
     public boolean isEnumTypeReference(TypeReference typeReference) {
         if (typeReference == null) {
-            return false;
+            throw new RuntimeException("Does this ever happen?");
         }
-        if (!typeReference.isEnumTypeReference()) {
-            return false;
-        }
-        return typeReference.asEnumTypeReference().orElseThrow().getTypeDefinition().isEnumTypeDefinition();
+        return typeReference.isEnumTypeReference();
     }
 
     /**
@@ -185,12 +186,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     protected EnumTypeDefinition getEnumTypeDefinition(TypeReference typeReference) {
-        if (!(typeReference instanceof ComplexTypeReference)) {
-            throw new FreemarkerException("type reference for enum types must be of type complex type");
+        if (!(typeReference instanceof NonSimpleTypeReference)) {
+            throw new FreemarkerException("type reference for enum types must be of type non simple type");
         }
-        ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-        String typeName = complexTypeReference.getName();
-        final TypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
+        NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) typeReference;
+        String typeName = nonSimpleTypeReference.getName();
+        final TypeDefinition typeDefinition = nonSimpleTypeReference.getTypeDefinition();
         if (typeDefinition == null) {
             throw new FreemarkerException("Couldn't find given enum type definition with name " + typeName);
         }
@@ -209,7 +210,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public SimpleTypeReference getEnumBaseTypeReference(TypeReference typeReference) {
         // Enum types always have simple type references.
-        return (SimpleTypeReference) getEnumTypeDefinition(typeReference).getType().orElseThrow();
+        return getEnumTypeDefinition(typeReference).getType().orElseThrow();
     }
 
     public SimpleTypeReference getEnumFieldTypeReference(TypeReference typeReference, String constantName) {
@@ -267,9 +268,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
-        ComplexTypeReference complexTypeReference = typeReference
-            .asComplexTypeReference()
-            .orElseThrow(() -> new FreemarkerException("Type reference must be a complex type reference"));
+        NonSimpleTypeReference complexTypeReference = typeReference
+            .asNonSimpleTypeReference()
+            .orElseThrow(() -> new FreemarkerException("Type reference must be a non simple type reference"));
         return complexTypeReference.getTypeDefinition();
     }
 
