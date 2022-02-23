@@ -619,11 +619,17 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             String typeRefName = ctx.complexTypeReference.getText();
             setOrScheduleTypeDefinitionConsumer(typeRefName, typeDefinition -> {
                 if (typeDefinition.isComplexTypeDefinition()) {
-                    typeReferenceCompletableFuture.complete(new DefaultComplexTypeReference(typeRefName, getParams(ctx.params)));
+                    DefaultComplexTypeReference value = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
                 } else if (typeDefinition.isEnumTypeDefinition()) {
-                    typeReferenceCompletableFuture.complete(new DefaultEnumTypeReference(typeRefName, getParams(ctx.params)));
+                    DefaultEnumTypeReference value = new DefaultEnumTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
                 } else if (typeDefinition.isDataIoTypeDefinition()) {
-                    typeReferenceCompletableFuture.complete(new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params)));
+                    DefaultDataIoTypeReference value = new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
                 } else {
                     throw new RuntimeException("Support for " + typeDefinition.getClass() + " not implemented yet");
                 }
