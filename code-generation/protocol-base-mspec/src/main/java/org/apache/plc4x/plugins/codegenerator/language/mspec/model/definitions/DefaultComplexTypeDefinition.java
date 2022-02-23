@@ -55,9 +55,6 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
         if (parserArguments != null) {
             allArguments.addAll(parserArguments);
         }
-        if (allArguments.isEmpty()) {
-            return Optional.empty();
-        }
         return Optional.of(allArguments);
     }
 

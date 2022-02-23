@@ -100,10 +100,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (typeReference == null) {
             return false;
         }
-        if (!typeReference.isComplexTypeReference()) {
+        if (!typeReference.isEnumTypeReference()) {
             return false;
         }
-        return typeReference.asComplexTypeReference().orElseThrow().getTypeDefinition().isEnumTypeDefinition();
+        return typeReference.asEnumTypeReference().orElseThrow().getTypeDefinition().isEnumTypeDefinition();
     }
 
     /**

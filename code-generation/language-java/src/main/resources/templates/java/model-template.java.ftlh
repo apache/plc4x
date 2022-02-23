@@ -68,7 +68,7 @@ import java.math.BigInteger;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.allParserArguments.orElseThrow()></#if>
-public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType.isPresent()> extends ${type.parentType.orElseThrow().name}</#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
@@ -169,8 +169,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#sep>, </#sep>
             </#list>
         </#if>
-        <#if type.parentType?has_content && type.parentType.allParserArguments.isPresent()>
-            <#assign filteredParentParserArguments = type.parentType.allParserArguments.orElseThrow()?filter(arg -> !type.parentType.asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+        <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
+            <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
             <#if filteredParentParserArguments?has_content>
                 <#if type.parentPropertyFields?has_content>, </#if>
                 <#list filteredParentParserArguments as parserArgument>
@@ -220,7 +220,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     <#if outputFlavor != "passive">
 <#if type.isDiscriminatedChildTypeDefinition()>
     @Override
-    protected void serialize${type.parentType.name}Child(WriteBuffer writeBuffer) throws SerializationException {
+    protected void serialize${type.parentType.orElseThrow().name}Child(WriteBuffer writeBuffer) throws SerializationException {
 <#else>
     <#if type.isDiscriminatedParentTypeDefinition()>
     abstract protected void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
@@ -378,7 +378,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     @Override
     public int getLengthInBits() {
-        int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+        int lengthInBits = <#if type.parentType.isPresent()>super.getLengthInBits()<#else>0</#if>;
         ${type.name} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
@@ -783,7 +783,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     </#if>
     <#if type.isDiscriminatedChildTypeDefinition()>
-        public static class ${type.name}Builder implements ${type.parentType.name}.${type.parentType.name}Builder {
+        public static class ${type.name}Builder implements ${type.parentType.orElseThrow().name}.${type.parentType.orElseThrow().name}Builder {
         <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>
                 private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
@@ -806,7 +806,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         </#if>
         }
 
-        public ${type.name} build(<#list type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParentParserArguments?has_content><#if type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
+        public ${type.name} build(<#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParentParserArguments?has_content><#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
             return new ${type.name}(<#list type.allPropertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.allPropertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
         }
     }
@@ -828,7 +828,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             (get${field.name?cap_first}() == that.get${field.name?cap_first}()) &&
             </#list>
             </#if>
-            <#if type.parentType??>
+            <#if type.parentType.isPresent()>
             super.equals(that) &&
             </#if>
             true;
@@ -837,7 +837,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     @Override
     public int hashCode() {
         return Objects.hash(
-            <#if type.parentType??>
+            <#if type.parentType.isPresent()>
             super.hashCode()<#if type.propertyFields?has_content>,</#if>
             </#if>
             <#if type.propertyFields?has_content>
