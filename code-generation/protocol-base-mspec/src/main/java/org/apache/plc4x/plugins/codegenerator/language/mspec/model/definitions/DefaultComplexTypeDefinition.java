@@ -30,12 +30,37 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     private final boolean isAbstract;
     private final List<Field> fields;
+    protected ComplexTypeDefinition parentType;
 
     public DefaultComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields) {
         super(name, attributes, parserArguments);
         this.isAbstract = isAbstract;
         this.fields = Objects.requireNonNull(fields);
     }
+
+    public Optional<ComplexTypeDefinition> getParentType() {
+        return Optional.ofNullable(parentType);
+    }
+
+    public void setParentType(ComplexTypeDefinition parentType) {
+        this.parentType = parentType;
+    }
+
+    public Optional<List<Argument>> getAllParserArguments() {
+        List<Argument> allArguments = new ArrayList<>();
+        getParentType()
+            .map(ComplexTypeDefinition::getParserArguments)
+            .map(arguments -> arguments.orElse(Collections.emptyList()))
+            .map(allArguments::addAll);
+        if (parserArguments != null) {
+            allArguments.addAll(parserArguments);
+        }
+        if (allArguments.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(allArguments);
+    }
+
 
     public boolean isAbstract() {
         return isAbstract;
@@ -104,19 +129,16 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     @Override
     public List<PropertyField> getAllPropertyFields() {
         List<PropertyField> fields = new LinkedList<>();
-        if (getParentType() != null) {
-            fields.addAll(((ComplexTypeDefinition) getParentType()).getAllPropertyFields());
-        }
+        getParentType()
+            .map(ComplexTypeDefinition::getAllPropertyFields)
+            .map(fields::addAll);
         fields.addAll(getPropertyFields());
         return fields;
     }
 
     @Override
     public List<PropertyField> getParentPropertyFields() {
-        if (getParentType() == null) {
-            return Collections.emptyList();
-        }
-        return ((ComplexTypeDefinition) getParentType()).getAllPropertyFields();
+        return getParentType().map(ComplexTypeDefinition::getAllPropertyFields).orElse(Collections.emptyList());
     }
 
     @Override

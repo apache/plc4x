@@ -58,7 +58,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     protected Map<String, TypeDefinition> types;
 
-    protected Map<String, List<Consumer<ComplexTypeDefinition>>> typeDefinitionConsumers = new HashMap<>();
+    protected Map<String, List<Consumer<TypeDefinition>>> typeDefinitionConsumers = new HashMap<>();
 
     private Stack<Map<String, Term>> batchSetAttributes = new Stack<>();
 
@@ -127,14 +127,6 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(typeName, attributes, parserArguments, switchField);
             dispatchType(typeName, type);
 
-            // Set the parent type for all sub-types.
-            if (switchField != null) {
-                for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
-                    if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
-                        ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
-                    }
-                }
-            }
             parserContexts.pop();
         } else { // Handle all other types.
             // If the type has sub-types it's an abstract type.
@@ -236,7 +228,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
         String typeRefName = ctx.type.complexTypeReference.getText();
         DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, null);
-        setOrScheduleTypeDefinitionConsumer(typeRefName, type::setComplexTypeDefinition);
+        setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
         String name = getIdString(ctx.name);
         String fieldName = null;
         if (ctx.fieldName != null) {
@@ -542,7 +534,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         } else {
             String typeRefName = ctx.complexTypeReference.getText();
             DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
-            setOrScheduleTypeDefinitionConsumer(typeRefName, type::setComplexTypeDefinition);
+            setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
             return type;
         }
     }
@@ -664,11 +656,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     public void dispatchType(String typeName, TypeDefinition type) {
         LOGGER.debug("dispatching {}:{}", typeName, type);
-        List<Consumer<ComplexTypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
+        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
-        Iterator<Consumer<ComplexTypeDefinition>> consumerIterator = waitingConsumers.iterator();
+        Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
         while (consumerIterator.hasNext()) {
-            Consumer<ComplexTypeDefinition> setter = consumerIterator.next();
+            Consumer<TypeDefinition> setter = consumerIterator.next();
             LOGGER.debug("setting {} for {}", typeName, setter);
             setter.accept(type);
             consumerIterator.remove();
@@ -678,20 +670,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     }
 
     @Override
-    public void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<ComplexTypeDefinition> setComplexTypeDefinition) {
+    public void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
         LOGGER.debug("set or schedule {}", typeRefName);
         TypeDefinition typeDefinition = types.get(typeRefName);
         if (typeDefinition != null) {
-            LOGGER.debug("{} present so setting for {}", typeRefName, setComplexTypeDefinition);
+            LOGGER.debug("{} present so setting for {}", typeRefName, setTypeDefinition);
             // TODO: This should actually only be a complex-type, right?
-            setComplexTypeDefinition.accept((ComplexTypeDefinition) typeDefinition);
+            setTypeDefinition.accept((ComplexTypeDefinition) typeDefinition);
         } else {
             // put up order
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new LinkedList<>()).size(), typeRefName);
             }
             typeDefinitionConsumers.putIfAbsent(typeRefName, new LinkedList<>());
-            typeDefinitionConsumers.get(typeRefName).add(setComplexTypeDefinition);
+            typeDefinitionConsumers.get(typeRefName).add(setTypeDefinition);
         }
     }
 

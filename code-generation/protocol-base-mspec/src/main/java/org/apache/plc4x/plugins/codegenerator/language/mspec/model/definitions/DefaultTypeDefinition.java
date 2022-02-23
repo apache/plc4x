@@ -20,7 +20,6 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
@@ -30,13 +29,11 @@ public abstract class DefaultTypeDefinition {
     protected final String name;
     private final Map<String, Term> attributes;
     protected final List<Argument> parserArguments;
-    protected TypeDefinition parentType;
 
     public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments) {
         this.name = Objects.requireNonNull(name);
         this.attributes = attributes;
         this.parserArguments = parserArguments;
-        this.parentType = null;
     }
 
     public String getName() {
@@ -56,22 +53,13 @@ public abstract class DefaultTypeDefinition {
 
     public Optional<List<Argument>> getAllParserArguments() {
         List<Argument> allArguments = new ArrayList<>();
-        if (getParentType() != null) {
-            final TypeDefinition parentType = getParentType();
-            allArguments.addAll(parentType.getParserArguments().orElse(Collections.emptyList()));
-        }
         if (parserArguments != null) {
             allArguments.addAll(parserArguments);
         }
+        if (allArguments.isEmpty()) {
+            return Optional.empty();
+        }
         return Optional.of(allArguments);
-    }
-
-    public TypeDefinition getParentType() {
-        return parentType;
-    }
-
-    public void setParentType(TypeDefinition parentType) {
-        this.parentType = parentType;
     }
 
     @Override
@@ -80,7 +68,6 @@ public abstract class DefaultTypeDefinition {
             "name='" + name + '\'' +
             ", attributes=" + attributes +
             ", parserArguments=" + parserArguments +
-            ", parentType=" + parentType +
             '}';
     }
 
@@ -89,11 +76,11 @@ public abstract class DefaultTypeDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultTypeDefinition that = (DefaultTypeDefinition) o;
-        return name.equals(that.name) && Objects.equals(attributes, that.attributes) && Objects.equals(parserArguments, that.parserArguments) && Objects.equals(parentType, that.parentType);
+        return name.equals(that.name) && Objects.equals(attributes, that.attributes) && Objects.equals(parserArguments, that.parserArguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, attributes, parserArguments, parentType);
+        return Objects.hash(name, attributes, parserArguments);
     }
 }
