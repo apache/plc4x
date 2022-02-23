@@ -713,8 +713,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
         ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
-            Term term = parser.parse(inputStream);
-            return term;
+            return parser.parse(inputStream);
         } catch (Exception e) {
             throw new RuntimeException("Error parsing expression: '" + expressionString + "'", e);
         }
@@ -738,31 +737,34 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     }
 
     private String unquoteString(String quotedString) {
-        if (quotedString != null && quotedString.length() >= 2) {
-            return quotedString.substring(1, quotedString.length() - 1);
+        if (quotedString == null || quotedString.length() < 2) {
+            return quotedString;
         }
-        return quotedString;
+        return quotedString.substring(1, quotedString.length() - 1);
     }
 
     private String getIdString(MSpecParser.IdExpressionContext ctx) {
-        if (ctx.id != null) {
-            return ctx.id.getText();
+        if (ctx.id == null) {
+            return null;
         }
-        return null;
+        return ctx.id.getText();
     }
 
     private String getExprString(MSpecParser.ExpressionContext ctx) {
-        if (ctx.expr != null) {
-            return ctx.expr.getText();
+        if (ctx.expr == null) {
+            return null;
         }
-        return null;
+        return ctx.expr.getText();
     }
 
     public void dispatchType(String typeName, TypeDefinition type) {
-        types.put(typeName, type);
         LOGGER.debug("dispatching {}:{}", typeName, type);
+
+        types.put(typeName, type);
+
         List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
+
         Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
         while (consumerIterator.hasNext()) {
             Consumer<TypeDefinition> setter = consumerIterator.next();
@@ -776,6 +778,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
         LOGGER.debug("set or schedule {}", typeRefName);
+
         TypeDefinition typeDefinition = types.get(typeRefName);
         if (typeDefinition != null) {
             LOGGER.debug("{} present so setting for {}", typeRefName, setTypeDefinition);

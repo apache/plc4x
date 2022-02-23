@@ -108,6 +108,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             // Generate the output for the given type.
             LOGGER.info("Generating type {}", typeEntry.getKey());
             for (Template template : templateList) {
+                LOGGER.debug("Applying template {}", template.getName());
                 try {
                     renderTemplate(outputDir, template, typeContext);
                 } catch (IOException | TemplateException e) {

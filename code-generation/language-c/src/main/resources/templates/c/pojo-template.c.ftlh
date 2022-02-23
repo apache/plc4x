@@ -251,7 +251,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getNullValueForTypeReference(discriminatorField.type)};
 <#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(discriminatorField.type, "&" + discriminatorField.name, field)};
-        <#elseif helper.isEnumField(field)>
+        <#elseif field.isEnumField()>
             <#assign simpleTypeReference = discriminatorField.type>
 <#if indentContent>  </#if>  enum ${helper.getLanguageTypeNameForTypeReference(discriminatorField.type)} ${discriminatorField.name};
 <#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "&${discriminatorField.name}", field)};
@@ -388,12 +388,13 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                     <#list case.discriminatorValueTerms as discriminatorValueTerm>
                         <#if case.discriminatorValueTerms?size &gt; 1>(</#if>
                         <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
-                        <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName].asNonSimpleTypeReference().orElseThrow()>
+                        <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
+                        <#if discriminatorType.isNonSimpleTypeReference()><#assign typeDefinition=discriminatorType.asNonSimpleTypeReference().orElseThrow().typeDefinition></#if>
                         ${helper.toVariableParseExpression(baseType, switchField, discriminatorExpression, parserArguments)} ==
-                        <#if helper.isEnumTypeReference(discriminatorType)>
-                            ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(discriminatorType.typeDefinition, switchField, discriminatorValueTerm, parserArguments)?replace("plc4c_spi_evaluation_helper_", "")?upper_case}
+                        <#if discriminatorType.isEnumTypeReference()>
+                            ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(typeDefinition, switchField, discriminatorValueTerm, parserArguments)?replace("plc4c_spi_evaluation_helper_", "")?upper_case}
                         <#else>
-                            ${helper.toParseExpression(discriminatorType.typeDefinition, switchField, discriminatorValueTerm, parserArguments)}
+                            ${helper.toParseExpression(typeDefinition, switchField, discriminatorValueTerm, parserArguments)}
                         </#if>
                         <#if case.discriminatorValueTerms?size &gt; 1>)</#if>
                         <#sep> && </#sep>
