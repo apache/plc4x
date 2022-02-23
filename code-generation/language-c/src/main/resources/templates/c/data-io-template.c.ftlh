@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition" -->
-<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
+${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -223,7 +223,6 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             </#switch>
         </#list>
     }<#sep> else </#sep></#list>
-    </#if>
 
   return OK;
 }

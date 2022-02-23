@@ -84,7 +84,7 @@ public enum ${type.name} {
 </#if>
 
     ${type.name}(<#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)} value</#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName}<#sep>, </#sep></#list></#if>) {
-<#if type.type?has_content>        this.value = value;</#if>
+<#if type.type.isPresent()>        this.value = value;</#if>
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
         this.${constantName} = ${constantName};

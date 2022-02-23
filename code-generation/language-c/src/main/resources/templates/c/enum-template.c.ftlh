@@ -71,7 +71,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         return NO_MEMORY;
     }
 
-    _res = ${helper.getReadBufferReadMethodCall(type.type.asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
+    _res = ${helper.getReadBufferReadMethodCall(type.type.orElseThrow().asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
 
     return _res;
 }
@@ -79,7 +79,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
-    _res = ${helper.getWriteBufferWriteMethodCall(type.type.asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
+    _res = ${helper.getWriteBufferWriteMethodCall(type.type.orElseThrow().asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
 
     return _res;
 }
@@ -187,5 +187,5 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName
 }
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
-    return ${type.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+    return ${type.type.orElseThrow().asSimpleTypeReference().orElseThrow().sizeInBits};
 }

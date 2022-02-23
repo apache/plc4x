@@ -255,7 +255,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             throw new FreemarkerException("Unsupported simple type. " + simpleTypeReference.getBaseType());
         } else {
-            return getCTypeName(((ComplexTypeReference) typeReference).getName());
+            return getCTypeName(((NonSimpleTypeReference) typeReference).getName());
         }
     }
 
@@ -513,8 +513,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     throw new FreemarkerException("Unsupported type.");
             }
         } else {
-            ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-            return getCTypeName(complexTypeReference.getName()) + "_null()";
+            NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) typeReference;
+            return getCTypeName(nonSimpleTypeReference.getName()) + "_null()";
         }
     }
 

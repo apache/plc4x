@@ -388,7 +388,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                     <#list case.discriminatorValueTerms as discriminatorValueTerm>
                         <#if case.discriminatorValueTerms?size &gt; 1>(</#if>
                         <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
-                        <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
+                        <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName].asNonSimpleTypeReference().orElseThrow()>
                         ${helper.toVariableParseExpression(baseType, switchField, discriminatorExpression, parserArguments)} ==
                         <#if helper.isEnumTypeReference(discriminatorType)>
                             ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(discriminatorType.typeDefinition, switchField, discriminatorValueTerm, parserArguments)?replace("plc4c_spi_evaluation_helper_", "")?upper_case}
