@@ -178,7 +178,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         String name = getIdString(ctx.name);
         DefaultAbstractField field = new DefaultAbstractField(getAttributes(ctx), name);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -197,7 +197,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term loopExpression = getExpressionTerm(ctx.loopExpression);
         DefaultArrayField field = new DefaultArrayField(getAttributes(ctx), name, loopType, loopExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -228,7 +228,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             field.setType(getSimpleTypeReference(ctx.type.dataType()));
         } else {
             getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-                if (throwable == null) {
+                if (throwable != null) {
                     // TODO: proper error collection in type context error bucket
                     LOGGER.error("Error setting type for {}", field, throwable);
                     return;
@@ -246,7 +246,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         String name = getIdString(ctx.name);
         DefaultDiscriminatorField field = new DefaultDiscriminatorField(getAttributes(ctx), name);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -291,7 +291,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term conditionExpression = getExpressionTerm(ctx.condition);
         DefaultAssertField field = new DefaultAssertField(getAttributes(ctx), name, conditionExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -315,7 +315,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         DefaultManualArrayField field = new DefaultManualArrayField(getAttributes(ctx), name, loopType, loopExpression,
             parseExpression, serializeExpression, lengthExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -336,7 +336,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         DefaultManualField field = new DefaultManualField(getAttributes(ctx), name, parseExpression, serializeExpression,
             lengthExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -357,7 +357,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         }
         DefaultOptionalField field = new DefaultOptionalField(getAttributes(ctx), name, conditionExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -378,7 +378,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         }
         DefaultPeekField field = new DefaultPeekField(getAttributes(ctx), name, offsetExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -417,7 +417,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         String name = getIdString(ctx.name);
         DefaultSimpleField field = new DefaultSimpleField(getAttributes(ctx), name);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -455,7 +455,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term valueExpression = getExpressionTerm(ctx.valueExpression);
         DefaultVirtualField field = new DefaultVirtualField(getAttributes(ctx), name, valueExpression);
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
-            if (throwable == null) {
+            if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
@@ -687,7 +687,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             .map(argumentContext -> {
                 DefaultArgument argument = new DefaultArgument(getIdString(argumentContext.name));
                 getTypeReference(argumentContext.type).whenComplete((typeReference, throwable) -> {
-                    if (throwable == null) {
+                    if (throwable != null) {
                         // TODO: proper error collection in type context error bucket
                         LOGGER.error("Error setting type for {}", argument, throwable);
                         return;
