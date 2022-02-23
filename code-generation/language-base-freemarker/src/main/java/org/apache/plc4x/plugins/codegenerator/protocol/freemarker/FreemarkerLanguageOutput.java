@@ -102,10 +102,6 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             } else if (typeEntry.getValue() instanceof DataIoTypeDefinition) {
                 templateList = dataIoTemplateList;
             } else {
-                // Skip outputting the sub-types of io-types.
-                if (typeEntry.getValue().getParentType() instanceof DataIoTypeDefinition) {
-                    continue;
-                }
                 templateList = complexTypesTemplateList;
             }
 

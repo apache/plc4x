@@ -134,7 +134,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (baseType instanceof DiscriminatedComplexTypeDefinition) {
             DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = (DiscriminatedComplexTypeDefinition) baseType;
             if (!discriminatedComplexTypeDefinition.isAbstract()) {
-                String typeReferenceName = discriminatedComplexTypeDefinition.getParentType().getName();
+                String typeReferenceName = discriminatedComplexTypeDefinition.getParentType().orElseThrow().getName();
                 complexTypeReferences.add(typeReferenceName);
             }
         }
@@ -209,7 +209,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public SimpleTypeReference getEnumBaseTypeReference(TypeReference typeReference) {
         // Enum types always have simple type references.
-        return (SimpleTypeReference) getEnumTypeDefinition(typeReference).getType();
+        return (SimpleTypeReference) getEnumTypeDefinition(typeReference).getType().orElseThrow();
     }
 
     public SimpleTypeReference getEnumFieldTypeReference(TypeReference typeReference, String constantName) {
@@ -296,8 +296,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         SwitchField switchField = null;
         Function<String, TypeReference> typeRefRetriever = null;
         if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            switchField = ((ComplexTypeDefinition) thisType.getParentType()).getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType.getParentType()).getTypeReferenceForProperty(propertyName).orElse(null);
+            ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
+            switchField = parentType.getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
         } else if (thisType instanceof ComplexTypeDefinition) {
             switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
             typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(propertyName).orElse(null);

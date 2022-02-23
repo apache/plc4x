@@ -640,7 +640,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             String lengthExpression;
             if (variableLiteral.getName().equals("lengthInBytes")) {
                 tracer = tracer.dive("lengthInBytes contained in variable name");
-                lengthType = (baseType.getParentType() == null) ? baseType : (ComplexTypeDefinition) baseType.getParentType();
+                lengthType = baseType;
+                Optional<ComplexTypeDefinition> parentType = baseType.asComplexTypeDefinition()
+                    .flatMap(ComplexTypeDefinition::getParentType);
+                if (parentType.isPresent()) {
+                    lengthType = parentType.get();
+                }
                 lengthExpression = "_message";
             } else {
                 final Optional<TypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(variableLiteral.getName());
@@ -833,15 +838,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // access next.
         StringBuilder sb = new StringBuilder();
         sb.append("((");
-        if (castType.getParentType() != null) {
-            sb.append(getCTypeName(castType.getParentType().getName()));
+        Optional<ComplexTypeDefinition> potentialParentType = castType.asComplexTypeDefinition().flatMap(ComplexTypeDefinition::getParentType);
+        if (potentialParentType.isPresent()) {
+            sb.append(getCTypeName(potentialParentType.get().getName()));
         } else {
             sb.append(getCTypeName(castType.getName()));
         }
         sb.append("*) (");
         sb.append(toVariableParseExpression(baseType, field, firstArgument, parserArguments)).append("))");
         if (variableLiteral.getChild().isPresent()) {
-            if (castType.getParentType() != null) {
+            if (potentialParentType.isPresent()) {
                 // Change the name of the property to contain the sub-type-prefix.
                 sb.append("->").append(camelCaseToSnakeCase(castType.getName())).append("_");
                 appendVariableExpressionRest(sb, baseType, variableLiteral.getChild().get());
