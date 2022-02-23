@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 
 import java.util.function.Consumer;
 
 public interface LazyTypeDefinitionConsumer {
 
-    void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition);
+    void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<ComplexTypeDefinition> setComplexTypeDefinition);
 
 }

@@ -19,23 +19,25 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.EnumTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultComplexTypeReference implements ComplexTypeReference {
+public class DefaultEnumTypeReference implements EnumTypeReference {
 
     protected final String name;
 
     protected final List<Term> params;
 
-    protected transient ComplexTypeDefinition typeDefinition;
+    protected transient EnumTypeDefinition typeDefinition;
 
-    public DefaultComplexTypeReference(String name, List<Term> params) {
+    public DefaultEnumTypeReference(String name, List<Term> params) {
         this.name = Objects.requireNonNull(name);
         this.params = params;
     }
@@ -51,28 +53,34 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     }
 
     @Override
+    public SimpleTypeReference getBaseTypeReference() {
+        // TODO: This should be safer here ...
+        return (SimpleTypeReference) getEnumTypeDefinition().getType();
+    }
+
+    @Override
     public TypeDefinition getTypeDefinition() {
-        return getComplexTypeDefinition();
+        return getEnumTypeDefinition();
     }
 
     @Override
     public void setTypeDefinition(TypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
-        if(!(typeDefinition instanceof ComplexTypeDefinition)) {
-            throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions");
+        if(!(typeDefinition instanceof EnumTypeDefinition)) {
+            throw new IllegalArgumentException("DefaultEnumTypeReferences only accept instances of EnumTypeDefinitions");
         }
-        this.typeDefinition = ((ComplexTypeDefinition) typeDefinition);
+        this.typeDefinition = ((EnumTypeDefinition) typeDefinition);
     }
 
     @Override
-    public ComplexTypeDefinition getComplexTypeDefinition() {
+    public EnumTypeDefinition getEnumTypeDefinition() {
         if (typeDefinition == null) {
             throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
         }
         return typeDefinition;
     }
 
-    public void setComplexTypeDefinition(ComplexTypeDefinition typeDefinition) {
+    public void setEnumTypeDefinition(EnumTypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
         this.typeDefinition = typeDefinition;
     }
@@ -89,7 +97,7 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DefaultComplexTypeReference that = (DefaultComplexTypeReference) o;
+        DefaultEnumTypeReference that = (DefaultEnumTypeReference) o;
         return Objects.equals(name, that.name) && Objects.equals(params, that.params);
     }
 
