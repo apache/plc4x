@@ -19,6 +19,7 @@
 package org.apache.plc4x.language.c;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -128,17 +129,17 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return getLanguageTypeNameForTypeReference(typeReference);
     }
 
-    public Map<ConstField, ComplexTypeDefinition> getAllConstFields() {
-        // We need to use IdentityHashMap here as we want the duplicates here
-        Map<ConstField, ComplexTypeDefinition> constFields = new IdentityHashMap<>();
+    public List<Pair<ConstField, ComplexTypeDefinition>> getAllConstFields() {
+        // Note: a map is not an option here as ConstFields are duplicated
+        List<Pair<ConstField, ComplexTypeDefinition>> constFields = new LinkedList<>();
         ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
         complexTypeDefinition.getConstFields()
-            .forEach(constField -> constFields.put(constField, complexTypeDefinition));
+            .forEach(constField -> constFields.add(Pair.of(constField, complexTypeDefinition)));
         complexTypeDefinition.getSwitchField()
             .map(SwitchField::getCases)
             .ifPresent(discriminatedComplexTypeDefinitions ->
                 discriminatedComplexTypeDefinitions.forEach(switchCase ->
-                    switchCase.getConstFields().forEach(constField -> constFields.put(constField, switchCase))
+                    switchCase.getConstFields().forEach(constField -> constFields.add(Pair.of(constField, switchCase)))
                 )
             );
         return constFields;
