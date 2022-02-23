@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -112,7 +114,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         final Map<String, Term> attributes = batchSetAttributes.peek();
         // Handle enum types.
         if (ctx.enumValues != null) {
-            TypeReference type = (ctx.type != null) ? getTypeReference(ctx.type) : null;
+            SimpleTypeReference type = (ctx.type != null) ? getSimpleTypeReference(ctx.type) : null;
             List<EnumValue> enumValues = getEnumValues();
             if (type == null) {
                 // in case there is no type we default to uint32
@@ -173,9 +175,16 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterAbstractField(MSpecParser.AbstractFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Field field = new DefaultAbstractField(getAttributes(ctx), type, name);
+        DefaultAbstractField field = new DefaultAbstractField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -183,11 +192,18 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterArrayField(MSpecParser.ArrayFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         ArrayField.LoopType loopType = ArrayField.LoopType.valueOf(ctx.loopType.getText().toUpperCase());
         Term loopExpression = getExpressionTerm(ctx.loopExpression);
-        Field field = new DefaultArrayField(getAttributes(ctx), type, name, loopType, loopExpression);
+        DefaultArrayField field = new DefaultArrayField(getAttributes(ctx), name, loopType, loopExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -206,9 +222,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterConstField(MSpecParser.ConstFieldContext ctx) {
-        TypeReference type = ctx.type.dataType() != null ? getSimpleTypeReference(ctx.type.dataType()) : getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Field field = new DefaultConstField(getAttributes(ctx), type, name, getValueLiteral(ctx.expected));
+        DefaultConstField field = new DefaultConstField(getAttributes(ctx), name, getValueLiteral(ctx.expected));
+        if (ctx.type.dataType() != null) {
+            field.setType(getSimpleTypeReference(ctx.type.dataType()));
+        } else {
+            getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+                if (throwable == null) {
+                    // TODO: proper error collection in type context error bucket
+                    LOGGER.error("Error setting type for {}", field, throwable);
+                    return;
+                }
+                field.setType(typeReference);
+            });
+        }
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -216,9 +243,16 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Field field = new DefaultDiscriminatorField(getAttributes(ctx), type, name);
+        DefaultDiscriminatorField field = new DefaultDiscriminatorField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -253,10 +287,17 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterAssertField(MSpecParser.AssertFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term conditionExpression = getExpressionTerm(ctx.condition);
-        Field field = new DefaultAssertField(getAttributes(ctx), type, name, conditionExpression);
+        DefaultAssertField field = new DefaultAssertField(getAttributes(ctx), name, conditionExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -264,7 +305,6 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterManualArrayField(MSpecParser.ManualArrayFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         ManualArrayField.LoopType loopType = ManualArrayField.LoopType.valueOf(
             ctx.loopType.getText().toUpperCase());
@@ -272,8 +312,16 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Term parseExpression = getExpressionTerm(ctx.parseExpression);
         Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
         Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
-        Field field = new DefaultManualArrayField(getAttributes(ctx), type, name, loopType, loopExpression,
+        DefaultManualArrayField field = new DefaultManualArrayField(getAttributes(ctx), name, loopType, loopExpression,
             parseExpression, serializeExpression, lengthExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -281,13 +329,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterManualField(MSpecParser.ManualFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term parseExpression = getExpressionTerm(ctx.parseExpression);
         Term serializeExpression = getExpressionTerm(ctx.serializeExpression);
         Term lengthExpression = getExpressionTerm(ctx.lengthExpression);
-        Field field = new DefaultManualField(getAttributes(ctx), type, name, parseExpression, serializeExpression,
+        DefaultManualField field = new DefaultManualField(getAttributes(ctx), name, parseExpression, serializeExpression,
             lengthExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -295,13 +350,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterOptionalField(MSpecParser.OptionalFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term conditionExpression = null;
         if (ctx.condition != null) {
             conditionExpression = getExpressionTerm(ctx.condition);
         }
-        Field field = new DefaultOptionalField(getAttributes(ctx), type, name, conditionExpression);
+        DefaultOptionalField field = new DefaultOptionalField(getAttributes(ctx), name, conditionExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -309,13 +371,20 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterPeekField(MSpecParser.PeekFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term offsetExpression = null;
         if (ctx.offset != null) {
             offsetExpression = getExpressionTerm(ctx.offset);
         }
-        Field field = new DefaultPeekField(getAttributes(ctx), type, name, offsetExpression);
+        DefaultPeekField field = new DefaultPeekField(getAttributes(ctx), name, offsetExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -345,9 +414,16 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterSimpleField(MSpecParser.SimpleFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Field field = new DefaultSimpleField(getAttributes(ctx), type, name);
+        DefaultSimpleField field = new DefaultSimpleField(getAttributes(ctx), name);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -375,10 +451,17 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
-        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Term valueExpression = getExpressionTerm(ctx.valueExpression);
-        Field field = new DefaultVirtualField(getAttributes(ctx), type, name, valueExpression);
+        DefaultVirtualField field = new DefaultVirtualField(getAttributes(ctx), name, valueExpression);
+        getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
+            if (throwable == null) {
+                // TODO: proper error collection in type context error bucket
+                LOGGER.error("Error setting type for {}", field, throwable);
+                return;
+            }
+            field.setType(typeReference);
+        });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -528,15 +611,24 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         }
     }
 
-    private TypeReference getTypeReference(MSpecParser.TypeReferenceContext ctx) {
+    private CompletionStage<TypeReference> getTypeReference(MSpecParser.TypeReferenceContext ctx) {
         if (ctx.simpleTypeReference != null) {
-            return getSimpleTypeReference(ctx.simpleTypeReference);
+            return CompletableFuture.completedFuture(getSimpleTypeReference(ctx.simpleTypeReference));
         } else {
+            CompletableFuture<TypeReference> typeReferenceCompletableFuture = new CompletableFuture<>();
             String typeRefName = ctx.complexTypeReference.getText();
-            // FIXME: TODO: we need to check if we reference a enum
-            DefaultComplexTypeReference type = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
-            setOrScheduleTypeDefinitionConsumer(typeRefName, type::setTypeDefinition);
-            return type;
+            setOrScheduleTypeDefinitionConsumer(typeRefName, typeDefinition -> {
+                if (typeDefinition.isComplexTypeDefinition()) {
+                    typeReferenceCompletableFuture.complete(new DefaultComplexTypeReference(typeRefName, getParams(ctx.params)));
+                } else if (typeDefinition.isEnumTypeDefinition()) {
+                    typeReferenceCompletableFuture.complete(new DefaultEnumTypeReference(typeRefName, getParams(ctx.params)));
+                } else if (typeDefinition.isDataIoTypeDefinition()) {
+                    typeReferenceCompletableFuture.complete(new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params)));
+                } else {
+                    throw new RuntimeException("Support for " + typeDefinition.getClass() + " not implemented yet");
+                }
+            });
+            return typeReferenceCompletableFuture;
         }
     }
 
@@ -592,7 +684,18 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     private List<Argument> getParserArguments(List<MSpecParser.ArgumentContext> params) {
         return params.stream()
-            .map(argumentContext -> new DefaultArgument(getTypeReference(argumentContext.type), getIdString(argumentContext.name)))
+            .map(argumentContext -> {
+                DefaultArgument argument = new DefaultArgument(getIdString(argumentContext.name));
+                getTypeReference(argumentContext.type).whenComplete((typeReference, throwable) -> {
+                    if (throwable == null) {
+                        // TODO: proper error collection in type context error bucket
+                        LOGGER.error("Error setting type for {}", argument, throwable);
+                        return;
+                    }
+                    argument.setType(typeReference);
+                });
+                return argument;
+            })
             .collect(Collectors.toList());
     }
 

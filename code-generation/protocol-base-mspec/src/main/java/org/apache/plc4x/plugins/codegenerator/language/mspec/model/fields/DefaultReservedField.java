@@ -19,7 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
@@ -28,9 +28,10 @@ public class DefaultReservedField extends DefaultTypedField implements ReservedF
 
     private final Object referenceValue;
 
-    public DefaultReservedField(Map<String, Term> attributes, TypeReference type, Object referenceValue) {
-        super(attributes, type);
+    public DefaultReservedField(Map<String, Term> attributes, SimpleTypeReference type, Object referenceValue) {
+        super(attributes);
         this.referenceValue = Objects.requireNonNull(referenceValue);
+        this.type = type;
     }
 
     public Object getReferenceValue() {

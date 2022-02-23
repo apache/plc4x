@@ -19,8 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
@@ -29,9 +28,10 @@ public class DefaultChecksumField extends DefaultTypedNamedField implements Chec
 
     private final Term checksumExpression;
 
-    public DefaultChecksumField(Map<String, Term> attributes, TypeReference type, String name, Term checksumExpression) {
-        super(attributes, type, name);
+    public DefaultChecksumField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term checksumExpression) {
+        super(attributes, name);
         this.checksumExpression = Objects.requireNonNull(checksumExpression);
+        this.type = type;
     }
 
     public Term getChecksumExpression() {

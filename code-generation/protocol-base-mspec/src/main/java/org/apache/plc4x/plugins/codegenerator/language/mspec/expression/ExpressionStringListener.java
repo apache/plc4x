@@ -19,6 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -131,7 +132,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     private void schedulePropertyResolution(String propertyName, CompletableFuture<TypeReference> typeReferenceFuture, String typeName) {
-        lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition)->{
+        lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition) -> {
             if (!typeDefinition.isComplexTypeDefinition()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("is not a complex type"));
                 return;
@@ -142,13 +143,18 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             final Optional<PropertyField> propertyFieldByName = complexTypeDefinition
                 .getPropertyFieldByName(propertyName);
             if (propertyFieldByName.isEmpty()) {
-                typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on "+typeName));
+                typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
                 return;
             }
-            TypeReference propertyTypeReference = propertyFieldByName
-                .orElseThrow()
-                .getType();
-            typeReferenceFuture.complete(propertyTypeReference);
+            PropertyField propertyField = propertyFieldByName
+                .orElseThrow();
+            ((DefaultTypedField) propertyField).getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
+                if (throwable != null) {
+                    typeReferenceFuture.completeExceptionally(throwable);
+                } else {
+                    typeReferenceFuture.complete(propertyTypeReference);
+                }
+            });
         });
     }
 
@@ -185,7 +191,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
         futureStack.pop().whenComplete((typeReference, throwable) -> {
             // TODO: check throwable
-            String typeName= typeReference.asComplexTypeReference().orElseThrow().getName();
+            String typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
             lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
         });
         if (futureStack.empty()) {

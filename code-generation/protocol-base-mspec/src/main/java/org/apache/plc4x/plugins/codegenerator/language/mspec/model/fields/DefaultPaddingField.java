@@ -19,23 +19,22 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultPaddingField extends DefaultTypedNamedField implements PaddingField {
 
     private final Term paddingValue;
     private final Term paddingCondition;
 
-    public DefaultPaddingField(Map<String, Term> attributes, TypeReference type, String name, Term paddingValue, Term paddingCondition) {
-        super(attributes, type, name);
+    public DefaultPaddingField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term paddingValue, Term paddingCondition) {
+        super(attributes, name);
         this.paddingValue = Objects.requireNonNull(paddingValue);
         this.paddingCondition = Objects.requireNonNull(paddingCondition);
+        this.type = type;
     }
 
     public Term getPaddingValue() {

@@ -31,7 +31,7 @@ import java.util.Objects;
 public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
 
     private final SwitchField switchField;
-    private final TypeReference type;
+    private TypeReference type;
 
     public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
         super(name, attributes, parserArguments);
@@ -39,7 +39,14 @@ public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implement
         if (parserArguments.size() < 1) {
             throw new IllegalStateException();
         }
-        this.type = Objects.requireNonNull(parserArguments.get(0).getType());
+        ((DefaultArgument) parserArguments.get(0)).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: handle error
+                System.err.println(throwable);
+                return;
+            }
+            this.type = Objects.requireNonNull(parserArguments.get(0).getType());
+        });
     }
 
     public SwitchField getSwitchField() {
@@ -47,6 +54,9 @@ public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implement
     }
 
     public TypeReference getType() {
+        if (type == null) {
+            throw new IllegalStateException("type not set");
+        }
         return this.type;
     }
 

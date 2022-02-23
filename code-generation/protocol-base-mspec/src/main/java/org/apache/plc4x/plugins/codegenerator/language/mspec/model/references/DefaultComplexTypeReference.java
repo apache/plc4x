@@ -58,8 +58,8 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     @Override
     public void setTypeDefinition(TypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
-        if(!(typeDefinition instanceof ComplexTypeDefinition)) {
-            throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: "+ typeDefinition.getClass());
+        if (!(typeDefinition instanceof ComplexTypeDefinition)) {
+            throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
         }
         this.typeDefinition = ((ComplexTypeDefinition) typeDefinition);
     }
@@ -80,9 +80,9 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     @Override
     public String toString() {
         return "DefaultComplexTypeReference{" +
-                "name='" + name + '\'' +
-                ", params=" + params +
-                '}';
+            "name='" + name + '\'' +
+            ", params=" + params +
+            '}';
     }
 
     @Override

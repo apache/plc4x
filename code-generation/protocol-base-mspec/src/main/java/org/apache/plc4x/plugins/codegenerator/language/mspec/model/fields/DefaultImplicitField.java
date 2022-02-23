@@ -19,7 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
@@ -28,9 +28,10 @@ public class DefaultImplicitField extends DefaultTypedNamedField implements Impl
 
     private final Term serializeExpression;
 
-    public DefaultImplicitField(Map<String, Term> attributes, TypeReference type, String name, Term serializeExpression) {
-        super(attributes,type,name);
+    public DefaultImplicitField(Map<String, Term> attributes, SimpleTypeReference type, String name, Term serializeExpression) {
+        super(attributes, name);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
+        this.type = type;
     }
 
     public Term getSerializeExpression() {

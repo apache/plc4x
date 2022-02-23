@@ -19,7 +19,6 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.PeekField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
@@ -30,8 +29,8 @@ public class DefaultPeekField extends DefaultTypedNamedField implements PeekFiel
 
     private final Term offsetExpression;
 
-    public DefaultPeekField(Map<String, Term> attributes, TypeReference type, String name, Term offsetExpression) {
-        super(attributes, type, name);
+    public DefaultPeekField(Map<String, Term> attributes, String name, Term offsetExpression) {
+        super(attributes, name);
         this.offsetExpression = offsetExpression;
     }
 

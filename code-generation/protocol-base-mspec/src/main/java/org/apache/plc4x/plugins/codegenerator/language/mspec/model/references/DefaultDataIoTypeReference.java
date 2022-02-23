@@ -18,26 +18,24 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.references.EnumTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.DataIoTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultEnumTypeReference implements EnumTypeReference {
+public class DefaultDataIoTypeReference implements DataIoTypeReference {
 
     protected final String name;
 
     protected final List<Term> params;
 
-    protected transient EnumTypeDefinition typeDefinition;
+    protected transient DataIoTypeDefinition typeDefinition;
 
-    public DefaultEnumTypeReference(String name, List<Term> params) {
+    public DefaultDataIoTypeReference(String name, List<Term> params) {
         this.name = Objects.requireNonNull(name);
         this.params = params;
     }
@@ -53,33 +51,28 @@ public class DefaultEnumTypeReference implements EnumTypeReference {
     }
 
     @Override
-    public Optional<SimpleTypeReference> getBaseTypeReference() {
-        return getEnumTypeDefinition().getType();
-    }
-
-    @Override
     public TypeDefinition getTypeDefinition() {
-        return getEnumTypeDefinition();
+        return getDataIoTypeDefinition();
     }
 
     @Override
     public void setTypeDefinition(TypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
-        if(!(typeDefinition instanceof EnumTypeDefinition)) {
-            throw new IllegalArgumentException("DefaultEnumTypeReferences only accept instances of EnumTypeDefinitions");
+        if (!(typeDefinition instanceof DataIoTypeDefinition)) {
+            throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
         }
-        this.typeDefinition = ((EnumTypeDefinition) typeDefinition);
+        this.typeDefinition = ((DataIoTypeDefinition) typeDefinition);
     }
 
     @Override
-    public EnumTypeDefinition getEnumTypeDefinition() {
+    public DataIoTypeDefinition getDataIoTypeDefinition() {
         if (typeDefinition == null) {
             throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
         }
         return typeDefinition;
     }
 
-    public void setEnumTypeDefinition(EnumTypeDefinition typeDefinition) {
+    public void setDataIoTypeDefinition(DataIoTypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
         this.typeDefinition = typeDefinition;
     }
@@ -87,16 +80,16 @@ public class DefaultEnumTypeReference implements EnumTypeReference {
     @Override
     public String toString() {
         return "DefaultComplexTypeReference{" +
-                "name='" + name + '\'' +
-                ", params=" + params +
-                '}';
+            "name='" + name + '\'' +
+            ", params=" + params +
+            '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DefaultEnumTypeReference that = (DefaultEnumTypeReference) o;
+        DefaultDataIoTypeReference that = (DefaultDataIoTypeReference) o;
         return Objects.equals(name, that.name) && Objects.equals(params, that.params);
     }
 
