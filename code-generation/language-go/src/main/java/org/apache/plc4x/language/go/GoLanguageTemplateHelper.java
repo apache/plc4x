@@ -767,8 +767,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 .flatMap(TypeReferenceConversions::asNonSimpleTypeReference);
             if (typeReferenceForProperty.isPresent()) {
                 tracer = tracer.dive("complex");
-                final TypeReference nonSimpleTypeReference = typeReferenceForProperty.get();
-                TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(nonSimpleTypeReference);
+                final NonSimpleTypeReference nonSimpleTypeReference = typeReferenceForProperty.get();
+                TypeDefinition typeDefinition = nonSimpleTypeReference.getTypeDefinition();
                 if (typeDefinition instanceof ComplexTypeDefinition) {
                     tracer = tracer.dive("complex");
                     ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
@@ -1424,8 +1424,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         complexTypeDefinition -> complexTypeDefinition.getPropertyFieldByName(propertyName)
                             .map(TypedField.class::cast)
                             .map(TypedField::getType)
-                            .filter(ComplexTypeReference.class::isInstance)
-                            .map(this::getTypeDefinitionForTypeReference)
+                            .filter(NonSimpleTypeReference.class::isInstance)
+                            .map(NonSimpleTypeReference.class::cast)
+                            .map(NonSimpleTypeReference::getTypeDefinition)
                             .map(typeDefinition -> !(typeDefinition instanceof EnumTypeDefinition))
                             .orElse(false)
                     )

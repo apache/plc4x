@@ -120,9 +120,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         TypedField typedField = field.asTypedField().orElseThrow(IllegalStateException::new);
         TypeReference typeReference = typedField.getType();
-        if (typeReference.isComplexTypeReference()) {
-            final TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            if (typeDefinition instanceof DataIoTypeDefinition) {
+        if (typeReference.isNonSimpleTypeReference()) {
+            if (typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition() instanceof DataIoTypeDefinition) {
                 return "plc4c_data*";
             }
         }
@@ -323,8 +322,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         if ("null".equals(valueString)) {
             // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
-            if (typeReference instanceof ComplexTypeReference) {
-                if (getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition) {
+            if (typeReference.isNonSimpleTypeReference()) {
+                if (typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition().isEnumTypeDefinition()) {
                     return "-1";
                 }
             }
@@ -648,11 +647,10 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 lengthExpression = "_message";
             } else {
-                final Optional<TypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(variableLiteral.getName());
-                if (typeReferenceForProperty.isEmpty()) {
-                    throw new FreemarkerException("Unknown type for property " + variableLiteral.getName());
-                }
-                lengthType = getTypeDefinitionForTypeReference(typeReferenceForProperty.get());
+                final TypeReference typeReferenceForProperty = ((ComplexTypeDefinition) baseType)
+                    .getTypeReferenceForProperty(variableLiteral.getName())
+                    .orElseThrow(()->new FreemarkerException("Unknown type for property " + variableLiteral.getName()));
+                lengthType = typeReferenceForProperty.asNonSimpleTypeReference().orElseThrow().getTypeDefinition();
                 lengthExpression = variableExpressionGenerator.apply(variableLiteral);
             }
             return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
@@ -983,8 +981,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         if (typeReferenceForProperty.isPresent()) {
             final TypeReference typeReference = typeReferenceForProperty.get();
             if (typeReference instanceof ComplexTypeReference) {
-                final TypeDefinition typeDefinitionForTypeReference =
-                    getTypeDefinitionForTypeReference(typeReference);
+                final TypeDefinition typeDefinitionForTypeReference = typeReference.asComplexTypeReference().orElseThrow().getTypeDefinition();
                 if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (variableLiteral.getChild().isPresent())) {
                     tracer = tracer.dive("is enum type definition");
                     sb.append(camelCaseToSnakeCase(variableLiteral.getName()));

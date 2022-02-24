@@ -258,20 +258,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (typeReference.isSimpleTypeReference()) {
             return false;
         }
-        TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+        TypeDefinition typeDefinition = typeReference.asNonSimpleTypeReference().orElseThrow()
+            .getTypeDefinition();
         return typeDefinition instanceof EnumTypeDefinition;
-    }
-
-    /* *********************************************************************************
-     * Methods related to type-definitions.
-     **********************************************************************************/
-
-    public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        Objects.requireNonNull(typeReference);
-        NonSimpleTypeReference complexTypeReference = typeReference
-            .asNonSimpleTypeReference()
-            .orElseThrow(() -> new FreemarkerException("Type reference must be a non simple type reference"));
-        return complexTypeReference.getTypeDefinition();
     }
 
     /* *********************************************************************************
@@ -403,14 +392,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return filteredEnumValues.values();
     }
 
-    public SimpleTypeReference getEnumFieldSimpleTypeReference(TypeReference type, String fieldName) {
-        TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(type);
-
-        if (typeDefinition instanceof EnumTypeDefinition
-            && ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName) instanceof SimpleTypeReference) {
-            return (SimpleTypeReference) ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName);
+    public SimpleTypeReference getEnumFieldSimpleTypeReference(NonSimpleTypeReference type, String fieldName) {
+        if (!(type.getTypeDefinition() instanceof EnumTypeDefinition)
+            || !(((EnumTypeDefinition) type.getTypeDefinition()).getConstantType(fieldName) instanceof SimpleTypeReference)) {
+            throw new IllegalArgumentException("not an enum type or enum constant is not a simple type");
         }
-        throw new IllegalArgumentException("not an enum type or enum constant is not a simple type");
+        return (SimpleTypeReference) ((EnumTypeDefinition) type.getTypeDefinition()).getConstantType(fieldName);
     }
 
     /**
