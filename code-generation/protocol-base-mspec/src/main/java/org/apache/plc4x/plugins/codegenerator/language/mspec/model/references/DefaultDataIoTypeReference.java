@@ -52,8 +52,11 @@ public class DefaultDataIoTypeReference implements DataIoTypeReference {
     }
 
     @Override
-    public TypeDefinition getTypeDefinition() {
-        return getDataIoTypeDefinition();
+    public ComplexTypeDefinition getTypeDefinition() {
+        if (typeDefinition == null) {
+            throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
+        }
+        return typeDefinition;
     }
 
     @Override
@@ -63,14 +66,6 @@ public class DefaultDataIoTypeReference implements DataIoTypeReference {
             throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
         }
         this.typeDefinition = ((DataIoTypeDefinition) typeDefinition);
-    }
-
-    @Override
-    public ComplexTypeDefinition getComplexTypeDefinition() {
-        if (typeDefinition == null) {
-            throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
-        }
-        return typeDefinition;
     }
 
     @Override

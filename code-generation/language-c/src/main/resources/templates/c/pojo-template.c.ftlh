@@ -122,6 +122,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     <#switch field.typeName>
         <#case "array">
             <#assign arrayField = field.asArrayField().orElseThrow()>
+            <#assign elementTypeReference = arrayField.getType().getElementTypeReference()>
             <#-- @ftlvariable name="field" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
 
 <#if indentContent>  </#if>  // Array field (${arrayField.name})
@@ -136,19 +137,19 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    // Count array
 <#if indentContent>  </#if>    uint16_t itemCount = (uint16_t) ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)};
 <#if indentContent>  </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
-<#if indentContent>  </#if>      <#if !arrayField.type.isSimpleTypeReference()>bool lastItem = curItem == (itemCount - 1);</#if>
+<#if indentContent>  </#if>      <#if !elementTypeReference.isSimpleTypeReference()>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if arrayField.type.isSimpleTypeReference()>
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}));
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "_value", field)};
+<#if elementTypeReference.isSimpleTypeReference()>
+<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}));
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "_value", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
 <#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if arrayField.type.isComplexTypeReference() && arrayField.type.asComplexTypeReference().get().getParams().isPresent()>, <#list arrayField.type.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -162,17 +163,17 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    uint8_t ${arrayField.name}EndPos = plc4c_spi_read_get_pos(readBuffer) + _${arrayField.name}Length;
 <#if indentContent>  </#if>    while(plc4c_spi_read_get_pos(readBuffer) < ${arrayField.name}EndPos) {
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if arrayField.type.isSimpleTypeReference()>
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value", arrayField)};
+<#if elementTypeReference.isSimpleTypeReference()>
+<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} _value = ${helper.getNullValueForTypeReference(elementTypeReference)};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "&_value", arrayField)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if arrayField.type.isComplexTypeReference() && arrayField.type.asComplexTypeReference().get().getParams().isPresent()>, <#list arrayField.type.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -185,17 +186,17 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    // Terminated array
 <#if indentContent>  </#if>    while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if arrayField.type.isSimpleTypeReference()>
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value", field)};
+<#if elementTypeReference.isSimpleTypeReference()>
+<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} _value = ${helper.getNullValueForTypeReference(elementTypeReference)};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "&_value", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if arrayField.type.isComplexTypeReference() && arrayField.type.asComplexTypeReference().get().getParams().isPresent()>, <#list arrayField.type.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -445,18 +446,19 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
     <#switch field.typeName>
         <#case "array">
             <#assign arrayField = field.asArrayField().orElseThrow()>
+            <#assign elementTypeReference = arrayField.type.elementTypeReference>
 
 <#if indentContent>    </#if>  // Array field (${arrayField.name})
 <#if indentContent>    </#if>  {
 <#if indentContent>    </#if>    uint8_t itemCount = plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
 <#if indentContent>    </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
             <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
-<#if !arrayField.type.isSimpleTypeReference()><#if indentContent>    </#if>      bool lastItem = curItem == (itemCount - 1);</#if>
-<#if indentContent>    </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = (${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message-><@fieldName baseType=baseType field=arrayField/>, curItem);
-            <#if arrayField.type.isSimpleTypeReference()>
-<#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(arrayField.type, "*_value", field)};
+<#if !elementTypeReference.isSimpleTypeReference()><#if indentContent>    </#if>      bool lastItem = curItem == (itemCount - 1);</#if>
+<#if indentContent>    </#if>      ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}* _value = (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}*) plc4c_utils_list_get_value(_message-><@fieldName baseType=baseType field=arrayField/>, curItem);
+            <#if elementTypeReference.isSimpleTypeReference()>
+<#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(elementTypeReference, "*_value", field)};
             <#else>
-<#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(writeBuffer, (void*) _value<#--#if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElse(null)) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, parserArguments)}<#sep>, </#sep></#list></#if-->);
+<#if indentContent>    </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_serialize(writeBuffer, (void*) _value<#--#if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElse(null)) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, parserArguments)}<#sep>, </#sep></#list></#if-->);
 <#if indentContent>    </#if>      if(_res != OK) {
 <#if indentContent>    </#if>        return _res;
 <#if indentContent>    </#if>      }
@@ -625,16 +627,17 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
         <#switch field.typeName>
             <#case "array">
                 <#assign arrayField = field.asArrayField().orElseThrow()>
+                <#assign elementTypeReference = arrayField.type.elementTypeReference>
 
 <#if indentContent>    </#if>  // Array field
-                <#if arrayField.type.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = arrayField.type>
+                <#if elementTypeReference.isSimpleTypeReference()>
+                    <#assign simpleTypeReference = elementTypeReference>
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits} * plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
                 <#else>
 <#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=arrayField/> != NULL) {
 <#if indentContent>    </#if>    plc4c_list_element* curElement = _message-><@fieldName baseType=baseType field=arrayField/>->tail;
 <#if indentContent>    </#if>    while (curElement != NULL) {
-<#if indentContent>    </#if>      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}((${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) curElement->value);
+<#if indentContent>    </#if>      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}((${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}*) curElement->value);
 <#if indentContent>    </#if>      curElement = curElement->next;
 <#if indentContent>    </#if>    }
 <#if indentContent>    </#if>  }

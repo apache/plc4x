@@ -377,7 +377,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (typeReference.isComplexTypeReference()) {
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            ComplexTypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference).asComplexTypeDefinition().orElseThrow();
+            ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
@@ -461,7 +461,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if ("value".equals(attributeName)) {
             outputTypeReference = getEnumBaseTypeReference(typeReference);
         } else {
-            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference, attributeName);
+            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
         return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }

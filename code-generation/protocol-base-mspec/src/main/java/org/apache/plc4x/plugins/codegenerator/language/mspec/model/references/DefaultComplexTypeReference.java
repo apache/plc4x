@@ -51,8 +51,11 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     }
 
     @Override
-    public TypeDefinition getTypeDefinition() {
-        return getComplexTypeDefinition();
+    public ComplexTypeDefinition getTypeDefinition() {
+        if (typeDefinition == null) {
+            throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
+        }
+        return typeDefinition;
     }
 
     @Override
@@ -62,14 +65,6 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
             throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
         }
         this.typeDefinition = ((ComplexTypeDefinition) typeDefinition);
-    }
-
-    @Override
-    public ComplexTypeDefinition getComplexTypeDefinition() {
-        if (typeDefinition == null) {
-            throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
-        }
-        return typeDefinition;
     }
 
     public void setComplexTypeDefinition(ComplexTypeDefinition typeDefinition) {
