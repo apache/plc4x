@@ -150,7 +150,7 @@ public class ${type.name} {
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                             <#elseif arrayField.isTerminatedArrayField()>
             // Terminated array
-            List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = new LinkedList<>();
+            ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} ${arrayField.name} = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
                 ${arrayField.name}.add(<#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 

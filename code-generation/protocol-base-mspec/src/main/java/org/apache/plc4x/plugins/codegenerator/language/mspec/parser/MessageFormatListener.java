@@ -212,7 +212,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
             }
-            field.setType(typeReference);
+            field.setType(new DefaultArrayTypeReference(typeReference));
         });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
@@ -330,7 +330,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 LOGGER.error("Error setting type for {}", field, throwable);
                 return;
             }
-            field.setType(typeReference);
+            field.setType(new DefaultArrayTypeReference(typeReference));
         });
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
@@ -500,11 +500,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         List<Argument> parserArguments = new LinkedList<>();
         // For DataIO types, add all the arguments from the parent type.
-        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)
+/*        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)
             && ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
             parserArguments.addAll(getParserArguments(
                 ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument()));
-        }
+        }*/
         // Add all eventually existing local arguments.
         if (ctx.argumentList() != null) {
             parserArguments.addAll(getParserArguments(ctx.argumentList().argument()));
@@ -521,7 +521,11 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
                 discriminatorValues, parserContexts.pop());
-        dispatchType(typeName, type);
+
+        // For DataIO we don't need to generate the sub-types as these will be PlcValues.
+        if(!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {
+            dispatchType(typeName, type);
+        }
 
         // Add the type to the switch field definition.
         DefaultSwitchField switchField = getSwitchField();

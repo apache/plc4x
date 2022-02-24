@@ -60,9 +60,36 @@ import java.util.Map;
 
 public enum ${type.name} {
 
-<#list type.enumValues as enumValue>
-    ${enumValue.name}(<#if type.type.isPresent()>(${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}) <#if type.type.orElseThrow().isComplexTypeReference()><#if helper.isEnumTypeReference(type.type.orElseThrow())>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}.${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if></#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName><#if type.getConstantType(constantName).isComplexTypeReference()><#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElse(null)) == 'null'>null<#elseif helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if><#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if><#sep>, </#sep></#list></#if>)<#sep>,
-</#sep></#list>;
+<@compress single_line=true>
+    <#list type.enumValues as enumValue>
+        ${enumValue.name}(
+            <#if type.type.isPresent()>
+                (${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)})
+                <#if type.type.orElseThrow().isNonSimpleTypeReference()>
+                    <#if type.type.orElseThrow().isEnumTypeReference()>
+                        ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}.${enumValue.value}
+                    <#else>
+                        ${enumValue.value}
+                    </#if>
+                <#else>
+                    ${enumValue.value}
+                </#if>
+            </#if>
+            <#if type.constantNames?has_content>
+                <#if type.type?has_content>, </#if>
+                <#list type.constantNames as constantName>
+                    <#if type.getConstantType(constantName).isNonSimpleTypeReference()>
+                        <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElse(null)) == 'null'>
+                            null
+                        <#elseif type.getConstantType(constantName).isEnumTypeReference()>
+                            ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if><#else>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
+                        </#if>
+                    <#sep>, </#sep>
+                </#list>
+            </#if>)
+        <#sep>, </#sep>
+    </#list>;
+</@compress>
 
 <#if type.type.isPresent()>
     private static final Logger logger = LoggerFactory.getLogger(${type.name}.class);

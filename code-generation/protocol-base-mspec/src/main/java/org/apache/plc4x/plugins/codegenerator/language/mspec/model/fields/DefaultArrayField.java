@@ -19,6 +19,8 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
+import org.apache.plc4x.plugins.codegenerator.types.references.ArrayTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
@@ -41,6 +43,19 @@ public class DefaultArrayField extends DefaultTypedNamedField implements ArrayFi
 
     public Term getLoopExpression() {
         return loopExpression;
+    }
+
+    @Override
+    public void setType(TypeReference typeReference) {
+        if(!(typeReference instanceof ArrayTypeReference)) {
+            throw new IllegalArgumentException("Array fields can only have ArrayTypeReferences");
+        }
+        super.setType(typeReference);
+    }
+
+    @Override
+    public ArrayTypeReference getType() {
+        return (ArrayTypeReference) super.getType();
     }
 
     @Override

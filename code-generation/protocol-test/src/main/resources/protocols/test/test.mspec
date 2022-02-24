@@ -141,10 +141,10 @@
 ]
 
 [type ArrayTypeTest
-    [array bit bitField count      '5']
-    [array int 8 intField count      '5']
-    [array uint 8 uintField count      '5']
-    [array float 32 floatField count      '5']
+    [array bit bitField count              '5']
+    [array int 8 intField count            '5']
+    [array uint 8 uintField count          '5']
+    [array float 32 floatField count       '5']
     [array float 64 doubleField count      '5']
     [array string 8 stringField count      '5']
 ]
