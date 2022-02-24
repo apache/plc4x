@@ -300,12 +300,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
             switchField = parentType.getSwitchField().orElse(null);
             typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
-        } else if (thisType instanceof ComplexTypeDefinition) {
-            switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(propertyName).orElse(null);
         } else if (thisType instanceof DefaultDataIoTypeDefinition) {
             final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) this.thisType;
-            switchField = dataIoTypeDefinition.getSwitchField();
+            switchField = dataIoTypeDefinition.getSwitchField().orElseThrow();
             typeRefRetriever = propertyName -> thisType.getParserArguments()
                 .orElse(Collections.emptyList())
                 .stream()
@@ -313,6 +310,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
                 .findFirst()
                 .map(Argument::getType)
                 .orElse(null);
+        } else if (thisType instanceof ComplexTypeDefinition) {
+            switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(propertyName).orElse(null);
         }
         // Get the typeSwitch field from that.
         if (switchField == null) {
