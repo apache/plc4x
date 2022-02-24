@@ -770,7 +770,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                             <#else>
                                 <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
                                 <#assign typeName=complexTypeReference.name>
-                                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                                <#assign typeDefinition=complexTypeReference.typeDefinition>
                                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                                 <#-- Usually you don't use child directly unless they are parameterized #-->
                                     <#assign typeName=typeDefinition.parentType.orElseThrow().name>
@@ -834,7 +834,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 							<#else>
                                 <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
                                 <#assign typeName=complexTypeReference.name>
-                                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                                <#assign typeDefinition=complexTypeReference.typeDefinition>
                                 <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
                                 <#-- Usually you don't use child directly unless they are parameterized #-->
                                     <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
@@ -1086,7 +1086,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<@compress single_line=true>
                 <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
                 <#assign typeName=complexTypeReference.name>
-                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                <#assign typeDefinition=complexTypeReference.typeDefinition>
                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#-- Usually you don't use child directly unless they are parameterized #-->
                     <#assign typeName=typeDefinition.parentType.orElseThrow().name>
@@ -1140,7 +1140,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<@compress single_line=true>
                 <#assign complexTypeReference=assertField.type.asComplexTypeReference().orElseThrow()>
                 <#assign typeName=complexTypeReference.name>
-                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                <#assign typeDefinition=complexTypeReference.typeDefinition>
                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#-- Usually you don't use child directly unless they are parameterized #-->
                     <#assign typeName=typeDefinition.parentType.orElseThrow().name>
@@ -1216,7 +1216,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#else>
         <#assign nonSimpleTypeReference=simpleField.type.asNonSimpleTypeReference().orElseThrow()>
         <#assign typeName=nonSimpleTypeReference.name>
-        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(nonSimpleTypeReference)>
+        <#assign typeDefinition=nonSimpleTypeReference.typeDefinition>
         <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
         <#-- Usually you don't use child directly unless they are parameterized #-->
             <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
@@ -1367,7 +1367,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <@compress single_line=true>
                         <#assign complexTypeReference=peekField.type.asComplexTypeReference().orElseThrow()>
                         <#assign typeName=complexTypeReference.name>
-                        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                        <#assign typeDefinition=complexTypeReference.typeDefinition>
                         <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                         <#-- Usually you don't use child directly unless they are parameterized #-->
                             <#assign typeName=typeDefinition.parentType.orElseThrow().name>
