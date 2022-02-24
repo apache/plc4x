@@ -89,10 +89,10 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     @Override
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
         Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
-        pipeline.addLast(getMessageCodec(configuration));
         if (this.encryptionHandler != null) {
             pipeline.addLast(this.encryptionHandler);
         }
+        pipeline.addLast(getMessageCodec(configuration));
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, this.protocol.apply(configuration));
         DriverContext driverContext = this.driverContext.apply(configuration);
         if (driverContext != null) {
