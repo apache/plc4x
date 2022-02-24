@@ -96,7 +96,7 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	switch e  {
 		<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 		case ${helper.escapeValue(type.type.orElseThrow(), enumValue.value)}: { /* '${enumValue.value}' */
-		    <#if type.getConstantType(constantName).isComplexTypeReference()>
+		    <#if type.getConstantType(constantName).isNonSimpleTypeReference()>
 		        <#if helper.isEnumTypeReference(type.getConstantType(constantName))>
 			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if>
 			    <#else>

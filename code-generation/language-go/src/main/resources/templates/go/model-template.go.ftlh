@@ -88,7 +88,7 @@ type ${type.name} struct {
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 	<#list type.propertyFields as field>
-	${field.name?cap_first} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
+	${field.name?cap_first} <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 	</#list>
 </#if>
 <#if parserArguments?has_content>
@@ -113,19 +113,19 @@ type I${type.name} interface {
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 	// ${discriminatorName?cap_first} returns ${discriminatorName?cap_first}
-	${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isComplexTypeReference() && !helper.isEnumTypeReference(discriminatorType)>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
+	${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference() && !helper.isEnumTypeReference(discriminatorType)>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
 	</#list>
 </#if>
 <#list type.propertyFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first}
-	Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
 <#list type.virtualFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
 	// Get${field.name?cap_first} returns ${field.name?cap_first}
-	Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -144,11 +144,11 @@ type I${type.name} interface {
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
-func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isComplexTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 	return
 				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
-					<#if typeRef.isComplexTypeReference()>
+					<#if typeRef.isNonSimpleTypeReference()>
 						<#if helper.isEnumTypeReference(typeRef)>
                             <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
                             <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
@@ -169,11 +169,11 @@ func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isComplexTy
 			</@compress>
 }
 
-func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isComplexTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 				return
 				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
-					<#if typeRef.isComplexTypeReference()>
+					<#if typeRef.isNonSimpleTypeReference()>
 						<#if helper.isEnumTypeReference(typeRef)>
 							<#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
 							<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
@@ -211,7 +211,7 @@ type I${type.name}Child interface {
 	<#if type.getPropertyFields()?has_content>, </#if>
 	<#list type.getPropertyFields() as field>
 		${field.name}
-		<#if field.loopType??>[]</#if>
+
 		<#if helper.needsPointerAccess(field)>*</#if>
 		${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
@@ -238,7 +238,7 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().
 	<#if parentTypeHasPropertyFields>, </#if>
     <#list type.parentPropertyFields as parentField>
         ${parentField.name}
-        <#if parentField.loopType??>[]</#if>
+
         <#if helper.needsPointerAccess(parentField)>*</#if>
         ${helper.getLanguageTypeNameForField(parentField)}
         <#sep>, </#sep>
@@ -256,7 +256,7 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().
 ///////////////////////////////////////////////////////////
 <#list type.propertyFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
-func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 	return m.${field.name?cap_first}
 }
 
@@ -267,7 +267,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#i
 ///////////////////////////////////////////////////////////
 <#list type.virtualFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
-func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
     <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
@@ -285,13 +285,13 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if field.loopType??>[]</#i
 <@compress single_line=true>
 func New${type.name}(
 	<#list type.propertyFields as field>
-		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
+		${field.name} <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
 	</#list>
 	<#if type.parentType.isPresent()>
 		<#if type.propertyFields?has_content && type.parentPropertyFields?has_content>, </#if>
 		<#list type.parentPropertyFields as parentField>
-			${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+			${parentField.name} <#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
 			<#sep>, </#sep>
 		</#list>
 	</#if>
@@ -377,14 +377,15 @@ func (m *${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
+                    <#assign arrayElementType = arrayField.type.elementTypeReference>
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-				<#if arrayField.type.isVstringTypeReference()>
-                    <#assign vstringTypeReference = arrayField.type.asVstringTypeReference().orElseThrow()>
+				<#if arrayElementType.isVstringTypeReference()>
+                    <#assign vstringTypeReference = arrayElementType.asVstringTypeReference().orElseThrow()>
 		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
-				<#elseif arrayField.type.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
+				<#elseif arrayElementType.isSimpleTypeReference()>
+                    <#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
 				<#if arrayField.isCountArrayField()>
@@ -450,6 +451,7 @@ func (m *${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 					<#break>
 				<#case "manualArray">
 					<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+	                <#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
 	${manualArrayField.name} := m.${manualArrayField.name?cap_first}<#-- TODO: ugly workaround for missing static evaluation-->
@@ -544,14 +546,15 @@ func (m *${type.name}) GetParentLengthInBits() uint16 {
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field.asArrayField().orElseThrow()>
+                <#assign arrayElementType = arrayField.type.elementTypeReference>
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-				<#if arrayField.type.isVstringTypeReference()>
-					<#assign vstringTypeReference=arrayField.type.asVstringTypeReference().orElseThrow()>
+				<#if arrayElementType.isVstringTypeReference()>
+					<#assign vstringTypeReference=arrayElementType.asVstringTypeReference().orElseThrow()>
 		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
-				<#elseif arrayField.type.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
+				<#elseif arrayElementType.isSimpleTypeReference()>
+                    <#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
 					<#if arrayField.isCountArrayField()>
@@ -619,9 +622,10 @@ func (m *${type.name}) GetParentLengthInBits() uint16 {
 				<#break>
 			<#case "manualArray">
 				<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+	            <#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
-	lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.lengthExpression, parserArguments)} * 8
+	lengthInBits += ${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.lengthExpression, parserArguments)} * 8
 				<#break>
 			<#case "manual">
 				<#assign manualField = field.asManualField().orElseThrow()>
@@ -704,7 +708,7 @@ func (m *${type.name}) GetLengthInBytes() uint16 {
 }
 
 <#assign hasParserArguments=parserArguments?has_content/>
-<#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
+<#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if>, error) {
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
@@ -717,7 +721,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field.asArrayField().orElseThrow()>
-				<#if arrayField.type.isByteBased()>
+                <#assign arrayElementType = arrayField.type.elementTypeReference>
+				<#if arrayElementType.isByteBased()>
 	// Byte Array field (${arrayField.name})
 	<#assign numberOfBytesExpression>
 		<#compress>
@@ -752,18 +757,18 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
-	${arrayField.name} := make([]<#if arrayField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	${arrayField.name} := make(<#if arrayElementType.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
 	{
 		for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}); curItem++ {
-						<#if (!arrayField.type.isSimpleTypeReference()) && helper.requiresVariable(arrayField, "lastItem")>
+						<#if (!arrayElementType.isSimpleTypeReference()) && helper.requiresVariable(arrayField, "lastItem")>
 			lastItem := curItem == uint16(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)} - 1)
 						</#if>
                         <@compress single_line=true>
 			_item, _err :=
-                            <#if arrayField.type.isSimpleTypeReference()>
-                                ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}
+                            <#if arrayElementType.isSimpleTypeReference()>
+                                ${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
                             <#else>
-                                <#assign complexTypeReference=arrayField.type.asComplexTypeReference().orElseThrow()>
+                                <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
                                 <#assign typeName=complexTypeReference.name>
                                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
@@ -777,7 +782,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 										,
                                         <#list complexTypeReference.params.orElseThrow() as parserArgument>
                                             <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
-                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}
+                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
                                             <#sep>, </#sep>
                                         </#list>
                                     </#if>
@@ -789,10 +794,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
-                        <#if arrayField.type.isSimpleTypeReference()>
+                        <#if arrayElementType.isSimpleTypeReference()>
 			${arrayField.name}[curItem] = _item
                         <#else>
-			${arrayField.name}[curItem] = Cast${arrayField.type.asComplexTypeReference().orElseThrow().name}(_item)
+			${arrayField.name}[curItem] = Cast${arrayElementType.asComplexTypeReference().orElseThrow().name}(_item)
                         </#if>
 		}
 	}
@@ -800,12 +805,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#elseif field.isLengthArrayField()>
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
-	${arrayField.name} := make([]<#if arrayField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
+	${arrayField.name} := make(<#if arrayElementType.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	{
 		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
 		_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
 		for ;readBuffer.GetPos() < _${arrayField.name}EndPos; {
-			_item, _err := <#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+			_item, _err := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayElementType.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayElementType.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayElementType.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -819,15 +824,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	${arrayField.name} := make([]<#if helper.needsPointerAccess(arrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
+	${arrayField.name} := make(<#if helper.needsPointerAccess(arrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	{
 		for ;!bool(${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}); {
 						<@compress single_line=true>
 			_item, _err :=
-							<#if arrayField.type.isSimpleTypeReference()>
-								${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}
+							<#if arrayElementType.isSimpleTypeReference()>
+								${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
 							<#else>
-                                <#assign complexTypeReference=arrayField.type.asComplexTypeReference().orElseThrow()>
+                                <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
                                 <#assign typeName=complexTypeReference.name>
                                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
                                 <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
@@ -841,7 +846,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 										,
                                         <#list complexTypeReference.params.orElseThrow() as parserArgument>
                                             <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
-                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}
+                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
                                             <#sep>, </#sep>
                                         </#list>
                                     </#if>
@@ -853,10 +858,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
-						<#if arrayField.type.isSimpleTypeReference()>
+						<#if arrayElementType.isSimpleTypeReference()>
 			${arrayField.name} = append(${arrayField.name}, _item)
 						<#else>
-			${arrayField.name} = append(${arrayField.name}, Cast${arrayField.type.asComplexTypeReference().orElseThrow().name}(_item))
+			${arrayField.name} = append(${arrayField.name}, Cast${arrayElementType.asComplexTypeReference().orElseThrow().name}(_item))
 						</#if>
 
 						<#-- After parsing, update the current position, but only if it's needed -->
@@ -969,6 +974,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#break>
 			<#case "manualArray">
 				<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+            	<#assign arrayElementType = manualArrayField.type.elementTypeReference>
 	if pullErr := readBuffer.PullContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
@@ -981,9 +987,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#if field.isCountArrayField()>
 	// Count array
 	_${manualArrayField.name}Count := ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.loopExpression, parserArguments)}
-	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count]
+	${helper.getLanguageTypeNameForField(field)} ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count]
 	for i := 0; i < _${manualArrayField.name}Count; i++ {
-		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})
+		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})
 	}
 				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
 				<#else>
@@ -991,10 +997,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#if field.isLengthArrayField()>
 	// Length array
 	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(manualArrayField, 16, manualArrayField.loopExpression, parserArguments)}
-	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	_${manualArrayField.name}List := make(${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
 	${manualArrayField.name}EndPos := readBuffer.GetPos() + _${manualArrayField.name}Length
 	for ;readBuffer.GetPos() < ${manualArrayField.name}EndPos; {
-		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})))
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
 		curPos = readBuffer.GetPos() - startPos
@@ -1003,12 +1009,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	_${manualArrayField.name}List := make([]<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	_${manualArrayField.name}List := make(<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
 	{
 		_values := &_${manualArrayField.name}List
 		_ = _values
 		for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
-		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})))
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
@@ -1023,7 +1029,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					Otherwise a simple toArray call is fine.
 				-->
 					<#if field.type.isSimpleTypeReference()>
-	${manualArrayField.name} := make([]${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
+	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
 	for i := 0; i < len(_${manualArrayField.name}List); i++ {
 		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])
 	}
@@ -1268,12 +1274,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 									<#-- We remove debug informations as we need them for lookup-->
 									<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
 									<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
-									<#if discriminatorType?has_content && discriminatorType.isComplexTypeReference()>
-										<#--TODO: What is meant to be here????-->
-									</#if>
 									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
 									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
-									<#elseif discriminatorType?has_content && discriminatorType.isComplexTypeReference()>
+									<#elseif discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
 										<#if helper.isEnumTypeReference(discriminatorType)>
 											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
 											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
@@ -1418,7 +1421,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	return _child.${type.parentType.orElseThrow().name}, nil
 	<#else>
 	// Create the instance
-	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isComplexTypeReference() && !helper.isEnumTypeReference(arg.type)>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
+	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(arg.type)>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
 	</#if>
 }
 
@@ -1462,11 +1465,11 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
-					<#assign simpleTypeReference = arrayField.type>
+					<#assign arrayElementType = arrayField.type.elementTypeReference>
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
-					<#if arrayField.type.isByteBased()>
+					<#if arrayElementType.isByteBased()>
 		// Byte Array field (${arrayField.name})
 		_writeArrayErr := writeBuffer.WriteByteArray("${arrayField.name}", m.${arrayField.name?cap_first})
 		if _writeArrayErr != nil {
@@ -1476,16 +1479,16 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-						<#if arrayField.type.isComplexTypeReference() && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
+						<#if arrayElementType.isComplexTypeReference() && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
 					</#if>
 		for _, _element := range m.${arrayField.name?cap_first} {
-						<#if arrayField.type.isSimpleTypeReference()>
-							<#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
+						<#if arrayElementType.isSimpleTypeReference()>
+							<#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
 			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
 						<#else>
-						<#assign complexTypeReference = arrayField.type>
+						<#assign complexTypeReference = arrayElementType>
 						<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
 						</#if>
@@ -1593,6 +1596,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#break>
 				<#case "manualArray">
 					<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+                	<#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
 	if m.${manualArrayField.name?cap_first} != nil {
@@ -1601,7 +1605,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		for _, m := range m.${manualArrayField.name?cap_first} {
 			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong therefore we substract it with substring-->
-			${helper.toSerializationExpression(manualArrayField, manualArrayField.type, manualArrayField.serializeExpression, parserArguments)?replace("m.","")}
+			${helper.toSerializationExpression(manualArrayField, arrayElementType, manualArrayField.serializeExpression, parserArguments)?replace("m.","")}
 		}
 		if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr

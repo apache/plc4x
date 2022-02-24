@@ -93,6 +93,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             // TODO: shouldn't this be an error case
             return "";
         }
+        if (typeReference instanceof ArrayTypeReference) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            return "[]" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference());
+        }
         if (!(typeReference instanceof SimpleTypeReference)) {
             return ((NonSimpleTypeReference) typeReference).getName();
         }
@@ -244,7 +248,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case VSTRING:
                     return "\"\"";
             }
-        } else if (typeReference instanceof ComplexTypeReference && isEnumTypeReference(typeReference)) {
+        } else if (typeReference.isEnumTypeReference()) {
             return "0";
         }
         return "nil";
@@ -273,7 +277,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean needsPointerAccess(PropertyField field) {
-        return "optional".equals(field.getTypeName()) || (field.getType().isComplexTypeReference() && !isEnumField(field));
+        return "optional".equals(field.getTypeName()) || (field.getType().isNonSimpleTypeReference() && !isEnumField(field));
     }
 
     public String getSpecialReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, TypedField field) {
