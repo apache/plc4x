@@ -19,10 +19,8 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
-import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 

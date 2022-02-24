@@ -47,4 +47,10 @@ class MessageFormatParserTest {
         System.out.println(parse);
     }
 
+    @Test
+    void parseNothingElse() {
+        TypeContext parse = SUT.parse(getClass().getResourceAsStream("/mspec.example3"));
+        System.out.println(parse);
+    }
+
 }

@@ -17,6 +17,8 @@
  * under the License.
  */
 
+// https://modbus.org/docs/Modbus_Application_Protocol_V1_1b.pdf
+
 // Remark: The different fields are encoded in Big-endian.
 
 [type ModbusConstants
@@ -234,23 +236,37 @@
             [array      byte        value         count   'byteCount']
         ]
 
+        // Remark: Even if the Modbus spec states that supporting this type of request is mandatory
+        // I have not come across a single device that really supported it. Some devices just reacted
+        // with an error.
         ['false','0x2B','false'     ModbusPDUReadDeviceIdentificationRequest
+            [const  uint 8                       meiType  0x0E]
+            [simple ModbusDeviceInformationLevel level        ]
+            [simple uint 8                       objectId     ]
         ]
         ['false','0x2B','true'      ModbusPDUReadDeviceIdentificationResponse
+            [const    uint 8                                 meiType          0x0E                              ]
+            [simple   ModbusDeviceInformationLevel           level                                              ]
+            [simple   bit                                    individualAccess                                   ]
+            [simple   ModbusDeviceInformationConformityLevel conformityLevel                                    ]
+            [simple   ModbusDeviceInformationMoreFollows     moreFollows                                        ]
+            [simple   uint 8                                 nextObjectId                                       ]
+            [implicit uint 8                                 numberOfObjects  'COUNT(objects)'                  ]
+            [array    ModbusDeviceInformationObject          objects          count            'numberOfObjects']
         ]
     ]
 ]
 
 [type ModbusPDUReadFileRecordRequestItem
     [simple     uint 8     referenceType]
-    [simple     uint 16    fileNumber]
-    [simple     uint 16    recordNumber]
-    [simple     uint 16    recordLength]
+    [simple     uint 16    fileNumber   ]
+    [simple     uint 16    recordNumber ]
+    [simple     uint 16    recordLength ]
 ]
 
 [type ModbusPDUReadFileRecordResponseItem
-    [implicit   uint 8     dataLength     'COUNT(data) + 1']
-    [simple     uint 8     referenceType]
+    [implicit   uint 8     dataLength     'COUNT(data) + 1'       ]
+    [simple     uint 8     referenceType                          ]
     [array      byte       data           length  'dataLength - 1']
 ]
 
@@ -258,7 +274,7 @@
     [simple     uint 8     referenceType]
     [simple     uint 16    fileNumber]
     [simple     uint 16    recordNumber]
-    [implicit   uint 16    recordLength   'COUNT(recordData) / 2']
+    [implicit   uint 16    recordLength   'COUNT(recordData) / 2'   ]
     [array      byte       recordData     length  'recordLength * 2']
 ]
 
@@ -270,41 +286,49 @@
     [array      byte       recordData     length  'recordLength']
 ]
 
+[type ModbusDeviceInformationObject
+    [simple   uint 8 objectId                                  ]
+    [implicit uint 8 objectLength  'COUNT(data)'               ]
+    [array    byte   data          count         'objectLength']
+]
+
 [dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
     [typeSwitch dataType,numberOfValues
         ['BOOL','1' BOOL
-            [reserved uint 7 '0x00']
-            [simple   bit    value]
+            [reserved uint 15 '0x0000']
+            [simple   bit     value   ]
         ]
         ['BOOL' List
             [array bit value count 'numberOfValues']
         ]
         ['BYTE','1' BitString
-            [simple uint 8 value]
+            [reserved uint 8 '0x00']
+            [simple   uint 8 value ]
         ]
         ['BYTE' List
-            [array uint 8 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 8']
         ]
         ['WORD','1' BitString
             [simple uint 16 value]
         ]
         ['WORD' List
-            [array uint 16 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 16']
         ]
         ['DWORD','1' BitString
             [simple uint 32 value]
         ]
         ['DWORD' List
-            [array uint 32 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 32']
         ]
         ['LWORD','1' BitString
             [simple uint 64 value]
         ]
         ['LWORD' List
-            [array uint 64 value count 'numberOfValues']
+            [array bit value count 'numberOfValues * 64']
         ]
         ['SINT','1' SINT
-            [simple int 8 value]
+            [reserved uint 8 '0x00']
+            [simple   int 8  value ]
         ]
         ['SINT' List
             [array int 8 value count 'numberOfValues']
@@ -328,7 +352,8 @@
             [array int 64 value count 'numberOfValues']
         ]
         ['USINT','1' USINT
-            [simple uint 8 value]
+            [reserved uint 8 '0x00']
+            [simple   uint 8 value ]
         ]
         ['USINT' List
             [array uint 8 value count 'numberOfValues']
@@ -379,16 +404,16 @@
 ]
 
 [enum uint 8 ModbusDataType(uint 8 dataTypeSize)
-    ['1' BOOL ['1']]
-    ['2' BYTE ['1']]
+    ['1' BOOL ['2']]
+    ['2' BYTE ['2']]
     ['3' WORD ['2']]
     ['4' DWORD ['4']]
     ['5' LWORD ['8']]
-    ['6' SINT ['1']]
+    ['6' SINT ['2']]
     ['7' INT ['2']]
     ['8' DINT ['4']]
     ['9' LINT ['8']]
-    ['10' USINT ['1']]
+    ['10' USINT ['2']]
     ['11' UINT ['2']]
     ['12' UDINT ['4']]
     ['13' ULINT ['8']]
@@ -419,4 +444,22 @@
     ['8'    MEMORY_PARITY_ERROR]
     ['10'   GATEWAY_PATH_UNAVAILABLE]
     ['11'   GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND]
+]
+
+[enum uint 8 ModbusDeviceInformationLevel
+    ['0x01' BASIC     ]
+    ['0x02' REGULAR   ]
+    ['0x03' EXTENDED  ]
+    ['0x04' INDIVIDUAL]
+]
+
+[enum uint 7 ModbusDeviceInformationConformityLevel
+    ['0x01' BASIC_STREAM_ONLY   ]
+    ['0x02' REGULAR_STREAM_ONLY ]
+    ['0x03' EXTENDED_STREAM_ONLY]
+]
+
+[enum uint 8 ModbusDeviceInformationMoreFollows
+    ['0x00' NO_MORE_OBJECTS_AVAILABLE]
+    ['0xFF' MORE_OBJECTS_AVAILABLE   ]
 ]

@@ -120,7 +120,9 @@ ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)
 <#if helper.getAllConstFields()?has_content>
 
 // Constant values.
-    <#list helper.getAllConstFields() as constField, parentType>
+    <#list helper.getAllConstFields() as entry>
+        <#assign constField=entry.key>
+        <#assign parentType=entry.value>
 ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}();
     </#list>
 </#if>

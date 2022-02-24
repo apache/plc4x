@@ -61,6 +61,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @RequirePcapNg
 public class RandomPackagesTest {
 
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomPackagesTest.class);
 
     public static final String BACNET_BPF_FILTER_UDP = "udp port 47808";
@@ -943,6 +944,8 @@ public class RandomPackagesTest {
                     assertNotNull(serviceRequest);
                     BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification = (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) serviceRequest;
                     assertEquals((short) 123, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getSubscriberProcessIdentifier().getPayload().getValueUint8());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals((long) 12345, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
                     assertEquals(BACnetObjectType.BINARY_INPUT, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getMonitoredObjectIdentifier().getInstanceNumber());
                     assertEquals(9, baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification.getLifetimeInSeconds().getPayload().getActualValue() / 60);

@@ -36,6 +36,8 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		return model.ModbusPDUWriteFileRecordRequestItemParse(io)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return model.ModbusPDUReadFileRecordResponseItemParse(io)
+	case "ModbusDeviceInformationObject":
+		return model.ModbusDeviceInformationObjectParse(io)
 	case "ModbusConstants":
 		return model.ModbusConstantsParse(io)
 	case "ModbusTcpADU":

@@ -19,11 +19,15 @@
 package org.apache.plc4x.java.modbus;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
+import org.apache.plc4x.java.modbus.discovery.ModbusPlcDiscoverer;
 import org.apache.plc4x.java.modbus.field.ModbusField;
 import org.apache.plc4x.java.modbus.field.ModbusFieldHandler;
 import org.apache.plc4x.java.modbus.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -55,6 +59,21 @@ public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
     @Override
     protected String getDefaultTransport() {
         return "tcp";
+    }
+
+    @Override
+    public PlcDriverMetadata getMetadata() {
+        return new PlcDriverMetadata() {
+            @Override
+            public boolean canDiscover() {
+                return true;
+            }
+        };
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(new ModbusPlcDiscoverer());
     }
 
     /**

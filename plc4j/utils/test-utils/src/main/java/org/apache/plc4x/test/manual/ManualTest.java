@@ -63,9 +63,13 @@ public abstract class ManualTest {
                 Assertions.assertNotNull(readResponse.getPlcValue(fieldName), fieldName);
                 if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
-                    List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
-                    for (int j = 0; j < expectedValues.size(); j++) {
-                        Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
+                    if(testCase.expectedReadValue instanceof List) {
+                        List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
+                        for (int j = 0; j < expectedValues.size(); j++) {
+                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
+                        }
+                    } else {
+                        Assertions.fail("Got a list of values, but only expected one.");
                     }
                 } else {
                     Assertions.assertEquals(

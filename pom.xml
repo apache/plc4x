@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>24</version>
+    <version>25</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -161,7 +161,7 @@
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.1</asciidoctorj.version>
+    <asciidoctorj.version>2.5.3</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>false</skip-code-generation-tests>
@@ -1369,6 +1369,20 @@
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
           <version>3.9.0.2155</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <!--
+          TODO: somehow the newer version is broken as it reports dependencies which are compile in fact
+          e.g. plc4j-connection-pool:
+          [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
+          [WARNING] Non-test scoped test only dependencies found:
+          [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
+          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.10.0-SNAPSHOT:compile
+          -->
+          <version>3.1.2</version>
         </plugin>
       </plugins>
     </pluginManagement>

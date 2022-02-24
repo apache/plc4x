@@ -20,11 +20,14 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
 import org.antlr.v4.runtime.RuleContext;
 import org.apache.commons.io.IOUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.WildcardTerm;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
@@ -45,7 +48,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class MessageFormatListener extends MSpecBaseListener {
+public class MessageFormatListener extends MSpecBaseListener implements LazyTypeDefinitionConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageFormatListener.class);
 
@@ -67,6 +70,8 @@ public class MessageFormatListener extends MSpecBaseListener {
         return enumContexts;
     }
 
+    private String currentTypeName;
+
     @Override
     public void enterFile(MSpecParser.FileContext ctx) {
         parserContexts = new LinkedList<>();
@@ -76,6 +81,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterComplexType(MSpecParser.ComplexTypeContext ctx) {
+        currentTypeName = getIdString(ctx.name);
         // Set a map of attributes that should be set for all fields.
         Map<String, Term> curBatchSetAttributes = new HashMap<>();
         // Add all attributes defined in the current batchSet field.
@@ -491,7 +497,9 @@ public class MessageFormatListener extends MSpecBaseListener {
         String expressionString = getExprString(expressionContext);
         Objects.requireNonNull(expressionString, "Expression string should not be null");
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+
+        Objects.requireNonNull(currentTypeName, "expression term can only occur within a type");
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
@@ -504,7 +512,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         // TODO: make nullsafe
         final String variableLiteral = variableLiteralContext.getText();
         InputStream inputStream = IOUtils.toInputStream(variableLiteral, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             // As this come from a VariableLiteralContext we know that it is a VariableLiteral
             return (VariableLiteral) parser.parse(inputStream);
@@ -518,7 +526,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         // TODO: make nullsafe
         final String valueLiteralContextText = valueLiteralContext.getText();
         InputStream inputStream = IOUtils.toInputStream(valueLiteralContextText, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             // As this come from a ValueLiteralContext we know that it is a Literal
             return (Literal) parser.parse(inputStream);
@@ -607,7 +615,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private Term parseExpression(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
         try {
             Term term = parser.parse(inputStream);
             return term;
@@ -654,7 +662,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         return null;
     }
 
-    private void dispatchType(String typeName, TypeDefinition type) {
+    public void dispatchType(String typeName, TypeDefinition type) {
         LOGGER.debug("dispatching {}:{}", typeName, type);
         List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
@@ -669,7 +677,8 @@ public class MessageFormatListener extends MSpecBaseListener {
         types.put(typeName, type);
     }
 
-    private void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
+    @Override
+    public void setOrScheduleTypeDefinitionConsumer(String typeRefName, Consumer<TypeDefinition> setTypeDefinition) {
         LOGGER.debug("set or schedule {}", typeRefName);
         TypeDefinition typeDefinition = types.get(typeRefName);
         if (typeDefinition != null) {
