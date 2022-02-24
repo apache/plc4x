@@ -134,12 +134,12 @@ public class ${type.name} {
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${arrayField.name}EndPos) {
                 value.add(
-                <#if arrayField.type.isSimpleTypeReference()>
-                    new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}(${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})
-                <#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#if arrayField.params.isPresent()>,
+                <#if arrayField.type.elementTypeReference.isSimpleTypeReference()>
+                    new ${helper.getPlcValueTypeForTypeReference(arrayField.type.elementTypeReference)}(${helper.getReadBufferReadMethodCall(arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
+                <#else>${arrayField.type.elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer
+                    <#if arrayField.type.params.isPresent()>,
                         <#list arrayField.params.orElseThrow() as parserArgument>
-                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,arrayField.type, parserArgument,parserArguments)})
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type.elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,arrayField.type.elementTypeReference, parserArgument,parserArguments)})
                             <#sep>, </#sep>
                         </#list>
                     </#if>
@@ -366,13 +366,23 @@ public class ${type.name} {
 
                         <#if case.name == "Struct">
             for (PlcValue val : ((List<PlcValue>) values.getStruct().get("${arrayField.name}").getList())) {
+                <#if arrayField.type.elementTypeReference.isByteBased()>
+                ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.getRaw();
+                writeBuffer.writeByteArray("", value);
+                <#else>
                 ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
                 ${helper.getWriteBufferWriteMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "value", arrayField)};
+                </#if>
             }
                         <#else>
             for (PlcValue val : ((List<PlcValue>) values.getList())) {
+                <#if arrayField.type.elementTypeReference.isByteBased()>
+                byte[] value = (byte[]) val.getRaw();
+                writeBuffer.writeByteArray("", value);
+                <#else>
                 ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
-                ${helper.getWriteBufferWriteMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
+                ${helper.getWriteBufferWriteMethodCall(arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
+                </#if>
             }
                         </#if>
 
@@ -465,10 +475,10 @@ public class ${type.name} {
                 PlcList values = (PlcList) _value;
                 <#if case.name == "Struct">
                 // TODO: Finish this!
-                <#elseif arrayField.type.isComplexTypeReference()>
+                <#elseif arrayField.type.elementTypeReference.isComplexTypeReference()>
                 // TODO: Finish this!
                 <#else>
-                sizeInBits += values.getList().size() * ${arrayField.type.asSimpleTypeReference().orElseThrow().sizeInBits};
+                sizeInBits += values.getList().size() * ${arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits};
                 </#if>
                 <#break>
             <#case "const">

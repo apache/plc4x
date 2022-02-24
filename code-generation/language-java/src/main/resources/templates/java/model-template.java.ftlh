@@ -115,7 +115,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Constant values.
     <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
+    public static final ${helper.getLanguageTypeNameForTypeReference(field.type)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
     </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
@@ -123,7 +123,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Properties.
     <#list type.propertyFields as field>
-    protected final ${helper.getLanguageTypeNameForField(field)} ${field.name};
+    protected final ${helper.getLanguageTypeNameForTypeReference(field.type, !field.isOptionalField())} ${field.name};
     </#list>
 </#if>
 <#if parserArguments?has_content>
@@ -279,7 +279,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign typedField = field.asTypedField().orElseThrow()>
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
-                        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+                        // Implicit Field (${implicitField.name}) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
                         <#-- Implicit field values might be used in expressions, in order to avoid problems, we generate a temporary variable with the given name. -->
                         ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.type, implicitField.serializeExpression, parserArguments)});
                         writeImplicitField("${namedField.name}", ${implicitField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
@@ -290,7 +290,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Manual Array Field (${manualArrayField.name})
-                        writeManualArrayField("${namedField.name}", ${namedField.name}, (${helper.getNonPrimitiveLanguageTypeNameForField(typedField)} _value) -> ${helper.toParseExpression(manualArrayField, manualArrayField.type.elementTypeReference, manualArrayField.serializeExpression, parserArguments)}, writeBuffer);
+                        writeManualArrayField("${namedField.name}", ${namedField.name}, (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)} _value) -> ${helper.toParseExpression(manualArrayField, manualArrayField.type.elementTypeReference, manualArrayField.serializeExpression, parserArguments)}, writeBuffer);
                         <#break>
                     <#case "manual">
                         <#assign manualField = field.asManualField().orElseThrow()>
@@ -654,9 +654,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
                 <#if arrayElementTypeReference.isByteBased()>
-                    byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, (byte[] _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                    byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, (byte[] _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 <#else>
-                    ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, (${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                    ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, (${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 </#if>
                 <#break>
             <#case "manual">

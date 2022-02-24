@@ -94,9 +94,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
             if(arrayTypeReference.getElementTypeReference().isByteBased()) {
-                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference()) + "[]";
+                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
             } else {
-                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference()) + ">";
+                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
             }
         }
         if (!(typeReference instanceof SimpleTypeReference)) {
