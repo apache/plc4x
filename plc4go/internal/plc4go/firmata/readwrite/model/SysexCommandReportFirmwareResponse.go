@@ -181,10 +181,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 
 		}
 	}
-	fileName := make([]byte, len(_fileNameList))
-	for i := 0; i < len(_fileNameList); i++ {
-		fileName[i] = byte(_fileNameList[i])
-	}
+	fileName := _fileNameList
 	if closeErr := readBuffer.CloseContext("fileName", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}

@@ -38,7 +38,6 @@ type ITransportSize interface {
 	ShortName() uint8
 	Supported_S7_1500() bool
 	DataTransportSize() DataTransportSize
-	BaseType() TransportSize
 	DataProtocolId() string
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
@@ -1202,128 +1201,6 @@ func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (T
 		}
 	}
 	return 0, errors.Errorf("enum for %v describing DataTransportSize not found", value)
-}
-
-func (e TransportSize) BaseType() TransportSize {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return 0
-		}
-	case 0x02:
-		{ /* '0x02' */
-			return 0
-		}
-	case 0x03:
-		{ /* '0x03' */
-			return 0
-		}
-	case 0x04:
-		{ /* '0x04' */
-			return TransportSize_WORD
-		}
-	case 0x05:
-		{ /* '0x05' */
-			return 0
-		}
-	case 0x06:
-		{ /* '0x06' */
-			return 0
-		}
-	case 0x07:
-		{ /* '0x07' */
-			return TransportSize_INT
-		}
-	case 0x08:
-		{ /* '0x08' */
-			return TransportSize_INT
-		}
-	case 0x09:
-		{ /* '0x09' */
-			return TransportSize_INT
-		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return TransportSize_INT
-		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return TransportSize_INT
-		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return TransportSize_INT
-		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return TransportSize_INT
-		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 0
-		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return TransportSize_REAL
-		}
-	case 0x10:
-		{ /* '0x10' */
-			return 0
-		}
-	case 0x11:
-		{ /* '0x11' */
-			return 0
-		}
-	case 0x12:
-		{ /* '0x12' */
-			return 0
-		}
-	case 0x13:
-		{ /* '0x13' */
-			return 0
-		}
-	case 0x14:
-		{ /* '0x14' */
-			return 0
-		}
-	case 0x16:
-		{ /* '0x16' */
-			return TransportSize_TIME
-		}
-	case 0x17:
-		{ /* '0x17' */
-			return 0
-		}
-	case 0x18:
-		{ /* '0x18' */
-			return 0
-		}
-	case 0x19:
-		{ /* '0x19' */
-			return 0
-		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 0
-		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return 0
-		}
-	default:
-		{
-			return 0
-		}
-	}
-}
-
-func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize, error) {
-	for _, sizeValue := range TransportSizeValues {
-		if sizeValue.BaseType() == value {
-			return sizeValue, nil
-		}
-	}
-	return 0, errors.Errorf("enum for %v describing BaseType not found", value)
 }
 
 func (e TransportSize) DataProtocolId() string {

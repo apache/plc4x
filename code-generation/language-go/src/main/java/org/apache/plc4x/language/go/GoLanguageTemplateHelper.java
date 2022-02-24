@@ -74,7 +74,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             PropertyField propertyField = (PropertyField) field;
             if (propertyField.getType() instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
+                final TypeDefinition typeDefinition =  complexTypeReference.getTypeDefinition();
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
@@ -170,8 +170,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             // TODO: shouldn't this be an error case
             return "";
         }
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((ComplexTypeReference) typeReference).getName();
+        if (typeReference.isNonSimpleTypeReference()) {
+            return ((NonSimpleTypeReference) typeReference).getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -763,12 +763,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // If the variable has a child element and we're able to find a type for this ... get the type.
         else if ((variableLiteral.getChild().isPresent()) && ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(variableLiteralName).isPresent()) {
             tracer = tracer.dive("child element");
-            final Optional<ComplexTypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(variableLiteralName)
-                .flatMap(TypeReferenceConversions::asComplexTypeReference);
+            final Optional<NonSimpleTypeReference> typeReferenceForProperty = ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(variableLiteralName)
+                .flatMap(TypeReferenceConversions::asNonSimpleTypeReference);
             if (typeReferenceForProperty.isPresent()) {
                 tracer = tracer.dive("complex");
-                final TypeReference complexTypeReference = typeReferenceForProperty.get();
-                TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(complexTypeReference);
+                final TypeReference nonSimpleTypeReference = typeReferenceForProperty.get();
+                TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(nonSimpleTypeReference);
                 if (typeDefinition instanceof ComplexTypeDefinition) {
                     tracer = tracer.dive("complex");
                     ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
@@ -779,7 +779,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
                         .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + variableLiteralName + ").Child." + capitalize(childProperty) + "()";
+                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Child." + capitalize(childProperty) + "()";
                     }
                     // TODO: is this really meant to fall through?
                     tracer = tracer.dive("we fell through the complex complex");
@@ -1116,9 +1116,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public String escapeEnumValue(TypeReference typeReference, String valueString) {
         // Currently the only case in which here complex type references are used are when referencing enum constants.
-        if (typeReference instanceof ComplexTypeReference) {
+        if (typeReference != null && typeReference.isNonSimpleTypeReference()) {
             // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
-            if ("null".equals(valueString)) {
+            if ("null".equals(valueString) || valueString == null) {
                 return "0";
             }
             if (valueString.contains(".")) {
@@ -1257,8 +1257,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                 }
                 List<Term> params = field.asTypedField()
-                    .map(typedField -> typedField.getType().asComplexTypeReference()
-                        .map(ComplexTypeReference::getParams)
+                    .map(typedField -> typedField.getType().asNonSimpleTypeReference()
+                        .map(NonSimpleTypeReference::getParams)
                         .map(terms -> terms.orElse(Collections.emptyList()))
                         .orElse(Collections.emptyList())
                     )
@@ -1281,8 +1281,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         return field.asTypedField()
-            .map(typedField -> typedField.getType().asComplexTypeReference()
-                .map(complexTypeReference -> complexTypeReference.getParams()
+            .map(typedField -> typedField.getType().asNonSimpleTypeReference()
+                .map(nonSimpleTypeReference -> nonSimpleTypeReference.getParams()
                     .map(params -> params.stream()
                         .anyMatch(param -> param.contains(variableName))
                     )
@@ -1351,8 +1351,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         return curField.asTypedField()
-            .map(typedField -> typedField.getType().asComplexTypeReference()
-                .map(complexTypeReference -> complexTypeReference.getParams()
+            .map(typedField -> typedField.getType().asNonSimpleTypeReference()
+                .map(nonSimpleTypeReference -> nonSimpleTypeReference.getParams()
                     .map(params -> params.stream()
                         .anyMatch(param -> param.contains(variable))
                     )

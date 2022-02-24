@@ -667,9 +667,9 @@
 
 [enum uint 8 DataTransportSize(bit sizeInBits)
     ['0x00' NULL            ['false']]
-    ['0x03' BIT             ['true']]
-    ['0x04' BYTE_WORD_DWORD ['true']]
-    ['0x05' INTEGER         ['true']]
+    ['0x03' BIT             ['true' ]]
+    ['0x04' BYTE_WORD_DWORD ['true' ]]
+    ['0x05' INTEGER         ['true' ]]
     ['0x06' DINTEGER        ['false']]
     ['0x07' REAL            ['false']]
     ['0x09' OCTET_STRING    ['false']]

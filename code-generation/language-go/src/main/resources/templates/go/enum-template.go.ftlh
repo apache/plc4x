@@ -91,29 +91,31 @@ returning the constant for a given enum value.
 -->
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>
+        <#assign constantType=type.getConstantType(constantName)>
 
-func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} {
+func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(constantType)} {
 	switch e  {
 		<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+			<#assign constantValue=enumValue.getConstant(constantName).orElseThrow()>
 		case ${helper.escapeValue(type.type.orElseThrow(), enumValue.value)}: { /* '${enumValue.value}' */
-		    <#if type.getConstantType(constantName).isNonSimpleTypeReference()>
-		        <#if helper.isEnumTypeReference(type.getConstantType(constantName))>
-			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if>
+		    <#if constantType.isNonSimpleTypeReference()>
+		        <#if constantType.isEnumTypeReference()>
+			return <#if helper.escapeEnumValue(constantType, constantValue) = "0">${helper.escapeEnumValue(constantType, constantValue)}<#else>${helper.getLanguageTypeNameForTypeReference(constantType)}_${helper.escapeEnumValue(constantType, constantValue)}</#if>
 			    <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
+            return ${helper.escapeEnumValue(constantType, constantValue)}
                 </#if>
             <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
+            return ${helper.escapeEnumValue(constantType, constantValue)}
             </#if>
 		}
 		</#list>
 		default: {
-			return ${helper.getNullValueForTypeReference(type.getConstantType(constantName))}
+			return ${helper.getNullValueForTypeReference(constantType)}
 		}
 	}
 }
 
-func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}) (${type.name}, error) {
+func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(constantType)}) (${type.name}, error) {
 	for _, sizeValue := range ${type.name}Values {
 		if sizeValue.${constantName?cap_first}() == value {
 			return sizeValue, nil

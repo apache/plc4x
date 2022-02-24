@@ -32,6 +32,13 @@ type KnxnetipParserHelper struct {
 
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
+	case "KnxProperty":
+		var propertyType model.KnxPropertyDataType
+		dataLengthInBytes, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.KnxPropertyParse(io, propertyType, dataLengthInBytes)
 	case "HPAIControlEndpoint":
 		return model.HPAIControlEndpointParse(io)
 	case "TunnelingResponseDataBlock":
@@ -123,6 +130,9 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.ApduDataParse(io, dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(io)
+	case "KnxDatapoint":
+		var datapointType model.KnxDatapointType
+		return model.KnxDatapointParse(io, datapointType)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

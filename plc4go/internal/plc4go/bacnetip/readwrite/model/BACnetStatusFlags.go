@@ -136,7 +136,7 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 	if pullErr := readBuffer.PullContext("rawBits"); pullErr != nil {
 		return nil, pullErr
 	}
-	_rawBits, _rawBitsErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType_BIT_STRING)
+	_rawBits, _rawBitsErr := BACnetContextTagParse(readBuffer, uint8(tagNumber), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _rawBitsErr != nil {
 		return nil, errors.Wrap(_rawBitsErr, "Error parsing 'rawBits' field")
 	}

@@ -835,10 +835,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                                 <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
                                 <#assign typeName=complexTypeReference.name>
                                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-                                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+                                <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
                                 <#-- Usually you don't use child directly unless they are parameterized #-->
-                                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-                                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
+                                    <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
+                                    <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
                                 </#if>
                                 <#assign hasRefParams=complexTypeReference.params.isPresent()>
                                 <#assign refParams>
@@ -1014,7 +1014,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		_values := &_${manualArrayField.name}List
 		_ = _values
 		for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
-		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForTypeReference(arrayElementType)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
@@ -1028,7 +1028,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					type we have to iterate over it's elements and explicitly cast them.
 					Otherwise a simple toArray call is fine.
 				-->
-					<#if field.type.isSimpleTypeReference()>
+					<#if manualArrayField.type.isSimpleTypeReference()>
 	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
 	for i := 0; i < len(_${manualArrayField.name}List); i++ {
 		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])

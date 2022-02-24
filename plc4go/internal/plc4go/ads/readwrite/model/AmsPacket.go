@@ -272,7 +272,7 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-	_data, _dataErr := AdsDataParse(readBuffer, commandId, bool(state.GetResponse()))
+	_data, _dataErr := AdsDataParse(readBuffer, CommandId(commandId), bool(state.GetResponse()))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
