@@ -255,7 +255,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         TypedField typedField = (TypedField) field;
         TypeReference typeReference = typedField.getType();
-        if (typeReference.isSimpleTypeReference()) {
+        if (!typeReference.isNonSimpleTypeReference()) {
             return false;
         }
         TypeDefinition typeDefinition = typeReference.asNonSimpleTypeReference().orElseThrow()
