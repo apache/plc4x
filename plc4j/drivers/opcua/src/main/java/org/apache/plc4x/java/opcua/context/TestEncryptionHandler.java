@@ -19,37 +19,26 @@
 package org.apache.plc4x.java.opcua.context;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 
 public class TestEncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
-
-    private static final Logger logger = LoggerFactory.getLogger(TestEncryptionHandler.class);
 
     public TestEncryptionHandler() {
         super(ByteBuf.class, ByteBuf.class);
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        logger.error("Encryption Handler ---------------------- encode...");
+    protected void encode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+
         in.retain();
         out.add(in);
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        logger.error("Encryption Handler ---------------------- decode...");
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         in.retain();
         out.add(in);
     }
