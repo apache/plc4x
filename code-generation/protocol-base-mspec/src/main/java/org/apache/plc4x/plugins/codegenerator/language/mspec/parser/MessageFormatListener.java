@@ -129,6 +129,15 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(typeName, attributes, parserArguments, switchField);
             dispatchType(typeName, type);
 
+            // Set the parent type for all sub-types.
+            if (switchField != null) {
+                for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
+                    if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        LOGGER.debug("Setting parent {} for {}", type, subtype);
+                        ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+                    }
+                }
+            }
             parserContexts.pop();
         } else { // Handle all other types.
             // If the type has sub-types it's an abstract type.
@@ -142,6 +151,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             if (switchField != null) {
                 for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
                     if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        LOGGER.debug("Setting parent {} for {}", type, subtype);
                         ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
                     }
                 }

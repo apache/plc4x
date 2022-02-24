@@ -143,6 +143,7 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
         return "DefaultComplexTypeDefinition{" +
             "isAbstract=" + isAbstract +
             ", fields=" + fields +
+            ", parentType=" + (parentType != null ? parentType.getName() : null) +
             "} " + super.toString();
     }
 

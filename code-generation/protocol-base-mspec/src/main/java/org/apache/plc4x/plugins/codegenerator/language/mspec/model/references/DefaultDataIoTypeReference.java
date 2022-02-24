@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.DataIoTypeReference;
@@ -62,6 +63,14 @@ public class DefaultDataIoTypeReference implements DataIoTypeReference {
             throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
         }
         this.typeDefinition = ((DataIoTypeDefinition) typeDefinition);
+    }
+
+    @Override
+    public ComplexTypeDefinition getComplexTypeDefinition() {
+        if (typeDefinition == null) {
+            throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
+        }
+        return typeDefinition;
     }
 
     @Override
