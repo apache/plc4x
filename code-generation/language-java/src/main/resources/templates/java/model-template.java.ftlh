@@ -576,6 +576,10 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     </#if>
 <#-- Here come the actual parse and serialize methods that actually do the parsing and serlaizing -->
     <#assign hasParserArguments=parserArguments?has_content/>
+    <#if type.isDiscriminatedChildTypeDefinition() && type.getParentType().orElseThrow().isDataIoTypeDefinition()>
+        <#assign hasParserArguments=type.parserArguments.isPresent()/>
+        <#assign parserArguments=type.parserArguments.orElseThrow()/>
+    </#if>
     <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
     public static ${type.name}<#if type.isDiscriminatedChildTypeDefinition()>Builder staticParseBuilder<#else> staticParse</#if>(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) throws ParseException {
         readBuffer.pullContext("${type.name}");
