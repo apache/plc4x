@@ -68,7 +68,7 @@ import (
 	
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.orElseThrow().cases as case>
@@ -204,11 +204,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 	return nil, errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
 }
 
-func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	<#if parserArguments?has_content>
 	m := struct {
     	<#list parserArguments as parserArgument>
-			${parserArgument.name?cap_first} <#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+			${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 		</#list>
 	}{
 		<#list parserArguments as parserArgument>

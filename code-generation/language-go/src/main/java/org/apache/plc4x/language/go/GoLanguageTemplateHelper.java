@@ -80,7 +80,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
             }
         }
-        return getLanguageTypeNameForTypeReference(((TypedField) field).getType());
+        TypedField typedField = field.asTypedField().orElseThrow();
+        return getLanguageTypeNameForTypeReference(typedField.getType());
     }
 
     public boolean isComplex(Field field) {
@@ -95,7 +96,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
-            return "[]" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference());
+            TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
+            return "[]" + (elementTypeReference.isNonSimpleTypeReference() && !elementTypeReference.isEnumTypeReference() ? "*" : "") + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
         if (!(typeReference instanceof SimpleTypeReference)) {
             return ((NonSimpleTypeReference) typeReference).getName();

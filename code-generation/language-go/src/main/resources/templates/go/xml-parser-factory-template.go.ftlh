@@ -111,12 +111,12 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                             <#break>
                         <#default>
 			// TODO: find a way to parse the sub types
-            var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+            var ${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference()>model.</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
                             <#break>
                     </#switch>
                 </#if>
             </#list>
-            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isComplexTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
+            <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument><#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
             return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
         <#else>
 			return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

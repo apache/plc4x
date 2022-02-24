@@ -757,7 +757,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
-	${arrayField.name} := make(<#if arrayElementType.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
 	{
 		for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}); curItem++ {
 						<#if (!arrayElementType.isSimpleTypeReference()) && helper.requiresVariable(arrayField, "lastItem")>
@@ -805,7 +805,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#elseif field.isLengthArrayField()>
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
-	${arrayField.name} := make(<#if arrayElementType.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
+	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, 0)
 	{
 		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
 		_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
@@ -824,7 +824,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	${arrayField.name} := make(<#if helper.needsPointerAccess(arrayField)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
+	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, 0)
 	{
 		for ;!bool(${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}); {
 						<@compress single_line=true>
@@ -1009,7 +1009,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
 	// Terminated array
-	_${manualArrayField.name}List := make(<#if helper.needsPointerAccess(manualArrayField)>*</#if>${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	_${manualArrayField.name}List := make(${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
 	{
 		_values := &_${manualArrayField.name}List
 		_ = _values
@@ -1214,19 +1214,19 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#if simpleField.type.isSimpleTypeReference()>
 		${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type.asSimpleTypeReference().orElseThrow(), null, simpleField)}
 	<#else>
-        <#assign complexTypeReference=simpleField.type.asComplexTypeReference().orElseThrow()>
-        <#assign typeName=complexTypeReference.name>
-        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-        <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+        <#assign nonSimpleTypeReference=simpleField.type.asNonSimpleTypeReference().orElseThrow()>
+        <#assign typeName=nonSimpleTypeReference.name>
+        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(nonSimpleTypeReference)>
+        <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
         <#-- Usually you don't use child directly unless they are parameterized #-->
-            <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-            <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
+            <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
+            <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
         </#if>
-        <#assign hasRefParams=complexTypeReference.params.isPresent()>
+        <#assign hasRefParams=nonSimpleTypeReference.params.isPresent()>
         <#assign refParams>
             <#if hasRefParams>
 				,
-                <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                <#list nonSimpleTypeReference.params.orElseThrow() as parserArgument>
 					<#assign parserTypeRef=helper.getArgumentType(simpleField.type, parserArgument?index)>
 					<#if !parserTypeRef.isComplexTypeReference()>${helper.getLanguageTypeNameForTypeReference(parserTypeRef)}(</#if>
                     ${helper.toTypedParseExpression(simpleField, parserTypeRef, parserArgument, parserArguments)}
@@ -1446,7 +1446,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 		<#if arraySizeInBytesHelpers?has_content>
 			<#list arraySizeInBytesHelpers?keys as key>
 				<#assign typeName=arraySizeInBytesHelpers[key]>
-	${key}ArraySizeInBytes := func(items []*${typeName}) uint32 {
+	${key}ArraySizeInBytes := func(items ${typeName}) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
 			sizeInBytes += uint32(v.GetLengthInBytes())
