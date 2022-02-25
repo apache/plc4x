@@ -333,7 +333,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Padding Field (padding)
 <#if indentContent>  </#if>  {
-<#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, parserArguments)}));
+<#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, ${helper.getNumBits(simpleTypeReference)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, parserArguments)}));
 <#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(simpleTypeReference)};

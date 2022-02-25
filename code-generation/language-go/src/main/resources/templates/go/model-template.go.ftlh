@@ -455,7 +455,7 @@ func (m *${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Manual Array Field (${manualArrayField.name})
 	${manualArrayField.name} := m.${manualArrayField.name?cap_first}<#-- TODO: ugly workaround for missing static evaluation-->
-	lengthInBits += ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.lengthExpression, parserArguments)} * 8
+	lengthInBits += uint16(${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.lengthExpression, parserArguments)})
 					<#break>
 				<#case "manual">
 					<#assign manualField = field.asManualField().orElseThrow()>
@@ -625,13 +625,13 @@ func (m *${type.name}) GetParentLengthInBits() uint16 {
 	            <#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
-	lengthInBits += ${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.lengthExpression, parserArguments)} * 8
+	lengthInBits += uint16(${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.lengthExpression, parserArguments)})
 				<#break>
 			<#case "manual">
 				<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	lengthInBits += ${helper.toParseExpression(manualField, manualField.type, manualField.lengthExpression, parserArguments)} * 8
+	lengthInBits += uint16(${helper.toParseExpression(manualField, manualField.type, manualField.lengthExpression, parserArguments)})
 				<#break>
 			<#case "optional">
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
@@ -987,7 +987,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#if field.isCountArrayField()>
 	// Count array
 	_${manualArrayField.name}Count := ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.loopExpression, parserArguments)}
-	${helper.getLanguageTypeNameForField(field)} ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count]
+	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, _${manualArrayField.name}Count)
 	for i := 0; i < _${manualArrayField.name}Count; i++ {
 		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})
 	}
