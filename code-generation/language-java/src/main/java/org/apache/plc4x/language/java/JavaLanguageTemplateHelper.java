@@ -99,8 +99,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
             }
         }
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((NonSimpleTypeReference) typeReference).getName();
+        // DataIo data-types always have properties of type PlcValue
+        if (typeReference.isDataIoTypeReference()) {
+            return "PlcValue";
+        }
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -379,6 +383,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
+            // In case of DataIo we actually need to use the type name and not what above returns.
+            // (In this case the mspec type name and the result type name differ)
+            if(typeReference.isDataIoTypeReference()) {
+                parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
+            }
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
             }

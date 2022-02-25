@@ -965,7 +965,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign implicitField = field.asImplicitField().orElseThrow()>
 				<#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
 
-	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (${implicitField.name}) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference, implicitField)}
 	_ = ${implicitField.name}
 	if _${implicitField.name}Err != nil {
