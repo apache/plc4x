@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
@@ -32,8 +33,7 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
 
     protected final List<Term> params;
 
-    // TODO: this should be ComplexTypeDefinition
-    protected transient TypeDefinition typeDefinition;
+    protected transient ComplexTypeDefinition typeDefinition;
 
     public DefaultComplexTypeReference(String name, List<Term> params) {
         this.name = Objects.requireNonNull(name);
@@ -50,17 +50,24 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
         return Optional.ofNullable(params);
     }
 
-    // TODO: this should be ComplexTypeDefinition
     @Override
-    public TypeDefinition getTypeDefinition() {
+    public ComplexTypeDefinition getTypeDefinition() {
         if (typeDefinition == null) {
             throw new IllegalStateException("Should not happen as this should be initialized. No type for " + name + " set!!!");
         }
         return typeDefinition;
     }
 
-    // TODO: this should be ComplexTypeDefinition
+    @Override
     public void setTypeDefinition(TypeDefinition typeDefinition) {
+        Objects.requireNonNull(typeDefinition);
+        if (!(typeDefinition instanceof ComplexTypeDefinition)) {
+            throw new IllegalArgumentException("DefaultComplexTypeReferences only accept instances of ComplexTypeDefinitions. Actual type: " + typeDefinition.getClass());
+        }
+        this.typeDefinition = ((ComplexTypeDefinition) typeDefinition);
+    }
+
+    public void setComplexTypeDefinition(ComplexTypeDefinition typeDefinition) {
         Objects.requireNonNull(typeDefinition);
         this.typeDefinition = typeDefinition;
     }
@@ -68,9 +75,9 @@ public class DefaultComplexTypeReference implements ComplexTypeReference {
     @Override
     public String toString() {
         return "DefaultComplexTypeReference{" +
-                "name='" + name + '\'' +
-                ", params=" + params +
-                '}';
+            "name='" + name + '\'' +
+            ", params=" + params +
+            '}';
     }
 
     @Override

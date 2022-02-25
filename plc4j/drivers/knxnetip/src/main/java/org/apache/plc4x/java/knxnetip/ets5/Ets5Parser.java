@@ -220,7 +220,7 @@ public class Ets5Parser {
         //
         // P-iiii/project.xml Created by user; contains the global data for project iiii (internal project ID, formatted as 4 hex digits).
         Pattern pattern = Pattern.compile( "^P-[0-9A-F]{4}", Pattern.CASE_INSENSITIVE);
-        for ( var fileHeader : zipFile.getFileHeaders ( ) ) {
+        for (FileHeader fileHeader : zipFile.getFileHeaders ( ) ) {
             Matcher matcher = pattern.matcher(fileHeader.getFileName());
             if (matcher.find()) {
                 return matcher.group();

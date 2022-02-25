@@ -141,13 +141,25 @@
 ]
 
 [type ArrayTypeTest
-    [array bit bitField count      '5']
-    [array int 8 intField count      '5']
-    [array uint 8 uintField count      '5']
-    [array float 32 floatField count      '5']
+    [array bit bitField count              '5']
+    [array byte byteField count            '5']
+    [array int 8 intField count            '5']
+    [array uint 8 uintField count          '5']
+    [array float 32 floatField count       '5']
     [array float 64 doubleField count      '5']
     [array string 8 stringField count      '5']
 ]
+
+/* TODO: we need to check the expressions. The loop expression for count is a number and not true. True fits to terminated. So it seems the java impl is of somehow
+[type ManualArrayTypeTest
+    [manualArray bit        bitField    count      'true'  'STATIC_CALL("parseBit",    readBuffer)' 'STATIC_CALL("serializeBit",    writeBuffer, _value)' '1'   ]
+    [manualArray byte       byteField   count      'true'  'STATIC_CALL("parseByte",   readBuffer)' 'STATIC_CALL("serializeByte",   writeBuffer, _value)' '5'   ]
+    [manualArray int     8  intField    count      'true'  'STATIC_CALL("parseInt8",   readBuffer)' 'STATIC_CALL("serializeInt8",   writeBuffer, _value)' '5'   ]
+    [manualArray uint    8  uintField   count      'true'  'STATIC_CALL("parseUint8",  readBuffer)' 'STATIC_CALL("serializeUint8",  writeBuffer, _value)' '5'   ]
+    [manualArray float  32  floatField  count      'true'  'STATIC_CALL("parseFloat",  readBuffer)' 'STATIC_CALL("serializeFloat",  writeBuffer, _value)' '20'  ]
+    [manualArray float  64  doubleField count      'true'  'STATIC_CALL("parseDouble", readBuffer)' 'STATIC_CALL("serializeDouble", writeBuffer, _value)' '40'  ]
+    [manualArray string  8  stringField count      'true'  'STATIC_CALL("parseString", readBuffer)' 'STATIC_CALL("serializeString", writeBuffer, _value)' '5'   ]
+]*/
 
 //TODO: Checksums fields are not supported in C
 //[type CheckSumTypeTest
@@ -384,6 +396,7 @@
     ['0x01' BOOL]
     ['0x02' UINT]
     ['0x03' INT]
+    ['0x11' BYTE_ARRAY]
 ]
 
 //TODO:  C doesn't support non integer switch fields
@@ -445,6 +458,10 @@
         ['INT' UINT
             [simple uint 16 value]
         ]
+        // TODO: Causes problems in C<<<>>a <
+        /*['BYTE_ARRAY' List
+            [array byte value length '5']
+        ]*/
     ]
 ]
 

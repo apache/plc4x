@@ -19,21 +19,20 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
+import org.apache.plc4x.plugins.codegenerator.types.references.ArrayTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultArrayField extends DefaultTypedNamedField implements ArrayField {
 
     private final LoopType loopType;
     private final Term loopExpression;
 
-    public DefaultArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression) {
-        super(attributes,type,name);
+    public DefaultArrayField(Map<String, Term> attributes, String name, LoopType loopType, Term loopExpression) {
+        super(attributes, name);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
     }
@@ -44,6 +43,19 @@ public class DefaultArrayField extends DefaultTypedNamedField implements ArrayFi
 
     public Term getLoopExpression() {
         return loopExpression;
+    }
+
+    @Override
+    public void setType(TypeReference typeReference) {
+        if(!(typeReference instanceof ArrayTypeReference)) {
+            throw new IllegalArgumentException("Array fields can only have ArrayTypeReferences");
+        }
+        super.setType(typeReference);
+    }
+
+    @Override
+    public ArrayTypeReference getType() {
+        return (ArrayTypeReference) super.getType();
     }
 
     @Override

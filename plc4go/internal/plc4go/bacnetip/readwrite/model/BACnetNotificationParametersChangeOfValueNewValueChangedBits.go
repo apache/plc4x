@@ -134,7 +134,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 	if pullErr := readBuffer.PullContext("changedBits"); pullErr != nil {
 		return nil, pullErr
 	}
-	_changedBits, _changedBitsErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_BIT_STRING)
+	_changedBits, _changedBitsErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _changedBitsErr != nil {
 		return nil, errors.Wrap(_changedBitsErr, "Error parsing 'changedBits' field")
 	}

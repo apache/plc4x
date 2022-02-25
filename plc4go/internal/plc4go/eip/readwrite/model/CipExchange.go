@@ -146,7 +146,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", unconnectedData))
 	}
 
-	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	size, _sizeErr := readBuffer.ReadUint16("size", 16)
 	_ = size
 	if _sizeErr != nil {

@@ -142,3 +142,15 @@ func StrToUint32(str string) (uint32, error) {
 	}
 	return uint32(intVal), nil
 }
+
+func StrToInt32(str string) (int32, error) {
+	intVal, err := strconv.ParseInt(str, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return int32(intVal), nil
+}
+
+func StrToString(s string) (string, error) {
+	return s, nil
+}

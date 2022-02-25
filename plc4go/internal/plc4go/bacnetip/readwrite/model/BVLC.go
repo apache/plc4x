@@ -142,7 +142,7 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field")
 	}
 
-	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (bvlcLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	bvlcLength, _bvlcLengthErr := readBuffer.ReadUint16("bvlcLength", 16)
 	_ = bvlcLength
 	if _bvlcLengthErr != nil {

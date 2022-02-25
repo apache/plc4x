@@ -261,7 +261,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 		}
 	}
 
-	// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	messageSize, _messageSizeErr := readBuffer.ReadUint16("messageSize", 16)
 	_ = messageSize
 	if _messageSizeErr != nil {

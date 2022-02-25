@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-opm</artifactId>
+  <artifactId>plc4j-examples-hello-opm</artifactId>
   <name>PLC4J: Examples: Hello OPM</name>
   <description>Hello World example of PLC4X using the OPM feature.</description>
 

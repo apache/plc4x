@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
@@ -28,8 +27,8 @@ public class DefaultTypedNamedField extends DefaultTypedField {
 
     protected final String name;
 
-    public DefaultTypedNamedField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes, type);
+    public DefaultTypedNamedField(Map<String, Term> attributes, String name) {
+        super(attributes);
         this.name = name;
     }
 

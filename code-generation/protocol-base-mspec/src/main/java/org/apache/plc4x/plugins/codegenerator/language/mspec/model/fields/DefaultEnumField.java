@@ -19,7 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.EnumTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
@@ -29,9 +29,10 @@ public class DefaultEnumField extends DefaultTypedNamedField implements EnumFiel
 
     private final String fieldName;
 
-    public DefaultEnumField(Map<String, Term> attributes, TypeReference type, String name, String fieldName) {
-        super(attributes,type,name);
+    public DefaultEnumField(Map<String, Term> attributes, EnumTypeReference type, String name, String fieldName) {
+        super(attributes, name);
         this.fieldName = Objects.requireNonNull(fieldName);
+        this.type = type;
     }
 
     public String getFieldName() {

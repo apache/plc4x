@@ -22,32 +22,47 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class DefaultArgument implements Argument {
 
-    private final TypeReference type;
     private final String name;
 
-    public DefaultArgument(TypeReference type, String name) {
-        // TODO: add null checks
-        this.type = type;
-        this.name = name;
-    }
+    private TypeReference type;
 
-    public TypeReference getType() {
-        return type;
+    protected CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+
+    public DefaultArgument(String name) {
+        this.name = Objects.requireNonNull(name);
     }
 
     public String getName() {
         return name;
     }
 
+    public TypeReference getType() {
+        if (type == null) {
+            throw new IllegalStateException("type not set");
+        }
+        return type;
+    }
+
+    public void setType(TypeReference typeReference) {
+        this.type = typeReference;
+        typeReferenceCompletionStage.complete(typeReference);
+    }
+
+    public CompletionStage<TypeReference> getTypeReferenceCompletionStage() {
+        return typeReferenceCompletionStage;
+    }
+
     @Override
     public String toString() {
         return "DefaultArgument{" +
-                "type=" + type +
-                ", name='" + name + '\'' +
-                '}';
+            "type=" + type +
+            ", name='" + name + '\'' +
+            '}';
     }
 
     @Override

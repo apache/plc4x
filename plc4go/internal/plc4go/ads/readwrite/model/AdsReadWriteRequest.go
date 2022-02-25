@@ -206,7 +206,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	}
 	readLength := _readLength
 
-	// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (writeLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	writeLength, _writeLengthErr := readBuffer.ReadUint32("writeLength", 32)
 	_ = writeLength
 	if _writeLengthErr != nil {

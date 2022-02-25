@@ -59,15 +59,15 @@
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getComplexTypeReferences()?has_content>
-    <#list helper.getComplexTypeReferences() as typeReference>
+<#if helper.getNonSimpleTypeReferences()?has_content>
+    <#list helper.getNonSimpleTypeReferences() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?values as discriminatorType>
-        <#if discriminatorType.isComplexTypeReference()>
-#include "${helper.camelCaseToSnakeCase(discriminatorType.name)}.h"
+        <#if discriminatorType.isNonSimpleTypeReference()>
+#include "${helper.camelCaseToSnakeCase(discriminatorType.asNonSimpleTypeReference().orElseThrow().name)}.h"
         </#if>
     </#list>
 </#if>
@@ -92,7 +92,7 @@ extern "C" {
 struct ${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
-        <#if !helper.getDiscriminatorTypes()[discriminatorName].isComplexTypeReference()>
+        <#if !helper.getDiscriminatorTypes()[discriminatorName].isNonSimpleTypeReference()>
   ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
         <#else>
   enum ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};

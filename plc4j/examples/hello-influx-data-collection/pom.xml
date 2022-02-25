@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-influx-data-collection</artifactId>
+  <artifactId>plc4j-examples-hello-influx-data-collection</artifactId>
   <name>PLC4J: Examples: Hello InfluxDB Data Collection</name>
   <description>Data Collection with PLC4X and InfluxDB.</description>
 

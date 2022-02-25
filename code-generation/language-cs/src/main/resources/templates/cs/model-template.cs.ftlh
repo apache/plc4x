@@ -60,7 +60,7 @@ using org.apache.plc4net.spi.model.values;
 namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFlavor?replace("-", "")}.model
 {
 
-    public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType??> : ${type.parentType.name}</#if>
+    public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType.isPresent()> : ${type.parentType.orElseThrow().name}</#if>
     {
 
 <#--
@@ -74,7 +74,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
-        public override ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} ${discriminatorName?cap_first} => <#if discriminatorValue??><#if helper.isEnumTypeReference(discriminatorType)>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}<#else>${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}</#if><#else>${helper.getNullValueForTypeReference(discriminatorType)}</#if>;
+        public override ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} ${discriminatorName?cap_first} => <#if discriminatorValue??><#if discriminatorType.isEnumTypeReference()>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}<#else>${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}</#if><#else>${helper.getNullValueForTypeReference(discriminatorType)}</#if>;
         </#if>
     </#list>
 </#if>
@@ -149,7 +149,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
     <#if outputFlavor != "passive">
 <#if type.isDiscriminatedChildTypeDefinition()>
     @Override
-    protected void serialize${type.parentType.name}Child(WriteBuffer writeBuffer) throws SerializationException {
+    protected void serialize${type.parentType.orElseThrow().name}Child(WriteBuffer writeBuffer) throws SerializationException {
 <#else>
     <#if type.isDiscriminatedParentTypeDefinition()>
     abstract protected void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
@@ -192,7 +192,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Const Field (${constField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeConstField("${constField.name}", ${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)});<#else>writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeConstField("${constField.name}", ${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)});<#else>writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "discriminator">
                         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -200,7 +200,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-                        <#if helper.isEnumTypeReference(typedField.type)>writeDiscriminatorEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", get${discriminatorField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeDiscriminatorField("${namedField.name}", get${discriminatorField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeDiscriminatorEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", get${discriminatorField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeDiscriminatorField("${namedField.name}", get${discriminatorField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "enum">
                         <#assign enumField = field.asEnumField().orElseThrow()>
@@ -242,7 +242,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
-                        <#if helper.isEnumTypeReference(typedField.type)>writeOptionalEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeOptionalField("${namedField.name}", ${namedField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeOptionalEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeOptionalField("${namedField.name}", ${namedField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "padding">
                         <#assign paddingField = field.asPaddingField().orElseThrow()>
@@ -264,7 +264,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Simple Field (${namedField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "switch">
                         <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -296,7 +296,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
 
         @Override
         public int getLengthInBits() {
-            int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+            int lengthInBits = <#if type.parentType.isPresent()>super.getLengthInBits()<#else>0</#if>;
             ${type.name} _value  = this;
     <#list type.fields as field>
     <#switch field.typeName>

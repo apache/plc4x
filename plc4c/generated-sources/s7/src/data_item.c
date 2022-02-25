@@ -55,7 +55,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_bool_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_BYTE") == 0) { /* List */
@@ -139,7 +138,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_int8_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_USINT") == 0) { /* USINT */
@@ -151,7 +149,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_INT") == 0) { /* INT */
@@ -163,7 +160,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_int16_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_UINT") == 0) { /* UINT */
@@ -175,7 +171,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DINT") == 0) { /* DINT */
@@ -187,7 +182,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_int32_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_UDINT") == 0) { /* UDINT */
@@ -199,7 +193,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_LINT") == 0) { /* LINT */
@@ -211,7 +204,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_int64_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_ULINT") == 0) { /* ULINT */
@@ -223,7 +215,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_REAL") == 0) { /* REAL */
@@ -235,7 +226,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_float_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_LREAL") == 0) { /* LREAL */
@@ -247,7 +237,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_double_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
@@ -287,7 +276,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
@@ -299,7 +287,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
@@ -311,7 +298,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
@@ -323,7 +309,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
@@ -335,7 +320,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint16_t_data(year);
 
 
@@ -346,7 +330,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(month);
 
 
@@ -357,7 +340,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(day);
 
 
@@ -368,7 +350,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(dayOfWeek);
 
 
@@ -379,7 +360,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(hour);
 
 
@@ -390,7 +370,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(minutes);
 
 
@@ -401,7 +380,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(seconds);
 
 
@@ -412,7 +390,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                     return _res;
                 }
 
-                    // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(nanos);
 
     }

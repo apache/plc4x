@@ -19,15 +19,14 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
 public class DefaultDiscriminatorField extends DefaultTypedNamedField implements DiscriminatorField {
 
-    public DefaultDiscriminatorField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes, type, name);
+    public DefaultDiscriminatorField(Map<String, Term> attributes, String name) {
+        super(attributes, name);
     }
 
     @Override

@@ -44,6 +44,14 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "DataItem":
+		dataType := model.ModbusDataTypeByName(parserArguments[0])
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		numberOfValues := uint16(parsedUint1)
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return model.ModbusPDUReadFileRecordResponseItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusDeviceInformationObject":

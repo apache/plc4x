@@ -147,7 +147,7 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusTcpADU_PROTOCOLIDENTIFIER) + " but got " + fmt.Sprintf("%d", protocolIdentifier))
 	}
 
-	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := readBuffer.ReadUint16("length", 16)
 	_ = length
 	if _lengthErr != nil {

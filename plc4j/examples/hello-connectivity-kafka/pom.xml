@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-connectivity-kafka</artifactId>
+  <artifactId>plc4j-examples-hello-connectivity-kafka</artifactId>
   <name>PLC4J: Examples: Connectivity: Kafka</name>
   <description>Sample application that reads data from a connected PLC and publishes this information to a Kafka topic.</description>
 

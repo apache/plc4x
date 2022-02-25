@@ -19,13 +19,10 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultManualField extends DefaultTypedNamedField implements ManualField {
 
@@ -33,8 +30,8 @@ public class DefaultManualField extends DefaultTypedNamedField implements Manual
     private final Term serializeExpression;
     private final Term lengthExpression;
 
-    public DefaultManualField(Map<String, Term> attributes, TypeReference type, String name, Term parseExpression, Term serializeExpression, Term lengthExpression) {
-        super(attributes, type, name);
+    public DefaultManualField(Map<String, Term> attributes, String name, Term parseExpression, Term serializeExpression, Term lengthExpression) {
+        super(attributes, name);
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);

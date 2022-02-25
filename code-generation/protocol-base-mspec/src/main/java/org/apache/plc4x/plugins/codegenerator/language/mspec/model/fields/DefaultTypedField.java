@@ -23,18 +23,33 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public abstract class DefaultTypedField extends DefaultField {
 
-    protected final TypeReference type;
+    protected TypeReference type;
 
-    public DefaultTypedField(Map<String, Term> attributes, TypeReference type) {
+    protected CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+
+    public DefaultTypedField(Map<String, Term> attributes) {
         super(attributes);
-        this.type = type;
     }
 
     public TypeReference getType() {
+        if (type == null) {
+            throw new IllegalStateException("type not set");
+        }
         return type;
+    }
+
+    public void setType(TypeReference typeReference) {
+        typeReferenceCompletionStage.complete(typeReference);
+        this.type = typeReference;
+    }
+
+    public CompletionStage<TypeReference> getTypeReferenceCompletionStage() {
+        return typeReferenceCompletionStage;
     }
 
     @Override
