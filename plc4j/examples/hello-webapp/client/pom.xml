@@ -26,7 +26,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-webapp-client</artifactId>
+  <artifactId>plc4j-examples-hello-webapp-client</artifactId>
   <packaging>swf</packaging>
 
   <name>PLC4J: Examples: Hello-Webapp: Client</name>

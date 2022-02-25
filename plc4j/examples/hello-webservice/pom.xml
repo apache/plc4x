@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-webservice</artifactId>
+  <artifactId>plc4j-examples-webservice</artifactId>
   <name>PLC4J: Examples: Hello-Webservice</name>
   <description>Hello world application sending PLC4X data to a remote Webservice.</description>
 

@@ -27,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-connectivity-mqtt</artifactId>
+  <artifactId>plc4j-examples-hello-connectivity-mqtt</artifactId>
   <name>PLC4J: Examples: Connectivity: MQTT</name>
   <description>Sample application, that reads data from a connected PLC and publishes this information via MQTT.</description>
 
