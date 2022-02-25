@@ -523,7 +523,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 discriminatorValues, parserContexts.pop());
 
         // For DataIO we don't need to generate the sub-types as these will be PlcValues.
-        if(!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {
+        if (!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {
             dispatchType(typeName, type);
         }
 
@@ -632,16 +632,16 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             CompletableFuture<TypeReference> typeReferenceCompletableFuture = new CompletableFuture<>();
             String typeRefName = ctx.complexTypeReference.getText();
             setOrScheduleTypeDefinitionConsumer(typeRefName, typeDefinition -> {
-                if (typeDefinition.isComplexTypeDefinition()) {
+                if (typeDefinition.isDataIoTypeDefinition()) {
+                    DefaultDataIoTypeReference value = new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params));
+                    value.setTypeDefinition(typeDefinition);
+                    typeReferenceCompletableFuture.complete(value);
+                } else if (typeDefinition.isComplexTypeDefinition()) {
                     DefaultComplexTypeReference value = new DefaultComplexTypeReference(typeRefName, getParams(ctx.params));
                     value.setTypeDefinition(typeDefinition);
                     typeReferenceCompletableFuture.complete(value);
                 } else if (typeDefinition.isEnumTypeDefinition()) {
                     DefaultEnumTypeReference value = new DefaultEnumTypeReference(typeRefName, getParams(ctx.params));
-                    value.setTypeDefinition(typeDefinition);
-                    typeReferenceCompletableFuture.complete(value);
-                } else if (typeDefinition.isDataIoTypeDefinition()) {
-                    DefaultDataIoTypeReference value = new DefaultDataIoTypeReference(typeRefName, getParams(ctx.params));
                     value.setTypeDefinition(typeDefinition);
                     typeReferenceCompletableFuture.complete(value);
                 } else {
