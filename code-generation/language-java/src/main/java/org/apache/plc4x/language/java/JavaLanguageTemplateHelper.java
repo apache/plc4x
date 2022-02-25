@@ -93,7 +93,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         Objects.requireNonNull(typeReference);
         if (typeReference instanceof ArrayTypeReference) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
-            if(arrayTypeReference.getElementTypeReference().isByteBased()) {
+            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
                 return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
             } else {
                 return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
@@ -385,7 +385,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             // In case of DataIo we actually need to use the type name and not what above returns.
             // (In this case the mspec type name and the result type name differ)
-            if(typeReference.isDataIoTypeReference()) {
+            if (typeReference.isDataIoTypeReference()) {
                 parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
             }
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
@@ -1230,6 +1230,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
         }
         return sb.toString();
+    }
+
+    public boolean isBigIntegerSource(Term term) {
+        boolean isBigInteger = term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .flatMap(VariableLiteral::getChild)
+            .map(Term.class::cast)
+            .map(this::isBigIntegerSource)
+            .orElse(false);
+        return isBigInteger || term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .map(VariableLiteral::getTypeReference)
+            .flatMap(TypeReferenceConversions::asIntegerTypeReference)
+            .map(integerTypeReference -> integerTypeReference.getSizeInBits() >= 64)
+            .orElse(false);
     }
 
 }

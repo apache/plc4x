@@ -123,7 +123,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
                     LOGGER.debug("Error processing variables", throwable);
                     return;
                 }
-                String typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+                String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
                 schedulePropertyResolution(propertyName, typeReferenceFuture, typeName);
             });
         }
@@ -190,8 +190,11 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
         final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
         futureStack.pop().whenComplete((typeReference, throwable) -> {
-            // TODO: check throwable
-            String typeName = typeReference.asComplexTypeReference().orElseThrow().getName();
+            if (throwable != null) {
+                LOGGER.error("Error setting type", throwable);
+                return;
+            }
+            String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
             lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
         });
         if (futureStack.empty()) {
