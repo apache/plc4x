@@ -49,8 +49,8 @@ public class DefaultArgument implements Argument {
     }
 
     public void setType(TypeReference typeReference) {
-        typeReferenceCompletionStage.complete(typeReference);
         this.type = typeReference;
+        typeReferenceCompletionStage.complete(typeReference);
     }
 
     public CompletionStage<TypeReference> getTypeReferenceCompletionStage() {
