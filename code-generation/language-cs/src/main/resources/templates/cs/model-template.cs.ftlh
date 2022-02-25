@@ -60,7 +60,7 @@ using org.apache.plc4net.spi.model.values;
 namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFlavor?replace("-", "")}.model
 {
 
-    public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType.isPresent()> : ${type.parentType.orElseThrow().name}</#if>
+    public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType.isPresent()> : ${type.parentType.orElseThrow().name}</#if>
     {
 
 <#--

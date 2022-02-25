@@ -93,6 +93,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField = field.asArrayField().orElseThrow()>
+                        <#assign elementTypeReference = arrayField.type.elementTypeReference>
                 // Array field (${arrayField.name})
                 <#-- Only update curPos if the length expression uses it -->
                         <#if arrayField.loopExpression.contains("curPos")>
@@ -106,7 +107,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                     var itemCount = ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                     ${arrayField.name} = new List<IPlcValue>();
                     for (var curItem = 0; curItem < itemCount; curItem++) {
-                        ${arrayField.name}.Add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}(<#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField, arrayField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                        ${arrayField.name}.Add(new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                     }
                 }
                 <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -119,12 +120,12 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 var value = new List<IPlcValue>();
                 while(readBuffer.getPos() < ${arrayField.name}EndPos) {
                     value.Add(
-                <#if helper.isSimpleTypeReference(arrayField.type)>
-                        new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}(${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})
-                <#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.StaticParse(readBuffer
-                    <#if arrayField.params.isPresent()>,
-                        <#list arrayField.params.orElseThrow() as parserArgument>
-                                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField,arrayField.type, parserArgument,parserArguments)})
+                <#if elementTypeReference.isSimpleTypeReference()>
+                        new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
+                <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer
+                    <#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>,
+                        <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>
+                                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(arrayField,elementTypeReference, parserArgument,parserArguments)})
                             <#sep>, </#sep>
                         </#list>
                     </#if>
@@ -137,7 +138,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 // Terminated array
                 var ${arrayField.name} = new List<${helper.getLanguageTypeNameForField(arrayField)}>();
                 while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
-                    ${arrayField.name}.Add(<#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${arrayField.name}.Add(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if arrayField.loopExpression.contains("curPos")>
@@ -199,7 +200,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 var ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
                         <#else>
                 // Simple Field (${simpleField.name})
-                var ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForField(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+                var ${simpleField.name} = <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asNonSimpleTypeReference().orElseThrow().name}IO.StaticParse(readBuffer<#if simpleField.type.asNonSimpleTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asNonSimpleTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
@@ -362,17 +363,18 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField=field.asArrayField().orElseThrow()>
+                        <#assign elementTypeReference = arrayField.type.elementTypeReference>
                 PlcList values = (PlcList) _value;
 
                         <#if case.name == "Struct">
                 foreach (IPlcValue val in values.GetStruct()["${arrayField.name}"].GetList()) {
-                    ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.Get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
-                    ${helper.getWriteBufferWriteMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "value", arrayField)};
+                    ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} value = (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}) val.Get${helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first}();
+                    ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "value", arrayField)};
                 }
                         <#else>
                 foreach (IPlcValue val in values.GetList()) {
-                    ${helper.getLanguageTypeNameForField(arrayField)} value = val.Get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
-                    ${helper.getWriteBufferWriteMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
+                    ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} value = val.Get${helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first}();
+                    ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
                 }
                         </#if>
 
@@ -416,10 +418,10 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 var ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
                             </#if>
                         </#if>
-                        <#if helper.isSimpleTypeReference(simpleField.type)>
+                        <#if simpleField.type.isSimpleTypeReference()>
                 ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)};
                         <#else>
-                ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.StaticSerialize(writeBuffer, ${simpleField.name});
+                ${simpleField.type.asNonSimpleTypeReference().orElseThrow().name}IO.StaticSerialize(writeBuffer, ${simpleField.name});
                         </#if>
                     <#break>
                 </#switch>

@@ -54,7 +54,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
     public enum ${type.name}
     {
     <#list type.enumValues as enumValue>
-        ${enumValue.name}<#if !helper.isStringTypeReference(type.type.orElseThrow())> = ${enumValue.value}</#if>,
+        ${enumValue.name}<#if type.type.orElseThrow().isNonSimpleTypeReference()> = ${enumValue.value}</#if>,
     </#list>
     }
 

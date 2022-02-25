@@ -347,6 +347,9 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
