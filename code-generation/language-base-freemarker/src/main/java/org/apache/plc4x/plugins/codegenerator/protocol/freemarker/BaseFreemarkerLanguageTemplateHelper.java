@@ -97,17 +97,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      **********************************************************************************/
 
     /**
-     * @deprecated use {@link TypeReference#isEnumTypeReference}
-     */
-    @Deprecated
-    public boolean isEnumTypeReference(TypeReference typeReference) {
-        if (typeReference == null) {
-            throw new RuntimeException("Does this ever happen?");
-        }
-        return typeReference.isEnumTypeReference();
-    }
-
-    /**
      * Helper for collecting referenced non simple types as these usually need to be
      * imported in some way.
      *

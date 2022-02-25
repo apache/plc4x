@@ -87,7 +87,7 @@ public class ${type.name} {
                         <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                         EvaluationHelper.equals(
                         ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)},
-                        <#if helper.isEnumTypeReference(discriminatorType)>
+                        <#if discriminatorType.isEnumTypeReference()>
                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
                         ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
@@ -346,7 +346,7 @@ public class ${type.name} {
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                     EvaluationHelper.equals(
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)},
-                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    <#if discriminatorType.isEnumTypeReference()>
                     ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
@@ -457,7 +457,7 @@ public class ${type.name} {
             <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                 EvaluationHelper.equals(
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)},
-                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    <#if discriminatorType.isEnumTypeReference()>
                     ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
