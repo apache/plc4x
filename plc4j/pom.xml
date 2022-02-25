@@ -153,6 +153,20 @@
       </plugin>
 
       <!--
+        As our libraries should be consumable on Java 1.8, downgrade the compiler settings.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <testSource>1.8</testSource>
+          <testTarget>1.8</testTarget>
+        </configuration>
+      </plugin>
+
+      <!--
         Make the surefire execute all unit-tests
       -->
       <plugin>
