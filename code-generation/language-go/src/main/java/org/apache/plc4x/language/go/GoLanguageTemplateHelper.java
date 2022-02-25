@@ -74,7 +74,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             PropertyField propertyField = (PropertyField) field;
             if (propertyField.getType() instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                final TypeDefinition typeDefinition =  complexTypeReference.getTypeDefinition();
+                final TypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
@@ -85,7 +85,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean isComplex(Field field) {
-        return field instanceof PropertyField && ((PropertyField) field).getType() instanceof ComplexTypeReference;
+        return field instanceof PropertyField && ((PropertyField) field).getType() instanceof NonSimpleTypeReference;
     }
 
     @Override

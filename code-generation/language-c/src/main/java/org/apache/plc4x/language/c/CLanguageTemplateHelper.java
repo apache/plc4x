@@ -980,8 +980,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(variableLiteral.getName());
         if (typeReferenceForProperty.isPresent()) {
             final TypeReference typeReference = typeReferenceForProperty.get();
-            if (typeReference instanceof ComplexTypeReference) {
-                final TypeDefinition typeDefinitionForTypeReference = typeReference.asComplexTypeReference().orElseThrow().getTypeDefinition();
+            if (typeReference instanceof NonSimpleTypeReference) {
+                final TypeDefinition typeDefinitionForTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition();
                 if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (variableLiteral.getChild().isPresent())) {
                     tracer = tracer.dive("is enum type definition");
                     sb.append(camelCaseToSnakeCase(variableLiteral.getName()));

@@ -64,7 +64,7 @@ const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type
   {/* ${helper.getCTypeName(name)} */
 <#if true>   </#if><@compress single_line=true>
                <#list typeTerms as key, term>
-                   <#if !helper.getDiscriminatorTypes()[key].isComplexTypeReference()>
+                   <#if !helper.getDiscriminatorTypes()[key].isNonSimpleTypeReference()>
                 .${key} = <#if term??>${helper.toParseExpression(type, null, term, parserArguments)}<#else>-1</#if><#sep>,
                    <#else>
                 .${key} = <#if term??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${term.asLiteral().orElseThrow().asVariableLiteral().orElseThrow().name}<#else>-1</#if><#sep>,
@@ -149,7 +149,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -173,7 +173,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -196,7 +196,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isComplexTypeReference() && elementTypeReference.asComplexTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -315,7 +315,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
 <#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name, field)};
         <#else>
-<#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(readBuffer<#if optionalField.type.isComplexTypeReference() && optionalField.type.asComplexTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
+<#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(readBuffer<#if optionalField.type.isNonSimpleTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
         </#if>
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
@@ -371,7 +371,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};
-<#if indentContent>  </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_parse(readBuffer<#if simpleField.type.isComplexTypeReference() && simpleField.type.asComplexTypeReference().get().getParams().isPresent()>, <#list simpleField.type.asComplexTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
+<#if indentContent>  </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_parse(readBuffer<#if simpleField.type.isNonSimpleTypeReference() && simpleField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list simpleField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
             </#if>
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;

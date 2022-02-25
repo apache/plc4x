@@ -323,7 +323,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public TypeReference getArgumentType(TypeReference typeReference, int index) {
         Objects.requireNonNull(typeReference, "type reference must not be null");
-        ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(() -> new FreemarkerException("Only complex type references supported here."));
+        NonSimpleTypeReference complexTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow(() -> new FreemarkerException("Only non simple type references supported here."));
         return complexTypeReference.getArgumentType(index);
     }
 

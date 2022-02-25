@@ -67,8 +67,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (field.isPropertyField()) {
             PropertyField propertyField = field.asPropertyField().orElseThrow(IllegalStateException::new);
             if (propertyField.getType().isComplexTypeReference()) {
-                ComplexTypeReference complexTypeReference = propertyField.getType().asComplexTypeReference().orElseThrow(IllegalStateException::new);
-                final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
+                NonSimpleTypeReference nonSimpleTypeReference = propertyField.getType().asNonSimpleTypeReference().orElseThrow(IllegalStateException::new);
+                final TypeDefinition typeDefinition = getTypeDefinitions().get(nonSimpleTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
@@ -81,7 +81,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
         if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((ComplexTypeReference) typeReference).getName();
+            return ((NonSimpleTypeReference) typeReference).getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -350,18 +350,18 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
-        } else if (typeReference.isComplexTypeReference()) {
+        } else if (typeReference.isNonSimpleTypeReference()) {
             StringBuilder paramsString = new StringBuilder();
-            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            ComplexTypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference).asComplexTypeDefinition().orElseThrow();
+            NonSimpleTypeReference nonSimpleTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow(IllegalStateException::new);
+            ComplexTypeDefinition typeDefinition = typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition().asComplexTypeDefinition().orElseThrow();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
             }
-            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            List<Term> paramTerms = nonSimpleTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
                 Term paramTerm = paramTerms.get(i);
-                final TypeReference argumentType = getArgumentType(complexTypeReference, i);
+                final TypeReference argumentType = getArgumentType(nonSimpleTypeReference, i);
                 paramsString
                     .append(", (")
                     .append(getLanguageTypeNameForTypeReference(argumentType))
