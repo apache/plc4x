@@ -105,6 +105,7 @@ public class ${type.name} {
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField = field.asArrayField().orElseThrow()>
+                        <#assign elementTypeReference=arrayField.type.elementTypeReference>
             // Array field (${arrayField.name})
             <#-- Only update curPos if the length expression uses it -->
                         <#if arrayField.loopExpression.contains("curPos")>
@@ -121,7 +122,7 @@ public class ${type.name} {
                 int itemCount = (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                 ${arrayField.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, arrayField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -134,12 +135,12 @@ public class ${type.name} {
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${arrayField.name}EndPos) {
                 value.add(
-                <#if arrayField.type.elementTypeReference.isSimpleTypeReference()>
-                    new ${helper.getPlcValueTypeForTypeReference(arrayField.type.elementTypeReference)}(${helper.getReadBufferReadMethodCall(arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
-                <#else>${arrayField.type.elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#if arrayField.type.params.isPresent()>,
+                <#if elementTypeReference.isSimpleTypeReference()>
+                    new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
+                <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer
+                    <#if elementTypeReference.params.isPresent()>,
                         <#list arrayField.params.orElseThrow() as parserArgument>
-                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type.elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,arrayField.type.elementTypeReference, parserArgument,parserArguments)})
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,elementTypeReference, parserArgument,parserArguments)})
                             <#sep>, </#sep>
                         </#list>
                     </#if>
@@ -152,7 +153,7 @@ public class ${type.name} {
             // Terminated array
             ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} ${arrayField.name} = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
-                ${arrayField.name}.add(<#if arrayField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                ${arrayField.name}.add(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if arrayField.loopExpression.contains("curPos")>
@@ -362,26 +363,27 @@ public class ${type.name} {
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField=field.asArrayField().orElseThrow()>
+                        <#assign elementTypeReference=arrayField.type.elementTypeReference>
             PlcList values = (PlcList) _value;
 
                         <#if case.name == "Struct">
             for (PlcValue val : ((List<PlcValue>) values.getStruct().get("${arrayField.name}").getList())) {
-                <#if arrayField.type.elementTypeReference.isByteBased()>
+                <#if elementTypeReference.isByteBased()>
                 ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.getRaw();
                 writeBuffer.writeByteArray("", value);
                 <#else>
                 ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
-                ${helper.getWriteBufferWriteMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "value", arrayField)};
+                ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "value", arrayField)};
                 </#if>
             }
                         <#else>
             for (PlcValue val : ((List<PlcValue>) values.getList())) {
-                <#if arrayField.type.elementTypeReference.isByteBased()>
+                <#if elementTypeReference.isByteBased()>
                 byte[] value = (byte[]) val.getRaw();
                 writeBuffer.writeByteArray("", value);
                 <#else>
                 ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
-                ${helper.getWriteBufferWriteMethodCall(arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
+                ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
                 </#if>
             }
                         </#if>
@@ -472,13 +474,14 @@ public class ${type.name} {
             <#switch field.typeName>
             <#case "array">
                 <#assign arrayField=field.asArrayField().orElseThrow()>
+                <#assign elementTypeReference=arrayField.type.elementTypeReference>
                 PlcList values = (PlcList) _value;
                 <#if case.name == "Struct">
                 // TODO: Finish this!
-                <#elseif arrayField.type.elementTypeReference.isComplexTypeReference()>
+                <#elseif elementTypeReference.isComplexTypeReference()>
                 // TODO: Finish this!
                 <#else>
-                sizeInBits += values.getList().size() * ${arrayField.type.elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits};
+                sizeInBits += values.getList().size() * ${elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits};
                 </#if>
                 <#break>
             <#case "const">
