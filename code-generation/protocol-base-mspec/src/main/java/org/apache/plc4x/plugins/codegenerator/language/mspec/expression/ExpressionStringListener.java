@@ -19,11 +19,11 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionConsumer;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 import org.slf4j.Logger;
@@ -140,15 +140,34 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             final ComplexTypeDefinition complexTypeDefinition = typeDefinition
                 .asComplexTypeDefinition()
                 .orElseThrow();
+            // Check for property fields context
             Optional<DefaultTypedField> propertyFieldByName = complexTypeDefinition
                 .getPropertyFieldByName(propertyName)
                 .map(DefaultTypedField.class::cast);
+            // Check for virtual fields context
             if (propertyFieldByName.isEmpty()) {
                 // TODO: do we need all virtual fields (from parent too)
                 propertyFieldByName = complexTypeDefinition.getVirtualFields().stream()
                     .filter(virtualField -> propertyName.equals(virtualField.getName()))
                     .map(DefaultTypedField.class::cast)
                     .findAny();
+            }
+            // Check for arguments context
+            if (propertyFieldByName.isEmpty() && complexTypeDefinition.getAllParserArguments().isPresent()) {
+                Optional<DefaultArgument> defaultArgument = complexTypeDefinition.getAllParserArguments().orElseThrow().stream()
+                    .filter(argument -> propertyName.equals(argument.getName()))
+                    .map(DefaultArgument.class::cast)
+                    .findAny();
+                if (defaultArgument.isPresent()) {
+                    defaultArgument.get().getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+                        if (throwable != null) {
+                            typeReferenceFuture.completeExceptionally(throwable);
+                        } else {
+                            typeReferenceFuture.complete(typeReference);
+                        }
+                    });
+                    return;
+                }
             }
             if (propertyFieldByName.isEmpty()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
