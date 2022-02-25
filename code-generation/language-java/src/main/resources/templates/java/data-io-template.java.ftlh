@@ -122,7 +122,7 @@ public class ${type.name} {
                 int itemCount = (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                 ${arrayField.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}((${helper.getLanguageTypeNameForTypeReference(elementTypeReference, false)}) <#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if elementTypeReference.params.isPresent()>, <#list elementTypeReference.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -139,8 +139,8 @@ public class ${type.name} {
                     new ${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})
                 <#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer
                     <#if elementTypeReference.params.isPresent()>,
-                        <#list arrayField.params.orElseThrow() as parserArgument>
-                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,elementTypeReference, parserArgument,parserArguments)})
+                        <#list elementTypeReference.params.orElseThrow() as parserArgument>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})
                             <#sep>, </#sep>
                         </#list>
                     </#if>
@@ -382,7 +382,7 @@ public class ${type.name} {
                 byte[] value = (byte[]) val.getRaw();
                 writeBuffer.writeByteArray("", value);
                 <#else>
-                ${helper.getLanguageTypeNameForField(arrayField)} value = (${helper.getLanguageTypeNameForField(arrayField)}) val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}();
+                ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} value = (${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}) val.get${helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first}();
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)};
                 </#if>
             }
