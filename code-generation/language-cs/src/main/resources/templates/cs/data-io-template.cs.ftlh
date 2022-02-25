@@ -68,18 +68,18 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
         {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.cases as case>
+        <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
             <@compress single_line=true>
                 <#if case.discriminatorValueTerms?has_content>
                     if(
                     <#list case.discriminatorValueTerms as discriminatorValueTerm>
-                        <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                        <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                         <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
-                        ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorExpression, parserArguments)} ==
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
                         <#if helper.isEnumTypeReference(discriminatorType)>
-                        ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                        ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
-                        ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         </#if>
                         <#sep> && </#sep>
                     </#list>
@@ -336,18 +336,18 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
             {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.cases as case>
+        <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
         <@compress single_line=true>
             <#if case.discriminatorValueTerms?has_content>
                     if(
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
-                    <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                    <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
-                            ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorExpression, parserArguments)} ==
+                            ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
                     <#if helper.isEnumTypeReference(discriminatorType)>
-                            ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                            ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
-                            ${helper.toParseExpression(dataIoTypeDefinition.switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                            ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     </#if>
                     <#sep> && </#sep>
                 </#list>
