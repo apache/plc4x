@@ -724,6 +724,13 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             return name;
         }
 
+        if (propertyType instanceof ArrayTypeReference) {
+            if (variableLiteral.getChild().isPresent()) {
+                throw new FreemarkerException("array property '" + name + "' doesn't have child properties.");
+            }
+            return name;
+        }
+
         // If it references a complex, type we need to get that type's definition first.
         final TypeDefinition propertyTypeDefinition = getTypeDefinitions().get(((NonSimpleTypeReference) propertyType).getName());
         // If we're not accessing any child property, no need to handle anything special.
