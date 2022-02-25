@@ -337,7 +337,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(simpleTypeReference)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_paddingValue", field)};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_paddingValue", paddingField)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -351,7 +351,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _reserved = ${helper.getNullValueForTypeReference(simpleTypeReference)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_reserved", field)};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_reserved", reservedField)};
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
@@ -367,7 +367,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
             <#if simpleField.type.isSimpleTypeReference()>
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(simpleField.type, "&" + simpleField.name, field)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(simpleField.type, "&" + simpleField.name, simpleField)};
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};

@@ -112,7 +112,7 @@ func (m *DF1UnprotectedReadResponse) GetLengthInBitsConditional(lastItem bool) u
 
 	// Manual Array Field (data)
 	data := m.Data
-	lengthInBits += DataLength(data) * 8
+	lengthInBits += uint16(DataLength(data))
 
 	return lengthInBits
 }

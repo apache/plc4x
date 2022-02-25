@@ -140,7 +140,7 @@ func (m *SysexCommandReportFirmwareResponse) GetLengthInBitsConditional(lastItem
 
 	// Manual Array Field (fileName)
 	fileName := m.FileName
-	lengthInBits += LengthSysexString(fileName) * 8
+	lengthInBits += uint16(LengthSysexString(fileName))
 
 	return lengthInBits
 }
