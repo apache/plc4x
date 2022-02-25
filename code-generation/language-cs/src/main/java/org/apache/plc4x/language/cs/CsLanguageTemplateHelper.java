@@ -46,8 +46,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
-        return "drivers." + String.join("", protocolName.split("\\-")) + "." +
-            String.join("", languageFlavorName.split("\\-"));
+        return "drivers." + String.join("", protocolName.split("-")) + "." +
+            String.join("", languageFlavorName.split("-"));
     }
 
     public String packageName() {
@@ -425,7 +425,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
     }
 
-    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
         if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
@@ -1164,7 +1164,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (valueString == null) {
             return null;
         }
-        if (typeReference instanceof SimpleTypeReference) {
+        if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case UINT:
@@ -1179,7 +1179,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return "\"" + valueString + "\"";
             }
         } else if (typeReference.isEnumTypeReference()) {
-            return "model." + typeReference.asComplexTypeReference().orElseThrow().getName() + "." + valueString;
+            return "model." + typeReference.asEnumTypeReference().orElseThrow().getName() + "." + valueString;
         }
         return valueString;
     }

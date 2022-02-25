@@ -458,9 +458,10 @@
         ['INT' UINT
             [simple uint 16 value]
         ]
-        ['BYTE_ARRAY' List
+        // TODO: Causes problems in C<<<>>a <
+        /*['BYTE_ARRAY' List
             [array byte value length '5']
-        ]
+        ]*/
     ]
 ]
 

@@ -461,7 +461,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
         if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
