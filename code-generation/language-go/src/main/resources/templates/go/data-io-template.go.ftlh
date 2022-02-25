@@ -68,7 +68,7 @@ import (
 	
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.orElseThrow().cases as case>
@@ -78,7 +78,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 			<#list case.discriminatorValueTerms as discriminatorValueTerm>
 				${helper.toParseExpression(null, null, type.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} ==
 				<#if parserArguments[discriminatorValueTerm?index].type.isNonSimpleTypeReference()>
-					<#if helper.isEnumTypeReference(parserArguments[discriminatorValueTerm?index].type)>
+					<#if parserArguments[discriminatorValueTerm?index].type.isEnumTypeReference()>
                         <#assign enumType=helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValueTerm?index].type)>
                         <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
                         <#assign enumTypeTraces=tracer.extractTraces(enumType)>
@@ -204,11 +204,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 	return nil, errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
 }
 
-func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	<#if parserArguments?has_content>
 	m := struct {
     	<#list parserArguments as parserArgument>
-			${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+			${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 		</#list>
 	}{
 		<#list parserArguments as parserArgument>
@@ -228,7 +228,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 				${helper.toParseExpression(null, null, type.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index], parserArguments)} ==
 				<#assign typeRef=parserArguments[discriminatorValueTerm?index].type>
 				<#if typeRef.isNonSimpleTypeReference()>
-					<#if helper.isEnumTypeReference(typeRef)>
+					<#if typeRef.isEnumTypeReference()>
                         <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
                         <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
                         <#assign enumTypeTraces=tracer.extractTraces(enumType)>

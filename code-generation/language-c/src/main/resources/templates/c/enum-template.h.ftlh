@@ -68,7 +68,7 @@ extern "C" {
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.orElseThrow().isStringTypeReference()>${enumValue?index}<#elseif type.type.orElseThrow().isNonSimpleTypeReference()><#if helper.isEnumTypeReference(type.type.orElseThrow())>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.orElseThrow().isStringTypeReference()>${enumValue?index}<#elseif type.type.orElseThrow().isNonSimpleTypeReference()><#if type.type.orElseThrow().isEnumTypeReference()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };

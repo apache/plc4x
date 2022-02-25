@@ -76,7 +76,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                         <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                         ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
-                        <#if helper.isEnumTypeReference(discriminatorType)>
+                        <#if discriminatorType.isEnumTypeReference()>
                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
                         ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
@@ -344,7 +344,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                     <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                             ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
-                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    <#if discriminatorType.isEnumTypeReference()>
                             ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                             ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}

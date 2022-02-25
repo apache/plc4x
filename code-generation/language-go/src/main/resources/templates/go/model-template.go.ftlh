@@ -113,7 +113,7 @@ type I${type.name} interface {
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 	// ${discriminatorName?cap_first} returns ${discriminatorName?cap_first}
-	${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference() && !helper.isEnumTypeReference(discriminatorType)>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
+	${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
 	</#list>
 </#if>
@@ -144,12 +144,12 @@ type I${type.name} interface {
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
-func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 	return
 				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
 					<#if typeRef.isNonSimpleTypeReference()>
-						<#if helper.isEnumTypeReference(typeRef)>
+						<#if typeRef.isEnumTypeReference()>
                             <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
                             <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
                             <#assign enumTypeTraces=tracer.extractTraces(enumType)>
@@ -169,12 +169,12 @@ func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimple
 			</@compress>
 }
 
-func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !helper.isEnumTypeReference(typeRef)>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 				return
 				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
 					<#if typeRef.isNonSimpleTypeReference()>
-						<#if helper.isEnumTypeReference(typeRef)>
+						<#if typeRef.isEnumTypeReference()>
 							<#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
 							<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
 							<#assign enumTypeTraces=tracer.extractTraces(enumType)>
@@ -584,7 +584,7 @@ func (m *${type.name}) GetParentLengthInBits() uint16 {
 				<#if constField.type.isVstringTypeReference()>
                     <#assign vstringTypeReference = constField.type.asVstringTypeReference().orElseThrow()>
 					lengthInBits += uint16(${helper.toSerializationExpression(constField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)})
-				<#elseif helper.isEnumTypeReference(constField.type)>
+				<#elseif constField.type.isEnumTypeReference()>
 	lengthInBits += ${helper.getEnumBaseTypeReference(constField.type).sizeInBits};
 				<#else>
 	lengthInBits += ${simpleTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits}
@@ -708,7 +708,7 @@ func (m *${type.name}) GetLengthInBytes() uint16 {
 }
 
 <#assign hasParserArguments=parserArguments?has_content/>
-<#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
+<#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if>, error) {
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
@@ -899,7 +899,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign constField = field.asConstField().orElseThrow()>
 
 	// Const Field (${constField.name})
-				<#if helper.isEnumTypeReference(constField.type)>
+				<#if constField.type.isEnumTypeReference()>
                     <#--<#assign constField=constField.asEnumField().orElseThrow()>-->
 					<#-- TODO: finish me-->
                     <#if false && constField.fieldName.isPresent()>
@@ -1277,7 +1277,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
 									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
 									<#elseif discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
-										<#if helper.isEnumTypeReference(discriminatorType)>
+										<#if discriminatorType.isEnumTypeReference()>
 											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
 											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
 											<#assign enumTypeTraces=tracer.extractTraces(enumType)>
@@ -1421,7 +1421,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	return _child.${type.parentType.orElseThrow().name}, nil
 	<#else>
 	// Create the instance
-	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !helper.isEnumTypeReference(arg.type)>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
+	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !arg.type.isEnumTypeReference()>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
 	</#if>
 }
 
@@ -1526,7 +1526,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 				<#case "const">
 					<#assign constField = field.asConstField().orElseThrow()>
 
-					<#if helper.isEnumTypeReference(constField.type)>
+					<#if constField.type.isEnumTypeReference()>
 						<#-- TODO: finish me-->
                         <#if constField.fieldName?has_content>
                             <#assign enumValueFieldAccessor=type.name+"_"+constField.name?upper_case>

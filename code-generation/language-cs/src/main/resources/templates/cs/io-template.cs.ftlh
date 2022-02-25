@@ -204,7 +204,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if helper.isEnumTypeReference(typedField.type)>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if typedField.type.isEnumTypeReference()>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
         <#break>
     <#case "switch">
         <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -220,7 +220,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
                     EvaluationHelper.equals(
                     ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
-                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    <#if discriminatorType.isEnumTypeReference()>
                     ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                     ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}

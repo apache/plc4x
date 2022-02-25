@@ -376,7 +376,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
-<#if indentContent>  </#if>  (*_message)-><@fieldName baseType=baseType field=simpleField/> = <#if helper.isEnumTypeReference(simpleField.type)>*</#if>${simpleField.name};
+<#if indentContent>  </#if>  (*_message)-><@fieldName baseType=baseType field=simpleField/> = <#if simpleField.type.isEnumTypeReference()>*</#if>${simpleField.name};
             <#break>
         <#case "switch">
             <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -584,7 +584,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if simpleField.type.isSimpleTypeReference()>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField), field)};
             <#else>
-<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, <#if helper.isEnumTypeReference(simpleField.type)>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
+<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, <#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
@@ -738,7 +738,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                     <#assign simpleTypeReference = simpleField.type>
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#else>
-<#if indentContent>    </#if>  lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(<#if helper.isEnumTypeReference(simpleField.type)>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
+<#if indentContent>    </#if>  lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(<#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
                 </#if>
                 <#break>
             <#case "switch">

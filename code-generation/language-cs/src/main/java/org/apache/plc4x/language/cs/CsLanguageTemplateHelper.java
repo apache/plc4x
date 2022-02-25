@@ -343,7 +343,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
-        if (isEnumTypeReference(typeReference)) {
+        if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
@@ -426,7 +426,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
-        if (!isEnumTypeReference(typeReference)) {
+        if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
         final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
@@ -1178,7 +1178,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case VSTRING:
                     return "\"" + valueString + "\"";
             }
-        } else if (isEnumTypeReference(typeReference)) {
+        } else if (typeReference.isEnumTypeReference()) {
             return "model." + typeReference.asComplexTypeReference().orElseThrow().getName() + "." + valueString;
         }
         return valueString;
