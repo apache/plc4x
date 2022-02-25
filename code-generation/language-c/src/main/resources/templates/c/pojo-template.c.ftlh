@@ -329,15 +329,15 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "padding">
             <#assign paddingField = field.asPaddingField().orElseThrow()>
-            <#assign simpleTypeReference = paddingField.type>
+            <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
 <#if indentContent>  </#if>  // Padding Field (padding)
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, parserArguments)}));
 <#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(paddingField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(paddingField.type, "&_paddingValue", field)};
+<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(simpleTypeReference)};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_paddingValue", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -346,12 +346,12 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "reserved">
             <#assign reservedField = field.asReservedField().orElseThrow()>
-            <#assign simpleTypeReference = reservedField.type>
+            <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
 
 <#if indentContent>  </#if>  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 <#if indentContent>  </#if>  {
-<#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _reserved = ${helper.getNullValueForTypeReference(reservedField.type)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(reservedField.type, "&_reserved", field)};
+<#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _reserved = ${helper.getNullValueForTypeReference(simpleTypeReference)};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_reserved", field)};
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
@@ -543,7 +543,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if optionalField.type.isSimpleTypeReference()>
 <#if indentContent>    </#if>    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type.asSimpleTypeReference().orElseThrow(), "*_message->" + helper.getFieldName(baseType, optionalField), field)};
             <#else>
-<#if indentContent>    </#if>    _res = ${helper.getCTypeName(optionalField.type.asComplexTypeReference().orElseThrow().name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=optionalField/>);
+<#if indentContent>    </#if>    _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
 <#if indentContent>    </#if>    if(_res != OK) {
 <#if indentContent>    </#if>      return _res;
@@ -631,7 +631,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
 
 <#if indentContent>    </#if>  // Array field
                 <#if elementTypeReference.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = elementTypeReference>
+                    <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits} * plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
                 <#else>
 <#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=arrayField/> != NULL) {

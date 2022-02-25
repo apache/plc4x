@@ -1178,12 +1178,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     public String getLengthInBitsFunctionNameForComplexTypedField(Field field) {
-        return field.asTypedField()
+        TypeReference typeReference = field.asTypedField()
             .map(TypedField::getType)
-            .orElseThrow(() -> new FreemarkerException("lengthInBits functions only exist for TypedFields"))
-            .asComplexTypeReference()
-            .map(complexTypeReference -> getCTypeName(complexTypeReference.getName()) + "_length_in_bits")
-            .orElseThrow(() -> new FreemarkerException("lengthInBits functions only exist for complex types"));
+            .orElseThrow(() -> new FreemarkerException("lengthInBits functions only exist for TypedFields"));
+        if (typeReference.isArrayTypeReference()){
+            typeReference = typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference();
+        }
+        return typeReference
+            .asNonSimpleTypeReference()
+            .map(nonSimpleTypeReference -> getCTypeName(nonSimpleTypeReference.getName()) + "_length_in_bits")
+            .orElseThrow(() -> new FreemarkerException("lengthInBits functions only exist for non simple type references"));
     }
 
     public String getEnumExpression(String expression) {
