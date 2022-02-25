@@ -24,8 +24,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
 
     public enum HostProtocolCode
     {
-        IPV4_UDP,
-        IPV4_TCP,
+        IPV4_UDP = 0x01,
+        IPV4_TCP = 0x02,
     }
 
 }

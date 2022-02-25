@@ -106,12 +106,12 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
 
         // Properties.
 <#list type.propertyFields as field>
-        public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name?cap_first} { get; }
+        public ${helper.getLanguageTypeNameForTypeReference(field.type)} ${field.name?cap_first} { get; }
 </#list>
 </#if>
 
     <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-        public ${type.name}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>)
+        public ${type.name}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep></#list>)
 <#if type.getParentPropertyFields()?has_content>
             : base(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>)
 </#if>

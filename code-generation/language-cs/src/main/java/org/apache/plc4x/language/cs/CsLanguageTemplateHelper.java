@@ -80,8 +80,16 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((NonSimpleTypeReference) typeReference).getName();
+        if (typeReference instanceof ArrayTypeReference) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference()) + "[]";
+        }
+        // DataIo data-types always have properties of type PlcValue
+        if (typeReference.isDataIoTypeReference()) {
+            return "PlcValue";
+        }
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {

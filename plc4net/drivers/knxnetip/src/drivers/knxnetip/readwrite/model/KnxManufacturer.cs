@@ -604,8 +604,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_TECGET = 577,
         M_XEROPOINT = 578,
         M_HONEYWELL_BUILDING_TECHNOLOGIES = 579,
-        M_ABB___RESERVED = 580,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 581,
+        M_COMFORTCLICK = 580,
+        M_DORBAS_ELECTRIC = 581,
+        M_ABB___RESERVED = 582,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 583,
     }
 
     public static class KnxManufacturerInfo
@@ -2220,10 +2222,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return 97;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '580' */
+                case KnxManufacturer.M_COMFORTCLICK: { /* '580' */
+                    return 638;
+                }
+                case KnxManufacturer.M_DORBAS_ELECTRIC: { /* '581' */
+                    return 639;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '582' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '581' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '583' */
                     return 43959;
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
@@ -3976,10 +3984,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_DAETWYLER: { /* '58' */
                     return "Dätwyler";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '580' */
+                case KnxManufacturer.M_COMFORTCLICK: { /* '580' */
+                    return "ComfortClick";
+                }
+                case KnxManufacturer.M_DORBAS_ELECTRIC: { /* '581' */
+                    return "DORBAS ELECTRIC";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '582' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '581' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '583' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_ELECTRAK: { /* '59' */
