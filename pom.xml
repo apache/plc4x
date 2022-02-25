@@ -165,7 +165,7 @@
     <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>false</skip-code-generation-tests>
-    <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+    <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
   </properties>
 
   <modules>
