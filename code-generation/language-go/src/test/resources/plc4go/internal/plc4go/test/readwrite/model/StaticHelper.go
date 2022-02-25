@@ -28,14 +28,14 @@ func ParseBit(io utils.ReadBuffer) int8 {
 func SerializeBit(io utils.WriteBuffer, data byte) {
 }
 
-func SerializeByte(io utils.ReadBuffer) int8 {
+func ParseByte(io utils.ReadBuffer) int8 {
 	return 0
 }
 
 func SerializeByte(io utils.WriteBuffer, data byte) {
 }
 
-func SerializeInt8(io utils.ReadBuffer) int8 {
+func ParseInt8(io utils.ReadBuffer) int8 {
 	return 0
 }
 

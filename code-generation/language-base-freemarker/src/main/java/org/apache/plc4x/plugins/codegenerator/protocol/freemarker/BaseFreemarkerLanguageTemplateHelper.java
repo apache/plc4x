@@ -108,35 +108,35 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     /**
-     * Helper for collecting referenced complex types as these usually ned to be
+     * Helper for collecting referenced non simple types as these usually need to be
      * imported in some way.
      *
-     * @return Collection of all complex type references used in fields or enum constants.
+     * @return Collection of all non simple type references used in fields or enum constants.
      */
-    public Collection<String> getComplexTypeReferences() {
-        return getComplexTypeReferences(thisType);
+    public Collection<String> getNonSimpleTypeReferences() {
+        return getNonSimpleTypeReferences(thisType);
     }
 
     /**
-     * Helper for collecting referenced complex types as these usually need to be
+     * Helper for collecting referenced non simple types as these usually need to be
      * imported in some way.
      *
      * @param baseType the base type we want to get the type references from
-     * @return collection of complex type references used in the type.
+     * @return collection of non simple type references used in the type.
      */
-    public Collection<String> getComplexTypeReferences(TypeDefinition baseType) {
-        return getComplexTypeReferences(baseType, new HashSet<>());
+    public Collection<String> getNonSimpleTypeReferences(TypeDefinition baseType) {
+        return getNonSimpleTypeReferences(baseType, new HashSet<>());
     }
 
-    public Collection<String> getComplexTypeReferences(TypeDefinition baseType, Set<String> complexTypeReferences) {
+    public Collection<String> getNonSimpleTypeReferences(TypeDefinition baseType, Set<String> nonSimpleTypeReferences) {
         // We add ourselves to avoid a stackoverflow
-        complexTypeReferences.add(baseType.getName());
+        nonSimpleTypeReferences.add(baseType.getName());
         // If this is a subtype of a discriminated type, we have to add a reference to the parent type.
         if (baseType instanceof DiscriminatedComplexTypeDefinition) {
             DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = (DiscriminatedComplexTypeDefinition) baseType;
             if (!discriminatedComplexTypeDefinition.isAbstract()) {
                 String typeReferenceName = discriminatedComplexTypeDefinition.getParentType().orElseThrow().getName();
-                complexTypeReferences.add(typeReferenceName);
+                nonSimpleTypeReferences.add(typeReferenceName);
             }
         }
         // If it's a complex type definition, add all the types referenced by any property fields
@@ -146,17 +146,17 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             for (Field field : complexTypeDefinition.getFields()) {
                 if (field instanceof PropertyField) {
                     PropertyField propertyField = (PropertyField) field;
-                    if (propertyField.getType() instanceof ComplexTypeReference) {
-                        ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                        complexTypeReferences.add(complexTypeReference.getName());
+                    if (propertyField.getType() instanceof NonSimpleTypeReference) {
+                        NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) propertyField.getType();
+                        nonSimpleTypeReferences.add(nonSimpleTypeReference.getName());
                     }
                 } else if (field instanceof SwitchField) {
                     SwitchField switchField = (SwitchField) field;
                     for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
-                        if (complexTypeReferences.contains(switchCase.getName())) {
+                        if (nonSimpleTypeReferences.contains(switchCase.getName())) {
                             continue;
                         }
-                        complexTypeReferences.addAll(getComplexTypeReferences(switchCase, complexTypeReferences));
+                        nonSimpleTypeReferences.addAll(getNonSimpleTypeReferences(switchCase, nonSimpleTypeReferences));
                     }
                 }
             }
@@ -164,25 +164,25 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) baseType;
             for (String constantName : enumTypeDefinition.getConstantNames()) {
                 final TypeReference constantType = enumTypeDefinition.getConstantType(constantName);
-                if (constantType instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) constantType;
-                    complexTypeReferences.add(complexTypeReference.getName());
+                if (constantType instanceof NonSimpleTypeReference) {
+                    NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) constantType;
+                    nonSimpleTypeReferences.add(nonSimpleTypeReference.getName());
                 }
             }
         }
         // If the type has any parser arguments, these have to be checked too.
         baseType.getParserArguments().ifPresent(arguments -> arguments.stream()
             .map(Argument::getType)
-            .map(TypeReferenceConversions::asComplexTypeReference)
+            .map(TypeReferenceConversions::asNonSimpleTypeReference)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .map(ComplexTypeReference::getName)
-            .forEach(complexTypeReferences::add)
+            .map(NonSimpleTypeReference::getName)
+            .forEach(nonSimpleTypeReferences::add)
         );
 
         // We remove ourselves to avoid a stackoverflow
-        complexTypeReferences.remove(baseType.getName());
-        return complexTypeReferences;
+        nonSimpleTypeReferences.remove(baseType.getName());
+        return nonSimpleTypeReferences;
     }
 
     protected EnumTypeDefinition getEnumTypeDefinition(TypeReference typeReference) {
