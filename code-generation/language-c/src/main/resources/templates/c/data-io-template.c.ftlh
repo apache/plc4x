@@ -130,14 +130,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                         type we have to iterate over it's elements and explicitly cast them.
                         Otherwise a simple toArray call is fine.
                     -->
-                        <#if elementTypeReference.isSimpleTypeReference()>
-        ${helper.getLanguageTypeNameForField(arrayField)}[] ${arrayField.name} = new ${helper.getLanguageTypeNameForField(arrayField)}[_${arrayField.name}List.size()];
+                        <#--if elementTypeReference.isSimpleTypeReference()>
+        ${helper.getLanguageTypeNameForField(arrayField)}[] ${arrayField.name} = malloc(sizeof(${helper.getLanguageTypeNameForField(arrayField)}) * _${arrayField.name}List.size()];
         for(int i = 0; i < _${arrayField.name}List.size(); i++) {
             ${arrayField.name}[i] = (${helper.getLanguageTypeNameForField(arrayField)}) _${arrayField.name}List.get(i);
         }
                         <#else>
         ${helper.getLanguageTypeNameForField(arrayField)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getLanguageTypeNameForField(arrayField)}[0]);
-                        </#if>
+                        </#if-->
                     </#if>
         *data_item = plc4c_data_create_list_data(*${arrayField.name});
 
@@ -220,7 +220,6 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 <#if case.name == "BitString">
                 *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_bit_string_data(${simpleField.name});
                 <#else>
-                    // Hurz
                 *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_data(${simpleField.name});
                 </#if>
 
