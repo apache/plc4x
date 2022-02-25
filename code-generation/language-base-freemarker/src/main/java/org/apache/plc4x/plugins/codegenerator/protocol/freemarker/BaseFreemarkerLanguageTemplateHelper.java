@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public abstract class BaseFreemarkerLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
@@ -83,13 +82,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public Map<String, TypeDefinition> getTypeDefinitions() {
         return types;
-    }
-
-    public List<TypeDefinition> getComplexTypeRootDefinitions() {
-        return types.values().stream()
-            .filter(ComplexTypeDefinition.class::isInstance)
-            .filter(typeDefinition -> !(typeDefinition instanceof DiscriminatedComplexTypeDefinition))
-            .collect(Collectors.toList());
     }
 
     /* *********************************************************************************
@@ -410,18 +402,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     protected boolean isVariableLiteralVirtualField(VariableLiteral variableLiteral) {
         return thisType.asComplexTypeDefinition()
             .map(complexTypeDefinition -> complexTypeDefinition.isVariableLiteralVirtualField(variableLiteral))
-            .orElse(false);
-    }
-
-    /**
-     * Confirms if a variable is a discriminator variable. These need to be handled differently when serializing and parsing.
-     *
-     * @param variableLiteral The variable to search for.
-     * @return boolean returns true if the variable's name is an discriminator field
-     */
-    protected boolean isVariableLiteralDiscriminatorField(VariableLiteral variableLiteral) {
-        return thisType.asComplexTypeDefinition()
-            .map(complexTypeDefinition -> complexTypeDefinition.isVariableLiteralDiscriminatorField(variableLiteral))
             .orElse(false);
     }
 
