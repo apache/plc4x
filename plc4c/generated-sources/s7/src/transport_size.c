@@ -1320,6 +1320,115 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
     }
 }
 
+plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_type(plc4c_s7_read_write_transport_size value) {
+  switch(value) {
+    case plc4c_s7_read_write_transport_size_BOOL: { /* '0x01' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_BYTE: { /* '0x02' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_WORD: { /* '0x03' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_DWORD: { /* '0x04' */
+      return plc4c_s7_read_write_transport_size_WORD;
+    }
+    case plc4c_s7_read_write_transport_size_LWORD: { /* '0x05' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_INT: { /* '0x06' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_UINT: { /* '0x07' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_SINT: { /* '0x08' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_USINT: { /* '0x09' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_DINT: { /* '0x0A' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_UDINT: { /* '0x0B' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_LINT: { /* '0x0C' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_ULINT: { /* '0x0D' */
+      return plc4c_s7_read_write_transport_size_INT;
+    }
+    case plc4c_s7_read_write_transport_size_REAL: { /* '0x0E' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_LREAL: { /* '0x0F' */
+      return plc4c_s7_read_write_transport_size_REAL;
+    }
+    case plc4c_s7_read_write_transport_size_CHAR: { /* '0x10' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_WCHAR: { /* '0x11' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_STRING: { /* '0x12' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_WSTRING: { /* '0x13' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_TIME: { /* '0x14' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_LTIME: { /* '0x16' */
+      return plc4c_s7_read_write_transport_size_TIME;
+    }
+    case plc4c_s7_read_write_transport_size_DATE: { /* '0x17' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_TIME_OF_DAY: { /* '0x18' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_TOD: { /* '0x19' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_DATE_AND_TIME: { /* '0x1A' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_DT: { /* '0x1B' */
+      return -1;
+    }
+    default: {
+      return 0;
+    }
+  }
+}
+
+plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_base_type(plc4c_s7_read_write_transport_size value) {
+    switch(value) {
+        case plc4c_s7_read_write_transport_size_UINT: /* '0x07' */{
+            return plc4c_s7_read_write_transport_size_UINT;
+        }
+        case plc4c_s7_read_write_transport_size_LREAL: /* '0x0F' */{
+            return plc4c_s7_read_write_transport_size_LREAL;
+        }
+        case plc4c_s7_read_write_transport_size_LTIME: /* '0x16' */{
+            return plc4c_s7_read_write_transport_size_LTIME;
+        }
+        case plc4c_s7_read_write_transport_size_DWORD: /* '0x04' */{
+            return plc4c_s7_read_write_transport_size_DWORD;
+        }
+        case plc4c_s7_read_write_transport_size_BOOL: /* '0x01' */{
+            return plc4c_s7_read_write_transport_size_BOOL;
+        }
+        default: {
+            return -1;
+        }
+    }
+}
+
 uint16_t plc4c_s7_read_write_transport_size_length_in_bytes(plc4c_s7_read_write_transport_size* _message) {
     return plc4c_s7_read_write_transport_size_length_in_bits(_message) / 8;
 }
