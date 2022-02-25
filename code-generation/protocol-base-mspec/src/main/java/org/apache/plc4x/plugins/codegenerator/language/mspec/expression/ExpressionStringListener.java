@@ -140,15 +140,22 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             final ComplexTypeDefinition complexTypeDefinition = typeDefinition
                 .asComplexTypeDefinition()
                 .orElseThrow();
-            final Optional<PropertyField> propertyFieldByName = complexTypeDefinition
-                .getPropertyFieldByName(propertyName);
+            Optional<DefaultTypedField> propertyFieldByName = complexTypeDefinition
+                .getPropertyFieldByName(propertyName)
+                .map(DefaultTypedField.class::cast);
+            if (propertyFieldByName.isEmpty()) {
+                // TODO: do we need all virtual fields (from parent too)
+                propertyFieldByName = complexTypeDefinition.getVirtualFields().stream()
+                    .filter(virtualField -> propertyName.equals(virtualField.getName()))
+                    .map(DefaultTypedField.class::cast)
+                    .findAny();
+            }
             if (propertyFieldByName.isEmpty()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
                 return;
             }
-            PropertyField propertyField = propertyFieldByName
-                .orElseThrow();
-            ((DefaultTypedField) propertyField).getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
+            DefaultTypedField propertyField = propertyFieldByName.orElseThrow();
+            propertyField.getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
                 if (throwable != null) {
                     typeReferenceFuture.completeExceptionally(throwable);
                 } else {
@@ -194,8 +201,13 @@ public class ExpressionStringListener extends ExpressionBaseListener {
                 LOGGER.error("Error setting type", throwable);
                 return;
             }
-            String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
-            lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
+            if (typeReference.isSimpleTypeReference()) {
+                variableLiteral.setTypeReference(typeReference);
+            } else {
+                variableLiteral.setTypeReference(typeReference);
+                String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
+                lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
+            }
         });
         if (futureStack.empty()) {
             futureStack = null;
