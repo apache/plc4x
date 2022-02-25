@@ -165,7 +165,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	}
 	functionId := _functionId
 
-	// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {

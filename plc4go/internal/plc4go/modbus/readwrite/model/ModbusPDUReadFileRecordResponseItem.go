@@ -113,7 +113,7 @@ func ModbusPDUReadFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mod
 		return nil, pullErr
 	}
 
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {

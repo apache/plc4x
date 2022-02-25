@@ -144,7 +144,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	var startPos = readBuffer.GetPos()
 	var curPos uint16
 
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {

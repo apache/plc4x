@@ -121,7 +121,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 		return nil, pullErr
 	}
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
