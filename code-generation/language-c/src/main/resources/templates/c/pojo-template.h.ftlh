@@ -67,7 +67,7 @@
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?values as discriminatorType>
         <#if discriminatorType.isNonSimpleTypeReference()>
-#include "${helper.camelCaseToSnakeCase(discriminatorType.name)}.h"
+#include "${helper.camelCaseToSnakeCase(discriminatorType.asNonSimpleTypeReference().orElseThrow().name)}.h"
         </#if>
     </#list>
 </#if>

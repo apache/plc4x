@@ -76,7 +76,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         // Array field (${arrayField.name})
                 <#-- Only update curPos if the length expression uses it -->
                     <#if arrayField.loopExpression.contains("curPos")>
-        curPos = readBuffer.getPos() - startPos;
+        curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
                     </#if>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if arrayField.isCountArrayField()>
@@ -99,25 +99,29 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                         <#if arrayField.isLengthArrayField()>
         // Length array
         int _${arrayField.name}Length = ${helper.toParseExpression(type, arrayField, arrayField.loopExpression, parserArguments)};
-        List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        int ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
-        while(readBuffer.getPos() < ${arrayField.name}EndPos) {
-            _${arrayField.name}List.add(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), null, arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(type, arrayField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+        plc4c_list* ${arrayField.name};
+        plc4c_utils_list_create(&${arrayField.name});
+        int ${arrayField.name}EndPos = plc4c_spi_read_get_pos(readBuffer) + _${arrayField.name}Length;
+        while(plc4c_spi_read_get_pos(readBuffer) < ${arrayField.name}EndPos) {
+            plc4c_data* _item =<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), null, arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(type, arrayField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            plc4c_utils_list_insert_head_value(${arrayField.name}, _item);
                         <#-- After parsing, update the current position, but only if it's needed -->
                             <#if arrayField.loopExpression.contains("curPos")>
-            curPos = readBuffer.getPos() - startPos;
+            curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
                             </#if>
         }
                         <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                         <#elseif arrayField.isTerminatedArrayField()>
         // Terminated array
-        List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
+        plc4c_list* ${arrayField.name};
+        plc4c_utils_list_create(&${arrayField.name});
         while(!((boolean) (${helper.toParseExpression(type, arrayField, arrayField.loopExpression, parserArguments)}))) {
-            _${arrayField.name}List.add(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow())}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(type, arrayField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+            plc4c_data* _item =<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), null, arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(type, arrayField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            plc4c_utils_list_insert_head_value(${arrayField.name}, _item);
 
                         <#-- After parsing, update the current position, but only if it's needed -->
                             <#if arrayField.loopExpression.contains("curPos")>
-            curPos = readBuffer.getPos() - startPos;
+            curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
                             </#if>
         }
                         </#if>
