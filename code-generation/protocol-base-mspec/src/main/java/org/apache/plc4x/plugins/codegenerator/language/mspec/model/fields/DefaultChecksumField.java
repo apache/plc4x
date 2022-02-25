@@ -39,6 +39,11 @@ public class DefaultChecksumField extends DefaultTypedNamedField implements Chec
     }
 
     @Override
+    public SimpleTypeReference getType() {
+        return (SimpleTypeReference) super.getType();
+    }
+
+    @Override
     public String toString() {
         return "DefaultChecksumField{" +
             "checksumExpression=" + checksumExpression +

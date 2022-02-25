@@ -113,8 +113,8 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         // We add ourselves to avoid a stackoverflow
         nonSimpleTypeReferences.add(baseType.getName());
         // If this is a subtype of a discriminated type, we have to add a reference to the parent type.
-        if (baseType instanceof DiscriminatedComplexTypeDefinition) {
-            DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = (DiscriminatedComplexTypeDefinition) baseType;
+        if (baseType.isDiscriminatedComplexTypeDefinition()) {
+            DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = baseType.asDiscriminatedComplexTypeDefinition().orElseThrow();
             if (!discriminatedComplexTypeDefinition.isAbstract()) {
                 String typeReferenceName = discriminatedComplexTypeDefinition.getParentType().orElseThrow().getName();
                 nonSimpleTypeReferences.add(typeReferenceName);
@@ -122,17 +122,21 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         // If it's a complex type definition, add all the types referenced by any property fields
         // (Includes any types referenced by sub-types in case this is a discriminated type parent)
-        if (baseType instanceof ComplexTypeDefinition) {
-            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) baseType;
+        if (baseType.isComplexTypeDefinition()) {
+            ComplexTypeDefinition complexTypeDefinition = baseType.asComplexTypeDefinition().orElseThrow();
             for (Field field : complexTypeDefinition.getFields()) {
-                if (field instanceof PropertyField) {
-                    PropertyField propertyField = (PropertyField) field;
-                    if (propertyField.getType() instanceof NonSimpleTypeReference) {
-                        NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) propertyField.getType();
+                if (field.isPropertyField()) {
+                    PropertyField propertyField = field.asPropertyField().orElseThrow();
+                    TypeReference typeReference = propertyField.getType();
+                    if (typeReference.isArrayTypeReference()) {
+                        typeReference = typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference();
+                    }
+                    if (typeReference.isNonSimpleTypeReference()) {
+                        NonSimpleTypeReference nonSimpleTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow();
                         nonSimpleTypeReferences.add(nonSimpleTypeReference.getName());
                     }
-                } else if (field instanceof SwitchField) {
-                    SwitchField switchField = (SwitchField) field;
+                } else if (field.isSwitchField()) {
+                    SwitchField switchField = field.asSwitchField().orElseThrow();
                     for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
                         if (nonSimpleTypeReferences.contains(switchCase.getName())) {
                             continue;
@@ -141,12 +145,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
                     }
                 }
             }
-        } else if (baseType instanceof EnumTypeDefinition) {// In case this is an enum type, we have to check all the constant types.
-            EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) baseType;
+        } else if (baseType.isEnumTypeDefinition()) {// In case this is an enum type, we have to check all the constant types.
+            EnumTypeDefinition enumTypeDefinition = baseType.asEnumTypeDefinition().orElseThrow();
             for (String constantName : enumTypeDefinition.getConstantNames()) {
                 final TypeReference constantType = enumTypeDefinition.getConstantType(constantName);
-                if (constantType instanceof NonSimpleTypeReference) {
-                    NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) constantType;
+                if (constantType.isNonSimpleTypeReference()) {
+                    NonSimpleTypeReference nonSimpleTypeReference = constantType.asNonSimpleTypeReference().orElseThrow();
                     nonSimpleTypeReferences.add(nonSimpleTypeReference.getName());
                 }
             }
@@ -167,17 +171,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     protected EnumTypeDefinition getEnumTypeDefinition(TypeReference typeReference) {
-        if (!(typeReference instanceof NonSimpleTypeReference)) {
-            throw new FreemarkerException("type reference for enum types must be of type non simple type");
-        }
-        NonSimpleTypeReference nonSimpleTypeReference = (NonSimpleTypeReference) typeReference;
+        NonSimpleTypeReference nonSimpleTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow(
+            () -> new FreemarkerException("type reference for enum types must be of type non simple type"));
         String typeName = nonSimpleTypeReference.getName();
         final TypeDefinition typeDefinition = nonSimpleTypeReference.getTypeDefinition();
         if (typeDefinition == null) {
             throw new FreemarkerException("Couldn't find given enum type definition with name " + typeName);
         }
         // TODO: same here. It is named complex type reference but it references a enum...
-        if (!(typeDefinition instanceof EnumTypeDefinition)) {
+        if (!typeDefinition.isEnumTypeDefinition()) {
             throw new FreemarkerException("Referenced type with name " + typeName + " is not an enum type");
         }
         return (EnumTypeDefinition) typeDefinition;
@@ -266,11 +268,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         // Get the parent type (Which contains the typeSwitch field)
         SwitchField switchField = null;
         Function<String, TypeReference> typeRefRetriever = null;
-        if (thisType instanceof DiscriminatedComplexTypeDefinition) {
+        if (thisType.isDiscriminatedComplexTypeDefinition()) {
             ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
             switchField = parentType.getSwitchField().orElse(null);
             typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
-        } else if (thisType instanceof DefaultDataIoTypeDefinition) {
+        } else if (thisType.isDataIoTypeDefinition()) {
             final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) this.thisType;
             switchField = dataIoTypeDefinition.getSwitchField().orElseThrow();
             typeRefRetriever = propertyName -> thisType.getParserArguments()
@@ -280,7 +282,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
                 .findFirst()
                 .map(Argument::getType)
                 .orElse(null);
-        } else if (thisType instanceof ComplexTypeDefinition) {
+        } else if (thisType.isComplexTypeDefinition()) {
             switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
             typeRefRetriever = propertyName -> ((ComplexTypeDefinition) thisType).getTypeReferenceForProperty(propertyName).orElse(null);
         }
