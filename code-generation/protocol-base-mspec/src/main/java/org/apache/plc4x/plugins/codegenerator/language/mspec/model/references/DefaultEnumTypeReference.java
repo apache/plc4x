@@ -85,7 +85,7 @@ public class DefaultEnumTypeReference implements EnumTypeReference {
 
     @Override
     public String toString() {
-        return "DefaultComplexTypeReference{" +
+        return "DefaultEnumTypeReference{" +
                 "name='" + name + '\'' +
                 ", params=" + params +
                 '}';
