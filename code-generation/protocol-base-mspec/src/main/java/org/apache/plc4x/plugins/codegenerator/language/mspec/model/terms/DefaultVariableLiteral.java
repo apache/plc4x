@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
@@ -59,10 +58,6 @@ public class DefaultVariableLiteral implements VariableLiteral {
     public void setTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
         this.typeReference = typeReference;
-    }
-
-    public void setTypeDefinition(TypeDefinition typeDefinition) {
-        // TODO: handle type definition
     }
 
     @Override

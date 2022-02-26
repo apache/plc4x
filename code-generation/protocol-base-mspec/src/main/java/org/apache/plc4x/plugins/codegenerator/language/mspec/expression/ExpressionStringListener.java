@@ -232,13 +232,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
                 LOGGER.error("Error setting type", throwable);
                 return;
             }
-            if (typeReference.isSimpleTypeReference()) {
-                variableLiteral.setTypeReference(typeReference);
-            } else {
-                variableLiteral.setTypeReference(typeReference);
-                String typeName = typeReference.asNonSimpleTypeReference().orElseThrow().getName();
-                lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, variableLiteral::setTypeDefinition);
-            }
+            variableLiteral.setTypeReference(typeReference);
         });
         if (futureStack.empty()) {
             futureStack = null;
