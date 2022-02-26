@@ -22,6 +22,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.LazyTypeDefinitionC
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultTypedField;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.BuiltIns;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
@@ -174,7 +175,11 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             }
             // Handle Builtins
             if (propertyFieldByName.isEmpty()) {
-                // TODO: handle builtins
+                TypeReference typeReference = BuiltIns.builtInFields.get(propertyName);
+                if (typeReference != null) {
+                    typeReferenceFuture.complete(typeReference);
+                    return;
+                }
             }
             if (propertyFieldByName.isEmpty()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
@@ -184,9 +189,9 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             propertyField.getTypeReferenceCompletionStage().whenComplete((propertyTypeReference, throwable) -> {
                 if (throwable != null) {
                     typeReferenceFuture.completeExceptionally(throwable);
-                } else {
-                    typeReferenceFuture.complete(propertyTypeReference);
+                    return;
                 }
+                typeReferenceFuture.complete(propertyTypeReference);
             });
         });
     }
