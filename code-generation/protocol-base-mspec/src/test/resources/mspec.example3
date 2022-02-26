@@ -22,6 +22,7 @@
     [virtual uint 8 doesIt  'a.b.c.nothingElseMatters'  ]
     [virtual bit    thisNow 'a.b.c.secondField'         ]
     [virtual bit    thisNow2 'a.b.c.thirdField'         ]
+    [virtual bit    thisNow3 'a.b.c.e'                  ]
 ]
 
 [type A
@@ -33,13 +34,18 @@
 ]
 
 [type C
-    [simple     bit     onlyOneField                 ]
-    [virtual    bit     secondField  'onlyOneField'  ]
-    [simple     D       d                            ]
-    [virtual    D       thirdField   'd'             ]
-    [simple     uint 8  nothingElseMatters           ]
+    [simple     bit         onlyOneField                 ]
+    [virtual    bit         secondField  'onlyOneField'  ]
+    [simple     D           d                            ]
+    [virtual    D           thirdField   'd'             ]
+    [simple     uint 8      nothingElseMatters           ]
+    [simple     E('true')   e                            ]
 ]
 
 [enum D
     ['0x1' D]
+]
+
+[type E(bit aBit)
+    [simple     bit     eField                      ]
 ]
