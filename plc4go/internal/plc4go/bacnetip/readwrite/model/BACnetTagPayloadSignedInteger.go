@@ -306,9 +306,7 @@ func (m *BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
 				return uint64(uint64(utils.InlineIf(m.GetIsInt32(), func() interface{} { return uint64((*m.GetValueInt32())) }, func() interface{} {
 					return uint64(uint64(utils.InlineIf(m.GetIsInt40(), func() interface{} { return uint64((*m.GetValueInt40())) }, func() interface{} {
 						return uint64(uint64(utils.InlineIf(m.GetIsInt48(), func() interface{} { return uint64((*m.GetValueInt48())) }, func() interface{} {
-							return uint64(uint64(utils.InlineIf(m.GetIsInt56(), func() interface{} { return uint64((*m.GetValueInt56())) }, func() interface{} {
-								return uint64(uint64(utils.InlineIf(m.GetIsInt64(), func() interface{} { return uint64((*m.GetValueInt64())) }, func() interface{} { return uint64(uint64(0)) }).(uint64)))
-							}).(uint64)))
+							return uint64(uint64(utils.InlineIf(m.GetIsInt56(), func() interface{} { return uint64((*m.GetValueInt56())) }, func() interface{} { return uint64((*m.GetValueInt64())) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))
@@ -543,9 +541,7 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 				return uint64(uint64(utils.InlineIf(isInt32, func() interface{} { return uint64((*valueInt32)) }, func() interface{} {
 					return uint64(uint64(utils.InlineIf(isInt40, func() interface{} { return uint64((*valueInt40)) }, func() interface{} {
 						return uint64(uint64(utils.InlineIf(isInt48, func() interface{} { return uint64((*valueInt48)) }, func() interface{} {
-							return uint64(uint64(utils.InlineIf(isInt56, func() interface{} { return uint64((*valueInt56)) }, func() interface{} {
-								return uint64(uint64(utils.InlineIf(isInt64, func() interface{} { return uint64((*valueInt64)) }, func() interface{} { return uint64(uint64(0)) }).(uint64)))
-							}).(uint64)))
+							return uint64(uint64(utils.InlineIf(isInt56, func() interface{} { return uint64((*valueInt56)) }, func() interface{} { return uint64((*valueInt64)) }).(uint64)))
 						}).(uint64)))
 					}).(uint64)))
 				}).(uint64)))

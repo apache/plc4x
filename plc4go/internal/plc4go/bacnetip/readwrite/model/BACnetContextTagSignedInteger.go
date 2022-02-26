@@ -40,6 +40,8 @@ type BACnetContextTagSignedInteger struct {
 type IBACnetContextTagSignedInteger interface {
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadSignedInteger
+	// GetActualValue returns ActualValue
+	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -73,6 +75,9 @@ func (m *BACnetContextTagSignedInteger) GetPayload() *BACnetTagPayloadSignedInte
 ///////////////////////////////////////////////////////////
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+func (m *BACnetContextTagSignedInteger) GetActualValue() uint64 {
+	return m.GetPayload().GetActualValue()
+}
 
 // NewBACnetContextTagSignedInteger factory function for BACnetContextTagSignedInteger
 func NewBACnetContextTagSignedInteger(payload *BACnetTagPayloadSignedInteger, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -117,6 +122,8 @@ func (m *BACnetContextTagSignedInteger) GetLengthInBitsConditional(lastItem bool
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -147,6 +154,11 @@ func BACnetContextTagSignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberAr
 		return nil, closeErr
 	}
 
+	// Virtual field
+	_actualValue := payload.GetActualValue()
+	actualValue := uint64(_actualValue)
+	_ = actualValue
+
 	if closeErr := readBuffer.CloseContext("BACnetContextTagSignedInteger"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -176,6 +188,10 @@ func (m *BACnetContextTagSignedInteger) Serialize(writeBuffer utils.WriteBuffer)
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagSignedInteger"); popErr != nil {
