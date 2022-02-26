@@ -32,10 +32,17 @@ In order to install it, please download end execute the installer from https://g
 A special version of LibPCAP is available for Windows, which is called Npcap.
 It is available from https://npcap.com/[here].
 
-Additional tasks to enable Java to find the pcap executables may need to be done.
-Follow the instructions https://github.com/kaitoy/pcap4j#about-native-library-loading[here]
+So in order to install things correctly:
+
+1. install the version Npcap from above location.
+2. Add `%SystemRoot%\System32\Npcap\` to your System's `PATH`
+3. Possibly reboot
 
 After this all should be working.
+
+If not, have a look here for possible help: https://github.com/kaitoy/pcap4j#about-native-library-loading[here]
+
+NOTE: If you had WinPcap installed, you need to uninstall this and make sure the files `Packet.dll` and `wpcap.dll` are deleted in the `%SystemRoot%\System32\` directory. Otherwise `pcap4j` will incorrectly detect a wrong version.
 
 === gcc
 

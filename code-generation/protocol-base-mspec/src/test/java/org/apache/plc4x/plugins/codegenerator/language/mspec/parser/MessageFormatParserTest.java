@@ -30,7 +30,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultBooleanLiteral;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultVariableLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.junit.jupiter.api.Test;

@@ -116,10 +116,14 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         String propertyName = ctx.name.getText();
 
         CompletableFuture<TypeReference> typeReferenceFuture = new CompletableFuture<>();
+        // If this is the root of a variable expression, the stack is "null".
         if (futureStack == null) {
             schedulePropertyResolution(propertyName, typeReferenceFuture, rootTypeName);
             futureStack = new Stack<>();
-        } else {
+        }
+        // If the stack is not null, we're in one of the children levels. We need to wait
+        // till the parent is resolved first. So we delay the resolution till that's done.
+        else {
             futureStack.peek().whenComplete((typeReference, throwable) -> {
                 if (throwable != null) {
                     LOGGER.debug("Error processing variables", throwable);
@@ -134,11 +138,13 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     private void schedulePropertyResolution(String propertyName, CompletableFuture<TypeReference> typeReferenceFuture, String typeName) {
+        // As soon as the type with the given name is resolved ...
         lazyTypeDefinitionConsumer.setOrScheduleTypeDefinitionConsumer(typeName, (TypeDefinition typeDefinition) -> {
             if (!typeDefinition.isComplexTypeDefinition()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("is not a complex type"));
                 return;
             }
+            // Get the definition of the field with the given property name.
             final ComplexTypeDefinition complexTypeDefinition = typeDefinition
                 .asComplexTypeDefinition()
                 .orElseThrow();
