@@ -200,8 +200,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
-        <#elseif helper.getLanguageTypeNameForField(field) = 'BigInteger' && !helper.isBigIntegerSource(field.valueExpression)>
-        return BigInteger.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
+        <#--elseif helper.getLanguageTypeNameForField(field) = 'BigInteger' && !helper.isBigIntegerSource(field.valueExpression)-->
+        <#elseif helper.getLanguageTypeNameForField(field) = 'BigInteger'>
+        Object o = ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)};
+        if (o instanceof BigInteger)
+            return (BigInteger) o;
+        return BigInteger.valueOf(((Number)o).longValue());
         <#else>
         return (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         </#if>
