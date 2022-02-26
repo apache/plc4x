@@ -24,6 +24,7 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.Defaul
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 import org.slf4j.Logger;
@@ -144,11 +145,13 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             Optional<DefaultTypedField> propertyFieldByName = complexTypeDefinition
                 .getPropertyFieldByName(propertyName)
                 .map(DefaultTypedField.class::cast);
-            // Check for virtual fields context
+            // Check for other fields
             if (propertyFieldByName.isEmpty()) {
-                // TODO: do we need all virtual fields (from parent too)
-                propertyFieldByName = complexTypeDefinition.getVirtualFields().stream()
-                    .filter(virtualField -> propertyName.equals(virtualField.getName()))
+                // TODO: do we need all fields from parent too?
+                propertyFieldByName = complexTypeDefinition.getFields().stream()
+                    .filter(NamedField.class::isInstance)
+                    .map(NamedField.class::cast)
+                    .filter(namedField -> propertyName.equals(namedField.getName()))
                     .map(DefaultTypedField.class::cast)
                     .findAny();
             }
@@ -168,6 +171,10 @@ public class ExpressionStringListener extends ExpressionBaseListener {
                     });
                     return;
                 }
+            }
+            // Handle Builtins
+            if (propertyFieldByName.isEmpty()) {
+                // TODO: handle builtins
             }
             if (propertyFieldByName.isEmpty()) {
                 typeReferenceFuture.completeExceptionally(new RuntimeException("Field with name " + propertyName + " not found on " + typeName));
