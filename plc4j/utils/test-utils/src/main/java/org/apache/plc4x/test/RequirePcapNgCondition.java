@@ -55,7 +55,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
                     return ConditionEvaluationResult.disabled("Test disabled due to too old libpcap version. Please install at least version 1.1.0 to support all features.");
                 }
             }
-        } catch(Exception e) {
+        } catch(Throwable e) {
             logger.info("Error detecting libpcap version.", e);
         }
         if(SystemUtils.IS_OS_WINDOWS) {
