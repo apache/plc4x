@@ -65,12 +65,6 @@ public class RandomPackagesTest {
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
-    @BeforeAll
-    static void beforeAll() {
-        // TODO: somehow this test doesn't run on windows anymore since the transition to the @RequirePcapNg annotation
-        assumeTrue(!System.getProperty( "os.name" ).startsWith( "Windows" ));
-    }
-
     @AfterEach
     void closeStuff() {
         for (Closeable closeable = toBeClosed.poll(); closeable != null; closeable = toBeClosed.poll()) {

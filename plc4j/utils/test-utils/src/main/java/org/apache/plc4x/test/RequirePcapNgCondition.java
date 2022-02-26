@@ -59,7 +59,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
             logger.info("Error detecting libpcap version.", e);
         }
         if(SystemUtils.IS_OS_WINDOWS) {
-            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid Npcap version. Please install from here: https://npcap.com/ as this version supports all needed freatures.");
+            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid Npcap version. Please install from here: https://npcap.com/ as this version supports all needed features.");
         } else {
             return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid libpcap version. Please install at least version 1.1.0 to support all features.");
         }
