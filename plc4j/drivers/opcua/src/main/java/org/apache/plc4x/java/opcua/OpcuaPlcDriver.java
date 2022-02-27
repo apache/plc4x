@@ -26,7 +26,6 @@ import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
 import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
-import org.apache.plc4x.java.opcua.context.TestEncryptionHandler;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
@@ -126,7 +125,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, OpcuaAPU::staticParse)
-            .withEncryptionHandler(new TestEncryptionHandler())
+            .withEncryptionHandler(new EncryptionHandler())
             .withProtocol(OpcuaProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withParserArgs(true)
