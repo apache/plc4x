@@ -24,6 +24,7 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,6 +34,15 @@ public class FieldReaderFactory {
     @SuppressWarnings("unused")
     public static <T> T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderAbstract<T>().readAbstractField(logicalName, dataReader, readerArgs);
+    }
+
+    // TODO: only used as lazy workaround
+    @Deprecated
+    public static <T> List<T> readCountArrayField(String logicalName, DataReader<T> dataReader, BigInteger count, WithReaderArgs... readerArgs) throws ParseException {
+        if (count.bitLength() > 64) {
+            throw new IllegalStateException("can't handle more than 64 bit. Actual: " + count.bitLength());
+        }
+        return readCountArrayField(logicalName, dataReader, count.longValue(), readerArgs);
     }
 
     public static <T> List<T> readCountArrayField(String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {

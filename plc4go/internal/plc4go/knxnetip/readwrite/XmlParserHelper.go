@@ -42,6 +42,14 @@ func init() {
 
 func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
+	case "KnxProperty":
+		propertyType := model.KnxPropertyDataTypeByName(parserArguments[0])
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		dataLengthInBytes := uint8(parsedUint1)
+		return model.KnxPropertyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), propertyType, dataLengthInBytes)
 	case "HPAIControlEndpoint":
 		return model.HPAIControlEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TunnelingResponseDataBlock":
@@ -138,6 +146,9 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "KnxDatapoint":
+		datapointType := model.KnxDatapointTypeByName(parserArguments[0])
+		return model.KnxDatapointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

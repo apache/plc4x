@@ -101,125 +101,115 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( cpuFunctionType == 0x04 ) { /* S7MessageObjectRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request;
-                    
-    // Const Field (variableSpec)
-    uint8_t variableSpec = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &variableSpec);
+
+  // Const Field (variableSpec)
+  uint8_t variableSpec = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &variableSpec);
+  if(_res != OK) {
+    return _res;
+  }
+  if(variableSpec != PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC()) {
+    return PARSE_ERROR;
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC + " but got " + variableSpec);
+  }
+
+
+  // Const Field (length)
+  uint8_t length = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &length);
+  if(_res != OK) {
+    return _res;
+  }
+  if(length != PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH()) {
+    return PARSE_ERROR;
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH + " but got " + length);
+  }
+
+
+  // Simple Field (syntaxId)
+  plc4c_s7_read_write_syntax_id_type* syntaxId;
+  _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_object_request_syntax_id = *syntaxId;
+
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
-    if(variableSpec != PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC()) {
-      return PARSE_ERROR;
-      // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC + " but got " + variableSpec);
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
     }
+  }
 
 
-                    
-    // Const Field (length)
-    uint8_t length = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &length);
+  // Simple Field (queryType)
+  plc4c_s7_read_write_query_type* queryType;
+  _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_object_request_query_type = *queryType;
+
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
-    if(length != PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH()) {
-      return PARSE_ERROR;
-      // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH + " but got " + length);
+    if(_reserved != 0x34) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x34, _reserved);
     }
+  }
 
 
-                    
-    // Simple Field (syntaxId)
-    plc4c_s7_read_write_syntax_id_type* syntaxId;
-    _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_object_request_syntax_id = *syntaxId;
-
-
-                    
-    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-    {
-      uint8_t _reserved = 0;
-      _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
-      if(_res != OK) {
-        return _res;
-      }
-      if(_reserved != 0x00) {
-        printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
-      }
-    }
-
-
-                    
-    // Simple Field (queryType)
-    plc4c_s7_read_write_query_type* queryType;
-    _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_object_request_query_type = *queryType;
-
-
-                    
-    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-    {
-      uint8_t _reserved = 0;
-      _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
-      if(_res != OK) {
-        return _res;
-      }
-      if(_reserved != 0x34) {
-        printf("Expected constant value '%d' but got '%d' for reserved field.", 0x34, _reserved);
-      }
-    }
-
-
-                    
-    // Simple Field (alarmType)
-    plc4c_s7_read_write_alarm_type* alarmType;
-    _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_object_request_alarm_type = *alarmType;
-
+  // Simple Field (alarmType)
+  plc4c_s7_read_write_alarm_type* alarmType;
+  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_object_request_alarm_type = *alarmType;
   } else 
 if( cpuFunctionType == 0x08 ) { /* S7MessageObjectResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response;
-                    
-    // Simple Field (returnCode)
-    plc4c_s7_read_write_data_transport_error_code* returnCode;
-    _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+
+  // Simple Field (returnCode)
+  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_object_response_return_code = *returnCode;
+
+
+  // Simple Field (transportSize)
+  plc4c_s7_read_write_data_transport_size* transportSize;
+  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_object_response_transport_size = *transportSize;
+
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_message_object_response_return_code = *returnCode;
-
-
-                    
-    // Simple Field (transportSize)
-    plc4c_s7_read_write_data_transport_size* transportSize;
-    _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
-    if(_res != OK) {
-      return _res;
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
     }
-    (*_message)->s7_message_object_response_transport_size = *transportSize;
-
-
-                    
-    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-    {
-      uint8_t _reserved = 0;
-      _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
-      if(_res != OK) {
-        return _res;
-      }
-      if(_reserved != 0x00) {
-        printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
-      }
-    }
-
+  }
   }
 
   return OK;
@@ -238,63 +228,63 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request: {
 
-      // Const Field (variableSpec)
-      plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC());
+  // Const Field (variableSpec)
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC());
 
-      // Const Field (length)
-      plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH());
+  // Const Field (length)
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH());
 
-      // Simple Field (syntaxId)
-      _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_message_object_request_syntax_id);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (syntaxId)
+  _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_message_object_request_syntax_id);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Reserved Field
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
-      if(_res != OK) {
-        return _res;
-      }
+  // Reserved Field
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Simple Field (queryType)
-      _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_message_object_request_query_type);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (queryType)
+  _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_message_object_request_query_type);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Reserved Field
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x34);
-      if(_res != OK) {
-        return _res;
-      }
+  // Reserved Field
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x34);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Simple Field (alarmType)
-      _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_message_object_request_alarm_type);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (alarmType)
+  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_message_object_request_alarm_type);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response: {
 
-      // Simple Field (returnCode)
-      _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_message_object_response_return_code);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (returnCode)
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_message_object_response_return_code);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Simple Field (transportSize)
-      _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_message_object_response_transport_size);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (transportSize)
+  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_message_object_response_transport_size);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Reserved Field
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
-      if(_res != OK) {
-        return _res;
-      }
+  // Reserved Field
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
@@ -320,47 +310,47 @@ uint16_t plc4c_s7_read_write_s7_data_alarm_message_length_in_bits(plc4c_s7_read_
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request: {
 
-      // Const Field (variableSpec)
-      lengthInBits += 8;
+  // Const Field (variableSpec)
+  lengthInBits += 8;
 
 
-      // Const Field (length)
-      lengthInBits += 8;
+  // Const Field (length)
+  lengthInBits += 8;
 
 
-      // Simple field (syntaxId)
-      lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_message_object_request_syntax_id);
+  // Simple field (syntaxId)
+  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_message_object_request_syntax_id);
 
 
-      // Reserved Field (reserved)
-      lengthInBits += 8;
+  // Reserved Field (reserved)
+  lengthInBits += 8;
 
 
-      // Simple field (queryType)
-      lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_message_object_request_query_type);
+  // Simple field (queryType)
+  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_message_object_request_query_type);
 
 
-      // Reserved Field (reserved)
-      lengthInBits += 8;
+  // Reserved Field (reserved)
+  lengthInBits += 8;
 
 
-      // Simple field (alarmType)
-      lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_message_object_request_alarm_type);
+  // Simple field (alarmType)
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_message_object_request_alarm_type);
 
       break;
     }
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response: {
 
-      // Simple field (returnCode)
-      lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_message_object_response_return_code);
+  // Simple field (returnCode)
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_message_object_response_return_code);
 
 
-      // Simple field (transportSize)
-      lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_message_object_response_transport_size);
+  // Simple field (transportSize)
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_message_object_response_transport_size);
 
 
-      // Reserved Field (reserved)
-      lengthInBits += 8;
+  // Reserved Field (reserved)
+  lengthInBits += 8;
 
       break;
     }

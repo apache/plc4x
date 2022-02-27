@@ -34,6 +34,13 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(io)
+	case "DataItem":
+		var dataType model.ModbusDataType
+		numberOfValues, err := utils.StrToUint16(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParse(io, dataType, numberOfValues)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return model.ModbusPDUReadFileRecordResponseItemParse(io)
 	case "ModbusDeviceInformationObject":

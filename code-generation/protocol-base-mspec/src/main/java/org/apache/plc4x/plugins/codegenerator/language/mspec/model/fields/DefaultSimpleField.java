@@ -19,18 +19,14 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultSimpleField extends DefaultTypedNamedField implements SimpleField {
 
-    public DefaultSimpleField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes, type, name);
+    public DefaultSimpleField(Map<String, Term> attributes, String name) {
+        super(attributes, name);
     }
 
     @Override

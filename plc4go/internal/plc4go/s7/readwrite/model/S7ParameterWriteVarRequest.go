@@ -139,7 +139,7 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 		return nil, pullErr
 	}
 
-	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {

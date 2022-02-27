@@ -164,7 +164,7 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field")
 	}
 
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	len, _lenErr := readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {

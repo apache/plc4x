@@ -27,6 +27,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTypeDefinition implements DiscriminatedComplexTypeDefinition {
 
@@ -37,14 +38,15 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
         this.discriminatorValueTerms = Objects.requireNonNull(discriminatorValueTerms);
     }
 
-    public DiscriminatorField getDiscriminatorField() {
+    public Optional<DiscriminatorField> getDiscriminatorField() {
         // For a discriminated type, the discriminator is always defined in the parent type,
         // which is always a DefaultComplexTypeDefinition instance.
-        return ((DefaultComplexTypeDefinition) getParentType()).getFields().stream()
-            .filter(field -> field instanceof DiscriminatorField)
-            .map(field -> (DiscriminatorField) field)
-            .findFirst()
-            .orElse(null);
+        return getParentType()
+            .flatMap(parentType -> parentType.getFields().stream()
+                .filter(field -> field instanceof DiscriminatorField)
+                .map(DiscriminatorField.class::cast)
+                .findFirst()
+            );
     }
 
     public List<Term> getDiscriminatorValueTerms() {

@@ -82,76 +82,71 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 if( parameterType == 0xC0 ) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
-                    
-    // Simple Field (tpduSize)
-    plc4c_s7_read_write_cotp_tpdu_size* tpduSize;
-    _res = plc4c_s7_read_write_cotp_tpdu_size_parse(readBuffer, (void*) &tpduSize);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
 
+  // Simple Field (tpduSize)
+  plc4c_s7_read_write_cotp_tpdu_size* tpduSize;
+  _res = plc4c_s7_read_write_cotp_tpdu_size_parse(readBuffer, (void*) &tpduSize);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
   } else 
 if( parameterType == 0xC1 ) { /* COTPParameterCallingTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap;
-                    
-    // Simple Field (tsapId)
-    uint16_t tsapId = 0;
-    _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &tsapId);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
 
+  // Simple Field (tsapId)
+  uint16_t tsapId = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &tsapId);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
   } else 
 if( parameterType == 0xC2 ) { /* COTPParameterCalledTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap;
-                    
-    // Simple Field (tsapId)
-    uint16_t tsapId = 0;
-    _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &tsapId);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
 
+  // Simple Field (tsapId)
+  uint16_t tsapId = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &tsapId);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
   } else 
 if( parameterType == 0xC3 ) { /* COTPParameterChecksum */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_checksum;
-                    
-    // Simple Field (crc)
-    uint8_t crc = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &crc);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->cotp_parameter_checksum_crc = crc;
 
+  // Simple Field (crc)
+  uint8_t crc = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &crc);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->cotp_parameter_checksum_crc = crc;
   } else 
 if( parameterType == 0xE0 ) { /* COTPParameterDisconnectAdditionalInformation */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information;
-                    
-    // Array field (data)
-    plc4c_list* data = NULL;
-    plc4c_utils_list_create(&data);
-    if(data == NULL) {
-      return NO_MEMORY;
-    }
-    {
-      // Count array
-      uint16_t itemCount = (uint16_t) rest;
-      for(int curItem = 0; curItem < itemCount; curItem++) {
-        
-        char* _value = malloc(sizeof(char));
-        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
-        if(_res != OK) {
-          return _res;
-        }
-        plc4c_utils_list_insert_head_value(data, _value);
-      }
-    }
-    (*_message)->cotp_parameter_disconnect_additional_information_data = data;
 
+  // Array field (data)
+  plc4c_list* data = NULL;
+  plc4c_utils_list_create(&data);
+  if(data == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) rest;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      
+      char* _value = malloc(sizeof(char));
+      _res = plc4c_spi_read_char(readBuffer, (char*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(data, _value);
+    }
+  }
+  (*_message)->cotp_parameter_disconnect_additional_information_data = data;
   }
 
   return OK;
@@ -173,55 +168,55 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
-      // Simple Field (tpduSize)
-      _res = plc4c_s7_read_write_cotp_tpdu_size_serialize(writeBuffer, &_message->cotp_parameter_tpdu_size_tpdu_size);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (tpduSize)
+  _res = plc4c_s7_read_write_cotp_tpdu_size_serialize(writeBuffer, &_message->cotp_parameter_tpdu_size_tpdu_size);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap: {
 
-      // Simple Field (tsapId)
-      _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->cotp_parameter_calling_tsap_tsap_id);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (tsapId)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->cotp_parameter_calling_tsap_tsap_id);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap: {
 
-      // Simple Field (tsapId)
-      _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->cotp_parameter_called_tsap_tsap_id);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (tsapId)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->cotp_parameter_called_tsap_tsap_id);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_checksum: {
 
-      // Simple Field (crc)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->cotp_parameter_checksum_crc);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (crc)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->cotp_parameter_checksum_crc);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information: {
 
-      // Array field (data)
-      {
-        uint8_t itemCount = plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
-        for(int curItem = 0; curItem < itemCount; curItem++) {
+  // Array field (data)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          char* _value = (char*) plc4c_utils_list_get_value(_message->cotp_parameter_disconnect_additional_information_data, curItem);
-          plc4c_spi_write_char(writeBuffer, *_value);
-        }
-      }
+      char* _value = (char*) plc4c_utils_list_get_value(_message->cotp_parameter_disconnect_additional_information_data, curItem);
+      plc4c_spi_write_char(writeBuffer, *_value);
+    }
+  }
 
       break;
     }
@@ -247,36 +242,36 @@ uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_c
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
-      // Simple field (tpduSize)
-      lengthInBits += plc4c_s7_read_write_cotp_tpdu_size_length_in_bits(&_message->cotp_parameter_tpdu_size_tpdu_size);
+  // Simple field (tpduSize)
+  lengthInBits += plc4c_s7_read_write_cotp_tpdu_size_length_in_bits(&_message->cotp_parameter_tpdu_size_tpdu_size);
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap: {
 
-      // Simple field (tsapId)
-      lengthInBits += 16;
+  // Simple field (tsapId)
+  lengthInBits += 16;
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap: {
 
-      // Simple field (tsapId)
-      lengthInBits += 16;
+  // Simple field (tsapId)
+  lengthInBits += 16;
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_checksum: {
 
-      // Simple field (crc)
-      lengthInBits += 8;
+  // Simple field (crc)
+  lengthInBits += 8;
 
       break;
     }
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information: {
 
-      // Array field
-      lengthInBits += 8 * plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
+  // Array field
+  lengthInBits += 8 * plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
 
       break;
     }

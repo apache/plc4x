@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
@@ -28,26 +29,32 @@ import java.util.*;
 
 public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements EnumTypeDefinition {
 
-    private final TypeReference type;
+    private final SimpleTypeReference type;
     private final List<EnumValue> enumValues;
     private final Map<String, TypeReference> constants;
 
-    public DefaultEnumTypeDefinition(String name, TypeReference type, Map<String, Term> attributes, List<EnumValue> enumValues,
-                                     List<Argument> constants) {
-        super(name, attributes, constants);
+    public DefaultEnumTypeDefinition(String name, SimpleTypeReference type, Map<String, Term> attributes, List<EnumValue> enumValues,
+                                     List<Argument> parserArgument) {
+        super(name, attributes, parserArgument);
         this.type = Objects.requireNonNull(type);
         this.enumValues = Objects.requireNonNull(enumValues);
         this.constants = new HashMap<>();
-        if (constants != null) {
-            for (Argument constant : constants) {
-                this.constants.put(constant.getName(), constant.getType());
+        if (parserArgument != null) {
+            for (Argument argument : parserArgument) {
+                ((DefaultArgument) argument).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+                    if (throwable != null) {
+                        // TODO: handle error
+                        System.err.println(throwable);
+                        return;
+                    }
+                    this.constants.put(argument.getName(), argument.getType());
+                });
             }
         }
     }
 
-    @Override
-    public TypeReference getType() {
-        return type;
+    public Optional<SimpleTypeReference> getType() {
+        return Optional.ofNullable(type);
     }
 
     @Override

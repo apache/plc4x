@@ -1112,14 +1112,12 @@
         ['0x2' BACnetApplicationTagUnsignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            // TODO: doesn't work in java as source value is already BigInteger and there is a BigInteger.valueOf() which doesn't like Big integers
-            //[virtual    uint 64 actualValue 'payload.actualValue'                                                     ]
+            [virtual    uint 64 actualValue   'payload.actualValue'                                                     ]
         ]
         ['0x3' BACnetApplicationTagSignedInteger(BACnetTagHeader header)
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            // TODO: doesn't work in java as source value is already BigInteger and there is a BigInteger.valueOf() which doesn't like Big integers
-            //[virtual    uint 64    actualValue 'payload.actualValue'                                                  ]
+            [virtual    uint 64    actualValue   'payload.actualValue'                                                  ]
         ]
         ['0x4' BACnetApplicationTagReal
             [simple BACnetTagPayloadReal
@@ -1193,15 +1191,13 @@
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
             [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            // TODO: doesn't work in java as source value is already BigInteger and there is a BigInteger.valueOf() which doesn't like Big integers
-            //[virtual    uint 64 actualValue 'payload.actualValue'                                                     ]
+            [virtual    uint 64 actualValue 'payload.actualValue'                                                     ]
         ]
         ['SIGNED_INTEGER' BACnetContextTagSignedInteger(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
-            // TODO: doesn't work in java as source value is already BigInteger and there is a BigInteger.valueOf() which doesn't like Big integers
-            //[virtual    uint 64     actualValue 'payload.actualValue'                                                 ]
+            [virtual    uint 64     actualValue 'payload.actualValue'                                                 ]
         ]
         ['REAL' BACnetContextTagReal(bit isNotOpeningOrClosingTag)
             [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"]
@@ -1332,41 +1328,43 @@
 ]
 
 [type BACnetTagPayloadUnsignedInteger(uint 32 actualLength)
-    [virtual    bit     isUint8     'actualLength == 1' ]
-    [optional   uint  8 valueUint8  'isUint8'           ]
-    [virtual    bit     isUint16    'actualLength == 2' ]
-    [optional   uint 16 valueUint16 'isUint16'          ]
-    [virtual    bit     isUint24    'actualLength == 3' ]
-    [optional   uint 24 valueUint24 'isUint24'          ]
-    [virtual    bit     isUint32    'actualLength == 4' ]
-    [optional   uint 32 valueUint32 'isUint32'          ]
-    // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-    [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
-    /*
-    [virtual    bit     isUint64    'actualLength == 4' ]
-    [optional   uint 64 valueUint64 'isUint64'          ]
-    [virtual    uint 64 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:(isUint64?valueUint64:0)))']
-    */
+    [virtual    bit         isUint8         'actualLength == 1'  ]
+    [optional   uint  8     valueUint8      'isUint8'            ]
+    [virtual    bit         isUint16        'actualLength == 2'  ]
+    [optional   uint 16     valueUint16     'isUint16'           ]
+    [virtual    bit         isUint24        'actualLength == 3'  ]
+    [optional   uint 24     valueUint24     'isUint24'           ]
+    [virtual    bit         isUint32        'actualLength == 4'  ]
+    [optional   uint 32     valueUint32     'isUint32'           ]
+    [virtual    bit         isUint40        'actualLength == 5'  ]
+    [optional   uint 40     valueUint40     'isUint40'           ]
+    [virtual    bit         isUint48        'actualLength == 6'  ]
+    [optional   uint 48     valueUint48     'isUint48'           ]
+    [virtual    bit         isUint56        'actualLength == 7'  ]
+    [optional   uint 56     valueUint56     'isUint56'           ]
+    [virtual    bit         isUint64        'actualLength == 8'  ]
+    [optional   uint 64     valueUint64     'isUint64'           ]
+    [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
 ]
 
 [type BACnetTagPayloadSignedInteger(uint 32 actualLength)
-    [virtual    bit     isInt8          'actualLength == 1'  ]
-    [optional   int 8   valueInt8       'isInt8'             ]
-    [virtual    bit     isInt16         'actualLength == 2'  ]
-    [optional   int 16  valueInt16      'isInt16'            ]
-    [virtual    bit     isInt24         'actualLength == 3'  ]
-    [optional   int 24  valueInt24      'isInt24'            ]
-    [virtual    bit     isInt32         'actualLength == 4'  ]
-    [optional   int 32  valueInt32      'isInt32'            ]
-    [virtual    bit     isInt40         'actualLength == 5'  ]
-    [optional   int 40  valueInt40      'isInt40'            ]
-    [virtual    bit     isInt48         'actualLength == 6'  ]
-    [optional   int 48  valueInt48      'isInt48'            ]
-    [virtual    bit     isInt56         'actualLength == 7'  ]
-    [optional   int 56  valueInt56      'isInt56'            ]
-    [virtual    bit     isInt64         'actualLength == 8'  ]
-    [optional   int 64  valueInt64      'isInt64'            ]
-    [virtual    uint 64 actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:(isInt64?valueInt64:0)))))))']
+    [virtual    bit         isInt8          'actualLength == 1'  ]
+    [optional   int 8       valueInt8       'isInt8'             ]
+    [virtual    bit         isInt16         'actualLength == 2'  ]
+    [optional   int 16      valueInt16      'isInt16'            ]
+    [virtual    bit         isInt24         'actualLength == 3'  ]
+    [optional   int 24      valueInt24      'isInt24'            ]
+    [virtual    bit         isInt32         'actualLength == 4'  ]
+    [optional   int 32      valueInt32      'isInt32'            ]
+    [virtual    bit         isInt40         'actualLength == 5'  ]
+    [optional   int 40      valueInt40      'isInt40'            ]
+    [virtual    bit         isInt48         'actualLength == 6'  ]
+    [optional   int 48      valueInt48      'isInt48'            ]
+    [virtual    bit         isInt56         'actualLength == 7'  ]
+    [optional   int 56      valueInt56      'isInt56'            ]
+    [virtual    bit         isInt64         'actualLength == 8'  ]
+    [optional   int 64      valueInt64      'isInt64'            ]
+    [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 
 [type BACnetTagPayloadReal

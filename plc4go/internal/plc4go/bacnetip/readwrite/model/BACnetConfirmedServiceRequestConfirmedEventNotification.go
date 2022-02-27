@@ -272,7 +272,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_UNSIGNED_INTEGER)
+	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field")
 	}
@@ -285,7 +285,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
 		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field")
 	}
@@ -298,7 +298,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("eventObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _eventObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field")
 	}
@@ -324,7 +324,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	_notificationClass, _notificationClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType_UNSIGNED_INTEGER)
+	_notificationClass, _notificationClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _notificationClassErr != nil {
 		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field")
 	}
@@ -337,7 +337,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-	_priority, _priorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType_UNSIGNED_INTEGER)
+	_priority, _priorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
@@ -350,7 +350,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_eventType, _eventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType_EVENT_TYPE)
+	_eventType, _eventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_EVENT_TYPE))
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field")
 	}
@@ -384,7 +384,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_notifyType, _notifyTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType_NOTIFY_TYPE)
+	_notifyType, _notifyTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(8)), BACnetDataType(BACnetDataType_NOTIFY_TYPE))
 	if _notifyTypeErr != nil {
 		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field")
 	}
@@ -439,7 +439,7 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("toState"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toState, _toStateErr := BACnetContextTagParse(readBuffer, uint8(uint8(11)), BACnetDataType_EVENT_STATE)
+	_toState, _toStateErr := BACnetContextTagParse(readBuffer, uint8(uint8(11)), BACnetDataType(BACnetDataType_EVENT_STATE))
 	if _toStateErr != nil {
 		return nil, errors.Wrap(_toStateErr, "Error parsing 'toState' field")
 	}

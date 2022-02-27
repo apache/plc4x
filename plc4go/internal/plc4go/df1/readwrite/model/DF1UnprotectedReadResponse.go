@@ -112,7 +112,7 @@ func (m *DF1UnprotectedReadResponse) GetLengthInBitsConditional(lastItem bool) u
 
 	// Manual Array Field (data)
 	data := m.Data
-	lengthInBits += DataLength(data) * 8
+	lengthInBits += uint16(DataLength(data))
 
 	return lengthInBits
 }
@@ -139,10 +139,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 
 		}
 	}
-	data := make([]byte, len(_dataList))
-	for i := 0; i < len(_dataList); i++ {
-		data[i] = byte(_dataList[i])
-	}
+	data := _dataList
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}

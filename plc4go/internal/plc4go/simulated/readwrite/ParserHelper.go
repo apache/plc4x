@@ -32,6 +32,16 @@ type SimulatedParserHelper struct {
 
 func (m SimulatedParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
+	case "DataItem":
+		dataType, err := utils.StrToString(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		numberOfValues, err := utils.StrToUint16(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParse(io, dataType, numberOfValues)
 	case "Dummy":
 		return model.DummyParse(io)
 	}

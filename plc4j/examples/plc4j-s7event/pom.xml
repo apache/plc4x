@@ -18,6 +18,7 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -26,7 +27,7 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-s7event</artifactId>
+  <artifactId>plc4j-examples-s7event</artifactId>
 
   <name>PLC4J: Examples: S7Event example</name>
   <description>Parent of all java based application example modules.

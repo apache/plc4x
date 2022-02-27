@@ -177,7 +177,7 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response 
 		return nil, pullErr
 	}
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {

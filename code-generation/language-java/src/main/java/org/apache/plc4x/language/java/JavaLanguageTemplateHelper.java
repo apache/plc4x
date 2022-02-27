@@ -91,8 +91,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
         Objects.requireNonNull(typeReference);
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((ComplexTypeReference) typeReference).getName();
+        if (typeReference instanceof ArrayTypeReference) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
+                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
+            } else {
+                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
+            }
+        }
+        // DataIo data-types always have properties of type PlcValue
+        if (typeReference.isDataIoTypeReference()) {
+            return "PlcValue";
+        }
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -356,21 +368,28 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
-        if (isEnumTypeReference(typeReference)) {
+        if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            Objects.requireNonNull(typeDefinition, "No type found for " + typeReference);
+            ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
+            // In case of DataIo we actually need to use the type name and not what above returns.
+            // (In this case the mspec type name and the result type name differ)
+            if (typeReference.isDataIoTypeReference()) {
+                parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
+            }
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
+                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
             }
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
@@ -432,6 +451,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataWriterCall(simpleTypeReference);
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
             return "new DataWriterComplexDefault<>(writeBuffer)";
         } else {
@@ -439,8 +461,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
-        if (!isEnumTypeReference(typeReference)) {
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
+        if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
         final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
@@ -448,7 +470,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if ("value".equals(attributeName)) {
             outputTypeReference = getEnumBaseTypeReference(typeReference);
         } else {
-            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference, attributeName);
+            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
         return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
@@ -1208,6 +1230,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
         }
         return sb.toString();
+    }
+
+    public boolean isBigIntegerSource(Term term) {
+        boolean isBigInteger = term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .flatMap(VariableLiteral::getChild)
+            .map(Term.class::cast)
+            .map(this::isBigIntegerSource)
+            .orElse(false);
+        return isBigInteger || term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .map(VariableLiteral::getTypeReference)
+            .flatMap(TypeReferenceConversions::asIntegerTypeReference)
+            .map(integerTypeReference -> integerTypeReference.getSizeInBits() >= 64)
+            .orElse(false);
     }
 
 }

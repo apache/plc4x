@@ -28,8 +28,8 @@ public class DefaultVirtualField extends DefaultTypedNamedField implements Virtu
 
     private final Term valueExpression;
 
-    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
-        super(attributes, type, name);
+    public DefaultVirtualField(Map<String, Term> attributes, String name, Term valueExpression) {
+        super(attributes, name);
         this.valueExpression = Objects.requireNonNull(valueExpression);
     }
 

@@ -197,14 +197,14 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 	tpduReference := _tpduReference
 
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint16("parameterLength", 16)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
 	}
 
-	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	payloadLength, _payloadLengthErr := readBuffer.ReadUint16("payloadLength", 16)
 	_ = payloadLength
 	if _payloadLengthErr != nil {

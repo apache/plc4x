@@ -24,29 +24,36 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
+public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition implements DataIoTypeDefinition {
 
     private final SwitchField switchField;
-    private final TypeReference type;
+    private TypeReference type;
 
     public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
-        super(name, attributes, parserArguments);
+        super(name, attributes, parserArguments, false, List.of(switchField));
         this.switchField = Objects.requireNonNull(switchField);
         if (parserArguments.size() < 1) {
             throw new IllegalStateException();
         }
-        this.type = Objects.requireNonNull(parserArguments.get(0).getType());
-    }
-
-    public SwitchField getSwitchField() {
-        return switchField;
+        ((DefaultArgument) parserArguments.get(0)).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
+            if (throwable != null) {
+                // TODO: handle error
+                System.err.println(throwable);
+                return;
+            }
+            this.type = Objects.requireNonNull(parserArguments.get(0).getType());
+        });
     }
 
     public TypeReference getType() {
+        if (type == null) {
+            throw new IllegalStateException("type not set");
+        }
         return this.type;
     }
 

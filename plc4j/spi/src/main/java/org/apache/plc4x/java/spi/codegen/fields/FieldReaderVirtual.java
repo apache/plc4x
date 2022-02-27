@@ -79,7 +79,7 @@ public class FieldReaderVirtual<T> implements FieldCommons {
             return type.cast(String.valueOf(valueExpression));
         }
         if (type == BigInteger.class) {
-            long longValue = valueExpression instanceof Long ? (Long) valueExpression : (long) valueExpression;
+            long longValue = valueExpression instanceof Long ? (Long) valueExpression : ((Number)valueExpression).longValue();
             return (T) BigInteger.valueOf(longValue);
         }
         return type.cast(valueExpression);

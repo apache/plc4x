@@ -208,7 +208,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH) + " but got " + fmt.Sprintf("%d", szlItemLength))
 	}
 
-	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	szlItemCount, _szlItemCountErr := readBuffer.ReadUint16("szlItemCount", 16)
 	_ = szlItemCount
 	if _szlItemCountErr != nil {

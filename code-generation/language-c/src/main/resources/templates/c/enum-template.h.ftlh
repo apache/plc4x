@@ -53,8 +53,8 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getComplexTypeReferences()?has_content>
-    <#list helper.getComplexTypeReferences() as typeReference>
+<#if helper.getNonSimpleTypeReferences()?has_content>
+    <#list helper.getNonSimpleTypeReferences() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
@@ -68,7 +68,7 @@ extern "C" {
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.isStringTypeReference()>${enumValue?index}<#elseif type.type.isComplexTypeReference()><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type)}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.orElseThrow().isStringTypeReference()>${enumValue?index}<#elseif type.type.orElseThrow().isNonSimpleTypeReference()><#if type.type.orElseThrow().isEnumTypeReference()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };

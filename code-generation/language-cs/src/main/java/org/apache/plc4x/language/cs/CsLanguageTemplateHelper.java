@@ -46,8 +46,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
-        return "drivers." + String.join("", protocolName.split("\\-")) + "." +
-            String.join("", languageFlavorName.split("\\-"));
+        return "drivers." + String.join("", protocolName.split("-")) + "." +
+            String.join("", languageFlavorName.split("-"));
     }
 
     public String packageName() {
@@ -67,8 +67,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (field.isPropertyField()) {
             PropertyField propertyField = field.asPropertyField().orElseThrow(IllegalStateException::new);
             if (propertyField.getType().isComplexTypeReference()) {
-                ComplexTypeReference complexTypeReference = propertyField.getType().asComplexTypeReference().orElseThrow(IllegalStateException::new);
-                final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
+                NonSimpleTypeReference nonSimpleTypeReference = propertyField.getType().asNonSimpleTypeReference().orElseThrow(IllegalStateException::new);
+                final TypeDefinition typeDefinition = getTypeDefinitions().get(nonSimpleTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
@@ -80,8 +80,16 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         Objects.requireNonNull(typeReference);
-        if (!(typeReference instanceof SimpleTypeReference)) {
-            return ((ComplexTypeReference) typeReference).getName();
+        if (typeReference instanceof ArrayTypeReference) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference()) + "[]";
+        }
+        // DataIo data-types always have properties of type PlcValue
+        if (typeReference.isDataIoTypeReference()) {
+            return "PlcValue";
+        }
+        if (typeReference.isNonSimpleTypeReference()) {
+            return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
@@ -343,25 +351,28 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
-        if (isEnumTypeReference(typeReference)) {
+        if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
-        } else if (typeReference.isComplexTypeReference()) {
+        } else if (typeReference.isNonSimpleTypeReference()) {
             StringBuilder paramsString = new StringBuilder();
-            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            NonSimpleTypeReference nonSimpleTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow(IllegalStateException::new);
+            ComplexTypeDefinition typeDefinition = typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition().asComplexTypeDefinition().orElseThrow();
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
+                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
             }
-            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            List<Term> paramTerms = nonSimpleTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
                 Term paramTerm = paramTerms.get(i);
-                final TypeReference argumentType = getArgumentType(complexTypeReference, i);
+                final TypeReference argumentType = getArgumentType(nonSimpleTypeReference, i);
                 paramsString
                     .append(", (")
                     .append(getLanguageTypeNameForTypeReference(argumentType))
@@ -425,8 +436,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
     }
 
-    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
-        if (!isEnumTypeReference(typeReference)) {
+    public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
+        if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
         final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
@@ -1164,7 +1175,7 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (valueString == null) {
             return null;
         }
-        if (typeReference instanceof SimpleTypeReference) {
+        if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case UINT:
@@ -1178,8 +1189,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case VSTRING:
                     return "\"" + valueString + "\"";
             }
-        } else if (isEnumTypeReference(typeReference)) {
-            return "model." + typeReference.asComplexTypeReference().orElseThrow().getName() + "." + valueString;
+        } else if (typeReference.isEnumTypeReference()) {
+            return "model." + typeReference.asEnumTypeReference().orElseThrow().getName() + "." + valueString;
         }
         return valueString;
     }

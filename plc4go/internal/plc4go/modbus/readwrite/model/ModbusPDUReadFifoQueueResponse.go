@@ -147,14 +147,14 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 		return nil, pullErr
 	}
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
-	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := readBuffer.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {

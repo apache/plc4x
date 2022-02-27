@@ -453,6 +453,10 @@ public class StaticHelper {
         Integer valueUint16 = null;
         Long valueUint24 = null;
         Long valueUint32 = null;
+        BigInteger valueUint40 = null;
+        BigInteger valueUint48 = null;
+        BigInteger valueUint56 = null;
+        BigInteger valueUint64 = null;
         if (value < 0x100) {
             length = 1;
             valueUint8 = (short) value;
@@ -466,7 +470,7 @@ public class StaticHelper {
             length = 4;
             valueUint32 = value;
         }
-        BACnetTagPayloadUnsignedInteger payload = new BACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, length);
+        BACnetTagPayloadUnsignedInteger payload = new BACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length);
         return Pair.of(length, payload);
     }
 

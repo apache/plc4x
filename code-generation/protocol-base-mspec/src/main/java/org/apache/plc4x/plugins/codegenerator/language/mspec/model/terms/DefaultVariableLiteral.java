@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms;
 
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class DefaultVariableLiteral implements VariableLiteral {
 
     private final String name;
-    private TypeDefinition typeDefinition;
+    private TypeReference typeReference;
     private final List<Term> args;
     private final int index;
     private final VariableLiteral child;
@@ -49,13 +48,16 @@ public class DefaultVariableLiteral implements VariableLiteral {
 
     @Override
     public TypeReference getTypeReference() {
-        // TODO: get type reference
-        //return typeDefinition.getTypeReference();
-        return null;
+        if (typeReference == null) {
+            throw new IllegalStateException("No type reference set for " + name);
+        }
+        return typeReference;
     }
 
-    public void setTypeDefinition(TypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
+
+    public void setTypeReference(TypeReference typeReference) {
+        Objects.requireNonNull(typeReference);
+        this.typeReference = typeReference;
     }
 
     @Override
@@ -81,11 +83,12 @@ public class DefaultVariableLiteral implements VariableLiteral {
     @Override
     public String toString() {
         return "DefaultVariableLiteral{" +
-                "name='" + name + '\'' +
-                ", args=" + args +
-                ", index=" + index +
-                ", child=" + child +
-                '}';
+            "name='" + name + '\'' +
+            ", typeReference='" + typeReference + '\'' +
+            ", args=" + args +
+            ", index=" + index +
+            ", child=" + child +
+            '}';
     }
 
     @Override
@@ -93,11 +96,11 @@ public class DefaultVariableLiteral implements VariableLiteral {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultVariableLiteral that = (DefaultVariableLiteral) o;
-        return index == that.index && name.equals(that.name) && Objects.equals(args, that.args) && Objects.equals(child, that.child);
+        return index == that.index && name.equals(that.name) && typeReference.equals(that.typeReference) && Objects.equals(args, that.args) && Objects.equals(child, that.child);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, args, index, child);
+        return Objects.hash(name, typeReference, args, index, child);
     }
 }

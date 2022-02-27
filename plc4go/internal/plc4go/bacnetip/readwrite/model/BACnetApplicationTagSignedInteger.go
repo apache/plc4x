@@ -36,6 +36,8 @@ type BACnetApplicationTagSignedInteger struct {
 type IBACnetApplicationTagSignedInteger interface {
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadSignedInteger
+	// GetActualValue returns ActualValue
+	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -69,6 +71,9 @@ func (m *BACnetApplicationTagSignedInteger) GetPayload() *BACnetTagPayloadSigned
 ///////////////////////////////////////////////////////////
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+func (m *BACnetApplicationTagSignedInteger) GetActualValue() uint64 {
+	return m.GetPayload().GetActualValue()
+}
 
 // NewBACnetApplicationTagSignedInteger factory function for BACnetApplicationTagSignedInteger
 func NewBACnetApplicationTagSignedInteger(payload *BACnetTagPayloadSignedInteger, header *BACnetTagHeader) *BACnetApplicationTag {
@@ -113,6 +118,8 @@ func (m *BACnetApplicationTagSignedInteger) GetLengthInBitsConditional(lastItem 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -137,6 +144,11 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
 		return nil, closeErr
 	}
+
+	// Virtual field
+	_actualValue := payload.GetActualValue()
+	actualValue := uint64(_actualValue)
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagSignedInteger"); closeErr != nil {
 		return nil, closeErr
@@ -167,6 +179,10 @@ func (m *BACnetApplicationTagSignedInteger) Serialize(writeBuffer utils.WriteBuf
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetApplicationTagSignedInteger"); popErr != nil {

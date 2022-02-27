@@ -18,15 +18,16 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
-    <artifactId>plc4j-hello-webapp</artifactId>
+    <artifactId>plc4j-examples-hello-webapp</artifactId>
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-hello-webapp-client</artifactId>
+  <artifactId>plc4j-examples-hello-webapp-client</artifactId>
   <packaging>swf</packaging>
 
   <name>PLC4J: Examples: Hello-Webapp: Client</name>

@@ -421,6 +421,10 @@ func CreateUnsignedPayload(value uint32) (uint32, *BACnetTagPayloadUnsignedInteg
 	var valueUint16 *uint16
 	var valueUint24 *uint32
 	var valueUint32 *uint32
+	var valueUint40 *uint64
+	var valueUint48 *uint64
+	var valueUint56 *uint64
+	var valueUint64 *uint64
 	switch {
 	case value < 0x100:
 		length = 1
@@ -438,7 +442,7 @@ func CreateUnsignedPayload(value uint32) (uint32, *BACnetTagPayloadUnsignedInteg
 		length = 4
 		valueUint32 = &value
 	}
-	payload := NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, length)
+	payload := NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length)
 	return length, payload
 }
 

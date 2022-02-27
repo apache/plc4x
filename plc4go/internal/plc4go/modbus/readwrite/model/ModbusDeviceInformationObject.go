@@ -120,7 +120,7 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDev
 	}
 	objectId := _objectId
 
-	// Implicit Field (objectLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	objectLength, _objectLengthErr := readBuffer.ReadUint8("objectLength", 8)
 	_ = objectLength
 	if _objectLengthErr != nil {

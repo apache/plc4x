@@ -122,7 +122,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := readBuffer.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {

@@ -127,47 +127,43 @@ if( messageType == 0x01 ) { /* S7MessageRequest */
   } else 
 if( messageType == 0x02 ) { /* S7MessageResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response;
-                    
-    // Simple Field (errorClass)
-    uint8_t errorClass = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorClass);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_response_error_class = errorClass;
+
+  // Simple Field (errorClass)
+  uint8_t errorClass = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorClass);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_response_error_class = errorClass;
 
 
-                    
-    // Simple Field (errorCode)
-    uint8_t errorCode = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorCode);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_response_error_code = errorCode;
-
+  // Simple Field (errorCode)
+  uint8_t errorCode = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorCode);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_response_error_code = errorCode;
   } else 
 if( messageType == 0x03 ) { /* S7MessageResponseData */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data;
-                    
-    // Simple Field (errorClass)
-    uint8_t errorClass = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorClass);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_response_data_error_class = errorClass;
+
+  // Simple Field (errorClass)
+  uint8_t errorClass = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorClass);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_response_data_error_class = errorClass;
 
 
-                    
-    // Simple Field (errorCode)
-    uint8_t errorCode = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorCode);
-    if(_res != OK) {
-      return _res;
-    }
-    (*_message)->s7_message_response_data_error_code = errorCode;
-
+  // Simple Field (errorCode)
+  uint8_t errorCode = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &errorCode);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_message_response_data_error_code = errorCode;
   } else 
 if( messageType == 0x07 ) { /* S7MessageUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data;
@@ -241,33 +237,33 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
     }
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response: {
 
-      // Simple Field (errorClass)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_error_class);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (errorClass)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_error_class);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Simple Field (errorCode)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_error_code);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (errorCode)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_error_code);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data: {
 
-      // Simple Field (errorClass)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_data_error_class);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (errorClass)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_data_error_class);
+  if(_res != OK) {
+    return _res;
+  }
 
-      // Simple Field (errorCode)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_data_error_code);
-      if(_res != OK) {
-        return _res;
-      }
+  // Simple Field (errorCode)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_message_response_data_error_code);
+  if(_res != OK) {
+    return _res;
+  }
 
       break;
     }
@@ -329,23 +325,23 @@ uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_me
     }
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response: {
 
-      // Simple field (errorClass)
-      lengthInBits += 8;
+  // Simple field (errorClass)
+  lengthInBits += 8;
 
 
-      // Simple field (errorCode)
-      lengthInBits += 8;
+  // Simple field (errorCode)
+  lengthInBits += 8;
 
       break;
     }
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data: {
 
-      // Simple field (errorClass)
-      lengthInBits += 8;
+  // Simple field (errorClass)
+  lengthInBits += 8;
 
 
-      // Simple field (errorCode)
-      lengthInBits += 8;
+  // Simple field (errorCode)
+  lengthInBits += 8;
 
       break;
     }

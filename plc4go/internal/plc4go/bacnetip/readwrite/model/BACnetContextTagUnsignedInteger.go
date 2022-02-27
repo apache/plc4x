@@ -40,6 +40,8 @@ type BACnetContextTagUnsignedInteger struct {
 type IBACnetContextTagUnsignedInteger interface {
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadUnsignedInteger
+	// GetActualValue returns ActualValue
+	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -73,6 +75,9 @@ func (m *BACnetContextTagUnsignedInteger) GetPayload() *BACnetTagPayloadUnsigned
 ///////////////////////////////////////////////////////////
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+func (m *BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
+	return m.GetPayload().GetActualValue()
+}
 
 // NewBACnetContextTagUnsignedInteger factory function for BACnetContextTagUnsignedInteger
 func NewBACnetContextTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInteger, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
@@ -117,6 +122,8 @@ func (m *BACnetContextTagUnsignedInteger) GetLengthInBitsConditional(lastItem bo
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -147,6 +154,11 @@ func BACnetContextTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumber
 		return nil, closeErr
 	}
 
+	// Virtual field
+	_actualValue := payload.GetActualValue()
+	actualValue := uint64(_actualValue)
+	_ = actualValue
+
 	if closeErr := readBuffer.CloseContext("BACnetContextTagUnsignedInteger"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -176,6 +188,10 @@ func (m *BACnetContextTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+		}
+		// Virtual field
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetContextTagUnsignedInteger"); popErr != nil {

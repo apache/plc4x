@@ -68,7 +68,7 @@ import java.math.BigInteger;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.allParserArguments.orElseThrow()></#if>
-public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if><#if type.parentType.isPresent()> extends ${type.parentType.orElseThrow().name}</#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
@@ -83,7 +83,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
     public ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
             <#if discriminatorValue?? && !helper.isWildcard(discriminatorValue)>
-                <#if helper.isEnumTypeReference(discriminatorType)>
+                <#if discriminatorType.isEnumTypeReference()>
         return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
                 <#else>
         return ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
@@ -115,7 +115,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Constant values.
     <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
+    public static final ${helper.getLanguageTypeNameForTypeReference(field.type)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
     </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
@@ -123,7 +123,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Properties.
     <#list type.propertyFields as field>
-    protected final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
+    protected final ${helper.getLanguageTypeNameForTypeReference(field.type, !field.isOptionalField())} ${field.name};
     </#list>
 </#if>
 <#if parserArguments?has_content>
@@ -141,14 +141,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     <@compress single_line=true>
     public ${type.name}(
         <#list type.getAllPropertyFields() as field>
-            <#if field.loopType?? && field.type.isByteBased()>
-                byte[]
-            <#elseif field.loopType??>
-                List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}>
-            <#else>
-                ${helper.getLanguageTypeNameForField(field)}
-            </#if>
-            ${field.name}
+            ${helper.getLanguageTypeNameForField(field)} ${field.name}
             <#sep>, </#sep>
         </#list>
         <#if filteredParserArguments?has_content>
@@ -169,8 +162,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#sep>, </#sep>
             </#list>
         </#if>
-        <#if type.parentType?has_content && type.parentType.allParserArguments.isPresent()>
-            <#assign filteredParentParserArguments = type.parentType.allParserArguments.orElseThrow()?filter(arg -> !type.parentType.asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+        <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
+            <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
             <#if filteredParentParserArguments?has_content>
                 <#if type.parentPropertyFields?has_content>, </#if>
                 <#list filteredParentParserArguments as parserArgument>
@@ -193,22 +186,26 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     }
 
 <#list type.abstractFields as field>
-    public abstract <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.asNamedField().orElseThrow().name?cap_first}();
+    public abstract ${helper.getLanguageTypeNameForField(field)} get${field.asNamedField().orElseThrow().name?cap_first}();
 
 </#list>
 <#list type.propertyFields as field>
-    public <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.name?cap_first}() {
+    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         return ${field.name};
     }
 
 </#list>
 <#list type.virtualFields as field>
     <#if !type.isDiscriminatorField(field.name)>
-    public <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.name?cap_first}() {
+    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
+        <#--elseif helper.getLanguageTypeNameForField(field) = 'BigInteger' && !helper.isBigIntegerSource(field.valueExpression)-->
         <#elseif helper.getLanguageTypeNameForField(field) = 'BigInteger'>
-        return BigInteger.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
+        Object o = ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)};
+        if (o instanceof BigInteger)
+            return (BigInteger) o;
+        return BigInteger.valueOf(((Number)o).longValue());
         <#else>
         return (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         </#if>
@@ -220,7 +217,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     <#if outputFlavor != "passive">
 <#if type.isDiscriminatedChildTypeDefinition()>
     @Override
-    protected void serialize${type.parentType.name}Child(WriteBuffer writeBuffer) throws SerializationException {
+    protected void serialize${type.parentType.orElseThrow().name}Child(WriteBuffer writeBuffer) throws SerializationException {
 <#else>
     <#if type.isDiscriminatedParentTypeDefinition()>
     abstract protected void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
@@ -241,10 +238,10 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Array Field (${arrayField.name})
-                        <#if arrayField.type.isByteBased()>
+                        <#if arrayField.type.elementTypeReference.isByteBased()>
                         writeByteArrayField("${namedField.name}", ${namedField.name}, writeByteArray(writeBuffer, 8));
-                        <#elseif arrayField.type.isSimpleTypeReference()>
-                        writeSimpleTypeArrayField("${namedField.name}", ${namedField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
+                        <#elseif arrayField.type.elementTypeReference.isSimpleTypeReference()>
+                        writeSimpleTypeArrayField("${namedField.name}", ${namedField.name}, ${helper.getDataWriterCall(arrayField.type.elementTypeReference, namedField.name)});
                         <#else>
                         writeComplexTypeArrayField("${namedField.name}", ${namedField.name}, writeBuffer);
                         </#if>
@@ -263,7 +260,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Const Field (${constField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeConstField("${constField.name}", ${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)});<#else>writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeConstField("${constField.name}", ${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)});<#else>writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "discriminator">
                         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -271,7 +268,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-                        <#if helper.isEnumTypeReference(typedField.type)>writeDiscriminatorEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", get${discriminatorField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeDiscriminatorField("${namedField.name}", get${discriminatorField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if typedField.type.isEnumTypeReference()>writeDiscriminatorEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", get${discriminatorField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeDiscriminatorField("${namedField.name}", get${discriminatorField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "enum">
                         <#assign enumField = field.asEnumField().orElseThrow()>
@@ -286,7 +283,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign typedField = field.asTypedField().orElseThrow()>
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
-                        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+                        // Implicit Field (${implicitField.name}) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
                         <#-- Implicit field values might be used in expressions, in order to avoid problems, we generate a temporary variable with the given name. -->
                         ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.type, implicitField.serializeExpression, parserArguments)});
                         writeImplicitField("${namedField.name}", ${implicitField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
@@ -297,7 +294,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Manual Array Field (${manualArrayField.name})
-                        writeManualArrayField("${namedField.name}", ${namedField.name}, (${helper.getNonPrimitiveLanguageTypeNameForField(typedField)} _value) -> ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.serializeExpression, parserArguments)}, writeBuffer);
+                        writeManualArrayField("${namedField.name}", ${namedField.name}, (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)} _value) -> ${helper.toParseExpression(manualArrayField, manualArrayField.type.elementTypeReference, manualArrayField.serializeExpression, parserArguments)}, writeBuffer);
                         <#break>
                     <#case "manual">
                         <#assign manualField = field.asManualField().orElseThrow()>
@@ -313,7 +310,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
-                        <#if helper.isEnumTypeReference(optionalField.type)>
+                        <#if optionalField.type.isEnumTypeReference()>
                             writeOptionalEnumField("${optionalField.name}", "${helper.getLanguageTypeNameForField(field)}", ${optionalField.name}, ${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")});
                         <#elseif optionalField.type.isDataIoTypeReference()>
                             writeOptionalField("${optionalField.name}", ${optionalField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${optionalField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)));
@@ -341,7 +338,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Simple Field (${namedField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>
+                        <#if typedField.type.isEnumTypeReference()>
                             writeSimpleEnumField("${simpleField.name}", "${helper.getLanguageTypeNameForField(field)}", ${simpleField.name}, ${helper.getEnumDataWriterCall(simpleField.type, simpleField.name, "value")});
                         <#elseif simpleField.type.isDataIoTypeReference()>
                             writeSimpleField("${simpleField.name}", ${simpleField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${simpleField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)));
@@ -378,22 +375,23 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     @Override
     public int getLengthInBits() {
-        int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+        int lengthInBits = <#if type.parentType.isPresent()>super.getLengthInBits()<#else>0</#if>;
         ${type.name} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
+        <#assign arrayElementTypeReference = arrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
         // Array field
         if(${arrayField.name} != null) {
-        <#if arrayField.type.isSimpleTypeReference()>
-            <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
-            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.<#if arrayField.type.isByteBased()>length<#else>size()</#if>;
+        <#if arrayElementTypeReference.isSimpleTypeReference()>
+            <#assign simpleTypeReference = arrayElementTypeReference.asSimpleTypeReference().orElseThrow()>
+            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.<#if arrayElementTypeReference.isByteBased()>length<#else>size()</#if>;
         <#elseif arrayField.isCountArrayField()>
             int i=0;
-            <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
-            for(${complexTypeReference.name} element : ${arrayField.name}) {
+            <#assign nonSimpleTypeReference = arrayElementTypeReference.asNonSimpleTypeReference().orElseThrow()>
+            for(${nonSimpleTypeReference.name} element : ${arrayField.name}) {
                 boolean last = ++i >= ${arrayField.name}.size();
                 lengthInBits += element.getLengthInBits();
             }
@@ -457,6 +455,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+        <#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
         // Manual Array Field (${manualArrayField.name})
         lengthInBits += ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.lengthExpression, parserArguments)} * 8;
@@ -587,8 +586,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign arrayField = field.asArrayField().orElseThrow()>
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
+                <#assign arrayElementTypeReference = arrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
-                <#if typedField.type.isByteBased()>
+                <#if arrayElementTypeReference.isByteBased()>
                     <#if !field.isCountArrayField() && !field.isLengthArrayField()>
                         throw new ParseException("array fields of type byte only support 'count' and 'length' loop-types.");
                     </#if>
@@ -596,15 +596,15 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#else>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if field.isCountArrayField()>
-                        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+                        ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
                     <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                     <#else>
                     <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                         <#if field.isLengthArrayField()>
-                            List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+                            ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
                         <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                         <#elseif field.isTerminatedArrayField()>
-                            List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)});
+                            ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)});
                         </#if>
                     </#if>
                 </#if>
@@ -642,7 +642,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", readEnum(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)});
+                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}", readEnum(${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)});
                 <#break>
             <#case "implicit">
                 <#assign implicitField = field.asImplicitField().orElseThrow()>
@@ -655,11 +655,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
+                <#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
-                <#if manualArrayField.type.isByteBased()>
-                    byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, (byte[] _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                <#if arrayElementTypeReference.isByteBased()>
+                    byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, (byte[] _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (byte) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 <#else>
-                    List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, (List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+                    ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, (${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} _values) -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 </#if>
                 <#break>
             <#case "manual">
@@ -694,7 +695,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if helper.isEnumTypeReference(typedField.type)>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
+                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if typedField.type.isEnumTypeReference()>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});</#if>
                 <#break>
             <#case "switch">
                 <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -713,7 +714,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
                                     EvaluationHelper.equals(
                                     ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
-                                    <#if helper.isEnumTypeReference(discriminatorType)>
+                                    <#if discriminatorType.isEnumTypeReference()>
                                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
                                     <#else>
                                         ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
@@ -778,15 +779,15 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     <#if type.isDiscriminatedParentTypeDefinition()>
         public static interface ${type.name}Builder {
-            ${type.name} build(<#list type.propertyFields as field><#if field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>);
+            ${type.name} build(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>);
         }
 
     </#if>
     <#if type.isDiscriminatedChildTypeDefinition()>
-        public static class ${type.name}Builder implements ${type.parentType.name}.${type.parentType.name}Builder {
+        public static class ${type.name}Builder implements ${type.parentType.orElseThrow().name}.${type.parentType.orElseThrow().name}Builder {
         <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>
-                private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
+                private final ${helper.getLanguageTypeNameForField(field)} ${field.name};
             </#list>
         </#if>
         <#if filteredParserArguments?has_content>
@@ -795,7 +796,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             </#list>
         </#if>
 
-        public ${type.name}Builder(<#list type.propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
+        public ${type.name}Builder(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
         <#list type.propertyFields as field>
             this.${field.name} = ${field.name};
         </#list>
@@ -806,7 +807,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         </#if>
         }
 
-        public ${type.name} build(<#list type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list><#if filteredParentParserArguments?has_content><#if type.parentType.asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
+        public ${type.name} build(<#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep></#list><#if filteredParentParserArguments?has_content><#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep></#list></#if>) {
             return new ${type.name}(<#list type.allPropertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.allPropertyFields?has_content>, </#if><#list filteredParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>);
         }
     }
@@ -828,7 +829,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             (get${field.name?cap_first}() == that.get${field.name?cap_first}()) &&
             </#list>
             </#if>
-            <#if type.parentType??>
+            <#if type.parentType.isPresent()>
             super.equals(that) &&
             </#if>
             true;
@@ -837,7 +838,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     @Override
     public int hashCode() {
         return Objects.hash(
-            <#if type.parentType??>
+            <#if type.parentType.isPresent()>
             super.hashCode()<#if type.propertyFields?has_content>,</#if>
             </#if>
             <#if type.propertyFields?has_content>

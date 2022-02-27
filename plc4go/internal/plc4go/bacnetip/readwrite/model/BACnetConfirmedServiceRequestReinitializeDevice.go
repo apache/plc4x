@@ -145,7 +145,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
 		return nil, pullErr
 	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_BACNET_DEVICE_STATE)
+	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_DEVICE_STATE))
 	if _reinitializedStateOfDeviceErr != nil {
 		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field")
 	}

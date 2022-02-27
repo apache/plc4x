@@ -32,20 +32,24 @@ type AdsParserHelper struct {
 
 func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
+	case "AmsSerialFrame":
+		return model.AmsSerialFrameParse(io)
+	case "DataItem":
+		dataFormatName, err := utils.StrToString(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		stringLength, err := utils.StrToInt32(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParse(io, dataFormatName, stringLength)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.AdsMultiRequestItemParse(io, indexGroup)
-	case "AmsTCPPacket":
-		return model.AmsTCPPacketParse(io)
-	case "State":
-		return model.StateParse(io)
-	case "AmsPacket":
-		return model.AmsPacketParse(io)
-	case "AmsSerialFrame":
-		return model.AmsSerialFrameParse(io)
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(io)
 	case "AdsData":
@@ -63,6 +67,12 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		return model.AmsSerialResetFrameParse(io)
 	case "AdsNotificationSample":
 		return model.AdsNotificationSampleParse(io)
+	case "AmsTCPPacket":
+		return model.AmsTCPPacketParse(io)
+	case "State":
+		return model.StateParse(io)
+	case "AmsPacket":
+		return model.AmsPacketParse(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -29,8 +29,8 @@ import java.util.Optional;
 
 public class DefaultAbstractField extends DefaultTypedNamedField implements AbstractField {
 
-    public DefaultAbstractField(Map<String, Term> attributes, TypeReference type, String name) {
-        super(attributes, type, name);
+    public DefaultAbstractField(Map<String, Term> attributes, String name) {
+        super(attributes, name);
     }
 
     @Override
