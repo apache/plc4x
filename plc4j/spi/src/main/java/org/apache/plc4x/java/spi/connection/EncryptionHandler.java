@@ -51,7 +51,7 @@ public class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
     }
 
     /**
-     * Overridable function used to encrypt an outgoing.
+     * Overridable function used to encrypt an outgoing message.
      *
      * @return ByteBuf the encrypted buffer should be returned.
      */
