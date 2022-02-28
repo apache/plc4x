@@ -36,6 +36,7 @@
   <modules>
     <module>ab-eth</module>
     <module>ads</module>
+    <module>c-bus</module>
     <module>bacnetip</module>
     <module>canopen</module>
     <module>df1</module>
