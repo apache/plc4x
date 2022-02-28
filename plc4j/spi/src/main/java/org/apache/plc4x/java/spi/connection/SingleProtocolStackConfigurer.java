@@ -23,6 +23,7 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
@@ -50,6 +51,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final MessageInput<BASE_PACKET_CLASS> messageIoClass;
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
+    private final MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
     private final Object[] parserArgs;
 
     public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, MessageInput<BPC> messageIo) {
@@ -66,7 +68,8 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   Class<? extends DriverContext> driverContextClass,
                                   MessageInput<BASE_PACKET_CLASS> messageIoClass,
                                   Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
-                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
+                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass,
+                                  MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
         this.basePacketClass = basePacketClass;
         this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
@@ -75,6 +78,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         this.messageIoClass = messageIoClass;
         this.packetSizeEstimatorClass = packetSizeEstimatorClass;
         this.corruptPacketRemoverClass = corruptPacketRemoverClass;
+        this.encryptionHandler = encryptionHandler;
     }
 
     private ChannelHandler getMessageCodec(Configuration configuration) {
@@ -89,6 +93,9 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     @Override
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
         Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
+        if (this.encryptionHandler != null) {
+            pipeline.addLast(this.encryptionHandler);
+        }
         pipeline.addLast(getMessageCodec(configuration));
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, createInstance(protocolClass));
         if (driverContextClass != null) {
@@ -126,6 +133,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
+        private MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
 
         public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, MessageInput<BASE_PACKET_CLASS> messageIo) {
             this.basePacketClass = basePacketClass;
@@ -172,9 +180,14 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             return this;
         }
 
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withEncryptionHandler(MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
+            this.encryptionHandler = encryptionHandler;
+            return this;
+        }
+
         public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
-            return new SingleProtocolStackConfigurer<>(basePacketClass, byteOrder, parserArgs, protocol, driverContextClass, messageIo, packetSizeEstimator, corruptPacketRemover);
+            return new SingleProtocolStackConfigurer<>(basePacketClass, byteOrder, parserArgs, protocol, driverContextClass, messageIo, packetSizeEstimator, corruptPacketRemover, encryptionHandler);
         }
 
     }

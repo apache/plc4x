@@ -125,6 +125,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, OpcuaAPU::staticParse)
+            .withEncryptionHandler(new EncryptionHandler())
             .withProtocol(OpcuaProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withParserArgs(true)
