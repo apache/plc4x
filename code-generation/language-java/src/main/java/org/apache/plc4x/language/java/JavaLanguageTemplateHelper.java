@@ -637,7 +637,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (term instanceof TernaryTerm) {
             return toTernaryTermExpression(field, resultType, (TernaryTerm) term, variableExpressionGenerator, tracer);
         } else {
-            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+            throw new RuntimeException("Unsupported Term type " + term.getClass().getName() + ". Actual type " + resultType);
         }
     }
 
@@ -714,20 +714,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "!":
                 tracer = tracer.dive("case !");
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'!(...)' expression requires boolean type");
+                    throw new IllegalArgumentException("'!(...)' expression requires boolean type. Actual type " + resultType);
                 }
                 return tracer + "!(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             case "-":
                 tracer = tracer.dive("case -");
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'-(...)' expression requires integer or floating-point type");
+                    throw new IllegalArgumentException("'-(...)' expression requires integer or floating-point type. Actual type " + resultType);
                 }
                 return tracer + "-(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             case "()":
                 tracer = tracer.dive("case ()");
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ")";
             default:
-                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
+                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation() + ". Actual type " + resultType);
         }
     }
 
@@ -740,7 +740,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "^": {
                 tracer = tracer.dive(operation);
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'A^B' expression requires numeric result type");
+                    throw new IllegalArgumentException("'A^B' expression requires numeric result type. Actual type " + resultType);
                 }
                 return tracer + "Math.pow((" + toExpression(field, resultType, a, variableExpressionGenerator) + "), (" + toExpression(field, resultType, b, variableExpressionGenerator) + "))";
             }
@@ -751,7 +751,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "-": {
                 tracer = tracer.dive(operation);
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isFloatTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires numeric result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires numeric result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             }
@@ -767,20 +767,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "==":
             case "!=":
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type. Actual type " + resultType);
                 }
                 // TODO: Try to infer the types of the arguments in this case
                 return tracer + "(" + toExpression(field, ANY_TYPE_REFERENCE, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, ANY_TYPE_REFERENCE, b, variableExpressionGenerator) + ")";
             case "&&":
             case "||":
                 if ((resultType != getAnyTypeReference()) && !resultType.isBooleanTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             case "&":
             case "|":
                 if ((resultType != getAnyTypeReference()) && !resultType.isIntegerTypeReference() && !resultType.isByteTypeReference()) {
-                    throw new IllegalArgumentException("'A" + operation + "B' expression requires boolean result type");
+                    throw new IllegalArgumentException("'A" + operation + "B' expression requires byte or integer result type. Actual type " + resultType);
                 }
                 return tracer + "(" + toExpression(field, resultType, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, resultType, b, variableExpressionGenerator) + ")";
             default:
@@ -801,7 +801,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 toExpression(field, resultType, c, variableExpressionGenerator) + "" +
                 ")";
         } else {
-            throw new IllegalArgumentException("Unsupported ternary operation type " + ternaryTerm.getOperation());
+            throw new IllegalArgumentException("Unsupported ternary operation type " + ternaryTerm.getOperation() + ". Actual type " + resultType);
         }
     }
 
