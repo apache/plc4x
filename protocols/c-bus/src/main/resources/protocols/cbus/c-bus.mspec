@@ -18,17 +18,17 @@
  */
 
 [discriminatedType CBusCommand(bit srchk)
-    [const  byte     initiator '0x5C'   ] // 0x5C == "/"
+    [const  byte       initiator 0x5C   ] // 0x5C == "/"
     [simple CBusHeader header           ]
-    [typeSwitch 'header.destinationAddressType'
-        ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint(srchk)
-            [simple CBusPointToPointToMultipointCommand command]
+    [typeSwitch header.destinationAddressType
+        ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint
+            [simple CBusPointToPointToMultipointCommand('srchk') command]
         ]
-        ['PointToMultiPoint'        CBusCommandPointToMultiPoint(srchk)
-            [simple CBusPointToMultiPointCommand        command]
+        ['PointToMultiPoint'        CBusCommandPointToMultiPoint
+            [simple CBusPointToMultiPointCommand('srchk')        command]
         ]
-        ['PointToPoint'             CBusCommandPointToPoint(srchk)
-            [simple CBusPointToPointCommand             command]
+        ['PointToPoint'             CBusCommandPointToPoint
+            [simple CBusPointToPointCommand('srchk')             command]
         ]
     ]
 ]
@@ -86,64 +86,65 @@
 
 [discriminatedType CBusPointToPointCommand(bit srchk)
     [peek    uint 16     bridgeAddressCountPeek ]
-    [typeSwitch 'bridgeAddressCountPeek && 0x00FF'
-        ['0x0000' CBusPointToPointCommandDirect
+    [virtual bit         isDirect  'bridgeAddressCountPeek && 0x00FF == 0x0000']
+    [typeSwitch isDirect
+        ['true'  CBusPointToPointCommandDirect
             [simple UnitAddress   unitAddress                                                   ]
         ]
-        [         CBusPointToPointCommandIndirect
+        ['false' CBusPointToPointCommandIndirect
             [simple BridgeAddress bridgeAddress                                                 ]
             [simple NetworkRoute  networkRoute                                                  ]
             [simple UnitAddress   unitAddress                                                   ]
         ]
     ]
     [simple   CALData calData                                                                   ]
-    [optional Checksum      checksum 'srchk'                                                    ] // checksum is optional but mspec checksum isn't
+    [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
     [optional Alpha         alpha    'curPos <= lengthInBytes'                                  ] // TODO:Read if there's still two bytes left
-    [const    byte          cr       '0xD'                                                      ] // 0xD == "<cr>"
+    [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
     [peek    byte     application             ]
-    [typeSwitch 'application'
+    [typeSwitch application
         ['0xFF'   CBusPointToMultiPointCommandStatus
             [reserved byte          '0xFF'                                                     ]
             [reserved byte          '0x00'                                                     ]
             [simple   StatusRequest statusRequest                                              ]
-            [optional Checksum      checksum      'srchk'                                      ] // checksum is optional but mspec checksum isn't
+            [optional Checksum      crc           'srchk'                                      ] // checksum is optional but mspec checksum isn't
             [optional Alpha         alpha         'curPos <= lengthInBytes'                    ] // TODO:Read if there's still two bytes left
-            [const    byte          cr            '0xD'                                        ] // 0xD == "<cr>"
+            [const    byte          cr            0xD                                          ] // 0xD == "<cr>"
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   Application   application                                                ]
             [reserved byte          '0x00'                                                     ]
             [simple   SALData       salData                                                    ]
-            [optional Checksum      checksum    'srchk'                                        ] // checksum is optional but mspec checksum isn't
+            [optional Checksum      crc         'srchk'                                        ] // crc      is optional but mspec crc      isn't
             [optional Alpha         alpha       'curPos <= lengthInBytes'                      ] // TODO:Read if there's still two bytes left
-            [const    byte          cr          '0xD'                                          ] // 0xD == "<cr>"
+            [const    byte          cr          0xD                                            ] // 0xD == "<cr>"
         ]
     ]
 ]
 
-[discriminatedType CBusCommandPointToPointToMultiPoint(bit srchk)
+[discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
     [simple BridgeAddress bridgeAddress                                                        ]
     [simple NetworkRoute  networkRoute                                                         ]
     [peek    byte     application                                                              ]
-    [typeSwitch 'application'
+    [typeSwitch application
             ['0xFF'   CBusCommandPointToPointToMultiPointStatus
                 [reserved byte        '0xFF'                                                   ]
                 [reserved byte        '0x00'                                                   ]
                 [simple StatusRequest statusRequest                                            ]
-                [optional Checksum    checksum      'srchk'                                    ] // checksum is optional but mspec checksum isn't
+                [optional Checksum    crc           'srchk'                                    ] // crc      is optional but mspec crc      isn't
                 [optional Alpha       alpha         'curPos <= lengthInBytes'                  ] // TODO:Read if there's still two bytes left
-                [const    byte        cr            '0xD'                                      ] // 0xD == "<cr>"
+                [const    byte        cr            0xD                                        ] // 0xD == "<cr>"
             ]
             [         CBusCommandPointToPointToMultiPointNormal
                 [simple Application   application                                              ]
                 [reserved byte        '0x00'                                                   ]
                 [simple SALData       salData                                                  ]
-                [optional Checksum    checksum 'srchk'                                         ] // checksum is optional but mspec checksum isn't
+                [optional Checksum    crc      'srchk'                                         ] // crc      is optional but mspec crc      isn't
                 [optional Alpha       alpha    'curPos <= lengthInBytes'                       ] // TODO:Read if there's still two bytes left
-                [const    byte        cr       '0xD'                                           ] // 0xD == "<cr>"
+                [const    byte        cr       0xD                                             ] // 0xD == "<cr>"
             ]
         ]
 ]
@@ -157,8 +158,8 @@
 ]
 
 [type StatusRequest
-    [peek    byte     type             ]
-    [typeSwitch 'type'
+    [peek    byte     statusType           ]
+    [typeSwitch statusType
         ['0x7A' StatusRequestBinaryState
             [reserved   byte      '0x7A'                                              ]
             [simple     byte      application                                         ]
@@ -176,7 +177,7 @@
                                 || startingGroupAddressLabel == 0x80
                                 || startingGroupAddressLabel == 0xA0
                                 || startingGroupAddressLabel == 0xC0
-                                || startingGroupAddressLabel == 0xE0'                 ]
+                                || startingGroupAddressLabel == 0xE0'                 "invalid label"]
         ]
     ]
 ]
@@ -187,19 +188,19 @@
 
 [type Reply
     [peek   byte magicByte]
-    [typeSwitch 'magicByte'
-        ['??' CALReply]
-        ['??' MonitoredSAL]
-        ['??' Confirmation]
-        ['??' PowerUp]
-        ['??' ParameterChange]
-        ['??' ExclamationMark]
+    [typeSwitch magicByte
+        ['0x0' CALReply]
+        ['0x0' MonitoredSAL]
+        ['0x0' Confirmation]
+        ['0x0' PowerUp]
+        ['0x0' ParameterChange]
+        ['0x0' ExclamationMark]
     ]
 ]
 
 [type CALReply
-    [peek    byte     type             ]
-    [typeSwitch 'type'
+    [peek    byte     calType             ]
+    [typeSwitch calType
         ['0x86' CALReplyLong
             [reserved   byte                   '0x86'                                          ]
             [peek       uint 24                terminatingByte                                 ]
@@ -209,16 +210,16 @@
             [optional   BridgeAddress          bridgeAddress   '!isUnitAddress'                ]
             [simple     SerialInterfaceAddress serialInterfaceAddress                          ]
             [optional   byte                   reservedByte    'isUnitAddress'                 ]
-            [validation                        'isUnitAddress && reservedByte == 0x00 || !isUnitAddress']
-            [optional   ReplyNetwork           '!isUnitAddress'                                ]
+            [validation                        'isUnitAddress && reservedByte == 0x00 || !isUnitAddress' "wrong reservedByte"]
+            [optional   ReplyNetwork           replyNetwork   '!isUnitAddress'                 ]
         ]
         [       CALReplyShort
         ]
     ]
     [simple   CALData   calData                                                                ]
-    [checksum checksum                                                                         ]
-    [const    byte      cr      '0x0D'                                                         ] // 0xD == "<cr>"
-    [const    byte      lf      '0x0A'                                                         ] // 0xA == "<lf>"
+    [checksum byte crc   '0x00'                                                                ]// TODO: Fix this
+    [const    byte      cr      0x0D                                                           ] // 0xD == "<cr>"
+    [const    byte      lf      0x0A                                                           ] // 0xA == "<lf>"
 ]
 
 [type BridgeCount
@@ -230,8 +231,8 @@
 ]
 
 [type MonitoredSAL
-    [peek    byte     type             ]
-    [typeSwitch 'type'
+    [peek    byte     salType             ]
+    [typeSwitch salType
         ['0x05' MonitoredSALLongFormSmartMode
             [reserved byte '0x05']
             [peek    uint 24     terminatingByte                        ]
@@ -244,10 +245,10 @@
             [simple     SerialInterfaceAddress
                          serialInterfaceAddress                         ]
             [optional   byte    reservedByte    'isUnitAddress'         ]
-            [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress']
-            [optional   ReplyNetwork            '!isUnitAddress'        ]
+            [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress' "invalid unit address"]
+            [optional   ReplyNetwork     replyNetwork       '!isUnitAddress'        ]
         ]
-        ['*' MonitoredSALShortFormBasicMode
+        [    MonitoredSALShortFormBasicMode
             [peek    byte     counts                                        ]
             [optional BridgeCount   bridgeCount     'counts != 0x00'        ]
             [optional NetworkNumber networkNumber   'counts != 0x00'        ]
@@ -256,36 +257,36 @@
         ]
     ]
     [optional SALData salData                                               ]
-    [checksum checksum]
-    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
-    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
+    [checksum byte crc   '0x00'                                                                ]// TODO: Fix this
+    [const    byte        cr 0x0D                                                     ] // 0xD == "<cr>"
+    [const    byte        lf 0x0A                                                     ] // 0xA == "<lf>"
 ]
 
 [type Confirmation
     [simple Alpha alpha]
-    [dicriminator   byte type]
-    [typeSwitch 'type'
-        ['.'    ConfirmationSuccessful              ]
-        ['#'    NotTransmittedToManyReTransmissions ]
-        ['$'    NotTransmittedCorruption            ]
-        ['%'    NotTransmittedSyncLoss              ]
-        ['''    NotTransmittedTooLong               ]
+    [discriminator   byte confirmationType]
+    [typeSwitch confirmationType
+        ['0x2E'    ConfirmationSuccessful              ] // "."
+        ['0x23'    NotTransmittedToManyReTransmissions ] // "#"
+        ['0x24'    NotTransmittedCorruption            ] // "$"
+        ['0x25'    NotTransmittedSyncLoss              ] // "%"
+        ['0x27'    NotTransmittedTooLong               ] // "'"
     ]
 ]
 
 [type PowerUp
     // TODO: skip potential garbage as first reserved might be wrong
-    [const    byte        something1     '+']
-    [const    byte        something2    '+']
-    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
-    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
+    [const    byte        something1     0x2B] // "+"
+    [const    byte        something2     0x2B] // "+"
+    [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
+    [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
 ]
 
 [type ParameterChange
-    [const    byte        something1    '=']
-    [const    byte        something2    '=']
-    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
-    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
+    [const    byte        something1    0x3D] // "="
+    [const    byte        something2    0x3D] // "="
+    [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
+    [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
 ]
 
 [type ExclamationMark

@@ -37,6 +37,7 @@
     <module>ab-eth</module>
     <module>ads</module>
     <module>bacnet</module>
+    <module>c-bus</module>
     <module>can</module>
     <module>canopen</module>
     <module>eip</module>
