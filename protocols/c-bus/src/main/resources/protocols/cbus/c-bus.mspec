@@ -61,12 +61,16 @@
     [simple byte address]
 ]
 
+[type SerialInterfaceAddress
+    [simple byte address]
+]
+
 [type NetworkRoute
     [simple RouteType     routeType                                                    ]
     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
 ]
 
-[enum uint 8 RouteType(uint 3 additionalBridges)
+[enum byte RouteType(uint 3 additionalBridges)
     ['0x00' NoBridgeAtAll         ['0']]
     ['0x09' NoAdditionalBridge    ['1']]
     ['0x12' OneAdditionalBridge   ['2']]
@@ -91,11 +95,11 @@
     [simple CALData calData                                                                     ]
     [optional Checksum      checksum                                                            ] // TODO: checksum is optional but mspec checksum isn't
     [optional byte          alpha                                                               ]
-    [const    uint 8        cr '0xD'                                                            ] // 0xD == "<cr>"
+    [const    byte        cr '0xD'                                                            ] // 0xD == "<cr>"
 ]
 
 [discriminatedType CBusPointToMultiPointCommand
-    [peek    uint 8     application             ]
+    [peek    byte     application             ]
     [typeSwitch 'application'
         ['0xFF'   CBusPointToMultiPointCommandStatus
             [reserved byte                 '0xFF'                                              ]
@@ -103,7 +107,7 @@
             [simple StatusRequest   statusRequest                                              ]
             [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
             [optional byte          alpha                                                      ]
-            [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+            [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
         ]
         ['*'      CBusPointToMultiPointCommandNormal
             [simple Application          application                                                  ]
@@ -111,7 +115,7 @@
             [simple SALData         salData                                                    ]
             [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
             [optional byte          alpha                                                      ]
-            [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+            [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
         ]
     ]
 ]
@@ -119,7 +123,7 @@
 [discriminatedType CBusCommandPointToPointToMultiPoint
     [simple BridgeAddress bridgeAddress                                                 ]
     [simple NetworkRoute  networkRoute                                                  ]
-    [peek    uint 8     application             ]
+    [peek    byte     application             ]
     [typeSwitch 'application'
             ['0xFF'   CBusCommandPointToPointToMultiPointStatus
                 [reserved byte                 '0xFF'                                              ]
@@ -127,7 +131,7 @@
                 [simple StatusRequest   statusRequest                                              ]
                 [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
                 [optional byte          alpha                                                      ]
-                [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+                [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
             ]
             ['*'      CBusCommandPointToPointToMultiPointNormal
                 [simple Application          application                                                  ]
@@ -135,7 +139,7 @@
                 [simple SALData         salData                                                    ]
                 [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
                 [optional byte          alpha                                                      ]
-                [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+                [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
             ]
         ]
 ]
@@ -149,7 +153,7 @@
 ]
 
 [type StatusRequest
-    [peek    uint 8     type             ]
+    [peek    byte     type             ]
     [typeSwitch 'type'
         ['0x7A' StatusRequestBinaryState
             [reserved byte                 '0x7A'                                              ]
@@ -175,4 +179,105 @@
 
 [type SALData
     // TODO: implement me
+]
+
+[type Reply
+    [peek   byte    magicByte]
+    [typeSwitch 'magicByte'
+        ['??' CALReply]
+        ['??' MonitoredSAL]
+        ['??' Confirmation]
+        ['??' PowerUp]
+        ['??' ParameterChange]
+        ['??' ExclamationMark]
+    ]
+]
+
+[type CALReply
+    [peek    byte     type             ]
+    [typeSwitch 'type'
+        ['0x86' CALReplyLong
+            [reserved byte '0x86']
+            [peek    uint 24     terminatingByte                        ]
+            // TODO: this should be subSub type but mspec doesn't support that yet directly
+            [virtual bit isUnitAddress 'terminatingByte & 0xff == 0x00' ]
+            [optional   UnitAddress
+                         unitAddress     'isUnitAddress'                ]
+            [optional   BridgeAddress
+                         bridgeAddress   '!isUnitAddress'               ]
+            [simple     SerialInterfaceAddress
+                         serialInterfaceAddress                         ]
+            [optional   byte    reservedByte    'isUnitAddress'         ]
+            [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress']
+            [optional   ReplyNetwork            '!isUnitAddress'        ]
+        ]
+        ['*'    CALReplyShort
+        ]
+    ]
+    [simple CALData calData]
+    [checksum checksum]
+    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
+    [const    byte        cr '0x0A'                                                   ] // 0xA == "<lf>"
+]
+
+[type BridgeCount
+    [simple uint 8 count]
+]
+
+[type NetworkNumber
+    [simple uint 8 number]
+]
+
+[type MonitoredSAL
+    [peek    byte     type             ]
+    [typeSwitch 'type'
+        ['0x05' MonitoredSALLongFormSmartMode
+            [reserved byte '0x05']
+            [peek    uint 24     terminatingByte                        ]
+            // TODO: this should be subSub type but mspec doesn't support that yet directly
+            [virtual bit isUnitAddress 'terminatingByte & 0xff == 0x00' ]
+            [optional   UnitAddress
+                         unitAddress     'isUnitAddress'                ]
+            [optional   BridgeAddress
+                         bridgeAddress   '!isUnitAddress'               ]
+            [simple     SerialInterfaceAddress
+                         serialInterfaceAddress                         ]
+            [optional   byte    reservedByte    'isUnitAddress'         ]
+            [validation 'isUnitAddress && reservedByte == 0x00 || !isUnitAddress']
+            [optional   ReplyNetwork            '!isUnitAddress'        ]
+        ]
+        ['*' MonitoredSALShortFormBasicMode
+            [peek    byte     counts                                        ]
+            [optional BridgeCount   bridgeCount     'counts != 0x00'        ]
+            [optional NetworkNumber networkNumber   'counts != 0x00'        ]
+            [optional byte    noCounts              'counts == 0x00'        ] // TODO: add validation that this is 0x00 when no bridge and network number are set
+            [simple Application application                                 ]
+        ]
+    ]
+    [optional SALData salData                                               ]
+    [checksum checksum]
+    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
+    [const    byte        cr '0x0A'                                                   ] // 0xA == "<lf>"
+]
+
+[type Confirmation
+    // TODO: implement me
+]
+
+[type PowerUp
+    // TODO: implement me
+]
+
+[type ParameterChange
+    // TODO: implement me
+]
+
+[type ExclamationMark
+    // TODO: implement me
+]
+
+[type ReplyNetwork
+     [simple RouteType     routeType                                                    ]
+     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
+     [simple UnitAddress    unitAddress                                                 ]
 ]
