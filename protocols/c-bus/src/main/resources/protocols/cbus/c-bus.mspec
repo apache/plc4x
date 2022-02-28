@@ -268,11 +268,11 @@
     [simple Alpha alpha]
     [dicriminator   byte type]
     [typeSwitch 'type'
-        ['.'    ConfirmationSuccessful]
-        ['#'    NotTransmittedToManyReTransmissions]
-        ['$'    NotTransmittedCorruption]
-        ['%'    NotTransmittedSyncLoss]
-        ['''    NotTransmittedTooLong]
+        ['.'    ConfirmationSuccessful              ]
+        ['#'    NotTransmittedToManyReTransmissions ]
+        ['$'    NotTransmittedCorruption            ]
+        ['%'    NotTransmittedSyncLoss              ]
+        ['''    NotTransmittedTooLong               ]
     ]
 ]
 

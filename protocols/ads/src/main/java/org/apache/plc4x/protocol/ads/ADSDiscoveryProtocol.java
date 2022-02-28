@@ -43,7 +43,11 @@ public class ADSDiscoveryProtocol implements Protocol {
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        return new MessageFormatParser().parse(schemaInputStream);
+        TypeContext typeContext = new MessageFormatParser().parse(schemaInputStream);
+        if (typeContext.getUnresolvedTypeReferences().size() > 0) {
+            throw new GenerationException("Unresolved types left: " + typeContext.getUnresolvedTypeReferences());
+        }
+        return typeContext;
     }
 
 }
