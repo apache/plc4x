@@ -124,16 +124,16 @@
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
       <version>0.10.0-SNAPSHOT</version>
-    </dependency>
+    </dependency-->
 
-    <dependency>
+    <!--dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-    </dependency>
+    </dependency-->
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
