@@ -24,10 +24,16 @@ import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements EnumTypeDefinition {
+
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEnumTypeDefinition.class);
+
 
     private final SimpleTypeReference type;
     private final List<EnumValue> enumValues;
@@ -43,8 +49,8 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
             for (Argument argument : parserArgument) {
                 ((DefaultArgument) argument).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
                     if (throwable != null) {
-                        // TODO: handle error
-                        System.err.println(throwable);
+                        // TODO: proper error collection in type context error bucket
+                        LOGGER.debug("Error setting type for {}", argument, throwable);
                         return;
                     }
                     this.constants.put(argument.getName(), argument.getType());

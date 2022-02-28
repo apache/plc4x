@@ -190,7 +190,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -209,7 +209,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(new DefaultArrayTypeReference(typeReference));
@@ -240,7 +240,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
                 if (throwable != null) {
                     // TODO: proper error collection in type context error bucket
-                    LOGGER.error("Error setting type for {}", field, throwable);
+                    LOGGER.debug("Error setting type for {}", field, throwable);
                     return;
                 }
                 field.setType(typeReference);
@@ -258,7 +258,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -303,7 +303,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -327,7 +327,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(new DefaultArrayTypeReference(typeReference));
@@ -348,7 +348,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -369,7 +369,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -390,7 +390,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -429,7 +429,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -467,7 +467,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         getTypeReference(ctx.type).whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
                 // TODO: proper error collection in type context error bucket
-                LOGGER.error("Error setting type for {}", field, throwable);
+                LOGGER.debug("Error setting type for {}", field, throwable);
                 return;
             }
             field.setType(typeReference);
@@ -709,7 +709,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                 getTypeReference(argumentContext.type).whenComplete((typeReference, throwable) -> {
                     if (throwable != null) {
                         // TODO: proper error collection in type context error bucket
-                        LOGGER.error("Error setting type for {}", argument, throwable);
+                        LOGGER.debug("Error setting type for {}", argument, throwable);
                         return;
                     }
                     argument.setType(typeReference);
