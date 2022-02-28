@@ -65,6 +65,10 @@
     [simple byte address]
 ]
 
+[type Alpha
+    [simple byte character]
+]
+
 [type NetworkRoute
     [simple RouteType     routeType                                                    ]
     [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
@@ -94,7 +98,7 @@
     ]
     [simple CALData calData                                                                     ]
     [optional Checksum      checksum                                                            ] // TODO: checksum is optional but mspec checksum isn't
-    [optional byte          alpha                                                               ]
+    [optional Alpha          alpha                                                               ]
     [const    byte        cr '0xD'                                                            ] // 0xD == "<cr>"
 ]
 
@@ -106,7 +110,7 @@
             [reserved byte                 '0x00'                                              ]
             [simple StatusRequest   statusRequest                                              ]
             [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
-            [optional byte          alpha                                                      ]
+            [optional Alpha          alpha                                                      ]
             [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
         ]
         ['*'      CBusPointToMultiPointCommandNormal
@@ -114,7 +118,7 @@
             [reserved byte                 '0x00'                                              ]
             [simple SALData         salData                                                    ]
             [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
-            [optional byte          alpha                                                      ]
+            [optional Alpha          alpha                                                      ]
             [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
         ]
     ]
@@ -130,7 +134,7 @@
                 [reserved byte                 '0x00'                                              ]
                 [simple StatusRequest   statusRequest                                              ]
                 [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
-                [optional byte          alpha                                                      ]
+                [optional Alpha          alpha                                                      ]
                 [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
             ]
             ['*'      CBusCommandPointToPointToMultiPointNormal
@@ -138,7 +142,7 @@
                 [reserved byte                 '0x00'                                              ]
                 [simple SALData         salData                                                    ]
                 [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
-                [optional byte          alpha                                                      ]
+                [optional Alpha          alpha                                                      ]
                 [const    byte        cr '0xD'                                                   ] // 0xD == "<cr>"
             ]
         ]
@@ -217,7 +221,7 @@
     [simple CALData calData]
     [checksum checksum]
     [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
-    [const    byte        cr '0x0A'                                                   ] // 0xA == "<lf>"
+    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
 ]
 
 [type BridgeCount
@@ -257,19 +261,34 @@
     [optional SALData salData                                               ]
     [checksum checksum]
     [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
-    [const    byte        cr '0x0A'                                                   ] // 0xA == "<lf>"
+    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
 ]
 
 [type Confirmation
-    // TODO: implement me
+    [simple Alpha alpha]
+    [dicriminator   byte type]
+    [typeSwitch 'type'
+        ['.'    ConfirmationSuccessful]
+        ['#'    NotTransmittedToManyReTransmissions]
+        ['$'    NotTransmittedCorruption]
+        ['%'    NotTransmittedSyncLoss]
+        ['''    NotTransmittedTooLong]
+    ]
 ]
 
 [type PowerUp
-    // TODO: implement me
+    // TODO: skip potential garbage as first reserved might be wrong
+    [const    byte        something1     '+']
+    [const    byte        something2    '+']
+    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
+    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
 ]
 
 [type ParameterChange
-    // TODO: implement me
+    [const    byte        something1    '=']
+    [const    byte        something2    '=']
+    [const    byte        cr '0x0D'                                                   ] // 0xD == "<cr>"
+    [const    byte        lf '0x0A'                                                   ] // 0xA == "<lf>"
 ]
 
 [type ExclamationMark
