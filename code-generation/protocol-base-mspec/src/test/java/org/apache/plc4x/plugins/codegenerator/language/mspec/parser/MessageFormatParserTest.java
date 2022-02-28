@@ -52,13 +52,15 @@ class MessageFormatParserTest {
     @Test
     void parseSomething() {
         TypeContext parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
-        System.out.println(parse);
+        assertThat(parse)
+            .isNotNull();
     }
 
     @Test
     void parseSomethingElse() {
         TypeContext parse = SUT.parse(getClass().getResourceAsStream("/mspec.example2"));
-        System.out.println(parse);
+        assertThat(parse)
+            .isNotNull();
     }
 
     @Test

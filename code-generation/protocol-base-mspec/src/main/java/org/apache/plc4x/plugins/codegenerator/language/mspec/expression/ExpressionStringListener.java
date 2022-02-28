@@ -235,7 +235,8 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         final DefaultVariableLiteral variableLiteral = new DefaultVariableLiteral(name, argsContext, index, rest);
         futureStack.pop().whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
-                LOGGER.error("Error setting type", throwable);
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type", throwable);
                 return;
             }
             variableLiteral.setTypeReference(typeReference);

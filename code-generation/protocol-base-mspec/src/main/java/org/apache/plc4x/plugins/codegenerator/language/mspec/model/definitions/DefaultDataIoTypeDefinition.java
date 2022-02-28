@@ -23,6 +23,8 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefini
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +33,10 @@ import java.util.Objects;
 
 public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition implements DataIoTypeDefinition {
 
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataIoTypeDefinition.class);
+    
+    
     private final SwitchField switchField;
     private TypeReference type;
 
@@ -42,8 +48,8 @@ public class DefaultDataIoTypeDefinition extends DefaultComplexTypeDefinition im
         }
         ((DefaultArgument) parserArguments.get(0)).getTypeReferenceCompletionStage().whenComplete((typeReference, throwable) -> {
             if (throwable != null) {
-                // TODO: handle error
-                System.err.println(throwable);
+                // TODO: proper error collection in type context error bucket
+                LOGGER.debug("Error setting type for {}", parserArguments.get(0), throwable);
                 return;
             }
             this.type = Objects.requireNonNull(parserArguments.get(0).getType());
