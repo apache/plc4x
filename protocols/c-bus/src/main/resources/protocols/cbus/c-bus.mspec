@@ -18,8 +18,8 @@
  */
 
 [discriminatedType CBusCommand
-    [const  uint 8     initiator '0x5C'] // 0x5C = "/"
-    [simple CBusHeader header          ]
+    [const  byte     initiator '0x5C'   ] // 0x5C == "/"
+    [simple CBusHeader header           ]
     [typeSwitch 'header.destinationAddressType'
         ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint
             [simple CBusPointToPointToMultipointCommand command]
@@ -40,23 +40,6 @@
     [simple   DestinationAddressType destinationAddressType]
 ]
 
-[discriminatedType CBusPointToPointCommand
-    [peek    uint 16     bridgeAddressCountPeek]
-    [virtual UnitAddress unitAddress           ]
-    [typeSwitch 'bridgeAddressCountPeek && 0x00FF'
-        ['0x0000' CBusPointToPointCommandDirect
-            [simple UnitAddress   unitAddress                                                  ]
-        ]
-        [         CBusPointToPointCommandIndirect
-            [simple BridgeAddress firstBridgeAddress                                           ]
-            [simple RouteType     routeType                                                    ]
-            [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-            [simple UnitAddress   unitAddress                                                  ]
-        ]
-    ]
-
-]
-
 [enum uint 2 PriorityClass
     ['0x00' Class4] // lowest
     ['0x01' Class3] // medium low
@@ -70,6 +53,19 @@
     ['0x06' PointToPoint            ] // P-P
 ]
 
+[type UnitAddress
+    [simple byte address]
+]
+
+[type BridgeAddress
+    [simple byte address]
+]
+
+[type NetworkRoute
+    [simple RouteType     routeType                                                    ]
+    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
+]
+
 [enum uint 8 RouteType(uint 3 additionalBridges)
     ['0x00' NoBridgeAtAll         ['0']]
     ['0x09' NoAdditionalBridge    ['1']]
@@ -78,3 +74,105 @@
     ['0x24' ThreeAdditionalBridge ['4']]
     ['0x2D' FourAdditionalBridge  ['4']]
     ['0x36' FiveAdditionalBridge  ['4']]
+]
+
+[discriminatedType CBusPointToPointCommand
+    [peek    uint 16     bridgeAddressCountPeek ]
+    [typeSwitch 'bridgeAddressCountPeek && 0x00FF'
+        ['0x0000' CBusPointToPointCommandDirect
+            [simple UnitAddress   unitAddress                                                   ]
+        ]
+        ['*'      CBusPointToPointCommandIndirect
+            [simple BridgeAddress bridgeAddress                                                 ]
+            [simple NetworkRoute  networkRoute                                                  ]
+            [simple UnitAddress   unitAddress                                                   ]
+        ]
+    ]
+    [simple CALData calData                                                                     ]
+    [optional Checksum      checksum                                                            ] // TODO: checksum is optional but mspec checksum isn't
+    [optional byte          alpha                                                               ]
+    [const    uint 8        cr '0xD'                                                            ] // 0xD == "<cr>"
+]
+
+[discriminatedType CBusPointToMultiPointCommand
+    [peek    uint 8     application             ]
+    [typeSwitch 'application'
+        ['0xFF'   CBusPointToMultiPointCommandStatus
+            [reserved byte                 '0xFF'                                              ]
+            [reserved byte                 '0x00'                                              ]
+            [simple StatusRequest   statusRequest                                              ]
+            [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
+            [optional byte          alpha                                                      ]
+            [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+        ]
+        ['*'      CBusPointToMultiPointCommandNormal
+            [simple Application          application                                                  ]
+            [reserved byte                 '0x00'                                              ]
+            [simple SALData         salData                                                    ]
+            [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
+            [optional byte          alpha                                                      ]
+            [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+        ]
+    ]
+]
+
+[discriminatedType CBusCommandPointToPointToMultiPoint
+    [simple BridgeAddress bridgeAddress                                                 ]
+    [simple NetworkRoute  networkRoute                                                  ]
+    [peek    uint 8     application             ]
+    [typeSwitch 'application'
+            ['0xFF'   CBusCommandPointToPointToMultiPointStatus
+                [reserved byte                 '0xFF'                                              ]
+                [reserved byte                 '0x00'                                              ]
+                [simple StatusRequest   statusRequest                                              ]
+                [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
+                [optional byte          alpha                                                      ]
+                [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+            ]
+            ['*'      CBusCommandPointToPointToMultiPointNormal
+                [simple Application          application                                                  ]
+                [reserved byte                 '0x00'                                              ]
+                [simple SALData         salData                                                    ]
+                [optional Checksum      checksum                                                   ] // TODO: checksum is optional but mspec checksum isn't
+                [optional byte          alpha                                                      ]
+                [const    uint 8        cr '0xD'                                                   ] // 0xD == "<cr>"
+            ]
+        ]
+]
+
+[type Application
+    [simple byte id]
+]
+
+[type CALData
+    // TODO: implement me
+]
+
+[type StatusRequest
+    [peek    uint 8     type             ]
+    [typeSwitch 'type'
+        ['0x7A' StatusRequestBinaryState
+            [reserved byte                 '0x7A'                                              ]
+            [simple byte          application                                                  ]
+            [reserved byte                 '0x00'                                              ]
+        ]
+        ['0x73' StatusRequestLevel
+            [reserved byte                 '0x73'                                              ]
+            [reserved byte                 '0x07'                                              ]
+            [simple byte          application                                                  ]
+            [simple byte          startingGroupAddressLabel                                    ]
+            [validation           'startingGroupAddressLabel == 0x00
+                                || startingGroupAddressLabel == 0x20
+                                || startingGroupAddressLabel == 0x40
+                                || startingGroupAddressLabel == 0x60
+                                || startingGroupAddressLabel == 0x80
+                                || startingGroupAddressLabel == 0xA0
+                                || startingGroupAddressLabel == 0xC0
+                                || startingGroupAddressLabel == 0xE0'                          ]
+        ]
+    ]
+]
+
+[type SALData
+    // TODO: implement me
+]
