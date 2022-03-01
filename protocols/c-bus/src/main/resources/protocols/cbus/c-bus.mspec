@@ -569,7 +569,7 @@
 ]
 
 [type StatusHeader
-    [reserved   uint 2                 '3'                          ]
+    [reserved   uint 2                 '0x3'                        ]
     [simple     uint 6  numberOfCharacterPairs                      ]
 ]
 
@@ -592,7 +592,7 @@
 ]
 
 [type ExtendedStatusHeader
-    [reserved   uint 3                 '7'                          ]
+    [reserved   uint 3                 '0x7'                        ]
     [simple     uint 5  numberOfCharacterPairs                      ]
 ]
 
@@ -607,7 +607,7 @@
     ['0' DOES_NOT_EXIST                                             ]
     ['1' ON                                                         ]
     ['2' OFF                                                        ]
-    ['3' ERRO                                                       ]
+    ['3' ERROR                                                      ]
 ]
 
 [enum byte StatusCoding
@@ -615,4 +615,10 @@
     ['0x40' BINARY_BY_ELSEWHERE                 ]
     ['0x07' LEVEL_BY_THIS_SERIAL_INTERFACE      ]
     ['0x47' LEVEL_BY_ELSEWHERE                  ]
+]
+
+[type NetworkProtocolControlInformation
+    [reserved   uint 2  '0x0'           ]
+    [simple     uint 3  stackCounter    ]
+    [simple     uint 3  stackDepth      ]
 ]
