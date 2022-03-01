@@ -36,13 +36,13 @@
 // TODO: check if that can be used in combination with srchk
 [type CBusOptions
     [simple bit connect]
-    [simple bit smart]
-    [simple bit idmon]
-    [simple bit exstat]
+    [simple bit smart  ]
+    [simple bit idmon  ]
+    [simple bit exstat ]
     [simple bit monitor]
-    [simple bit monall]
-    [simple bit pun]
-    [simple bit pcn]
+    [simple bit monall ]
+    [simple bit pun    ]
+    [simple bit pcn    ]
 ]
 
 [type CBusHeader
@@ -146,23 +146,23 @@
     [simple NetworkRoute  networkRoute                                                          ]
     [peek    byte       peekedApplication                                                       ]
     [typeSwitch peekedApplication
-            ['0xFF'   CBusCommandPointToPointToMultiPointStatus
-                [reserved byte        '0xFF'                                                    ]
-                [simple StatusRequest statusRequest                                             ]
-                [optional Checksum    crc           'srchk'                                     ] // crc      is optional but mspec crc      isn't
-                [peek     byte        peekAlpha                                                 ]
-                [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
-                [const    byte        cr            0xD                                         ] // 0xD == "<cr>"
-            ]
-            [         CBusCommandPointToPointToMultiPointNormal
-                [simple   Application application                                               ]
-                [simple   SALData     salData                                                   ]
-                [optional Checksum    crc         'srchk'                                       ] // crc      is optional but mspec crc      isn't
-                [peek     byte        peekAlpha                                                 ]
-                [optional Alpha       alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'  ] // Read if the peeked byte is between 'g' and 'z'
-                [const    byte        cr          0xD                                           ] // 0xD == "<cr>"
-            ]
+        ['0xFF'   CBusCommandPointToPointToMultiPointStatus
+            [reserved byte        '0xFF'                                                    ]
+            [simple StatusRequest statusRequest                                             ]
+            [optional Checksum    crc           'srchk'                                     ] // crc      is optional but mspec crc      isn't
+            [peek     byte        peekAlpha                                                 ]
+            [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
+            [const    byte        cr            0xD                                         ] // 0xD == "<cr>"
         ]
+        [         CBusCommandPointToPointToMultiPointNormal
+            [simple   Application application                                               ]
+            [simple   SALData     salData                                                   ]
+            [optional Checksum    crc         'srchk'                                       ] // crc      is optional but mspec crc      isn't
+            [peek     byte        peekAlpha                                                 ]
+            [optional Alpha       alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'  ] // Read if the peeked byte is between 'g' and 'z'
+            [const    byte        cr          0xD                                           ] // 0xD == "<cr>"
+        ]
+    ]
 ]
 
 [type Application
@@ -176,36 +176,57 @@
         ['RESET' CALDataRequestReset
         ]
         ['RECALL' CALDataRequestRecall
-            [simple uint 8 paramNo]
-            [simple uint 8 count]
+            [simple uint 8 paramNo                                                          ]
+            [simple uint 8 count                                                            ]
         ]
         ['IDENTIFY' CALDataRequestIdentify
-            [simple byte attribute]
+            [simple Attribute attribute                                                     ]
         ]
         ['GET_STATUS' CALDataRequestGetStatus
-            [simple uint 8 paramNo]
-            [simple uint 8 count]
+            [simple uint 8 paramNo                                                          ]
+            [simple uint 8 count                                                            ]
         ]
         ['REPLY' CALDataReplyReply(CALCommandTypeContainer commandTypeContainer)
-            [simple uint 8 paramNumber                                      ]
-            [array  byte   data        count 'commandTypeContainer.numBytes']
+            [simple uint 8 paramNumber                                                      ]
+            [array  byte   data        count 'commandTypeContainer.numBytes'                ]
         ]
         ['ACKNOWLEDGE' CALDataReplyAcknowledge
-            [simple uint 8 paramNo]
-            [simple uint 8 code]
+            [simple uint 8 paramNo                                                          ]
+            [simple uint 8 code                                                             ]
         ]
         ['STATUS' CALDataReplyStatus(CALCommandTypeContainer commandTypeContainer)
-            [simple Application application]
-            [simple uint 8      blockStart ]
-            [array  byte        data count 'commandTypeContainer.numBytes']
+            [simple Application application                                                 ]
+            [simple uint 8      blockStart                                                  ]
+            [array  byte        data        count 'commandTypeContainer.numBytes'           ]
         ]
         ['STATUS_EXTENDED' CALDataReplyStatusExtended(CALCommandTypeContainer commandTypeContainer)
-            [simple uint 8      encoding   ]
-            [simple Application application]
-            [simple uint 8      blockStart ]
-            [array  byte        data count 'commandTypeContainer.numBytes']
+            [simple uint 8      encoding                                                    ]
+            [simple Application application                                                 ]
+            [simple uint 8      blockStart                                                  ]
+            [array  byte        data        count 'commandTypeContainer.numBytes'           ]
         ]
     ]
+]
+
+[enum uint 8 Attribute(uint 8 bytesReturned)
+    ['0x00' Manufacturer              [ '8']]
+    ['0x01' Type                      [ '8']]
+    ['0x02' FirmwareVersion           [ '8']]
+    ['0x03' Summary                   [ '9']]
+    ['0x04' ExtendedDiagnosticSummary ['13']]
+    ['0x05' NetworkTerminalLevels     ['13']]
+    ['0x06' TerminalLevel             ['13']]
+    ['0x07' NetworkVoltage            [ '5']]
+    ['0x08' GAVValuesCurrent          ['16']]
+    ['0x09' GAVValuesStored           ['16']]
+    ['0x0A' GAVPhysicalAddresses      ['16']]
+    ['0x0B' LogicalAssignment         ['13']]
+    ['0x0C' Delays                    ['14']]
+    ['0x0D' MinimumLevels             ['13']]
+    ['0x0E' MaximumLevels             ['13']]
+    ['0x0F' CurrentSenseLevels        [ '8']]
+    ['0x10' OutputUnitSummary         [ '4']]
+    ['0x11' DSIStatus                 ['10']]
 ]
 
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
@@ -310,12 +331,12 @@
 ]
 
 [enum uint 4 CALCommandType
-// Request
+    // Request
     ['0x0' RESET          ] //00001000
     ['0x0' RECALL         ] //00011010
     ['0x1' IDENTIFY       ] //00100001
     ['0x2' GET_STATUS     ] //01000001
-// Response
+    // Response
     ['0x3' REPLY          ] //100xxxxx
     ['0x4' ACKNOWLEDGE    ] //00110010
     ['0x5' STATUS         ] //110xxxxx
@@ -342,7 +363,7 @@
                                 || startingGroupAddressLabel == 0x80
                                 || startingGroupAddressLabel == 0xA0
                                 || startingGroupAddressLabel == 0xC0
-                                || startingGroupAddressLabel == 0xE0'                 "invalid label"]
+                                || startingGroupAddressLabel == 0xE0'  "invalid label"]
         ]
     ]
 ]
@@ -352,17 +373,17 @@
     [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
         ['OFF'            SALDataOff
-            [simple byte group]
+            [simple byte group                                                              ]
         ]
         ['ON'             SALDataOn
-            [simple byte group]
+            [simple byte group                                                              ]
         ]
         ['RAMP_TO_LEVEL'  SALDataRampToLevel
-            [simple byte group]
-            [simple byte level]
+            [simple byte group                                                              ]
+            [simple byte level                                                              ]
         ]
         ['TERMINATE_RAMP' SALDataTerminateRamp
-            [simple byte group]
+            [simple byte group                                                              ]
         ]
     ]
     // TODO: According to spec this could be recursive
