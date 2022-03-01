@@ -1154,15 +1154,13 @@
           <version>0.8.7</version>
         </plugin>
 
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.10.0</version>
           <configuration>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <testSource>${java.version}</testSource>
-            <testTarget>${java.version}</testTarget>
+            <release>${java.version}</release>
           </configuration>
         </plugin>
 
