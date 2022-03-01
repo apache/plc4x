@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.cbus;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
+import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -27,17 +27,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@Disabled("non of those work yet")
 public class RandomPackagesTest {
 
     static final String BACKSLASH = "5C";
     static final String CR = "0D";
+    static final String LF = "0A";
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
     class ReferenceDocumentationTest {
         // 4.2.9.1
         @Test
+        @Disabled("Not yet implemented")
         void pointToPointCommand1() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0603002102D4");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
@@ -48,6 +49,7 @@ public class RandomPackagesTest {
 
         // 4.2.9.1
         @Test
+        @Disabled("Not yet implemented")
         void pointToPointCommand2() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "06420903210289");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
@@ -58,6 +60,7 @@ public class RandomPackagesTest {
 
         // 4.2.9.2
         @Test
+        @Disabled("Not yet implemented")
         void pointToMultiPointCommand1() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0538000108BA");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
@@ -68,6 +71,7 @@ public class RandomPackagesTest {
 
         // 4.2.9.2
         @Test
+        @Disabled("Not yet implemented")
         void pointToMultiPointCommand2() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "05FF007A38004A");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
@@ -78,6 +82,7 @@ public class RandomPackagesTest {
 
         // 4.2.9.3
         @Test
+        @Disabled("Not yet implemented")
         void pointToPointToMultiPointCommand2() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "03420938010871");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
@@ -88,7 +93,8 @@ public class RandomPackagesTest {
 
         // 4.3.3.1
         @Test
-        void calReply1() throws Exception {
+        @Disabled("Not yet implemented")
+        void calRequest() throws Exception {
             byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102" + CR);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
@@ -99,22 +105,35 @@ public class RandomPackagesTest {
 
         // 4.3.3.1
         @Test
-        void calReply2() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "860593008902312E322E363620207F" + CR);
+        void calReplyNormal() throws Exception {
+            byte[] bytes = Hex.decodeHex("8902312E322E363620200A" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CALReply msg = CALReplyShort.staticParse(readBufferByteBased, false);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
+        }
+
+        @Test
+        void calReplySmart() throws Exception {
+            byte[] bytes = Hex.decodeHex("860593008902312E322E363620207F" + CR + LF);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CALReply msg = CALReplyLong.staticParse(readBufferByteBased, false);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.3.3.2
         @Test
+        @Disabled("Not yet implemented")
         void monitoredSal() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "0503380079083F");
+            byte[] bytes = Hex.decodeHex("0503380079083F");
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            Reply msg = MonitoredSALReply.staticParse(readBufferByteBased, false);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
     }
 

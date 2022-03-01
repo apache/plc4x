@@ -183,18 +183,24 @@
             [simple uint 8 paramNo]
             [simple uint 8 count]
         ]
-        ['REPLY' CALDataReplyReply
-            // TODO: how to parse this?
+        ['REPLY' CALDataReplyReply(CALCommandTypeContainer commandTypeContainer)
+            [simple uint 8 paramNumber                                      ]
+            [array  byte   data        count 'commandTypeContainer.numBytes']
         ]
         ['ACKNOWLEDGE' CALDataReplyAcknowledge
             [simple uint 8 paramNo]
             [simple uint 8 code]
         ]
-        ['STATUS' CALDataReplyStatus
-            // TODO: how to parse this?
+        ['STATUS' CALDataReplyStatus(CALCommandTypeContainer commandTypeContainer)
+            [simple Application application]
+            [simple uint 8      blockStart ]
+            [array  byte        data count 'commandTypeContainer.numBytes']
         ]
-        ['STATUS_EXTENDED' CALDataReplyStatusExtended
-            // TODO: how to parse this?
+        ['STATUS_EXTENDED' CALDataReplyStatusExtended(CALCommandTypeContainer commandTypeContainer)
+            [simple uint 8      encoding   ]
+            [simple Application application]
+            [simple uint 8      blockStart ]
+            [array  byte        data count 'commandTypeContainer.numBytes']
         ]
     ]
 ]
@@ -412,27 +418,27 @@
 ]
 
 [type CALReply
-    [peek    byte     calType             ]
+    [peek    byte     calType                                                                    ]
     [typeSwitch calType
         ['0x86' CALReplyLong
-            [reserved   byte                   '0x86'                                          ]
-            [peek       uint 24                terminatingByte                                 ]
+            [reserved   byte                   '0x86'                                            ]
+            [peek       uint 24                terminatingByte                                   ]
             // TODO: this should be subSub type but mspec doesn't support that yet directly
             [virtual    bit                    isUnitAddress   '(terminatingByte & 0xff) == 0x00']
-            [optional   UnitAddress            unitAddress     'isUnitAddress'                 ]
-            [optional   BridgeAddress          bridgeAddress   '!isUnitAddress'                ]
-            [simple     SerialInterfaceAddress serialInterfaceAddress                          ]
-            [optional   byte                   reservedByte    'isUnitAddress'                 ]
+            [optional   UnitAddress            unitAddress     'isUnitAddress'                   ]
+            [optional   BridgeAddress          bridgeAddress   '!isUnitAddress'                  ]
+            [simple     SerialInterfaceAddress serialInterfaceAddress                            ]
+            [optional   byte                   reservedByte    'isUnitAddress'                   ]
             [validation                        'isUnitAddress && reservedByte == 0x00 || !isUnitAddress' "wrong reservedByte"]
-            [optional   ReplyNetwork           replyNetwork   '!isUnitAddress'                 ]
+            [optional   ReplyNetwork           replyNetwork   '!isUnitAddress'                   ]
         ]
         [       CALReplyShort
         ]
     ]
-    [simple   CALData   calData                                                                ]
+    [simple   CALData   calData                                                                  ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [const    byte      cr      0x0D                                                           ] // 0xD == "<cr>"
-    [const    byte      lf      0x0A                                                           ] // 0xA == "<lf>"
+    [const    byte      cr      0x0D                                                             ] // 0xD == "<cr>"
+    [const    byte      lf      0x0A                                                             ] // 0xA == "<lf>"
 ]
 
 [type BridgeCount
