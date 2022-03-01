@@ -427,16 +427,22 @@
     [peek   byte magicByte]
     [typeSwitch magicByte
         ['0x0' CALReplyReply
+            [simple CALReply isA]
         ]
         ['0x0' MonitoredSALReply
+            [simple MonitoredSAL isA]
         ]
         ['0x0' ConfirmationReply
+            [simple Confirmation isA]
         ]
         ['0x0' PowerUpReply
+            [simple PowerUp isA]
         ]
         ['0x0' ParameterChangeReply
+            [simple ParameterChange isA]
         ]
         ['0x0' ExclamationMarkReply
+            [simple ExclamationMark isA]
         ]
     ]
 ]
