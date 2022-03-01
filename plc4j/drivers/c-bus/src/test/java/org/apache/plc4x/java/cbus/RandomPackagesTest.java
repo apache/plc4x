@@ -38,69 +38,68 @@ public class RandomPackagesTest {
     class ReferenceDocumentationTest {
         // 4.2.9.1
         @Test
-        @Disabled("Not yet implemented")
-        void pointToPointCommand1() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "0603002102D4");
+        void pointToPointCommandDirect() throws Exception {
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "0603002102D4" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.2.9.1
         @Test
-        @Disabled("Not yet implemented")
-        void pointToPointCommand2() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "06420903210289");
+        void pointToPointCommandBridged() throws Exception {
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "06420903210289" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.2.9.2
         @Test
-        @Disabled("Not yet implemented")
-        void pointToMultiPointCommand1() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "0538000108BA");
+        void pointToMultiPointCommandDirect() throws Exception {
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "0538000108BA" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.2.9.2
         @Test
-        @Disabled("Not yet implemented")
-        void pointToMultiPointCommand2() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "05FF007A38004A");
+        void pointToMultiPointCommandBridged() throws Exception {
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "05FF007A38004A" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.2.9.3
         @Test
-        @Disabled("Not yet implemented")
         void pointToPointToMultiPointCommand2() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "03420938010871");
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "03420938010871" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
                 .isNotNull();
+            System.out.println(msg);
         }
 
         // 4.3.3.1
         @Test
-        @Disabled("Not yet implemented")
         void calRequest() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102" + CR);
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102" + CR + LF);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-            CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
-            assertThat(cBusCommand)
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, false);
+            assertThat(msg)
                 .isNotNull();
-            System.out.println(cBusCommand);
+            System.out.println(msg);
         }
 
         // 4.3.3.1

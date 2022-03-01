@@ -88,12 +88,12 @@
 
 [enum byte RouteType(uint 3 additionalBridges)
     ['0x00' NoBridgeAtAll         ['0']]
-    ['0x09' NoAdditionalBridge    ['1']]
-    ['0x12' OneAdditionalBridge   ['2']]
-    ['0x1B' TwoAdditionalBridge   ['3']]
-    ['0x24' ThreeAdditionalBridge ['4']]
+    ['0x09' NoAdditionalBridge    ['0']]
+    ['0x12' OneAdditionalBridge   ['1']]
+    ['0x1B' TwoAdditionalBridge   ['2']]
+    ['0x24' ThreeAdditionalBridge ['3']]
     ['0x2D' FourAdditionalBridge  ['4']]
-    ['0x36' FiveAdditionalBridge  ['4']]
+    ['0x36' FiveAdditionalBridge  ['5']]
 ]
 
 [discriminatedType CBusPointToPointCommand(bit srchk)
@@ -112,7 +112,8 @@
     ]
     [simple   CALData calData                                                                   ]
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
-    [optional Alpha         alpha    'curPos <= 123123'                                  ] // TODO:Read if there's still two bytes left (was lengthInBytes but that didn't compile here)
+    [peek     byte          peekAlpha                                                           ]
+    [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
     [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
 ]
 
@@ -124,7 +125,8 @@
             [reserved byte          '0x00'                                                     ]
             [simple   StatusRequest statusRequest                                              ]
             [optional Checksum      crc           'srchk'                                      ] // checksum is optional but mspec checksum isn't
-            [optional Alpha         alpha         'curPos <= 123123'                    ] // TODO:Read if there's still two bytes left (was lengthInBytes but that didn't compile here)
+            [peek     byte          peekAlpha                                                  ]
+            [optional Alpha         alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)' ] // Read if the peeked byte is between 'g' and 'z'
             [const    byte          cr            0xD                                          ] // 0xD == "<cr>"
         ]
         [         CBusPointToMultiPointCommandNormal
@@ -132,32 +134,33 @@
             [reserved byte          '0x00'                                                     ]
             [simple   SALData       salData                                                    ]
             [optional Checksum      crc         'srchk'                                        ] // crc      is optional but mspec crc      isn't
-            [optional Alpha         alpha       'curPos <= 123123'                      ] // TODO:Read if there's still two bytes left (was lengthInBytes but that didn't compile here)
+            [peek     byte          peekAlpha                                                  ]
+            [optional Alpha         alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'   ] // Read if the peeked byte is between 'g' and 'z'
             [const    byte          cr          0xD                                            ] // 0xD == "<cr>"
         ]
     ]
 ]
 
 [discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
-    [simple BridgeAddress bridgeAddress                                                        ]
-    [simple NetworkRoute  networkRoute                                                         ]
-    [peek    byte       peekedApplication                                                      ]
+    [simple BridgeAddress bridgeAddress                                                         ]
+    [simple NetworkRoute  networkRoute                                                          ]
+    [peek    byte       peekedApplication                                                       ]
     [typeSwitch peekedApplication
             ['0xFF'   CBusCommandPointToPointToMultiPointStatus
-                [reserved byte        '0xFF'                                                   ]
-                [reserved byte        '0x00'                                                   ]
-                [simple StatusRequest statusRequest                                            ]
-                [optional Checksum    crc           'srchk'                                    ] // crc      is optional but mspec crc      isn't
-                [optional Alpha       alpha         'curPos <= 123123'                  ] // TODO:Read if there's still two bytes left (was lengthInBytes but that didn't compile here)
-                [const    byte        cr            0xD                                        ] // 0xD == "<cr>"
+                [reserved byte        '0xFF'                                                    ]
+                [simple StatusRequest statusRequest                                             ]
+                [optional Checksum    crc           'srchk'                                     ] // crc      is optional but mspec crc      isn't
+                [peek     byte        peekAlpha                                                 ]
+                [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
+                [const    byte        cr            0xD                                         ] // 0xD == "<cr>"
             ]
             [         CBusCommandPointToPointToMultiPointNormal
-                [simple Application   application                                              ]
-                [reserved byte        '0x00'                                                   ]
-                [simple SALData       salData                                                  ]
-                [optional Checksum    crc      'srchk'                                         ] // crc      is optional but mspec crc      isn't
-                [optional Alpha       alpha    'curPos <= 123123'                       ] // TODO:Read if there's still two bytes left (was lengthInBytes but that didn't compile here)
-                [const    byte        cr       0xD                                             ] // 0xD == "<cr>"
+                [simple   Application application                                               ]
+                [simple   SALData     salData                                                   ]
+                [optional Checksum    crc         'srchk'                                       ] // crc      is optional but mspec crc      isn't
+                [peek     byte        peekAlpha                                                 ]
+                [optional Alpha       alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'  ] // Read if the peeked byte is between 'g' and 'z'
+                [const    byte        cr          0xD                                           ] // 0xD == "<cr>"
             ]
         ]
 ]
