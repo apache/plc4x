@@ -223,21 +223,54 @@
 ]
 
 [type SALData
-    [simple CommandHeader commandHeader]
-    [typeSwitch commandHeader.value
-        ['0x01' SALDataOff
+    [simple  SALCommandTypeContainer commandTypeContainer                                   ]
+    [virtual SALCommandType          commandType          'commandTypeContainer.commandType']
+    [typeSwitch commandType
+        ['OFF'            SALDataOff
             [simple byte group]
         ]
-        ['0x79' SALDataOn
+        ['ON'             SALDataOn
             [simple byte group]
         ]
-        ['0x0' SALDataRampToLevel
-            [simple byte groupLevel]
+        ['RAMP_TO_LEVEL'  SALDataRampToLevel
+            [simple byte group]
+            [simple byte level]
         ]
-        ['0x09' SALDataTerminateRamp
+        ['TERMINATE_RAMP' SALDataTerminateRamp
             [simple byte group]
         ]
     ]
+    // TODO: According to spec this could be recursive
+    //[optional SALData salData 'what decides if this is present?']
+]
+
+[enum uint 8 SALCommandTypeContainer(SALCommandType commandType)
+    ['0x01' SALCommandOff                       ['OFF'           ]]
+    ['0x79' SALCommandOn                        ['ON'            ]]
+    ['0x02' SALCommandRampToLevel_Instantaneous ['RAMP_TO_LEVEL' ]]
+    ['0x0A' SALCommandRampToLevel_4Second       ['RAMP_TO_LEVEL' ]]
+    ['0x12' SALCommandRampToLevel_8Second       ['RAMP_TO_LEVEL' ]]
+    ['0x1A' SALCommandRampToLevel_12Second      ['RAMP_TO_LEVEL' ]]
+    ['0x22' SALCommandRampToLevel_20Second      ['RAMP_TO_LEVEL' ]]
+    ['0x2A' SALCommandRampToLevel_30Second      ['RAMP_TO_LEVEL' ]]
+    ['0x32' SALCommandRampToLevel_40Second      ['RAMP_TO_LEVEL' ]]
+    ['0x3A' SALCommandRampToLevel_60Second      ['RAMP_TO_LEVEL' ]]
+    ['0x42' SALCommandRampToLevel_90Second      ['RAMP_TO_LEVEL' ]]
+    ['0x4A' SALCommandRampToLevel_120Second     ['RAMP_TO_LEVEL' ]]
+    ['0x52' SALCommandRampToLevel_180Second     ['RAMP_TO_LEVEL' ]]
+    ['0x5A' SALCommandRampToLevel_300Second     ['RAMP_TO_LEVEL' ]]
+    ['0x62' SALCommandRampToLevel_420Second     ['RAMP_TO_LEVEL' ]]
+    ['0x6A' SALCommandRampToLevel_600Second     ['RAMP_TO_LEVEL' ]]
+    ['0x72' SALCommandRampToLevel_900Second     ['RAMP_TO_LEVEL' ]]
+    ['0x7A' SALCommandRampToLevel_1020Second    ['RAMP_TO_LEVEL' ]]
+    ['0x09' SALCommandTerminateRamp             ['TERMINATE_RAMP']]
+]
+
+[enum uint 4 SALCommandType
+    ['0x00' OFF           ]
+    ['0x01' ON            ]
+    ['0x02' RAMP_TO_LEVEL ]
+    ['0x03' TERMINATE_RAMP]
 ]
 
 [type CommandHeader
