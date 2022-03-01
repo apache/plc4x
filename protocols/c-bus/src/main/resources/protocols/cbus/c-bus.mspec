@@ -524,9 +524,11 @@
 ]
 
 [type PowerUp
-    [array    byte        garbage   terminated  '0x2B'                              ] // "+"
-    [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
-    [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
+// TODO: implement garbage reading
+//    [array    byte        garbage   terminated  '0x2B'                              ] // "+"
+    [const    byte        plus 0x02B                                                  ] // 0xD == "<cr>"
+    [const    byte        cr   0x0D                                                   ] // 0xD == "<cr>"
+    [const    byte        lf   0x0A                                                   ] // 0xA == "<lf>"
 ]
 
 [type ParameterChange
