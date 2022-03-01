@@ -27,10 +27,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("non of those work yet")
+//@Disabled("non of those work yet")
 public class RandomPackagesTest {
 
     static final String BACKSLASH = "5C";
+    static final String CR = "0D";
 
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
@@ -88,17 +89,18 @@ public class RandomPackagesTest {
         // 4.3.3.1
         @Test
         void calReply1() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102");
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "0605002102" + CR);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
             assertThat(cBusCommand)
                 .isNotNull();
+            System.out.println(cBusCommand);
         }
 
         // 4.3.3.1
         @Test
         void calReply2() throws Exception {
-            byte[] bytes = Hex.decodeHex(BACKSLASH + "86059300890231E22E363620207F");
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "860593008902312E322E363620207F" + CR);
             ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
             CBusCommand cBusCommand = CBusCommand.staticParse(readBufferByteBased, false);
             assertThat(cBusCommand)

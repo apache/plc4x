@@ -101,7 +101,8 @@
     [virtual bit         isDirect  '(bridgeAddressCountPeek & 0x00FF) == 0x0000']
     [typeSwitch isDirect
         ['true'  CBusPointToPointCommandDirect
-            [simple UnitAddress   unitAddress                                                   ]
+            [simple   UnitAddress   unitAddress                                                 ]
+            [reserved uint 8        '0x00'                                                      ]
         ]
         ['false' CBusPointToPointCommandIndirect
             [simple BridgeAddress bridgeAddress                                                 ]
@@ -166,35 +167,150 @@
 ]
 
 [type CALData
-    [simple CommandHeader commandHeader]
-    [typeSwitch commandHeader.value
-        ['0x08' CALDataRequestReset
+    [simple  CALCommandTypeContainer commandTypeContainer                                   ]
+    [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
+    [typeSwitch commandType
+        ['RESET' CALDataRequestReset
         ]
-        ['0x1A' CALDataRequestRecall
+        ['RECALL' CALDataRequestRecall
             [simple uint 8 paramNo]
             [simple uint 8 count]
         ]
-        ['0x21' CALDataRequestIdentify
+        ['IDENTIFY' CALDataRequestIdentify
             [simple byte attribute]
         ]
-        ['0x09' CALDataRequestGetStatus
+        ['GET_STATUS' CALDataRequestGetStatus
             [simple uint 8 paramNo]
             [simple uint 8 count]
         ]
-        ['0x80' CALDataReplyReply
+        ['REPLY' CALDataReplyReply
             // TODO: how to parse this?
         ]
-        ['0x32' CALDataReplyAcknowledge
+        ['ACKNOWLEDGE' CALDataReplyAcknowledge
             [simple uint 8 paramNo]
             [simple uint 8 code]
         ]
-        ['0xC0' CALDataReplyStatus
+        ['STATUS' CALDataReplyStatus
             // TODO: how to parse this?
         ]
-        ['0xE0' CALDataReplyStatusExtended
+        ['STATUS_EXTENDED' CALDataReplyStatusExtended
             // TODO: how to parse this?
         ]
     ]
+]
+
+[enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
+    ['0x08' CALCommandReset                  ['RESET',            '0']]
+    ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
+    ['0x21' CALCommandIdentify               ['IDENTIFY',         '0']]
+    ['0x2A' CALCommandGetStatus              ['GET_STATUS',       '0']]
+    ['0x81' CALCommandReply_1Bytes           ['REPLY',            '1']]
+    ['0x82' CALCommandReply_2Bytes           ['REPLY',            '2']]
+    ['0x83' CALCommandReply_3Bytes           ['REPLY',            '3']]
+    ['0x84' CALCommandReply_4Bytes           ['REPLY',            '4']]
+    ['0x85' CALCommandReply_5Bytes           ['REPLY',            '5']]
+    ['0x86' CALCommandReply_6Bytes           ['REPLY',            '6']]
+    ['0x87' CALCommandReply_7Bytes           ['REPLY',            '7']]
+    ['0x88' CALCommandReply_8Bytes           ['REPLY',            '8']]
+    ['0x89' CALCommandReply_9Bytes           ['REPLY',            '9']]
+    ['0x8A' CALCommandReply_10Bytes          ['REPLY',           '10']]
+    ['0x8B' CALCommandReply_11Bytes          ['REPLY',           '11']]
+    ['0x8C' CALCommandReply_12Bytes          ['REPLY',           '12']]
+    ['0x8D' CALCommandReply_13Bytes          ['REPLY',           '13']]
+    ['0x8E' CALCommandReply_14Bytes          ['REPLY',           '14']]
+    ['0x8F' CALCommandReply_15Bytes          ['REPLY',           '15']]
+    ['0x90' CALCommandReply_16Bytes          ['REPLY',           '16']]
+    ['0x91' CALCommandReply_17Bytes          ['REPLY',           '17']]
+    ['0x92' CALCommandReply_18Bytes          ['REPLY',           '18']]
+    ['0x93' CALCommandReply_19Bytes          ['REPLY',           '19']]
+    ['0x94' CALCommandReply_20Bytes          ['REPLY',           '20']]
+    ['0x95' CALCommandReply_21Bytes          ['REPLY',           '21']]
+    ['0x96' CALCommandReply_22Bytes          ['REPLY',           '22']]
+    ['0x97' CALCommandReply_23Bytes          ['REPLY',           '23']]
+    ['0x98' CALCommandReply_24Bytes          ['REPLY',           '24']]
+    ['0x99' CALCommandReply_25Bytes          ['REPLY',           '25']]
+    ['0x9A' CALCommandReply_26Bytes          ['REPLY',           '26']]
+    ['0x9B' CALCommandReply_27Bytes          ['REPLY',           '27']]
+    ['0x9C' CALCommandReply_28Bytes          ['REPLY',           '28']]
+    ['0x9D' CALCommandReply_29Bytes          ['REPLY',           '29']]
+    ['0x9E' CALCommandReply_30Bytes          ['REPLY',           '30']]
+    ['0x9F' CALCommandReply_31Bytes          ['REPLY',           '31']]
+    ['0x32' CALCommandAcknowledge            ['ACKNOWLEDGE',      '0']]
+    ['0xC1' CALCommandStatus_1Bytes          ['STATUS',           '1']]
+    ['0xC2' CALCommandStatus_2Bytes          ['STATUS',           '2']]
+    ['0xC3' CALCommandStatus_3Bytes          ['STATUS',           '3']]
+    ['0xC4' CALCommandStatus_4Bytes          ['STATUS',           '4']]
+    ['0xC5' CALCommandStatus_5Bytes          ['STATUS',           '5']]
+    ['0xC6' CALCommandStatus_6Bytes          ['STATUS',           '6']]
+    ['0xC7' CALCommandStatus_7Bytes          ['STATUS',           '7']]
+    ['0xC8' CALCommandStatus_8Bytes          ['STATUS',           '8']]
+    ['0xC9' CALCommandStatus_9Bytes          ['STATUS',           '9']]
+    ['0xCA' CALCommandStatus_10Bytes         ['STATUS',          '10']]
+    ['0xCB' CALCommandStatus_11Bytes         ['STATUS',          '11']]
+    ['0xCC' CALCommandStatus_12Bytes         ['STATUS',          '12']]
+    ['0xCD' CALCommandStatus_13Bytes         ['STATUS',          '13']]
+    ['0xCE' CALCommandStatus_14Bytes         ['STATUS',          '14']]
+    ['0xCF' CALCommandStatus_15Bytes         ['STATUS',          '15']]
+    ['0xD0' CALCommandStatus_16Bytes         ['STATUS',          '16']]
+    ['0xD1' CALCommandStatus_17Bytes         ['STATUS',          '17']]
+    ['0xD2' CALCommandStatus_18Bytes         ['STATUS',          '18']]
+    ['0xD3' CALCommandStatus_19Bytes         ['STATUS',          '19']]
+    ['0xD4' CALCommandStatus_20Bytes         ['STATUS',          '20']]
+    ['0xD5' CALCommandStatus_21Bytes         ['STATUS',          '21']]
+    ['0xD6' CALCommandStatus_22Bytes         ['STATUS',          '22']]
+    ['0xD7' CALCommandStatus_23Bytes         ['STATUS',          '23']]
+    ['0xD8' CALCommandStatus_24Bytes         ['STATUS',          '24']]
+    ['0xD9' CALCommandStatus_25Bytes         ['STATUS',          '25']]
+    ['0xDA' CALCommandStatus_26Bytes         ['STATUS',          '26']]
+    ['0xDB' CALCommandStatus_27Bytes         ['STATUS',          '27']]
+    ['0xDC' CALCommandStatus_28Bytes         ['STATUS',          '28']]
+    ['0xDD' CALCommandStatus_29Bytes         ['STATUS',          '29']]
+    ['0xDE' CALCommandStatus_30Bytes         ['STATUS',          '30']]
+    ['0xDF' CALCommandStatus_31Bytes         ['STATUS',          '31']]
+    ['0xE1' CALCommandStatusExtended_1Bytes  ['STATUS_EXTENDED',  '1']]
+    ['0xE1' CALCommandStatusExtended_2Bytes  ['STATUS_EXTENDED',  '2']]
+    ['0xE3' CALCommandStatusExtended_3Bytes  ['STATUS_EXTENDED',  '3']]
+    ['0xE4' CALCommandStatusExtended_4Bytes  ['STATUS_EXTENDED',  '4']]
+    ['0xE5' CALCommandStatusExtended_5Bytes  ['STATUS_EXTENDED',  '5']]
+    ['0xE6' CALCommandStatusExtended_6Bytes  ['STATUS_EXTENDED',  '6']]
+    ['0xE7' CALCommandStatusExtended_7Bytes  ['STATUS_EXTENDED',  '7']]
+    ['0xE8' CALCommandStatusExtended_8Bytes  ['STATUS_EXTENDED',  '8']]
+    ['0xE9' CALCommandStatusExtended_9Bytes  ['STATUS_EXTENDED',  '9']]
+    ['0xEA' CALCommandStatusExtended_10Bytes ['STATUS_EXTENDED', '10']]
+    ['0xEB' CALCommandStatusExtended_11Bytes ['STATUS_EXTENDED', '11']]
+    ['0xEC' CALCommandStatusExtended_12Bytes ['STATUS_EXTENDED', '12']]
+    ['0xED' CALCommandStatusExtended_13Bytes ['STATUS_EXTENDED', '13']]
+    ['0xEE' CALCommandStatusExtended_14Bytes ['STATUS_EXTENDED', '14']]
+    ['0xEF' CALCommandStatusExtended_15Bytes ['STATUS_EXTENDED', '15']]
+    ['0xF0' CALCommandStatusExtended_16Bytes ['STATUS_EXTENDED', '16']]
+    ['0xF1' CALCommandStatusExtended_17Bytes ['STATUS_EXTENDED', '17']]
+    ['0xF2' CALCommandStatusExtended_18Bytes ['STATUS_EXTENDED', '18']]
+    ['0xF3' CALCommandStatusExtended_19Bytes ['STATUS_EXTENDED', '19']]
+    ['0xF4' CALCommandStatusExtended_20Bytes ['STATUS_EXTENDED', '20']]
+    ['0xF5' CALCommandStatusExtended_21Bytes ['STATUS_EXTENDED', '21']]
+    ['0xF6' CALCommandStatusExtended_22Bytes ['STATUS_EXTENDED', '22']]
+    ['0xF7' CALCommandStatusExtended_23Bytes ['STATUS_EXTENDED', '23']]
+    ['0xF8' CALCommandStatusExtended_24Bytes ['STATUS_EXTENDED', '24']]
+    ['0xF9' CALCommandStatusExtended_25Bytes ['STATUS_EXTENDED', '25']]
+    ['0xFA' CALCommandStatusExtended_26Bytes ['STATUS_EXTENDED', '26']]
+    ['0xFB' CALCommandStatusExtended_27Bytes ['STATUS_EXTENDED', '27']]
+    ['0xFC' CALCommandStatusExtended_28Bytes ['STATUS_EXTENDED', '28']]
+    ['0xFD' CALCommandStatusExtended_29Bytes ['STATUS_EXTENDED', '29']]
+    ['0xFE' CALCommandStatusExtended_30Bytes ['STATUS_EXTENDED', '30']]
+    ['0xFF' CALCommandStatusExtended_31Bytes ['STATUS_EXTENDED', '31']]
+]
+
+[enum uint 4 CALCommandType
+// Request
+    ['0x0' RESET          ] //00001000
+    ['0x0' RECALL         ] //00011010
+    ['0x1' IDENTIFY       ] //00100001
+    ['0x2' GET_STATUS     ] //01000001
+// Response
+    ['0x3' REPLY          ] //100xxxxx
+    ['0x4' ACKNOWLEDGE    ] //00110010
+    ['0x5' STATUS         ] //110xxxxx
+    ['0x5' STATUS_EXTENDED] //111xxxxx
 ]
 
 [type StatusRequest
