@@ -551,3 +551,37 @@
 [type Checksum
     [simple byte crc]
 ]
+
+[type StandardFormatStatusReply
+    [simple StatusHeader statusHeader]
+    [simple     Application
+                        application                                 ]
+    [simple     uint 8  blockStart                                  ]
+    [array      StatusByte
+                        statusBytes
+                        count
+                        'statusHeader.numberOfCharacterPairs - 2'   ]
+    [simple     Checksum
+                        crc                                         ]
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+]
+
+[type StatusHeader
+    [reserved   uint 2                 '1'                          ]
+    [simple     uint 6  numberOfCharacterPairs                      ]
+]
+
+[type StatusByte
+    [simple GAVState    gav3                                        ]
+    [simple GAVState    gav2                                        ]
+    [simple GAVState    gav1                                        ]
+    [simple GAVState    gav0                                        ]
+]
+
+[enum uint 2 GAVState
+    ['0' DOES_NOT_EXIST                                             ]
+    ['1' ON                                                         ]
+    ['2' OFF                                                        ]
+    ['3' ERRO                                                       ]
+]
