@@ -166,7 +166,35 @@
 ]
 
 [type CALData
-    // TODO: implement me
+    [simple CommandHeader commandHeader]
+    [typeSwitch commandHeader.value
+        ['0x08' CALDataRequestReset
+        ]
+        ['0x1A' CALDataRequestRecall
+            [simple uint 8 paramNo]
+            [simple uint 8 count]
+        ]
+        ['0x21' CALDataRequestIdentify
+            [simple byte attribute]
+        ]
+        ['0x09' CALDataRequestGetStatus
+            [simple uint 8 paramNo]
+            [simple uint 8 count]
+        ]
+        ['0x80' CALDataReplyReply
+            // TODO: how to parse this?
+        ]
+        ['0x32' CALDataReplyAcknowledge
+            [simple uint 8 paramNo]
+            [simple uint 8 code]
+        ]
+        ['0xC0' CALDataReplyStatus
+            // TODO: how to parse this?
+        ]
+        ['0xE0' CALDataReplyStatusExtended
+            // TODO: how to parse this?
+        ]
+    ]
 ]
 
 [type StatusRequest
