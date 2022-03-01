@@ -86,7 +86,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#if discriminatorType.isEnumTypeReference()>
         return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
                 <#else>
-        return ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
+        return (${helper.getLanguageTypeNameForTypeReference(discriminatorType, true)}) ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
                 </#if>
             <#else>
         return ${helper.getNullValueForTypeReference(discriminatorType)};
