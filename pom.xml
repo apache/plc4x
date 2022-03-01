@@ -1159,7 +1159,10 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.10.0</version>
           <configuration>
-            <release>${java.version}</release>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <testSource>${java.version}</testSource>
+            <testTarget>${java.version}</testTarget>
           </configuration>
         </plugin>
 
