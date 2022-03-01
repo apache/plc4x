@@ -553,7 +553,8 @@
 ]
 
 [type StandardFormatStatusReply
-    [simple StatusHeader statusHeader]
+    [simple     StatusHeader
+                        statusHeader                                ]
     [simple     Application
                         application                                 ]
     [simple     uint 8  blockStart                                  ]
@@ -568,8 +569,31 @@
 ]
 
 [type StatusHeader
-    [reserved   uint 2                 '1'                          ]
+    [reserved   uint 2                 '3'                          ]
     [simple     uint 6  numberOfCharacterPairs                      ]
+]
+
+[type ExtendedFormatStatusReply
+    [simple     ExtendedStatusHeader
+                        statusHeader                                ]
+    [simple     StatusCoding
+                        coding                                      ]
+    [simple     Application
+                        application                                 ]
+    [simple     uint 8  blockStart                                  ]
+    [array      StatusByte
+                        statusBytes
+                        count
+                        'statusHeader.numberOfCharacterPairs - 3'   ]
+    [simple     Checksum
+                        crc                                         ]
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+]
+
+[type ExtendedStatusHeader
+    [reserved   uint 3                 '7'                          ]
+    [simple     uint 5  numberOfCharacterPairs                      ]
 ]
 
 [type StatusByte
@@ -584,4 +608,11 @@
     ['1' ON                                                         ]
     ['2' OFF                                                        ]
     ['3' ERRO                                                       ]
+]
+
+[enum byte StatusCoding
+    ['0x00' BINARY_BY_THIS_SERIAL_INTERFACE     ]
+    ['0x40' BINARY_BY_ELSEWHERE                 ]
+    ['0x07' LEVEL_BY_THIS_SERIAL_INTERFACE      ]
+    ['0x47' LEVEL_BY_ELSEWHERE                  ]
 ]

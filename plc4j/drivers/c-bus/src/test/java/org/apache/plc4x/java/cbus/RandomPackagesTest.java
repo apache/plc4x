@@ -165,6 +165,37 @@ public class RandomPackagesTest {
                 .isNotNull();
             System.out.println(msg);
         }
+
+        // 7.4
+        @Test
+        void ExtendedFormatStatusReply1() throws Exception {
+            byte[] bytes = Hex.decodeHex("F9073800AAAA000095990000000005555000000000005555555548" + CR + LF);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+        @Test
+        void ExtendedFormatStatusReply2() throws Exception {
+            byte[] bytes = Hex.decodeHex("F907380B0000000000005555000000000000000000000000000013" + CR + LF);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+        @Test
+        void ExtendedFormatStatusReply3() throws Exception {
+            byte[] bytes = Hex.decodeHex("f70738160000000000000000000000000000000000000000B4" + CR + LF);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            ExtendedFormatStatusReply msg = ExtendedFormatStatusReply.staticParse(readBufferByteBased, false);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
     }
 
 }
