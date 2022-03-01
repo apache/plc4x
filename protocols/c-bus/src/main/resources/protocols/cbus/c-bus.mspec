@@ -524,16 +524,14 @@
 ]
 
 [type PowerUp
-    // TODO: skip potential garbage as first reserved might be wrong
-    [const    byte        something1     0x2B] // "+"
-    [const    byte        something2     0x2B] // "+"
+    [array    byte        garbage   terminated  '0x2B'                              ] // "+"
     [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
     [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
 ]
 
 [type ParameterChange
-    [const    byte        something1    0x3D] // "="
-    [const    byte        something2    0x3D] // "="
+    [const    byte        specialChar1      0x3D                                    ] // "="
+    [const    byte        specialChar2      0x3D                                    ] // "="
     [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
     [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
 ]
