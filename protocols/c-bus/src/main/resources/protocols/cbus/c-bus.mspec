@@ -195,7 +195,25 @@
 ]
 
 [type SALData
-    // TODO: implement me
+    [simple CommandHeader commandHeader]
+    [typeSwitch commandHeader.value
+        ['0x01' SALDataOff
+            [simple byte group]
+        ]
+        ['0x79' SALDataOn
+            [simple byte group]
+        ]
+        ['0x0' SALDataRampToLevel
+            [simple byte groupLevel]
+        ]
+        ['0x09' SALDataTerminateRamp
+            [simple byte group]
+        ]
+    ]
+]
+
+[type CommandHeader
+    [simple byte value]
 ]
 
 [type Reply
