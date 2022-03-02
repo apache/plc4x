@@ -28,7 +28,7 @@ RUN apt update -y
 # Install general purpose tools
 RUN apt install -y make libpcap-dev libc-dev git
 
-# Requied for "with-boost" profile
+# Required for "with-boost" profile
 #RUN apt install -y bison flex gcc g++
 
 # Required for "with-cpp" profile
@@ -108,7 +108,7 @@ RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
     --release-info="add:IMPLEMENTOR=radistao:IMPLEMENTOR_VERSION=radistao_JRE" \
     --output "$JAVA_MINIMAL"
 
-# Now create an actuall deployment container
+# Now create an actual deployment container
 FROM alpine:3.10
 
 # Install our optimized JRE
