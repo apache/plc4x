@@ -109,6 +109,8 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := readBuffer.ReadUint8("addressType", 8)

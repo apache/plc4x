@@ -114,6 +114,8 @@ func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length
 	if pullErr := readBuffer.PullContext("ApduDataExtOpenRoutingTableRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtOpenRoutingTableRequest"); closeErr != nil {
 		return nil, closeErr

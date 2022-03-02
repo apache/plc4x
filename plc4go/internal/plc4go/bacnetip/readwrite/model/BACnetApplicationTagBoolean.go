@@ -131,6 +131,8 @@ func BACnetApplicationTagBooleanParse(readBuffer utils.ReadBuffer, header *BACne
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

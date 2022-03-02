@@ -114,6 +114,8 @@ func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI
 	if pullErr := readBuffer.PullContext("MFuncPropStateReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MFuncPropStateReadReq"); closeErr != nil {
 		return nil, closeErr

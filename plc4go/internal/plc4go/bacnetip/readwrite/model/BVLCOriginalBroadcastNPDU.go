@@ -125,6 +125,8 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLeng
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {

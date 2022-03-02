@@ -149,6 +149,8 @@ func ModbusPDUReadCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) 
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)

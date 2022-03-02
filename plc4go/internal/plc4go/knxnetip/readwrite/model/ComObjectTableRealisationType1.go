@@ -149,6 +149,8 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType1"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numEntries)
 	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)

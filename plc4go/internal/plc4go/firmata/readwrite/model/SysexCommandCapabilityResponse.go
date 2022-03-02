@@ -119,6 +119,8 @@ func SysexCommandCapabilityResponseParse(readBuffer utils.ReadBuffer, response b
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandCapabilityResponse"); closeErr != nil {
 		return nil, closeErr

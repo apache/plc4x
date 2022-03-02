@@ -153,6 +153,8 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (*BA
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileRecord"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (fileStartRecord)
 	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {

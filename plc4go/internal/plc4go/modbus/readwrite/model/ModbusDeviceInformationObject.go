@@ -112,6 +112,8 @@ func ModbusDeviceInformationObjectParse(readBuffer utils.ReadBuffer) (*ModbusDev
 	if pullErr := readBuffer.PullContext("ModbusDeviceInformationObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectId)
 	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)

@@ -85,6 +85,15 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-c-bus</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**</excludes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-df1</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
@@ -193,6 +202,19 @@
             </goals>
             <configuration>
               <protocolName>bacnetip</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/internal</outputDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-driver-c-bus</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>c-bus</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
               <outputDir>${project.basedir}/internal</outputDir>
@@ -607,6 +629,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-c-bus</artifactId>
       <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

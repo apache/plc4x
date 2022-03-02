@@ -129,6 +129,8 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	if pullErr := readBuffer.PullContext("NLMIAmRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (destinationNetworkAddress)
 	if pullErr := readBuffer.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {

@@ -137,6 +137,8 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (fileStartPosition)
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {

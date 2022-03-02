@@ -221,6 +221,8 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (segmentedMessage)
 	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")

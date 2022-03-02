@@ -97,6 +97,8 @@ func DummyParse(readBuffer utils.ReadBuffer) (*Dummy, error) {
 	if pullErr := readBuffer.PullContext("Dummy"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dummy)
 	_dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)

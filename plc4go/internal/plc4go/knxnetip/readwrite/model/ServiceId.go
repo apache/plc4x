@@ -109,6 +109,8 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := readBuffer.ReadUint8("serviceType", 8)

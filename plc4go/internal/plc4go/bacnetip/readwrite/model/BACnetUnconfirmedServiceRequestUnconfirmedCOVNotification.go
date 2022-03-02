@@ -170,6 +170,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {

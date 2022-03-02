@@ -114,6 +114,8 @@ func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, e
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataIndividualReq"); closeErr != nil {
 		return nil, closeErr

@@ -112,6 +112,8 @@ func BACnetConfirmedServiceACKRemovedAuthenticateParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKRemovedAuthenticate"); closeErr != nil {
 		return nil, closeErr

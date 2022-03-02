@@ -122,6 +122,8 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {

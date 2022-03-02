@@ -109,6 +109,8 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (*S7ParameterUser
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)

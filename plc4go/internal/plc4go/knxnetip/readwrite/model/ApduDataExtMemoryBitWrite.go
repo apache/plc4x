@@ -114,6 +114,8 @@ func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtMemoryBitWrite"); closeErr != nil {
 		return nil, closeErr

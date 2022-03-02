@@ -112,6 +112,8 @@ func BACnetConfirmedServiceRequestParse(readBuffer utils.ReadBuffer, len uint16)
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)

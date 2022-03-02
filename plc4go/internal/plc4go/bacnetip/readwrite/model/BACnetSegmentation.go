@@ -128,6 +128,8 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, 
 	if pullErr := readBuffer.PullContext("BACnetSegmentation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (rawData)
 	if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {

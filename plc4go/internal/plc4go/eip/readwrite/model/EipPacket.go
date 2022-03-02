@@ -153,6 +153,8 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (command) (Used as input to a switch field)
 	command, _commandErr := readBuffer.ReadUint16("command", 16)

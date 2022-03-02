@@ -162,6 +162,8 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (frameType)
 	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")

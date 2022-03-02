@@ -127,6 +127,8 @@ func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Modb
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (referenceType)
 	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)

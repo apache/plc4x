@@ -137,6 +137,8 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	if pullErr := readBuffer.PullContext("BACnetPropertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
@@ -154,7 +156,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -175,7 +177,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
 	var propertyValue *BACnetConstructedDataElement = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -196,7 +198,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
 	var priority *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}

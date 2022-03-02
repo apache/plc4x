@@ -114,6 +114,8 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, e
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataIndividualInd"); closeErr != nil {
 		return nil, closeErr

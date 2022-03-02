@@ -128,6 +128,8 @@ func BACnetContextTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	if pullErr := readBuffer.PullContext("BACnetContextTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

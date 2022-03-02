@@ -107,6 +107,8 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (*ChannelInformation, 
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numChannels)
 	_numChannels, _numChannelsErr := readBuffer.ReadUint8("numChannels", 3)

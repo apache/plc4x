@@ -114,6 +114,8 @@ func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LRawCon"); closeErr != nil {
 		return nil, closeErr

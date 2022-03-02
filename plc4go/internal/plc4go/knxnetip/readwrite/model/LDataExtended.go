@@ -196,6 +196,8 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (groupAddress)
 	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")

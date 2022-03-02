@@ -119,6 +119,8 @@ func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer, commandId C
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsDeviceNotificationResponse"); closeErr != nil {
 		return nil, closeErr

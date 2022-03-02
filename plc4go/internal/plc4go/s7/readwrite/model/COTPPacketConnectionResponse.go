@@ -150,6 +150,8 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationReference)
 	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)

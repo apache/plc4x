@@ -114,6 +114,8 @@ func BACnetErrorPasswordFailureParse(readBuffer utils.ReadBuffer) (*BACnetError,
 	if pullErr := readBuffer.PullContext("BACnetErrorPasswordFailure"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorPasswordFailure"); closeErr != nil {
 		return nil, closeErr

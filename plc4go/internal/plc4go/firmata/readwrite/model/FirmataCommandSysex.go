@@ -129,6 +129,8 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {

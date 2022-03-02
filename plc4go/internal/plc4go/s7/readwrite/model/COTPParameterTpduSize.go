@@ -125,6 +125,8 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tpduSize)
 	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {

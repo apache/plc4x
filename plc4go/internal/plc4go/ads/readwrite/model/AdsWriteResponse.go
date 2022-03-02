@@ -130,6 +130,8 @@ func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, res
 	if pullErr := readBuffer.PullContext("AdsWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {

@@ -114,6 +114,8 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength 
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataIndividualAddressRead"); closeErr != nil {
 		return nil, closeErr

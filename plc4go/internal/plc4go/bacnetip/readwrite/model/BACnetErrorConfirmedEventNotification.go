@@ -114,6 +114,8 @@ func BACnetErrorConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*B
 	if pullErr := readBuffer.PullContext("BACnetErrorConfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorConfirmedEventNotification"); closeErr != nil {
 		return nil, closeErr

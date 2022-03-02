@@ -97,6 +97,8 @@ func BACnetTagPayloadDoubleParse(readBuffer utils.ReadBuffer) (*BACnetTagPayload
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDouble"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (value)
 	_value, _valueErr := readBuffer.ReadFloat64("value", 64)

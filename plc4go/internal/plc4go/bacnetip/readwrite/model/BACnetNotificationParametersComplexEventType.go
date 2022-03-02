@@ -130,6 +130,8 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (listOfValues)
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {

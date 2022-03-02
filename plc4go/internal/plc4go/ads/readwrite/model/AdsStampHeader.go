@@ -122,6 +122,8 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (*AdsStampHeader, error) {
 	if pullErr := readBuffer.PullContext("AdsStampHeader"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (timestamp)
 	_timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)

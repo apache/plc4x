@@ -160,6 +160,8 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (referenceAddress)
 	_referenceAddress, _referenceAddressErr := readBuffer.ReadUint16("referenceAddress", 16)

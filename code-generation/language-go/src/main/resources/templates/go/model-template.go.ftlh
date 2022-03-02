@@ -713,6 +713,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	<#if helper.requiresStartPosAndCurPos()>
 	var startPos = readBuffer.GetPos()
 	var curPos uint16
@@ -1079,7 +1081,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			return nil, closeErr
 		}
 			<#else>
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -1342,13 +1344,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 				// Peek Field (${peekField.name})
                 <#if peekField.type.isSimpleTypeReference()>
-				currentPos := readBuffer.GetPos()
+				currentPos = readBuffer.GetPos()
 				${peekField.name}, _err := ${helper.getReadBufferReadMethodCall(peekField.name, peekField.type.asSimpleTypeReference().orElseThrow(), peekField)}
 				if _err != nil {
 					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
 				}
                 <#elseif helper.isEnumField(field)>
-				currentPos := readBuffer.GetPos()
+				currentPos = readBuffer.GetPos()
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
 					return nil, pullErr
 				}
@@ -1360,7 +1362,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 					return nil, closeErr
 				}
                 <#else>
-				currentPos := readBuffer.GetPos()
+				currentPos = readBuffer.GetPos()
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
 					return nil, pullErr
 				}

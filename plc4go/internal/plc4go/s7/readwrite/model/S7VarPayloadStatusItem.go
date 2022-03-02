@@ -97,6 +97,8 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStat
 	if pullErr := readBuffer.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {

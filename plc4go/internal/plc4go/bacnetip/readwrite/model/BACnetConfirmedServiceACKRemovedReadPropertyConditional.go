@@ -112,6 +112,8 @@ func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); closeErr != nil {
 		return nil, closeErr

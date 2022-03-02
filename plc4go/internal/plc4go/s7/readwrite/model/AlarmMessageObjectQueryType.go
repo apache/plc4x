@@ -178,6 +178,8 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessag
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (lengthDataset)
 	_lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)

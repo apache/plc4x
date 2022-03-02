@@ -159,6 +159,8 @@ func BACnetUnconfirmedServiceRequestIAmParse(readBuffer utils.ReadBuffer, len ui
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {

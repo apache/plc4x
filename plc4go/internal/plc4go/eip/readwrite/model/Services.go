@@ -127,6 +127,8 @@ func ServicesParse(readBuffer utils.ReadBuffer, servicesLen uint16) (*Services, 
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (serviceNb)
 	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)

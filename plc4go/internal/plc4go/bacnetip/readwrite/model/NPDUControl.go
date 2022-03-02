@@ -144,6 +144,8 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (*NPDUControl, error) {
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (messageTypeFieldPresent)
 	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")

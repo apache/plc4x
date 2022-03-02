@@ -109,6 +109,8 @@ func DF1RequestCommandParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, er
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
 	functionCode, _functionCodeErr := readBuffer.ReadUint8("functionCode", 8)

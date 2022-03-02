@@ -128,6 +128,8 @@ func BACnetContextTagDeviceStateParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	if pullErr := readBuffer.PullContext("BACnetContextTagDeviceState"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

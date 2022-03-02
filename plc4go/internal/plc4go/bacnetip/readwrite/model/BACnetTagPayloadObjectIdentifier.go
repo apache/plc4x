@@ -124,6 +124,8 @@ func BACnetTagPayloadObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnet
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Manual Field (objectType)
 	objectType, _objectTypeErr := ReadObjectType(readBuffer)

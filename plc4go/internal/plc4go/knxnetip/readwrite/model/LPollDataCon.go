@@ -114,6 +114,8 @@ func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 	if pullErr := readBuffer.PullContext("LPollDataCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LPollDataCon"); closeErr != nil {
 		return nil, closeErr

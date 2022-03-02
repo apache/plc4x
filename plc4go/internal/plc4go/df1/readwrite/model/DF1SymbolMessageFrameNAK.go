@@ -111,6 +111,8 @@ func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, err
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameNAK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrameNAK"); closeErr != nil {
 		return nil, closeErr

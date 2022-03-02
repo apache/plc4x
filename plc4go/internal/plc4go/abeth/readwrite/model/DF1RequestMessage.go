@@ -152,6 +152,8 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	if pullErr := readBuffer.PullContext("DF1RequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationAddress)
 	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)

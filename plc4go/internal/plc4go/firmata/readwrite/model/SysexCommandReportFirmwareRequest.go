@@ -119,6 +119,8 @@ func SysexCommandReportFirmwareRequestParse(readBuffer utils.ReadBuffer, respons
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandReportFirmwareRequest"); closeErr != nil {
 		return nil, closeErr

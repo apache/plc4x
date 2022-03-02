@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); closeErr != nil {
 		return nil, closeErr

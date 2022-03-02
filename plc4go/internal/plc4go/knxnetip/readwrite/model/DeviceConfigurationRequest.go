@@ -136,6 +136,8 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {

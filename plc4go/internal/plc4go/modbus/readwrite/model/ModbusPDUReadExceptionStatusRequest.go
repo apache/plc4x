@@ -127,6 +127,8 @@ func ModbusPDUReadExceptionStatusRequestParse(readBuffer utils.ReadBuffer, respo
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadExceptionStatusRequest"); closeErr != nil {
 		return nil, closeErr

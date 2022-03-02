@@ -152,6 +152,8 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (szlId)
 	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {

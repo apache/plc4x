@@ -136,6 +136,8 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (requestPathSize)
 	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)

@@ -127,6 +127,8 @@ func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response b
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReportServerIdRequest"); closeErr != nil {
 		return nil, closeErr

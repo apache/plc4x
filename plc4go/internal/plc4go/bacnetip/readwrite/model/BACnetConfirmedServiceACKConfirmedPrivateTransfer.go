@@ -112,6 +112,8 @@ func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKConfirmedPrivateTransfer"); closeErr != nil {
 		return nil, closeErr

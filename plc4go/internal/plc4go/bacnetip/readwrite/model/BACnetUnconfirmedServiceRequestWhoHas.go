@@ -168,11 +168,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHas"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -193,7 +195,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -214,7 +216,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -235,7 +237,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	// Optional Field (objectName) (Can be skipped, if a given expression evaluates to false)
 	var objectName *BACnetContextTagOctetString = nil
 	if bool((objectIdentifier) == (nil)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 			return nil, pullErr
 		}

@@ -128,6 +128,8 @@ func BACnetContextTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument ui
 	if pullErr := readBuffer.PullContext("BACnetContextTagDate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

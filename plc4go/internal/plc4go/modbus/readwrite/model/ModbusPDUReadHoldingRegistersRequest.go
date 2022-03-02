@@ -149,6 +149,8 @@ func ModbusPDUReadHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, resp
 	if pullErr := readBuffer.PullContext("ModbusPDUReadHoldingRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)

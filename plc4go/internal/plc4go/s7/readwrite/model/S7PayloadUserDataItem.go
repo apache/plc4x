@@ -133,6 +133,8 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {

@@ -115,6 +115,8 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {
 		return nil, closeErr

@@ -114,6 +114,8 @@ func BACnetErrorRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetEr
 	if pullErr := readBuffer.PullContext("BACnetErrorRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorRemovedAuthenticate"); closeErr != nil {
 		return nil, closeErr

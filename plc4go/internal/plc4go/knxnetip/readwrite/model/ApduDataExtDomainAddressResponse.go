@@ -114,6 +114,8 @@ func ApduDataExtDomainAddressResponseParse(readBuffer utils.ReadBuffer, length u
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtDomainAddressResponse"); closeErr != nil {
 		return nil, closeErr

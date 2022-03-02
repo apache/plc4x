@@ -128,6 +128,8 @@ func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (unknownBytes)
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((len) > (0))), func() interface{} { return uint16(uint16(uint16(len) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)

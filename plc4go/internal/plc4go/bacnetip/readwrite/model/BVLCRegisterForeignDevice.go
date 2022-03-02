@@ -122,6 +122,8 @@ func BVLCRegisterForeignDeviceParse(readBuffer utils.ReadBuffer) (*BVLC, error) 
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (ttl)
 	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)

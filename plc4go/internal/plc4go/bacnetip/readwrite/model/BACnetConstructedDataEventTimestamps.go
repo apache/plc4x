@@ -159,6 +159,8 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimestamps"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (toOffnormal)
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {

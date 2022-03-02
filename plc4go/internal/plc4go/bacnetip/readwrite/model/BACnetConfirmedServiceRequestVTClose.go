@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len 
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTClose"); closeErr != nil {
 		return nil, closeErr

@@ -111,6 +111,8 @@ func ApduControlAckParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlAck"); closeErr != nil {
 		return nil, closeErr

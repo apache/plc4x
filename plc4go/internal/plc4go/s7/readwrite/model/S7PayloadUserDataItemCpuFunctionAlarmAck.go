@@ -160,6 +160,8 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)

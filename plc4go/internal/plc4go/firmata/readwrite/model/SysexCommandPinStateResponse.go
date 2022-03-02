@@ -152,6 +152,8 @@ func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response boo
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)

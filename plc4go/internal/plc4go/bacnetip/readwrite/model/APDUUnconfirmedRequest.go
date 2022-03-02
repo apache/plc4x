@@ -129,6 +129,8 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

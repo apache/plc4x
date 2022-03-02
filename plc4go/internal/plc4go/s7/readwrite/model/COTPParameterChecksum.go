@@ -125,6 +125,8 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (crc)
 	_crc, _crcErr := readBuffer.ReadUint8("crc", 8)

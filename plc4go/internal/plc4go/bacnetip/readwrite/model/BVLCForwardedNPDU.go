@@ -149,6 +149,8 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (ip)
 	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {

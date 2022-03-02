@@ -114,6 +114,8 @@ func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, len
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtGroupPropertyValueResponse"); closeErr != nil {
 		return nil, closeErr

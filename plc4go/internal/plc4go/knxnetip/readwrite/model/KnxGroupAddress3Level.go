@@ -144,6 +144,8 @@ func KnxGroupAddress3LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*
 	if pullErr := readBuffer.PullContext("KnxGroupAddress3Level"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (mainGroup)
 	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)

@@ -116,6 +116,8 @@ func DF1SymbolParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (messageStart)
 	messageStart, _messageStartErr := readBuffer.ReadUint8("messageStart", 8)

@@ -114,6 +114,8 @@ func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length u
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtNetworkParameterWrite"); closeErr != nil {
 		return nil, closeErr

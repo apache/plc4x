@@ -111,6 +111,8 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BA
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadPropertyMultiple"); closeErr != nil {
 		return nil, closeErr

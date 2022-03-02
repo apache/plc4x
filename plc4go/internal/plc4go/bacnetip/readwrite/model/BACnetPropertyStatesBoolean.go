@@ -132,11 +132,13 @@ func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (booleanValue) (Can be skipped, if a given expression evaluates to false)
 	var booleanValue *BACnetContextTagBoolean = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 			return nil, pullErr
 		}

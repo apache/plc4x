@@ -114,6 +114,8 @@ func MResetReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MResetReq"); closeErr != nil {
 		return nil, closeErr

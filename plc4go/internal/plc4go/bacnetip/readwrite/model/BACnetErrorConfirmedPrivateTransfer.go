@@ -114,6 +114,8 @@ func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BAC
 	if pullErr := readBuffer.PullContext("BACnetErrorConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorConfirmedPrivateTransfer"); closeErr != nil {
 		return nil, closeErr

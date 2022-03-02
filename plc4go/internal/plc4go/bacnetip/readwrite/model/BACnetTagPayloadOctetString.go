@@ -107,6 +107,8 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadOctetString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Virtual field
 	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))

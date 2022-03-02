@@ -147,6 +147,8 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialAckn
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)

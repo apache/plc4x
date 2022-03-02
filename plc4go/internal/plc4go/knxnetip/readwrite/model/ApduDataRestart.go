@@ -114,6 +114,8 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduD
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataRestart"); closeErr != nil {
 		return nil, closeErr

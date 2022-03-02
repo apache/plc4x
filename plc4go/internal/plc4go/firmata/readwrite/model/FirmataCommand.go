@@ -112,6 +112,8 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCo
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 4)

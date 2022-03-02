@@ -122,6 +122,8 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)

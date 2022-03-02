@@ -111,6 +111,8 @@ func BACnetServiceAckGetAlarmSummaryParse(readBuffer utils.ReadBuffer) (*BACnetS
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetAlarmSummary"); closeErr != nil {
 		return nil, closeErr

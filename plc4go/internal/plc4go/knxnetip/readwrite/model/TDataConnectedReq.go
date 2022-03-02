@@ -114,6 +114,8 @@ func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, er
 	if pullErr := readBuffer.PullContext("TDataConnectedReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("TDataConnectedReq"); closeErr != nil {
 		return nil, closeErr

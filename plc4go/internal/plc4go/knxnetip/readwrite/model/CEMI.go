@@ -112,6 +112,8 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode, _messageCodeErr := readBuffer.ReadUint8("messageCode", 8)

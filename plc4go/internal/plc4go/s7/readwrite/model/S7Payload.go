@@ -112,6 +112,8 @@ func S7PayloadParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S
 	if pullErr := readBuffer.PullContext("S7Payload"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *S7Payload

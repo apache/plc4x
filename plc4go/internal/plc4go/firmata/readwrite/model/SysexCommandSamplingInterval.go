@@ -119,6 +119,8 @@ func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response boo
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandSamplingInterval"); closeErr != nil {
 		return nil, closeErr

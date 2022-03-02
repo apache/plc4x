@@ -167,6 +167,8 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)

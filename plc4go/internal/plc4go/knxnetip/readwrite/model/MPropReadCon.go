@@ -180,6 +180,8 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (interfaceObjectType)
 	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)

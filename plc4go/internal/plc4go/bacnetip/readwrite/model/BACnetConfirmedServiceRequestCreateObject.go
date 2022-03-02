@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestCreateObject"); closeErr != nil {
 		return nil, closeErr

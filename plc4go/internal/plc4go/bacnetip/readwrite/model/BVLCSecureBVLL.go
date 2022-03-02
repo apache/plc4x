@@ -111,6 +111,8 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCSecureBVLL"); closeErr != nil {
 		return nil, closeErr

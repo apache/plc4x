@@ -166,6 +166,8 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (*BACnetTagPayloadTi
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Virtual field
 	_wildcard := 0xFF

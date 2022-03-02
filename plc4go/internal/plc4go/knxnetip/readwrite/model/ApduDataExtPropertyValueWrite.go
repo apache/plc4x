@@ -171,6 +171,8 @@ func ApduDataExtPropertyValueWriteParse(readBuffer utils.ReadBuffer, length uint
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIndex)
 	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)

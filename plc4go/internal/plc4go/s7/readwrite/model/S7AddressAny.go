@@ -181,6 +181,8 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr

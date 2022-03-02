@@ -117,6 +117,8 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if pullErr := readBuffer.PullContext("BACnetOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(bool((actualLength) == (6))) {

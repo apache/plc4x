@@ -131,6 +131,8 @@ func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACn
 	if pullErr := readBuffer.PullContext("BACnetStatusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (rawBits)
 	if pullErr := readBuffer.PullContext("rawBits"); pullErr != nil {

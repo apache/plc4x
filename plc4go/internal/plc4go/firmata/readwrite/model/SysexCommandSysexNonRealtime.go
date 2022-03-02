@@ -119,6 +119,8 @@ func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response boo
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandSysexNonRealtime"); closeErr != nil {
 		return nil, closeErr

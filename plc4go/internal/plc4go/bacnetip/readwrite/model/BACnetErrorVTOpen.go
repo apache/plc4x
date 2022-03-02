@@ -114,6 +114,8 @@ func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorVTOpen"); closeErr != nil {
 		return nil, closeErr

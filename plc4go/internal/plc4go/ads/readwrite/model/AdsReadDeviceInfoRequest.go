@@ -119,6 +119,8 @@ func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId Comman
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoRequest"); closeErr != nil {
 		return nil, closeErr

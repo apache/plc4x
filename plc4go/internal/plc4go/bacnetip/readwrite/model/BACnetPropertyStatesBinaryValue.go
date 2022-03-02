@@ -132,11 +132,13 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (binaryValue) (Can be skipped, if a given expression evaluates to false)
 	var binaryValue *BACnetBinaryPV = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
 			return nil, pullErr
 		}

@@ -122,6 +122,8 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {

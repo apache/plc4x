@@ -138,6 +138,8 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8)
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (level)
 	_level, _levelErr := readBuffer.ReadUint8("level", 8)

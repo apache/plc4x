@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); closeErr != nil {
 		return nil, closeErr

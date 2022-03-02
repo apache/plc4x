@@ -135,6 +135,8 @@ func BACnetContextTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnsignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

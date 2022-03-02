@@ -147,6 +147,8 @@ func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (*AmsSerialResetFrame
 	if pullErr := readBuffer.PullContext("AmsSerialResetFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (magicCookie)
 	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)

@@ -143,6 +143,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	if pullErr := readBuffer.PullContext("BACnetPropertyStates"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
@@ -158,7 +160,7 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -111,6 +111,8 @@ func BVLCDeleteForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (*BVLC,
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
 		return nil, closeErr

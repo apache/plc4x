@@ -165,6 +165,8 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)

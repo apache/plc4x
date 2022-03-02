@@ -149,6 +149,8 @@ func ModbusPDUWriteMultipleCoilsResponseParse(readBuffer utils.ReadBuffer, respo
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (startingAddress)
 	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)

@@ -190,9 +190,11 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -222,7 +224,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	// Optional Field (applicationTag) (Can be skipped, if a given expression evaluates to false)
 	var applicationTag *BACnetApplicationTag = nil
 	if isApplicationTag {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("applicationTag"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -243,7 +245,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	// Optional Field (contextTag) (Can be skipped, if a given expression evaluates to false)
 	var contextTag *BACnetContextTag = nil
 	if isContextTag {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -264,7 +266,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectType B
 	// Optional Field (constructedData) (Can be skipped, if a given expression evaluates to false)
 	var constructedData *BACnetConstructedData = nil
 	if isConstructedData {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, pullErr
 		}

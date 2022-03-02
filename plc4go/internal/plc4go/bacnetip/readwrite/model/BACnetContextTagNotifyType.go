@@ -129,6 +129,8 @@ func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	if pullErr := readBuffer.PullContext("BACnetContextTagNotifyType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

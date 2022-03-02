@@ -192,6 +192,8 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)

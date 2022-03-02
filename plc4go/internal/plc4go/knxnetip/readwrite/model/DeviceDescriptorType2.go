@@ -187,6 +187,8 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 	if pullErr := readBuffer.PullContext("DeviceDescriptorType2"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (manufacturerId)
 	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)

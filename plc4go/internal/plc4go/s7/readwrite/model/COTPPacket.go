@@ -141,6 +141,8 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	var startPos = readBuffer.GetPos()
 	var curPos uint16
 
@@ -208,7 +210,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	var payload *S7Message = nil
 	if bool((curPos) < (cotpLen)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}

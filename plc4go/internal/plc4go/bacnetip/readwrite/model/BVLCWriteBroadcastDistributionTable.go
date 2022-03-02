@@ -129,6 +129,8 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (table)
 	if pullErr := readBuffer.PullContext("table", utils.WithRenderAsList(true)); pullErr != nil {

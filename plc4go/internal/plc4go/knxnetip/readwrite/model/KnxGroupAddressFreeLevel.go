@@ -122,6 +122,8 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subGroup)
 	_subGroup, _subGroupErr := readBuffer.ReadUint16("subGroup", 16)

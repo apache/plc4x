@@ -111,6 +111,8 @@ func BVLCReadForeignDeviceTableAckParse(readBuffer utils.ReadBuffer) (*BVLC, err
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCReadForeignDeviceTableAck"); closeErr != nil {
 		return nil, closeErr

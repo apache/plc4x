@@ -118,6 +118,8 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (itemCount)
 	itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)

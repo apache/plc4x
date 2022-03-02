@@ -149,6 +149,8 @@ func ModbusPDUWriteSingleRegisterResponseParse(readBuffer utils.ReadBuffer, resp
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleRegisterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (address)
 	_address, _addressErr := readBuffer.ReadUint16("address", 16)

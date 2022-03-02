@@ -130,6 +130,8 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 	if pullErr := readBuffer.PullContext("ModbusTcpADU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (transactionIdentifier)
 	_transactionIdentifier, _transactionIdentifierErr := readBuffer.ReadUint16("transactionIdentifier", 16)

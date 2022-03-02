@@ -157,6 +157,8 @@ func AdsWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	if pullErr := readBuffer.PullContext("AdsWriteRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)

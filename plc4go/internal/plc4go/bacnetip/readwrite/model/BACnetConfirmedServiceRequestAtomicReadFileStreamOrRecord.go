@@ -140,9 +140,11 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(readBuffer u
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}

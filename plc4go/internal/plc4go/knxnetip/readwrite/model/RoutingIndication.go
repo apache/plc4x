@@ -111,6 +111,8 @@ func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("RoutingIndication"); closeErr != nil {
 		return nil, closeErr

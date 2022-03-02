@@ -111,6 +111,8 @@ func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 	if pullErr := readBuffer.PullContext("ApduControlNack"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlNack"); closeErr != nil {
 		return nil, closeErr

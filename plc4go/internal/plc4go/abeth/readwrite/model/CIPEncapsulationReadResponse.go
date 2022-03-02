@@ -130,6 +130,8 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (response)
 	if pullErr := readBuffer.PullContext("response"); pullErr != nil {

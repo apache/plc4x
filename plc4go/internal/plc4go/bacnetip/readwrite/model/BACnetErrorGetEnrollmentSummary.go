@@ -114,6 +114,8 @@ func BACnetErrorGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetE
 	if pullErr := readBuffer.PullContext("BACnetErrorGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorGetEnrollmentSummary"); closeErr != nil {
 		return nil, closeErr

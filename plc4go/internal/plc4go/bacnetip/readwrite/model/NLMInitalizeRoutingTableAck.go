@@ -143,6 +143,8 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTableAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numberOfPorts)
 	_numberOfPorts, _numberOfPortsErr := readBuffer.ReadUint8("numberOfPorts", 8)

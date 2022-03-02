@@ -124,6 +124,8 @@ func BACnetTagPayloadBitStringParse(readBuffer utils.ReadBuffer, actualLength ui
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (unusedBits)
 	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)

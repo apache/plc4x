@@ -109,6 +109,8 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	if pullErr := readBuffer.PullContext("AdsData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData

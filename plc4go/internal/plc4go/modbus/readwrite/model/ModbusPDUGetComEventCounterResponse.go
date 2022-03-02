@@ -149,6 +149,8 @@ func ModbusPDUGetComEventCounterResponseParse(readBuffer utils.ReadBuffer, respo
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (status)
 	_status, _statusErr := readBuffer.ReadUint16("status", 16)

@@ -119,6 +119,8 @@ func SysexCommandAnalogMappingResponseParse(readBuffer utils.ReadBuffer, respons
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandAnalogMappingResponse"); closeErr != nil {
 		return nil, closeErr

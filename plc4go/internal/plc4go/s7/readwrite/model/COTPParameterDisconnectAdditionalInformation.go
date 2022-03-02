@@ -127,6 +127,8 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (data)
 	numberOfBytesdata := int(rest)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

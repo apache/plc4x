@@ -122,6 +122,8 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)

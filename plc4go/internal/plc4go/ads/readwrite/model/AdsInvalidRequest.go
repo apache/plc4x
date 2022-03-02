@@ -119,6 +119,8 @@ func AdsInvalidRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, re
 	if pullErr := readBuffer.PullContext("AdsInvalidRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsInvalidRequest"); closeErr != nil {
 		return nil, closeErr

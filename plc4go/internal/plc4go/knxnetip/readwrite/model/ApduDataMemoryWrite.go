@@ -114,6 +114,8 @@ func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryWrite"); closeErr != nil {
 		return nil, closeErr

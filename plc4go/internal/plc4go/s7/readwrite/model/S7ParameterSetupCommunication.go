@@ -156,6 +156,8 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

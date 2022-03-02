@@ -109,6 +109,8 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (*BACnetAddress, error) {
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (address)
 	if pullErr := readBuffer.PullContext("address", utils.WithRenderAsList(true)); pullErr != nil {

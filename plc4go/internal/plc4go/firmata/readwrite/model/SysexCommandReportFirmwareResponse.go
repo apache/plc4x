@@ -153,6 +153,8 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (majorVersion)
 	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)

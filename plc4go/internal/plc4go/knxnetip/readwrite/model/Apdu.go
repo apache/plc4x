@@ -131,6 +131,8 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	if pullErr := readBuffer.PullContext("Apdu"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control, _controlErr := readBuffer.ReadUint8("control", 1)

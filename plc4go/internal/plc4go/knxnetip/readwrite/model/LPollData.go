@@ -164,6 +164,8 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {

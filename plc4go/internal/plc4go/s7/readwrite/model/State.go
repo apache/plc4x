@@ -167,6 +167,8 @@ func StateParse(readBuffer utils.ReadBuffer) (*State, error) {
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (SIG_8)
 	_SIG_8, _SIG_8Err := readBuffer.ReadBit("SIG_8")

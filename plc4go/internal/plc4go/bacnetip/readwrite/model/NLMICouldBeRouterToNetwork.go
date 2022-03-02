@@ -138,6 +138,8 @@ func NLMICouldBeRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uin
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)

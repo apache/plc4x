@@ -109,6 +109,8 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType, _additionalInformationTypeErr := readBuffer.ReadUint8("additionalInformationType", 8)

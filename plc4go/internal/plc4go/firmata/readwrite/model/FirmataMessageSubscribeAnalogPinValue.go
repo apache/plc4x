@@ -140,6 +140,8 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pin)
 	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)

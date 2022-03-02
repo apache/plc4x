@@ -114,6 +114,8 @@ func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) 
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSystemReset"); closeErr != nil {
 		return nil, closeErr

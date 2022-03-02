@@ -132,6 +132,8 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (id)
 	if pullErr := readBuffer.PullContext("id", utils.WithRenderAsList(true)); pullErr != nil {

@@ -176,6 +176,8 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

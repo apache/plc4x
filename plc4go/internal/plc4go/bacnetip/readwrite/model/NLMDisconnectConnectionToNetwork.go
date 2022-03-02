@@ -127,6 +127,8 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)

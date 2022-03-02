@@ -111,6 +111,8 @@ func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (*BVLC
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BVLCReadBroadcastDistributionTable"); closeErr != nil {
 		return nil, closeErr

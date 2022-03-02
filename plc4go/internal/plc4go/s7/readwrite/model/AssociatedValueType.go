@@ -129,6 +129,8 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	if pullErr := readBuffer.PullContext("AssociatedValueType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {

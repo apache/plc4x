@@ -111,6 +111,8 @@ func BACnetConfirmedServiceACKReadPropertyParse(readBuffer utils.ReadBuffer) (*B
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKReadProperty"); closeErr != nil {
 		return nil, closeErr

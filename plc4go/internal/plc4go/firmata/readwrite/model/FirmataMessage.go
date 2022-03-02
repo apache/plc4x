@@ -112,6 +112,8 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	if pullErr := readBuffer.PullContext("FirmataMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 4)

@@ -119,6 +119,8 @@ func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (*S
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandStringData"); closeErr != nil {
 		return nil, closeErr

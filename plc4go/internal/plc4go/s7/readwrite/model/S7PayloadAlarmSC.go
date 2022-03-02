@@ -141,6 +141,8 @@ func S7PayloadAlarmSCParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, c
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmSC"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (alarmMessage)
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {

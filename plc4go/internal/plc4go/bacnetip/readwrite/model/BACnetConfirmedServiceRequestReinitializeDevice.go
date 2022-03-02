@@ -140,6 +140,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (reinitializedStateOfDevice)
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
@@ -157,7 +159,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(readBuffer utils.ReadB
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
 	var password *BACnetContextTagCharacterString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, pullErr
 		}

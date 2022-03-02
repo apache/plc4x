@@ -122,6 +122,8 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (code)
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {

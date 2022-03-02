@@ -167,6 +167,8 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Manual Field (year)
 	year, _yearErr := BcdToInt(readBuffer)

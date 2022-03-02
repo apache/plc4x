@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestDeleteObject"); closeErr != nil {
 		return nil, closeErr

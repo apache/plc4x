@@ -114,6 +114,8 @@ func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (*A
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtLinkResponse"); closeErr != nil {
 		return nil, closeErr

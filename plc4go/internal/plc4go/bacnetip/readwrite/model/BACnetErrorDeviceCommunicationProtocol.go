@@ -114,6 +114,8 @@ func BACnetErrorDeviceCommunicationProtocolParse(readBuffer utils.ReadBuffer) (*
 	if pullErr := readBuffer.PullContext("BACnetErrorDeviceCommunicationProtocol"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorDeviceCommunicationProtocol"); closeErr != nil {
 		return nil, closeErr

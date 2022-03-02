@@ -122,11 +122,13 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 	if pullErr := readBuffer.PullContext("BACnetAction"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}

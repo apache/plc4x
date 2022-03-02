@@ -188,11 +188,13 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	if pullErr := readBuffer.PullContext("BACnetActionCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (deviceIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -239,7 +241,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -260,7 +262,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
 	var propertyValue *BACnetConstructedData = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -281,7 +283,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
 	var priority *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -302,7 +304,7 @@ func BACnetActionCommandParse(readBuffer utils.ReadBuffer) (*BACnetActionCommand
 	// Optional Field (postDelay) (Can be skipped, if a given expression evaluates to false)
 	var postDelay *BACnetContextTagBoolean = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("postDelay"); pullErr != nil {
 			return nil, pullErr
 		}

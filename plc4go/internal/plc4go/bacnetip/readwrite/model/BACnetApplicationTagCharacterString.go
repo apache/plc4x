@@ -131,6 +131,8 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, heade
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

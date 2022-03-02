@@ -125,6 +125,8 @@ func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("LDataFrameACK"); closeErr != nil {
 		return nil, closeErr

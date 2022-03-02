@@ -109,6 +109,8 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (*S7VarRequestP
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)

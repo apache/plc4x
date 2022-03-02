@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedRequestKey"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestRemovedRequestKey"); closeErr != nil {
 		return nil, closeErr

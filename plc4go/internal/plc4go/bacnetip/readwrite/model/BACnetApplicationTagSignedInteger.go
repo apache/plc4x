@@ -131,6 +131,8 @@ func BACnetApplicationTagSignedIntegerParse(readBuffer utils.ReadBuffer, header 
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagSignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

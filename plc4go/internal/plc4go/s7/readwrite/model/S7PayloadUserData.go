@@ -138,6 +138,8 @@ func S7PayloadUserDataParse(readBuffer utils.ReadBuffer, messageType uint8, para
 	if pullErr := readBuffer.PullContext("S7PayloadUserData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (items)
 	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {

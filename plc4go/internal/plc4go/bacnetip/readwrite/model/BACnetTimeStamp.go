@@ -143,6 +143,8 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
@@ -158,7 +160,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}

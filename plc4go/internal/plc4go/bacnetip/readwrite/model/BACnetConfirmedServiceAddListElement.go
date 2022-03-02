@@ -111,6 +111,8 @@ func BACnetConfirmedServiceAddListElementParse(readBuffer utils.ReadBuffer) (*BA
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceAddListElement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceAddListElement"); closeErr != nil {
 		return nil, closeErr

@@ -127,6 +127,8 @@ func ModbusPDUGetComEventCounterRequestParse(readBuffer utils.ReadBuffer, respon
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventCounterRequest"); closeErr != nil {
 		return nil, closeErr

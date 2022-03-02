@@ -125,6 +125,8 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)

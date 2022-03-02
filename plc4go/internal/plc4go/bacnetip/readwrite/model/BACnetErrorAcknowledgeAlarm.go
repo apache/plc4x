@@ -114,6 +114,8 @@ func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError
 	if pullErr := readBuffer.PullContext("BACnetErrorAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorAcknowledgeAlarm"); closeErr != nil {
 		return nil, closeErr

@@ -185,6 +185,8 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersOutOfRange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {

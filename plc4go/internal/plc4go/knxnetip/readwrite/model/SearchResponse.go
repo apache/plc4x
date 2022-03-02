@@ -144,6 +144,8 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) 
 	if pullErr := readBuffer.PullContext("SearchResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiControlEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {

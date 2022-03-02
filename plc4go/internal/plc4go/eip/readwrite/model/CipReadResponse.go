@@ -164,6 +164,8 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

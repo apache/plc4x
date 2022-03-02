@@ -111,6 +111,8 @@ func ApduControlDisconnectParse(readBuffer utils.ReadBuffer) (*ApduControl, erro
 	if pullErr := readBuffer.PullContext("ApduControlDisconnect"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlDisconnect"); closeErr != nil {
 		return nil, closeErr

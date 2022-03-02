@@ -159,6 +159,8 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOV"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {

@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestRemoveListElement"); closeErr != nil {
 		return nil, closeErr

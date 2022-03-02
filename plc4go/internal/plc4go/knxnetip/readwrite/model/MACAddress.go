@@ -99,6 +99,8 @@ func MACAddressParse(readBuffer utils.ReadBuffer) (*MACAddress, error) {
 	if pullErr := readBuffer.PullContext("MACAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (addr)
 	numberOfBytesaddr := int(uint16(6))
 	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)

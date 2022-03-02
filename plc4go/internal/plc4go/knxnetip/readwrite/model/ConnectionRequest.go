@@ -144,6 +144,8 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {

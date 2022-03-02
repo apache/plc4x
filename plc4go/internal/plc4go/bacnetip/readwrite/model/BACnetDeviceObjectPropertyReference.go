@@ -155,6 +155,8 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectPropertyReference"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
@@ -198,7 +200,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -219,7 +221,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer, tagNu
 	// Optional Field (deviceIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var deviceIdentifier *BACnetContextTagObjectIdentifier = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}

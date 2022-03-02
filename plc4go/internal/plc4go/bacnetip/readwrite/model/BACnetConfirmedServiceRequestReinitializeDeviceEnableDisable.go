@@ -132,11 +132,13 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}

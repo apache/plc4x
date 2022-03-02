@@ -138,6 +138,8 @@ func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (pinBlock)
 	_pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)

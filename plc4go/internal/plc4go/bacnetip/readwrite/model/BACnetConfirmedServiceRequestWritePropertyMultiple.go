@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); closeErr != nil {
 		return nil, closeErr

@@ -131,6 +131,8 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	if pullErr := readBuffer.PullContext("BACnetApplicationTag"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {

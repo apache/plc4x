@@ -134,6 +134,8 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 	if pullErr := readBuffer.PullContext("ModbusSerialADU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (transactionId)
 	_transactionId, _transactionIdErr := readBuffer.ReadUint16("transactionId", 16)

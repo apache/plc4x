@@ -118,6 +118,8 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	if pullErr := readBuffer.PullContext("S7DataAlarmMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (functionId)
 	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)

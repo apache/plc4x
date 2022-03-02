@@ -128,6 +128,8 @@ func BACnetContextTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	if pullErr := readBuffer.PullContext("BACnetContextTagOctetString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

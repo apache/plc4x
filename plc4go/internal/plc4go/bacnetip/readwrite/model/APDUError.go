@@ -140,6 +140,8 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

@@ -137,6 +137,8 @@ func S7MessageResponseParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	if pullErr := readBuffer.PullContext("S7MessageResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (errorClass)
 	_errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)

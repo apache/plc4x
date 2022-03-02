@@ -140,6 +140,8 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, err
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

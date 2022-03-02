@@ -144,6 +144,8 @@ func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint3
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (itemIndexGroup)
 	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)

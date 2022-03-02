@@ -175,6 +175,8 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (deviceIdentifier)
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
@@ -192,7 +194,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	// Optional Field (openingTag) (Can be skipped, if a given expression evaluates to false)
 	var openingTag *BACnetOpeningTag = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -239,7 +241,7 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(readBuffer utils.ReadBuff
 	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
 	var closingTag *BACnetClosingTag = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 			return nil, pullErr
 		}

@@ -114,6 +114,8 @@ func BACnetErrorAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetError,
 	if pullErr := readBuffer.PullContext("BACnetErrorAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorAtomicWriteFile"); closeErr != nil {
 		return nil, closeErr

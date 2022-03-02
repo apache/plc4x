@@ -111,6 +111,8 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckCreateObject"); closeErr != nil {
 		return nil, closeErr

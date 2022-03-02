@@ -114,6 +114,8 @@ func BACnetErrorReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetE
 	if pullErr := readBuffer.PullContext("BACnetErrorReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorReadPropertyMultiple"); closeErr != nil {
 		return nil, closeErr

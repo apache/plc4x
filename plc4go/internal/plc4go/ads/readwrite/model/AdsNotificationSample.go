@@ -119,6 +119,8 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (*AdsNotificationSa
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (notificationHandle)
 	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)

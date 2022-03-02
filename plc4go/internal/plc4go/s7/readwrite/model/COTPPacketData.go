@@ -139,6 +139,8 @@ func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPack
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (eot)
 	_eot, _eotErr := readBuffer.ReadBit("eot")

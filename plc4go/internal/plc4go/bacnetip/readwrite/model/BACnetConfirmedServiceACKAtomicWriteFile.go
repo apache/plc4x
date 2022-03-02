@@ -112,6 +112,8 @@ func BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKAtomicWriteFile"); closeErr != nil {
 		return nil, closeErr

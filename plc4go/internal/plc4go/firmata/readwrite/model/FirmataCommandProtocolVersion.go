@@ -136,6 +136,8 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (majorVersion)
 	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)

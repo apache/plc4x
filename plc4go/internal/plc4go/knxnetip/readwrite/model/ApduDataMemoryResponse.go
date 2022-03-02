@@ -141,6 +141,8 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)

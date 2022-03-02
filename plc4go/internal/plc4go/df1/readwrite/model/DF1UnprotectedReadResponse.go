@@ -125,6 +125,8 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}

@@ -112,6 +112,8 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipServic
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (service) (Used as input to a switch field)
 	service, _serviceErr := readBuffer.ReadUint8("service", 8)

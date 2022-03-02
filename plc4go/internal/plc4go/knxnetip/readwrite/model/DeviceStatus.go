@@ -101,6 +101,8 @@ func DeviceStatusParse(readBuffer utils.ReadBuffer) (*DeviceStatus, error) {
 	if pullErr := readBuffer.PullContext("DeviceStatus"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

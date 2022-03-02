@@ -177,6 +177,8 @@ func GroupObjectDescriptorRealisationType2Parse(readBuffer utils.ReadBuffer) (*G
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType2"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataPointer)
 	_dataPointer, _dataPointerErr := readBuffer.ReadUint8("dataPointer", 8)

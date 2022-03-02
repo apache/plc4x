@@ -124,6 +124,8 @@ func BACnetApplicationTagBitStringParse(readBuffer utils.ReadBuffer, header *BAC
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

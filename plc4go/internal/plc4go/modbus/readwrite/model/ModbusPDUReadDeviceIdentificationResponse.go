@@ -208,6 +208,8 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (meiType)
 	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)

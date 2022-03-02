@@ -162,6 +162,8 @@ func S7MessageObjectRequestParse(readBuffer utils.ReadBuffer, cpuFunctionType ui
 	if pullErr := readBuffer.PullContext("S7MessageObjectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)

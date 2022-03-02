@@ -152,6 +152,8 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	_result, _resultErr := readBuffer.ReadUint8("result", 8)

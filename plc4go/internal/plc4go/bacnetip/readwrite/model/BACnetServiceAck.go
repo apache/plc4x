@@ -109,6 +109,8 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, erro
 	if pullErr := readBuffer.PullContext("BACnetServiceAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)

@@ -177,6 +177,8 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (*G
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType7"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataAddress)
 	_dataAddress, _dataAddressErr := readBuffer.ReadUint16("dataAddress", 16)

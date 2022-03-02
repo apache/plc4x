@@ -115,6 +115,8 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); closeErr != nil {
 		return nil, closeErr

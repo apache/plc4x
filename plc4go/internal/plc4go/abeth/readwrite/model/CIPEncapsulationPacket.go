@@ -157,6 +157,8 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType, _commandTypeErr := readBuffer.ReadUint16("commandType", 16)

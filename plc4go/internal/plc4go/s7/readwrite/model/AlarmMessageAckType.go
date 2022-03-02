@@ -122,6 +122,8 @@ func AlarmMessageAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAckType
 	if pullErr := readBuffer.PullContext("AlarmMessageAckType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)

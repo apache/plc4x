@@ -119,6 +119,8 @@ func AdsInvalidResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, r
 	if pullErr := readBuffer.PullContext("AdsInvalidResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsInvalidResponse"); closeErr != nil {
 		return nil, closeErr

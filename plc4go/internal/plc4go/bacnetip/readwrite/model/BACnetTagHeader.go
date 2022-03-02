@@ -248,6 +248,8 @@ func BACnetTagHeaderParse(readBuffer utils.ReadBuffer) (*BACnetTagHeader, error)
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tagNumber)
 	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)

@@ -122,6 +122,8 @@ func KnxNetIpDeviceManagementParse(readBuffer utils.ReadBuffer) (*ServiceId, err
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)

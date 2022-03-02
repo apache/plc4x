@@ -166,6 +166,8 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (byteSize)
 	_byteSize, _byteSizeErr := readBuffer.ReadUint8("byteSize", 8)

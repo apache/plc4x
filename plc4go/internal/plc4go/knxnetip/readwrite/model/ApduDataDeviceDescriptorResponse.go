@@ -138,6 +138,8 @@ func ApduDataDeviceDescriptorResponseParse(readBuffer utils.ReadBuffer, dataLeng
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (descriptorType)
 	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)

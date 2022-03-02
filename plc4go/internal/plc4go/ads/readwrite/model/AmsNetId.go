@@ -147,6 +147,8 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (*AmsNetId, error) {
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (octet1)
 	_octet1, _octet1Err := readBuffer.ReadUint8("octet1", 8)

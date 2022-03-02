@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, len u
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTOpen"); closeErr != nil {
 		return nil, closeErr

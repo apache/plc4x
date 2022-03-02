@@ -121,6 +121,8 @@ func BVLCWriteBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTableEntry"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (ip)
 	if pullErr := readBuffer.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {

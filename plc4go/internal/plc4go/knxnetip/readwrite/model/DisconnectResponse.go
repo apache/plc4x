@@ -133,6 +133,8 @@ func DisconnectResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)

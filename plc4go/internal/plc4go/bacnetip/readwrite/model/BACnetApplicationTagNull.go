@@ -113,6 +113,8 @@ func BACnetApplicationTagNullParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagNull"); closeErr != nil {
 		return nil, closeErr

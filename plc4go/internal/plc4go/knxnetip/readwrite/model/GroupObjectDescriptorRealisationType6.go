@@ -87,6 +87,8 @@ func GroupObjectDescriptorRealisationType6Parse(readBuffer utils.ReadBuffer) (*G
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationType6"); closeErr != nil {
 		return nil, closeErr

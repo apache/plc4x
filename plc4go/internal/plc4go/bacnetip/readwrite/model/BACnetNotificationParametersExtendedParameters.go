@@ -279,6 +279,8 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtendedParameters"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
@@ -296,7 +298,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (nullValue) (Can be skipped, if a given expression evaluates to false)
 	var nullValue *BACnetApplicationTagNull = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -317,7 +319,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (realValue) (Can be skipped, if a given expression evaluates to false)
 	var realValue *BACnetApplicationTagReal = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -338,7 +340,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (unsignedValue) (Can be skipped, if a given expression evaluates to false)
 	var unsignedValue *BACnetApplicationTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -359,7 +361,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (booleanValue) (Can be skipped, if a given expression evaluates to false)
 	var booleanValue *BACnetApplicationTagBoolean = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -380,7 +382,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (integerValue) (Can be skipped, if a given expression evaluates to false)
 	var integerValue *BACnetApplicationTagSignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -401,7 +403,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (doubleValue) (Can be skipped, if a given expression evaluates to false)
 	var doubleValue *BACnetApplicationTagDouble = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -422,7 +424,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (octetStringValue) (Can be skipped, if a given expression evaluates to false)
 	var octetStringValue *BACnetApplicationTagOctetString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -443,7 +445,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (characterStringValue) (Can be skipped, if a given expression evaluates to false)
 	var characterStringValue *BACnetApplicationTagCharacterString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -464,7 +466,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (bitStringValue) (Can be skipped, if a given expression evaluates to false)
 	var bitStringValue *BACnetApplicationTagBitString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -485,7 +487,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (enumeratedValue) (Can be skipped, if a given expression evaluates to false)
 	var enumeratedValue *BACnetApplicationTagEnumerated = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -506,7 +508,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (dateValue) (Can be skipped, if a given expression evaluates to false)
 	var dateValue *BACnetApplicationTagDate = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -527,7 +529,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (timeValue) (Can be skipped, if a given expression evaluates to false)
 	var timeValue *BACnetApplicationTagTime = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -548,7 +550,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetApplicationTagObjectIdentifier = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -569,7 +571,7 @@ func BACnetNotificationParametersExtendedParametersParse(readBuffer utils.ReadBu
 	// Optional Field (reference) (Can be skipped, if a given expression evaluates to false)
 	var reference *BACnetDeviceObjectPropertyReference = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 			return nil, pullErr
 		}

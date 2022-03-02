@@ -138,6 +138,8 @@ func ApduDataGroupValueWriteParse(readBuffer utils.ReadBuffer, dataLength uint8)
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataFirstByte)
 	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)

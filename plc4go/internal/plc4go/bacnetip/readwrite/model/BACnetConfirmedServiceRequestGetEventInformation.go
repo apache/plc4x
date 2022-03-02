@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEventInformation"); closeErr != nil {
 		return nil, closeErr

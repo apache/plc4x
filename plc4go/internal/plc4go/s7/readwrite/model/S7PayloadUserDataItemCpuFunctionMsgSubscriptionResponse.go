@@ -130,6 +130,8 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse"); closeErr != nil {
 		return nil, closeErr

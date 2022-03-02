@@ -112,6 +112,8 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType, _apduTypeErr := readBuffer.ReadUint8("apduType", 4)

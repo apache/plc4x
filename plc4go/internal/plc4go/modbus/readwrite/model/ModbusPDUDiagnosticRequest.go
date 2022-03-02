@@ -149,6 +149,8 @@ func ModbusPDUDiagnosticRequestParse(readBuffer utils.ReadBuffer, response bool)
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (subFunction)
 	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)

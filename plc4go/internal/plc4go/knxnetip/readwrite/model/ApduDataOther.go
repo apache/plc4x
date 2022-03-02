@@ -125,6 +125,8 @@ func ApduDataOtherParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDat
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (extendedApdu)
 	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {

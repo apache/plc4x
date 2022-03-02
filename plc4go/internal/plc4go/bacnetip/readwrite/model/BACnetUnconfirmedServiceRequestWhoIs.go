@@ -142,11 +142,13 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeLowLimit *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -167,7 +169,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeHighLimit *BACnetContextTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, pullErr
 		}

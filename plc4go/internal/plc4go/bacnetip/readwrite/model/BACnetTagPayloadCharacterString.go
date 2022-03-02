@@ -117,6 +117,8 @@ func BACnetTagPayloadCharacterStringParse(readBuffer utils.ReadBuffer, actualLen
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (encoding)
 	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {

@@ -131,6 +131,8 @@ func BACnetReadAccessSpecificationParse(readBuffer utils.ReadBuffer) (*BACnetRea
 	if pullErr := readBuffer.PullContext("BACnetReadAccessSpecification"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {

@@ -151,6 +151,8 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (objectIdentifier)
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
@@ -181,7 +183,7 @@ func BACnetConfirmedServiceRequestReadPropertyParse(readBuffer utils.ReadBuffer,
 	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
 	var arrayIndex *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, pullErr
 		}

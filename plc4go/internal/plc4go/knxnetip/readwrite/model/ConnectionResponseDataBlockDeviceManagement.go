@@ -112,6 +112,8 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlockDeviceManagement"); closeErr != nil {
 		return nil, closeErr

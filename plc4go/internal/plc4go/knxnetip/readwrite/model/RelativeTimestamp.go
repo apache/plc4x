@@ -97,6 +97,8 @@ func RelativeTimestampParse(readBuffer utils.ReadBuffer) (*RelativeTimestamp, er
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (timestamp)
 	_timestamp, _timestampErr := readBuffer.ReadUint16("timestamp", 16)

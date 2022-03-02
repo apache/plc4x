@@ -139,6 +139,8 @@ func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (*SzlDataTreeItem, error)
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (itemIndex)
 	_itemIndex, _itemIndexErr := readBuffer.ReadUint16("itemIndex", 16)

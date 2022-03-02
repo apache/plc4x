@@ -132,6 +132,8 @@ func ModbusPDUWriteFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Mod
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (referenceType)
 	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)

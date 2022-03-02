@@ -130,6 +130,8 @@ func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType ui
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numItems)
 	_numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)

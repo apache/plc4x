@@ -180,6 +180,8 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("AmsPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (targetAmsNetId)
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {

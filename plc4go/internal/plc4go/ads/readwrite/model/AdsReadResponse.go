@@ -146,6 +146,8 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, resp
 	if pullErr := readBuffer.PullContext("AdsReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {

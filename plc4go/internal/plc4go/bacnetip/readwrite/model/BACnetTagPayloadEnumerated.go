@@ -109,6 +109,8 @@ func BACnetTagPayloadEnumeratedParse(readBuffer utils.ReadBuffer, actualLength u
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (data)
 	numberOfBytesdata := int(actualLength)
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)

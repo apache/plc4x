@@ -125,6 +125,8 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayl
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (npdu)
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {

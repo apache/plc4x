@@ -125,6 +125,8 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COT
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tsapId)
 	_tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)

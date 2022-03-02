@@ -141,6 +141,8 @@ func S7PayloadAlarmAckIndParse(readBuffer utils.ReadBuffer, cpuFunctionType uint
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmAckInd"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (alarmMessage)
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {

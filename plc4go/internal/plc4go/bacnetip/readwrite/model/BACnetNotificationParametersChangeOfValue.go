@@ -163,6 +163,8 @@ func BACnetNotificationParametersChangeOfValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {

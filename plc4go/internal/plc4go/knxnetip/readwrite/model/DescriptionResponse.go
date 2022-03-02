@@ -133,6 +133,8 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dibDeviceInfo)
 	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {

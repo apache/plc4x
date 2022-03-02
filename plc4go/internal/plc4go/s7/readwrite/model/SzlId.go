@@ -117,6 +117,8 @@ func SzlIdParse(readBuffer utils.ReadBuffer) (*SzlId, error) {
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (typeClass)
 	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {

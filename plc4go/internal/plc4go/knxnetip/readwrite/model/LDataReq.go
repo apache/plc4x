@@ -151,6 +151,8 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (additionalInformationLength)
 	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)

@@ -131,6 +131,8 @@ func BACnetApplicationTagDoubleParse(readBuffer utils.ReadBuffer) (*BACnetApplic
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagDouble"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

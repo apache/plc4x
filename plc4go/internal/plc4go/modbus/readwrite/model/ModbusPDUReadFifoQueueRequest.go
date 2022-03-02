@@ -138,6 +138,8 @@ func ModbusPDUReadFifoQueueRequestParse(readBuffer utils.ReadBuffer, response bo
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (fifoPointerAddress)
 	_fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)

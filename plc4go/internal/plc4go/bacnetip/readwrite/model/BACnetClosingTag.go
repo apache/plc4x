@@ -117,6 +117,8 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if pullErr := readBuffer.PullContext("BACnetClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(bool((actualLength) == (7))) {

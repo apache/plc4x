@@ -137,6 +137,8 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error)
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

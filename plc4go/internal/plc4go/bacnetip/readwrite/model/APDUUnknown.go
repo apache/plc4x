@@ -127,6 +127,8 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, er
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (unknownBytes)
 	numberOfBytesunknownBytes := int(utils.InlineIf(bool(bool((apduLength) > (0))), func() interface{} { return uint16(uint16(uint16(apduLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)

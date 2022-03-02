@@ -112,6 +112,8 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (*Connection
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)

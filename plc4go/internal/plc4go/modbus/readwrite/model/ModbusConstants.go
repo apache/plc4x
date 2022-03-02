@@ -95,6 +95,8 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error)
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := readBuffer.ReadUint16("modbusTcpDefaultPort", 16)

@@ -413,6 +413,8 @@ func BACnetTagPayloadSignedIntegerParse(readBuffer utils.ReadBuffer, actualLengt
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadSignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Virtual field
 	_isInt8 := bool((actualLength) == (1))

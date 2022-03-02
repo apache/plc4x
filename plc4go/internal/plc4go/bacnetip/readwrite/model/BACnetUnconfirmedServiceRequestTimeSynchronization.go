@@ -137,6 +137,8 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (synchronizedDate)
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {

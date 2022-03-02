@@ -122,6 +122,8 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {

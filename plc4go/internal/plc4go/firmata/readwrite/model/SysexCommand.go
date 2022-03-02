@@ -111,6 +111,8 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 	if pullErr := readBuffer.PullContext("SysexCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType, _commandTypeErr := readBuffer.ReadUint8("commandType", 8)

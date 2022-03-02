@@ -147,6 +147,8 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("BACnetContextTagPropertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Validation
 	if !(isNotOpeningOrClosingTag) {

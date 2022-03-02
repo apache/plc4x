@@ -160,6 +160,8 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
@@ -184,7 +186,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -205,7 +207,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
 			return nil, pullErr
 		}

@@ -149,6 +149,8 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	if pullErr := readBuffer.PullContext("AlarmMessageQueryType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)

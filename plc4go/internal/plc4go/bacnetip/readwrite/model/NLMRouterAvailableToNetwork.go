@@ -129,6 +129,8 @@ func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength ui
 	if pullErr := readBuffer.PullContext("NLMRouterAvailableToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (destinationNetworkAddress)
 	if pullErr := readBuffer.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {

@@ -126,6 +126,8 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLC"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (bacnetType)
 	bacnetType, _bacnetTypeErr := readBuffer.ReadUint8("bacnetType", 8)

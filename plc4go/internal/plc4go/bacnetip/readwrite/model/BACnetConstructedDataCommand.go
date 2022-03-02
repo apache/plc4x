@@ -163,6 +163,8 @@ func BACnetConstructedDataCommandParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {

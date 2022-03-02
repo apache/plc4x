@@ -119,6 +119,8 @@ func AdsReadStateRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, 
 	if pullErr := readBuffer.PullContext("AdsReadStateRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("AdsReadStateRequest"); closeErr != nil {
 		return nil, closeErr

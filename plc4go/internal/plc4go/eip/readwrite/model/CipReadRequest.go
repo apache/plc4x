@@ -149,6 +149,8 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipSe
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (requestPathSize)
 	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)

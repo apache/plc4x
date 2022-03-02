@@ -112,6 +112,8 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, er
 	if pullErr := readBuffer.PullContext("ApduData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
 	apciType, _apciTypeErr := readBuffer.ReadUint8("apciType", 4)

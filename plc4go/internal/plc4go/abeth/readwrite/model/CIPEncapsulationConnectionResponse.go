@@ -116,6 +116,8 @@ func CIPEncapsulationConnectionResponseParse(readBuffer utils.ReadBuffer) (*CIPE
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationConnectionResponse"); closeErr != nil {
 		return nil, closeErr

@@ -136,6 +136,8 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tunnelingRequestDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {

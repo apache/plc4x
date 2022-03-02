@@ -124,6 +124,8 @@ func BACnetApplicationTagDateParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagDate"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

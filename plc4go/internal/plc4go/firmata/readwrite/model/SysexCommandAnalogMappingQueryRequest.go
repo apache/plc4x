@@ -119,6 +119,8 @@ func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, res
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("SysexCommandAnalogMappingQueryRequest"); closeErr != nil {
 		return nil, closeErr

@@ -114,6 +114,8 @@ func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer, lengt
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtReadRouterMemoryResponse"); closeErr != nil {
 		return nil, closeErr

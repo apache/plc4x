@@ -181,6 +181,8 @@ func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uin
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

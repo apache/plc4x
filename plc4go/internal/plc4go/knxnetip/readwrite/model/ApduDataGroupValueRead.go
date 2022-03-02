@@ -119,6 +119,8 @@ func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

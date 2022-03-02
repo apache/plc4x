@@ -132,11 +132,13 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (action) (Can be skipped, if a given expression evaluates to false)
 	var action *BACnetAction = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("action"); pullErr != nil {
 			return nil, pullErr
 		}

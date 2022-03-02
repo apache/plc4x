@@ -138,6 +138,8 @@ func NLMEstablishConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLengt
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)

@@ -127,6 +127,8 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (request)
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {

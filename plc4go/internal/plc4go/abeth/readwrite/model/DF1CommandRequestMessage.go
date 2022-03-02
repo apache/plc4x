@@ -127,6 +127,8 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {

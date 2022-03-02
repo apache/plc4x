@@ -99,6 +99,8 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 	// Byte Array field (addr)
 	numberOfBytesaddr := int(uint16(4))
 	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)

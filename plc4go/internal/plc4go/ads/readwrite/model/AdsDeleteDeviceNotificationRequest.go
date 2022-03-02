@@ -130,6 +130,8 @@ func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, comman
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (notificationHandle)
 	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)

@@ -182,6 +182,8 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (Subscription)
 	_Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)

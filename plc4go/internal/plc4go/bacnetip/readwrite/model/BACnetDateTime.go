@@ -130,6 +130,8 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetD
 	if pullErr := readBuffer.PullContext("BACnetDateTime"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {

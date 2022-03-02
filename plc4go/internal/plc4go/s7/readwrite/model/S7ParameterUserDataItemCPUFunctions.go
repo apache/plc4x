@@ -208,6 +208,8 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)

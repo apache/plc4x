@@ -137,6 +137,8 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {

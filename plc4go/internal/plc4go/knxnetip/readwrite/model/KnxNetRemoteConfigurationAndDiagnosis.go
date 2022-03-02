@@ -122,6 +122,8 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (*S
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (version)
 	_version, _versionErr := readBuffer.ReadUint8("version", 8)

@@ -114,6 +114,8 @@ func ApduDataExtKeyWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduD
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyWrite"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtKeyWrite"); closeErr != nil {
 		return nil, closeErr

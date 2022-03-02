@@ -138,6 +138,8 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (rejectReason)
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {

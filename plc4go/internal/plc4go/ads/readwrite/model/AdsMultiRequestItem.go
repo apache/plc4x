@@ -107,6 +107,8 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsMultiRequestItem

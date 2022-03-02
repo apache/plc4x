@@ -129,6 +129,8 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (sequenceNumber)
 	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {

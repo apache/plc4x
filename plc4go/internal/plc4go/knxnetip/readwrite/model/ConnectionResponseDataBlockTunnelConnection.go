@@ -123,6 +123,8 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (knxAddress)
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {

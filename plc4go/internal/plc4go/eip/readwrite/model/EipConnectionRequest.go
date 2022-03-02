@@ -128,6 +128,8 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) 
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := readBuffer.ReadUint16("protocolVersion", 16)

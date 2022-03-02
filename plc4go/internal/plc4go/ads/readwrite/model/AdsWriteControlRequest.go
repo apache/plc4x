@@ -157,6 +157,8 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (adsState)
 	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)

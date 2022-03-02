@@ -115,6 +115,8 @@ func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	if pullErr := readBuffer.PullContext("S7MessageUserData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("S7MessageUserData"); closeErr != nil {
 		return nil, closeErr

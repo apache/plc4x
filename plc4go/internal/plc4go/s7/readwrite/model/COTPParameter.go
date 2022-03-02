@@ -115,6 +115,8 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)

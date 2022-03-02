@@ -132,6 +132,8 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageAck
 	if pullErr := readBuffer.PullContext("AlarmMessageAckPushType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (TimeStamp)
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {

@@ -143,6 +143,8 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)

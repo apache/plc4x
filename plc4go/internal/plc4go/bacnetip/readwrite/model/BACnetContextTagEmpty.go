@@ -116,6 +116,8 @@ func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument u
 	if pullErr := readBuffer.PullContext("BACnetContextTagEmpty"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagEmpty"); closeErr != nil {
 		return nil, closeErr

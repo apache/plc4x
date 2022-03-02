@@ -114,6 +114,8 @@ func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length ui
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtFileStreamInfoReport"); closeErr != nil {
 		return nil, closeErr

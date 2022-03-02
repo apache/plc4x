@@ -129,6 +129,8 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (*NLM
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
 	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)

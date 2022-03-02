@@ -117,6 +117,8 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (*KnxAddress, error) {
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (mainGroup)
 	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 4)

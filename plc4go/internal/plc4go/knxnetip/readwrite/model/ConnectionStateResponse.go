@@ -133,6 +133,8 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage
 	if pullErr := readBuffer.PullContext("ConnectionStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)

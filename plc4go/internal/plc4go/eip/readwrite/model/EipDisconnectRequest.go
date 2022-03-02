@@ -116,6 +116,8 @@ func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) 
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("EipDisconnectRequest"); closeErr != nil {
 		return nil, closeErr

@@ -158,6 +158,8 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

@@ -111,6 +111,8 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 	if pullErr := readBuffer.PullContext("TPKTPacket"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)

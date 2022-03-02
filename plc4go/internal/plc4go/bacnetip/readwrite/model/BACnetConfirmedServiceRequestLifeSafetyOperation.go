@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); closeErr != nil {
 		return nil, closeErr

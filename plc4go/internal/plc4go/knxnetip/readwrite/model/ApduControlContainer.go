@@ -128,6 +128,8 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (controlApdu)
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {

@@ -114,6 +114,8 @@ func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, 
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MFuncPropCommandReq"); closeErr != nil {
 		return nil, closeErr

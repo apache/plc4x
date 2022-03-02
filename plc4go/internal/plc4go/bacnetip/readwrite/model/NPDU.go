@@ -284,6 +284,8 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (protocolVersionNumber)
 	_protocolVersionNumber, _protocolVersionNumberErr := readBuffer.ReadUint8("protocolVersionNumber", 8)
@@ -411,7 +413,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
 	var nlm *NLM = nil
 	if control.GetMessageTypeFieldPresent() {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -432,7 +434,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
 	var apdu *APDU = nil
 	if !(control.GetMessageTypeFieldPresent()) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
 			return nil, pullErr
 		}

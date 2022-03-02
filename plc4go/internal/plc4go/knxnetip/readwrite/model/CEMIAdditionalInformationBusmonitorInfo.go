@@ -185,6 +185,8 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (len)
 	len, _lenErr := readBuffer.ReadUint8("len", 8)

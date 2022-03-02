@@ -128,6 +128,8 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (dataApdu)
 	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {

@@ -123,6 +123,8 @@ func NLMParse(readBuffer utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 8)

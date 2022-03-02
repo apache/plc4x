@@ -114,6 +114,8 @@ func MPropWriteReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error)
 	if pullErr := readBuffer.PullContext("MPropWriteReq"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("MPropWriteReq"); closeErr != nil {
 		return nil, closeErr

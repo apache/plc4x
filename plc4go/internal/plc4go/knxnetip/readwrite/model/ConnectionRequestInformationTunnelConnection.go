@@ -127,6 +127,8 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (knxLayer)
 	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {

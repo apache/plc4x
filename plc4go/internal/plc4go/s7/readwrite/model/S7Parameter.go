@@ -111,6 +111,8 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)

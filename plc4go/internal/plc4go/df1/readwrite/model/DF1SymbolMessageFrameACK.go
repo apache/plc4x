@@ -111,6 +111,8 @@ func DF1SymbolMessageFrameACKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, err
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrameACK"); closeErr != nil {
 		return nil, closeErr

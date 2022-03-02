@@ -151,6 +151,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (vendorId)
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
@@ -181,7 +183,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	// Optional Field (serviceParameters) (Can be skipped, if a given expression evaluates to false)
 	var serviceParameters *BACnetPropertyValues = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("serviceParameters"); pullErr != nil {
 			return nil, pullErr
 		}

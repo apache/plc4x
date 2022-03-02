@@ -142,6 +142,8 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if pullErr := readBuffer.PullContext("BACnetContextTag"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (header)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {

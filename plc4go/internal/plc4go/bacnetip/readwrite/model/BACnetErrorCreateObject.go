@@ -114,6 +114,8 @@ func BACnetErrorCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetError, er
 	if pullErr := readBuffer.PullContext("BACnetErrorCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetErrorCreateObject"); closeErr != nil {
 		return nil, closeErr

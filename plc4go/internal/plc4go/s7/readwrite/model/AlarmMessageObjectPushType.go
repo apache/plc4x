@@ -189,6 +189,8 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessage
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectPushType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)

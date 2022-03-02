@@ -125,6 +125,8 @@ func BACnetPropertyValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, obj
 	if pullErr := readBuffer.PullContext("BACnetPropertyValues"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {

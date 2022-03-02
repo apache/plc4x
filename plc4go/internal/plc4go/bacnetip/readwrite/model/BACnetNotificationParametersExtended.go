@@ -174,6 +174,8 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersExtended"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (innerOpeningTag)
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {

@@ -131,6 +131,8 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BA
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {

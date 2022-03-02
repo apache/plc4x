@@ -176,6 +176,8 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {

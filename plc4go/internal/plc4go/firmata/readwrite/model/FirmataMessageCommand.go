@@ -125,6 +125,8 @@ func FirmataMessageCommandParse(readBuffer utils.ReadBuffer, response bool) (*Fi
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (command)
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {

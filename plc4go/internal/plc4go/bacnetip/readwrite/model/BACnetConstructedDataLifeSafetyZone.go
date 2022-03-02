@@ -141,6 +141,8 @@ func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZone"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Array field (zones)
 	if pullErr := readBuffer.PullContext("zones", utils.WithRenderAsList(true)); pullErr != nil {

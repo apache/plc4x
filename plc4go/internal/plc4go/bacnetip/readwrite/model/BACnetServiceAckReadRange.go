@@ -111,6 +111,8 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer) (*BACnetService
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadRange"); closeErr != nil {
 		return nil, closeErr

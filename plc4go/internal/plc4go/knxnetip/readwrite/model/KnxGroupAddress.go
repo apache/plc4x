@@ -107,6 +107,8 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress

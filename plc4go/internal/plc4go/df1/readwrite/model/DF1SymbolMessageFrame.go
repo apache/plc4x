@@ -158,6 +158,8 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrame"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (destinationAddress)
 	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)

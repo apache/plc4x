@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); closeErr != nil {
 		return nil, closeErr

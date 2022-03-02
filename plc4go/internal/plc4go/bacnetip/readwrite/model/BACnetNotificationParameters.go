@@ -144,6 +144,8 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("BACnetNotificationParameters"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
@@ -159,7 +161,7 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Peek Field (peekedTagHeader)
-	currentPos := readBuffer.GetPos()
+	currentPos = readBuffer.GetPos()
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, pullErr
 	}

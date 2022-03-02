@@ -136,6 +136,8 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Ap
 	if pullErr := readBuffer.PullContext("ApduDataMemoryRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (numBytes)
 	_numBytes, _numBytesErr := readBuffer.ReadUint8("numBytes", 6)

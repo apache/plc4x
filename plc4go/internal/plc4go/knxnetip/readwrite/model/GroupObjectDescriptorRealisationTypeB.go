@@ -167,6 +167,8 @@ func GroupObjectDescriptorRealisationTypeBParse(readBuffer utils.ReadBuffer) (*G
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationTypeB"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (updateEnable)
 	_updateEnable, _updateEnableErr := readBuffer.ReadBit("updateEnable")

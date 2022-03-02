@@ -115,6 +115,8 @@ func ModbusPDUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, err
 	if pullErr := readBuffer.PullContext("ModbusPDU"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")

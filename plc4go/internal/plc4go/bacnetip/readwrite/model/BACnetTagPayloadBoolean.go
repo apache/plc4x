@@ -114,6 +114,8 @@ func BACnetTagPayloadBooleanParse(readBuffer utils.ReadBuffer, actualLength uint
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Virtual field
 	_value := bool((actualLength) == (1))

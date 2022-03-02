@@ -138,6 +138,8 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (exceptionCode)
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {

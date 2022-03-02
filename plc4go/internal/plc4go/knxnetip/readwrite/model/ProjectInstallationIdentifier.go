@@ -107,6 +107,8 @@ func ProjectInstallationIdentifierParse(readBuffer utils.ReadBuffer) (*ProjectIn
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (projectNumber)
 	_projectNumber, _projectNumberErr := readBuffer.ReadUint8("projectNumber", 8)

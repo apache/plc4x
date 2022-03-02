@@ -114,6 +114,8 @@ func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataUserMessage"); closeErr != nil {
 		return nil, closeErr

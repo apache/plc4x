@@ -114,6 +114,8 @@ func ApduDataAdcResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 	if pullErr := readBuffer.PullContext("ApduDataAdcResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataAdcResponse"); closeErr != nil {
 		return nil, closeErr

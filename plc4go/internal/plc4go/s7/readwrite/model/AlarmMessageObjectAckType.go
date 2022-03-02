@@ -148,6 +148,8 @@ func AlarmMessageObjectAckTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageO
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectAckType"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (variableSpec)
 	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)

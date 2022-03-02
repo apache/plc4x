@@ -207,6 +207,8 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionTyp
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (EventId)
 	_EventId, _EventIdErr := readBuffer.ReadUint16("EventId", 16)

@@ -115,6 +115,8 @@ func BACnetConfirmedServiceRequestReadRangeParse(readBuffer utils.ReadBuffer, le
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRange"); closeErr != nil {
 		return nil, closeErr

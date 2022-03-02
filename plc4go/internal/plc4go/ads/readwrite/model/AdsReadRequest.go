@@ -152,6 +152,8 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, respo
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (indexGroup)
 	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)

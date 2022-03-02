@@ -129,6 +129,8 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuff
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (changedValue)
 	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {

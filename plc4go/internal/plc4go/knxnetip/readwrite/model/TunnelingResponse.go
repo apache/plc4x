@@ -122,6 +122,8 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (tunnelingResponseDataBlock)
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {

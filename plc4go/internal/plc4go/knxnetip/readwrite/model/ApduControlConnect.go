@@ -111,6 +111,8 @@ func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControl, error) 
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduControlConnect"); closeErr != nil {
 		return nil, closeErr

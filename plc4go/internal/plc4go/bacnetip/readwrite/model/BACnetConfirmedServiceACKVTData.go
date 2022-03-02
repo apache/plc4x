@@ -111,6 +111,8 @@ func BACnetConfirmedServiceACKVTDataParse(readBuffer utils.ReadBuffer) (*BACnetC
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKVTData"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceACKVTData"); closeErr != nil {
 		return nil, closeErr

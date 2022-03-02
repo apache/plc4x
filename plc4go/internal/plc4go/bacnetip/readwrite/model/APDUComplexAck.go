@@ -217,6 +217,8 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (segmentedMessage)
 	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
@@ -276,7 +278,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 	// Optional Field (serviceAck) (Can be skipped, if a given expression evaluates to false)
 	var serviceAck *BACnetServiceAck = nil
 	if !(segmentedMessage) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 			return nil, pullErr
 		}

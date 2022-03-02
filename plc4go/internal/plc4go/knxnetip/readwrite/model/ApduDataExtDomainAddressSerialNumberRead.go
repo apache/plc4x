@@ -114,6 +114,8 @@ func ApduDataExtDomainAddressSerialNumberReadParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSerialNumberRead"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtDomainAddressSerialNumberRead"); closeErr != nil {
 		return nil, closeErr

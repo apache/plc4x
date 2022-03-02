@@ -160,6 +160,8 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
@@ -234,7 +236,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
 	if bool((parameterLength) > (0)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -255,7 +257,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
 	if bool((payloadLength) > (0)) {
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}

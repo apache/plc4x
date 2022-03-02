@@ -114,6 +114,8 @@ func ApduDataExtWriteRouterStatusRequestParse(readBuffer utils.ReadBuffer, lengt
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterStatusRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtWriteRouterStatusRequest"); closeErr != nil {
 		return nil, closeErr

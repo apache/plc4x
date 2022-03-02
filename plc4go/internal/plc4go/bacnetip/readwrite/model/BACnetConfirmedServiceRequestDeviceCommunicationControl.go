@@ -153,11 +153,13 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Optional Field (timeDuration) (Can be skipped, if a given expression evaluates to false)
 	var timeDuration *BACnetContextTagUnsignedInteger = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("timeDuration"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -191,7 +193,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
 	var password *BACnetContextTagCharacterString = nil
 	{
-		currentPos := readBuffer.GetPos()
+		currentPos = readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, pullErr
 		}

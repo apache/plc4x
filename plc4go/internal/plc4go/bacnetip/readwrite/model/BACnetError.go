@@ -128,6 +128,8 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)

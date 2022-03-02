@@ -157,6 +157,8 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId Co
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
+	currentPos := readBuffer.GetPos()
+	_ = currentPos
 
 	// Simple Field (length)
 	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
