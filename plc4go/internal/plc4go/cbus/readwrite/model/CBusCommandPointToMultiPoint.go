@@ -50,11 +50,11 @@ type ICBusCommandPointToMultiPoint interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CBusCommandPointToMultiPoint) HeaderDestinationAddressType() DestinationAddressType {
+func (m *CBusCommandPointToMultiPoint) DestinationAddressType() DestinationAddressType {
 	return DestinationAddressType_PointToMultiPoint
 }
 
-func (m *CBusCommandPointToMultiPoint) GetHeaderDestinationAddressType() DestinationAddressType {
+func (m *CBusCommandPointToMultiPoint) GetDestinationAddressType() DestinationAddressType {
 	return DestinationAddressType_PointToMultiPoint
 }
 

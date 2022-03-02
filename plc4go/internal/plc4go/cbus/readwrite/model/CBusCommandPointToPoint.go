@@ -50,11 +50,11 @@ type ICBusCommandPointToPoint interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CBusCommandPointToPoint) HeaderDestinationAddressType() DestinationAddressType {
+func (m *CBusCommandPointToPoint) DestinationAddressType() DestinationAddressType {
 	return DestinationAddressType_PointToPoint
 }
 
-func (m *CBusCommandPointToPoint) GetHeaderDestinationAddressType() DestinationAddressType {
+func (m *CBusCommandPointToPoint) GetDestinationAddressType() DestinationAddressType {
 	return DestinationAddressType_PointToPoint
 }
 

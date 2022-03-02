@@ -20,7 +20,9 @@
 [discriminatedType CBusCommand(bit srchk)
     [const  byte       initiator 0x5C   ] // 0x5C == "/"
     [simple CBusHeader header           ]
-    [typeSwitch header.destinationAddressType
+    // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
+    [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
+    [typeSwitch destinationAddressType
         ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint
             [simple CBusPointToPointToMultipointCommand('srchk') command]
         ]

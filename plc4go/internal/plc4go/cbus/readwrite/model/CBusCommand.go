@@ -41,10 +41,12 @@ type CBusCommand struct {
 
 // The corresponding interface
 type ICBusCommand interface {
-	// HeaderDestinationAddressType returns HeaderDestinationAddressType
-	HeaderDestinationAddressType() DestinationAddressType
+	// DestinationAddressType returns DestinationAddressType
+	DestinationAddressType() DestinationAddressType
 	// GetHeader returns Header
 	GetHeader() *CBusHeader
+	// GetDestinationAddressType returns DestinationAddressType
+	GetDestinationAddressType() DestinationAddressType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -75,6 +77,9 @@ func (m *CBusCommand) GetHeader() *CBusHeader {
 ///////////////////////////////////////////////////////////
 // Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
+	return m.GetHeader().GetDestinationAddressType()
+}
 
 // NewCBusCommand factory function for CBusCommand
 func NewCBusCommand(header *CBusHeader, srchk bool) *CBusCommand {
@@ -115,6 +120,8 @@ func (m *CBusCommand) GetParentLengthInBits() uint16 {
 	// Simple field (header)
 	lengthInBits += m.Header.GetLengthInBits()
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -151,15 +158,20 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 		return nil, closeErr
 	}
 
+	// Virtual field
+	_destinationAddressType := header.GetDestinationAddressType()
+	destinationAddressType := DestinationAddressType(_destinationAddressType)
+	_ = destinationAddressType
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *CBusCommand
 	var typeSwitchError error
 	switch {
-	case header.GetDestinationAddressType() == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
+	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
 		_parent, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
-	case header.GetDestinationAddressType() == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
+	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
 		_parent, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
-	case header.GetDestinationAddressType() == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
+	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
 		_parent, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
 	default:
 		// TODO: return actual type
@@ -203,6 +215,10 @@ func (m *CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ICBus
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	}
+	// Virtual field
+	if _destinationAddressTypeErr := writeBuffer.WriteVirtual("destinationAddressType", m.GetDestinationAddressType()); _destinationAddressTypeErr != nil {
+		return errors.Wrap(_destinationAddressTypeErr, "Error serializing 'destinationAddressType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
