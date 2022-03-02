@@ -46,37 +46,14 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
 		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BridgeAddress":
-		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALReply":
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MonitoredSAL":
-		return model.MonitoredSALParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExclamationMark":
 		return model.ExclamationMarkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ParameterChange":
-		return model.ParameterChangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "StatusByte":
-		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ReplyNetwork":
-		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExtendedStatusHeader":
-		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CommandHeader":
-		return model.CommandHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Confirmation":
-		return model.ConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusPointToMultiPointCommand":
-		srchk := parserArguments[0] == "true"
-		return model.CBusPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
 	case "Application":
 		return model.ApplicationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "StatusHeader":
-		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "StatusRequest":
-		return model.StatusRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StandardFormatStatusReply":
@@ -88,6 +65,40 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "CBusCommand":
 		srchk := parserArguments[0] == "true"
 		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
+	case "IdentifyReplyCommand":
+		attribute := model.AttributeByName(parserArguments[0])
+		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute)
+	case "BridgeCount":
+		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "PowerUp":
+		return model.PowerUpParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "Reply":
+		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SerialInterfaceAddress":
+		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BridgeAddress":
+		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MonitoredSAL":
+		return model.MonitoredSALParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ParameterChange":
+		return model.ParameterChangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "StatusByte":
+		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ReplyNetwork":
+		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ExtendedStatusHeader":
+		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CommandHeader":
+		return model.CommandHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "Confirmation":
+		return model.ConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CBusPointToMultiPointCommand":
+		srchk := parserArguments[0] == "true"
+		return model.CBusPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
+	case "StatusHeader":
+		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "StatusRequest":
+		return model.StatusRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UnitAddress":
 		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkProtocolControlInformation":
@@ -99,19 +110,11 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "CBusPointToPointCommand":
 		srchk := parserArguments[0] == "true"
 		return model.CBusPointToPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
-	case "BridgeCount":
-		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Alpha":
 		return model.AlphaParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "PowerUp":
-		return model.PowerUpParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusPointToPointToMultipointCommand":
 		srchk := parserArguments[0] == "true"
 		return model.CBusPointToPointToMultipointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
-	case "Reply":
-		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "SerialInterfaceAddress":
-		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

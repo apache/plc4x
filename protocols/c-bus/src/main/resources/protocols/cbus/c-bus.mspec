@@ -231,6 +231,112 @@
     ['0x11' DSIStatus                 ['10']]
 ]
 
+[type IdentifyReplyCommand(Attribute attribute)
+    [typeSwitch attribute
+        ['Manufacturer'                 IdentifyReplyCommandManufacturer
+            [simple string 64  manufacturerName ]
+        ]
+        ['Type'                         IdentifyReplyCommandType
+            [simple string 64  unitType         ]
+        ]
+        ['FirmwareVersion'              IdentifyReplyCommandFirmwareVersion
+            [simple string 64  firmwareVersion  ]
+        ]
+        ['Summary'                      IdentifyReplyCommandFirmwareSummary
+            [simple string 48  firmwareVersion  ]
+            [simple byte       unitServiceType  ]
+            [simple string 32  version          ]
+        ]
+        ['ExtendedDiagnosticSummary'    IdentifyReplyCommandExtendedDiagnosticSummary
+            [simple Application  lowApplication         ]
+            [simple Application  highApplication        ]
+            [simple byte         area                   ]
+            [simple uint 16      crc                    ]
+            [simple uint 32      serialNumber           ]
+            [simple byte         networkVoltage         ]
+            [simple bit          outputUnit             ]
+            [simple bit          enableChecksumAlarm    ]
+            [reserved uint 1        '0'                 ]
+            [reserved uint 1        '0'                 ]
+            [reserved uint 1        '0'                 ]
+            [simple bit          networkVoltageMarginal ]
+            [simple bit          networkVoltageLow      ]
+            [simple bit          unitInLearnMode        ]
+            [simple bit          microPowerReset        ]
+            [simple bit          internalStackOverflow  ]
+            [simple bit          commsTxError           ]
+            [simple bit          microReset             ]
+            [simple bit          EEDataError            ]
+            [simple bit          EEChecksumError        ]
+            [simple bit          EEWriteError           ]
+            [simple bit          installationMMIError   ]
+        ]
+        ['NetworkTerminalLevels'        IdentifyReplyCommandNetworkTerminalLevels
+            //TODO: read dynamic
+        ]
+        ['TerminalLevel'                IdentifyReplyCommandTerminalLevels
+            //TODO: read dynamic
+        ]
+        ['NetworkVoltage'               IdentifyReplyCommandNetworkVoltage
+           [simple string 2     volts                   ]
+           [const  byte         dot     0x2C            ]
+           [simple string 2     voltsDecimalPlace       ]
+           [const  byte         v       0x56            ]
+        ]
+        ['GAVValuesCurrent'             IdentifyReplyCommandGAVValuesCurrent
+           [array  byte         values  count   '16'    ] // TODO: check datatype
+        ]
+        ['GAVValuesStored'              IdentifyReplyCommandGAVValuesStored
+           [array  byte         values  count   '16'    ] // TODO: check datatype
+        ]
+        ['GAVPhysicalAddresses'         IdentifyReplyCommandGAVPhysicalAddresses
+           [array  byte         values  count   '16'    ] // TODO: check datatype
+        ]
+        ['LogicalAssignment'            IdentifyReplyCommandLogicalAssignment
+            //TODO: read dynamic
+        ]
+        ['Delays'                       IdentifyReplyCommandDelays
+            //TODO: read dynamic
+        ]
+        ['MinimumLevels'                IdentifyReplyCommandMinimumLevels
+            //TODO: read dynamic
+        ]
+        ['MaximumLevels'                IdentifyReplyCommandMaximumLevels
+            //TODO: read dynamic
+        ]
+        ['CurrentSenseLevels'           IdentifyReplyCommandCurrentSenseLevels
+            //TODO: read dynamic
+        ]
+        ['OutputUnitSummary'            IdentifyReplyCommandOutputUnitSummary
+            //TODO: read dynamic
+        ]
+        ['DSIStatus'                    IdentifyReplyCommandDSIStatus
+            [simple ChannelStatus   channelStatus1          ]
+            [simple ChannelStatus   channelStatus2          ]
+            [simple ChannelStatus   channelStatus3          ]
+            [simple ChannelStatus   channelStatus4          ]
+            [simple ChannelStatus   channelStatus5          ]
+            [simple ChannelStatus   channelStatus6          ]
+            [simple ChannelStatus   channelStatus7          ]
+            [simple ChannelStatus   channelStatus8          ]
+            [simple UnitStatus      unitStatus              ]
+            [simple byte            dimmingUCRevisionNumber ]
+        ]
+    ]
+]
+
+[enum uint 8 ChannelStatus
+    ['0'    OK                      ]
+    ['2'    LAMP_FAULT              ]
+    ['3'    CURRENT_LIMIT_OR_SHORT  ]
+]
+
+[enum uint 8 UnitStatus
+    ['0'    OK                      ]
+    ['1'    NACK                    ]
+    ['2'    NO_RESPONSE             ]
+]
+
 [enum uint 8 CALCommandTypeContainer(CALCommandType commandType, uint 5 numBytes)
     ['0x08' CALCommandReset                  ['RESET',            '0']]
     ['0x1A' CALCommandRecall                 ['RECALL',           '0']]
