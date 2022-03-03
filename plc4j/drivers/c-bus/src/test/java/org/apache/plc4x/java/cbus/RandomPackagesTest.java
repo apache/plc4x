@@ -198,4 +198,20 @@ public class RandomPackagesTest {
         }
     }
 
+    @Nested
+    class CBusQuickStartGuideTest {
+
+        // 4.2.9.1
+        @Test
+        void pointToPointCommandDirect() throws Exception {
+            byte[] bytes = Hex.decodeHex(BACKSLASH + "0538007902D4" + CR + LF);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            CBusCommand msg = CBusCommand.staticParse(readBufferByteBased, true);
+            assertThat(msg)
+                .isNotNull();
+            System.out.println(msg);
+        }
+
+    }
+
 }

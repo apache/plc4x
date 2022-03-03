@@ -18,27 +18,46 @@
  */
 package org.apache.plc4x.java.cbus;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
+import org.apache.plc4x.java.cbus.context.CBusDriverContext;
+import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
 public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
+
     @Override
     public String getProtocolCode() {
-        return null;
+        return "c-bus";
     }
 
     @Override
     public String getProtocolName() {
-        return null;
+        return "Clipsal C-Bus";
+    }
+
+    @Override
+    protected String getDefaultTransport() {
+        return "tcp";
+    }
+
+    @Override
+    protected boolean canRead() {
+        return true;
     }
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return null;
+        return CBusConfiguration.class;
     }
 
     @Override
@@ -52,12 +71,37 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return null;
+    protected ProtocolStackConfigurer<CBusCommand> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(CBusCommand.class, CBusCommand::staticParse)
+            .withProtocol(CBusProtocolLogic.class)
+            .withDriverContext(CBusDriverContext.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
+            .build();
     }
 
-    @Override
-    protected ProtocolStackConfigurer<CBusCommand> getStackConfigurer() {
-        return null;
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            for(int i = 0; i < byteBuf.readableBytes() - 1; i++) {
+                if((byteBuf.getUnsignedByte(i) == (short) 0x0D) && (byteBuf.getUnsignedByte(i + 1) == (short) 0x0A)) {
+                    return i + 1;
+                }
+            }
+            return -1;
+        }
     }
+
+    /** Consumes all Bytes till a backslash is found */
+    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
+        @Override
+        public void accept(ByteBuf byteBuf) {
+            // Consume every byte until the next byte would be a backslash.
+            while (byteBuf.getUnsignedByte(0) != '\\') {
+                // Just consume the bytes till the next possible start position.
+                byteBuf.readByte();
+            }
+        }
+    }
+
 }
