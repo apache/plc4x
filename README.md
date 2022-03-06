@@ -116,7 +116,7 @@ https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
 
 #### Mac
 
-Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
+Make sure `Homebrew` is installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
 
 ```
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
