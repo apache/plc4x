@@ -47,14 +47,46 @@
     [simple         ModbusPDU('response')   pdu]
 ]
 
-[type ModbusSerialADU(bit response) byteOrder='LITTLE_ENDIAN'
-    [simple         uint 16     transactionId]
-    [reserved       uint 16     '0x0000']
-    [simple         uint 16     length]
+[type ModbusRtuADU(bit response) byteOrder='LITTLE_ENDIAN'
+    // The start is indicated by more than 3,5 chars of value 0x00 ...
+    // The protocol will take care of consuming all except the last 4 empty chars
+    // The Length is determined by starting at the last 4 empty characters
+    // to the start of the next 4 empty characters
+    [const          uint 8      space1 0x00           ] // Character '\0'
+    [const          uint 8      space2 0x00           ] // Character '\0'
+    [const          uint 8      space3 0x00           ] // Character '\0'
+    [const          uint 8      space4 0x00           ] // Character '\0'
     [simple         uint 8      address]
 
     // The actual modbus payload
     [simple         ModbusPDU('response')   pdu]
+    //[checksum       uint 16     crc            ]
+
+    // The at least 4 silence chars is a separator ... so we don't actually consume them.
+    // They will be consumed by the next packet
+    //[const          uint 8      0x00           ] // Character '\0'
+    //[const          uint 8      0x00           ] // Character '\0'
+    //[const          uint 8      0x00           ] // Character '\0'
+    //[const          uint 8      0x00           ] // Character '\0'
+]
+
+[type ModbusAsciiADU(bit response) byteOrder='BIG_ENDIAN'
+    [const          uint 8      start 0x3A           ] // Character ':'
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Starting the ASCII encoded part where every byte is encoded as the ASCII representation of the raw byte.
+    [simple         uint 8      address        ]
+
+    // The actual modbus payload
+    [simple         ModbusPDU('response')   pdu]
+
+    //[checksum       uint 8      lrc            ]
+
+    // End the ASCII encoded part ...
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    [const          uint 8      cr 0x0D           ] // Character '\r'
+    [const          uint 8      lf 0x0A           ] // Character '\n'
 ]
 
 [discriminatedType ModbusPDU(bit response)
