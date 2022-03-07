@@ -360,13 +360,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
             }
             case TIME:
-                return "readBuffer.ReadTime(\"" + logicalName + "\")";
             case DATE:
-                return "readBuffer.ReadDate(\"" + logicalName + "\")";
             case DATETIME:
-                return "readBuffer.ReadDateTime(\"" + logicalName + "\")";
+                emitRequiredImport("time");
+                return "func() (time.Time, error) {raw, err := readBuffer.ReadUint32(\"" + logicalName + "\", 32);return time.UnixMilli(int64(raw)), err;}()";
             default:
-                throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
+                throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }
     }
 
@@ -467,13 +466,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case DATE:
-                return "writeBuffer.WriteDate(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
             case TIME:
-                return "writeBuffer.WriteTime(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
             case DATETIME:
-                return "writeBuffer.WriteDateTime(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteUint32(\"" + logicalName + "\", uint32(" + fieldName + ")" + writerArgsString + ")";
             default:
-                throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
+                throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }
     }
 
