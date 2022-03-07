@@ -36,9 +36,9 @@ type BACnetConfirmedServiceRequestAtomicReadFileRecord struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFileRecord interface {
 	IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-	// GetFileStartRecord returns FileStartRecord
+	// GetFileStartRecord returns FileStartRecord (property field)
 	GetFileStartRecord() *BACnetApplicationTagSignedInteger
-	// GetRequestRecordCount returns RequestRecordCount
+	// GetRequestRecordCount returns RequestRecordCount (property field)
 	GetRequestRecordCount() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type IBACnetConfirmedServiceRequestAtomicReadFileRecord interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) PeekedTagNumber() uint8 {
-	return 0x1
-}
-
-func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetPeekedTagNumber() uint8 {
-	return 0x1
-}
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader

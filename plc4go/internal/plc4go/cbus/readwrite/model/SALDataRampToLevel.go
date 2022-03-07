@@ -36,9 +36,9 @@ type SALDataRampToLevel struct {
 // The corresponding interface
 type ISALDataRampToLevel interface {
 	ISALData
-	// GetGroup returns Group
+	// GetGroup returns Group (property field)
 	GetGroup() byte
-	// GetLevel returns Level
+	// GetLevel returns Level (property field)
 	GetLevel() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ISALDataRampToLevel interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SALDataRampToLevel) CommandType() SALCommandType {
-	return SALCommandType_RAMP_TO_LEVEL
-}
-
-func (m *SALDataRampToLevel) GetCommandType() SALCommandType {
-	return SALCommandType_RAMP_TO_LEVEL
-}
 
 func (m *SALDataRampToLevel) InitializeParent(parent *SALData, commandTypeContainer SALCommandTypeContainer) {
 	m.SALData.CommandTypeContainer = commandTypeContainer

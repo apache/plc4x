@@ -41,19 +41,19 @@ type S7PayloadDiagnosticMessage struct {
 // The corresponding interface
 type IS7PayloadDiagnosticMessage interface {
 	IS7PayloadUserDataItem
-	// GetEventId returns EventId
+	// GetEventId returns EventId (property field)
 	GetEventId() uint16
-	// GetPriorityClass returns PriorityClass
+	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() uint8
-	// GetObNumber returns ObNumber
+	// GetObNumber returns ObNumber (property field)
 	GetObNumber() uint8
-	// GetDatId returns DatId
+	// GetDatId returns DatId (property field)
 	GetDatId() uint16
-	// GetInfo1 returns Info1
+	// GetInfo1 returns Info1 (property field)
 	GetInfo1() uint16
-	// GetInfo2 returns Info2
+	// GetInfo2 returns Info2 (property field)
 	GetInfo2() uint32
-	// GetTimeStamp returns TimeStamp
+	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() *DateAndTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

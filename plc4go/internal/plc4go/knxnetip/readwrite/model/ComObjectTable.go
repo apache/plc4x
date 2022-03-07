@@ -33,8 +33,8 @@ type ComObjectTable struct {
 
 // The corresponding interface
 type IComObjectTable interface {
-	// FirmwareType returns FirmwareType
-	FirmwareType() FirmwareType
+	// GetFirmwareType returns FirmwareType (discriminator field)
+	GetFirmwareType() FirmwareType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -35,9 +35,9 @@ type CBusHeader struct {
 
 // The corresponding interface
 type ICBusHeader interface {
-	// GetPriorityClass returns PriorityClass
+	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() PriorityClass
-	// GetDestinationAddressType returns DestinationAddressType
+	// GetDestinationAddressType returns DestinationAddressType (property field)
 	GetDestinationAddressType() DestinationAddressType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

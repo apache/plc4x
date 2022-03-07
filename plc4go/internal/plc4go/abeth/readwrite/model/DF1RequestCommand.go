@@ -33,8 +33,8 @@ type DF1RequestCommand struct {
 
 // The corresponding interface
 type IDF1RequestCommand interface {
-	// FunctionCode returns FunctionCode
-	FunctionCode() uint8
+	// GetFunctionCode returns FunctionCode (discriminator field)
+	GetFunctionCode() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -148,7 +148,7 @@ func (m *DF1RequestCommand) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
-	functionCode := uint8(child.FunctionCode())
+	functionCode := uint8(child.GetFunctionCode())
 	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, (functionCode))
 
 	if _functionCodeErr != nil {

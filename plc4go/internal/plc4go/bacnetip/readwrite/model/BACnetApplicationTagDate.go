@@ -35,7 +35,7 @@ type BACnetApplicationTagDate struct {
 // The corresponding interface
 type IBACnetApplicationTagDate interface {
 	IBACnetApplicationTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadDate
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -48,13 +48,6 @@ type IBACnetApplicationTagDate interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagDate) ActualTagNumber() uint8 {
-	return 0xA
-}
-
-func (m *BACnetApplicationTagDate) GetActualTagNumber() uint8 {
-	return 0xA
-}
 
 func (m *BACnetApplicationTagDate) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header

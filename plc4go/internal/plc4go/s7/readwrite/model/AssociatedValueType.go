@@ -36,13 +36,13 @@ type AssociatedValueType struct {
 
 // The corresponding interface
 type IAssociatedValueType interface {
-	// GetReturnCode returns ReturnCode
+	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
-	// GetTransportSize returns TransportSize
+	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
-	// GetValueLength returns ValueLength
+	// GetValueLength returns ValueLength (property field)
 	GetValueLength() uint16
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

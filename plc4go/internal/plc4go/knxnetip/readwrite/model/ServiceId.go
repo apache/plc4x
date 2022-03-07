@@ -33,8 +33,8 @@ type ServiceId struct {
 
 // The corresponding interface
 type IServiceId interface {
-	// ServiceType returns ServiceType
-	ServiceType() uint8
+	// GetServiceType returns ServiceType (discriminator field)
+	GetServiceType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -160,7 +160,7 @@ func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServic
 	}
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType := uint8(child.ServiceType())
+	serviceType := uint8(child.GetServiceType())
 	_serviceTypeErr := writeBuffer.WriteUint8("serviceType", 8, (serviceType))
 
 	if _serviceTypeErr != nil {

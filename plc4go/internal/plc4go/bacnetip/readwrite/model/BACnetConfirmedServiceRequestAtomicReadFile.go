@@ -39,9 +39,9 @@ type BACnetConfirmedServiceRequestAtomicReadFile struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFile interface {
 	IBACnetConfirmedServiceRequest
-	// GetFileIdentifier returns FileIdentifier
+	// GetFileIdentifier returns FileIdentifier (property field)
 	GetFileIdentifier() *BACnetApplicationTagObjectIdentifier
-	// GetAccessMethod returns AccessMethod
+	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

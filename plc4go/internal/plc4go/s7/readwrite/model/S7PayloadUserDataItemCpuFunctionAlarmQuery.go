@@ -45,11 +45,11 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 	IS7PayloadUserDataItem
-	// GetSyntaxId returns SyntaxId
+	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
-	// GetQueryType returns QueryType
+	// GetQueryType returns QueryType (property field)
 	GetQueryType() QueryType
-	// GetAlarmType returns AlarmType
+	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

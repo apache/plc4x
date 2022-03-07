@@ -33,7 +33,7 @@ type BACnetTagPayloadDouble struct {
 
 // The corresponding interface
 type IBACnetTagPayloadDouble interface {
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() float64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

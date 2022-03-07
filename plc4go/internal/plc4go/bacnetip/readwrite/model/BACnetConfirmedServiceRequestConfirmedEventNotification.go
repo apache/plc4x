@@ -51,31 +51,31 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	IBACnetConfirmedServiceRequest
-	// GetProcessIdentifier returns ProcessIdentifier
+	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() *BACnetContextTagUnsignedInteger
-	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier
+	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
 	GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier
-	// GetEventObjectIdentifier returns EventObjectIdentifier
+	// GetEventObjectIdentifier returns EventObjectIdentifier (property field)
 	GetEventObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetTimestamp returns Timestamp
+	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() *BACnetTimeStamp
-	// GetNotificationClass returns NotificationClass
+	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() *BACnetContextTagUnsignedInteger
-	// GetPriority returns Priority
+	// GetPriority returns Priority (property field)
 	GetPriority() *BACnetContextTagUnsignedInteger
-	// GetEventType returns EventType
+	// GetEventType returns EventType (property field)
 	GetEventType() *BACnetContextTagEventType
-	// GetMessageText returns MessageText
+	// GetMessageText returns MessageText (property field)
 	GetMessageText() *BACnetContextTagCharacterString
-	// GetNotifyType returns NotifyType
+	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() *BACnetContextTagNotifyType
-	// GetAckRequired returns AckRequired
+	// GetAckRequired returns AckRequired (property field)
 	GetAckRequired() *BACnetContextTagBoolean
-	// GetFromState returns FromState
+	// GetFromState returns FromState (property field)
 	GetFromState() *BACnetContextTagEventState
-	// GetToState returns ToState
+	// GetToState returns ToState (property field)
 	GetToState() *BACnetContextTagEventState
-	// GetEventValues returns EventValues
+	// GetEventValues returns EventValues (property field)
 	GetEventValues() *BACnetNotificationParameters
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

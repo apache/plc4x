@@ -39,9 +39,9 @@ type ApduDataGroupValueWrite struct {
 // The corresponding interface
 type IApduDataGroupValueWrite interface {
 	IApduData
-	// GetDataFirstByte returns DataFirstByte
+	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

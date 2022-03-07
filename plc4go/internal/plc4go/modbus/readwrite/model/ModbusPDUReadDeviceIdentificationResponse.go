@@ -44,17 +44,17 @@ type ModbusPDUReadDeviceIdentificationResponse struct {
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationResponse interface {
 	IModbusPDU
-	// GetLevel returns Level
+	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
-	// GetIndividualAccess returns IndividualAccess
+	// GetIndividualAccess returns IndividualAccess (property field)
 	GetIndividualAccess() bool
-	// GetConformityLevel returns ConformityLevel
+	// GetConformityLevel returns ConformityLevel (property field)
 	GetConformityLevel() ModbusDeviceInformationConformityLevel
-	// GetMoreFollows returns MoreFollows
+	// GetMoreFollows returns MoreFollows (property field)
 	GetMoreFollows() ModbusDeviceInformationMoreFollows
-	// GetNextObjectId returns NextObjectId
+	// GetNextObjectId returns NextObjectId (property field)
 	GetNextObjectId() uint8
-	// GetObjects returns Objects
+	// GetObjects returns Objects (property field)
 	GetObjects() []*ModbusDeviceInformationObject
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -33,8 +33,8 @@ type IdentifyReplyCommand struct {
 
 // The corresponding interface
 type IIdentifyReplyCommand interface {
-	// Attribute returns Attribute
-	Attribute() Attribute
+	// GetAttribute returns Attribute (discriminator field)
+	GetAttribute() Attribute
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -40,11 +40,11 @@ type CBusPointToPointCommandIndirect struct {
 // The corresponding interface
 type ICBusPointToPointCommandIndirect interface {
 	ICBusPointToPointCommand
-	// GetBridgeAddress returns BridgeAddress
+	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() *BridgeAddress
-	// GetNetworkRoute returns NetworkRoute
+	// GetNetworkRoute returns NetworkRoute (property field)
 	GetNetworkRoute() *NetworkRoute
-	// GetUnitAddress returns UnitAddress
+	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() *UnitAddress
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -57,13 +57,6 @@ type ICBusPointToPointCommandIndirect interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CBusPointToPointCommandIndirect) IsDirect() bool {
-	return bool(false)
-}
-
-func (m *CBusPointToPointCommandIndirect) GetIsDirect() bool {
-	return bool(false)
-}
 
 func (m *CBusPointToPointCommandIndirect) InitializeParent(parent *CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData *CALData, crc *Checksum, peekAlpha byte, alpha *Alpha) {
 	m.CBusPointToPointCommand.BridgeAddressCountPeek = bridgeAddressCountPeek

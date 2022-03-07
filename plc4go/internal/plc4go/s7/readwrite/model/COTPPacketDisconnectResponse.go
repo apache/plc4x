@@ -39,9 +39,9 @@ type COTPPacketDisconnectResponse struct {
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
 	ICOTPPacket
-	// GetDestinationReference returns DestinationReference
+	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
-	// GetSourceReference returns SourceReference
+	// GetSourceReference returns SourceReference (property field)
 	GetSourceReference() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

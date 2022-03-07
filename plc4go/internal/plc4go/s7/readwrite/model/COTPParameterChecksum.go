@@ -38,7 +38,7 @@ type COTPParameterChecksum struct {
 // The corresponding interface
 type ICOTPParameterChecksum interface {
 	ICOTPParameter
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

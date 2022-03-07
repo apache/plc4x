@@ -42,13 +42,13 @@ type CipReadResponse struct {
 // The corresponding interface
 type ICipReadResponse interface {
 	ICipService
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint8
-	// GetExtStatus returns ExtStatus
+	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
-	// GetDataType returns DataType
+	// GetDataType returns DataType (property field)
 	GetDataType() CIPDataTypeCode
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

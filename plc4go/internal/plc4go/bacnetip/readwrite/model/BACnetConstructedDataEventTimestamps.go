@@ -41,11 +41,11 @@ type BACnetConstructedDataEventTimestamps struct {
 // The corresponding interface
 type IBACnetConstructedDataEventTimestamps interface {
 	IBACnetConstructedData
-	// GetToOffnormal returns ToOffnormal
+	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() *BACnetContextTagTime
-	// GetToFault returns ToFault
+	// GetToFault returns ToFault (property field)
 	GetToFault() *BACnetContextTagUnsignedInteger
-	// GetToNormal returns ToNormal
+	// GetToNormal returns ToNormal (property field)
 	GetToNormal() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -64,14 +64,6 @@ func (m *BACnetConstructedDataEventTimestamps) ObjectType() BACnetObjectType {
 
 func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
 	return 0
-}
-
-func (m *BACnetConstructedDataEventTimestamps) PropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
-}
-
-func (m *BACnetConstructedDataEventTimestamps) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
 }
 
 func (m *BACnetConstructedDataEventTimestamps) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {

@@ -39,7 +39,7 @@ type BACnetConstructedDataLifeSafetyZone struct {
 // The corresponding interface
 type IBACnetConstructedDataLifeSafetyZone interface {
 	IBACnetConstructedData
-	// GetZones returns Zones
+	// GetZones returns Zones (property field)
 	GetZones() []*BACnetContextTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -58,14 +58,6 @@ func (m *BACnetConstructedDataLifeSafetyZone) ObjectType() BACnetObjectType {
 
 func (m *BACnetConstructedDataLifeSafetyZone) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_ZONE
-}
-
-func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return 0
-}
-
-func (m *BACnetConstructedDataLifeSafetyZone) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return 0
 }
 
 func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {

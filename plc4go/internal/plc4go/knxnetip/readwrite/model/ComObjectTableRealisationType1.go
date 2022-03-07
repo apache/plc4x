@@ -37,11 +37,11 @@ type ComObjectTableRealisationType1 struct {
 // The corresponding interface
 type IComObjectTableRealisationType1 interface {
 	IComObjectTable
-	// GetNumEntries returns NumEntries
+	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
-	// GetRamFlagsTablePointer returns RamFlagsTablePointer
+	// GetRamFlagsTablePointer returns RamFlagsTablePointer (property field)
 	GetRamFlagsTablePointer() uint8
-	// GetComObjectDescriptors returns ComObjectDescriptors
+	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() []*GroupObjectDescriptorRealisationType1
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

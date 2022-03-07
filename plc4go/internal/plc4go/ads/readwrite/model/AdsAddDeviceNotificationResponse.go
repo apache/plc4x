@@ -36,9 +36,9 @@ type AdsAddDeviceNotificationResponse struct {
 // The corresponding interface
 type IAdsAddDeviceNotificationResponse interface {
 	IAdsData
-	// GetResult returns Result
+	// GetResult returns Result (property field)
 	GetResult() ReturnCode
-	// GetNotificationHandle returns NotificationHandle
+	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

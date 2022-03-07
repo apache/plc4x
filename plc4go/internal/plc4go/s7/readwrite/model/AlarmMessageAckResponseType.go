@@ -35,11 +35,11 @@ type AlarmMessageAckResponseType struct {
 
 // The corresponding interface
 type IAlarmMessageAckResponseType interface {
-	// GetFunctionId returns FunctionId
+	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
-	// GetNumberOfObjects returns NumberOfObjects
+	// GetNumberOfObjects returns NumberOfObjects (property field)
 	GetNumberOfObjects() uint8
-	// GetMessageObjects returns MessageObjects
+	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

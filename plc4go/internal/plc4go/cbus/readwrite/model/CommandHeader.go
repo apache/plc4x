@@ -33,7 +33,7 @@ type CommandHeader struct {
 
 // The corresponding interface
 type ICommandHeader interface {
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

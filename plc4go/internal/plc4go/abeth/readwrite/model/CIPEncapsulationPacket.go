@@ -38,15 +38,15 @@ type CIPEncapsulationPacket struct {
 
 // The corresponding interface
 type ICIPEncapsulationPacket interface {
-	// CommandType returns CommandType
-	CommandType() uint16
-	// GetSessionHandle returns SessionHandle
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() uint16
+	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint32
-	// GetSenderContext returns SenderContext
+	// GetSenderContext returns SenderContext (property field)
 	GetSenderContext() []uint8
-	// GetOptions returns Options
+	// GetOptions returns Options (property field)
 	GetOptions() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -263,7 +263,7 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType := uint16(child.CommandType())
+	commandType := uint16(child.GetCommandType())
 	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, (commandType))
 
 	if _commandTypeErr != nil {

@@ -35,7 +35,7 @@ type ConfirmationReply struct {
 // The corresponding interface
 type IConfirmationReply interface {
 	IReply
-	// GetIsA returns IsA
+	// GetIsA returns IsA (property field)
 	GetIsA() *Confirmation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

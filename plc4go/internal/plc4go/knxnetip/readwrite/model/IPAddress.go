@@ -33,7 +33,7 @@ type IPAddress struct {
 
 // The corresponding interface
 type IIPAddress interface {
-	// GetAddr returns Addr
+	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

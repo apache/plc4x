@@ -38,7 +38,7 @@ type COTPParameterTpduSize struct {
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
 	ICOTPParameter
-	// GetTpduSize returns TpduSize
+	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

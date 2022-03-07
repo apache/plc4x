@@ -43,15 +43,15 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWriteProperty interface {
 	IBACnetConfirmedServiceRequest
-	// GetObjectIdentifier returns ObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetPropertyIdentifier returns PropertyIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
-	// GetArrayIndex returns ArrayIndex
+	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
-	// GetPropertyValue returns PropertyValue
+	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() *BACnetConstructedData
-	// GetPriority returns Priority
+	// GetPriority returns Priority (property field)
 	GetPriority() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

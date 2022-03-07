@@ -33,7 +33,7 @@ type S7VarPayloadStatusItem struct {
 
 // The corresponding interface
 type IS7VarPayloadStatusItem interface {
-	// GetReturnCode returns ReturnCode
+	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

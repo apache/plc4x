@@ -33,8 +33,8 @@ type AdsMultiRequestItem struct {
 
 // The corresponding interface
 type IAdsMultiRequestItem interface {
-	// IndexGroup returns IndexGroup
-	IndexGroup() uint32
+	// GetIndexGroup returns IndexGroup (discriminator field)
+	GetIndexGroup() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

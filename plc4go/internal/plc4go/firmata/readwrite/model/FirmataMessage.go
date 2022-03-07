@@ -36,8 +36,8 @@ type FirmataMessage struct {
 
 // The corresponding interface
 type IFirmataMessage interface {
-	// MessageType returns MessageType
-	MessageType() uint8
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -159,7 +159,7 @@ func (m *FirmataMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IF
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(child.MessageType())
+	messageType := uint8(child.GetMessageType())
 	_messageTypeErr := writeBuffer.WriteUint8("messageType", 4, (messageType))
 
 	if _messageTypeErr != nil {

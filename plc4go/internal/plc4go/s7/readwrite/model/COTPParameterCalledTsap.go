@@ -38,7 +38,7 @@ type COTPParameterCalledTsap struct {
 // The corresponding interface
 type ICOTPParameterCalledTsap interface {
 	ICOTPParameter
-	// GetTsapId returns TsapId
+	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

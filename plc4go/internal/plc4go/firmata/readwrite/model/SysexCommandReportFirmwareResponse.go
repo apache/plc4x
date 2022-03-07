@@ -37,11 +37,11 @@ type SysexCommandReportFirmwareResponse struct {
 // The corresponding interface
 type ISysexCommandReportFirmwareResponse interface {
 	ISysexCommand
-	// GetMajorVersion returns MajorVersion
+	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
-	// GetMinorVersion returns MinorVersion
+	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
-	// GetFileName returns FileName
+	// GetFileName returns FileName (property field)
 	GetFileName() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

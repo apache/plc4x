@@ -34,9 +34,9 @@ type ModbusDeviceInformationObject struct {
 
 // The corresponding interface
 type IModbusDeviceInformationObject interface {
-	// GetObjectId returns ObjectId
+	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

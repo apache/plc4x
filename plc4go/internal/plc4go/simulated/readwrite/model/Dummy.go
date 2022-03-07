@@ -33,7 +33,7 @@ type Dummy struct {
 
 // The corresponding interface
 type IDummy interface {
-	// GetDummy returns Dummy
+	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

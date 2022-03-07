@@ -33,7 +33,7 @@ type UnitAddress struct {
 
 // The corresponding interface
 type IUnitAddress interface {
-	// GetAddress returns Address
+	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

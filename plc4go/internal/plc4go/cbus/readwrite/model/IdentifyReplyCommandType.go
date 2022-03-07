@@ -35,7 +35,7 @@ type IdentifyReplyCommandType struct {
 // The corresponding interface
 type IIdentifyReplyCommandType interface {
 	IIdentifyReplyCommand
-	// GetUnitType returns UnitType
+	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

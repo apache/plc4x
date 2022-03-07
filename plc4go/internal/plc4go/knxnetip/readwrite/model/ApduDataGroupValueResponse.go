@@ -39,9 +39,9 @@ type ApduDataGroupValueResponse struct {
 // The corresponding interface
 type IApduDataGroupValueResponse interface {
 	IApduData
-	// GetDataFirstByte returns DataFirstByte
+	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

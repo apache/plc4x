@@ -41,23 +41,23 @@ type DIBDeviceInfo struct {
 
 // The corresponding interface
 type IDIBDeviceInfo interface {
-	// GetDescriptionType returns DescriptionType
+	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
-	// GetKnxMedium returns KnxMedium
+	// GetKnxMedium returns KnxMedium (property field)
 	GetKnxMedium() KnxMedium
-	// GetDeviceStatus returns DeviceStatus
+	// GetDeviceStatus returns DeviceStatus (property field)
 	GetDeviceStatus() *DeviceStatus
-	// GetKnxAddress returns KnxAddress
+	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() *KnxAddress
-	// GetProjectInstallationIdentifier returns ProjectInstallationIdentifier
+	// GetProjectInstallationIdentifier returns ProjectInstallationIdentifier (property field)
 	GetProjectInstallationIdentifier() *ProjectInstallationIdentifier
-	// GetKnxNetIpDeviceSerialNumber returns KnxNetIpDeviceSerialNumber
+	// GetKnxNetIpDeviceSerialNumber returns KnxNetIpDeviceSerialNumber (property field)
 	GetKnxNetIpDeviceSerialNumber() []byte
-	// GetKnxNetIpDeviceMulticastAddress returns KnxNetIpDeviceMulticastAddress
+	// GetKnxNetIpDeviceMulticastAddress returns KnxNetIpDeviceMulticastAddress (property field)
 	GetKnxNetIpDeviceMulticastAddress() *IPAddress
-	// GetKnxNetIpDeviceMacAddress returns KnxNetIpDeviceMacAddress
+	// GetKnxNetIpDeviceMacAddress returns KnxNetIpDeviceMacAddress (property field)
 	GetKnxNetIpDeviceMacAddress() *MACAddress
-	// GetDeviceFriendlyName returns DeviceFriendlyName
+	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
 	GetDeviceFriendlyName() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

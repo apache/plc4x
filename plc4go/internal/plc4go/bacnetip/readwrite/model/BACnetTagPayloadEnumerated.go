@@ -36,9 +36,9 @@ type BACnetTagPayloadEnumerated struct {
 
 // The corresponding interface
 type IBACnetTagPayloadEnumerated interface {
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -36,15 +36,15 @@ type BACnetStatusFlags struct {
 
 // The corresponding interface
 type IBACnetStatusFlags interface {
-	// GetRawBits returns RawBits
+	// GetRawBits returns RawBits (property field)
 	GetRawBits() *BACnetContextTagBitString
-	// GetInAlarm returns InAlarm
+	// GetInAlarm returns InAlarm (virtual field)
 	GetInAlarm() bool
-	// GetFault returns Fault
+	// GetFault returns Fault (virtual field)
 	GetFault() bool
-	// GetOverriden returns Overriden
+	// GetOverriden returns Overriden (virtual field)
 	GetOverriden() bool
-	// GetOutOfService returns OutOfService
+	// GetOutOfService returns OutOfService (virtual field)
 	GetOutOfService() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

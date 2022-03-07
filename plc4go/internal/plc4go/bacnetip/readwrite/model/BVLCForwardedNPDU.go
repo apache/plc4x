@@ -40,11 +40,11 @@ type BVLCForwardedNPDU struct {
 // The corresponding interface
 type IBVLCForwardedNPDU interface {
 	IBVLC
-	// GetIp returns Ip
+	// GetIp returns Ip (property field)
 	GetIp() []uint8
-	// GetPort returns Port
+	// GetPort returns Port (property field)
 	GetPort() uint16
-	// GetNpdu returns Npdu
+	// GetNpdu returns Npdu (property field)
 	GetNpdu() *NPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

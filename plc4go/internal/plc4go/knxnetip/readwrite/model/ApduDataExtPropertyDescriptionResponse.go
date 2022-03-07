@@ -46,21 +46,21 @@ type ApduDataExtPropertyDescriptionResponse struct {
 // The corresponding interface
 type IApduDataExtPropertyDescriptionResponse interface {
 	IApduDataExt
-	// GetObjectIndex returns ObjectIndex
+	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
-	// GetPropertyId returns PropertyId
+	// GetPropertyId returns PropertyId (property field)
 	GetPropertyId() uint8
-	// GetIndex returns Index
+	// GetIndex returns Index (property field)
 	GetIndex() uint8
-	// GetWriteEnabled returns WriteEnabled
+	// GetWriteEnabled returns WriteEnabled (property field)
 	GetWriteEnabled() bool
-	// GetPropertyDataType returns PropertyDataType
+	// GetPropertyDataType returns PropertyDataType (property field)
 	GetPropertyDataType() KnxPropertyDataType
-	// GetMaxNrOfElements returns MaxNrOfElements
+	// GetMaxNrOfElements returns MaxNrOfElements (property field)
 	GetMaxNrOfElements() uint16
-	// GetReadLevel returns ReadLevel
+	// GetReadLevel returns ReadLevel (property field)
 	GetReadLevel() AccessLevel
-	// GetWriteLevel returns WriteLevel
+	// GetWriteLevel returns WriteLevel (property field)
 	GetWriteLevel() AccessLevel
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

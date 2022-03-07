@@ -36,8 +36,8 @@ type BACnetUnconfirmedServiceRequest struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequest interface {
-	// ServiceChoice returns ServiceChoice
-	ServiceChoice() uint8
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -175,7 +175,7 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.ServiceChoice())
+	serviceChoice := uint8(child.GetServiceChoice())
 	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {

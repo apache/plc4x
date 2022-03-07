@@ -38,11 +38,11 @@ type BACnetTagPayloadBitString struct {
 
 // The corresponding interface
 type IBACnetTagPayloadBitString interface {
-	// GetUnusedBits returns UnusedBits
+	// GetUnusedBits returns UnusedBits (property field)
 	GetUnusedBits() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []bool
-	// GetUnused returns Unused
+	// GetUnused returns Unused (property field)
 	GetUnused() []bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -34,7 +34,7 @@ type StatusHeader struct {
 
 // The corresponding interface
 type IStatusHeader interface {
-	// GetNumberOfCharacterPairs returns NumberOfCharacterPairs
+	// GetNumberOfCharacterPairs returns NumberOfCharacterPairs (property field)
 	GetNumberOfCharacterPairs() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

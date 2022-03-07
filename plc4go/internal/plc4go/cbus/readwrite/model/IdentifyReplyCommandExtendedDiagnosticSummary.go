@@ -54,43 +54,43 @@ type IdentifyReplyCommandExtendedDiagnosticSummary struct {
 // The corresponding interface
 type IIdentifyReplyCommandExtendedDiagnosticSummary interface {
 	IIdentifyReplyCommand
-	// GetLowApplication returns LowApplication
+	// GetLowApplication returns LowApplication (property field)
 	GetLowApplication() ApplicationIdContainer
-	// GetHighApplication returns HighApplication
+	// GetHighApplication returns HighApplication (property field)
 	GetHighApplication() ApplicationIdContainer
-	// GetArea returns Area
+	// GetArea returns Area (property field)
 	GetArea() byte
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() uint16
-	// GetSerialNumber returns SerialNumber
+	// GetSerialNumber returns SerialNumber (property field)
 	GetSerialNumber() uint32
-	// GetNetworkVoltage returns NetworkVoltage
+	// GetNetworkVoltage returns NetworkVoltage (property field)
 	GetNetworkVoltage() byte
-	// GetOutputUnit returns OutputUnit
+	// GetOutputUnit returns OutputUnit (property field)
 	GetOutputUnit() bool
-	// GetEnableChecksumAlarm returns EnableChecksumAlarm
+	// GetEnableChecksumAlarm returns EnableChecksumAlarm (property field)
 	GetEnableChecksumAlarm() bool
-	// GetNetworkVoltageMarginal returns NetworkVoltageMarginal
+	// GetNetworkVoltageMarginal returns NetworkVoltageMarginal (property field)
 	GetNetworkVoltageMarginal() bool
-	// GetNetworkVoltageLow returns NetworkVoltageLow
+	// GetNetworkVoltageLow returns NetworkVoltageLow (property field)
 	GetNetworkVoltageLow() bool
-	// GetUnitInLearnMode returns UnitInLearnMode
+	// GetUnitInLearnMode returns UnitInLearnMode (property field)
 	GetUnitInLearnMode() bool
-	// GetMicroPowerReset returns MicroPowerReset
+	// GetMicroPowerReset returns MicroPowerReset (property field)
 	GetMicroPowerReset() bool
-	// GetInternalStackOverflow returns InternalStackOverflow
+	// GetInternalStackOverflow returns InternalStackOverflow (property field)
 	GetInternalStackOverflow() bool
-	// GetCommsTxError returns CommsTxError
+	// GetCommsTxError returns CommsTxError (property field)
 	GetCommsTxError() bool
-	// GetMicroReset returns MicroReset
+	// GetMicroReset returns MicroReset (property field)
 	GetMicroReset() bool
-	// GetEEDataError returns EEDataError
+	// GetEEDataError returns EEDataError (property field)
 	GetEEDataError() bool
-	// GetEEChecksumError returns EEChecksumError
+	// GetEEChecksumError returns EEChecksumError (property field)
 	GetEEChecksumError() bool
-	// GetEEWriteError returns EEWriteError
+	// GetEEWriteError returns EEWriteError (property field)
 	GetEEWriteError() bool
-	// GetInstallationMMIError returns InstallationMMIError
+	// GetInstallationMMIError returns InstallationMMIError (property field)
 	GetInstallationMMIError() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,7 +35,7 @@ type SALDataTerminateRamp struct {
 // The corresponding interface
 type ISALDataTerminateRamp interface {
 	ISALData
-	// GetGroup returns Group
+	// GetGroup returns Group (property field)
 	GetGroup() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -48,13 +48,6 @@ type ISALDataTerminateRamp interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SALDataTerminateRamp) CommandType() SALCommandType {
-	return SALCommandType_TERMINATE_RAMP
-}
-
-func (m *SALDataTerminateRamp) GetCommandType() SALCommandType {
-	return SALCommandType_TERMINATE_RAMP
-}
 
 func (m *SALDataTerminateRamp) InitializeParent(parent *SALData, commandTypeContainer SALCommandTypeContainer) {
 	m.SALData.CommandTypeContainer = commandTypeContainer

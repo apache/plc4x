@@ -36,9 +36,9 @@ type ModbusPDUGetComEventCounterResponse struct {
 // The corresponding interface
 type IModbusPDUGetComEventCounterResponse interface {
 	IModbusPDU
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint16
-	// GetEventCount returns EventCount
+	// GetEventCount returns EventCount (property field)
 	GetEventCount() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

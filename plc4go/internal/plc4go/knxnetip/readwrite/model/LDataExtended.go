@@ -40,17 +40,17 @@ type LDataExtended struct {
 // The corresponding interface
 type ILDataExtended interface {
 	ILDataFrame
-	// GetGroupAddress returns GroupAddress
+	// GetGroupAddress returns GroupAddress (property field)
 	GetGroupAddress() bool
-	// GetHopCount returns HopCount
+	// GetHopCount returns HopCount (property field)
 	GetHopCount() uint8
-	// GetExtendedFrameFormat returns ExtendedFrameFormat
+	// GetExtendedFrameFormat returns ExtendedFrameFormat (property field)
 	GetExtendedFrameFormat() uint8
-	// GetSourceAddress returns SourceAddress
+	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() *KnxAddress
-	// GetDestinationAddress returns DestinationAddress
+	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() []byte
-	// GetApdu returns Apdu
+	// GetApdu returns Apdu (property field)
 	GetApdu() *Apdu
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

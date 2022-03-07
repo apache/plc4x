@@ -39,7 +39,7 @@ type BACnetPropertyStatesBoolean struct {
 // The corresponding interface
 type IBACnetPropertyStatesBoolean interface {
 	IBACnetPropertyStates
-	// GetBooleanValue returns BooleanValue
+	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() *BACnetContextTagBoolean
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -52,13 +52,6 @@ type IBACnetPropertyStatesBoolean interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetPropertyStatesBoolean) PeekedTagNumber() uint8 {
-	return uint8(0)
-}
-
-func (m *BACnetPropertyStatesBoolean) GetPeekedTagNumber() uint8 {
-	return uint8(0)
-}
 
 func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetPropertyStates.OpeningTag = openingTag

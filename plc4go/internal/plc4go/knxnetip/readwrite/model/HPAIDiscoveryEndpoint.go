@@ -35,11 +35,11 @@ type HPAIDiscoveryEndpoint struct {
 
 // The corresponding interface
 type IHPAIDiscoveryEndpoint interface {
-	// GetHostProtocolCode returns HostProtocolCode
+	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
-	// GetIpAddress returns IpAddress
+	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() *IPAddress
-	// GetIpPort returns IpPort
+	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,9 +39,9 @@ type DeviceConfigurationRequest struct {
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
 	IKnxNetIpMessage
-	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock
+	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock (property field)
 	GetDeviceConfigurationRequestDataBlock() *DeviceConfigurationRequestDataBlock
-	// GetCemi returns Cemi
+	// GetCemi returns Cemi (property field)
 	GetCemi() *CEMI
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

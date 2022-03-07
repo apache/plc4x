@@ -35,11 +35,11 @@ type TunnelingResponseDataBlock struct {
 
 // The corresponding interface
 type ITunnelingResponseDataBlock interface {
-	// GetCommunicationChannelId returns CommunicationChannelId
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
-	// GetSequenceCounter returns SequenceCounter
+	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() Status
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

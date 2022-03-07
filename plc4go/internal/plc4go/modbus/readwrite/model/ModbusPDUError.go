@@ -35,7 +35,7 @@ type ModbusPDUError struct {
 // The corresponding interface
 type IModbusPDUError interface {
 	IModbusPDU
-	// GetExceptionCode returns ExceptionCode
+	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

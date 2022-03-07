@@ -37,11 +37,11 @@ type AdsReadStateResponse struct {
 // The corresponding interface
 type IAdsReadStateResponse interface {
 	IAdsData
-	// GetResult returns Result
+	// GetResult returns Result (property field)
 	GetResult() ReturnCode
-	// GetAdsState returns AdsState
+	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
-	// GetDeviceState returns DeviceState
+	// GetDeviceState returns DeviceState (property field)
 	GetDeviceState() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

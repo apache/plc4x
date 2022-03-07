@@ -34,7 +34,7 @@ type Reply struct {
 
 // The corresponding interface
 type IReply interface {
-	// GetMagicByte returns MagicByte
+	// GetMagicByte returns MagicByte (property field)
 	GetMagicByte() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

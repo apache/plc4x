@@ -36,9 +36,9 @@ type KnxGroupAddress2Level struct {
 // The corresponding interface
 type IKnxGroupAddress2Level interface {
 	IKnxGroupAddress
-	// GetMainGroup returns MainGroup
+	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
-	// GetSubGroup returns SubGroup
+	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

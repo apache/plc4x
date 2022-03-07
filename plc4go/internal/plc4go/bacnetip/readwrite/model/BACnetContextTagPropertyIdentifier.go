@@ -41,11 +41,11 @@ type BACnetContextTagPropertyIdentifier struct {
 // The corresponding interface
 type IBACnetContextTagPropertyIdentifier interface {
 	IBACnetContextTag
-	// GetPropertyIdentifier returns PropertyIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifier
-	// GetProprietaryValue returns ProprietaryValue
+	// GetProprietaryValue returns ProprietaryValue (property field)
 	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary
+	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

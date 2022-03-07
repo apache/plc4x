@@ -36,8 +36,8 @@ type CipService struct {
 
 // The corresponding interface
 type ICipService interface {
-	// Service returns Service
-	Service() uint8
+	// GetService returns Service (discriminator field)
+	GetService() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -163,7 +163,7 @@ func (m *CipService) SerializeParent(writeBuffer utils.WriteBuffer, child ICipSe
 	}
 
 	// Discriminator Field (service) (Used as input to a switch field)
-	service := uint8(child.Service())
+	service := uint8(child.GetService())
 	_serviceErr := writeBuffer.WriteUint8("service", 8, (service))
 
 	if _serviceErr != nil {

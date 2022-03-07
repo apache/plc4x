@@ -37,9 +37,9 @@ type S7MessageObjectResponse struct {
 // The corresponding interface
 type IS7MessageObjectResponse interface {
 	IS7DataAlarmMessage
-	// GetReturnCode returns ReturnCode
+	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
-	// GetTransportSize returns TransportSize
+	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

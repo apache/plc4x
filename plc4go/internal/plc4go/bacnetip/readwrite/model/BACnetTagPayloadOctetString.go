@@ -36,9 +36,9 @@ type BACnetTagPayloadOctetString struct {
 
 // The corresponding interface
 type IBACnetTagPayloadOctetString interface {
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() string
-	// GetActualLengthInBit returns ActualLengthInBit
+	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
 	GetActualLengthInBit() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

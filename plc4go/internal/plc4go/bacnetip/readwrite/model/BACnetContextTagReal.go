@@ -39,9 +39,9 @@ type BACnetContextTagReal struct {
 // The corresponding interface
 type IBACnetContextTagReal interface {
 	IBACnetContextTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadReal
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

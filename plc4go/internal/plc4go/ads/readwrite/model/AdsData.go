@@ -33,10 +33,10 @@ type AdsData struct {
 
 // The corresponding interface
 type IAdsData interface {
-	// CommandId returns CommandId
-	CommandId() CommandId
-	// Response returns Response
-	Response() bool
+	// GetCommandId returns CommandId (discriminator field)
+	GetCommandId() CommandId
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

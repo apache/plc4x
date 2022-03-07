@@ -36,9 +36,9 @@ type S7MessageResponseData struct {
 // The corresponding interface
 type IS7MessageResponseData interface {
 	IS7Message
-	// GetErrorClass returns ErrorClass
+	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() uint8
-	// GetErrorCode returns ErrorCode
+	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,15 +39,15 @@ type AdsReadDeviceInfoResponse struct {
 // The corresponding interface
 type IAdsReadDeviceInfoResponse interface {
 	IAdsData
-	// GetResult returns Result
+	// GetResult returns Result (property field)
 	GetResult() ReturnCode
-	// GetMajorVersion returns MajorVersion
+	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
-	// GetMinorVersion returns MinorVersion
+	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
-	// GetVersion returns Version
+	// GetVersion returns Version (property field)
 	GetVersion() uint16
-	// GetDevice returns Device
+	// GetDevice returns Device (property field)
 	GetDevice() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

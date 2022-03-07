@@ -35,9 +35,9 @@ type BACnetApplicationTagDouble struct {
 // The corresponding interface
 type IBACnetApplicationTagDouble interface {
 	IBACnetApplicationTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadDouble
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -50,13 +50,6 @@ type IBACnetApplicationTagDouble interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagDouble) ActualTagNumber() uint8 {
-	return 0x5
-}
-
-func (m *BACnetApplicationTagDouble) GetActualTagNumber() uint8 {
-	return 0x5
-}
 
 func (m *BACnetApplicationTagDouble) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header

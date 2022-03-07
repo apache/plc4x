@@ -36,8 +36,8 @@ type COTPParameter struct {
 
 // The corresponding interface
 type ICOTPParameter interface {
-	// ParameterType returns ParameterType
-	ParameterType() uint8
+	// GetParameterType returns ParameterType (discriminator field)
+	GetParameterType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -169,7 +169,7 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(child.ParameterType())
+	parameterType := uint8(child.GetParameterType())
 	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, (parameterType))
 
 	if _parameterTypeErr != nil {

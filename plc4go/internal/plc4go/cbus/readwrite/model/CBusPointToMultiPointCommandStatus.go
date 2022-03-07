@@ -47,13 +47,13 @@ type CBusPointToMultiPointCommandStatus struct {
 // The corresponding interface
 type ICBusPointToMultiPointCommandStatus interface {
 	ICBusPointToMultiPointCommand
-	// GetStatusRequest returns StatusRequest
+	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() *StatusRequest
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
-	// GetPeekAlpha returns PeekAlpha
+	// GetPeekAlpha returns PeekAlpha (property field)
 	GetPeekAlpha() byte
-	// GetAlpha returns Alpha
+	// GetAlpha returns Alpha (property field)
 	GetAlpha() *Alpha
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

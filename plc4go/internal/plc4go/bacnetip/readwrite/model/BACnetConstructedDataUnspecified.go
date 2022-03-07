@@ -42,13 +42,13 @@ type BACnetConstructedDataUnspecified struct {
 // The corresponding interface
 type IBACnetConstructedDataUnspecified interface {
 	IBACnetConstructedData
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []*BACnetConstructedDataElement
-	// GetPropertyIdentifier returns PropertyIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
-	// GetContent returns Content
+	// GetContent returns Content (property field)
 	GetContent() *BACnetApplicationTag
-	// GetHasData returns HasData
+	// GetHasData returns HasData (virtual field)
 	GetHasData() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -66,14 +66,6 @@ func (m *BACnetConstructedDataUnspecified) ObjectType() BACnetObjectType {
 }
 
 func (m *BACnetConstructedDataUnspecified) GetObjectType() BACnetObjectType {
-	return 0
-}
-
-func (m *BACnetConstructedDataUnspecified) PropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return 0
-}
-
-func (m *BACnetConstructedDataUnspecified) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
 	return 0
 }
 

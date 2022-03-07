@@ -44,13 +44,6 @@ type IBACnetApplicationTagNull interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagNull) ActualTagNumber() uint8 {
-	return 0x0
-}
-
-func (m *BACnetApplicationTagNull) GetActualTagNumber() uint8 {
-	return 0x0
-}
 
 func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header

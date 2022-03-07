@@ -40,9 +40,9 @@ type FirmataCommandSetDigitalPinValue struct {
 // The corresponding interface
 type IFirmataCommandSetDigitalPinValue interface {
 	IFirmataCommand
-	// GetPin returns Pin
+	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetOn returns On
+	// GetOn returns On (property field)
 	GetOn() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,13 +39,13 @@ type ConnectionResponse struct {
 // The corresponding interface
 type IConnectionResponse interface {
 	IKnxNetIpMessage
-	// GetCommunicationChannelId returns CommunicationChannelId
+	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() Status
-	// GetHpaiDataEndpoint returns HpaiDataEndpoint
+	// GetHpaiDataEndpoint returns HpaiDataEndpoint (property field)
 	GetHpaiDataEndpoint() *HPAIDataEndpoint
-	// GetConnectionResponseDataBlock returns ConnectionResponseDataBlock
+	// GetConnectionResponseDataBlock returns ConnectionResponseDataBlock (property field)
 	GetConnectionResponseDataBlock() *ConnectionResponseDataBlock
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

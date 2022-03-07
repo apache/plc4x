@@ -39,7 +39,7 @@ type BACnetPropertyStatesAction struct {
 // The corresponding interface
 type IBACnetPropertyStatesAction interface {
 	IBACnetPropertyStates
-	// GetAction returns Action
+	// GetAction returns Action (property field)
 	GetAction() *BACnetAction
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -52,13 +52,6 @@ type IBACnetPropertyStatesAction interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetPropertyStatesAction) PeekedTagNumber() uint8 {
-	return uint8(16)
-}
-
-func (m *BACnetPropertyStatesAction) GetPeekedTagNumber() uint8 {
-	return uint8(16)
-}
 
 func (m *BACnetPropertyStatesAction) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetPropertyStates.OpeningTag = openingTag

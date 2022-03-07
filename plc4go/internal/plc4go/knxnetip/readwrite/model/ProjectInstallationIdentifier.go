@@ -34,9 +34,9 @@ type ProjectInstallationIdentifier struct {
 
 // The corresponding interface
 type IProjectInstallationIdentifier interface {
-	// GetProjectNumber returns ProjectNumber
+	// GetProjectNumber returns ProjectNumber (property field)
 	GetProjectNumber() uint8
-	// GetInstallationNumber returns InstallationNumber
+	// GetInstallationNumber returns InstallationNumber (property field)
 	GetInstallationNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

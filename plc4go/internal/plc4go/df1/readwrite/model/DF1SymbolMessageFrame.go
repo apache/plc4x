@@ -42,11 +42,11 @@ type DF1SymbolMessageFrame struct {
 // The corresponding interface
 type IDF1SymbolMessageFrame interface {
 	IDF1Symbol
-	// GetDestinationAddress returns DestinationAddress
+	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
-	// GetSourceAddress returns SourceAddress
+	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() uint8
-	// GetCommand returns Command
+	// GetCommand returns Command (property field)
 	GetCommand() *DF1Command
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

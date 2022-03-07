@@ -39,13 +39,13 @@ type BACnetDateTime struct {
 
 // The corresponding interface
 type IBACnetDateTime interface {
-	// GetOpeningTag returns OpeningTag
+	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetDateValue returns DateValue
+	// GetDateValue returns DateValue (property field)
 	GetDateValue() *BACnetApplicationTagDate
-	// GetTimeValue returns TimeValue
+	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() *BACnetApplicationTagTime
-	// GetClosingTag returns ClosingTag
+	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

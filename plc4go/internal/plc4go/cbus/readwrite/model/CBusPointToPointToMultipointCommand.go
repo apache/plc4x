@@ -39,11 +39,11 @@ type CBusPointToPointToMultipointCommand struct {
 
 // The corresponding interface
 type ICBusPointToPointToMultipointCommand interface {
-	// GetBridgeAddress returns BridgeAddress
+	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() *BridgeAddress
-	// GetNetworkRoute returns NetworkRoute
+	// GetNetworkRoute returns NetworkRoute (property field)
 	GetNetworkRoute() *NetworkRoute
-	// GetPeekedApplication returns PeekedApplication
+	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

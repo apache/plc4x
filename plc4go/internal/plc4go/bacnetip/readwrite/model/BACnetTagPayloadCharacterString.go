@@ -37,11 +37,11 @@ type BACnetTagPayloadCharacterString struct {
 
 // The corresponding interface
 type IBACnetTagPayloadCharacterString interface {
-	// GetEncoding returns Encoding
+	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() string
-	// GetActualLengthInBit returns ActualLengthInBit
+	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
 	GetActualLengthInBit() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -34,9 +34,9 @@ type ChannelInformation struct {
 
 // The corresponding interface
 type IChannelInformation interface {
-	// GetNumChannels returns NumChannels
+	// GetNumChannels returns NumChannels (property field)
 	GetNumChannels() uint8
-	// GetChannelCode returns ChannelCode
+	// GetChannelCode returns ChannelCode (property field)
 	GetChannelCode() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

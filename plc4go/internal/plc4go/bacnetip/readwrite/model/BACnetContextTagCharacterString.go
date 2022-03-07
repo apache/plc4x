@@ -39,7 +39,7 @@ type BACnetContextTagCharacterString struct {
 // The corresponding interface
 type IBACnetContextTagCharacterString interface {
 	IBACnetContextTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadCharacterString
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

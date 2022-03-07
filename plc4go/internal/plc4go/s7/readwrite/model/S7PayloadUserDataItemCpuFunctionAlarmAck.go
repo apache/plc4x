@@ -36,9 +36,9 @@ type S7PayloadUserDataItemCpuFunctionAlarmAck struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmAck interface {
 	IS7PayloadUserDataItem
-	// GetFunctionId returns FunctionId
+	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
-	// GetMessageObjects returns MessageObjects
+	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []*AlarmMessageObjectAckType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

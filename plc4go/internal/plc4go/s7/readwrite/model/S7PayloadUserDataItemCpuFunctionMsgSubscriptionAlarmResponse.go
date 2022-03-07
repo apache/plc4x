@@ -39,15 +39,15 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	IS7PayloadUserDataItem
-	// GetResult returns Result
+	// GetResult returns Result (property field)
 	GetResult() uint8
-	// GetReserved01 returns Reserved01
+	// GetReserved01 returns Reserved01 (property field)
 	GetReserved01() uint8
-	// GetAlarmType returns AlarmType
+	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
-	// GetReserved02 returns Reserved02
+	// GetReserved02 returns Reserved02 (property field)
 	GetReserved02() uint8
-	// GetReserved03 returns Reserved03
+	// GetReserved03 returns Reserved03 (property field)
 	GetReserved03() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

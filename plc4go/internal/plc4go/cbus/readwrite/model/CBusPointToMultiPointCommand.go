@@ -37,7 +37,7 @@ type CBusPointToMultiPointCommand struct {
 
 // The corresponding interface
 type ICBusPointToMultiPointCommand interface {
-	// GetPeekedApplication returns PeekedApplication
+	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

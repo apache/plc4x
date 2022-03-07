@@ -42,15 +42,15 @@ type ApduDataExtPropertyValueResponse struct {
 // The corresponding interface
 type IApduDataExtPropertyValueResponse interface {
 	IApduDataExt
-	// GetObjectIndex returns ObjectIndex
+	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
-	// GetPropertyId returns PropertyId
+	// GetPropertyId returns PropertyId (property field)
 	GetPropertyId() uint8
-	// GetCount returns Count
+	// GetCount returns Count (property field)
 	GetCount() uint8
-	// GetIndex returns Index
+	// GetIndex returns Index (property field)
 	GetIndex() uint16
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

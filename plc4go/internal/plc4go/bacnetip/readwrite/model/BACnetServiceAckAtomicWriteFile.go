@@ -35,7 +35,7 @@ type BACnetServiceAckAtomicWriteFile struct {
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
 	IBACnetServiceAck
-	// GetFileStartPosition returns FileStartPosition
+	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() *BACnetContextTagSignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,7 +35,7 @@ type ModbusPDUReadDiscreteInputsResponse struct {
 // The corresponding interface
 type IModbusPDUReadDiscreteInputsResponse interface {
 	IModbusPDU
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -42,21 +42,21 @@ type S7ParameterUserDataItemCPUFunctions struct {
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
 	IS7ParameterUserDataItem
-	// GetMethod returns Method
+	// GetMethod returns Method (property field)
 	GetMethod() uint8
-	// GetCpuFunctionType returns CpuFunctionType
+	// GetCpuFunctionType returns CpuFunctionType (property field)
 	GetCpuFunctionType() uint8
-	// GetCpuFunctionGroup returns CpuFunctionGroup
+	// GetCpuFunctionGroup returns CpuFunctionGroup (property field)
 	GetCpuFunctionGroup() uint8
-	// GetCpuSubfunction returns CpuSubfunction
+	// GetCpuSubfunction returns CpuSubfunction (property field)
 	GetCpuSubfunction() uint8
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-	// GetDataUnitReferenceNumber returns DataUnitReferenceNumber
+	// GetDataUnitReferenceNumber returns DataUnitReferenceNumber (property field)
 	GetDataUnitReferenceNumber() *uint8
-	// GetLastDataUnit returns LastDataUnit
+	// GetLastDataUnit returns LastDataUnit (property field)
 	GetLastDataUnit() *uint8
-	// GetErrorCode returns ErrorCode
+	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() *uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

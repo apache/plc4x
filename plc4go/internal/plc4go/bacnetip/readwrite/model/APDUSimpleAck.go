@@ -40,9 +40,9 @@ type APDUSimpleAck struct {
 // The corresponding interface
 type IAPDUSimpleAck interface {
 	IAPDU
-	// GetOriginalInvokeId returns OriginalInvokeId
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetServiceChoice returns ServiceChoice
+	// GetServiceChoice returns ServiceChoice (property field)
 	GetServiceChoice() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -34,9 +34,9 @@ type DIBSuppSvcFamilies struct {
 
 // The corresponding interface
 type IDIBSuppSvcFamilies interface {
-	// GetDescriptionType returns DescriptionType
+	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
-	// GetServiceIds returns ServiceIds
+	// GetServiceIds returns ServiceIds (property field)
 	GetServiceIds() []*ServiceId
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

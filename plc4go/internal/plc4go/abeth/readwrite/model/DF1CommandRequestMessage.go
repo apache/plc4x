@@ -35,7 +35,7 @@ type DF1CommandRequestMessage struct {
 // The corresponding interface
 type IDF1CommandRequestMessage interface {
 	IDF1RequestMessage
-	// GetCommand returns Command
+	// GetCommand returns Command (property field)
 	GetCommand() *DF1RequestCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

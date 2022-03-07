@@ -39,13 +39,13 @@ type BACnetServiceAckReadProperty struct {
 // The corresponding interface
 type IBACnetServiceAckReadProperty interface {
 	IBACnetServiceAck
-	// GetObjectIdentifier returns ObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetPropertyIdentifier returns PropertyIdentifier
+	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
-	// GetArrayIndex returns ArrayIndex
+	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() *BACnetContextTagUnsignedInteger
-	// GetValues returns Values
+	// GetValues returns Values (property field)
 	GetValues() *BACnetConstructedData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

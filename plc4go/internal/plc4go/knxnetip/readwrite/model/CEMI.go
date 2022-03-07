@@ -36,8 +36,8 @@ type CEMI struct {
 
 // The corresponding interface
 type ICEMI interface {
-	// MessageCode returns MessageCode
-	MessageCode() uint8
+	// GetMessageCode returns MessageCode (discriminator field)
+	GetMessageCode() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -195,7 +195,7 @@ func (m *CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMI, seria
 	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode := uint8(child.MessageCode())
+	messageCode := uint8(child.GetMessageCode())
 	_messageCodeErr := writeBuffer.WriteUint8("messageCode", 8, (messageCode))
 
 	if _messageCodeErr != nil {

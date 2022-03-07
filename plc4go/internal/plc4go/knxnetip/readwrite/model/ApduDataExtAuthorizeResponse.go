@@ -38,7 +38,7 @@ type ApduDataExtAuthorizeResponse struct {
 // The corresponding interface
 type IApduDataExtAuthorizeResponse interface {
 	IApduDataExt
-	// GetLevel returns Level
+	// GetLevel returns Level (property field)
 	GetLevel() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

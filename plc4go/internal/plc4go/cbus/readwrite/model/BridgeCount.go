@@ -33,7 +33,7 @@ type BridgeCount struct {
 
 // The corresponding interface
 type IBridgeCount interface {
-	// GetCount returns Count
+	// GetCount returns Count (property field)
 	GetCount() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

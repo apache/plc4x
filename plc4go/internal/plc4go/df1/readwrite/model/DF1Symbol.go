@@ -37,8 +37,8 @@ type DF1Symbol struct {
 
 // The corresponding interface
 type IDF1Symbol interface {
-	// SymbolType returns SymbolType
-	SymbolType() uint8
+	// GetSymbolType returns SymbolType (discriminator field)
+	GetSymbolType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -174,7 +174,7 @@ func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Sym
 	}
 
 	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType := uint8(child.SymbolType())
+	symbolType := uint8(child.GetSymbolType())
 	_symbolTypeErr := writeBuffer.WriteUint8("symbolType", 8, (symbolType))
 
 	if _symbolTypeErr != nil {

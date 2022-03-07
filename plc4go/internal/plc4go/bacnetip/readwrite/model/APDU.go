@@ -36,8 +36,8 @@ type APDU struct {
 
 // The corresponding interface
 type IAPDU interface {
-	// ApduType returns ApduType
-	ApduType() uint8
+	// GetApduType returns ApduType (discriminator field)
+	GetApduType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -167,7 +167,7 @@ func (m *APDU) SerializeParent(writeBuffer utils.WriteBuffer, child IAPDU, seria
 	}
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType := uint8(child.ApduType())
+	apduType := uint8(child.GetApduType())
 	_apduTypeErr := writeBuffer.WriteUint8("apduType", 4, (apduType))
 
 	if _apduTypeErr != nil {

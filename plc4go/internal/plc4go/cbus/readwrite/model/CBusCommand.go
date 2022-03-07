@@ -41,11 +41,9 @@ type CBusCommand struct {
 
 // The corresponding interface
 type ICBusCommand interface {
-	// DestinationAddressType returns DestinationAddressType
-	DestinationAddressType() DestinationAddressType
-	// GetHeader returns Header
+	// GetHeader returns Header (property field)
 	GetHeader() *CBusHeader
-	// GetDestinationAddressType returns DestinationAddressType
+	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

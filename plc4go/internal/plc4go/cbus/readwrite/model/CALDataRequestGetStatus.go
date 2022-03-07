@@ -36,9 +36,9 @@ type CALDataRequestGetStatus struct {
 // The corresponding interface
 type ICALDataRequestGetStatus interface {
 	ICALData
-	// GetParamNo returns ParamNo
+	// GetParamNo returns ParamNo (property field)
 	GetParamNo() uint8
-	// GetCount returns Count
+	// GetCount returns Count (property field)
 	GetCount() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ICALDataRequestGetStatus interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataRequestGetStatus) CommandType() CALCommandType {
-	return CALCommandType_GET_STATUS
-}
-
-func (m *CALDataRequestGetStatus) GetCommandType() CALCommandType {
-	return CALCommandType_GET_STATUS
-}
 
 func (m *CALDataRequestGetStatus) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

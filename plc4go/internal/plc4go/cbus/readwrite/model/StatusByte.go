@@ -36,13 +36,13 @@ type StatusByte struct {
 
 // The corresponding interface
 type IStatusByte interface {
-	// GetGav3 returns Gav3
+	// GetGav3 returns Gav3 (property field)
 	GetGav3() GAVState
-	// GetGav2 returns Gav2
+	// GetGav2 returns Gav2 (property field)
 	GetGav2() GAVState
-	// GetGav1 returns Gav1
+	// GetGav1 returns Gav1 (property field)
 	GetGav1() GAVState
-	// GetGav0 returns Gav0
+	// GetGav0 returns Gav0 (property field)
 	GetGav0() GAVState
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

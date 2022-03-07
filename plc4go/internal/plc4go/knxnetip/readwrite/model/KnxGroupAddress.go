@@ -33,8 +33,8 @@ type KnxGroupAddress struct {
 
 // The corresponding interface
 type IKnxGroupAddress interface {
-	// NumLevels returns NumLevels
-	NumLevels() uint8
+	// GetNumLevels returns NumLevels (discriminator field)
+	GetNumLevels() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -36,8 +36,8 @@ type FirmataCommand struct {
 
 // The corresponding interface
 type IFirmataCommand interface {
-	// CommandCode returns CommandCode
-	CommandCode() uint8
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -159,7 +159,7 @@ func (m *FirmataCommand) SerializeParent(writeBuffer utils.WriteBuffer, child IF
 	}
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.CommandCode())
+	commandCode := uint8(child.GetCommandCode())
 	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, (commandCode))
 
 	if _commandCodeErr != nil {

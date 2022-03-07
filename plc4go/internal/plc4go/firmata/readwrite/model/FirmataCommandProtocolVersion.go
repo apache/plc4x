@@ -39,9 +39,9 @@ type FirmataCommandProtocolVersion struct {
 // The corresponding interface
 type IFirmataCommandProtocolVersion interface {
 	IFirmataCommand
-	// GetMajorVersion returns MajorVersion
+	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
-	// GetMinorVersion returns MinorVersion
+	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

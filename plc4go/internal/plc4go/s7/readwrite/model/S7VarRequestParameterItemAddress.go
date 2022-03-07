@@ -35,7 +35,7 @@ type S7VarRequestParameterItemAddress struct {
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
 	IS7VarRequestParameterItem
-	// GetAddress returns Address
+	// GetAddress returns Address (property field)
 	GetAddress() *S7Address
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

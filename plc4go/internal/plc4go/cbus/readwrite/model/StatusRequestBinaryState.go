@@ -36,7 +36,7 @@ type StatusRequestBinaryState struct {
 // The corresponding interface
 type IStatusRequestBinaryState interface {
 	IStatusRequest
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

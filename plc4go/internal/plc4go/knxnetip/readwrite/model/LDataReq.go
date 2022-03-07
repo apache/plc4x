@@ -40,11 +40,11 @@ type LDataReq struct {
 // The corresponding interface
 type ILDataReq interface {
 	ICEMI
-	// GetAdditionalInformationLength returns AdditionalInformationLength
+	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
-	// GetAdditionalInformation returns AdditionalInformation
+	// GetAdditionalInformation returns AdditionalInformation (property field)
 	GetAdditionalInformation() []*CEMIAdditionalInformation
-	// GetDataFrame returns DataFrame
+	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() *LDataFrame
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -40,21 +40,21 @@ type State struct {
 
 // The corresponding interface
 type IState interface {
-	// GetSIG_8 returns SIG_8
+	// GetSIG_8 returns SIG_8 (property field)
 	GetSIG_8() bool
-	// GetSIG_7 returns SIG_7
+	// GetSIG_7 returns SIG_7 (property field)
 	GetSIG_7() bool
-	// GetSIG_6 returns SIG_6
+	// GetSIG_6 returns SIG_6 (property field)
 	GetSIG_6() bool
-	// GetSIG_5 returns SIG_5
+	// GetSIG_5 returns SIG_5 (property field)
 	GetSIG_5() bool
-	// GetSIG_4 returns SIG_4
+	// GetSIG_4 returns SIG_4 (property field)
 	GetSIG_4() bool
-	// GetSIG_3 returns SIG_3
+	// GetSIG_3 returns SIG_3 (property field)
 	GetSIG_3() bool
-	// GetSIG_2 returns SIG_2
+	// GetSIG_2 returns SIG_2 (property field)
 	GetSIG_2() bool
-	// GetSIG_1 returns SIG_1
+	// GetSIG_1 returns SIG_1 (property field)
 	GetSIG_1() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

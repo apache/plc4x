@@ -37,11 +37,11 @@ type SearchResponse struct {
 // The corresponding interface
 type ISearchResponse interface {
 	IKnxNetIpMessage
-	// GetHpaiControlEndpoint returns HpaiControlEndpoint
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() *HPAIControlEndpoint
-	// GetDibDeviceInfo returns DibDeviceInfo
+	// GetDibDeviceInfo returns DibDeviceInfo (property field)
 	GetDibDeviceInfo() *DIBDeviceInfo
-	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies
+	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() *DIBSuppSvcFamilies
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

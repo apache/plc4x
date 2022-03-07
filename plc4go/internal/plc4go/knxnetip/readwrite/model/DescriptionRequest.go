@@ -35,7 +35,7 @@ type DescriptionRequest struct {
 // The corresponding interface
 type IDescriptionRequest interface {
 	IKnxNetIpMessage
-	// GetHpaiControlEndpoint returns HpaiControlEndpoint
+	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() *HPAIControlEndpoint
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

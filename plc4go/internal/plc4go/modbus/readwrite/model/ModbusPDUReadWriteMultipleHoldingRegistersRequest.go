@@ -39,15 +39,15 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	IModbusPDU
-	// GetReadStartingAddress returns ReadStartingAddress
+	// GetReadStartingAddress returns ReadStartingAddress (property field)
 	GetReadStartingAddress() uint16
-	// GetReadQuantity returns ReadQuantity
+	// GetReadQuantity returns ReadQuantity (property field)
 	GetReadQuantity() uint16
-	// GetWriteStartingAddress returns WriteStartingAddress
+	// GetWriteStartingAddress returns WriteStartingAddress (property field)
 	GetWriteStartingAddress() uint16
-	// GetWriteQuantity returns WriteQuantity
+	// GetWriteQuantity returns WriteQuantity (property field)
 	GetWriteQuantity() uint16
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

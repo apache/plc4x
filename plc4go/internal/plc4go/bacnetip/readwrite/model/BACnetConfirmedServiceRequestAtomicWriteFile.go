@@ -43,15 +43,15 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
 	IBACnetConfirmedServiceRequest
-	// GetDeviceIdentifier returns DeviceIdentifier
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
-	// GetOpeningTag returns OpeningTag
+	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetFileStartPosition returns FileStartPosition
+	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() *BACnetApplicationTagSignedInteger
-	// GetFileData returns FileData
+	// GetFileData returns FileData (property field)
 	GetFileData() *BACnetApplicationTagOctetString
-	// GetClosingTag returns ClosingTag
+	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,9 +39,9 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestTimeSynchronization interface {
 	IBACnetUnconfirmedServiceRequest
-	// GetSynchronizedDate returns SynchronizedDate
+	// GetSynchronizedDate returns SynchronizedDate (property field)
 	GetSynchronizedDate() *BACnetApplicationTagDate
-	// GetSynchronizedTime returns SynchronizedTime
+	// GetSynchronizedTime returns SynchronizedTime (property field)
 	GetSynchronizedTime() *BACnetApplicationTagTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

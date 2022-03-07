@@ -35,13 +35,13 @@ type BACnetTagPayloadObjectIdentifier struct {
 
 // The corresponding interface
 type IBACnetTagPayloadObjectIdentifier interface {
-	// GetObjectType returns ObjectType
+	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectType
-	// GetProprietaryValue returns ProprietaryValue
+	// GetProprietaryValue returns ProprietaryValue (property field)
 	GetProprietaryValue() uint16
-	// GetInstanceNumber returns InstanceNumber
+	// GetInstanceNumber returns InstanceNumber (property field)
 	GetInstanceNumber() uint32
-	// GetIsProprietary returns IsProprietary
+	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

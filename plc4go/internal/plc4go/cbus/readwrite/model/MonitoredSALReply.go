@@ -35,7 +35,7 @@ type MonitoredSALReply struct {
 // The corresponding interface
 type IMonitoredSALReply interface {
 	IReply
-	// GetIsA returns IsA
+	// GetIsA returns IsA (property field)
 	GetIsA() *MonitoredSAL
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

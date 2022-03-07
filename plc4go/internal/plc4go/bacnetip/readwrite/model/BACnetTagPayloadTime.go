@@ -36,23 +36,23 @@ type BACnetTagPayloadTime struct {
 
 // The corresponding interface
 type IBACnetTagPayloadTime interface {
-	// GetHour returns Hour
+	// GetHour returns Hour (property field)
 	GetHour() uint8
-	// GetMinute returns Minute
+	// GetMinute returns Minute (property field)
 	GetMinute() uint8
-	// GetSecond returns Second
+	// GetSecond returns Second (property field)
 	GetSecond() uint8
-	// GetFractional returns Fractional
+	// GetFractional returns Fractional (property field)
 	GetFractional() uint8
-	// GetWildcard returns Wildcard
+	// GetWildcard returns Wildcard (virtual field)
 	GetWildcard() uint8
-	// GetHourIsWildcard returns HourIsWildcard
+	// GetHourIsWildcard returns HourIsWildcard (virtual field)
 	GetHourIsWildcard() bool
-	// GetMinuteIsWildcard returns MinuteIsWildcard
+	// GetMinuteIsWildcard returns MinuteIsWildcard (virtual field)
 	GetMinuteIsWildcard() bool
-	// GetSecondIsWildcard returns SecondIsWildcard
+	// GetSecondIsWildcard returns SecondIsWildcard (virtual field)
 	GetSecondIsWildcard() bool
-	// GetFractionalIsWildcard returns FractionalIsWildcard
+	// GetFractionalIsWildcard returns FractionalIsWildcard (virtual field)
 	GetFractionalIsWildcard() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

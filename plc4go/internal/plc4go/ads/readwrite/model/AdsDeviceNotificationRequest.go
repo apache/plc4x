@@ -37,11 +37,11 @@ type AdsDeviceNotificationRequest struct {
 // The corresponding interface
 type IAdsDeviceNotificationRequest interface {
 	IAdsData
-	// GetLength returns Length
+	// GetLength returns Length (property field)
 	GetLength() uint32
-	// GetStamps returns Stamps
+	// GetStamps returns Stamps (property field)
 	GetStamps() uint32
-	// GetAdsStampHeaders returns AdsStampHeaders
+	// GetAdsStampHeaders returns AdsStampHeaders (property field)
 	GetAdsStampHeaders() []*AdsStampHeader
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

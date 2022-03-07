@@ -40,11 +40,11 @@ type BACnetContextTagBoolean struct {
 // The corresponding interface
 type IBACnetContextTagBoolean interface {
 	IBACnetContextTag
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() uint8
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadBoolean
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,7 +39,7 @@ type BACnetNotificationParametersComplexEventType struct {
 // The corresponding interface
 type IBACnetNotificationParametersComplexEventType interface {
 	IBACnetNotificationParameters
-	// GetListOfValues returns ListOfValues
+	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() *BACnetPropertyValues
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -52,13 +52,6 @@ type IBACnetNotificationParametersComplexEventType interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersComplexEventType) PeekedTagNumber() uint8 {
-	return uint8(6)
-}
-
-func (m *BACnetNotificationParametersComplexEventType) GetPeekedTagNumber() uint8 {
-	return uint8(6)
-}
 
 func (m *BACnetNotificationParametersComplexEventType) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag

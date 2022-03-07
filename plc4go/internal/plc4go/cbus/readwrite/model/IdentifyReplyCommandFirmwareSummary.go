@@ -37,11 +37,11 @@ type IdentifyReplyCommandFirmwareSummary struct {
 // The corresponding interface
 type IIdentifyReplyCommandFirmwareSummary interface {
 	IIdentifyReplyCommand
-	// GetFirmwareVersion returns FirmwareVersion
+	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
-	// GetUnitServiceType returns UnitServiceType
+	// GetUnitServiceType returns UnitServiceType (property field)
 	GetUnitServiceType() byte
-	// GetVersion returns Version
+	// GetVersion returns Version (property field)
 	GetVersion() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

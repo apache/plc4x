@@ -43,15 +43,15 @@ type APDUSegmentAck struct {
 // The corresponding interface
 type IAPDUSegmentAck interface {
 	IAPDU
-	// GetNegativeAck returns NegativeAck
+	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
-	// GetServer returns Server
+	// GetServer returns Server (property field)
 	GetServer() bool
-	// GetOriginalInvokeId returns OriginalInvokeId
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-	// GetProposedWindowSize returns ProposedWindowSize
+	// GetProposedWindowSize returns ProposedWindowSize (property field)
 	GetProposedWindowSize() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

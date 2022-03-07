@@ -44,17 +44,17 @@ type BACnetNotificationParametersOutOfRange struct {
 // The corresponding interface
 type IBACnetNotificationParametersOutOfRange interface {
 	IBACnetNotificationParameters
-	// GetInnerOpeningTag returns InnerOpeningTag
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
-	// GetExceedingValue returns ExceedingValue
+	// GetExceedingValue returns ExceedingValue (property field)
 	GetExceedingValue() *BACnetContextTagReal
-	// GetStatusFlags returns StatusFlags
+	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() *BACnetStatusFlags
-	// GetDeadband returns Deadband
+	// GetDeadband returns Deadband (property field)
 	GetDeadband() *BACnetContextTagReal
-	// GetExceededLimit returns ExceededLimit
+	// GetExceededLimit returns ExceededLimit (property field)
 	GetExceededLimit() *BACnetContextTagReal
-	// GetInnerClosingTag returns InnerClosingTag
+	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -67,13 +67,6 @@ type IBACnetNotificationParametersOutOfRange interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersOutOfRange) PeekedTagNumber() uint8 {
-	return uint8(5)
-}
-
-func (m *BACnetNotificationParametersOutOfRange) GetPeekedTagNumber() uint8 {
-	return uint8(5)
-}
 
 func (m *BACnetNotificationParametersOutOfRange) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag

@@ -41,9 +41,9 @@ type IdentifyReplyCommandNetworkVoltage struct {
 // The corresponding interface
 type IIdentifyReplyCommandNetworkVoltage interface {
 	IIdentifyReplyCommand
-	// GetVolts returns Volts
+	// GetVolts returns Volts (property field)
 	GetVolts() string
-	// GetVoltsDecimalPlace returns VoltsDecimalPlace
+	// GetVoltsDecimalPlace returns VoltsDecimalPlace (property field)
 	GetVoltsDecimalPlace() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

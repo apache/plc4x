@@ -35,11 +35,11 @@ type AdsStampHeader struct {
 
 // The corresponding interface
 type IAdsStampHeader interface {
-	// GetTimestamp returns Timestamp
+	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint64
-	// GetSamples returns Samples
+	// GetSamples returns Samples (property field)
 	GetSamples() uint32
-	// GetAdsNotificationSamples returns AdsNotificationSamples
+	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
 	GetAdsNotificationSamples() []*AdsNotificationSample
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,7 +35,7 @@ type S7PayloadNotify struct {
 // The corresponding interface
 type IS7PayloadNotify interface {
 	IS7PayloadUserDataItem
-	// GetAlarmMessage returns AlarmMessage
+	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() *AlarmMessagePushType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

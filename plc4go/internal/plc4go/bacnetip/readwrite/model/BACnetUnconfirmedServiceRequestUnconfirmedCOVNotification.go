@@ -42,15 +42,15 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	IBACnetUnconfirmedServiceRequest
-	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
-	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier
+	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
 	GetInitiatingDeviceIdentifier() *BACnetContextTagObjectIdentifier
-	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetLifetimeInSeconds returns LifetimeInSeconds
+	// GetLifetimeInSeconds returns LifetimeInSeconds (property field)
 	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
-	// GetListOfValues returns ListOfValues
+	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() *BACnetPropertyValues
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

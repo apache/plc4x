@@ -37,11 +37,11 @@ type AdsReadRequest struct {
 // The corresponding interface
 type IAdsReadRequest interface {
 	IAdsData
-	// GetIndexGroup returns IndexGroup
+	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
-	// GetIndexOffset returns IndexOffset
+	// GetIndexOffset returns IndexOffset (property field)
 	GetIndexOffset() uint32
-	// GetLength returns Length
+	// GetLength returns Length (property field)
 	GetLength() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

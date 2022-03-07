@@ -39,11 +39,11 @@ type BACnetContextTagObjectIdentifier struct {
 // The corresponding interface
 type IBACnetContextTagObjectIdentifier interface {
 	IBACnetContextTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadObjectIdentifier
-	// GetObjectType returns ObjectType
+	// GetObjectType returns ObjectType (virtual field)
 	GetObjectType() BACnetObjectType
-	// GetInstanceNumber returns InstanceNumber
+	// GetInstanceNumber returns InstanceNumber (virtual field)
 	GetInstanceNumber() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

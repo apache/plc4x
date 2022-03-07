@@ -37,11 +37,11 @@ type CALDataReplyStatus struct {
 // The corresponding interface
 type ICALDataReplyStatus interface {
 	ICALData
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetBlockStart returns BlockStart
+	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -54,13 +54,6 @@ type ICALDataReplyStatus interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataReplyStatus) CommandType() CALCommandType {
-	return CALCommandType_STATUS
-}
-
-func (m *CALDataReplyStatus) GetCommandType() CALCommandType {
-	return CALCommandType_STATUS
-}
 
 func (m *CALDataReplyStatus) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

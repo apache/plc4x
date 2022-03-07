@@ -33,7 +33,7 @@ type Alpha struct {
 
 // The corresponding interface
 type IAlpha interface {
-	// GetCharacter returns Character
+	// GetCharacter returns Character (property field)
 	GetCharacter() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

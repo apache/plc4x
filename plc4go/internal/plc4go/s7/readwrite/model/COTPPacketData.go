@@ -39,9 +39,9 @@ type COTPPacketData struct {
 // The corresponding interface
 type ICOTPPacketData interface {
 	ICOTPPacket
-	// GetEot returns Eot
+	// GetEot returns Eot (property field)
 	GetEot() bool
-	// GetTpduRef returns TpduRef
+	// GetTpduRef returns TpduRef (property field)
 	GetTpduRef() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

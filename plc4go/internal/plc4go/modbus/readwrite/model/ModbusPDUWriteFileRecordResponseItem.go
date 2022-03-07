@@ -36,13 +36,13 @@ type ModbusPDUWriteFileRecordResponseItem struct {
 
 // The corresponding interface
 type IModbusPDUWriteFileRecordResponseItem interface {
-	// GetReferenceType returns ReferenceType
+	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
-	// GetFileNumber returns FileNumber
+	// GetFileNumber returns FileNumber (property field)
 	GetFileNumber() uint16
-	// GetRecordNumber returns RecordNumber
+	// GetRecordNumber returns RecordNumber (property field)
 	GetRecordNumber() uint16
-	// GetRecordData returns RecordData
+	// GetRecordData returns RecordData (property field)
 	GetRecordData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

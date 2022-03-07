@@ -39,7 +39,7 @@ type BACnetContextTagTime struct {
 // The corresponding interface
 type IBACnetContextTagTime interface {
 	IBACnetContextTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadTime
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

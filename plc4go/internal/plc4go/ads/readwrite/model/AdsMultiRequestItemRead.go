@@ -37,11 +37,11 @@ type AdsMultiRequestItemRead struct {
 // The corresponding interface
 type IAdsMultiRequestItemRead interface {
 	IAdsMultiRequestItem
-	// GetItemIndexGroup returns ItemIndexGroup
+	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
-	// GetItemIndexOffset returns ItemIndexOffset
+	// GetItemIndexOffset returns ItemIndexOffset (property field)
 	GetItemIndexOffset() uint32
-	// GetItemReadLength returns ItemReadLength
+	// GetItemReadLength returns ItemReadLength (property field)
 	GetItemReadLength() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -38,7 +38,7 @@ type APDUUnknown struct {
 // The corresponding interface
 type IAPDUUnknown interface {
 	IAPDU
-	// GetUnknownBytes returns UnknownBytes
+	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

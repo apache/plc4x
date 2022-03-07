@@ -41,13 +41,13 @@ type LBusmonInd struct {
 // The corresponding interface
 type ILBusmonInd interface {
 	ICEMI
-	// GetAdditionalInformationLength returns AdditionalInformationLength
+	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
-	// GetAdditionalInformation returns AdditionalInformation
+	// GetAdditionalInformation returns AdditionalInformation (property field)
 	GetAdditionalInformation() []*CEMIAdditionalInformation
-	// GetDataFrame returns DataFrame
+	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() *LDataFrame
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -208,7 +208,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc *uint8 = nil
-	if CastLDataFrame(dataFrame).Child.NotAckFrame() {
+	if CastLDataFrame(dataFrame).Child.GetNotAckFrame() {
 		_val, _err := readBuffer.ReadUint8("crc", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")

@@ -47,21 +47,21 @@ type APDUComplexAck struct {
 // The corresponding interface
 type IAPDUComplexAck interface {
 	IAPDU
-	// GetSegmentedMessage returns SegmentedMessage
+	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
-	// GetMoreFollows returns MoreFollows
+	// GetMoreFollows returns MoreFollows (property field)
 	GetMoreFollows() bool
-	// GetOriginalInvokeId returns OriginalInvokeId
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() *uint8
-	// GetProposedWindowSize returns ProposedWindowSize
+	// GetProposedWindowSize returns ProposedWindowSize (property field)
 	GetProposedWindowSize() *uint8
-	// GetServiceAck returns ServiceAck
+	// GetServiceAck returns ServiceAck (property field)
 	GetServiceAck() *BACnetServiceAck
-	// GetSegmentServiceChoice returns SegmentServiceChoice
+	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
 	GetSegmentServiceChoice() *uint8
-	// GetSegment returns Segment
+	// GetSegment returns Segment (property field)
 	GetSegment() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

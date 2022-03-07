@@ -35,7 +35,7 @@ type IdentifyReplyCommandFirmwareVersion struct {
 // The corresponding interface
 type IIdentifyReplyCommandFirmwareVersion interface {
 	IIdentifyReplyCommand
-	// GetFirmwareVersion returns FirmwareVersion
+	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -40,9 +40,9 @@ type CipWriteResponse struct {
 // The corresponding interface
 type ICipWriteResponse interface {
 	ICipService
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint8
-	// GetExtStatus returns ExtStatus
+	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

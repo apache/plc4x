@@ -35,7 +35,7 @@ type S7ParameterWriteVarResponse struct {
 // The corresponding interface
 type IS7ParameterWriteVarResponse interface {
 	IS7Parameter
-	// GetNumItems returns NumItems
+	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

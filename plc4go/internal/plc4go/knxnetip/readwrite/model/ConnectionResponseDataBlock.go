@@ -33,8 +33,8 @@ type ConnectionResponseDataBlock struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlock interface {
-	// ConnectionType returns ConnectionType
-	ConnectionType() uint8
+	// GetConnectionType returns ConnectionType (discriminator field)
+	GetConnectionType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -167,7 +167,7 @@ func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuf
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(child.ConnectionType())
+	connectionType := uint8(child.GetConnectionType())
 	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, (connectionType))
 
 	if _connectionTypeErr != nil {

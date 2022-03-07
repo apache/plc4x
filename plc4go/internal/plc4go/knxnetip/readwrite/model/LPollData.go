@@ -38,11 +38,11 @@ type LPollData struct {
 // The corresponding interface
 type ILPollData interface {
 	ILDataFrame
-	// GetSourceAddress returns SourceAddress
+	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() *KnxAddress
-	// GetTargetAddress returns TargetAddress
+	// GetTargetAddress returns TargetAddress (property field)
 	GetTargetAddress() []byte
-	// GetNumberExpectedPollData returns NumberExpectedPollData
+	// GetNumberExpectedPollData returns NumberExpectedPollData (property field)
 	GetNumberExpectedPollData() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

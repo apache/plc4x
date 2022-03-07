@@ -46,19 +46,17 @@ type CBusPointToPointCommand struct {
 
 // The corresponding interface
 type ICBusPointToPointCommand interface {
-	// IsDirect returns IsDirect
-	IsDirect() bool
-	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek
+	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
-	// GetCalData returns CalData
+	// GetCalData returns CalData (property field)
 	GetCalData() *CALData
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
-	// GetPeekAlpha returns PeekAlpha
+	// GetPeekAlpha returns PeekAlpha (property field)
 	GetPeekAlpha() byte
-	// GetAlpha returns Alpha
+	// GetAlpha returns Alpha (property field)
 	GetAlpha() *Alpha
-	// GetIsDirect returns IsDirect
+	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

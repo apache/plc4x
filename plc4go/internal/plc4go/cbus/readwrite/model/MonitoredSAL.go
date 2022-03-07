@@ -41,9 +41,9 @@ type MonitoredSAL struct {
 
 // The corresponding interface
 type IMonitoredSAL interface {
-	// GetSalType returns SalType
+	// GetSalType returns SalType (property field)
 	GetSalType() byte
-	// GetSalData returns SalData
+	// GetSalData returns SalData (property field)
 	GetSalData() *SALData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

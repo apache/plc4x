@@ -41,13 +41,13 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
 	IBACnetUnconfirmedServiceRequest
-	// GetDeviceIdentifier returns DeviceIdentifier
+	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
-	// GetMaximumApduLengthAcceptedLength returns MaximumApduLengthAcceptedLength
+	// GetMaximumApduLengthAcceptedLength returns MaximumApduLengthAcceptedLength (property field)
 	GetMaximumApduLengthAcceptedLength() *BACnetApplicationTagUnsignedInteger
-	// GetSegmentationSupported returns SegmentationSupported
+	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() *BACnetSegmentation
-	// GetVendorId returns VendorId
+	// GetVendorId returns VendorId (property field)
 	GetVendorId() *BACnetApplicationTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

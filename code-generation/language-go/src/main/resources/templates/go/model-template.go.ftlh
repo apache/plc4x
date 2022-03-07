@@ -115,19 +115,19 @@ type I${type.name} interface {
 	<#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
-	// ${discriminatorName?cap_first} returns ${discriminatorName?cap_first}
-	${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
+	// Get${discriminatorName?cap_first} returns ${discriminatorName?cap_first} (discriminator field)
+	Get${discriminatorName?cap_first}() <#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
 	</#list>
 </#if>
 <#list type.propertyFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
-	// Get${field.name?cap_first} returns ${field.name?cap_first}
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
 <#list type.virtualFields as field>
     <#assign typeRef=field.asTypedField().orElseThrow().type>
-	// Get${field.name?cap_first} returns ${field.name?cap_first}
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
 	// GetLengthInBytes returns the length in bytes
@@ -225,14 +225,6 @@ type I${type.name}Child interface {
 	GetTypeName() string
 	I${type.name}
 }
-	<#--list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
-	<#- If the discriminator name matches that of another field, suppress the methods generation ->
-		<#if !helper.isNonDiscriminatorField(discriminatorName)>
-func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
-	return m.${discriminatorName?cap_first}()
-}
-		</#if>
-	</#list-->
 <#elseif type.parentType.isPresent()>
 
 <@compress single_line=true>
@@ -1551,7 +1543,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 					<#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
 
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
+	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.Get${discriminatorField.name?cap_first}())
 					<#if helper.isEnumField(field)>
 	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
 					<#else>

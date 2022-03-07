@@ -34,7 +34,7 @@ type DeviceStatus struct {
 
 // The corresponding interface
 type IDeviceStatus interface {
-	// GetProgramMode returns ProgramMode
+	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -33,7 +33,7 @@ type Checksum struct {
 
 // The corresponding interface
 type IChecksum interface {
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

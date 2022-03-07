@@ -41,11 +41,11 @@ type APDUAbort struct {
 // The corresponding interface
 type IAPDUAbort interface {
 	IAPDU
-	// GetServer returns Server
+	// GetServer returns Server (property field)
 	GetServer() bool
-	// GetOriginalInvokeId returns OriginalInvokeId
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetAbortReason returns AbortReason
+	// GetAbortReason returns AbortReason (property field)
 	GetAbortReason() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,9 +35,9 @@ type BACnetApplicationTagUnsignedInteger struct {
 // The corresponding interface
 type IBACnetApplicationTagUnsignedInteger interface {
 	IBACnetApplicationTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadUnsignedInteger
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -50,13 +50,6 @@ type IBACnetApplicationTagUnsignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagUnsignedInteger) ActualTagNumber() uint8 {
-	return 0x2
-}
-
-func (m *BACnetApplicationTagUnsignedInteger) GetActualTagNumber() uint8 {
-	return 0x2
-}
 
 func (m *BACnetApplicationTagUnsignedInteger) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header

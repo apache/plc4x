@@ -38,7 +38,7 @@ type NLMIAmRouterToNetwork struct {
 // The corresponding interface
 type INLMIAmRouterToNetwork interface {
 	INLM
-	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() []uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

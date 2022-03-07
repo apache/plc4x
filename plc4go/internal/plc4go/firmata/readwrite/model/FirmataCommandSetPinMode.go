@@ -39,9 +39,9 @@ type FirmataCommandSetPinMode struct {
 // The corresponding interface
 type IFirmataCommandSetPinMode interface {
 	IFirmataCommand
-	// GetPin returns Pin
+	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetMode returns Mode
+	// GetMode returns Mode (property field)
 	GetMode() PinMode
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

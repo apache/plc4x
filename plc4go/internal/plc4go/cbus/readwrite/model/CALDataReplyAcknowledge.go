@@ -36,9 +36,9 @@ type CALDataReplyAcknowledge struct {
 // The corresponding interface
 type ICALDataReplyAcknowledge interface {
 	ICALData
-	// GetParamNo returns ParamNo
+	// GetParamNo returns ParamNo (property field)
 	GetParamNo() uint8
-	// GetCode returns Code
+	// GetCode returns Code (property field)
 	GetCode() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ICALDataReplyAcknowledge interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataReplyAcknowledge) CommandType() CALCommandType {
-	return CALCommandType_ACKNOWLEDGE
-}
-
-func (m *CALDataReplyAcknowledge) GetCommandType() CALCommandType {
-	return CALCommandType_ACKNOWLEDGE
-}
 
 func (m *CALDataReplyAcknowledge) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

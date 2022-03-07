@@ -45,11 +45,11 @@ type CipUnconnectedRequest struct {
 // The corresponding interface
 type ICipUnconnectedRequest interface {
 	ICipService
-	// GetUnconnectedService returns UnconnectedService
+	// GetUnconnectedService returns UnconnectedService (property field)
 	GetUnconnectedService() *CipService
-	// GetBackPlane returns BackPlane
+	// GetBackPlane returns BackPlane (property field)
 	GetBackPlane() int8
-	// GetSlot returns Slot
+	// GetSlot returns Slot (property field)
 	GetSlot() int8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -791,7 +791,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
                         .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Child." + capitalize(childProperty) + "()";
+                        return tracer + "Cast" + getLanguageTypeNameForTypeReference(nonSimpleTypeReference) + "(" + variableLiteralName + ").Child.Get" + capitalize(childProperty) + "()";
                     }
                     // TODO: is this really meant to fall through?
                     tracer = tracer.dive("we fell through the complex complex");

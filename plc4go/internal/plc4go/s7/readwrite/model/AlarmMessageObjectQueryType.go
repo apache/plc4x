@@ -45,21 +45,21 @@ type AlarmMessageObjectQueryType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectQueryType interface {
-	// GetLengthDataset returns LengthDataset
+	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
-	// GetEventState returns EventState
+	// GetEventState returns EventState (property field)
 	GetEventState() *State
-	// GetAckStateGoing returns AckStateGoing
+	// GetAckStateGoing returns AckStateGoing (property field)
 	GetAckStateGoing() *State
-	// GetAckStateComing returns AckStateComing
+	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() *State
-	// GetTimeComing returns TimeComing
+	// GetTimeComing returns TimeComing (property field)
 	GetTimeComing() *DateAndTime
-	// GetValueComing returns ValueComing
+	// GetValueComing returns ValueComing (property field)
 	GetValueComing() *AssociatedValueType
-	// GetTimeGoing returns TimeGoing
+	// GetTimeGoing returns TimeGoing (property field)
 	GetTimeGoing() *DateAndTime
-	// GetValueGoing returns ValueGoing
+	// GetValueGoing returns ValueGoing (property field)
 	GetValueGoing() *AssociatedValueType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

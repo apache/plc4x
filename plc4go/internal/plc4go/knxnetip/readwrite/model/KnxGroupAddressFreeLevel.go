@@ -35,7 +35,7 @@ type KnxGroupAddressFreeLevel struct {
 // The corresponding interface
 type IKnxGroupAddressFreeLevel interface {
 	IKnxGroupAddress
-	// GetSubGroup returns SubGroup
+	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

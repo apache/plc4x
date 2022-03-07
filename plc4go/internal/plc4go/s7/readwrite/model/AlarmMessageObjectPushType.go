@@ -45,23 +45,23 @@ type AlarmMessageObjectPushType struct {
 
 // The corresponding interface
 type IAlarmMessageObjectPushType interface {
-	// GetLengthSpec returns LengthSpec
+	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
-	// GetSyntaxId returns SyntaxId
+	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
-	// GetNumberOfValues returns NumberOfValues
+	// GetNumberOfValues returns NumberOfValues (property field)
 	GetNumberOfValues() uint8
-	// GetEventId returns EventId
+	// GetEventId returns EventId (property field)
 	GetEventId() uint32
-	// GetEventState returns EventState
+	// GetEventState returns EventState (property field)
 	GetEventState() *State
-	// GetLocalState returns LocalState
+	// GetLocalState returns LocalState (property field)
 	GetLocalState() *State
-	// GetAckStateGoing returns AckStateGoing
+	// GetAckStateGoing returns AckStateGoing (property field)
 	GetAckStateGoing() *State
-	// GetAckStateComing returns AckStateComing
+	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() *State
-	// GetAssociatedValues returns AssociatedValues
+	// GetAssociatedValues returns AssociatedValues (property field)
 	GetAssociatedValues() []*AssociatedValueType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,15 +39,13 @@ type BACnetPropertyStates struct {
 
 // The corresponding interface
 type IBACnetPropertyStates interface {
-	// PeekedTagNumber returns PeekedTagNumber
-	PeekedTagNumber() uint8
-	// GetOpeningTag returns OpeningTag
+	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetPeekedTagHeader returns PeekedTagHeader
+	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() *BACnetTagHeader
-	// GetClosingTag returns ClosingTag
+	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
-	// GetPeekedTagNumber returns PeekedTagNumber
+	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

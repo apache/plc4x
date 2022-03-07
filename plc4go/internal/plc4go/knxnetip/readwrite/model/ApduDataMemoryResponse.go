@@ -39,9 +39,9 @@ type ApduDataMemoryResponse struct {
 // The corresponding interface
 type IApduDataMemoryResponse interface {
 	IApduData
-	// GetAddress returns Address
+	// GetAddress returns Address (property field)
 	GetAddress() uint16
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

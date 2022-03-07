@@ -34,13 +34,11 @@ type BACnetApplicationTag struct {
 
 // The corresponding interface
 type IBACnetApplicationTag interface {
-	// ActualTagNumber returns ActualTagNumber
-	ActualTagNumber() uint8
-	// GetHeader returns Header
+	// GetHeader returns Header (property field)
 	GetHeader() *BACnetTagHeader
-	// GetActualTagNumber returns ActualTagNumber
+	// GetActualTagNumber returns ActualTagNumber (virtual field)
 	GetActualTagNumber() uint8
-	// GetActualLength returns ActualLength
+	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

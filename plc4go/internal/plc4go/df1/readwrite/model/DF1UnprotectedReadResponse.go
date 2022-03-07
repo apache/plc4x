@@ -34,7 +34,7 @@ type DF1UnprotectedReadResponse struct {
 // The corresponding interface
 type IDF1UnprotectedReadResponse interface {
 	IDF1Command
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -38,7 +38,7 @@ type BACnetTimeStampSequence struct {
 // The corresponding interface
 type IBACnetTimeStampSequence interface {
 	IBACnetTimeStamp
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type IBACnetTimeStampSequence interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTimeStampSequence) PeekedTagNumber() uint8 {
-	return uint8(1)
-}
-
-func (m *BACnetTimeStampSequence) GetPeekedTagNumber() uint8 {
-	return uint8(1)
-}
 
 func (m *BACnetTimeStampSequence) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetTimeStamp.OpeningTag = openingTag

@@ -40,21 +40,21 @@ type CBusOptions struct {
 
 // The corresponding interface
 type ICBusOptions interface {
-	// GetConnect returns Connect
+	// GetConnect returns Connect (property field)
 	GetConnect() bool
-	// GetSmart returns Smart
+	// GetSmart returns Smart (property field)
 	GetSmart() bool
-	// GetIdmon returns Idmon
+	// GetIdmon returns Idmon (property field)
 	GetIdmon() bool
-	// GetExstat returns Exstat
+	// GetExstat returns Exstat (property field)
 	GetExstat() bool
-	// GetMonitor returns Monitor
+	// GetMonitor returns Monitor (property field)
 	GetMonitor() bool
-	// GetMonall returns Monall
+	// GetMonall returns Monall (property field)
 	GetMonall() bool
-	// GetPun returns Pun
+	// GetPun returns Pun (property field)
 	GetPun() bool
-	// GetPcn returns Pcn
+	// GetPcn returns Pcn (property field)
 	GetPcn() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

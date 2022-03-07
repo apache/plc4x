@@ -38,7 +38,7 @@ type UnknownMessage struct {
 // The corresponding interface
 type IUnknownMessage interface {
 	IKnxNetIpMessage
-	// GetUnknownData returns UnknownData
+	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

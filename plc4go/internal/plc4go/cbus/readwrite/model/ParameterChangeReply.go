@@ -35,7 +35,7 @@ type ParameterChangeReply struct {
 // The corresponding interface
 type IParameterChangeReply interface {
 	IReply
-	// GetIsA returns IsA
+	// GetIsA returns IsA (property field)
 	GetIsA() *ParameterChange
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

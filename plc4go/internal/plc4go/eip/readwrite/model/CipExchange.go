@@ -42,7 +42,7 @@ type CipExchange struct {
 
 // The corresponding interface
 type ICipExchange interface {
-	// GetService returns Service
+	// GetService returns Service (property field)
 	GetService() *CipService
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

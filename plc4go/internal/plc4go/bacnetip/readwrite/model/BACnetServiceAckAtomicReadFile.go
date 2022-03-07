@@ -36,9 +36,9 @@ type BACnetServiceAckAtomicReadFile struct {
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFile interface {
 	IBACnetServiceAck
-	// GetEndOfFile returns EndOfFile
+	// GetEndOfFile returns EndOfFile (property field)
 	GetEndOfFile() *BACnetApplicationTagBoolean
-	// GetAccessMethod returns AccessMethod
+	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() *BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

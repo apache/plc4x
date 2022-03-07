@@ -44,17 +44,17 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
 	ICEMIAdditionalInformation
-	// GetFrameErrorFlag returns FrameErrorFlag
+	// GetFrameErrorFlag returns FrameErrorFlag (property field)
 	GetFrameErrorFlag() bool
-	// GetBitErrorFlag returns BitErrorFlag
+	// GetBitErrorFlag returns BitErrorFlag (property field)
 	GetBitErrorFlag() bool
-	// GetParityErrorFlag returns ParityErrorFlag
+	// GetParityErrorFlag returns ParityErrorFlag (property field)
 	GetParityErrorFlag() bool
-	// GetUnknownFlag returns UnknownFlag
+	// GetUnknownFlag returns UnknownFlag (property field)
 	GetUnknownFlag() bool
-	// GetLostFlag returns LostFlag
+	// GetLostFlag returns LostFlag (property field)
 	GetLostFlag() bool
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

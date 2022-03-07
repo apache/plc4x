@@ -35,7 +35,7 @@ type S7ParameterWriteVarRequest struct {
 // The corresponding interface
 type IS7ParameterWriteVarRequest interface {
 	IS7Parameter
-	// GetItems returns Items
+	// GetItems returns Items (property field)
 	GetItems() []*S7VarRequestParameterItem
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

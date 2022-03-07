@@ -39,7 +39,7 @@ type CipRRData struct {
 // The corresponding interface
 type ICipRRData interface {
 	IEipPacket
-	// GetExchange returns Exchange
+	// GetExchange returns Exchange (property field)
 	GetExchange() *CipExchange
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

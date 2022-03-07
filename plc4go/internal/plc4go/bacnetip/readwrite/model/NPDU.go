@@ -47,33 +47,33 @@ type NPDU struct {
 
 // The corresponding interface
 type INPDU interface {
-	// GetProtocolVersionNumber returns ProtocolVersionNumber
+	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
-	// GetControl returns Control
+	// GetControl returns Control (property field)
 	GetControl() *NPDUControl
-	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() *uint16
-	// GetDestinationLength returns DestinationLength
+	// GetDestinationLength returns DestinationLength (property field)
 	GetDestinationLength() *uint8
-	// GetDestinationAddress returns DestinationAddress
+	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() []uint8
-	// GetSourceNetworkAddress returns SourceNetworkAddress
+	// GetSourceNetworkAddress returns SourceNetworkAddress (property field)
 	GetSourceNetworkAddress() *uint16
-	// GetSourceLength returns SourceLength
+	// GetSourceLength returns SourceLength (property field)
 	GetSourceLength() *uint8
-	// GetSourceAddress returns SourceAddress
+	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() []uint8
-	// GetHopCount returns HopCount
+	// GetHopCount returns HopCount (property field)
 	GetHopCount() *uint8
-	// GetNlm returns Nlm
+	// GetNlm returns Nlm (property field)
 	GetNlm() *NLM
-	// GetApdu returns Apdu
+	// GetApdu returns Apdu (property field)
 	GetApdu() *APDU
-	// GetSourceLengthAddon returns SourceLengthAddon
+	// GetSourceLengthAddon returns SourceLengthAddon (virtual field)
 	GetSourceLengthAddon() uint16
-	// GetDestinationLengthAddon returns DestinationLengthAddon
+	// GetDestinationLengthAddon returns DestinationLengthAddon (virtual field)
 	GetDestinationLengthAddon() uint16
-	// GetPayloadSubtraction returns PayloadSubtraction
+	// GetPayloadSubtraction returns PayloadSubtraction (virtual field)
 	GetPayloadSubtraction() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

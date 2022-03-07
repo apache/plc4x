@@ -39,7 +39,7 @@ type BACnetPropertyStatesBinaryValue struct {
 // The corresponding interface
 type IBACnetPropertyStatesBinaryValue interface {
 	IBACnetPropertyStates
-	// GetBinaryValue returns BinaryValue
+	// GetBinaryValue returns BinaryValue (property field)
 	GetBinaryValue() *BACnetBinaryPV
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -52,13 +52,6 @@ type IBACnetPropertyStatesBinaryValue interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetPropertyStatesBinaryValue) PeekedTagNumber() uint8 {
-	return uint8(1)
-}
-
-func (m *BACnetPropertyStatesBinaryValue) GetPeekedTagNumber() uint8 {
-	return uint8(1)
-}
 
 func (m *BACnetPropertyStatesBinaryValue) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetPropertyStates.OpeningTag = openingTag

@@ -42,19 +42,19 @@ type CALReplyLong struct {
 // The corresponding interface
 type ICALReplyLong interface {
 	ICALReply
-	// GetTerminatingByte returns TerminatingByte
+	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
-	// GetUnitAddress returns UnitAddress
+	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() *UnitAddress
-	// GetBridgeAddress returns BridgeAddress
+	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() *BridgeAddress
-	// GetSerialInterfaceAddress returns SerialInterfaceAddress
+	// GetSerialInterfaceAddress returns SerialInterfaceAddress (property field)
 	GetSerialInterfaceAddress() *SerialInterfaceAddress
-	// GetReservedByte returns ReservedByte
+	// GetReservedByte returns ReservedByte (property field)
 	GetReservedByte() *byte
-	// GetReplyNetwork returns ReplyNetwork
+	// GetReplyNetwork returns ReplyNetwork (property field)
 	GetReplyNetwork() *ReplyNetwork
-	// GetIsUnitAddress returns IsUnitAddress
+	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

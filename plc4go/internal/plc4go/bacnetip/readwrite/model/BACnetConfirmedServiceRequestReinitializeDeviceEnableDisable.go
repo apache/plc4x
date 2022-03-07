@@ -37,13 +37,13 @@ type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable interface {
-	// GetRawData returns RawData
+	// GetRawData returns RawData (property field)
 	GetRawData() *BACnetContextTagEnumerated
-	// GetIsEnable returns IsEnable
+	// GetIsEnable returns IsEnable (virtual field)
 	GetIsEnable() bool
-	// GetIsDisable returns IsDisable
+	// GetIsDisable returns IsDisable (virtual field)
 	GetIsDisable() bool
-	// GetIsDisableInitiation returns IsDisableInitiation
+	// GetIsDisableInitiation returns IsDisableInitiation (virtual field)
 	GetIsDisableInitiation() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

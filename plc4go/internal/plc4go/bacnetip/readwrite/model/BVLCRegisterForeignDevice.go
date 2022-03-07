@@ -35,7 +35,7 @@ type BVLCRegisterForeignDevice struct {
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
 	IBVLC
-	// GetTtl returns Ttl
+	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

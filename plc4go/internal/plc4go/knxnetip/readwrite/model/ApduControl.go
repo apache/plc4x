@@ -33,8 +33,8 @@ type ApduControl struct {
 
 // The corresponding interface
 type IApduControl interface {
-	// ControlType returns ControlType
-	ControlType() uint8
+	// GetControlType returns ControlType (discriminator field)
+	GetControlType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -154,7 +154,7 @@ func (m *ApduControl) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu
 	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType := uint8(child.ControlType())
+	controlType := uint8(child.GetControlType())
 	_controlTypeErr := writeBuffer.WriteUint8("controlType", 2, (controlType))
 
 	if _controlTypeErr != nil {

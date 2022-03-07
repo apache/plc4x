@@ -39,15 +39,13 @@ type BACnetConstructedData struct {
 
 // The corresponding interface
 type IBACnetConstructedData interface {
-	// ObjectType returns ObjectType
-	ObjectType() BACnetObjectType
-	// PropertyIdentifierEnum returns PropertyIdentifierEnum
-	PropertyIdentifierEnum() BACnetPropertyIdentifier
-	// GetOpeningTag returns OpeningTag
+	// GetObjectType returns ObjectType (discriminator field)
+	GetObjectType() BACnetObjectType
+	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetClosingTag returns ClosingTag
+	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
-	// GetPropertyIdentifierEnum returns PropertyIdentifierEnum
+	// GetPropertyIdentifierEnum returns PropertyIdentifierEnum (virtual field)
 	GetPropertyIdentifierEnum() BACnetPropertyIdentifier
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

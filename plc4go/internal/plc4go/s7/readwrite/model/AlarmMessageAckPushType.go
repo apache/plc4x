@@ -36,13 +36,13 @@ type AlarmMessageAckPushType struct {
 
 // The corresponding interface
 type IAlarmMessageAckPushType interface {
-	// GetTimeStamp returns TimeStamp
+	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() *DateAndTime
-	// GetFunctionId returns FunctionId
+	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
-	// GetNumberOfObjects returns NumberOfObjects
+	// GetNumberOfObjects returns NumberOfObjects (property field)
 	GetNumberOfObjects() uint8
-	// GetMessageObjects returns MessageObjects
+	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []*AlarmMessageAckObjectPushType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

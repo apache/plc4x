@@ -38,7 +38,7 @@ type S7PayloadUserData struct {
 // The corresponding interface
 type IS7PayloadUserData interface {
 	IS7Payload
-	// GetItems returns Items
+	// GetItems returns Items (property field)
 	GetItems() []*S7PayloadUserDataItem
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

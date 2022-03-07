@@ -35,7 +35,7 @@ type DeviceConfigurationAck struct {
 // The corresponding interface
 type IDeviceConfigurationAck interface {
 	IKnxNetIpMessage
-	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock
+	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
 	GetDeviceConfigurationAckDataBlock() *DeviceConfigurationAckDataBlock
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

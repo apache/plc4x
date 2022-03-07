@@ -34,11 +34,9 @@ type CALData struct {
 
 // The corresponding interface
 type ICALData interface {
-	// CommandType returns CommandType
-	CommandType() CALCommandType
-	// GetCommandTypeContainer returns CommandTypeContainer
+	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
-	// GetCommandType returns CommandType
+	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() CALCommandType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

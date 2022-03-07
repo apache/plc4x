@@ -39,9 +39,9 @@ type FirmataMessageAnalogIO struct {
 // The corresponding interface
 type IFirmataMessageAnalogIO interface {
 	IFirmataMessage
-	// GetPin returns Pin
+	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []int8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

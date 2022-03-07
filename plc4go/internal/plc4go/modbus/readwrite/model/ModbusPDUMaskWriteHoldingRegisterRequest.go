@@ -37,11 +37,11 @@ type ModbusPDUMaskWriteHoldingRegisterRequest struct {
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterRequest interface {
 	IModbusPDU
-	// GetReferenceAddress returns ReferenceAddress
+	// GetReferenceAddress returns ReferenceAddress (property field)
 	GetReferenceAddress() uint16
-	// GetAndMask returns AndMask
+	// GetAndMask returns AndMask (property field)
 	GetAndMask() uint16
-	// GetOrMask returns OrMask
+	// GetOrMask returns OrMask (property field)
 	GetOrMask() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

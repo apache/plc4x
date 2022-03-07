@@ -38,7 +38,7 @@ type CBusCommandPointToMultiPoint struct {
 // The corresponding interface
 type ICBusCommandPointToMultiPoint interface {
 	ICBusCommand
-	// GetCommand returns Command
+	// GetCommand returns Command (property field)
 	GetCommand() *CBusPointToMultiPointCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ICBusCommandPointToMultiPoint interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CBusCommandPointToMultiPoint) DestinationAddressType() DestinationAddressType {
-	return DestinationAddressType_PointToMultiPoint
-}
-
-func (m *CBusCommandPointToMultiPoint) GetDestinationAddressType() DestinationAddressType {
-	return DestinationAddressType_PointToMultiPoint
-}
 
 func (m *CBusCommandPointToMultiPoint) InitializeParent(parent *CBusCommand, header *CBusHeader) {
 	m.CBusCommand.Header = header

@@ -35,9 +35,9 @@ type NetworkProtocolControlInformation struct {
 
 // The corresponding interface
 type INetworkProtocolControlInformation interface {
-	// GetStackCounter returns StackCounter
+	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
-	// GetStackDepth returns StackDepth
+	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

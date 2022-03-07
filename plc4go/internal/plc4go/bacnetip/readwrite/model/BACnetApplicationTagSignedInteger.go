@@ -35,9 +35,9 @@ type BACnetApplicationTagSignedInteger struct {
 // The corresponding interface
 type IBACnetApplicationTagSignedInteger interface {
 	IBACnetApplicationTag
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *BACnetTagPayloadSignedInteger
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -50,13 +50,6 @@ type IBACnetApplicationTagSignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetApplicationTagSignedInteger) ActualTagNumber() uint8 {
-	return 0x3
-}
-
-func (m *BACnetApplicationTagSignedInteger) GetActualTagNumber() uint8 {
-	return 0x3
-}
 
 func (m *BACnetApplicationTagSignedInteger) InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader) {
 	m.BACnetApplicationTag.Header = header

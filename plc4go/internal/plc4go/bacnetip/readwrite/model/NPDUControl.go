@@ -38,15 +38,15 @@ type NPDUControl struct {
 
 // The corresponding interface
 type INPDUControl interface {
-	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent
+	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
 	GetMessageTypeFieldPresent() bool
-	// GetDestinationSpecified returns DestinationSpecified
+	// GetDestinationSpecified returns DestinationSpecified (property field)
 	GetDestinationSpecified() bool
-	// GetSourceSpecified returns SourceSpecified
+	// GetSourceSpecified returns SourceSpecified (property field)
 	GetSourceSpecified() bool
-	// GetExpectingReply returns ExpectingReply
+	// GetExpectingReply returns ExpectingReply (property field)
 	GetExpectingReply() bool
-	// GetNetworkPriority returns NetworkPriority
+	// GetNetworkPriority returns NetworkPriority (property field)
 	GetNetworkPriority() NPDUNetworkPriority
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

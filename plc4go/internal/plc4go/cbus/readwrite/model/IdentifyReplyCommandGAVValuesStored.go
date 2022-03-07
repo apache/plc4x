@@ -35,7 +35,7 @@ type IdentifyReplyCommandGAVValuesStored struct {
 // The corresponding interface
 type IIdentifyReplyCommandGAVValuesStored interface {
 	IIdentifyReplyCommand
-	// GetValues returns Values
+	// GetValues returns Values (property field)
 	GetValues() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

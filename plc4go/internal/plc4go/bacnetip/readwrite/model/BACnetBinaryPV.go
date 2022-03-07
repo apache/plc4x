@@ -37,11 +37,11 @@ type BACnetBinaryPV struct {
 
 // The corresponding interface
 type IBACnetBinaryPV interface {
-	// GetRawData returns RawData
+	// GetRawData returns RawData (property field)
 	GetRawData() *BACnetContextTagEnumerated
-	// GetIsInactive returns IsInactive
+	// GetIsInactive returns IsInactive (virtual field)
 	GetIsInactive() bool
-	// GetIsActive returns IsActive
+	// GetIsActive returns IsActive (virtual field)
 	GetIsActive() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

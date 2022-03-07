@@ -47,15 +47,15 @@ type CBusCommandPointToPointToMultiPointNormal struct {
 // The corresponding interface
 type ICBusCommandPointToPointToMultiPointNormal interface {
 	ICBusPointToPointToMultipointCommand
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetSalData returns SalData
+	// GetSalData returns SalData (property field)
 	GetSalData() *SALData
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
-	// GetPeekAlpha returns PeekAlpha
+	// GetPeekAlpha returns PeekAlpha (property field)
 	GetPeekAlpha() byte
-	// GetAlpha returns Alpha
+	// GetAlpha returns Alpha (property field)
 	GetAlpha() *Alpha
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

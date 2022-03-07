@@ -41,23 +41,23 @@ type GroupObjectDescriptorRealisationType7 struct {
 
 // The corresponding interface
 type IGroupObjectDescriptorRealisationType7 interface {
-	// GetDataAddress returns DataAddress
+	// GetDataAddress returns DataAddress (property field)
 	GetDataAddress() uint16
-	// GetUpdateEnable returns UpdateEnable
+	// GetUpdateEnable returns UpdateEnable (property field)
 	GetUpdateEnable() bool
-	// GetTransmitEnable returns TransmitEnable
+	// GetTransmitEnable returns TransmitEnable (property field)
 	GetTransmitEnable() bool
-	// GetSegmentSelectorEnable returns SegmentSelectorEnable
+	// GetSegmentSelectorEnable returns SegmentSelectorEnable (property field)
 	GetSegmentSelectorEnable() bool
-	// GetWriteEnable returns WriteEnable
+	// GetWriteEnable returns WriteEnable (property field)
 	GetWriteEnable() bool
-	// GetReadEnable returns ReadEnable
+	// GetReadEnable returns ReadEnable (property field)
 	GetReadEnable() bool
-	// GetCommunicationEnable returns CommunicationEnable
+	// GetCommunicationEnable returns CommunicationEnable (property field)
 	GetCommunicationEnable() bool
-	// GetPriority returns Priority
+	// GetPriority returns Priority (property field)
 	GetPriority() CEMIPriority
-	// GetValueType returns ValueType
+	// GetValueType returns ValueType (property field)
 	GetValueType() ComObjectValueType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

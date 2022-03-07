@@ -42,9 +42,9 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	IS7PayloadUserDataItem
-	// GetPudicfReturnCode returns PudicfReturnCode
+	// GetPudicfReturnCode returns PudicfReturnCode (property field)
 	GetPudicfReturnCode() DataTransportErrorCode
-	// GetPudicftransportSize returns PudicftransportSize
+	// GetPudicftransportSize returns PudicftransportSize (property field)
 	GetPudicftransportSize() DataTransportSize
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

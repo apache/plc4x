@@ -41,17 +41,17 @@ type S7AddressAny struct {
 // The corresponding interface
 type IS7AddressAny interface {
 	IS7Address
-	// GetTransportSize returns TransportSize
+	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
-	// GetNumberOfElements returns NumberOfElements
+	// GetNumberOfElements returns NumberOfElements (property field)
 	GetNumberOfElements() uint16
-	// GetDbNumber returns DbNumber
+	// GetDbNumber returns DbNumber (property field)
 	GetDbNumber() uint16
-	// GetArea returns Area
+	// GetArea returns Area (property field)
 	GetArea() MemoryArea
-	// GetByteAddress returns ByteAddress
+	// GetByteAddress returns ByteAddress (property field)
 	GetByteAddress() uint16
-	// GetBitAddress returns BitAddress
+	// GetBitAddress returns BitAddress (property field)
 	GetBitAddress() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

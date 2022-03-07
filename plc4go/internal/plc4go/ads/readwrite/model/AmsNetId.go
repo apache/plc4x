@@ -38,17 +38,17 @@ type AmsNetId struct {
 
 // The corresponding interface
 type IAmsNetId interface {
-	// GetOctet1 returns Octet1
+	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
-	// GetOctet2 returns Octet2
+	// GetOctet2 returns Octet2 (property field)
 	GetOctet2() uint8
-	// GetOctet3 returns Octet3
+	// GetOctet3 returns Octet3 (property field)
 	GetOctet3() uint8
-	// GetOctet4 returns Octet4
+	// GetOctet4 returns Octet4 (property field)
 	GetOctet4() uint8
-	// GetOctet5 returns Octet5
+	// GetOctet5 returns Octet5 (property field)
 	GetOctet5() uint8
-	// GetOctet6 returns Octet6
+	// GetOctet6 returns Octet6 (property field)
 	GetOctet6() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

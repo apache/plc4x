@@ -37,15 +37,15 @@ type SzlDataTreeItem struct {
 
 // The corresponding interface
 type ISzlDataTreeItem interface {
-	// GetItemIndex returns ItemIndex
+	// GetItemIndex returns ItemIndex (property field)
 	GetItemIndex() uint16
-	// GetMlfb returns Mlfb
+	// GetMlfb returns Mlfb (property field)
 	GetMlfb() []byte
-	// GetModuleTypeId returns ModuleTypeId
+	// GetModuleTypeId returns ModuleTypeId (property field)
 	GetModuleTypeId() uint16
-	// GetAusbg returns Ausbg
+	// GetAusbg returns Ausbg (property field)
 	GetAusbg() uint16
-	// GetAusbe returns Ausbe
+	// GetAusbe returns Ausbe (property field)
 	GetAusbe() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

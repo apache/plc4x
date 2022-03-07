@@ -35,11 +35,11 @@ type KnxAddress struct {
 
 // The corresponding interface
 type IKnxAddress interface {
-	// GetMainGroup returns MainGroup
+	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
-	// GetMiddleGroup returns MiddleGroup
+	// GetMiddleGroup returns MiddleGroup (property field)
 	GetMiddleGroup() uint8
-	// GetSubGroup returns SubGroup
+	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

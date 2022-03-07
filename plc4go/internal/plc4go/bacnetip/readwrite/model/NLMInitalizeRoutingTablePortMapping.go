@@ -36,13 +36,13 @@ type NLMInitalizeRoutingTablePortMapping struct {
 
 // The corresponding interface
 type INLMInitalizeRoutingTablePortMapping interface {
-	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
-	// GetPortId returns PortId
+	// GetPortId returns PortId (property field)
 	GetPortId() uint8
-	// GetPortInfoLength returns PortInfoLength
+	// GetPortInfoLength returns PortInfoLength (property field)
 	GetPortInfoLength() uint8
-	// GetPortInfo returns PortInfo
+	// GetPortInfo returns PortInfo (property field)
 	GetPortInfo() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

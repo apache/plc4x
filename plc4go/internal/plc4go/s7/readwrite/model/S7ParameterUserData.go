@@ -35,7 +35,7 @@ type S7ParameterUserData struct {
 // The corresponding interface
 type IS7ParameterUserData interface {
 	IS7Parameter
-	// GetItems returns Items
+	// GetItems returns Items (property field)
 	GetItems() []*S7ParameterUserDataItem
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -47,23 +47,23 @@ type APDUConfirmedRequest struct {
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
 	IAPDU
-	// GetSegmentedMessage returns SegmentedMessage
+	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
-	// GetMoreFollows returns MoreFollows
+	// GetMoreFollows returns MoreFollows (property field)
 	GetMoreFollows() bool
-	// GetSegmentedResponseAccepted returns SegmentedResponseAccepted
+	// GetSegmentedResponseAccepted returns SegmentedResponseAccepted (property field)
 	GetSegmentedResponseAccepted() bool
-	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted
+	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted (property field)
 	GetMaxSegmentsAccepted() uint8
-	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted
+	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() uint8
-	// GetInvokeId returns InvokeId
+	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint8
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() *uint8
-	// GetProposedWindowSize returns ProposedWindowSize
+	// GetProposedWindowSize returns ProposedWindowSize (property field)
 	GetProposedWindowSize() *uint8
-	// GetServiceRequest returns ServiceRequest
+	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() *BACnetConfirmedServiceRequest
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

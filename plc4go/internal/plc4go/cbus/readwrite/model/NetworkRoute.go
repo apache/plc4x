@@ -34,9 +34,9 @@ type NetworkRoute struct {
 
 // The corresponding interface
 type INetworkRoute interface {
-	// GetRouteType returns RouteType
+	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
-	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses
+	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []*BridgeAddress
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

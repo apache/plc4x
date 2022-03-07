@@ -39,9 +39,9 @@ type COTPPacketTpduError struct {
 // The corresponding interface
 type ICOTPPacketTpduError interface {
 	ICOTPPacket
-	// GetDestinationReference returns DestinationReference
+	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
-	// GetRejectCause returns RejectCause
+	// GetRejectCause returns RejectCause (property field)
 	GetRejectCause() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

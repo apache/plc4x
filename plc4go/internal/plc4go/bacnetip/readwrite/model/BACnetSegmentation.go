@@ -33,15 +33,15 @@ type BACnetSegmentation struct {
 
 // The corresponding interface
 type IBACnetSegmentation interface {
-	// GetRawData returns RawData
+	// GetRawData returns RawData (property field)
 	GetRawData() *BACnetApplicationTagEnumerated
-	// GetIsSegmentedBoth returns IsSegmentedBoth
+	// GetIsSegmentedBoth returns IsSegmentedBoth (virtual field)
 	GetIsSegmentedBoth() bool
-	// GetIsSegmentedTransmit returns IsSegmentedTransmit
+	// GetIsSegmentedTransmit returns IsSegmentedTransmit (virtual field)
 	GetIsSegmentedTransmit() bool
-	// GetIsSegmentedReceive returns IsSegmentedReceive
+	// GetIsSegmentedReceive returns IsSegmentedReceive (virtual field)
 	GetIsSegmentedReceive() bool
-	// GetIsNoSegmentation returns IsNoSegmentation
+	// GetIsNoSegmentation returns IsNoSegmentation (virtual field)
 	GetIsNoSegmentation() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

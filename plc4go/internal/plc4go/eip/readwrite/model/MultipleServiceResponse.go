@@ -43,15 +43,15 @@ type MultipleServiceResponse struct {
 // The corresponding interface
 type IMultipleServiceResponse interface {
 	ICipService
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint8
-	// GetExtStatus returns ExtStatus
+	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
-	// GetServiceNb returns ServiceNb
+	// GetServiceNb returns ServiceNb (property field)
 	GetServiceNb() uint16
-	// GetOffsets returns Offsets
+	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
-	// GetServicesData returns ServicesData
+	// GetServicesData returns ServicesData (property field)
 	GetServicesData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

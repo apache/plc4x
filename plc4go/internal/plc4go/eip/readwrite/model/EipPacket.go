@@ -37,15 +37,15 @@ type EipPacket struct {
 
 // The corresponding interface
 type IEipPacket interface {
-	// Command returns Command
-	Command() uint16
-	// GetSessionHandle returns SessionHandle
+	// GetCommand returns Command (discriminator field)
+	GetCommand() uint16
+	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
-	// GetStatus returns Status
+	// GetStatus returns Status (property field)
 	GetStatus() uint32
-	// GetSenderContext returns SenderContext
+	// GetSenderContext returns SenderContext (property field)
 	GetSenderContext() []uint8
-	// GetOptions returns Options
+	// GetOptions returns Options (property field)
 	GetOptions() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -243,7 +243,7 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 
 	// Discriminator Field (command) (Used as input to a switch field)
-	command := uint16(child.Command())
+	command := uint16(child.GetCommand())
 	_commandErr := writeBuffer.WriteUint16("command", 16, (command))
 
 	if _commandErr != nil {

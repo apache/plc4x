@@ -34,11 +34,9 @@ type SALData struct {
 
 // The corresponding interface
 type ISALData interface {
-	// CommandType returns CommandType
-	CommandType() SALCommandType
-	// GetCommandTypeContainer returns CommandTypeContainer
+	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() SALCommandTypeContainer
-	// GetCommandType returns CommandType
+	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() SALCommandType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

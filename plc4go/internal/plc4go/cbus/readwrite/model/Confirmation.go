@@ -34,9 +34,9 @@ type Confirmation struct {
 
 // The corresponding interface
 type IConfirmation interface {
-	// ConfirmationType returns ConfirmationType
-	ConfirmationType() byte
-	// GetAlpha returns Alpha
+	// GetConfirmationType returns ConfirmationType (discriminator field)
+	GetConfirmationType() byte
+	// GetAlpha returns Alpha (property field)
 	GetAlpha() *Alpha
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -190,7 +190,7 @@ func (m *Confirmation) SerializeParent(writeBuffer utils.WriteBuffer, child ICon
 	}
 
 	// Discriminator Field (confirmationType) (Used as input to a switch field)
-	confirmationType := byte(child.ConfirmationType())
+	confirmationType := byte(child.GetConfirmationType())
 	_confirmationTypeErr := writeBuffer.WriteByte("confirmationType", (confirmationType))
 
 	if _confirmationTypeErr != nil {

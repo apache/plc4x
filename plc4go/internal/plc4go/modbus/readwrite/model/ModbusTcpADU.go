@@ -42,11 +42,11 @@ type ModbusTcpADU struct {
 
 // The corresponding interface
 type IModbusTcpADU interface {
-	// GetTransactionIdentifier returns TransactionIdentifier
+	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
-	// GetUnitIdentifier returns UnitIdentifier
+	// GetUnitIdentifier returns UnitIdentifier (property field)
 	GetUnitIdentifier() uint8
-	// GetPdu returns Pdu
+	// GetPdu returns Pdu (property field)
 	GetPdu() *ModbusPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

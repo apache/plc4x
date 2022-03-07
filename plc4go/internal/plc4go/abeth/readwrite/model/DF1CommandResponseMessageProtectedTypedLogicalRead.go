@@ -38,7 +38,7 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 // The corresponding interface
 type IDF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	IDF1ResponseMessage
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

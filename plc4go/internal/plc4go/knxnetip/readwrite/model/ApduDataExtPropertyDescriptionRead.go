@@ -40,11 +40,11 @@ type ApduDataExtPropertyDescriptionRead struct {
 // The corresponding interface
 type IApduDataExtPropertyDescriptionRead interface {
 	IApduDataExt
-	// GetObjectIndex returns ObjectIndex
+	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
-	// GetPropertyId returns PropertyId
+	// GetPropertyId returns PropertyId (property field)
 	GetPropertyId() uint8
-	// GetIndex returns Index
+	// GetIndex returns Index (property field)
 	GetIndex() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

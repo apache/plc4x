@@ -38,7 +38,7 @@ type CBusCommandPointToPoint struct {
 // The corresponding interface
 type ICBusCommandPointToPoint interface {
 	ICBusCommand
-	// GetCommand returns Command
+	// GetCommand returns Command (property field)
 	GetCommand() *CBusPointToPointCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ICBusCommandPointToPoint interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CBusCommandPointToPoint) DestinationAddressType() DestinationAddressType {
-	return DestinationAddressType_PointToPoint
-}
-
-func (m *CBusCommandPointToPoint) GetDestinationAddressType() DestinationAddressType {
-	return DestinationAddressType_PointToPoint
-}
 
 func (m *CBusCommandPointToPoint) InitializeParent(parent *CBusCommand, header *CBusHeader) {
 	m.CBusCommand.Header = header

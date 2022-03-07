@@ -38,8 +38,8 @@ type S7DataAlarmMessage struct {
 
 // The corresponding interface
 type IS7DataAlarmMessage interface {
-	// CpuFunctionType returns CpuFunctionType
-	CpuFunctionType() uint8
+	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
+	GetCpuFunctionType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

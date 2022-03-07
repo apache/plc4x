@@ -44,13 +44,6 @@ type ICALDataRequestReset interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataRequestReset) CommandType() CALCommandType {
-	return CALCommandType_RESET
-}
-
-func (m *CALDataRequestReset) GetCommandType() CALCommandType {
-	return CALCommandType_RESET
-}
 
 func (m *CALDataRequestReset) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

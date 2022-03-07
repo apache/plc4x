@@ -36,9 +36,9 @@ type CALDataReplyReply struct {
 // The corresponding interface
 type ICALDataReplyReply interface {
 	ICALData
-	// GetParamNumber returns ParamNumber
+	// GetParamNumber returns ParamNumber (property field)
 	GetParamNumber() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type ICALDataReplyReply interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataReplyReply) CommandType() CALCommandType {
-	return CALCommandType_REPLY
-}
-
-func (m *CALDataReplyReply) GetCommandType() CALCommandType {
-	return CALCommandType_REPLY
-}
 
 func (m *CALDataReplyReply) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

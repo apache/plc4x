@@ -41,11 +41,11 @@ type BACnetConstructedDataCommand struct {
 // The corresponding interface
 type IBACnetConstructedDataCommand interface {
 	IBACnetConstructedData
-	// GetInnerOpeningTag returns InnerOpeningTag
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
-	// GetAction returns Action
+	// GetAction returns Action (property field)
 	GetAction() []*BACnetActionCommand
-	// GetInnerClosingTag returns InnerClosingTag
+	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -64,14 +64,6 @@ func (m *BACnetConstructedDataCommand) ObjectType() BACnetObjectType {
 
 func (m *BACnetConstructedDataCommand) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_COMMAND
-}
-
-func (m *BACnetConstructedDataCommand) PropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return 0
-}
-
-func (m *BACnetConstructedDataCommand) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return 0
 }
 
 func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {

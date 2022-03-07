@@ -35,11 +35,11 @@ type SzlId struct {
 
 // The corresponding interface
 type ISzlId interface {
-	// GetTypeClass returns TypeClass
+	// GetTypeClass returns TypeClass (property field)
 	GetTypeClass() SzlModuleTypeClass
-	// GetSublistExtract returns SublistExtract
+	// GetSublistExtract returns SublistExtract (property field)
 	GetSublistExtract() uint8
-	// GetSublistList returns SublistList
+	// GetSublistList returns SublistList (property field)
 	GetSublistList() SzlSublist
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

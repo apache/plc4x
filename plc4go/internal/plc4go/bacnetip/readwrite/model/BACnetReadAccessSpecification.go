@@ -36,13 +36,13 @@ type BACnetReadAccessSpecification struct {
 
 // The corresponding interface
 type IBACnetReadAccessSpecification interface {
-	// GetObjectIdentifier returns ObjectIdentifier
+	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetOpeningTag returns OpeningTag
+	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() *BACnetOpeningTag
-	// GetListOfPropertyReferences returns ListOfPropertyReferences
+	// GetListOfPropertyReferences returns ListOfPropertyReferences (property field)
 	GetListOfPropertyReferences() []*BACnetPropertyReference
-	// GetClosingTag returns ClosingTag
+	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

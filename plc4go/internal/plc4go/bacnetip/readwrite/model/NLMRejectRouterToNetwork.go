@@ -39,9 +39,9 @@ type NLMRejectRouterToNetwork struct {
 // The corresponding interface
 type INLMRejectRouterToNetwork interface {
 	INLM
-	// GetRejectReason returns RejectReason
+	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() NLMRejectRouterToNetworkRejectReason
-	// GetDestinationNetworkAddress returns DestinationNetworkAddress
+	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

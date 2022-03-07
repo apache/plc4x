@@ -38,11 +38,11 @@ type S7ParameterSetupCommunication struct {
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
 	IS7Parameter
-	// GetMaxAmqCaller returns MaxAmqCaller
+	// GetMaxAmqCaller returns MaxAmqCaller (property field)
 	GetMaxAmqCaller() uint16
-	// GetMaxAmqCallee returns MaxAmqCallee
+	// GetMaxAmqCallee returns MaxAmqCallee (property field)
 	GetMaxAmqCallee() uint16
-	// GetPduLength returns PduLength
+	// GetPduLength returns PduLength (property field)
 	GetPduLength() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

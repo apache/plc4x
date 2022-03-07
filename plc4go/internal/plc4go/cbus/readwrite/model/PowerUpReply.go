@@ -35,7 +35,7 @@ type PowerUpReply struct {
 // The corresponding interface
 type IPowerUpReply interface {
 	IReply
-	// GetIsA returns IsA
+	// GetIsA returns IsA (property field)
 	GetIsA() *PowerUp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

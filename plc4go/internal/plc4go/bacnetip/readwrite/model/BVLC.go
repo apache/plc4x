@@ -37,9 +37,9 @@ type BVLC struct {
 
 // The corresponding interface
 type IBVLC interface {
-	// BvlcFunction returns BvlcFunction
-	BvlcFunction() uint8
-	// GetBvlcPayloadLength returns BvlcPayloadLength
+	// GetBvlcFunction returns BvlcFunction (discriminator field)
+	GetBvlcFunction() uint8
+	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -216,7 +216,7 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction := uint8(child.BvlcFunction())
+	bvlcFunction := uint8(child.GetBvlcFunction())
 	_bvlcFunctionErr := writeBuffer.WriteUint8("bvlcFunction", 8, (bvlcFunction))
 
 	if _bvlcFunctionErr != nil {

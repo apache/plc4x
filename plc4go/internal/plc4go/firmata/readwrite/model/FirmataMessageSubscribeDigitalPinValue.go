@@ -40,9 +40,9 @@ type FirmataMessageSubscribeDigitalPinValue struct {
 // The corresponding interface
 type IFirmataMessageSubscribeDigitalPinValue interface {
 	IFirmataMessage
-	// GetPin returns Pin
+	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetEnable returns Enable
+	// GetEnable returns Enable (property field)
 	GetEnable() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,11 +35,11 @@ type BACnetError struct {
 
 // The corresponding interface
 type IBACnetError interface {
-	// ServiceChoice returns ServiceChoice
-	ServiceChoice() uint8
-	// GetErrorClass returns ErrorClass
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() uint8
+	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() *BACnetApplicationTagEnumerated
-	// GetErrorCode returns ErrorCode
+	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() *BACnetApplicationTagEnumerated
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -233,7 +233,7 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(child.ServiceChoice())
+	serviceChoice := uint8(child.GetServiceChoice())
 	_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {

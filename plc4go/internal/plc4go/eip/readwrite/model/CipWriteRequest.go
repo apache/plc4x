@@ -42,15 +42,15 @@ type CipWriteRequest struct {
 // The corresponding interface
 type ICipWriteRequest interface {
 	ICipService
-	// GetRequestPathSize returns RequestPathSize
+	// GetRequestPathSize returns RequestPathSize (property field)
 	GetRequestPathSize() int8
-	// GetTag returns Tag
+	// GetTag returns Tag (property field)
 	GetTag() []byte
-	// GetDataType returns DataType
+	// GetDataType returns DataType (property field)
 	GetDataType() CIPDataTypeCode
-	// GetElementNb returns ElementNb
+	// GetElementNb returns ElementNb (property field)
 	GetElementNb() uint16
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

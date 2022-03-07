@@ -33,7 +33,7 @@ type RelativeTimestamp struct {
 
 // The corresponding interface
 type IRelativeTimestamp interface {
-	// GetTimestamp returns Timestamp
+	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,11 +35,11 @@ type AdsNotificationSample struct {
 
 // The corresponding interface
 type IAdsNotificationSample interface {
-	// GetNotificationHandle returns NotificationHandle
+	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
-	// GetSampleSize returns SampleSize
+	// GetSampleSize returns SampleSize (property field)
 	GetSampleSize() uint32
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

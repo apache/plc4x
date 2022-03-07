@@ -33,8 +33,8 @@ type S7VarRequestParameterItem struct {
 
 // The corresponding interface
 type IS7VarRequestParameterItem interface {
-	// ItemType returns ItemType
-	ItemType() uint8
+	// GetItemType returns ItemType (discriminator field)
+	GetItemType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -148,7 +148,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType := uint8(child.ItemType())
+	itemType := uint8(child.GetItemType())
 	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, (itemType))
 
 	if _itemTypeErr != nil {

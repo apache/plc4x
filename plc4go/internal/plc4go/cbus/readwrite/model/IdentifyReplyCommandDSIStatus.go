@@ -44,25 +44,25 @@ type IdentifyReplyCommandDSIStatus struct {
 // The corresponding interface
 type IIdentifyReplyCommandDSIStatus interface {
 	IIdentifyReplyCommand
-	// GetChannelStatus1 returns ChannelStatus1
+	// GetChannelStatus1 returns ChannelStatus1 (property field)
 	GetChannelStatus1() ChannelStatus
-	// GetChannelStatus2 returns ChannelStatus2
+	// GetChannelStatus2 returns ChannelStatus2 (property field)
 	GetChannelStatus2() ChannelStatus
-	// GetChannelStatus3 returns ChannelStatus3
+	// GetChannelStatus3 returns ChannelStatus3 (property field)
 	GetChannelStatus3() ChannelStatus
-	// GetChannelStatus4 returns ChannelStatus4
+	// GetChannelStatus4 returns ChannelStatus4 (property field)
 	GetChannelStatus4() ChannelStatus
-	// GetChannelStatus5 returns ChannelStatus5
+	// GetChannelStatus5 returns ChannelStatus5 (property field)
 	GetChannelStatus5() ChannelStatus
-	// GetChannelStatus6 returns ChannelStatus6
+	// GetChannelStatus6 returns ChannelStatus6 (property field)
 	GetChannelStatus6() ChannelStatus
-	// GetChannelStatus7 returns ChannelStatus7
+	// GetChannelStatus7 returns ChannelStatus7 (property field)
 	GetChannelStatus7() ChannelStatus
-	// GetChannelStatus8 returns ChannelStatus8
+	// GetChannelStatus8 returns ChannelStatus8 (property field)
 	GetChannelStatus8() ChannelStatus
-	// GetUnitStatus returns UnitStatus
+	// GetUnitStatus returns UnitStatus (property field)
 	GetUnitStatus() UnitStatus
-	// GetDimmingUCRevisionNumber returns DimmingUCRevisionNumber
+	// GetDimmingUCRevisionNumber returns DimmingUCRevisionNumber (property field)
 	GetDimmingUCRevisionNumber() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

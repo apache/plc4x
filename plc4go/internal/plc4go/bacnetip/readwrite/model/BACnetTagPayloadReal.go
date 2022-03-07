@@ -33,7 +33,7 @@ type BACnetTagPayloadReal struct {
 
 // The corresponding interface
 type IBACnetTagPayloadReal interface {
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() float32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

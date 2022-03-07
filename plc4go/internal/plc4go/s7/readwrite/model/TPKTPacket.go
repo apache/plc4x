@@ -38,7 +38,7 @@ type TPKTPacket struct {
 
 // The corresponding interface
 type ITPKTPacket interface {
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *COTPPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

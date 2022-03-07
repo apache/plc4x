@@ -35,7 +35,7 @@ type SearchRequest struct {
 // The corresponding interface
 type ISearchRequest interface {
 	IKnxNetIpMessage
-	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint
+	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

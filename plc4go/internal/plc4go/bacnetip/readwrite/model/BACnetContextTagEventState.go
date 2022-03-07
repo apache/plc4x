@@ -41,11 +41,11 @@ type BACnetContextTagEventState struct {
 // The corresponding interface
 type IBACnetContextTagEventState interface {
 	IBACnetContextTag
-	// GetEventState returns EventState
+	// GetEventState returns EventState (property field)
 	GetEventState() BACnetEventState
-	// GetProprietaryValue returns ProprietaryValue
+	// GetProprietaryValue returns ProprietaryValue (property field)
 	GetProprietaryValue() uint32
-	// GetIsProprietary returns IsProprietary
+	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

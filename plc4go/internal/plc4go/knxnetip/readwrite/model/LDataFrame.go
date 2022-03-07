@@ -38,19 +38,19 @@ type LDataFrame struct {
 
 // The corresponding interface
 type ILDataFrame interface {
-	// NotAckFrame returns NotAckFrame
-	NotAckFrame() bool
-	// Polling returns Polling
-	Polling() bool
-	// GetFrameType returns FrameType
+	// GetNotAckFrame returns NotAckFrame (discriminator field)
+	GetNotAckFrame() bool
+	// GetPolling returns Polling (discriminator field)
+	GetPolling() bool
+	// GetFrameType returns FrameType (property field)
 	GetFrameType() bool
-	// GetNotRepeated returns NotRepeated
+	// GetNotRepeated returns NotRepeated (property field)
 	GetNotRepeated() bool
-	// GetPriority returns Priority
+	// GetPriority returns Priority (property field)
 	GetPriority() CEMIPriority
-	// GetAcknowledgeRequested returns AcknowledgeRequested
+	// GetAcknowledgeRequested returns AcknowledgeRequested (property field)
 	GetAcknowledgeRequested() bool
-	// GetErrorFlag returns ErrorFlag
+	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -259,7 +259,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling := bool(child.Polling())
+	polling := bool(child.GetPolling())
 	_pollingErr := writeBuffer.WriteBit("polling", (polling))
 
 	if _pollingErr != nil {
@@ -274,7 +274,7 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame := bool(child.NotAckFrame())
+	notAckFrame := bool(child.GetNotAckFrame())
 	_notAckFrameErr := writeBuffer.WriteBit("notAckFrame", (notAckFrame))
 
 	if _notAckFrameErr != nil {

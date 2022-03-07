@@ -34,7 +34,7 @@ type StatusRequest struct {
 
 // The corresponding interface
 type IStatusRequest interface {
-	// GetStatusType returns StatusType
+	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

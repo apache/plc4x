@@ -37,11 +37,11 @@ type BACnetAction struct {
 
 // The corresponding interface
 type IBACnetAction interface {
-	// GetRawData returns RawData
+	// GetRawData returns RawData (property field)
 	GetRawData() *BACnetContextTagEnumerated
-	// GetIsDirect returns IsDirect
+	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
-	// GetIsReverse returns IsReverse
+	// GetIsReverse returns IsReverse (virtual field)
 	GetIsReverse() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

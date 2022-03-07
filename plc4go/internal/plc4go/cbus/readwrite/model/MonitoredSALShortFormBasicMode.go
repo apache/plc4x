@@ -40,15 +40,15 @@ type MonitoredSALShortFormBasicMode struct {
 // The corresponding interface
 type IMonitoredSALShortFormBasicMode interface {
 	IMonitoredSAL
-	// GetCounts returns Counts
+	// GetCounts returns Counts (property field)
 	GetCounts() byte
-	// GetBridgeCount returns BridgeCount
+	// GetBridgeCount returns BridgeCount (property field)
 	GetBridgeCount() *BridgeCount
-	// GetNetworkNumber returns NetworkNumber
+	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() *NetworkNumber
-	// GetNoCounts returns NoCounts
+	// GetNoCounts returns NoCounts (property field)
 	GetNoCounts() *byte
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

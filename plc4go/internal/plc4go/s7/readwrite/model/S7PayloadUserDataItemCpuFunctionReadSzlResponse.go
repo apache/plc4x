@@ -41,11 +41,11 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	IS7PayloadUserDataItem
-	// GetSzlId returns SzlId
+	// GetSzlId returns SzlId (property field)
 	GetSzlId() *SzlId
-	// GetSzlIndex returns SzlIndex
+	// GetSzlIndex returns SzlIndex (property field)
 	GetSzlIndex() uint16
-	// GetItems returns Items
+	// GetItems returns Items (property field)
 	GetItems() []*SzlDataTreeItem
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

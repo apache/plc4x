@@ -35,11 +35,11 @@ type BVLCWriteBroadcastDistributionTableEntry struct {
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTableEntry interface {
-	// GetIp returns Ip
+	// GetIp returns Ip (property field)
 	GetIp() []uint8
-	// GetPort returns Port
+	// GetPort returns Port (property field)
 	GetPort() uint16
-	// GetBroadcastDistributionMap returns BroadcastDistributionMap
+	// GetBroadcastDistributionMap returns BroadcastDistributionMap (property field)
 	GetBroadcastDistributionMap() []uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

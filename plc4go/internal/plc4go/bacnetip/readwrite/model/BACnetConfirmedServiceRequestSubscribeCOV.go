@@ -41,13 +41,13 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
 	IBACnetConfirmedServiceRequest
-	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
-	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
-	// GetIssueConfirmed returns IssueConfirmed
+	// GetIssueConfirmed returns IssueConfirmed (property field)
 	GetIssueConfirmed() *BACnetContextTagBoolean
-	// GetLifetimeInSeconds returns LifetimeInSeconds
+	// GetLifetimeInSeconds returns LifetimeInSeconds (property field)
 	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -39,15 +39,15 @@ type DF1RequestProtectedTypedLogicalRead struct {
 // The corresponding interface
 type IDF1RequestProtectedTypedLogicalRead interface {
 	IDF1RequestCommand
-	// GetByteSize returns ByteSize
+	// GetByteSize returns ByteSize (property field)
 	GetByteSize() uint8
-	// GetFileNumber returns FileNumber
+	// GetFileNumber returns FileNumber (property field)
 	GetFileNumber() uint8
-	// GetFileType returns FileType
+	// GetFileType returns FileType (property field)
 	GetFileType() uint8
-	// GetElementNumber returns ElementNumber
+	// GetElementNumber returns ElementNumber (property field)
 	GetElementNumber() uint8
-	// GetSubElementNumber returns SubElementNumber
+	// GetSubElementNumber returns SubElementNumber (property field)
 	GetSubElementNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

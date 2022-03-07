@@ -35,7 +35,7 @@ type AdsDeleteDeviceNotificationResponse struct {
 // The corresponding interface
 type IAdsDeleteDeviceNotificationResponse interface {
 	IAdsData
-	// GetResult returns Result
+	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

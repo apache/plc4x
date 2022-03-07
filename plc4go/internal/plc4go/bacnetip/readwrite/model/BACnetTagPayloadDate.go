@@ -36,35 +36,35 @@ type BACnetTagPayloadDate struct {
 
 // The corresponding interface
 type IBACnetTagPayloadDate interface {
-	// GetYearMinus1900 returns YearMinus1900
+	// GetYearMinus1900 returns YearMinus1900 (property field)
 	GetYearMinus1900() uint8
-	// GetMonth returns Month
+	// GetMonth returns Month (property field)
 	GetMonth() uint8
-	// GetDayOfMonth returns DayOfMonth
+	// GetDayOfMonth returns DayOfMonth (property field)
 	GetDayOfMonth() uint8
-	// GetDayOfWeek returns DayOfWeek
+	// GetDayOfWeek returns DayOfWeek (property field)
 	GetDayOfWeek() uint8
-	// GetWildcard returns Wildcard
+	// GetWildcard returns Wildcard (virtual field)
 	GetWildcard() uint8
-	// GetYearIsWildcard returns YearIsWildcard
+	// GetYearIsWildcard returns YearIsWildcard (virtual field)
 	GetYearIsWildcard() bool
-	// GetYear returns Year
+	// GetYear returns Year (virtual field)
 	GetYear() uint16
-	// GetMonthIsWildcard returns MonthIsWildcard
+	// GetMonthIsWildcard returns MonthIsWildcard (virtual field)
 	GetMonthIsWildcard() bool
-	// GetOddMonthWildcard returns OddMonthWildcard
+	// GetOddMonthWildcard returns OddMonthWildcard (virtual field)
 	GetOddMonthWildcard() bool
-	// GetEvenMonthWildcard returns EvenMonthWildcard
+	// GetEvenMonthWildcard returns EvenMonthWildcard (virtual field)
 	GetEvenMonthWildcard() bool
-	// GetDayOfMonthIsWildcard returns DayOfMonthIsWildcard
+	// GetDayOfMonthIsWildcard returns DayOfMonthIsWildcard (virtual field)
 	GetDayOfMonthIsWildcard() bool
-	// GetLastDayOfMonthWildcard returns LastDayOfMonthWildcard
+	// GetLastDayOfMonthWildcard returns LastDayOfMonthWildcard (virtual field)
 	GetLastDayOfMonthWildcard() bool
-	// GetOddDayOfMonthWildcard returns OddDayOfMonthWildcard
+	// GetOddDayOfMonthWildcard returns OddDayOfMonthWildcard (virtual field)
 	GetOddDayOfMonthWildcard() bool
-	// GetEvenDayOfMonthWildcard returns EvenDayOfMonthWildcard
+	// GetEvenDayOfMonthWildcard returns EvenDayOfMonthWildcard (virtual field)
 	GetEvenDayOfMonthWildcard() bool
-	// GetDayOfWeekIsWildcard returns DayOfWeekIsWildcard
+	// GetDayOfWeekIsWildcard returns DayOfWeekIsWildcard (virtual field)
 	GetDayOfWeekIsWildcard() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

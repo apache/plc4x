@@ -39,13 +39,13 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscription struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscription interface {
 	IS7PayloadUserDataItem
-	// GetSubscription returns Subscription
+	// GetSubscription returns Subscription (property field)
 	GetSubscription() uint8
-	// GetMagicKey returns MagicKey
+	// GetMagicKey returns MagicKey (property field)
 	GetMagicKey() string
-	// GetAlarmtype returns Alarmtype
+	// GetAlarmtype returns Alarmtype (property field)
 	GetAlarmtype() *AlarmStateType
-	// GetReserve returns Reserve
+	// GetReserve returns Reserve (property field)
 	GetReserve() *uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

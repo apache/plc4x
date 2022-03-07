@@ -35,7 +35,7 @@ type SALDataOn struct {
 // The corresponding interface
 type ISALDataOn interface {
 	ISALData
-	// GetGroup returns Group
+	// GetGroup returns Group (property field)
 	GetGroup() byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -48,13 +48,6 @@ type ISALDataOn interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SALDataOn) CommandType() SALCommandType {
-	return SALCommandType_ON
-}
-
-func (m *SALDataOn) GetCommandType() SALCommandType {
-	return SALCommandType_ON
-}
 
 func (m *SALDataOn) InitializeParent(parent *SALData, commandTypeContainer SALCommandTypeContainer) {
 	m.SALData.CommandTypeContainer = commandTypeContainer

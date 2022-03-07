@@ -40,15 +40,15 @@ type S7ParameterModeTransition struct {
 // The corresponding interface
 type IS7ParameterModeTransition interface {
 	IS7Parameter
-	// GetMethod returns Method
+	// GetMethod returns Method (property field)
 	GetMethod() uint8
-	// GetCpuFunctionType returns CpuFunctionType
+	// GetCpuFunctionType returns CpuFunctionType (property field)
 	GetCpuFunctionType() uint8
-	// GetCpuFunctionGroup returns CpuFunctionGroup
+	// GetCpuFunctionGroup returns CpuFunctionGroup (property field)
 	GetCpuFunctionGroup() uint8
-	// GetCurrentMode returns CurrentMode
+	// GetCurrentMode returns CurrentMode (property field)
 	GetCurrentMode() uint8
-	// GetSequenceNumber returns SequenceNumber
+	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

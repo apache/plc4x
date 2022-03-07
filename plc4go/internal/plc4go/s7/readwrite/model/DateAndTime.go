@@ -40,21 +40,21 @@ type DateAndTime struct {
 
 // The corresponding interface
 type IDateAndTime interface {
-	// GetYear returns Year
+	// GetYear returns Year (property field)
 	GetYear() uint8
-	// GetMonth returns Month
+	// GetMonth returns Month (property field)
 	GetMonth() uint8
-	// GetDay returns Day
+	// GetDay returns Day (property field)
 	GetDay() uint8
-	// GetHour returns Hour
+	// GetHour returns Hour (property field)
 	GetHour() uint8
-	// GetMinutes returns Minutes
+	// GetMinutes returns Minutes (property field)
 	GetMinutes() uint8
-	// GetSeconds returns Seconds
+	// GetSeconds returns Seconds (property field)
 	GetSeconds() uint8
-	// GetMsec returns Msec
+	// GetMsec returns Msec (property field)
 	GetMsec() uint16
-	// GetDow returns Dow
+	// GetDow returns Dow (property field)
 	GetDow() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

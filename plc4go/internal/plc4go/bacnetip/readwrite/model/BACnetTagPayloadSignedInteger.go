@@ -43,39 +43,39 @@ type BACnetTagPayloadSignedInteger struct {
 
 // The corresponding interface
 type IBACnetTagPayloadSignedInteger interface {
-	// GetValueInt8 returns ValueInt8
+	// GetValueInt8 returns ValueInt8 (property field)
 	GetValueInt8() *int8
-	// GetValueInt16 returns ValueInt16
+	// GetValueInt16 returns ValueInt16 (property field)
 	GetValueInt16() *int16
-	// GetValueInt24 returns ValueInt24
+	// GetValueInt24 returns ValueInt24 (property field)
 	GetValueInt24() *int32
-	// GetValueInt32 returns ValueInt32
+	// GetValueInt32 returns ValueInt32 (property field)
 	GetValueInt32() *int32
-	// GetValueInt40 returns ValueInt40
+	// GetValueInt40 returns ValueInt40 (property field)
 	GetValueInt40() *int64
-	// GetValueInt48 returns ValueInt48
+	// GetValueInt48 returns ValueInt48 (property field)
 	GetValueInt48() *int64
-	// GetValueInt56 returns ValueInt56
+	// GetValueInt56 returns ValueInt56 (property field)
 	GetValueInt56() *int64
-	// GetValueInt64 returns ValueInt64
+	// GetValueInt64 returns ValueInt64 (property field)
 	GetValueInt64() *int64
-	// GetIsInt8 returns IsInt8
+	// GetIsInt8 returns IsInt8 (virtual field)
 	GetIsInt8() bool
-	// GetIsInt16 returns IsInt16
+	// GetIsInt16 returns IsInt16 (virtual field)
 	GetIsInt16() bool
-	// GetIsInt24 returns IsInt24
+	// GetIsInt24 returns IsInt24 (virtual field)
 	GetIsInt24() bool
-	// GetIsInt32 returns IsInt32
+	// GetIsInt32 returns IsInt32 (virtual field)
 	GetIsInt32() bool
-	// GetIsInt40 returns IsInt40
+	// GetIsInt40 returns IsInt40 (virtual field)
 	GetIsInt40() bool
-	// GetIsInt48 returns IsInt48
+	// GetIsInt48 returns IsInt48 (virtual field)
 	GetIsInt48() bool
-	// GetIsInt56 returns IsInt56
+	// GetIsInt56 returns IsInt56 (virtual field)
 	GetIsInt56() bool
-	// GetIsInt64 returns IsInt64
+	// GetIsInt64 returns IsInt64 (virtual field)
 	GetIsInt64() bool
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

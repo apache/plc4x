@@ -37,11 +37,11 @@ type SysexCommandPinStateResponse struct {
 // The corresponding interface
 type ISysexCommandPinStateResponse interface {
 	ISysexCommand
-	// GetPin returns Pin
+	// GetPin returns Pin (property field)
 	GetPin() uint8
-	// GetPinMode returns PinMode
+	// GetPinMode returns PinMode (property field)
 	GetPinMode() uint8
-	// GetPinState returns PinState
+	// GetPinState returns PinState (property field)
 	GetPinState() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

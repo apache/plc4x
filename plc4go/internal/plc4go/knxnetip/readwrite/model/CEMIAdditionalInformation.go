@@ -33,8 +33,8 @@ type CEMIAdditionalInformation struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformation interface {
-	// AdditionalInformationType returns AdditionalInformationType
-	AdditionalInformationType() uint8
+	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
+	GetAdditionalInformationType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -150,7 +150,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType := uint8(child.AdditionalInformationType())
+	additionalInformationType := uint8(child.GetAdditionalInformationType())
 	_additionalInformationTypeErr := writeBuffer.WriteUint8("additionalInformationType", 8, (additionalInformationType))
 
 	if _additionalInformationTypeErr != nil {

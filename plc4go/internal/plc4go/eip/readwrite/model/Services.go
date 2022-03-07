@@ -38,11 +38,11 @@ type Services struct {
 
 // The corresponding interface
 type IServices interface {
-	// GetServiceNb returns ServiceNb
+	// GetServiceNb returns ServiceNb (property field)
 	GetServiceNb() uint16
-	// GetOffsets returns Offsets
+	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
-	// GetServices returns Services
+	// GetServices returns Services (property field)
 	GetServices() []*CipService
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

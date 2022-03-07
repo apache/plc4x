@@ -34,9 +34,9 @@ type BACnetAddress struct {
 
 // The corresponding interface
 type IBACnetAddress interface {
-	// GetAddress returns Address
+	// GetAddress returns Address (property field)
 	GetAddress() []uint8
-	// GetPort returns Port
+	// GetPort returns Port (property field)
 	GetPort() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

@@ -35,7 +35,7 @@ type ModbusPDUReadExceptionStatusResponse struct {
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
 	IModbusPDU
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

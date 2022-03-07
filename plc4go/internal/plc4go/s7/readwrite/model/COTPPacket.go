@@ -39,11 +39,11 @@ type COTPPacket struct {
 
 // The corresponding interface
 type ICOTPPacket interface {
-	// TpduCode returns TpduCode
-	TpduCode() uint8
-	// GetParameters returns Parameters
+	// GetTpduCode returns TpduCode (discriminator field)
+	GetTpduCode() uint8
+	// GetParameters returns Parameters (property field)
 	GetParameters() []*COTPParameter
-	// GetPayload returns Payload
+	// GetPayload returns Payload (property field)
 	GetPayload() *S7Message
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -251,7 +251,7 @@ func (m *COTPPacket) SerializeParent(writeBuffer utils.WriteBuffer, child ICOTPP
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode := uint8(child.TpduCode())
+	tpduCode := uint8(child.GetTpduCode())
 	_tpduCodeErr := writeBuffer.WriteUint8("tpduCode", 8, (tpduCode))
 
 	if _tpduCodeErr != nil {

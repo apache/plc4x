@@ -39,11 +39,11 @@ type BACnetPropertyValues struct {
 
 // The corresponding interface
 type IBACnetPropertyValues interface {
-	// GetInnerOpeningTag returns InnerOpeningTag
+	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() *BACnetOpeningTag
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []*BACnetPropertyValue
-	// GetInnerClosingTag returns InnerClosingTag
+	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() *BACnetClosingTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

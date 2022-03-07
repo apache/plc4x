@@ -33,7 +33,7 @@ type MACAddress struct {
 
 // The corresponding interface
 type IMACAddress interface {
-	// GetAddr returns Addr
+	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

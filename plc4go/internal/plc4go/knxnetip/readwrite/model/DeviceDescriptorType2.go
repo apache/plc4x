@@ -42,25 +42,25 @@ type DeviceDescriptorType2 struct {
 
 // The corresponding interface
 type IDeviceDescriptorType2 interface {
-	// GetManufacturerId returns ManufacturerId
+	// GetManufacturerId returns ManufacturerId (property field)
 	GetManufacturerId() uint16
-	// GetDeviceType returns DeviceType
+	// GetDeviceType returns DeviceType (property field)
 	GetDeviceType() uint16
-	// GetVersion returns Version
+	// GetVersion returns Version (property field)
 	GetVersion() uint8
-	// GetReadSupported returns ReadSupported
+	// GetReadSupported returns ReadSupported (property field)
 	GetReadSupported() bool
-	// GetWriteSupported returns WriteSupported
+	// GetWriteSupported returns WriteSupported (property field)
 	GetWriteSupported() bool
-	// GetLogicalTagBase returns LogicalTagBase
+	// GetLogicalTagBase returns LogicalTagBase (property field)
 	GetLogicalTagBase() uint8
-	// GetChannelInfo1 returns ChannelInfo1
+	// GetChannelInfo1 returns ChannelInfo1 (property field)
 	GetChannelInfo1() *ChannelInformation
-	// GetChannelInfo2 returns ChannelInfo2
+	// GetChannelInfo2 returns ChannelInfo2 (property field)
 	GetChannelInfo2() *ChannelInformation
-	// GetChannelInfo3 returns ChannelInfo3
+	// GetChannelInfo3 returns ChannelInfo3 (property field)
 	GetChannelInfo3() *ChannelInformation
-	// GetChannelInfo4 returns ChannelInfo4
+	// GetChannelInfo4 returns ChannelInfo4 (property field)
 	GetChannelInfo4() *ChannelInformation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

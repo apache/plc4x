@@ -35,7 +35,7 @@ type AdsDeleteDeviceNotificationRequest struct {
 // The corresponding interface
 type IAdsDeleteDeviceNotificationRequest interface {
 	IAdsData
-	// GetNotificationHandle returns NotificationHandle
+	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

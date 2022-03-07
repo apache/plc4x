@@ -38,7 +38,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue struct {
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 	IBACnetNotificationParametersChangeOfValueNewValue
-	// GetChangedValue returns ChangedValue
+	// GetChangedValue returns ChangedValue (property field)
 	GetChangedValue() *BACnetContextTagReal
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -51,13 +51,6 @@ type IBACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) PeekedTagNumber() uint8 {
-	return uint8(1)
-}
-
-func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetPeekedTagNumber() uint8 {
-	return uint8(1)
-}
 
 func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetNotificationParametersChangeOfValueNewValue.OpeningTag = openingTag

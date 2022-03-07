@@ -33,8 +33,8 @@ type S7Address struct {
 
 // The corresponding interface
 type IS7Address interface {
-	// AddressType returns AddressType
-	AddressType() uint8
+	// GetAddressType returns AddressType (discriminator field)
+	GetAddressType() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -148,7 +148,7 @@ func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Addr
 	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType := uint8(child.AddressType())
+	addressType := uint8(child.GetAddressType())
 	_addressTypeErr := writeBuffer.WriteUint8("addressType", 8, (addressType))
 
 	if _addressTypeErr != nil {

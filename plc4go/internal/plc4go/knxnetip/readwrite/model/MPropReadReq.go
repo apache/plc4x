@@ -42,15 +42,15 @@ type MPropReadReq struct {
 // The corresponding interface
 type IMPropReadReq interface {
 	ICEMI
-	// GetInterfaceObjectType returns InterfaceObjectType
+	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
-	// GetObjectInstance returns ObjectInstance
+	// GetObjectInstance returns ObjectInstance (property field)
 	GetObjectInstance() uint8
-	// GetPropertyId returns PropertyId
+	// GetPropertyId returns PropertyId (property field)
 	GetPropertyId() uint8
-	// GetNumberOfElements returns NumberOfElements
+	// GetNumberOfElements returns NumberOfElements (property field)
 	GetNumberOfElements() uint8
-	// GetStartIndex returns StartIndex
+	// GetStartIndex returns StartIndex (property field)
 	GetStartIndex() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

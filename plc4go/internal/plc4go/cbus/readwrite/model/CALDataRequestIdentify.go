@@ -35,7 +35,7 @@ type CALDataRequestIdentify struct {
 // The corresponding interface
 type ICALDataRequestIdentify interface {
 	ICALData
-	// GetAttribute returns Attribute
+	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -48,13 +48,6 @@ type ICALDataRequestIdentify interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataRequestIdentify) CommandType() CALCommandType {
-	return CALCommandType_IDENTIFY
-}
-
-func (m *CALDataRequestIdentify) GetCommandType() CALCommandType {
-	return CALCommandType_IDENTIFY
-}
 
 func (m *CALDataRequestIdentify) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer

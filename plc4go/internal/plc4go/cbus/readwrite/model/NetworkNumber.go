@@ -33,7 +33,7 @@ type NetworkNumber struct {
 
 // The corresponding interface
 type INetworkNumber interface {
-	// GetNumber returns Number
+	// GetNumber returns Number (property field)
 	GetNumber() uint8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

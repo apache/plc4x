@@ -38,7 +38,7 @@ type ApduDataContainer struct {
 // The corresponding interface
 type IApduDataContainer interface {
 	IApdu
-	// GetDataApdu returns DataApdu
+	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() *ApduData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

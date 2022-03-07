@@ -40,9 +40,9 @@ type CALReply struct {
 
 // The corresponding interface
 type ICALReply interface {
-	// GetCalType returns CalType
+	// GetCalType returns CalType (property field)
 	GetCalType() byte
-	// GetCalData returns CalData
+	// GetCalData returns CalData (property field)
 	GetCalData() *CALData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

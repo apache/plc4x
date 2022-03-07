@@ -38,7 +38,7 @@ type BVLCDistributeBroadcastToNetwork struct {
 // The corresponding interface
 type IBVLCDistributeBroadcastToNetwork interface {
 	IBVLC
-	// GetNpdu returns Npdu
+	// GetNpdu returns Npdu (property field)
 	GetNpdu() *NPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

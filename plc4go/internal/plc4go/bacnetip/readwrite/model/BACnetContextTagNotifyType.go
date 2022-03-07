@@ -40,7 +40,7 @@ type BACnetContextTagNotifyType struct {
 // The corresponding interface
 type IBACnetContextTagNotifyType interface {
 	IBACnetContextTag
-	// GetValue returns Value
+	// GetValue returns Value (property field)
 	GetValue() BACnetNotifyType
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

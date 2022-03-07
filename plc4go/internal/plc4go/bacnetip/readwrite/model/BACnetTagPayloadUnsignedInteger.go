@@ -43,39 +43,39 @@ type BACnetTagPayloadUnsignedInteger struct {
 
 // The corresponding interface
 type IBACnetTagPayloadUnsignedInteger interface {
-	// GetValueUint8 returns ValueUint8
+	// GetValueUint8 returns ValueUint8 (property field)
 	GetValueUint8() *uint8
-	// GetValueUint16 returns ValueUint16
+	// GetValueUint16 returns ValueUint16 (property field)
 	GetValueUint16() *uint16
-	// GetValueUint24 returns ValueUint24
+	// GetValueUint24 returns ValueUint24 (property field)
 	GetValueUint24() *uint32
-	// GetValueUint32 returns ValueUint32
+	// GetValueUint32 returns ValueUint32 (property field)
 	GetValueUint32() *uint32
-	// GetValueUint40 returns ValueUint40
+	// GetValueUint40 returns ValueUint40 (property field)
 	GetValueUint40() *uint64
-	// GetValueUint48 returns ValueUint48
+	// GetValueUint48 returns ValueUint48 (property field)
 	GetValueUint48() *uint64
-	// GetValueUint56 returns ValueUint56
+	// GetValueUint56 returns ValueUint56 (property field)
 	GetValueUint56() *uint64
-	// GetValueUint64 returns ValueUint64
+	// GetValueUint64 returns ValueUint64 (property field)
 	GetValueUint64() *uint64
-	// GetIsUint8 returns IsUint8
+	// GetIsUint8 returns IsUint8 (virtual field)
 	GetIsUint8() bool
-	// GetIsUint16 returns IsUint16
+	// GetIsUint16 returns IsUint16 (virtual field)
 	GetIsUint16() bool
-	// GetIsUint24 returns IsUint24
+	// GetIsUint24 returns IsUint24 (virtual field)
 	GetIsUint24() bool
-	// GetIsUint32 returns IsUint32
+	// GetIsUint32 returns IsUint32 (virtual field)
 	GetIsUint32() bool
-	// GetIsUint40 returns IsUint40
+	// GetIsUint40 returns IsUint40 (virtual field)
 	GetIsUint40() bool
-	// GetIsUint48 returns IsUint48
+	// GetIsUint48 returns IsUint48 (virtual field)
 	GetIsUint48() bool
-	// GetIsUint56 returns IsUint56
+	// GetIsUint56 returns IsUint56 (virtual field)
 	GetIsUint56() bool
-	// GetIsUint64 returns IsUint64
+	// GetIsUint64 returns IsUint64 (virtual field)
 	GetIsUint64() bool
-	// GetActualValue returns ActualValue
+	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

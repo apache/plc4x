@@ -39,9 +39,9 @@ type FirmataMessageDigitalIO struct {
 // The corresponding interface
 type IFirmataMessageDigitalIO interface {
 	IFirmataMessage
-	// GetPinBlock returns PinBlock
+	// GetPinBlock returns PinBlock (property field)
 	GetPinBlock() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []int8
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

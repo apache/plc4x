@@ -35,11 +35,11 @@ type BACnetTagPayloadBoolean struct {
 
 // The corresponding interface
 type IBACnetTagPayloadBoolean interface {
-	// GetValue returns Value
+	// GetValue returns Value (virtual field)
 	GetValue() bool
-	// GetIsTrue returns IsTrue
+	// GetIsTrue returns IsTrue (virtual field)
 	GetIsTrue() bool
-	// GetIsFalse returns IsFalse
+	// GetIsFalse returns IsFalse (virtual field)
 	GetIsFalse() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

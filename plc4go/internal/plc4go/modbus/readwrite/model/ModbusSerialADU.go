@@ -37,9 +37,9 @@ type ModbusSerialADU struct {
 
 // The corresponding interface
 type IModbusSerialADU interface {
-	// GetAddress returns Address
+	// GetAddress returns Address (property field)
 	GetAddress() uint8
-	// GetPdu returns Pdu
+	// GetPdu returns Pdu (property field)
 	GetPdu() *ModbusPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

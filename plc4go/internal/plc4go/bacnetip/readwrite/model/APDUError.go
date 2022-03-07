@@ -40,9 +40,9 @@ type APDUError struct {
 // The corresponding interface
 type IAPDUError interface {
 	IAPDU
-	// GetOriginalInvokeId returns OriginalInvokeId
+	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
-	// GetError returns Error
+	// GetError returns Error (property field)
 	GetError() *BACnetError
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

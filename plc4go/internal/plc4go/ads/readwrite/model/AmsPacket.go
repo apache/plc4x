@@ -41,23 +41,23 @@ type AmsPacket struct {
 
 // The corresponding interface
 type IAmsPacket interface {
-	// GetTargetAmsNetId returns TargetAmsNetId
+	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() *AmsNetId
-	// GetTargetAmsPort returns TargetAmsPort
+	// GetTargetAmsPort returns TargetAmsPort (property field)
 	GetTargetAmsPort() uint16
-	// GetSourceAmsNetId returns SourceAmsNetId
+	// GetSourceAmsNetId returns SourceAmsNetId (property field)
 	GetSourceAmsNetId() *AmsNetId
-	// GetSourceAmsPort returns SourceAmsPort
+	// GetSourceAmsPort returns SourceAmsPort (property field)
 	GetSourceAmsPort() uint16
-	// GetCommandId returns CommandId
+	// GetCommandId returns CommandId (property field)
 	GetCommandId() CommandId
-	// GetState returns State
+	// GetState returns State (property field)
 	GetState() *State
-	// GetErrorCode returns ErrorCode
+	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() uint32
-	// GetInvokeId returns InvokeId
+	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint32
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() *AdsData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

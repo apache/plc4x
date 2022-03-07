@@ -37,9 +37,9 @@ type NLM struct {
 
 // The corresponding interface
 type INLM interface {
-	// MessageType returns MessageType
-	MessageType() uint8
-	// GetVendorId returns VendorId
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
+	// GetVendorId returns VendorId (property field)
 	GetVendorId() *uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -190,7 +190,7 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(child.MessageType())
+	messageType := uint8(child.GetMessageType())
 	_messageTypeErr := writeBuffer.WriteUint8("messageType", 8, (messageType))
 
 	if _messageTypeErr != nil {

@@ -34,7 +34,7 @@ type AmsTCPPacket struct {
 
 // The corresponding interface
 type IAmsTCPPacket interface {
-	// GetUserdata returns Userdata
+	// GetUserdata returns Userdata (property field)
 	GetUserdata() *AmsPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

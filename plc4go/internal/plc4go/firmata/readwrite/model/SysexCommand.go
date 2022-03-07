@@ -33,10 +33,10 @@ type SysexCommand struct {
 
 // The corresponding interface
 type ISysexCommand interface {
-	// CommandType returns CommandType
-	CommandType() uint8
-	// Response returns Response
-	Response() bool
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() uint8
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -178,7 +178,7 @@ func (m *SysexCommand) SerializeParent(writeBuffer utils.WriteBuffer, child ISys
 	}
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType := uint8(child.CommandType())
+	commandType := uint8(child.GetCommandType())
 	_commandTypeErr := writeBuffer.WriteUint8("commandType", 8, (commandType))
 
 	if _commandTypeErr != nil {

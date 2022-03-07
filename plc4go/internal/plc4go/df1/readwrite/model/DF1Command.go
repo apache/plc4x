@@ -35,11 +35,11 @@ type DF1Command struct {
 
 // The corresponding interface
 type IDF1Command interface {
-	// CommandCode returns CommandCode
-	CommandCode() uint8
-	// GetStatus returns Status
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
+	// GetStatus returns Status (property field)
 	GetStatus() uint8
-	// GetTransactionCounter returns TransactionCounter
+	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -183,7 +183,7 @@ func (m *DF1Command) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Co
 	}
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.CommandCode())
+	commandCode := uint8(child.GetCommandCode())
 	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, (commandCode))
 
 	if _commandCodeErr != nil {

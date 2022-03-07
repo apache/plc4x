@@ -38,7 +38,7 @@ type COTPParameterDisconnectAdditionalInformation struct {
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
 	ICOTPParameter
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

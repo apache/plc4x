@@ -37,8 +37,8 @@ type KnxNetIpMessage struct {
 
 // The corresponding interface
 type IKnxNetIpMessage interface {
-	// MsgType returns MsgType
-	MsgType() uint16
+	// GetMsgType returns MsgType (discriminator field)
+	GetMsgType() uint16
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -227,7 +227,7 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType := uint16(child.MsgType())
+	msgType := uint16(child.GetMsgType())
 	_msgTypeErr := writeBuffer.WriteUint16("msgType", 16, (msgType))
 
 	if _msgTypeErr != nil {

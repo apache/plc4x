@@ -35,11 +35,11 @@ type ReplyNetwork struct {
 
 // The corresponding interface
 type IReplyNetwork interface {
-	// GetRouteType returns RouteType
+	// GetRouteType returns RouteType (property field)
 	GetRouteType() RouteType
-	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses
+	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []*BridgeAddress
-	// GetUnitAddress returns UnitAddress
+	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() *UnitAddress
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16

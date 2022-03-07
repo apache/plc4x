@@ -39,7 +39,7 @@ type CEMIAdditionalInformationRelativeTimestamp struct {
 // The corresponding interface
 type ICEMIAdditionalInformationRelativeTimestamp interface {
 	ICEMIAdditionalInformation
-	// GetRelativeTimestamp returns RelativeTimestamp
+	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() *RelativeTimestamp
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
