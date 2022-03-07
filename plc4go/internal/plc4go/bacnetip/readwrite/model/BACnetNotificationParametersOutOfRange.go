@@ -43,6 +43,7 @@ type BACnetNotificationParametersOutOfRange struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersOutOfRange interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetExceedingValue returns ExceedingValue

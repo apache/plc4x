@@ -40,6 +40,7 @@ type LBusmonInd struct {
 
 // The corresponding interface
 type ILBusmonInd interface {
+	ICEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength
 	GetAdditionalInformationLength() uint8
 	// GetAdditionalInformation returns AdditionalInformation

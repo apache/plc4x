@@ -40,6 +40,7 @@ type APDUAbort struct {
 
 // The corresponding interface
 type IAPDUAbort interface {
+	IAPDU
 	// GetServer returns Server
 	GetServer() bool
 	// GetOriginalInvokeId returns OriginalInvokeId

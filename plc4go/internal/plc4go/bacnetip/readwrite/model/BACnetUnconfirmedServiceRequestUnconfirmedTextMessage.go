@@ -35,6 +35,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -41,6 +41,7 @@ type S7ParameterUserDataItemCPUFunctions struct {
 
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
+	IS7ParameterUserDataItem
 	// GetMethod returns Method
 	GetMethod() uint8
 	// GetCpuFunctionType returns CpuFunctionType

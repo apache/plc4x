@@ -41,6 +41,7 @@ type CipWriteRequest struct {
 
 // The corresponding interface
 type ICipWriteRequest interface {
+	ICipService
 	// GetRequestPathSize returns RequestPathSize
 	GetRequestPathSize() int8
 	// GetTag returns Tag

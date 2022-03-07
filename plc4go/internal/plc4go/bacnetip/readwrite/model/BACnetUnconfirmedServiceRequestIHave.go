@@ -39,6 +39,7 @@ type BACnetUnconfirmedServiceRequestIHave struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIHave interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier
 	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier

@@ -40,6 +40,7 @@ type S7PayloadDiagnosticMessage struct {
 
 // The corresponding interface
 type IS7PayloadDiagnosticMessage interface {
+	IS7PayloadUserDataItem
 	// GetEventId returns EventId
 	GetEventId() uint16
 	// GetPriorityClass returns PriorityClass

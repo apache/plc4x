@@ -35,6 +35,7 @@ type ApduDataExtNetworkParameterResponse struct {
 
 // The corresponding interface
 type IApduDataExtNetworkParameterResponse interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

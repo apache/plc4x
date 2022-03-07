@@ -35,6 +35,7 @@ type BACnetConfirmedServiceRequestAtomicReadFileStream struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFileStream interface {
+	IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition
 	GetFileStartPosition() *BACnetApplicationTagSignedInteger
 	// GetRequestOctetCount returns RequestOctetCount

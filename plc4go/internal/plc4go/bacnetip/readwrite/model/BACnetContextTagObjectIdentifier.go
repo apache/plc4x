@@ -38,6 +38,7 @@ type BACnetContextTagObjectIdentifier struct {
 
 // The corresponding interface
 type IBACnetContextTagObjectIdentifier interface {
+	IBACnetContextTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadObjectIdentifier
 	// GetObjectType returns ObjectType

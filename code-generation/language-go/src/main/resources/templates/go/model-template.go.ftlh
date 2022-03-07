@@ -108,6 +108,9 @@ type ${type.name} struct {
 
 // The corresponding interface
 type I${type.name} interface {
+<#if type.isDiscriminatedChildTypeDefinition()>
+	I${type.parentType.orElseThrow().name?cap_first}
+</#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
 	<#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->

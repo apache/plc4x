@@ -40,6 +40,7 @@ type BACnetConstructedDataCommand struct {
 
 // The corresponding interface
 type IBACnetConstructedDataCommand interface {
+	IBACnetConstructedData
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetAction returns Action

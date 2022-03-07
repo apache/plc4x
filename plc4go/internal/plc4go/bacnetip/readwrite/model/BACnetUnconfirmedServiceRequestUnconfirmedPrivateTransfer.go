@@ -40,6 +40,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetVendorId returns VendorId
 	GetVendorId() *BACnetContextTagUnsignedInteger
 	// GetServiceNumber returns ServiceNumber

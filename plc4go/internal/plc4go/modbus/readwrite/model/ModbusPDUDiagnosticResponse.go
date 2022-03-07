@@ -35,6 +35,7 @@ type ModbusPDUDiagnosticResponse struct {
 
 // The corresponding interface
 type IModbusPDUDiagnosticResponse interface {
+	IModbusPDU
 	// GetSubFunction returns SubFunction
 	GetSubFunction() uint16
 	// GetData returns Data

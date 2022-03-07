@@ -39,6 +39,7 @@ type BVLCForwardedNPDU struct {
 
 // The corresponding interface
 type IBVLCForwardedNPDU interface {
+	IBVLC
 	// GetIp returns Ip
 	GetIp() []uint8
 	// GetPort returns Port

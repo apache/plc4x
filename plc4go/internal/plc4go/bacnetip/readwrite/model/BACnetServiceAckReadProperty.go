@@ -38,6 +38,7 @@ type BACnetServiceAckReadProperty struct {
 
 // The corresponding interface
 type IBACnetServiceAckReadProperty interface {
+	IBACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier

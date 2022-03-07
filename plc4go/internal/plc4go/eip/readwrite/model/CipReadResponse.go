@@ -41,6 +41,7 @@ type CipReadResponse struct {
 
 // The corresponding interface
 type ICipReadResponse interface {
+	ICipService
 	// GetStatus returns Status
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus

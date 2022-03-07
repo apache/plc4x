@@ -41,6 +41,7 @@ type BACnetConstructedDataUnspecified struct {
 
 // The corresponding interface
 type IBACnetConstructedDataUnspecified interface {
+	IBACnetConstructedData
 	// GetData returns Data
 	GetData() []*BACnetConstructedDataElement
 	// GetPropertyIdentifier returns PropertyIdentifier

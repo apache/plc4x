@@ -35,6 +35,7 @@ type MResetReq struct {
 
 // The corresponding interface
 type IMResetReq interface {
+	ICEMI
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

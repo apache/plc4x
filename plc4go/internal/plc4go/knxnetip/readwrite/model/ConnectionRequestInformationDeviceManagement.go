@@ -32,6 +32,7 @@ type ConnectionRequestInformationDeviceManagement struct {
 
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
+	IConnectionRequestInformation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

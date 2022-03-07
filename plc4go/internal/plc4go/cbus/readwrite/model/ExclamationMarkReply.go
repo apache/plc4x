@@ -34,6 +34,7 @@ type ExclamationMarkReply struct {
 
 // The corresponding interface
 type IExclamationMarkReply interface {
+	IReply
 	// GetIsA returns IsA
 	GetIsA() *ExclamationMark
 	// GetLengthInBytes returns the length in bytes

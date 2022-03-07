@@ -34,6 +34,7 @@ type ModbusPDUReadFifoQueueResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueResponse interface {
+	IModbusPDU
 	// GetFifoValue returns FifoValue
 	GetFifoValue() []uint16
 	// GetLengthInBytes returns the length in bytes

@@ -40,6 +40,7 @@ type IdentifyReplyCommandNetworkVoltage struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandNetworkVoltage interface {
+	IIdentifyReplyCommand
 	// GetVolts returns Volts
 	GetVolts() string
 	// GetVoltsDecimalPlace returns VoltsDecimalPlace

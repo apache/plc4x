@@ -37,6 +37,7 @@ type S7ParameterSetupCommunication struct {
 
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
+	IS7Parameter
 	// GetMaxAmqCaller returns MaxAmqCaller
 	GetMaxAmqCaller() uint16
 	// GetMaxAmqCallee returns MaxAmqCallee

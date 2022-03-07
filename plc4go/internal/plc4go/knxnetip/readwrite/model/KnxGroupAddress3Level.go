@@ -36,6 +36,7 @@ type KnxGroupAddress3Level struct {
 
 // The corresponding interface
 type IKnxGroupAddress3Level interface {
+	IKnxGroupAddress
 	// GetMainGroup returns MainGroup
 	GetMainGroup() uint8
 	// GetMiddleGroup returns MiddleGroup

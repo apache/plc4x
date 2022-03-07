@@ -35,6 +35,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
+	IBACnetConfirmedServiceRequest
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -32,6 +32,7 @@ type CALDataRequestReset struct {
 
 // The corresponding interface
 type ICALDataRequestReset interface {
+	ICALData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

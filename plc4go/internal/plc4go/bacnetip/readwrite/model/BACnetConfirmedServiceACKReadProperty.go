@@ -32,6 +32,7 @@ type BACnetConfirmedServiceACKReadProperty struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadProperty interface {
+	IBACnetConfirmedServiceACK
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

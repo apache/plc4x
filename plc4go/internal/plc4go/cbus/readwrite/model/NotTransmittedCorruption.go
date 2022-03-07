@@ -32,6 +32,7 @@ type NotTransmittedCorruption struct {
 
 // The corresponding interface
 type INotTransmittedCorruption interface {
+	IConfirmation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -32,6 +32,7 @@ type BACnetErrorAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetErrorAtomicWriteFile interface {
+	IBACnetError
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -37,6 +37,7 @@ type BVLCOriginalBroadcastNPDU struct {
 
 // The corresponding interface
 type IBVLCOriginalBroadcastNPDU interface {
+	IBVLC
 	// GetNpdu returns Npdu
 	GetNpdu() *NPDU
 	// GetLengthInBytes returns the length in bytes

@@ -32,6 +32,7 @@ type DF1SymbolMessageFrameNAK struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrameNAK interface {
+	IDF1Symbol
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

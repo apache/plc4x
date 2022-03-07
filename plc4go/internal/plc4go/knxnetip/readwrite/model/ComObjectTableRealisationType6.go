@@ -34,6 +34,7 @@ type ComObjectTableRealisationType6 struct {
 
 // The corresponding interface
 type IComObjectTableRealisationType6 interface {
+	IComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors
 	GetComObjectDescriptors() *GroupObjectDescriptorRealisationType6
 	// GetLengthInBytes returns the length in bytes

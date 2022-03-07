@@ -32,6 +32,7 @@ type BACnetServiceAckGetAlarmSummary struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetAlarmSummary interface {
+	IBACnetServiceAck
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

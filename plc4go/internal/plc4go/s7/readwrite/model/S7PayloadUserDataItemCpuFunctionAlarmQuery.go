@@ -44,6 +44,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQuery struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
+	IS7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId
 	GetSyntaxId() SyntaxIdType
 	// GetQueryType returns QueryType

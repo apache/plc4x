@@ -38,6 +38,7 @@ type FirmataCommandProtocolVersion struct {
 
 // The corresponding interface
 type IFirmataCommandProtocolVersion interface {
+	IFirmataCommand
 	// GetMajorVersion returns MajorVersion
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion

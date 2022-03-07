@@ -34,6 +34,7 @@ type BACnetApplicationTagBitString struct {
 
 // The corresponding interface
 type IBACnetApplicationTagBitString interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadBitString
 	// GetLengthInBytes returns the length in bytes

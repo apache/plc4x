@@ -39,6 +39,7 @@ type LDataExtended struct {
 
 // The corresponding interface
 type ILDataExtended interface {
+	ILDataFrame
 	// GetGroupAddress returns GroupAddress
 	GetGroupAddress() bool
 	// GetHopCount returns HopCount

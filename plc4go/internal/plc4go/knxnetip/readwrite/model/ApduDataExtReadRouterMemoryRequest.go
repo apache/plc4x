@@ -35,6 +35,7 @@ type ApduDataExtReadRouterMemoryRequest struct {
 
 // The corresponding interface
 type IApduDataExtReadRouterMemoryRequest interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

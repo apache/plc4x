@@ -37,6 +37,7 @@ type BACnetTimeStampDateTime struct {
 
 // The corresponding interface
 type IBACnetTimeStampDateTime interface {
+	IBACnetTimeStamp
 	// GetDateTimeValue returns DateTimeValue
 	GetDateTimeValue() *BACnetDateTime
 	// GetLengthInBytes returns the length in bytes

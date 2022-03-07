@@ -38,6 +38,7 @@ type BACnetContextTagDeviceState struct {
 
 // The corresponding interface
 type IBACnetContextTagDeviceState interface {
+	IBACnetContextTag
 	// GetState returns State
 	GetState() BACnetDeviceState
 	// GetLengthInBytes returns the length in bytes

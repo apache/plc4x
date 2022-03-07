@@ -32,6 +32,7 @@ type RoutingIndication struct {
 
 // The corresponding interface
 type IRoutingIndication interface {
+	IKnxNetIpMessage
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

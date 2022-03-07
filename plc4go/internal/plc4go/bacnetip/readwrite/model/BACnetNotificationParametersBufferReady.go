@@ -42,6 +42,7 @@ type BACnetNotificationParametersBufferReady struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersBufferReady interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetBufferProperty returns BufferProperty

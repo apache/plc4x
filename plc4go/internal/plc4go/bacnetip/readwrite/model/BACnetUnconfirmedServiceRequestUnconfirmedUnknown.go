@@ -37,6 +37,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedUnknown struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedUnknown interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes
 	GetUnknownBytes() []byte
 	// GetLengthInBytes returns the length in bytes

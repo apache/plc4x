@@ -32,6 +32,7 @@ type BACnetErrorVTOpen struct {
 
 // The corresponding interface
 type IBACnetErrorVTOpen interface {
+	IBACnetError
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

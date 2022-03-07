@@ -34,6 +34,7 @@ type SALDataOn struct {
 
 // The corresponding interface
 type ISALDataOn interface {
+	ISALData
 	// GetGroup returns Group
 	GetGroup() byte
 	// GetLengthInBytes returns the length in bytes

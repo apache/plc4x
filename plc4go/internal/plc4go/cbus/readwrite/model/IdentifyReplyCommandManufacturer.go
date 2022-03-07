@@ -34,6 +34,7 @@ type IdentifyReplyCommandManufacturer struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandManufacturer interface {
+	IIdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName
 	GetManufacturerName() string
 	// GetLengthInBytes returns the length in bytes

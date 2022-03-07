@@ -40,6 +40,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
+	IBACnetConfirmedServiceRequest
 	// GetTimeDuration returns TimeDuration
 	GetTimeDuration() *BACnetContextTagUnsignedInteger
 	// GetEnableDisable returns EnableDisable

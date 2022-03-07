@@ -40,6 +40,7 @@ type BACnetConstructedDataEventTimestamps struct {
 
 // The corresponding interface
 type IBACnetConstructedDataEventTimestamps interface {
+	IBACnetConstructedData
 	// GetToOffnormal returns ToOffnormal
 	GetToOffnormal() *BACnetContextTagTime
 	// GetToFault returns ToFault

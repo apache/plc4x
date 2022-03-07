@@ -34,6 +34,7 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
+	IConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress
 	GetKnxAddress() *KnxAddress
 	// GetLengthInBytes returns the length in bytes

@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyZone struct {
 
 // The corresponding interface
 type IBACnetConstructedDataLifeSafetyZone interface {
+	IBACnetConstructedData
 	// GetZones returns Zones
 	GetZones() []*BACnetContextTagObjectIdentifier
 	// GetLengthInBytes returns the length in bytes

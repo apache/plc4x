@@ -36,6 +36,7 @@ type ConnectionRequest struct {
 
 // The corresponding interface
 type IConnectionRequest interface {
+	IKnxNetIpMessage
 	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint
 	GetHpaiDiscoveryEndpoint() *HPAIDiscoveryEndpoint
 	// GetHpaiDataEndpoint returns HpaiDataEndpoint

@@ -35,6 +35,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
+	IS7PayloadUserDataItem
 	// GetSzlId returns SzlId
 	GetSzlId() *SzlId
 	// GetSzlIndex returns SzlIndex

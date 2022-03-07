@@ -37,6 +37,7 @@ type ApduDataOther struct {
 
 // The corresponding interface
 type IApduDataOther interface {
+	IApduData
 	// GetExtendedApdu returns ExtendedApdu
 	GetExtendedApdu() *ApduDataExt
 	// GetLengthInBytes returns the length in bytes

@@ -34,6 +34,7 @@ type ModbusPDUReadCoilsResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadCoilsResponse interface {
+	IModbusPDU
 	// GetValue returns Value
 	GetValue() []byte
 	// GetLengthInBytes returns the length in bytes

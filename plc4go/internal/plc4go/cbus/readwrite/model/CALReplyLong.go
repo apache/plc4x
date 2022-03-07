@@ -41,6 +41,7 @@ type CALReplyLong struct {
 
 // The corresponding interface
 type ICALReplyLong interface {
+	ICALReply
 	// GetTerminatingByte returns TerminatingByte
 	GetTerminatingByte() uint32
 	// GetUnitAddress returns UnitAddress

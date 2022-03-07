@@ -32,6 +32,7 @@ type BACnetConfirmedServiceACKCreateObject struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKCreateObject interface {
+	IBACnetConfirmedServiceACK
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -34,6 +34,7 @@ type CALDataRequestIdentify struct {
 
 // The corresponding interface
 type ICALDataRequestIdentify interface {
+	ICALData
 	// GetAttribute returns Attribute
 	GetAttribute() Attribute
 	// GetLengthInBytes returns the length in bytes

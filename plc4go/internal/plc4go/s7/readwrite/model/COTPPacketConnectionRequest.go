@@ -39,6 +39,7 @@ type COTPPacketConnectionRequest struct {
 
 // The corresponding interface
 type ICOTPPacketConnectionRequest interface {
+	ICOTPPacket
 	// GetDestinationReference returns DestinationReference
 	GetDestinationReference() uint16
 	// GetSourceReference returns SourceReference

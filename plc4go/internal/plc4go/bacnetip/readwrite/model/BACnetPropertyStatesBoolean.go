@@ -38,6 +38,7 @@ type BACnetPropertyStatesBoolean struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesBoolean interface {
+	IBACnetPropertyStates
 	// GetBooleanValue returns BooleanValue
 	GetBooleanValue() *BACnetContextTagBoolean
 	// GetLengthInBytes returns the length in bytes

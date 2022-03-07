@@ -34,6 +34,7 @@ type S7ParameterReadVarResponse struct {
 
 // The corresponding interface
 type IS7ParameterReadVarResponse interface {
+	IS7Parameter
 	// GetNumItems returns NumItems
 	GetNumItems() uint8
 	// GetLengthInBytes returns the length in bytes

@@ -32,6 +32,7 @@ type ModbusPDUGetComEventCounterRequest struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventCounterRequest interface {
+	IModbusPDU
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

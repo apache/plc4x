@@ -38,6 +38,7 @@ type FirmataMessageDigitalIO struct {
 
 // The corresponding interface
 type IFirmataMessageDigitalIO interface {
+	IFirmataMessage
 	// GetPinBlock returns PinBlock
 	GetPinBlock() uint8
 	// GetData returns Data

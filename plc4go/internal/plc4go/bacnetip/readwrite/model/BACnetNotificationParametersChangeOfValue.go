@@ -41,6 +41,7 @@ type BACnetNotificationParametersChangeOfValue struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValue interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetNewValue returns NewValue

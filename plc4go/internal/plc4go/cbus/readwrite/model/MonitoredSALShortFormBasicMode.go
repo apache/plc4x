@@ -39,6 +39,7 @@ type MonitoredSALShortFormBasicMode struct {
 
 // The corresponding interface
 type IMonitoredSALShortFormBasicMode interface {
+	IMonitoredSAL
 	// GetCounts returns Counts
 	GetCounts() byte
 	// GetBridgeCount returns BridgeCount

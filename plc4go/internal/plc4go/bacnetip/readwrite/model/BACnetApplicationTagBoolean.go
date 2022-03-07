@@ -34,6 +34,7 @@ type BACnetApplicationTagBoolean struct {
 
 // The corresponding interface
 type IBACnetApplicationTagBoolean interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue

@@ -42,6 +42,7 @@ type BACnetNotificationParametersExtended struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersExtended interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetVendorId returns VendorId

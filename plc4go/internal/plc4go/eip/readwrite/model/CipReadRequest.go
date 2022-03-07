@@ -39,6 +39,7 @@ type CipReadRequest struct {
 
 // The corresponding interface
 type ICipReadRequest interface {
+	ICipService
 	// GetRequestPathSize returns RequestPathSize
 	GetRequestPathSize() int8
 	// GetTag returns Tag

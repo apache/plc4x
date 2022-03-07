@@ -36,6 +36,7 @@ type AdsMultiRequestItemRead struct {
 
 // The corresponding interface
 type IAdsMultiRequestItemRead interface {
+	IAdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup
 	GetItemIndexGroup() uint32
 	// GetItemIndexOffset returns ItemIndexOffset

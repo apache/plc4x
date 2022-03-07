@@ -34,6 +34,7 @@ type BACnetApplicationTagDate struct {
 
 // The corresponding interface
 type IBACnetApplicationTagDate interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadDate
 	// GetLengthInBytes returns the length in bytes

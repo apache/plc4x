@@ -35,6 +35,7 @@ type ApduDataExtIndividualAddressSerialNumberWrite struct {
 
 // The corresponding interface
 type IApduDataExtIndividualAddressSerialNumberWrite interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

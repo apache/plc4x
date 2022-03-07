@@ -39,6 +39,7 @@ type COTPPacketDisconnectRequest struct {
 
 // The corresponding interface
 type ICOTPPacketDisconnectRequest interface {
+	ICOTPPacket
 	// GetDestinationReference returns DestinationReference
 	GetDestinationReference() uint16
 	// GetSourceReference returns SourceReference

@@ -41,6 +41,7 @@ type DF1SymbolMessageFrame struct {
 
 // The corresponding interface
 type IDF1SymbolMessageFrame interface {
+	IDF1Symbol
 	// GetDestinationAddress returns DestinationAddress
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress

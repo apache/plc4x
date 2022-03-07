@@ -39,6 +39,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDevice interface {
+	IBACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice
 	GetReinitializedStateOfDevice() *BACnetContextTagDeviceState
 	// GetPassword returns Password

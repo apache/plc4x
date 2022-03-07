@@ -42,6 +42,7 @@ type MPropReadCon struct {
 
 // The corresponding interface
 type IMPropReadCon interface {
+	ICEMI
 	// GetInterfaceObjectType returns InterfaceObjectType
 	GetInterfaceObjectType() uint16
 	// GetObjectInstance returns ObjectInstance

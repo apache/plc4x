@@ -38,6 +38,7 @@ type NLMInitalizeRoutingTable struct {
 
 // The corresponding interface
 type INLMInitalizeRoutingTable interface {
+	INLM
 	// GetNumberOfPorts returns NumberOfPorts
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings

@@ -39,6 +39,7 @@ type APDUReject struct {
 
 // The corresponding interface
 type IAPDUReject interface {
+	IAPDU
 	// GetOriginalInvokeId returns OriginalInvokeId
 	GetOriginalInvokeId() uint8
 	// GetRejectReason returns RejectReason

@@ -32,6 +32,7 @@ type IdentifyReplyCommandMinimumLevels struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandMinimumLevels interface {
+	IIdentifyReplyCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

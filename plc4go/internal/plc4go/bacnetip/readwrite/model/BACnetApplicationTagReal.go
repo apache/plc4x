@@ -34,6 +34,7 @@ type BACnetApplicationTagReal struct {
 
 // The corresponding interface
 type IBACnetApplicationTagReal interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadReal
 	// GetActualValue returns ActualValue

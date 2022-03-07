@@ -32,6 +32,7 @@ type BACnetErrorVTData struct {
 
 // The corresponding interface
 type IBACnetErrorVTData interface {
+	IBACnetError
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

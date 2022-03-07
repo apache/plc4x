@@ -34,6 +34,7 @@ type SysexCommandPinStateQuery struct {
 
 // The corresponding interface
 type ISysexCommandPinStateQuery interface {
+	ISysexCommand
 	// GetPin returns Pin
 	GetPin() uint8
 	// GetLengthInBytes returns the length in bytes

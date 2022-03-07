@@ -35,6 +35,7 @@ type BACnetConfirmedServiceRequestReadRange struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadRange interface {
+	IBACnetConfirmedServiceRequest
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

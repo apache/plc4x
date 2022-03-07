@@ -34,6 +34,7 @@ type TunnelingResponse struct {
 
 // The corresponding interface
 type ITunnelingResponse interface {
+	IKnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock
 	GetTunnelingResponseDataBlock() *TunnelingResponseDataBlock
 	// GetLengthInBytes returns the length in bytes

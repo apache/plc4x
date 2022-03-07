@@ -42,6 +42,7 @@ type APDUSegmentAck struct {
 
 // The corresponding interface
 type IAPDUSegmentAck interface {
+	IAPDU
 	// GetNegativeAck returns NegativeAck
 	GetNegativeAck() bool
 	// GetServer returns Server

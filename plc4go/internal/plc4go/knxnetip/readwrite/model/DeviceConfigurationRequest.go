@@ -38,6 +38,7 @@ type DeviceConfigurationRequest struct {
 
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
+	IKnxNetIpMessage
 	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock
 	GetDeviceConfigurationRequestDataBlock() *DeviceConfigurationRequestDataBlock
 	// GetCemi returns Cemi

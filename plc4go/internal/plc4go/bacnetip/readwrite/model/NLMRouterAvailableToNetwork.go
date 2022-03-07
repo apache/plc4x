@@ -37,6 +37,7 @@ type NLMRouterAvailableToNetwork struct {
 
 // The corresponding interface
 type INLMRouterAvailableToNetwork interface {
+	INLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress
 	GetDestinationNetworkAddress() []uint16
 	// GetLengthInBytes returns the length in bytes

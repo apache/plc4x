@@ -36,6 +36,7 @@ type IdentifyReplyCommandFirmwareSummary struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandFirmwareSummary interface {
+	IIdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion
 	GetFirmwareVersion() string
 	// GetUnitServiceType returns UnitServiceType

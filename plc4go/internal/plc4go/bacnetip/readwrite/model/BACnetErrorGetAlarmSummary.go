@@ -32,6 +32,7 @@ type BACnetErrorGetAlarmSummary struct {
 
 // The corresponding interface
 type IBACnetErrorGetAlarmSummary interface {
+	IBACnetError
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

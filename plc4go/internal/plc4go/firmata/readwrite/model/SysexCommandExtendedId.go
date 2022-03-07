@@ -34,6 +34,7 @@ type SysexCommandExtendedId struct {
 
 // The corresponding interface
 type ISysexCommandExtendedId interface {
+	ISysexCommand
 	// GetId returns Id
 	GetId() []int8
 	// GetLengthInBytes returns the length in bytes

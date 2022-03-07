@@ -37,6 +37,7 @@ type BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadPropertyMultiple interface {
+	IBACnetConfirmedServiceRequest
 	// GetData returns Data
 	GetData() []*BACnetReadAccessSpecification
 	// GetLengthInBytes returns the length in bytes

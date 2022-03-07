@@ -32,6 +32,7 @@ type SysexCommandSysexRealtime struct {
 
 // The corresponding interface
 type ISysexCommandSysexRealtime interface {
+	ISysexCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

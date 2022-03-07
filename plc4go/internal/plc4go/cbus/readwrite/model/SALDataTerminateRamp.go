@@ -34,6 +34,7 @@ type SALDataTerminateRamp struct {
 
 // The corresponding interface
 type ISALDataTerminateRamp interface {
+	ISALData
 	// GetGroup returns Group
 	GetGroup() byte
 	// GetLengthInBytes returns the length in bytes

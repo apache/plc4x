@@ -35,6 +35,7 @@ type CALDataRequestRecall struct {
 
 // The corresponding interface
 type ICALDataRequestRecall interface {
+	ICALData
 	// GetParamNo returns ParamNo
 	GetParamNo() uint8
 	// GetCount returns Count

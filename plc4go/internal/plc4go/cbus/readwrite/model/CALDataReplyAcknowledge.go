@@ -35,6 +35,7 @@ type CALDataReplyAcknowledge struct {
 
 // The corresponding interface
 type ICALDataReplyAcknowledge interface {
+	ICALData
 	// GetParamNo returns ParamNo
 	GetParamNo() uint8
 	// GetCode returns Code

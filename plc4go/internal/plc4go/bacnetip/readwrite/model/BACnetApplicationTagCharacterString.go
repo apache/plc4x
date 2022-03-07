@@ -34,6 +34,7 @@ type BACnetApplicationTagCharacterString struct {
 
 // The corresponding interface
 type IBACnetApplicationTagCharacterString interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadCharacterString
 	// GetValue returns Value

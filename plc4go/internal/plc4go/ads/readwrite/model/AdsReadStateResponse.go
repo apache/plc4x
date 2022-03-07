@@ -36,6 +36,7 @@ type AdsReadStateResponse struct {
 
 // The corresponding interface
 type IAdsReadStateResponse interface {
+	IAdsData
 	// GetResult returns Result
 	GetResult() ReturnCode
 	// GetAdsState returns AdsState

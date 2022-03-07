@@ -38,6 +38,7 @@ type TunnelingRequest struct {
 
 // The corresponding interface
 type ITunnelingRequest interface {
+	IKnxNetIpMessage
 	// GetTunnelingRequestDataBlock returns TunnelingRequestDataBlock
 	GetTunnelingRequestDataBlock() *TunnelingRequestDataBlock
 	// GetCemi returns Cemi

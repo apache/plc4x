@@ -42,6 +42,7 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWriteProperty interface {
+	IBACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier
 	GetObjectIdentifier() *BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier

@@ -35,6 +35,7 @@ type ModbusPDUWriteMultipleHoldingRegistersResponse struct {
 
 // The corresponding interface
 type IModbusPDUWriteMultipleHoldingRegistersResponse interface {
+	IModbusPDU
 	// GetStartingAddress returns StartingAddress
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity

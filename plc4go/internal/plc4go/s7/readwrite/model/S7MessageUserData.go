@@ -32,6 +32,7 @@ type S7MessageUserData struct {
 
 // The corresponding interface
 type IS7MessageUserData interface {
+	IS7Message
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

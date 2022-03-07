@@ -41,6 +41,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
 	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
 	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier

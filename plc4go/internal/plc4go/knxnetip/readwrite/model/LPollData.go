@@ -37,6 +37,7 @@ type LPollData struct {
 
 // The corresponding interface
 type ILPollData interface {
+	ILDataFrame
 	// GetSourceAddress returns SourceAddress
 	GetSourceAddress() *KnxAddress
 	// GetTargetAddress returns TargetAddress

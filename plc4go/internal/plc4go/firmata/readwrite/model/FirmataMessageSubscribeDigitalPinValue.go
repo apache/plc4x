@@ -39,6 +39,7 @@ type FirmataMessageSubscribeDigitalPinValue struct {
 
 // The corresponding interface
 type IFirmataMessageSubscribeDigitalPinValue interface {
+	IFirmataMessage
 	// GetPin returns Pin
 	GetPin() uint8
 	// GetEnable returns Enable

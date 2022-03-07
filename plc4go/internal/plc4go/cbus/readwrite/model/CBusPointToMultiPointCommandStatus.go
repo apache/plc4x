@@ -46,6 +46,7 @@ type CBusPointToMultiPointCommandStatus struct {
 
 // The corresponding interface
 type ICBusPointToMultiPointCommandStatus interface {
+	ICBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest
 	GetStatusRequest() *StatusRequest
 	// GetCrc returns Crc

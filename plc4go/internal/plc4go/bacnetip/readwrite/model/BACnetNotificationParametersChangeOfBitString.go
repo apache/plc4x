@@ -41,6 +41,7 @@ type BACnetNotificationParametersChangeOfBitString struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfBitString interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetChangeOfBitString returns ChangeOfBitString

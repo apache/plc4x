@@ -32,6 +32,7 @@ type BACnetServiceAckGetEventInformation struct {
 
 // The corresponding interface
 type IBACnetServiceAckGetEventInformation interface {
+	IBACnetServiceAck
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

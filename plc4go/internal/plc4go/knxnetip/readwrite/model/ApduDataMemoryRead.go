@@ -38,6 +38,7 @@ type ApduDataMemoryRead struct {
 
 // The corresponding interface
 type IApduDataMemoryRead interface {
+	IApduData
 	// GetNumBytes returns NumBytes
 	GetNumBytes() uint8
 	// GetAddress returns Address

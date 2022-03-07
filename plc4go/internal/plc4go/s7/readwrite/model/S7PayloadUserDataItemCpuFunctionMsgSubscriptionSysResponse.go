@@ -35,6 +35,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
+	IS7PayloadUserDataItem
 	// GetResult returns Result
 	GetResult() uint8
 	// GetReserved01 returns Reserved01

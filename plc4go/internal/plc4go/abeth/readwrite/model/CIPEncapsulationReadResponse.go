@@ -37,6 +37,7 @@ type CIPEncapsulationReadResponse struct {
 
 // The corresponding interface
 type ICIPEncapsulationReadResponse interface {
+	ICIPEncapsulationPacket
 	// GetResponse returns Response
 	GetResponse() *DF1ResponseMessage
 	// GetLengthInBytes returns the length in bytes

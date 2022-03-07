@@ -34,6 +34,7 @@ type ModbusPDUWriteFileRecordRequest struct {
 
 // The corresponding interface
 type IModbusPDUWriteFileRecordRequest interface {
+	IModbusPDU
 	// GetItems returns Items
 	GetItems() []*ModbusPDUWriteFileRecordRequestItem
 	// GetLengthInBytes returns the length in bytes

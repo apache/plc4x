@@ -34,6 +34,7 @@ type AdsWriteControlResponse struct {
 
 // The corresponding interface
 type IAdsWriteControlResponse interface {
+	IAdsData
 	// GetResult returns Result
 	GetResult() ReturnCode
 	// GetLengthInBytes returns the length in bytes

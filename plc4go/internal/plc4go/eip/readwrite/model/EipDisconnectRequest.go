@@ -32,6 +32,7 @@ type EipDisconnectRequest struct {
 
 // The corresponding interface
 type IEipDisconnectRequest interface {
+	IEipPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

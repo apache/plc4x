@@ -35,6 +35,7 @@ type ApduDataExtMemoryBitWrite struct {
 
 // The corresponding interface
 type IApduDataExtMemoryBitWrite interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

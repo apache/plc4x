@@ -42,6 +42,7 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
+	IBACnetConfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier
 	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag

@@ -35,6 +35,7 @@ type DisconnectResponse struct {
 
 // The corresponding interface
 type IDisconnectResponse interface {
+	IKnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status

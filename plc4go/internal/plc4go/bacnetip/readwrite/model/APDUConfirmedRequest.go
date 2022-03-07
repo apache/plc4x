@@ -46,6 +46,7 @@ type APDUConfirmedRequest struct {
 
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
+	IAPDU
 	// GetSegmentedMessage returns SegmentedMessage
 	GetSegmentedMessage() bool
 	// GetMoreFollows returns MoreFollows

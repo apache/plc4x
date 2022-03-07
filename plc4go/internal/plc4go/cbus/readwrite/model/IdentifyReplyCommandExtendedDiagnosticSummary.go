@@ -53,6 +53,7 @@ type IdentifyReplyCommandExtendedDiagnosticSummary struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandExtendedDiagnosticSummary interface {
+	IIdentifyReplyCommand
 	// GetLowApplication returns LowApplication
 	GetLowApplication() ApplicationIdContainer
 	// GetHighApplication returns HighApplication

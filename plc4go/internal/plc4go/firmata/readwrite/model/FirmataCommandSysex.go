@@ -38,6 +38,7 @@ type FirmataCommandSysex struct {
 
 // The corresponding interface
 type IFirmataCommandSysex interface {
+	IFirmataCommand
 	// GetCommand returns Command
 	GetCommand() *SysexCommand
 	// GetLengthInBytes returns the length in bytes

@@ -37,6 +37,7 @@ type FirmataMessageCommand struct {
 
 // The corresponding interface
 type IFirmataMessageCommand interface {
+	IFirmataMessage
 	// GetCommand returns Command
 	GetCommand() *FirmataCommand
 	// GetLengthInBytes returns the length in bytes

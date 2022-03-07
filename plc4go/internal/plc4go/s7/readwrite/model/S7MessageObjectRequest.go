@@ -42,6 +42,7 @@ type S7MessageObjectRequest struct {
 
 // The corresponding interface
 type IS7MessageObjectRequest interface {
+	IS7DataAlarmMessage
 	// GetSyntaxId returns SyntaxId
 	GetSyntaxId() SyntaxIdType
 	// GetQueryType returns QueryType

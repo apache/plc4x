@@ -35,6 +35,7 @@ type ConnectionStateResponse struct {
 
 // The corresponding interface
 type IConnectionStateResponse interface {
+	IKnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status

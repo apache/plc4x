@@ -38,6 +38,7 @@ type BACnetContextTagEnumerated struct {
 
 // The corresponding interface
 type IBACnetContextTagEnumerated interface {
+	IBACnetContextTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue

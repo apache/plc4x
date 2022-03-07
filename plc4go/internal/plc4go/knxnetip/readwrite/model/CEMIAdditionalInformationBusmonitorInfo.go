@@ -43,6 +43,7 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
+	ICEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag
 	GetFrameErrorFlag() bool
 	// GetBitErrorFlag returns BitErrorFlag

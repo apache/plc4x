@@ -32,6 +32,7 @@ type AdsReadStateRequest struct {
 
 // The corresponding interface
 type IAdsReadStateRequest interface {
+	IAdsData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

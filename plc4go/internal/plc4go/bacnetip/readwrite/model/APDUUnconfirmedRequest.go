@@ -38,6 +38,7 @@ type APDUUnconfirmedRequest struct {
 
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
+	IAPDU
 	// GetServiceRequest returns ServiceRequest
 	GetServiceRequest() *BACnetUnconfirmedServiceRequest
 	// GetLengthInBytes returns the length in bytes

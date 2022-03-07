@@ -42,6 +42,7 @@ type BACnetNotificationParametersUnsignedRange struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersUnsignedRange interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetSequenceNumber returns SequenceNumber

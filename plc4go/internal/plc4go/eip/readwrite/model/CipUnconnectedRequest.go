@@ -44,6 +44,7 @@ type CipUnconnectedRequest struct {
 
 // The corresponding interface
 type ICipUnconnectedRequest interface {
+	ICipService
 	// GetUnconnectedService returns UnconnectedService
 	GetUnconnectedService() *CipService
 	// GetBackPlane returns BackPlane

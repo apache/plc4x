@@ -34,6 +34,7 @@ type AdsWriteResponse struct {
 
 // The corresponding interface
 type IAdsWriteResponse interface {
+	IAdsData
 	// GetResult returns Result
 	GetResult() ReturnCode
 	// GetLengthInBytes returns the length in bytes

@@ -40,6 +40,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
+	IBACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
 	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier

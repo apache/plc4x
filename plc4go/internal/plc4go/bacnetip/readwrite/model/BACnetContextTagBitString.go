@@ -38,6 +38,7 @@ type BACnetContextTagBitString struct {
 
 // The corresponding interface
 type IBACnetContextTagBitString interface {
+	IBACnetContextTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadBitString
 	// GetLengthInBytes returns the length in bytes

@@ -35,6 +35,7 @@ type SALDataRampToLevel struct {
 
 // The corresponding interface
 type ISALDataRampToLevel interface {
+	ISALData
 	// GetGroup returns Group
 	GetGroup() byte
 	// GetLevel returns Level

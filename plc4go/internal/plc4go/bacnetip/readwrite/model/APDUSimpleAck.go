@@ -39,6 +39,7 @@ type APDUSimpleAck struct {
 
 // The corresponding interface
 type IAPDUSimpleAck interface {
+	IAPDU
 	// GetOriginalInvokeId returns OriginalInvokeId
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice

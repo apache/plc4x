@@ -38,6 +38,7 @@ type BACnetNotificationParametersComplexEventType struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersComplexEventType interface {
+	IBACnetNotificationParameters
 	// GetListOfValues returns ListOfValues
 	GetListOfValues() *BACnetPropertyValues
 	// GetLengthInBytes returns the length in bytes

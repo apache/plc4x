@@ -34,6 +34,7 @@ type IdentifyReplyCommandGAVValuesCurrent struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandGAVValuesCurrent interface {
+	IIdentifyReplyCommand
 	// GetValues returns Values
 	GetValues() []byte
 	// GetLengthInBytes returns the length in bytes

@@ -38,6 +38,7 @@ type NLMEstablishConnectionToNetwork struct {
 
 // The corresponding interface
 type INLMEstablishConnectionToNetwork interface {
+	INLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime

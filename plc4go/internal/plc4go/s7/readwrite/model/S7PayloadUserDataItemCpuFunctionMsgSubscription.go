@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscription struct {
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionMsgSubscription interface {
+	IS7PayloadUserDataItem
 	// GetSubscription returns Subscription
 	GetSubscription() uint8
 	// GetMagicKey returns MagicKey

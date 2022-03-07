@@ -37,6 +37,7 @@ type CBusCommandPointToPointToMultiPoint struct {
 
 // The corresponding interface
 type ICBusCommandPointToPointToMultiPoint interface {
+	ICBusCommand
 	// GetCommand returns Command
 	GetCommand() *CBusPointToPointToMultipointCommand
 	// GetLengthInBytes returns the length in bytes

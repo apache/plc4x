@@ -41,6 +41,7 @@ type MonitoredSALLongFormSmartMode struct {
 
 // The corresponding interface
 type IMonitoredSALLongFormSmartMode interface {
+	IMonitoredSAL
 	// GetTerminatingByte returns TerminatingByte
 	GetTerminatingByte() uint32
 	// GetUnitAddress returns UnitAddress

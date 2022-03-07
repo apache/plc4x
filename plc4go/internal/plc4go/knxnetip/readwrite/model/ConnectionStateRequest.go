@@ -36,6 +36,7 @@ type ConnectionStateRequest struct {
 
 // The corresponding interface
 type IConnectionStateRequest interface {
+	IKnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint

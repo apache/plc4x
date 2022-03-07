@@ -32,6 +32,7 @@ type BVLCSecureBVLL struct {
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
+	IBVLC
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

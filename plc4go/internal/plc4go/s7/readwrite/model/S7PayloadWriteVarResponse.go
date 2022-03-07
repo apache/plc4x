@@ -37,6 +37,7 @@ type S7PayloadWriteVarResponse struct {
 
 // The corresponding interface
 type IS7PayloadWriteVarResponse interface {
+	IS7Payload
 	// GetItems returns Items
 	GetItems() []*S7VarPayloadStatusItem
 	// GetLengthInBytes returns the length in bytes

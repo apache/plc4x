@@ -37,6 +37,7 @@ type ModbusPDUGetComEventLogResponse struct {
 
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
+	IModbusPDU
 	// GetStatus returns Status
 	GetStatus() uint16
 	// GetEventCount returns EventCount

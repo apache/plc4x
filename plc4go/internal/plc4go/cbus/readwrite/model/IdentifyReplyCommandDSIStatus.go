@@ -43,6 +43,7 @@ type IdentifyReplyCommandDSIStatus struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandDSIStatus interface {
+	IIdentifyReplyCommand
 	// GetChannelStatus1 returns ChannelStatus1
 	GetChannelStatus1() ChannelStatus
 	// GetChannelStatus2 returns ChannelStatus2

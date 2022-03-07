@@ -34,6 +34,7 @@ type S7ParameterReadVarRequest struct {
 
 // The corresponding interface
 type IS7ParameterReadVarRequest interface {
+	IS7Parameter
 	// GetItems returns Items
 	GetItems() []*S7VarRequestParameterItem
 	// GetLengthInBytes returns the length in bytes

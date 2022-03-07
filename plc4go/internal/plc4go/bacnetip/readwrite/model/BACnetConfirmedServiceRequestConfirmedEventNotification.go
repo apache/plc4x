@@ -50,6 +50,7 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
+	IBACnetConfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier
 	GetProcessIdentifier() *BACnetContextTagUnsignedInteger
 	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier

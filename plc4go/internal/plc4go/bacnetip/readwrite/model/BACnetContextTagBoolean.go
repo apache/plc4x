@@ -39,6 +39,7 @@ type BACnetContextTagBoolean struct {
 
 // The corresponding interface
 type IBACnetContextTagBoolean interface {
+	IBACnetContextTag
 	// GetValue returns Value
 	GetValue() uint8
 	// GetPayload returns Payload

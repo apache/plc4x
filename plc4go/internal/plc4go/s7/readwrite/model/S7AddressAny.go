@@ -40,6 +40,7 @@ type S7AddressAny struct {
 
 // The corresponding interface
 type IS7AddressAny interface {
+	IS7Address
 	// GetTransportSize returns TransportSize
 	GetTransportSize() TransportSize
 	// GetNumberOfElements returns NumberOfElements

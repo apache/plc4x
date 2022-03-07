@@ -34,6 +34,7 @@ type BACnetApplicationTagOctetString struct {
 
 // The corresponding interface
 type IBACnetApplicationTagOctetString interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadOctetString
 	// GetValue returns Value

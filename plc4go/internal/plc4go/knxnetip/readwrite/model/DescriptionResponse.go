@@ -35,6 +35,7 @@ type DescriptionResponse struct {
 
 // The corresponding interface
 type IDescriptionResponse interface {
+	IKnxNetIpMessage
 	// GetDibDeviceInfo returns DibDeviceInfo
 	GetDibDeviceInfo() *DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies

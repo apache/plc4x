@@ -38,6 +38,7 @@ type BACnetContextTagSignedInteger struct {
 
 // The corresponding interface
 type IBACnetContextTagSignedInteger interface {
+	IBACnetContextTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue

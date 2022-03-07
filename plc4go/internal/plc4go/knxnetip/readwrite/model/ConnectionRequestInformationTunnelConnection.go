@@ -35,6 +35,7 @@ type ConnectionRequestInformationTunnelConnection struct {
 
 // The corresponding interface
 type IConnectionRequestInformationTunnelConnection interface {
+	IConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer
 	GetKnxLayer() KnxLayer
 	// GetLengthInBytes returns the length in bytes

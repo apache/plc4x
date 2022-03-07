@@ -34,6 +34,7 @@ type ModbusPDUReadWriteMultipleHoldingRegistersResponse struct {
 
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
+	IModbusPDU
 	// GetValue returns Value
 	GetValue() []byte
 	// GetLengthInBytes returns the length in bytes

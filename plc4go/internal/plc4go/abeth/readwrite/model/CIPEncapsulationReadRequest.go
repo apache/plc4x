@@ -34,6 +34,7 @@ type CIPEncapsulationReadRequest struct {
 
 // The corresponding interface
 type ICIPEncapsulationReadRequest interface {
+	ICIPEncapsulationPacket
 	// GetRequest returns Request
 	GetRequest() *DF1RequestMessage
 	// GetLengthInBytes returns the length in bytes

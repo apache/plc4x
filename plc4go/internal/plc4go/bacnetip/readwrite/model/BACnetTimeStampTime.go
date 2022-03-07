@@ -37,6 +37,7 @@ type BACnetTimeStampTime struct {
 
 // The corresponding interface
 type IBACnetTimeStampTime interface {
+	IBACnetTimeStamp
 	// GetTimeValue returns TimeValue
 	GetTimeValue() *BACnetContextTagTime
 	// GetLengthInBytes returns the length in bytes

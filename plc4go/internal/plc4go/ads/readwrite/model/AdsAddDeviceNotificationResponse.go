@@ -35,6 +35,7 @@ type AdsAddDeviceNotificationResponse struct {
 
 // The corresponding interface
 type IAdsAddDeviceNotificationResponse interface {
+	IAdsData
 	// GetResult returns Result
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle

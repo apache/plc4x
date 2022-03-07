@@ -39,6 +39,7 @@ type LDataInd struct {
 
 // The corresponding interface
 type ILDataInd interface {
+	ICEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength
 	GetAdditionalInformationLength() uint8
 	// GetAdditionalInformation returns AdditionalInformation

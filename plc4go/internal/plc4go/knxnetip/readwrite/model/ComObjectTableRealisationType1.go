@@ -36,6 +36,7 @@ type ComObjectTableRealisationType1 struct {
 
 // The corresponding interface
 type IComObjectTableRealisationType1 interface {
+	IComObjectTable
 	// GetNumEntries returns NumEntries
 	GetNumEntries() uint8
 	// GetRamFlagsTablePointer returns RamFlagsTablePointer

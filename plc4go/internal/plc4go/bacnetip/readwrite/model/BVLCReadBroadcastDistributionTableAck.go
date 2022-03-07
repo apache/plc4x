@@ -32,6 +32,7 @@ type BVLCReadBroadcastDistributionTableAck struct {
 
 // The corresponding interface
 type IBVLCReadBroadcastDistributionTableAck interface {
+	IBVLC
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

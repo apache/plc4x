@@ -34,6 +34,7 @@ type BACnetApplicationTagSignedInteger struct {
 
 // The corresponding interface
 type IBACnetApplicationTagSignedInteger interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadSignedInteger
 	// GetActualValue returns ActualValue

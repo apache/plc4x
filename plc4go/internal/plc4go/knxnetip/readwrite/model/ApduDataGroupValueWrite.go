@@ -38,6 +38,7 @@ type ApduDataGroupValueWrite struct {
 
 // The corresponding interface
 type IApduDataGroupValueWrite interface {
+	IApduData
 	// GetDataFirstByte returns DataFirstByte
 	GetDataFirstByte() int8
 	// GetData returns Data

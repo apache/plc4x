@@ -32,6 +32,7 @@ type IdentifyReplyCommandNetworkTerminalLevels struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandNetworkTerminalLevels interface {
+	IIdentifyReplyCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -32,6 +32,7 @@ type AdsInvalidResponse struct {
 
 // The corresponding interface
 type IAdsInvalidResponse interface {
+	IAdsData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

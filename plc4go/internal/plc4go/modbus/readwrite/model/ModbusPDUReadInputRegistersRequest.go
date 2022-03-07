@@ -35,6 +35,7 @@ type ModbusPDUReadInputRegistersRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadInputRegistersRequest interface {
+	IModbusPDU
 	// GetStartingAddress returns StartingAddress
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity

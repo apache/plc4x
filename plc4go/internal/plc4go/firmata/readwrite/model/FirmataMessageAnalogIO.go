@@ -38,6 +38,7 @@ type FirmataMessageAnalogIO struct {
 
 // The corresponding interface
 type IFirmataMessageAnalogIO interface {
+	IFirmataMessage
 	// GetPin returns Pin
 	GetPin() uint8
 	// GetData returns Data

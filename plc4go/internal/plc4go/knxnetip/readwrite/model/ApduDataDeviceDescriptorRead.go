@@ -37,6 +37,7 @@ type ApduDataDeviceDescriptorRead struct {
 
 // The corresponding interface
 type IApduDataDeviceDescriptorRead interface {
+	IApduData
 	// GetDescriptorType returns DescriptorType
 	GetDescriptorType() uint8
 	// GetLengthInBytes returns the length in bytes

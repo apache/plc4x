@@ -38,6 +38,7 @@ type ApduDataExtAuthorizeRequest struct {
 
 // The corresponding interface
 type IApduDataExtAuthorizeRequest interface {
+	IApduDataExt
 	// GetLevel returns Level
 	GetLevel() uint8
 	// GetData returns Data

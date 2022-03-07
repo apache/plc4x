@@ -38,6 +38,7 @@ type DF1RequestProtectedTypedLogicalRead struct {
 
 // The corresponding interface
 type IDF1RequestProtectedTypedLogicalRead interface {
+	IDF1RequestCommand
 	// GetByteSize returns ByteSize
 	GetByteSize() uint8
 	// GetFileNumber returns FileNumber

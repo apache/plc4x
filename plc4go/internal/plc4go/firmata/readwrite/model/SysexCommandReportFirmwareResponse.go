@@ -36,6 +36,7 @@ type SysexCommandReportFirmwareResponse struct {
 
 // The corresponding interface
 type ISysexCommandReportFirmwareResponse interface {
+	ISysexCommand
 	// GetMajorVersion returns MajorVersion
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion

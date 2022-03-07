@@ -39,6 +39,7 @@ type CBusPointToPointCommandIndirect struct {
 
 // The corresponding interface
 type ICBusPointToPointCommandIndirect interface {
+	ICBusPointToPointCommand
 	// GetBridgeAddress returns BridgeAddress
 	GetBridgeAddress() *BridgeAddress
 	// GetNetworkRoute returns NetworkRoute

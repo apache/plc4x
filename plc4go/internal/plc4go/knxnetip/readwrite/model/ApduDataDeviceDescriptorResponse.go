@@ -38,6 +38,7 @@ type ApduDataDeviceDescriptorResponse struct {
 
 // The corresponding interface
 type IApduDataDeviceDescriptorResponse interface {
+	IApduData
 	// GetDescriptorType returns DescriptorType
 	GetDescriptorType() uint8
 	// GetData returns Data

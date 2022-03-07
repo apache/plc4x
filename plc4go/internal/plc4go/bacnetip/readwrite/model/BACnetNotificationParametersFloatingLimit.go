@@ -43,6 +43,7 @@ type BACnetNotificationParametersFloatingLimit struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersFloatingLimit interface {
+	IBACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag
 	GetInnerOpeningTag() *BACnetOpeningTag
 	// GetReferenceValue returns ReferenceValue

@@ -38,6 +38,7 @@ type NLMICouldBeRouterToNetwork struct {
 
 // The corresponding interface
 type INLMICouldBeRouterToNetwork interface {
+	INLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress
 	GetDestinationNetworkAddress() uint16
 	// GetPerformanceIndex returns PerformanceIndex

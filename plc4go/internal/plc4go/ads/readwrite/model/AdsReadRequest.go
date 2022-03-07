@@ -36,6 +36,7 @@ type AdsReadRequest struct {
 
 // The corresponding interface
 type IAdsReadRequest interface {
+	IAdsData
 	// GetIndexGroup returns IndexGroup
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset

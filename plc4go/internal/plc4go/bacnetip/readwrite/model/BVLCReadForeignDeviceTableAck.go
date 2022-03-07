@@ -32,6 +32,7 @@ type BVLCReadForeignDeviceTableAck struct {
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTableAck interface {
+	IBVLC
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

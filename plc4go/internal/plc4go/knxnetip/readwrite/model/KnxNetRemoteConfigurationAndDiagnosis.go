@@ -34,6 +34,7 @@ type KnxNetRemoteConfigurationAndDiagnosis struct {
 
 // The corresponding interface
 type IKnxNetRemoteConfigurationAndDiagnosis interface {
+	IServiceId
 	// GetVersion returns Version
 	GetVersion() uint8
 	// GetLengthInBytes returns the length in bytes

@@ -39,6 +39,7 @@ type ModbusPDUReadDeviceIdentificationRequest struct {
 
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationRequest interface {
+	IModbusPDU
 	// GetLevel returns Level
 	GetLevel() ModbusDeviceInformationLevel
 	// GetObjectId returns ObjectId

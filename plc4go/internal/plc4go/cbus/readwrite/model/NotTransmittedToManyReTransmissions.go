@@ -32,6 +32,7 @@ type NotTransmittedToManyReTransmissions struct {
 
 // The corresponding interface
 type INotTransmittedToManyReTransmissions interface {
+	IConfirmation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

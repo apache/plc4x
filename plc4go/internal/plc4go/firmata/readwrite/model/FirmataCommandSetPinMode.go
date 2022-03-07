@@ -38,6 +38,7 @@ type FirmataCommandSetPinMode struct {
 
 // The corresponding interface
 type IFirmataCommandSetPinMode interface {
+	IFirmataCommand
 	// GetPin returns Pin
 	GetPin() uint8
 	// GetMode returns Mode

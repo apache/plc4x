@@ -34,6 +34,7 @@ type SysexCommandAnalogMappingQueryResponse struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingQueryResponse interface {
+	ISysexCommand
 	// GetPin returns Pin
 	GetPin() uint8
 	// GetLengthInBytes returns the length in bytes

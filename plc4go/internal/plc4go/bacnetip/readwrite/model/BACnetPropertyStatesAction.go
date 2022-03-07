@@ -38,6 +38,7 @@ type BACnetPropertyStatesAction struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesAction interface {
+	IBACnetPropertyStates
 	// GetAction returns Action
 	GetAction() *BACnetAction
 	// GetLengthInBytes returns the length in bytes

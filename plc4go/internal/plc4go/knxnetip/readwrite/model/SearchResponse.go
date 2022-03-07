@@ -36,6 +36,7 @@ type SearchResponse struct {
 
 // The corresponding interface
 type ISearchResponse interface {
+	IKnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint
 	GetHpaiControlEndpoint() *HPAIControlEndpoint
 	// GetDibDeviceInfo returns DibDeviceInfo

@@ -34,6 +34,7 @@ type CALReplyReply struct {
 
 // The corresponding interface
 type ICALReplyReply interface {
+	IReply
 	// GetIsA returns IsA
 	GetIsA() *CALReply
 	// GetLengthInBytes returns the length in bytes

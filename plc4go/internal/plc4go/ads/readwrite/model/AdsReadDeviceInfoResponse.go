@@ -38,6 +38,7 @@ type AdsReadDeviceInfoResponse struct {
 
 // The corresponding interface
 type IAdsReadDeviceInfoResponse interface {
+	IAdsData
 	// GetResult returns Result
 	GetResult() ReturnCode
 	// GetMajorVersion returns MajorVersion

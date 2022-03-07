@@ -34,6 +34,7 @@ type BVLCResult struct {
 
 // The corresponding interface
 type IBVLCResult interface {
+	IBVLC
 	// GetCode returns Code
 	GetCode() BVLCResultCode
 	// GetLengthInBytes returns the length in bytes

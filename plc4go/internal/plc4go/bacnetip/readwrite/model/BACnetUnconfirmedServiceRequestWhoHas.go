@@ -41,6 +41,7 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoHas interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit
 	GetDeviceInstanceRangeLowLimit() *BACnetContextTagUnsignedInteger
 	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit

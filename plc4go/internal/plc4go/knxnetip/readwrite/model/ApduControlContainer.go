@@ -37,6 +37,7 @@ type ApduControlContainer struct {
 
 // The corresponding interface
 type IApduControlContainer interface {
+	IApdu
 	// GetControlApdu returns ControlApdu
 	GetControlApdu() *ApduControl
 	// GetLengthInBytes returns the length in bytes

@@ -32,6 +32,7 @@ type CIPEncapsulationConnectionResponse struct {
 
 // The corresponding interface
 type ICIPEncapsulationConnectionResponse interface {
+	ICIPEncapsulationPacket
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

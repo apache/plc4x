@@ -32,6 +32,7 @@ type SysexCommandAnalogMappingQueryRequest struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingQueryRequest interface {
+	ISysexCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

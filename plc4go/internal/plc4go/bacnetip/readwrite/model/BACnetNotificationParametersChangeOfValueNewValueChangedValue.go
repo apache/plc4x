@@ -37,6 +37,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
+	IBACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedValue returns ChangedValue
 	GetChangedValue() *BACnetContextTagReal
 	// GetLengthInBytes returns the length in bytes

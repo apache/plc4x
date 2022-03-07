@@ -41,6 +41,7 @@ type ApduDataExtPropertyValueWrite struct {
 
 // The corresponding interface
 type IApduDataExtPropertyValueWrite interface {
+	IApduDataExt
 	// GetObjectIndex returns ObjectIndex
 	GetObjectIndex() uint8
 	// GetPropertyId returns PropertyId

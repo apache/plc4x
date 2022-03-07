@@ -38,6 +38,7 @@ type COTPPacketData struct {
 
 // The corresponding interface
 type ICOTPPacketData interface {
+	ICOTPPacket
 	// GetEot returns Eot
 	GetEot() bool
 	// GetTpduRef returns TpduRef

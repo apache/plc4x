@@ -37,6 +37,7 @@ type BACnetTimeStampSequence struct {
 
 // The corresponding interface
 type IBACnetTimeStampSequence interface {
+	IBACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber
 	GetSequenceNumber() *BACnetContextTagUnsignedInteger
 	// GetLengthInBytes returns the length in bytes

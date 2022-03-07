@@ -32,6 +32,7 @@ type S7MessageRequest struct {
 
 // The corresponding interface
 type IS7MessageRequest interface {
+	IS7Message
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

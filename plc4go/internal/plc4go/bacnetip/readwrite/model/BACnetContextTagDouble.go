@@ -38,6 +38,7 @@ type BACnetContextTagDouble struct {
 
 // The corresponding interface
 type IBACnetContextTagDouble interface {
+	IBACnetContextTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadDouble
 	// GetActualValue returns ActualValue

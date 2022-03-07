@@ -42,6 +42,7 @@ type MultipleServiceResponse struct {
 
 // The corresponding interface
 type IMultipleServiceResponse interface {
+	ICipService
 	// GetStatus returns Status
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus

@@ -34,6 +34,7 @@ type IdentifyReplyCommandGAVPhysicalAddresses struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandGAVPhysicalAddresses interface {
+	IIdentifyReplyCommand
 	// GetValues returns Values
 	GetValues() []byte
 	// GetLengthInBytes returns the length in bytes

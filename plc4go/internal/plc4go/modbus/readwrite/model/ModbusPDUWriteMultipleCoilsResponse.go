@@ -35,6 +35,7 @@ type ModbusPDUWriteMultipleCoilsResponse struct {
 
 // The corresponding interface
 type IModbusPDUWriteMultipleCoilsResponse interface {
+	IModbusPDU
 	// GetStartingAddress returns StartingAddress
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity

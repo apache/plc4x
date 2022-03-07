@@ -36,6 +36,7 @@ type StatusRequestLevel struct {
 
 // The corresponding interface
 type IStatusRequestLevel interface {
+	IStatusRequest
 	// GetApplication returns Application
 	GetApplication() byte
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel

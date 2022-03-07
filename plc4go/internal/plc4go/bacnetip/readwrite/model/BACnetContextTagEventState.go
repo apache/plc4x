@@ -40,6 +40,7 @@ type BACnetContextTagEventState struct {
 
 // The corresponding interface
 type IBACnetContextTagEventState interface {
+	IBACnetContextTag
 	// GetEventState returns EventState
 	GetEventState() BACnetEventState
 	// GetProprietaryValue returns ProprietaryValue

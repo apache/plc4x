@@ -37,6 +37,7 @@ type BVLCWriteBroadcastDistributionTable struct {
 
 // The corresponding interface
 type IBVLCWriteBroadcastDistributionTable interface {
+	IBVLC
 	// GetTable returns Table
 	GetTable() []*BVLCWriteBroadcastDistributionTableEntry
 	// GetLengthInBytes returns the length in bytes

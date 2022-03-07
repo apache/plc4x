@@ -34,6 +34,7 @@ type KnxNetIpRouting struct {
 
 // The corresponding interface
 type IKnxNetIpRouting interface {
+	IServiceId
 	// GetVersion returns Version
 	GetVersion() uint8
 	// GetLengthInBytes returns the length in bytes

@@ -40,6 +40,7 @@ type AdsAddDeviceNotificationRequest struct {
 
 // The corresponding interface
 type IAdsAddDeviceNotificationRequest interface {
+	IAdsData
 	// GetIndexGroup returns IndexGroup
 	GetIndexGroup() uint32
 	// GetIndexOffset returns IndexOffset

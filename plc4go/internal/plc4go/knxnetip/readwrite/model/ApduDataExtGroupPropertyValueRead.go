@@ -35,6 +35,7 @@ type ApduDataExtGroupPropertyValueRead struct {
 
 // The corresponding interface
 type IApduDataExtGroupPropertyValueRead interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

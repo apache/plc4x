@@ -39,6 +39,7 @@ type APDUError struct {
 
 // The corresponding interface
 type IAPDUError interface {
+	IAPDU
 	// GetOriginalInvokeId returns OriginalInvokeId
 	GetOriginalInvokeId() uint8
 	// GetError returns Error

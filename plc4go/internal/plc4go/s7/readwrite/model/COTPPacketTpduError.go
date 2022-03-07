@@ -38,6 +38,7 @@ type COTPPacketTpduError struct {
 
 // The corresponding interface
 type ICOTPPacketTpduError interface {
+	ICOTPPacket
 	// GetDestinationReference returns DestinationReference
 	GetDestinationReference() uint16
 	// GetRejectCause returns RejectCause

@@ -39,6 +39,7 @@ type S7ParameterModeTransition struct {
 
 // The corresponding interface
 type IS7ParameterModeTransition interface {
+	IS7Parameter
 	// GetMethod returns Method
 	GetMethod() uint8
 	// GetCpuFunctionType returns CpuFunctionType

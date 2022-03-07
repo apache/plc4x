@@ -35,6 +35,7 @@ type CALDataRequestGetStatus struct {
 
 // The corresponding interface
 type ICALDataRequestGetStatus interface {
+	ICALData
 	// GetParamNo returns ParamNo
 	GetParamNo() uint8
 	// GetCount returns Count

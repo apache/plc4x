@@ -46,6 +46,7 @@ type APDUComplexAck struct {
 
 // The corresponding interface
 type IAPDUComplexAck interface {
+	IAPDU
 	// GetSegmentedMessage returns SegmentedMessage
 	GetSegmentedMessage() bool
 	// GetMoreFollows returns MoreFollows

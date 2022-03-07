@@ -39,6 +39,7 @@ type LDataCon struct {
 
 // The corresponding interface
 type ILDataCon interface {
+	ICEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength
 	GetAdditionalInformationLength() uint8
 	// GetAdditionalInformation returns AdditionalInformation

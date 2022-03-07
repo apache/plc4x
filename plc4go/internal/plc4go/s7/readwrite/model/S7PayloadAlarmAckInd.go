@@ -34,6 +34,7 @@ type S7PayloadAlarmAckInd struct {
 
 // The corresponding interface
 type IS7PayloadAlarmAckInd interface {
+	IS7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage
 	GetAlarmMessage() *AlarmMessageAckPushType
 	// GetLengthInBytes returns the length in bytes

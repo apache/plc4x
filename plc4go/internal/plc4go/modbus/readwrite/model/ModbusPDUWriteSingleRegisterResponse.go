@@ -35,6 +35,7 @@ type ModbusPDUWriteSingleRegisterResponse struct {
 
 // The corresponding interface
 type IModbusPDUWriteSingleRegisterResponse interface {
+	IModbusPDU
 	// GetAddress returns Address
 	GetAddress() uint16
 	// GetValue returns Value

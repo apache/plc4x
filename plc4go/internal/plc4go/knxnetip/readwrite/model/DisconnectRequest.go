@@ -36,6 +36,7 @@ type DisconnectRequest struct {
 
 // The corresponding interface
 type IDisconnectRequest interface {
+	IKnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint

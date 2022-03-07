@@ -32,6 +32,7 @@ type SysexCommandCapabilityQuery struct {
 
 // The corresponding interface
 type ISysexCommandCapabilityQuery interface {
+	ISysexCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

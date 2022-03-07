@@ -32,6 +32,7 @@ type NotTransmittedTooLong struct {
 
 // The corresponding interface
 type INotTransmittedTooLong interface {
+	IConfirmation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

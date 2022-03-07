@@ -32,6 +32,7 @@ type SysexCommandAnalogMappingResponse struct {
 
 // The corresponding interface
 type ISysexCommandAnalogMappingResponse interface {
+	ISysexCommand
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -35,6 +35,7 @@ type DF1UnprotectedReadRequest struct {
 
 // The corresponding interface
 type IDF1UnprotectedReadRequest interface {
+	IDF1Command
 	// GetAddress returns Address
 	GetAddress() uint16
 	// GetSize returns Size

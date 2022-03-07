@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryValue struct {
 
 // The corresponding interface
 type IBACnetPropertyStatesBinaryValue interface {
+	IBACnetPropertyStates
 	// GetBinaryValue returns BinaryValue
 	GetBinaryValue() *BACnetBinaryPV
 	// GetLengthInBytes returns the length in bytes

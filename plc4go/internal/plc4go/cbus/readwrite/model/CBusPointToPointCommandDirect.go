@@ -38,6 +38,7 @@ type CBusPointToPointCommandDirect struct {
 
 // The corresponding interface
 type ICBusPointToPointCommandDirect interface {
+	ICBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress
 	GetUnitAddress() *UnitAddress
 	// GetLengthInBytes returns the length in bytes

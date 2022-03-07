@@ -35,6 +35,7 @@ type ApduDataExtDomainAddressWrite struct {
 
 // The corresponding interface
 type IApduDataExtDomainAddressWrite interface {
+	IApduDataExt
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

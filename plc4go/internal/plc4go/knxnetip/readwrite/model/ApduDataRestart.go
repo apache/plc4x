@@ -35,6 +35,7 @@ type ApduDataRestart struct {
 
 // The corresponding interface
 type IApduDataRestart interface {
+	IApduData
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -42,6 +42,7 @@ type MultipleServiceRequest struct {
 
 // The corresponding interface
 type IMultipleServiceRequest interface {
+	ICipService
 	// GetData returns Data
 	GetData() *Services
 	// GetLengthInBytes returns the length in bytes

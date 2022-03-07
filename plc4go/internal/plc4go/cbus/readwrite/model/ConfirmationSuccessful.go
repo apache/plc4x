@@ -32,6 +32,7 @@ type ConfirmationSuccessful struct {
 
 // The corresponding interface
 type IConfirmationSuccessful interface {
+	IConfirmation
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -36,6 +36,7 @@ type BACnetOpeningTag struct {
 
 // The corresponding interface
 type IBACnetOpeningTag interface {
+	IBACnetContextTag
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

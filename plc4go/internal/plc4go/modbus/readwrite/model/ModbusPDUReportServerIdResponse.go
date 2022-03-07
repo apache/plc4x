@@ -34,6 +34,7 @@ type ModbusPDUReportServerIdResponse struct {
 
 // The corresponding interface
 type IModbusPDUReportServerIdResponse interface {
+	IModbusPDU
 	// GetValue returns Value
 	GetValue() []byte
 	// GetLengthInBytes returns the length in bytes

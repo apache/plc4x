@@ -36,6 +36,7 @@ type CALDataReplyStatus struct {
 
 // The corresponding interface
 type ICALDataReplyStatus interface {
+	ICALData
 	// GetApplication returns Application
 	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart

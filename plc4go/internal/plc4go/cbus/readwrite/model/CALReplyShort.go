@@ -32,6 +32,7 @@ type CALReplyShort struct {
 
 // The corresponding interface
 type ICALReplyShort interface {
+	ICALReply
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

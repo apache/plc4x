@@ -32,6 +32,7 @@ type BACnetConfirmedServiceAddListElement struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceAddListElement interface {
+	IBACnetConfirmedServiceACK
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

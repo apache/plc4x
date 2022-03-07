@@ -40,6 +40,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
+	IBACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier
 	GetDeviceIdentifier() *BACnetApplicationTagObjectIdentifier
 	// GetMaximumApduLengthAcceptedLength returns MaximumApduLengthAcceptedLength

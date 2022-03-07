@@ -34,6 +34,7 @@ type KnxNetObjectServer struct {
 
 // The corresponding interface
 type IKnxNetObjectServer interface {
+	IServiceId
 	// GetVersion returns Version
 	GetVersion() uint8
 	// GetLengthInBytes returns the length in bytes

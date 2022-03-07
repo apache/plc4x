@@ -34,6 +34,7 @@ type BACnetApplicationTagObjectIdentifier struct {
 
 // The corresponding interface
 type IBACnetApplicationTagObjectIdentifier interface {
+	IBACnetApplicationTag
 	// GetPayload returns Payload
 	GetPayload() *BACnetTagPayloadObjectIdentifier
 	// GetObjectType returns ObjectType

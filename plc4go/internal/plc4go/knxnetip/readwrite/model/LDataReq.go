@@ -39,6 +39,7 @@ type LDataReq struct {
 
 // The corresponding interface
 type ILDataReq interface {
+	ICEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength
 	GetAdditionalInformationLength() uint8
 	// GetAdditionalInformation returns AdditionalInformation

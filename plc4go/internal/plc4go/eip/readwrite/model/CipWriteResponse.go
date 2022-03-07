@@ -39,6 +39,7 @@ type CipWriteResponse struct {
 
 // The corresponding interface
 type ICipWriteResponse interface {
+	ICipService
 	// GetStatus returns Status
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus

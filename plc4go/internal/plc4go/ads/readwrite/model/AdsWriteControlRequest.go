@@ -36,6 +36,7 @@ type AdsWriteControlRequest struct {
 
 // The corresponding interface
 type IAdsWriteControlRequest interface {
+	IAdsData
 	// GetAdsState returns AdsState
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState

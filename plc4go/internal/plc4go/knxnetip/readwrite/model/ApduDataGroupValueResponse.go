@@ -38,6 +38,7 @@ type ApduDataGroupValueResponse struct {
 
 // The corresponding interface
 type IApduDataGroupValueResponse interface {
+	IApduData
 	// GetDataFirstByte returns DataFirstByte
 	GetDataFirstByte() int8
 	// GetData returns Data

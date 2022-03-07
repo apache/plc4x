@@ -35,6 +35,7 @@ type TDataConnectedInd struct {
 
 // The corresponding interface
 type ITDataConnectedInd interface {
+	ICEMI
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits

@@ -45,6 +45,7 @@ type ApduDataExtPropertyDescriptionResponse struct {
 
 // The corresponding interface
 type IApduDataExtPropertyDescriptionResponse interface {
+	IApduDataExt
 	// GetObjectIndex returns ObjectIndex
 	GetObjectIndex() uint8
 	// GetPropertyId returns PropertyId

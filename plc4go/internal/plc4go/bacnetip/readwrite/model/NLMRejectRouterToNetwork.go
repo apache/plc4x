@@ -38,6 +38,7 @@ type NLMRejectRouterToNetwork struct {
 
 // The corresponding interface
 type INLMRejectRouterToNetwork interface {
+	INLM
 	// GetRejectReason returns RejectReason
 	GetRejectReason() NLMRejectRouterToNetworkRejectReason
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress

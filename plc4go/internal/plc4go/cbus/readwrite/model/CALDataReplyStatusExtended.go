@@ -37,6 +37,7 @@ type CALDataReplyStatusExtended struct {
 
 // The corresponding interface
 type ICALDataReplyStatusExtended interface {
+	ICALData
 	// GetEncoding returns Encoding
 	GetEncoding() uint8
 	// GetApplication returns Application

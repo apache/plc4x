@@ -40,6 +40,7 @@ type BACnetContextTagPropertyIdentifier struct {
 
 // The corresponding interface
 type IBACnetContextTagPropertyIdentifier interface {
+	IBACnetContextTag
 	// GetPropertyIdentifier returns PropertyIdentifier
 	GetPropertyIdentifier() BACnetPropertyIdentifier
 	// GetProprietaryValue returns ProprietaryValue

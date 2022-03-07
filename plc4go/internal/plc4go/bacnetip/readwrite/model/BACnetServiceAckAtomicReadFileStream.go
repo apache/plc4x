@@ -35,6 +35,7 @@ type BACnetServiceAckAtomicReadFileStream struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFileStream interface {
+	IBACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition
 	GetFileStartPosition() *BACnetApplicationTagSignedInteger
 	// GetFileData returns FileData
