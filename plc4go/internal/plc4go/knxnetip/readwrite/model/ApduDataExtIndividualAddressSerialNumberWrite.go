@@ -75,22 +75,19 @@ func NewApduDataExtIndividualAddressSerialNumberWrite(length uint8) *ApduDataExt
 }
 
 func CastApduDataExtIndividualAddressSerialNumberWrite(structType interface{}) *ApduDataExtIndividualAddressSerialNumberWrite {
-	castFunc := func(typ interface{}) *ApduDataExtIndividualAddressSerialNumberWrite {
-		if casted, ok := typ.(ApduDataExtIndividualAddressSerialNumberWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtIndividualAddressSerialNumberWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtIndividualAddressSerialNumberWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtIndividualAddressSerialNumberWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtIndividualAddressSerialNumberWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtIndividualAddressSerialNumberWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtIndividualAddressSerialNumberWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtIndividualAddressSerialNumberWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetTypeName() string {

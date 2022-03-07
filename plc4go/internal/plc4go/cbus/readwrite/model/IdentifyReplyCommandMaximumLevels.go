@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandMaximumLevels() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandMaximumLevels(structType interface{}) *IdentifyReplyCommandMaximumLevels {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandMaximumLevels {
-		if casted, ok := typ.(IdentifyReplyCommandMaximumLevels); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandMaximumLevels); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandMaximumLevels(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandMaximumLevels(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandMaximumLevels); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandMaximumLevels); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandMaximumLevels(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandMaximumLevels(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandMaximumLevels) GetTypeName() string {

@@ -90,22 +90,19 @@ func NewCBusPointToPointCommandDirect(unitAddress *UnitAddress, bridgeAddressCou
 }
 
 func CastCBusPointToPointCommandDirect(structType interface{}) *CBusPointToPointCommandDirect {
-	castFunc := func(typ interface{}) *CBusPointToPointCommandDirect {
-		if casted, ok := typ.(CBusPointToPointCommandDirect); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToPointCommandDirect); ok {
-			return casted
-		}
-		if casted, ok := typ.(CBusPointToPointCommand); ok {
-			return CastCBusPointToPointCommandDirect(casted.Child)
-		}
-		if casted, ok := typ.(*CBusPointToPointCommand); ok {
-			return CastCBusPointToPointCommandDirect(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToPointCommandDirect); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToPointCommandDirect); ok {
+		return casted
+	}
+	if casted, ok := structType.(CBusPointToPointCommand); ok {
+		return CastCBusPointToPointCommandDirect(casted.Child)
+	}
+	if casted, ok := structType.(*CBusPointToPointCommand); ok {
+		return CastCBusPointToPointCommandDirect(casted.Child)
+	}
+	return nil
 }
 
 func (m *CBusPointToPointCommandDirect) GetTypeName() string {

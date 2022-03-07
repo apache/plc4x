@@ -95,22 +95,19 @@ func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdent
 }
 
 func CastBACnetConstructedDataLifeSafetyZone(structType interface{}) *BACnetConstructedDataLifeSafetyZone {
-	castFunc := func(typ interface{}) *BACnetConstructedDataLifeSafetyZone {
-		if casted, ok := typ.(BACnetConstructedDataLifeSafetyZone); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataLifeSafetyZone); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return CastBACnetConstructedDataLifeSafetyZone(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return CastBACnetConstructedDataLifeSafetyZone(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataLifeSafetyZone); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataLifeSafetyZone); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return CastBACnetConstructedDataLifeSafetyZone(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return CastBACnetConstructedDataLifeSafetyZone(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataLifeSafetyZone) GetTypeName() string {

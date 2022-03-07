@@ -61,16 +61,13 @@ func NewStatusHeader(numberOfCharacterPairs uint8) *StatusHeader {
 }
 
 func CastStatusHeader(structType interface{}) *StatusHeader {
-	castFunc := func(typ interface{}) *StatusHeader {
-		if casted, ok := typ.(StatusHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StatusHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(StatusHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StatusHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *StatusHeader) GetTypeName() string {

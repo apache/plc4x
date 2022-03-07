@@ -80,22 +80,19 @@ func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock
 }
 
 func CastTunnelingResponse(structType interface{}) *TunnelingResponse {
-	castFunc := func(typ interface{}) *TunnelingResponse {
-		if casted, ok := typ.(TunnelingResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastTunnelingResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastTunnelingResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TunnelingResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastTunnelingResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastTunnelingResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *TunnelingResponse) GetTypeName() string {

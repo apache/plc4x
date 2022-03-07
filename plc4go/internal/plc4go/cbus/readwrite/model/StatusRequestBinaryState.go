@@ -76,22 +76,19 @@ func NewStatusRequestBinaryState(application byte, statusType byte) *StatusReque
 }
 
 func CastStatusRequestBinaryState(structType interface{}) *StatusRequestBinaryState {
-	castFunc := func(typ interface{}) *StatusRequestBinaryState {
-		if casted, ok := typ.(StatusRequestBinaryState); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StatusRequestBinaryState); ok {
-			return casted
-		}
-		if casted, ok := typ.(StatusRequest); ok {
-			return CastStatusRequestBinaryState(casted.Child)
-		}
-		if casted, ok := typ.(*StatusRequest); ok {
-			return CastStatusRequestBinaryState(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(StatusRequestBinaryState); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StatusRequestBinaryState); ok {
+		return casted
+	}
+	if casted, ok := structType.(StatusRequest); ok {
+		return CastStatusRequestBinaryState(casted.Child)
+	}
+	if casted, ok := structType.(*StatusRequest); ok {
+		return CastStatusRequestBinaryState(casted.Child)
+	}
+	return nil
 }
 
 func (m *StatusRequestBinaryState) GetTypeName() string {

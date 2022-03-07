@@ -75,22 +75,19 @@ func NewMFuncPropCon(size uint16) *CEMI {
 }
 
 func CastMFuncPropCon(structType interface{}) *MFuncPropCon {
-	castFunc := func(typ interface{}) *MFuncPropCon {
-		if casted, ok := typ.(MFuncPropCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MFuncPropCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MFuncPropCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMFuncPropCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMFuncPropCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *MFuncPropCon) GetTypeName() string {

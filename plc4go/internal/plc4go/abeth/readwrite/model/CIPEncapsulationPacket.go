@@ -97,16 +97,13 @@ func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContex
 }
 
 func CastCIPEncapsulationPacket(structType interface{}) *CIPEncapsulationPacket {
-	castFunc := func(typ interface{}) *CIPEncapsulationPacket {
-		if casted, ok := typ.(CIPEncapsulationPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CIPEncapsulationPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CIPEncapsulationPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CIPEncapsulationPacket) GetTypeName() string {

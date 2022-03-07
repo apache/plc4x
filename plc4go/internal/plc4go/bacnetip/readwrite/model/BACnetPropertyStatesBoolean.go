@@ -88,22 +88,19 @@ func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openi
 }
 
 func CastBACnetPropertyStatesBoolean(structType interface{}) *BACnetPropertyStatesBoolean {
-	castFunc := func(typ interface{}) *BACnetPropertyStatesBoolean {
-		if casted, ok := typ.(BACnetPropertyStatesBoolean); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStatesBoolean); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesBoolean(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesBoolean(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStatesBoolean); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStatesBoolean); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesBoolean(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesBoolean(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStatesBoolean) GetTypeName() string {

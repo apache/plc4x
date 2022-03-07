@@ -68,16 +68,13 @@ func NewBACnetPropertyReference(propertyIdentifier *BACnetContextTagPropertyIden
 }
 
 func CastBACnetPropertyReference(structType interface{}) *BACnetPropertyReference {
-	castFunc := func(typ interface{}) *BACnetPropertyReference {
-		if casted, ok := typ.(BACnetPropertyReference); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyReference); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyReference); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyReference); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetPropertyReference) GetTypeName() string {

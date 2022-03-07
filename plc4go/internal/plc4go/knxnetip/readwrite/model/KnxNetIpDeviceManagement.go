@@ -80,22 +80,19 @@ func NewKnxNetIpDeviceManagement(version uint8) *ServiceId {
 }
 
 func CastKnxNetIpDeviceManagement(structType interface{}) *KnxNetIpDeviceManagement {
-	castFunc := func(typ interface{}) *KnxNetIpDeviceManagement {
-		if casted, ok := typ.(KnxNetIpDeviceManagement); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpDeviceManagement); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpDeviceManagement(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpDeviceManagement(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpDeviceManagement); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpDeviceManagement); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpDeviceManagement(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpDeviceManagement(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpDeviceManagement) GetTypeName() string {

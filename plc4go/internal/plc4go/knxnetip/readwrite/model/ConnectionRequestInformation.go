@@ -69,16 +69,13 @@ func NewConnectionRequestInformation() *ConnectionRequestInformation {
 }
 
 func CastConnectionRequestInformation(structType interface{}) *ConnectionRequestInformation {
-	castFunc := func(typ interface{}) *ConnectionRequestInformation {
-		if casted, ok := typ.(ConnectionRequestInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionRequestInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ConnectionRequestInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionRequestInformation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ConnectionRequestInformation) GetTypeName() string {

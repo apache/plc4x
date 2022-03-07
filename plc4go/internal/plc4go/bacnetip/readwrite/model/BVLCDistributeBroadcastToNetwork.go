@@ -83,22 +83,19 @@ func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *
 }
 
 func CastBVLCDistributeBroadcastToNetwork(structType interface{}) *BVLCDistributeBroadcastToNetwork {
-	castFunc := func(typ interface{}) *BVLCDistributeBroadcastToNetwork {
-		if casted, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCDistributeBroadcastToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCDistributeBroadcastToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCDistributeBroadcastToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCDistributeBroadcastToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCDistributeBroadcastToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCDistributeBroadcastToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCDistributeBroadcastToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCDistributeBroadcastToNetwork) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewBACnetErrorReadRange(errorClass *BACnetApplicationTagEnumerated, errorCo
 }
 
 func CastBACnetErrorReadRange(structType interface{}) *BACnetErrorReadRange {
-	castFunc := func(typ interface{}) *BACnetErrorReadRange {
-		if casted, ok := typ.(BACnetErrorReadRange); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorReadRange); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorReadRange(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorReadRange(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorReadRange); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorReadRange); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorReadRange(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorReadRange(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorReadRange) GetTypeName() string {

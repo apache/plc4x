@@ -105,16 +105,13 @@ func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, ackn
 }
 
 func CastLDataFrame(structType interface{}) *LDataFrame {
-	castFunc := func(typ interface{}) *LDataFrame {
-		if casted, ok := typ.(LDataFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(LDataFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataFrame); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *LDataFrame) GetTypeName() string {

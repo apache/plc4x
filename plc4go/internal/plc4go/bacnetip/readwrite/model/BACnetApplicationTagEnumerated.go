@@ -87,22 +87,19 @@ func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, head
 }
 
 func CastBACnetApplicationTagEnumerated(structType interface{}) *BACnetApplicationTagEnumerated {
-	castFunc := func(typ interface{}) *BACnetApplicationTagEnumerated {
-		if casted, ok := typ.(BACnetApplicationTagEnumerated); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagEnumerated); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagEnumerated(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagEnumerated(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagEnumerated); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagEnumerated); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagEnumerated(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagEnumerated(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagEnumerated) GetTypeName() string {

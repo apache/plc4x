@@ -60,16 +60,13 @@ func NewCommandHeader(value byte) *CommandHeader {
 }
 
 func CastCommandHeader(structType interface{}) *CommandHeader {
-	castFunc := func(typ interface{}) *CommandHeader {
-		if casted, ok := typ.(CommandHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CommandHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CommandHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CommandHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CommandHeader) GetTypeName() string {

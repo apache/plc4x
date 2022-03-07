@@ -88,22 +88,19 @@ func NewBACnetNotificationParametersComplexEventType(listOfValues *BACnetPropert
 }
 
 func CastBACnetNotificationParametersComplexEventType(structType interface{}) *BACnetNotificationParametersComplexEventType {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersComplexEventType {
-		if casted, ok := typ.(BACnetNotificationParametersComplexEventType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersComplexEventType); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersComplexEventType(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersComplexEventType(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersComplexEventType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersComplexEventType); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersComplexEventType(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersComplexEventType(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersComplexEventType) GetTypeName() string {

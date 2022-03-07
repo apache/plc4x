@@ -74,16 +74,13 @@ func NewReplyNetwork(routeType RouteType, additionalBridgeAddresses []*BridgeAdd
 }
 
 func CastReplyNetwork(structType interface{}) *ReplyNetwork {
-	castFunc := func(typ interface{}) *ReplyNetwork {
-		if casted, ok := typ.(ReplyNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ReplyNetwork); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ReplyNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ReplyNetwork); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ReplyNetwork) GetTypeName() string {

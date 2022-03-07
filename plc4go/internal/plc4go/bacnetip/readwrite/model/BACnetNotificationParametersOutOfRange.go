@@ -128,22 +128,19 @@ func NewBACnetNotificationParametersOutOfRange(innerOpeningTag *BACnetOpeningTag
 }
 
 func CastBACnetNotificationParametersOutOfRange(structType interface{}) *BACnetNotificationParametersOutOfRange {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersOutOfRange {
-		if casted, ok := typ.(BACnetNotificationParametersOutOfRange); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersOutOfRange); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersOutOfRange(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersOutOfRange(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersOutOfRange); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersOutOfRange); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersOutOfRange(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersOutOfRange(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersOutOfRange) GetTypeName() string {

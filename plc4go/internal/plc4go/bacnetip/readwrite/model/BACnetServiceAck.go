@@ -69,16 +69,13 @@ func NewBACnetServiceAck() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAck(structType interface{}) *BACnetServiceAck {
-	castFunc := func(typ interface{}) *BACnetServiceAck {
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetServiceAck) GetTypeName() string {

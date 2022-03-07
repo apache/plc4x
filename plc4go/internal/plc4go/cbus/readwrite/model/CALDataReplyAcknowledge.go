@@ -90,22 +90,19 @@ func NewCALDataReplyAcknowledge(paramNo uint8, code uint8, commandTypeContainer 
 }
 
 func CastCALDataReplyAcknowledge(structType interface{}) *CALDataReplyAcknowledge {
-	castFunc := func(typ interface{}) *CALDataReplyAcknowledge {
-		if casted, ok := typ.(CALDataReplyAcknowledge); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataReplyAcknowledge); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataReplyAcknowledge(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataReplyAcknowledge(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataReplyAcknowledge); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataReplyAcknowledge); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataReplyAcknowledge(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataReplyAcknowledge(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataReplyAcknowledge) GetTypeName() string {

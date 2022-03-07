@@ -68,16 +68,13 @@ func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *BACnetTagP
 }
 
 func CastBACnetTagPayloadEnumerated(structType interface{}) *BACnetTagPayloadEnumerated {
-	castFunc := func(typ interface{}) *BACnetTagPayloadEnumerated {
-		if casted, ok := typ.(BACnetTagPayloadEnumerated); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadEnumerated); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadEnumerated); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadEnumerated); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadEnumerated) GetTypeName() string {

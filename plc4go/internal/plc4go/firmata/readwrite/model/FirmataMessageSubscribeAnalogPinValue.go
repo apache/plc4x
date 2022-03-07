@@ -92,22 +92,19 @@ func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response b
 }
 
 func CastFirmataMessageSubscribeAnalogPinValue(structType interface{}) *FirmataMessageSubscribeAnalogPinValue {
-	castFunc := func(typ interface{}) *FirmataMessageSubscribeAnalogPinValue {
-		if casted, ok := typ.(FirmataMessageSubscribeAnalogPinValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageSubscribeAnalogPinValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageSubscribeAnalogPinValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageSubscribeAnalogPinValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageSubscribeAnalogPinValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) GetTypeName() string {

@@ -99,22 +99,19 @@ func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEM
 }
 
 func CastLDataCon(structType interface{}) *LDataCon {
-	castFunc := func(typ interface{}) *LDataCon {
-		if casted, ok := typ.(LDataCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLDataCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLDataCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLDataCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLDataCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataCon) GetTypeName() string {

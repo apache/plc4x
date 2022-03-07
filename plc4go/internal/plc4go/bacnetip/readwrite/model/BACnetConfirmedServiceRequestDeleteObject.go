@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestDeleteObject(len uint16) *BACnetConfirmedSe
 }
 
 func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) *BACnetConfirmedServiceRequestDeleteObject {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestDeleteObject {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestDeleteObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestDeleteObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestDeleteObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestDeleteObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) GetTypeName() string {

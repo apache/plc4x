@@ -60,16 +60,13 @@ func NewAlpha(character byte) *Alpha {
 }
 
 func CastAlpha(structType interface{}) *Alpha {
-	castFunc := func(typ interface{}) *Alpha {
-		if casted, ok := typ.(Alpha); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Alpha); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Alpha); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Alpha); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Alpha) GetTypeName() string {

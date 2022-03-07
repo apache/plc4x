@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandOutputUnitSummary() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandOutputUnitSummary(structType interface{}) *IdentifyReplyCommandOutputUnitSummary {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandOutputUnitSummary {
-		if casted, ok := typ.(IdentifyReplyCommandOutputUnitSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandOutputUnitSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandOutputUnitSummary(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandOutputUnitSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandOutputUnitSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandOutputUnitSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandOutputUnitSummary(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandOutputUnitSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandOutputUnitSummary) GetTypeName() string {

@@ -109,16 +109,13 @@ func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint
 }
 
 func CastDateAndTime(structType interface{}) *DateAndTime {
-	castFunc := func(typ interface{}) *DateAndTime {
-		if casted, ok := typ.(DateAndTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DateAndTime); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DateAndTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DateAndTime); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DateAndTime) GetTypeName() string {

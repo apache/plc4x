@@ -90,22 +90,19 @@ func NewCALDataRequestGetStatus(paramNo uint8, count uint8, commandTypeContainer
 }
 
 func CastCALDataRequestGetStatus(structType interface{}) *CALDataRequestGetStatus {
-	castFunc := func(typ interface{}) *CALDataRequestGetStatus {
-		if casted, ok := typ.(CALDataRequestGetStatus); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataRequestGetStatus); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataRequestGetStatus(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataRequestGetStatus(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataRequestGetStatus); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataRequestGetStatus); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataRequestGetStatus(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataRequestGetStatus(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataRequestGetStatus) GetTypeName() string {

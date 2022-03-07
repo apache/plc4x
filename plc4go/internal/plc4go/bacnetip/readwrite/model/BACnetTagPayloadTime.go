@@ -110,16 +110,13 @@ func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional 
 }
 
 func CastBACnetTagPayloadTime(structType interface{}) *BACnetTagPayloadTime {
-	castFunc := func(typ interface{}) *BACnetTagPayloadTime {
-		if casted, ok := typ.(BACnetTagPayloadTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadTime); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadTime); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadTime) GetTypeName() string {

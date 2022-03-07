@@ -72,22 +72,19 @@ func NewBACnetServiceAckVTData() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckVTData(structType interface{}) *BACnetServiceAckVTData {
-	castFunc := func(typ interface{}) *BACnetServiceAckVTData {
-		if casted, ok := typ.(BACnetServiceAckVTData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckVTData); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckVTData(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckVTData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckVTData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckVTData); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckVTData(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckVTData(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckVTData) GetTypeName() string {

@@ -60,16 +60,13 @@ func NewChecksum(crc byte) *Checksum {
 }
 
 func CastChecksum(structType interface{}) *Checksum {
-	castFunc := func(typ interface{}) *Checksum {
-		if casted, ok := typ.(Checksum); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Checksum); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Checksum); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Checksum); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Checksum) GetTypeName() string {

@@ -80,22 +80,19 @@ func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMe
 }
 
 func CastDescriptionRequest(structType interface{}) *DescriptionRequest {
-	castFunc := func(typ interface{}) *DescriptionRequest {
-		if casted, ok := typ.(DescriptionRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DescriptionRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDescriptionRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDescriptionRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DescriptionRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DescriptionRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDescriptionRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDescriptionRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DescriptionRequest) GetTypeName() string {

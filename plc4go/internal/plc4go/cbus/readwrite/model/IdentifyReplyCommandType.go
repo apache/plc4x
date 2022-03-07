@@ -80,22 +80,19 @@ func NewIdentifyReplyCommandType(unitType string) *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandType(structType interface{}) *IdentifyReplyCommandType {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandType {
-		if casted, ok := typ.(IdentifyReplyCommandType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandType); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandType(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandType(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandType); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandType(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandType(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandType) GetTypeName() string {

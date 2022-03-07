@@ -87,22 +87,19 @@ func NewBACnetApplicationTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInt
 }
 
 func CastBACnetApplicationTagUnsignedInteger(structType interface{}) *BACnetApplicationTagUnsignedInteger {
-	castFunc := func(typ interface{}) *BACnetApplicationTagUnsignedInteger {
-		if casted, ok := typ.(BACnetApplicationTagUnsignedInteger); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagUnsignedInteger); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagUnsignedInteger(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagUnsignedInteger(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagUnsignedInteger); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagUnsignedInteger); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagUnsignedInteger(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagUnsignedInteger(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagUnsignedInteger) GetTypeName() string {

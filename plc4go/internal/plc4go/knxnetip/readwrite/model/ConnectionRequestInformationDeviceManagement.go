@@ -73,22 +73,19 @@ func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInforma
 }
 
 func CastConnectionRequestInformationDeviceManagement(structType interface{}) *ConnectionRequestInformationDeviceManagement {
-	castFunc := func(typ interface{}) *ConnectionRequestInformationDeviceManagement {
-		if casted, ok := typ.(ConnectionRequestInformationDeviceManagement); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionRequestInformationDeviceManagement); ok {
-			return casted
-		}
-		if casted, ok := typ.(ConnectionRequestInformation); ok {
-			return CastConnectionRequestInformationDeviceManagement(casted.Child)
-		}
-		if casted, ok := typ.(*ConnectionRequestInformation); ok {
-			return CastConnectionRequestInformationDeviceManagement(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionRequestInformationDeviceManagement); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionRequestInformationDeviceManagement); ok {
+		return casted
+	}
+	if casted, ok := structType.(ConnectionRequestInformation); ok {
+		return CastConnectionRequestInformationDeviceManagement(casted.Child)
+	}
+	if casted, ok := structType.(*ConnectionRequestInformation); ok {
+		return CastConnectionRequestInformationDeviceManagement(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) GetTypeName() string {

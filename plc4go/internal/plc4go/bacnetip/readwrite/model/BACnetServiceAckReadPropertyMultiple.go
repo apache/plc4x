@@ -72,22 +72,19 @@ func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) *BACnetServiceAckReadPropertyMultiple {
-	castFunc := func(typ interface{}) *BACnetServiceAckReadPropertyMultiple {
-		if casted, ok := typ.(BACnetServiceAckReadPropertyMultiple); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckReadPropertyMultiple); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckReadPropertyMultiple); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckReadPropertyMultiple); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) GetTypeName() string {

@@ -109,16 +109,13 @@ func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 
 }
 
 func CastState(structType interface{}) *State {
-	castFunc := func(typ interface{}) *State {
-		if casted, ok := typ.(State); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*State); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(State); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*State); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *State) GetTypeName() string {

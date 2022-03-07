@@ -104,22 +104,19 @@ func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, sl
 }
 
 func CastCipUnconnectedRequest(structType interface{}) *CipUnconnectedRequest {
-	castFunc := func(typ interface{}) *CipUnconnectedRequest {
-		if casted, ok := typ.(CipUnconnectedRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipUnconnectedRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipUnconnectedRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipUnconnectedRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipUnconnectedRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipUnconnectedRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipUnconnectedRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipUnconnectedRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipUnconnectedRequest) GetTypeName() string {

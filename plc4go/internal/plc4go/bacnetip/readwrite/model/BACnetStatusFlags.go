@@ -86,16 +86,13 @@ func NewBACnetStatusFlags(rawBits *BACnetContextTagBitString, tagNumber uint8) *
 }
 
 func CastBACnetStatusFlags(structType interface{}) *BACnetStatusFlags {
-	castFunc := func(typ interface{}) *BACnetStatusFlags {
-		if casted, ok := typ.(BACnetStatusFlags); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetStatusFlags); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetStatusFlags); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetStatusFlags); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetStatusFlags) GetTypeName() string {

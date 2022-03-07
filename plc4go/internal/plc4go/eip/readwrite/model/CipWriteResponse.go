@@ -92,22 +92,19 @@ func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *CipS
 }
 
 func CastCipWriteResponse(structType interface{}) *CipWriteResponse {
-	castFunc := func(typ interface{}) *CipWriteResponse {
-		if casted, ok := typ.(CipWriteResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipWriteResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipWriteResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipWriteResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipWriteResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipWriteResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipWriteResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipWriteResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipWriteResponse) GetTypeName() string {

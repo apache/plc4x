@@ -338,24 +338,21 @@ func New${type.name}(
 }
 
 func Cast${type.name}(structType interface{}) *${type.name} {
-	castFunc := func(typ interface{}) *${type.name} {
-		if casted, ok := typ.(${type.name}); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*${type.name}); ok {
-			return casted
-		}
-	<#if type.parentType.isPresent()>
-		if casted, ok := typ.(${type.parentType.orElseThrow().name}); ok {
-			return Cast${type.name}(casted.Child)
-		}
-		if casted, ok := typ.(*${type.parentType.orElseThrow().name}); ok {
-			return Cast${type.name}(casted.Child)
-		}
-	</#if>
-		return nil
+	if casted, ok := structType.(${type.name}); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*${type.name}); ok {
+		return casted
+	}
+	<#if type.parentType.isPresent()>
+	if casted, ok := structType.(${type.parentType.orElseThrow().name}); ok {
+		return Cast${type.name}(casted.Child)
+	}
+	if casted, ok := structType.(*${type.parentType.orElseThrow().name}); ok {
+		return Cast${type.name}(casted.Child)
+	}
+	</#if>
+	return nil
 }
 
 func (m *${type.name}) GetTypeName() string {

@@ -84,22 +84,19 @@ func NewStatusRequestLevel(application byte, startingGroupAddressLabel byte, sta
 }
 
 func CastStatusRequestLevel(structType interface{}) *StatusRequestLevel {
-	castFunc := func(typ interface{}) *StatusRequestLevel {
-		if casted, ok := typ.(StatusRequestLevel); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StatusRequestLevel); ok {
-			return casted
-		}
-		if casted, ok := typ.(StatusRequest); ok {
-			return CastStatusRequestLevel(casted.Child)
-		}
-		if casted, ok := typ.(*StatusRequest); ok {
-			return CastStatusRequestLevel(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(StatusRequestLevel); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StatusRequestLevel); ok {
+		return casted
+	}
+	if casted, ok := structType.(StatusRequest); ok {
+		return CastStatusRequestLevel(casted.Child)
+	}
+	if casted, ok := structType.(*StatusRequest); ok {
+		return CastStatusRequestLevel(casted.Child)
+	}
+	return nil
 }
 
 func (m *StatusRequestLevel) GetTypeName() string {

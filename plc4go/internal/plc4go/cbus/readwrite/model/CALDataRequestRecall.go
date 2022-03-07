@@ -90,22 +90,19 @@ func NewCALDataRequestRecall(paramNo uint8, count uint8, commandTypeContainer CA
 }
 
 func CastCALDataRequestRecall(structType interface{}) *CALDataRequestRecall {
-	castFunc := func(typ interface{}) *CALDataRequestRecall {
-		if casted, ok := typ.(CALDataRequestRecall); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataRequestRecall); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataRequestRecall(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataRequestRecall(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataRequestRecall); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataRequestRecall); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataRequestRecall(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataRequestRecall(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataRequestRecall) GetTypeName() string {

@@ -76,16 +76,13 @@ func NewCBusPointToMultiPointCommand(peekedApplication byte, srchk bool) *CBusPo
 }
 
 func CastCBusPointToMultiPointCommand(structType interface{}) *CBusPointToMultiPointCommand {
-	castFunc := func(typ interface{}) *CBusPointToMultiPointCommand {
-		if casted, ok := typ.(CBusPointToMultiPointCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToMultiPointCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToMultiPointCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToMultiPointCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusPointToMultiPointCommand) GetTypeName() string {

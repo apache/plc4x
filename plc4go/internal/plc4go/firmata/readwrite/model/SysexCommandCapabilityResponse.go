@@ -80,22 +80,19 @@ func NewSysexCommandCapabilityResponse() *SysexCommand {
 }
 
 func CastSysexCommandCapabilityResponse(structType interface{}) *SysexCommandCapabilityResponse {
-	castFunc := func(typ interface{}) *SysexCommandCapabilityResponse {
-		if casted, ok := typ.(SysexCommandCapabilityResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandCapabilityResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandCapabilityResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandCapabilityResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandCapabilityResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandCapabilityResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandCapabilityResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandCapabilityResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandCapabilityResponse) GetTypeName() string {

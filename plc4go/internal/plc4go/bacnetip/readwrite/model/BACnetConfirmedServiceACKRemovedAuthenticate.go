@@ -73,22 +73,19 @@ func NewBACnetConfirmedServiceACKRemovedAuthenticate() *BACnetConfirmedServiceAC
 }
 
 func CastBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) *BACnetConfirmedServiceACKRemovedAuthenticate {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKRemovedAuthenticate {
-		if casted, ok := typ.(BACnetConfirmedServiceACKRemovedAuthenticate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKRemovedAuthenticate); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKRemovedAuthenticate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKRemovedAuthenticate); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKRemovedAuthenticate) GetTypeName() string {

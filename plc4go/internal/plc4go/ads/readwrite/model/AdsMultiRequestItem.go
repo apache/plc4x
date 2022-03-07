@@ -69,16 +69,13 @@ func NewAdsMultiRequestItem() *AdsMultiRequestItem {
 }
 
 func CastAdsMultiRequestItem(structType interface{}) *AdsMultiRequestItem {
-	castFunc := func(typ interface{}) *AdsMultiRequestItem {
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsMultiRequestItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsMultiRequestItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsMultiRequestItem) GetTypeName() string {

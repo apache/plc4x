@@ -83,22 +83,19 @@ func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtAuthorizeResponse(structType interface{}) *ApduDataExtAuthorizeResponse {
-	castFunc := func(typ interface{}) *ApduDataExtAuthorizeResponse {
-		if casted, ok := typ.(ApduDataExtAuthorizeResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtAuthorizeResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtAuthorizeResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtAuthorizeResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtAuthorizeResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtAuthorizeResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtAuthorizeResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtAuthorizeResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtAuthorizeResponse) GetTypeName() string {

@@ -117,22 +117,19 @@ func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdConta
 }
 
 func CastCBusCommandPointToPointToMultiPointNormal(structType interface{}) *CBusCommandPointToPointToMultiPointNormal {
-	castFunc := func(typ interface{}) *CBusCommandPointToPointToMultiPointNormal {
-		if casted, ok := typ.(CBusCommandPointToPointToMultiPointNormal); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusCommandPointToPointToMultiPointNormal); ok {
-			return casted
-		}
-		if casted, ok := typ.(CBusPointToPointToMultipointCommand); ok {
-			return CastCBusCommandPointToPointToMultiPointNormal(casted.Child)
-		}
-		if casted, ok := typ.(*CBusPointToPointToMultipointCommand); ok {
-			return CastCBusCommandPointToPointToMultiPointNormal(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CBusCommandPointToPointToMultiPointNormal); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusCommandPointToPointToMultiPointNormal); ok {
+		return casted
+	}
+	if casted, ok := structType.(CBusPointToPointToMultipointCommand); ok {
+		return CastCBusCommandPointToPointToMultiPointNormal(casted.Child)
+	}
+	if casted, ok := structType.(*CBusPointToPointToMultipointCommand); ok {
+		return CastCBusCommandPointToPointToMultiPointNormal(casted.Child)
+	}
+	return nil
 }
 
 func (m *CBusCommandPointToPointToMultiPointNormal) GetTypeName() string {

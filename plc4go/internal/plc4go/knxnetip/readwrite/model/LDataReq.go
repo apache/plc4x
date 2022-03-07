@@ -99,22 +99,19 @@ func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEM
 }
 
 func CastLDataReq(structType interface{}) *LDataReq {
-	castFunc := func(typ interface{}) *LDataReq {
-		if casted, ok := typ.(LDataReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLDataReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLDataReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLDataReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLDataReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataReq) GetTypeName() string {

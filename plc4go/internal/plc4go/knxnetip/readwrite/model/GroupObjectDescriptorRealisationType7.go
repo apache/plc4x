@@ -116,16 +116,13 @@ func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable b
 }
 
 func CastGroupObjectDescriptorRealisationType7(structType interface{}) *GroupObjectDescriptorRealisationType7 {
-	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationType7 {
-		if casted, ok := typ.(GroupObjectDescriptorRealisationType7); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*GroupObjectDescriptorRealisationType7); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(GroupObjectDescriptorRealisationType7); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*GroupObjectDescriptorRealisationType7); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *GroupObjectDescriptorRealisationType7) GetTypeName() string {

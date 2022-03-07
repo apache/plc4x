@@ -79,16 +79,13 @@ func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietar
 }
 
 func CastBACnetTagPayloadObjectIdentifier(structType interface{}) *BACnetTagPayloadObjectIdentifier {
-	castFunc := func(typ interface{}) *BACnetTagPayloadObjectIdentifier {
-		if casted, ok := typ.(BACnetTagPayloadObjectIdentifier); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadObjectIdentifier); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadObjectIdentifier); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadObjectIdentifier); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadObjectIdentifier) GetTypeName() string {

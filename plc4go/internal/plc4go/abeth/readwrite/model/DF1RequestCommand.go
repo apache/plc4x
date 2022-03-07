@@ -69,16 +69,13 @@ func NewDF1RequestCommand() *DF1RequestCommand {
 }
 
 func CastDF1RequestCommand(structType interface{}) *DF1RequestCommand {
-	castFunc := func(typ interface{}) *DF1RequestCommand {
-		if casted, ok := typ.(DF1RequestCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1RequestCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1RequestCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1RequestCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DF1RequestCommand) GetTypeName() string {

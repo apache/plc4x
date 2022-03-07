@@ -72,22 +72,19 @@ func NewRoutingIndication() *KnxNetIpMessage {
 }
 
 func CastRoutingIndication(structType interface{}) *RoutingIndication {
-	castFunc := func(typ interface{}) *RoutingIndication {
-		if casted, ok := typ.(RoutingIndication); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*RoutingIndication); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastRoutingIndication(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastRoutingIndication(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(RoutingIndication); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*RoutingIndication); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastRoutingIndication(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastRoutingIndication(casted.Child)
+	}
+	return nil
 }
 
 func (m *RoutingIndication) GetTypeName() string {

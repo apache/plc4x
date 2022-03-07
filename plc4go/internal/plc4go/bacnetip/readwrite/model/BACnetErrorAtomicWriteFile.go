@@ -75,22 +75,19 @@ func NewBACnetErrorAtomicWriteFile(errorClass *BACnetApplicationTagEnumerated, e
 }
 
 func CastBACnetErrorAtomicWriteFile(structType interface{}) *BACnetErrorAtomicWriteFile {
-	castFunc := func(typ interface{}) *BACnetErrorAtomicWriteFile {
-		if casted, ok := typ.(BACnetErrorAtomicWriteFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorAtomicWriteFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorAtomicWriteFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorAtomicWriteFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorAtomicWriteFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorAtomicWriteFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorAtomicWriteFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorAtomicWriteFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorAtomicWriteFile) GetTypeName() string {

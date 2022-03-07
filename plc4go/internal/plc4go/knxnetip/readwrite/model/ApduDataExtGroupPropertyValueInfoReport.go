@@ -75,22 +75,19 @@ func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtGroupPropertyValueInfoReport(structType interface{}) *ApduDataExtGroupPropertyValueInfoReport {
-	castFunc := func(typ interface{}) *ApduDataExtGroupPropertyValueInfoReport {
-		if casted, ok := typ.(ApduDataExtGroupPropertyValueInfoReport); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtGroupPropertyValueInfoReport); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtGroupPropertyValueInfoReport); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtGroupPropertyValueInfoReport); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtGroupPropertyValueInfoReport(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) GetTypeName() string {

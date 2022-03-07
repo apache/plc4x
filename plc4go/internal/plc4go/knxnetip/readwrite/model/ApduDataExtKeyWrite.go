@@ -75,22 +75,19 @@ func NewApduDataExtKeyWrite(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtKeyWrite(structType interface{}) *ApduDataExtKeyWrite {
-	castFunc := func(typ interface{}) *ApduDataExtKeyWrite {
-		if casted, ok := typ.(ApduDataExtKeyWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtKeyWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtKeyWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtKeyWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtKeyWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtKeyWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtKeyWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtKeyWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtKeyWrite) GetTypeName() string {

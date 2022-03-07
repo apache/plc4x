@@ -85,16 +85,13 @@ func NewCALReply(calType byte, calData *CALData) *CALReply {
 }
 
 func CastCALReply(structType interface{}) *CALReply {
-	castFunc := func(typ interface{}) *CALReply {
-		if casted, ok := typ.(CALReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALReply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CALReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALReply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CALReply) GetTypeName() string {

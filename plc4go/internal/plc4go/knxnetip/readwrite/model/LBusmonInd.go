@@ -107,22 +107,19 @@ func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*C
 }
 
 func CastLBusmonInd(structType interface{}) *LBusmonInd {
-	castFunc := func(typ interface{}) *LBusmonInd {
-		if casted, ok := typ.(LBusmonInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LBusmonInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLBusmonInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLBusmonInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LBusmonInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LBusmonInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLBusmonInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLBusmonInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *LBusmonInd) GetTypeName() string {

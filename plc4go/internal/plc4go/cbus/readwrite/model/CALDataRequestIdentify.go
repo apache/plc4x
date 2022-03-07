@@ -82,22 +82,19 @@ func NewCALDataRequestIdentify(attribute Attribute, commandTypeContainer CALComm
 }
 
 func CastCALDataRequestIdentify(structType interface{}) *CALDataRequestIdentify {
-	castFunc := func(typ interface{}) *CALDataRequestIdentify {
-		if casted, ok := typ.(CALDataRequestIdentify); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataRequestIdentify); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataRequestIdentify(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataRequestIdentify(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataRequestIdentify); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataRequestIdentify); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataRequestIdentify(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataRequestIdentify(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataRequestIdentify) GetTypeName() string {

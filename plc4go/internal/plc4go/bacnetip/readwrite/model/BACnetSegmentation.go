@@ -83,16 +83,13 @@ func NewBACnetSegmentation(rawData *BACnetApplicationTagEnumerated) *BACnetSegme
 }
 
 func CastBACnetSegmentation(structType interface{}) *BACnetSegmentation {
-	castFunc := func(typ interface{}) *BACnetSegmentation {
-		if casted, ok := typ.(BACnetSegmentation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetSegmentation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetSegmentation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetSegmentation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetSegmentation) GetTypeName() string {

@@ -88,16 +88,13 @@ func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausb
 }
 
 func CastSzlDataTreeItem(structType interface{}) *SzlDataTreeItem {
-	castFunc := func(typ interface{}) *SzlDataTreeItem {
-		if casted, ok := typ.(SzlDataTreeItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SzlDataTreeItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SzlDataTreeItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SzlDataTreeItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SzlDataTreeItem) GetTypeName() string {

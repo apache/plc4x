@@ -67,16 +67,13 @@ func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *M
 }
 
 func CastModbusPDUReadFileRecordResponseItem(structType interface{}) *ModbusPDUReadFileRecordResponseItem {
-	castFunc := func(typ interface{}) *ModbusPDUReadFileRecordResponseItem {
-		if casted, ok := typ.(ModbusPDUReadFileRecordResponseItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadFileRecordResponseItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadFileRecordResponseItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadFileRecordResponseItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) GetTypeName() string {

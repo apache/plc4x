@@ -120,22 +120,19 @@ func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messag
 }
 
 func CastModbusPDUGetComEventLogResponse(structType interface{}) *ModbusPDUGetComEventLogResponse {
-	castFunc := func(typ interface{}) *ModbusPDUGetComEventLogResponse {
-		if casted, ok := typ.(ModbusPDUGetComEventLogResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUGetComEventLogResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUGetComEventLogResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUGetComEventLogResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUGetComEventLogResponse) GetTypeName() string {

@@ -87,16 +87,13 @@ func NewCBusCommand(header *CBusHeader, srchk bool) *CBusCommand {
 }
 
 func CastCBusCommand(structType interface{}) *CBusCommand {
-	castFunc := func(typ interface{}) *CBusCommand {
-		if casted, ok := typ.(CBusCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusCommand) GetTypeName() string {

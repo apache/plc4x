@@ -99,22 +99,19 @@ func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, servi
 }
 
 func CastCipReadRequest(structType interface{}) *CipReadRequest {
-	castFunc := func(typ interface{}) *CipReadRequest {
-		if casted, ok := typ.(CipReadRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipReadRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipReadRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipReadRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipReadRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipReadRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipReadRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipReadRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipReadRequest) GetTypeName() string {

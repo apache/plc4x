@@ -94,16 +94,13 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeade
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetTypeName() string {

@@ -83,22 +83,19 @@ func NewBVLCOriginalUnicastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 }
 
 func CastBVLCOriginalUnicastNPDU(structType interface{}) *BVLCOriginalUnicastNPDU {
-	castFunc := func(typ interface{}) *BVLCOriginalUnicastNPDU {
-		if casted, ok := typ.(BVLCOriginalUnicastNPDU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCOriginalUnicastNPDU); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCOriginalUnicastNPDU(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCOriginalUnicastNPDU(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCOriginalUnicastNPDU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCOriginalUnicastNPDU); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCOriginalUnicastNPDU(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCOriginalUnicastNPDU(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCOriginalUnicastNPDU) GetTypeName() string {

@@ -67,16 +67,13 @@ func NewModbusDeviceInformationObject(objectId uint8, data []byte) *ModbusDevice
 }
 
 func CastModbusDeviceInformationObject(structType interface{}) *ModbusDeviceInformationObject {
-	castFunc := func(typ interface{}) *ModbusDeviceInformationObject {
-		if casted, ok := typ.(ModbusDeviceInformationObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusDeviceInformationObject); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusDeviceInformationObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusDeviceInformationObject); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusDeviceInformationObject) GetTypeName() string {

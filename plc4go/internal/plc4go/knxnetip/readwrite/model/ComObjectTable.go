@@ -69,16 +69,13 @@ func NewComObjectTable() *ComObjectTable {
 }
 
 func CastComObjectTable(structType interface{}) *ComObjectTable {
-	castFunc := func(typ interface{}) *ComObjectTable {
-		if casted, ok := typ.(ComObjectTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ComObjectTable); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ComObjectTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ComObjectTable); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ComObjectTable) GetTypeName() string {

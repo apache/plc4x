@@ -53,16 +53,13 @@ func NewExclamationMark() *ExclamationMark {
 }
 
 func CastExclamationMark(structType interface{}) *ExclamationMark {
-	castFunc := func(typ interface{}) *ExclamationMark {
-		if casted, ok := typ.(ExclamationMark); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ExclamationMark); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ExclamationMark); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ExclamationMark); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ExclamationMark) GetTypeName() string {

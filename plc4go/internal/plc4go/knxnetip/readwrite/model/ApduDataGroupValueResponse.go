@@ -91,22 +91,19 @@ func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength u
 }
 
 func CastApduDataGroupValueResponse(structType interface{}) *ApduDataGroupValueResponse {
-	castFunc := func(typ interface{}) *ApduDataGroupValueResponse {
-		if casted, ok := typ.(ApduDataGroupValueResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataGroupValueResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataGroupValueResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataGroupValueResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataGroupValueResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataGroupValueResponse) GetTypeName() string {

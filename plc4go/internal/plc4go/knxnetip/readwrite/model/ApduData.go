@@ -72,16 +72,13 @@ func NewApduData(dataLength uint8) *ApduData {
 }
 
 func CastApduData(structType interface{}) *ApduData {
-	castFunc := func(typ interface{}) *ApduData {
-		if casted, ok := typ.(ApduData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ApduData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduData); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ApduData) GetTypeName() string {

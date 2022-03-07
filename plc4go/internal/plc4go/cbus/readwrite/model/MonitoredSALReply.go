@@ -75,22 +75,19 @@ func NewMonitoredSALReply(isA *MonitoredSAL, magicByte byte) *Reply {
 }
 
 func CastMonitoredSALReply(structType interface{}) *MonitoredSALReply {
-	castFunc := func(typ interface{}) *MonitoredSALReply {
-		if casted, ok := typ.(MonitoredSALReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MonitoredSALReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastMonitoredSALReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastMonitoredSALReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MonitoredSALReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MonitoredSALReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastMonitoredSALReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastMonitoredSALReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *MonitoredSALReply) GetTypeName() string {

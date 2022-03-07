@@ -72,16 +72,13 @@ func NewCipService(serviceLen uint16) *CipService {
 }
 
 func CastCipService(structType interface{}) *CipService {
-	castFunc := func(typ interface{}) *CipService {
-		if casted, ok := typ.(CipService); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CipService); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipService); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CipService) GetTypeName() string {

@@ -72,22 +72,19 @@ func NewBACnetConfirmedServiceACKReadProperty() *BACnetConfirmedServiceACK {
 }
 
 func CastBACnetConfirmedServiceACKReadProperty(structType interface{}) *BACnetConfirmedServiceACKReadProperty {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKReadProperty {
-		if casted, ok := typ.(BACnetConfirmedServiceACKReadProperty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKReadProperty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKReadProperty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKReadProperty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKReadProperty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKReadProperty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKReadProperty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKReadProperty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKReadProperty) GetTypeName() string {

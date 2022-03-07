@@ -96,22 +96,19 @@ func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle u
 }
 
 func CastAdsAddDeviceNotificationResponse(structType interface{}) *AdsAddDeviceNotificationResponse {
-	castFunc := func(typ interface{}) *AdsAddDeviceNotificationResponse {
-		if casted, ok := typ.(AdsAddDeviceNotificationResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsAddDeviceNotificationResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsAddDeviceNotificationResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsAddDeviceNotificationResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsAddDeviceNotificationResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsAddDeviceNotificationResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsAddDeviceNotificationResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsAddDeviceNotificationResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsAddDeviceNotificationResponse) GetTypeName() string {

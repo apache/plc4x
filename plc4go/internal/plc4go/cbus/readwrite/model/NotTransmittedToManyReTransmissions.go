@@ -74,22 +74,19 @@ func NewNotTransmittedToManyReTransmissions(alpha *Alpha) *Confirmation {
 }
 
 func CastNotTransmittedToManyReTransmissions(structType interface{}) *NotTransmittedToManyReTransmissions {
-	castFunc := func(typ interface{}) *NotTransmittedToManyReTransmissions {
-		if casted, ok := typ.(NotTransmittedToManyReTransmissions); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NotTransmittedToManyReTransmissions); ok {
-			return casted
-		}
-		if casted, ok := typ.(Confirmation); ok {
-			return CastNotTransmittedToManyReTransmissions(casted.Child)
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return CastNotTransmittedToManyReTransmissions(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NotTransmittedToManyReTransmissions); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NotTransmittedToManyReTransmissions); ok {
+		return casted
+	}
+	if casted, ok := structType.(Confirmation); ok {
+		return CastNotTransmittedToManyReTransmissions(casted.Child)
+	}
+	if casted, ok := structType.(*Confirmation); ok {
+		return CastNotTransmittedToManyReTransmissions(casted.Child)
+	}
+	return nil
 }
 
 func (m *NotTransmittedToManyReTransmissions) GetTypeName() string {

@@ -60,16 +60,13 @@ func NewMACAddress(addr []byte) *MACAddress {
 }
 
 func CastMACAddress(structType interface{}) *MACAddress {
-	castFunc := func(typ interface{}) *MACAddress {
-		if casted, ok := typ.(MACAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MACAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(MACAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MACAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *MACAddress) GetTypeName() string {

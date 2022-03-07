@@ -78,16 +78,13 @@ func NewNLM(vendorId *uint16, apduLength uint16) *NLM {
 }
 
 func CastNLM(structType interface{}) *NLM {
-	castFunc := func(typ interface{}) *NLM {
-		if casted, ok := typ.(NLM); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NLM); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLM); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NLM) GetTypeName() string {

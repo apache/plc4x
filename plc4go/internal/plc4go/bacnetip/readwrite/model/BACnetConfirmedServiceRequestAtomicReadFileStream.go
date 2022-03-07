@@ -92,22 +92,19 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition *BAC
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFileStream {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicReadFileStream {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
-			return CastBACnetConfirmedServiceRequestAtomicReadFileStream(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
-			return CastBACnetConfirmedServiceRequestAtomicReadFileStream(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAtomicReadFileStream); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
+		return CastBACnetConfirmedServiceRequestAtomicReadFileStream(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord); ok {
+		return CastBACnetConfirmedServiceRequestAtomicReadFileStream(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStream) GetTypeName() string {

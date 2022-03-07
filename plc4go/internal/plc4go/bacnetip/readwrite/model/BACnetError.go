@@ -82,16 +82,13 @@ func NewBACnetError(errorClass *BACnetApplicationTagEnumerated, errorCode *BACne
 }
 
 func CastBACnetError(structType interface{}) *BACnetError {
-	castFunc := func(typ interface{}) *BACnetError {
-		if casted, ok := typ.(BACnetError); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetError); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetError); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetError) GetTypeName() string {

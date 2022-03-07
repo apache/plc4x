@@ -75,22 +75,19 @@ func NewMFuncPropCommandReq(size uint16) *CEMI {
 }
 
 func CastMFuncPropCommandReq(structType interface{}) *MFuncPropCommandReq {
-	castFunc := func(typ interface{}) *MFuncPropCommandReq {
-		if casted, ok := typ.(MFuncPropCommandReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropCommandReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropCommandReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropCommandReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MFuncPropCommandReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MFuncPropCommandReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMFuncPropCommandReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMFuncPropCommandReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MFuncPropCommandReq) GetTypeName() string {

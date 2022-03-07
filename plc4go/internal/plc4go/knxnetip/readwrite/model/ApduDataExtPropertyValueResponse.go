@@ -115,22 +115,19 @@ func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, co
 }
 
 func CastApduDataExtPropertyValueResponse(structType interface{}) *ApduDataExtPropertyValueResponse {
-	castFunc := func(typ interface{}) *ApduDataExtPropertyValueResponse {
-		if casted, ok := typ.(ApduDataExtPropertyValueResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtPropertyValueResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtPropertyValueResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtPropertyValueResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtPropertyValueResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtPropertyValueResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtPropertyValueResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtPropertyValueResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtPropertyValueResponse) GetTypeName() string {

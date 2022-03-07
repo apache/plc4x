@@ -91,22 +91,19 @@ func NewBACnetContextTagDouble(payload *BACnetTagPayloadDouble, header *BACnetTa
 }
 
 func CastBACnetContextTagDouble(structType interface{}) *BACnetContextTagDouble {
-	castFunc := func(typ interface{}) *BACnetContextTagDouble {
-		if casted, ok := typ.(BACnetContextTagDouble); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagDouble); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagDouble(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagDouble(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagDouble); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagDouble); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagDouble(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagDouble(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagDouble) GetTypeName() string {

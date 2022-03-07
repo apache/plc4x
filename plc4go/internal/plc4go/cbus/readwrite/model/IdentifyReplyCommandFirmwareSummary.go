@@ -96,22 +96,19 @@ func NewIdentifyReplyCommandFirmwareSummary(firmwareVersion string, unitServiceT
 }
 
 func CastIdentifyReplyCommandFirmwareSummary(structType interface{}) *IdentifyReplyCommandFirmwareSummary {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandFirmwareSummary {
-		if casted, ok := typ.(IdentifyReplyCommandFirmwareSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandFirmwareSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandFirmwareSummary(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandFirmwareSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandFirmwareSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandFirmwareSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandFirmwareSummary(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandFirmwareSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandFirmwareSummary) GetTypeName() string {

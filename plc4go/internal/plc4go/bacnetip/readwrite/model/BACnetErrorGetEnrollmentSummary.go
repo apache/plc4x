@@ -75,22 +75,19 @@ func NewBACnetErrorGetEnrollmentSummary(errorClass *BACnetApplicationTagEnumerat
 }
 
 func CastBACnetErrorGetEnrollmentSummary(structType interface{}) *BACnetErrorGetEnrollmentSummary {
-	castFunc := func(typ interface{}) *BACnetErrorGetEnrollmentSummary {
-		if casted, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorGetEnrollmentSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorGetEnrollmentSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorGetEnrollmentSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorGetEnrollmentSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorGetEnrollmentSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorGetEnrollmentSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorGetEnrollmentSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorGetEnrollmentSummary) GetTypeName() string {

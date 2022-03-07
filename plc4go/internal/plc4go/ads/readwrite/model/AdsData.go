@@ -71,16 +71,13 @@ func NewAdsData() *AdsData {
 }
 
 func CastAdsData(structType interface{}) *AdsData {
-	castFunc := func(typ interface{}) *AdsData {
-		if casted, ok := typ.(AdsData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsData); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsData) GetTypeName() string {

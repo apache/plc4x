@@ -80,22 +80,19 @@ func NewKnxNetIpTunneling(version uint8) *ServiceId {
 }
 
 func CastKnxNetIpTunneling(structType interface{}) *KnxNetIpTunneling {
-	castFunc := func(typ interface{}) *KnxNetIpTunneling {
-		if casted, ok := typ.(KnxNetIpTunneling); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpTunneling); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpTunneling(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpTunneling(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpTunneling); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpTunneling); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpTunneling(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpTunneling(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpTunneling) GetTypeName() string {

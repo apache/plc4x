@@ -100,22 +100,19 @@ func NewBACnetContextTagEventState(eventState BACnetEventState, proprietaryValue
 }
 
 func CastBACnetContextTagEventState(structType interface{}) *BACnetContextTagEventState {
-	castFunc := func(typ interface{}) *BACnetContextTagEventState {
-		if casted, ok := typ.(BACnetContextTagEventState); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagEventState); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagEventState(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagEventState(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagEventState); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagEventState); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagEventState(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagEventState(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagEventState) GetTypeName() string {

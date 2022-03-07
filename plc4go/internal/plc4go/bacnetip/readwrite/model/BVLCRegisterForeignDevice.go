@@ -80,22 +80,19 @@ func NewBVLCRegisterForeignDevice(ttl uint16) *BVLC {
 }
 
 func CastBVLCRegisterForeignDevice(structType interface{}) *BVLCRegisterForeignDevice {
-	castFunc := func(typ interface{}) *BVLCRegisterForeignDevice {
-		if casted, ok := typ.(BVLCRegisterForeignDevice); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCRegisterForeignDevice); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCRegisterForeignDevice(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCRegisterForeignDevice(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCRegisterForeignDevice); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCRegisterForeignDevice); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCRegisterForeignDevice(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCRegisterForeignDevice(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCRegisterForeignDevice) GetTypeName() string {

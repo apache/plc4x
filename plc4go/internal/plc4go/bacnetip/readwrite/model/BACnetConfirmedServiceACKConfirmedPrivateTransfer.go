@@ -73,22 +73,19 @@ func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServ
 }
 
 func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{}) *BACnetConfirmedServiceACKConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKConfirmedPrivateTransfer {
-		if casted, ok := typ.(BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetTypeName() string {

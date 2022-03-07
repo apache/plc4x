@@ -74,16 +74,13 @@ func NewS7DataAlarmMessage() *S7DataAlarmMessage {
 }
 
 func CastS7DataAlarmMessage(structType interface{}) *S7DataAlarmMessage {
-	castFunc := func(typ interface{}) *S7DataAlarmMessage {
-		if casted, ok := typ.(S7DataAlarmMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7DataAlarmMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7DataAlarmMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7DataAlarmMessage); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7DataAlarmMessage) GetTypeName() string {

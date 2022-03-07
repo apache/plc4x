@@ -79,16 +79,13 @@ func NewBACnetAction(rawData *BACnetContextTagEnumerated, tagNumber uint8) *BACn
 }
 
 func CastBACnetAction(structType interface{}) *BACnetAction {
-	castFunc := func(typ interface{}) *BACnetAction {
-		if casted, ok := typ.(BACnetAction); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetAction); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetAction); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetAction); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetAction) GetTypeName() string {

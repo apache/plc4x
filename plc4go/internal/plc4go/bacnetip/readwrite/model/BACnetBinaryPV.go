@@ -79,16 +79,13 @@ func NewBACnetBinaryPV(rawData *BACnetContextTagEnumerated, tagNumber uint8) *BA
 }
 
 func CastBACnetBinaryPV(structType interface{}) *BACnetBinaryPV {
-	castFunc := func(typ interface{}) *BACnetBinaryPV {
-		if casted, ok := typ.(BACnetBinaryPV); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetBinaryPV); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetBinaryPV); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetBinaryPV); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetBinaryPV) GetTypeName() string {

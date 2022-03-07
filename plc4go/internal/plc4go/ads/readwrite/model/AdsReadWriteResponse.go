@@ -96,22 +96,19 @@ func NewAdsReadWriteResponse(result ReturnCode, data []byte) *AdsData {
 }
 
 func CastAdsReadWriteResponse(structType interface{}) *AdsReadWriteResponse {
-	castFunc := func(typ interface{}) *AdsReadWriteResponse {
-		if casted, ok := typ.(AdsReadWriteResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadWriteResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadWriteResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadWriteResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadWriteResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadWriteResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadWriteResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadWriteResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadWriteResponse) GetTypeName() string {

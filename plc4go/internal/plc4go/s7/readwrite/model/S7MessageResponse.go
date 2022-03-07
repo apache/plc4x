@@ -92,22 +92,19 @@ func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint1
 }
 
 func CastS7MessageResponse(structType interface{}) *S7MessageResponse {
-	castFunc := func(typ interface{}) *S7MessageResponse {
-		if casted, ok := typ.(S7MessageResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Message); ok {
-			return CastS7MessageResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7Message); ok {
-			return CastS7MessageResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Message); ok {
+		return CastS7MessageResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7Message); ok {
+		return CastS7MessageResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageResponse) GetTypeName() string {

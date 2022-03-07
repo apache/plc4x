@@ -102,22 +102,19 @@ func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference
 }
 
 func CastCOTPPacketDisconnectRequest(structType interface{}) *COTPPacketDisconnectRequest {
-	castFunc := func(typ interface{}) *COTPPacketDisconnectRequest {
-		if casted, ok := typ.(COTPPacketDisconnectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketDisconnectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketDisconnectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketDisconnectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketDisconnectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketDisconnectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketDisconnectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketDisconnectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketDisconnectRequest) GetTypeName() string {

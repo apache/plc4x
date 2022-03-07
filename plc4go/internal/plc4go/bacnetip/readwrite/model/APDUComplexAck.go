@@ -141,22 +141,19 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 }
 
 func CastAPDUComplexAck(structType interface{}) *APDUComplexAck {
-	castFunc := func(typ interface{}) *APDUComplexAck {
-		if casted, ok := typ.(APDUComplexAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUComplexAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUComplexAck(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUComplexAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUComplexAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUComplexAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUComplexAck(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUComplexAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUComplexAck) GetTypeName() string {

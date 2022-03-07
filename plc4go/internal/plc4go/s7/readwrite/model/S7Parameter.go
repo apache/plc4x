@@ -71,16 +71,13 @@ func NewS7Parameter() *S7Parameter {
 }
 
 func CastS7Parameter(structType interface{}) *S7Parameter {
-	castFunc := func(typ interface{}) *S7Parameter {
-		if casted, ok := typ.(S7Parameter); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7Parameter); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7Parameter); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7Parameter) GetTypeName() string {

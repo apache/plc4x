@@ -81,16 +81,13 @@ func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize Dat
 }
 
 func CastAssociatedValueType(structType interface{}) *AssociatedValueType {
-	castFunc := func(typ interface{}) *AssociatedValueType {
-		if casted, ok := typ.(AssociatedValueType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AssociatedValueType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AssociatedValueType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AssociatedValueType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AssociatedValueType) GetTypeName() string {

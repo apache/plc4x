@@ -75,22 +75,19 @@ func NewApduDataExtDomainAddressWrite(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtDomainAddressWrite(structType interface{}) *ApduDataExtDomainAddressWrite {
-	castFunc := func(typ interface{}) *ApduDataExtDomainAddressWrite {
-		if casted, ok := typ.(ApduDataExtDomainAddressWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtDomainAddressWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtDomainAddressWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtDomainAddressWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtDomainAddressWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtDomainAddressWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtDomainAddressWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtDomainAddressWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtDomainAddressWrite) GetTypeName() string {

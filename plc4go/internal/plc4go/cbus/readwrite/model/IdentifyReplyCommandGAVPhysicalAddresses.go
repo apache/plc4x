@@ -80,22 +80,19 @@ func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte) *IdentifyReplyCo
 }
 
 func CastIdentifyReplyCommandGAVPhysicalAddresses(structType interface{}) *IdentifyReplyCommandGAVPhysicalAddresses {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandGAVPhysicalAddresses {
-		if casted, ok := typ.(IdentifyReplyCommandGAVPhysicalAddresses); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandGAVPhysicalAddresses); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandGAVPhysicalAddresses(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandGAVPhysicalAddresses(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandGAVPhysicalAddresses); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandGAVPhysicalAddresses); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandGAVPhysicalAddresses(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandGAVPhysicalAddresses(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandGAVPhysicalAddresses) GetTypeName() string {

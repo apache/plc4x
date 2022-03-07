@@ -96,22 +96,19 @@ func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer ui
 }
 
 func CastComObjectTableRealisationType2(structType interface{}) *ComObjectTableRealisationType2 {
-	castFunc := func(typ interface{}) *ComObjectTableRealisationType2 {
-		if casted, ok := typ.(ComObjectTableRealisationType2); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ComObjectTableRealisationType2); ok {
-			return casted
-		}
-		if casted, ok := typ.(ComObjectTable); ok {
-			return CastComObjectTableRealisationType2(casted.Child)
-		}
-		if casted, ok := typ.(*ComObjectTable); ok {
-			return CastComObjectTableRealisationType2(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ComObjectTableRealisationType2); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ComObjectTableRealisationType2); ok {
+		return casted
+	}
+	if casted, ok := structType.(ComObjectTable); ok {
+		return CastComObjectTableRealisationType2(casted.Child)
+	}
+	if casted, ok := structType.(*ComObjectTable); ok {
+		return CastComObjectTableRealisationType2(casted.Child)
+	}
+	return nil
 }
 
 func (m *ComObjectTableRealisationType2) GetTypeName() string {

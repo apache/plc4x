@@ -148,22 +148,19 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 }
 
 func CastAPDUConfirmedRequest(structType interface{}) *APDUConfirmedRequest {
-	castFunc := func(typ interface{}) *APDUConfirmedRequest {
-		if casted, ok := typ.(APDUConfirmedRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUConfirmedRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUConfirmedRequest(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUConfirmedRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUConfirmedRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUConfirmedRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUConfirmedRequest(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUConfirmedRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUConfirmedRequest) GetTypeName() string {

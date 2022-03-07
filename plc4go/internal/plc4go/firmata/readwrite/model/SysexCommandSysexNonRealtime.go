@@ -80,22 +80,19 @@ func NewSysexCommandSysexNonRealtime() *SysexCommand {
 }
 
 func CastSysexCommandSysexNonRealtime(structType interface{}) *SysexCommandSysexNonRealtime {
-	castFunc := func(typ interface{}) *SysexCommandSysexNonRealtime {
-		if casted, ok := typ.(SysexCommandSysexNonRealtime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandSysexNonRealtime); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandSysexNonRealtime(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandSysexNonRealtime(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandSysexNonRealtime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandSysexNonRealtime); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandSysexNonRealtime(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandSysexNonRealtime(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandSysexNonRealtime) GetTypeName() string {

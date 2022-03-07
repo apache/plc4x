@@ -96,22 +96,19 @@ func NewModbusPDUReadDiscreteInputsResponse(value []byte) *ModbusPDU {
 }
 
 func CastModbusPDUReadDiscreteInputsResponse(structType interface{}) *ModbusPDUReadDiscreteInputsResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadDiscreteInputsResponse {
-		if casted, ok := typ.(ModbusPDUReadDiscreteInputsResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadDiscreteInputsResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadDiscreteInputsResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadDiscreteInputsResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadDiscreteInputsResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadDiscreteInputsResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadDiscreteInputsResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadDiscreteInputsResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadDiscreteInputsResponse) GetTypeName() string {

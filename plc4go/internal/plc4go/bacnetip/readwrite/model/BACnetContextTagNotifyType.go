@@ -87,22 +87,19 @@ func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHead
 }
 
 func CastBACnetContextTagNotifyType(structType interface{}) *BACnetContextTagNotifyType {
-	castFunc := func(typ interface{}) *BACnetContextTagNotifyType {
-		if casted, ok := typ.(BACnetContextTagNotifyType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagNotifyType); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagNotifyType(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagNotifyType(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagNotifyType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagNotifyType); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagNotifyType(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagNotifyType(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagNotifyType) GetTypeName() string {

@@ -93,16 +93,13 @@ func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, e
 }
 
 func CastAlarmMessageObjectAckType(structType interface{}) *AlarmMessageObjectAckType {
-	castFunc := func(typ interface{}) *AlarmMessageObjectAckType {
-		if casted, ok := typ.(AlarmMessageObjectAckType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageObjectAckType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageObjectAckType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageObjectAckType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageObjectAckType) GetTypeName() string {

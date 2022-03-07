@@ -68,16 +68,13 @@ func NewBACnetTagPayloadOctetString(value string, actualLength uint32) *BACnetTa
 }
 
 func CastBACnetTagPayloadOctetString(structType interface{}) *BACnetTagPayloadOctetString {
-	castFunc := func(typ interface{}) *BACnetTagPayloadOctetString {
-		if casted, ok := typ.(BACnetTagPayloadOctetString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadOctetString); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadOctetString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadOctetString); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadOctetString) GetTypeName() string {

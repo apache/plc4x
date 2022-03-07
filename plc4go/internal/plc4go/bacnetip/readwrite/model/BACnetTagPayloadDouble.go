@@ -60,16 +60,13 @@ func NewBACnetTagPayloadDouble(value float64) *BACnetTagPayloadDouble {
 }
 
 func CastBACnetTagPayloadDouble(structType interface{}) *BACnetTagPayloadDouble {
-	castFunc := func(typ interface{}) *BACnetTagPayloadDouble {
-		if casted, ok := typ.(BACnetTagPayloadDouble); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadDouble); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadDouble); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadDouble); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadDouble) GetTypeName() string {

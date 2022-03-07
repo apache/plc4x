@@ -67,16 +67,13 @@ func NewChannelInformation(numChannels uint8, channelCode uint16) *ChannelInform
 }
 
 func CastChannelInformation(structType interface{}) *ChannelInformation {
-	castFunc := func(typ interface{}) *ChannelInformation {
-		if casted, ok := typ.(ChannelInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ChannelInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ChannelInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ChannelInformation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ChannelInformation) GetTypeName() string {

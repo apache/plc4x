@@ -106,22 +106,19 @@ func NewCALDataReplyStatusExtended(encoding uint8, application ApplicationIdCont
 }
 
 func CastCALDataReplyStatusExtended(structType interface{}) *CALDataReplyStatusExtended {
-	castFunc := func(typ interface{}) *CALDataReplyStatusExtended {
-		if casted, ok := typ.(CALDataReplyStatusExtended); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataReplyStatusExtended); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataReplyStatusExtended(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataReplyStatusExtended(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataReplyStatusExtended); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataReplyStatusExtended); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataReplyStatusExtended(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataReplyStatusExtended(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataReplyStatusExtended) GetTypeName() string {

@@ -72,22 +72,19 @@ func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckGetAlarmSummary(structType interface{}) *BACnetServiceAckGetAlarmSummary {
-	castFunc := func(typ interface{}) *BACnetServiceAckGetAlarmSummary {
-		if casted, ok := typ.(BACnetServiceAckGetAlarmSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckGetAlarmSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetAlarmSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetAlarmSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckGetAlarmSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckGetAlarmSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetAlarmSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetAlarmSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckGetAlarmSummary) GetTypeName() string {

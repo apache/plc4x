@@ -91,22 +91,19 @@ func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *Fir
 }
 
 func CastFirmataMessageDigitalIO(structType interface{}) *FirmataMessageDigitalIO {
-	castFunc := func(typ interface{}) *FirmataMessageDigitalIO {
-		if casted, ok := typ.(FirmataMessageDigitalIO); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageDigitalIO); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageDigitalIO(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageDigitalIO(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageDigitalIO); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageDigitalIO); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageDigitalIO(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageDigitalIO(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageDigitalIO) GetTypeName() string {

@@ -60,16 +60,13 @@ func NewBridgeCount(count uint8) *BridgeCount {
 }
 
 func CastBridgeCount(structType interface{}) *BridgeCount {
-	castFunc := func(typ interface{}) *BridgeCount {
-		if casted, ok := typ.(BridgeCount); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BridgeCount); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BridgeCount); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BridgeCount); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BridgeCount) GetTypeName() string {

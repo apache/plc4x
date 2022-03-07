@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(len uint16) *BACnetCon
 }
 
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType interface{}) *BACnetConfirmedServiceRequestGetEnrollmentSummary {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestGetEnrollmentSummary {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestGetEnrollmentSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestGetEnrollmentSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestGetEnrollmentSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestGetEnrollmentSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetTypeName() string {

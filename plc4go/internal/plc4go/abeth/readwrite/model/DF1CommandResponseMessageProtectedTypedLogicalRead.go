@@ -88,22 +88,19 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destina
 }
 
 func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType interface{}) *DF1CommandResponseMessageProtectedTypedLogicalRead {
-	castFunc := func(typ interface{}) *DF1CommandResponseMessageProtectedTypedLogicalRead {
-		if casted, ok := typ.(DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1ResponseMessage); ok {
-			return CastDF1CommandResponseMessageProtectedTypedLogicalRead(casted.Child)
-		}
-		if casted, ok := typ.(*DF1ResponseMessage); ok {
-			return CastDF1CommandResponseMessageProtectedTypedLogicalRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1CommandResponseMessageProtectedTypedLogicalRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1ResponseMessage); ok {
+		return CastDF1CommandResponseMessageProtectedTypedLogicalRead(casted.Child)
+	}
+	if casted, ok := structType.(*DF1ResponseMessage); ok {
+		return CastDF1CommandResponseMessageProtectedTypedLogicalRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetTypeName() string {

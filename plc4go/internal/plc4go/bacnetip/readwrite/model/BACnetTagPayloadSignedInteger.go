@@ -321,16 +321,13 @@ func NewBACnetTagPayloadSignedInteger(valueInt8 *int8, valueInt16 *int16, valueI
 }
 
 func CastBACnetTagPayloadSignedInteger(structType interface{}) *BACnetTagPayloadSignedInteger {
-	castFunc := func(typ interface{}) *BACnetTagPayloadSignedInteger {
-		if casted, ok := typ.(BACnetTagPayloadSignedInteger); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadSignedInteger); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadSignedInteger); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadSignedInteger); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadSignedInteger) GetTypeName() string {

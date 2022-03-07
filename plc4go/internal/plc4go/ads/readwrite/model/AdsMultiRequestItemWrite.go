@@ -96,22 +96,19 @@ func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, 
 }
 
 func CastAdsMultiRequestItemWrite(structType interface{}) *AdsMultiRequestItemWrite {
-	castFunc := func(typ interface{}) *AdsMultiRequestItemWrite {
-		if casted, ok := typ.(AdsMultiRequestItemWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItemWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemWrite(casted.Child)
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsMultiRequestItemWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsMultiRequestItemWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemWrite(casted.Child)
+	}
+	if casted, ok := structType.(*AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsMultiRequestItemWrite) GetTypeName() string {

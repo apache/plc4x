@@ -80,22 +80,19 @@ func NewAdsReadDeviceInfoRequest() *AdsData {
 }
 
 func CastAdsReadDeviceInfoRequest(structType interface{}) *AdsReadDeviceInfoRequest {
-	castFunc := func(typ interface{}) *AdsReadDeviceInfoRequest {
-		if casted, ok := typ.(AdsReadDeviceInfoRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadDeviceInfoRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadDeviceInfoRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadDeviceInfoRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadDeviceInfoRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadDeviceInfoRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadDeviceInfoRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadDeviceInfoRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadDeviceInfoRequest) GetTypeName() string {

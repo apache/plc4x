@@ -147,22 +147,19 @@ func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber
 }
 
 func CastS7PayloadDiagnosticMessage(structType interface{}) *S7PayloadDiagnosticMessage {
-	castFunc := func(typ interface{}) *S7PayloadDiagnosticMessage {
-		if casted, ok := typ.(S7PayloadDiagnosticMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadDiagnosticMessage); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadDiagnosticMessage(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadDiagnosticMessage(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadDiagnosticMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadDiagnosticMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadDiagnosticMessage(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadDiagnosticMessage(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadDiagnosticMessage) GetTypeName() string {

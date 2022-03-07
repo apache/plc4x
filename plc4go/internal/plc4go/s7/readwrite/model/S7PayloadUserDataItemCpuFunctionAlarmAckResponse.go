@@ -107,22 +107,19 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messa
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-		if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetTypeName() string {

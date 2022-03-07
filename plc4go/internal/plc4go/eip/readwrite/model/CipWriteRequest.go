@@ -115,22 +115,19 @@ func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCo
 }
 
 func CastCipWriteRequest(structType interface{}) *CipWriteRequest {
-	castFunc := func(typ interface{}) *CipWriteRequest {
-		if casted, ok := typ.(CipWriteRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipWriteRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipWriteRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipWriteRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipWriteRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipWriteRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipWriteRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipWriteRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipWriteRequest) GetTypeName() string {

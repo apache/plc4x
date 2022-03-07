@@ -61,16 +61,13 @@ func NewAmsTCPPacket(userdata *AmsPacket) *AmsTCPPacket {
 }
 
 func CastAmsTCPPacket(structType interface{}) *AmsTCPPacket {
-	castFunc := func(typ interface{}) *AmsTCPPacket {
-		if casted, ok := typ.(AmsTCPPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsTCPPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsTCPPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsTCPPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsTCPPacket) GetTypeName() string {

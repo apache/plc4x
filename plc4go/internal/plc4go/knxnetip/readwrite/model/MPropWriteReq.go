@@ -75,22 +75,19 @@ func NewMPropWriteReq(size uint16) *CEMI {
 }
 
 func CastMPropWriteReq(structType interface{}) *MPropWriteReq {
-	castFunc := func(typ interface{}) *MPropWriteReq {
-		if casted, ok := typ.(MPropWriteReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropWriteReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropWriteReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropWriteReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropWriteReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropWriteReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropWriteReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropWriteReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropWriteReq) GetTypeName() string {

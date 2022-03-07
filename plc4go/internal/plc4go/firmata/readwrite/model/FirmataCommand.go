@@ -72,16 +72,13 @@ func NewFirmataCommand(response bool) *FirmataCommand {
 }
 
 func CastFirmataCommand(structType interface{}) *FirmataCommand {
-	castFunc := func(typ interface{}) *FirmataCommand {
-		if casted, ok := typ.(FirmataCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *FirmataCommand) GetTypeName() string {

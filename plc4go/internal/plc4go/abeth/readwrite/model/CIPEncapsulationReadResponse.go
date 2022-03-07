@@ -88,22 +88,19 @@ func NewCIPEncapsulationReadResponse(response *DF1ResponseMessage, sessionHandle
 }
 
 func CastCIPEncapsulationReadResponse(structType interface{}) *CIPEncapsulationReadResponse {
-	castFunc := func(typ interface{}) *CIPEncapsulationReadResponse {
-		if casted, ok := typ.(CIPEncapsulationReadResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CIPEncapsulationReadResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationReadResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationReadResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CIPEncapsulationReadResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CIPEncapsulationReadResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationReadResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationReadResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *CIPEncapsulationReadResponse) GetTypeName() string {

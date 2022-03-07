@@ -72,22 +72,19 @@ func NewBACnetServiceAckGetEventInformation() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckGetEventInformation(structType interface{}) *BACnetServiceAckGetEventInformation {
-	castFunc := func(typ interface{}) *BACnetServiceAckGetEventInformation {
-		if casted, ok := typ.(BACnetServiceAckGetEventInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckGetEventInformation); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEventInformation(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEventInformation(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckGetEventInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckGetEventInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEventInformation(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEventInformation(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckGetEventInformation) GetTypeName() string {

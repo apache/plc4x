@@ -102,22 +102,19 @@ func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarm
 }
 
 func CastS7MessageObjectRequest(structType interface{}) *S7MessageObjectRequest {
-	castFunc := func(typ interface{}) *S7MessageObjectRequest {
-		if casted, ok := typ.(S7MessageObjectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageObjectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7DataAlarmMessage); ok {
-			return CastS7MessageObjectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*S7DataAlarmMessage); ok {
-			return CastS7MessageObjectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageObjectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageObjectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7DataAlarmMessage); ok {
+		return CastS7MessageObjectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*S7DataAlarmMessage); ok {
+		return CastS7MessageObjectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageObjectRequest) GetTypeName() string {

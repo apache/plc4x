@@ -95,16 +95,13 @@ func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Paylo
 }
 
 func CastS7Message(structType interface{}) *S7Message {
-	castFunc := func(typ interface{}) *S7Message {
-		if casted, ok := typ.(S7Message); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7Message); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7Message); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7Message); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7Message) GetTypeName() string {

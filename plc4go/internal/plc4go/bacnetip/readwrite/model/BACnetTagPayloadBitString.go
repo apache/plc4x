@@ -77,16 +77,13 @@ func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, 
 }
 
 func CastBACnetTagPayloadBitString(structType interface{}) *BACnetTagPayloadBitString {
-	castFunc := func(typ interface{}) *BACnetTagPayloadBitString {
-		if casted, ok := typ.(BACnetTagPayloadBitString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadBitString); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadBitString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadBitString); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadBitString) GetTypeName() string {

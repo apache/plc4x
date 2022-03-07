@@ -80,22 +80,19 @@ func NewBVLCResult(code BVLCResultCode) *BVLC {
 }
 
 func CastBVLCResult(structType interface{}) *BVLCResult {
-	castFunc := func(typ interface{}) *BVLCResult {
-		if casted, ok := typ.(BVLCResult); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCResult); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCResult(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCResult(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCResult); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCResult); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCResult(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCResult(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCResult) GetTypeName() string {

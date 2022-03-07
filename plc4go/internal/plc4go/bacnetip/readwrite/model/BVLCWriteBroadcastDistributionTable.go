@@ -83,22 +83,19 @@ func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistribut
 }
 
 func CastBVLCWriteBroadcastDistributionTable(structType interface{}) *BVLCWriteBroadcastDistributionTable {
-	castFunc := func(typ interface{}) *BVLCWriteBroadcastDistributionTable {
-		if casted, ok := typ.(BVLCWriteBroadcastDistributionTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCWriteBroadcastDistributionTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCWriteBroadcastDistributionTable(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCWriteBroadcastDistributionTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCWriteBroadcastDistributionTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCWriteBroadcastDistributionTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCWriteBroadcastDistributionTable(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCWriteBroadcastDistributionTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTable) GetTypeName() string {

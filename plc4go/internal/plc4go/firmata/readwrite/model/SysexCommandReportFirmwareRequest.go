@@ -80,22 +80,19 @@ func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 }
 
 func CastSysexCommandReportFirmwareRequest(structType interface{}) *SysexCommandReportFirmwareRequest {
-	castFunc := func(typ interface{}) *SysexCommandReportFirmwareRequest {
-		if casted, ok := typ.(SysexCommandReportFirmwareRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandReportFirmwareRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandReportFirmwareRequest(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandReportFirmwareRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandReportFirmwareRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandReportFirmwareRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandReportFirmwareRequest(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandReportFirmwareRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandReportFirmwareRequest) GetTypeName() string {

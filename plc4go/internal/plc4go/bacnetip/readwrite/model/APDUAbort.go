@@ -100,22 +100,19 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, apduLe
 }
 
 func CastAPDUAbort(structType interface{}) *APDUAbort {
-	castFunc := func(typ interface{}) *APDUAbort {
-		if casted, ok := typ.(APDUAbort); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUAbort); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUAbort(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUAbort(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUAbort); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUAbort); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUAbort(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUAbort(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUAbort) GetTypeName() string {

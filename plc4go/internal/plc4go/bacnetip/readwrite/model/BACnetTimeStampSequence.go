@@ -87,22 +87,19 @@ func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger,
 }
 
 func CastBACnetTimeStampSequence(structType interface{}) *BACnetTimeStampSequence {
-	castFunc := func(typ interface{}) *BACnetTimeStampSequence {
-		if casted, ok := typ.(BACnetTimeStampSequence); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTimeStampSequence); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetTimeStamp); ok {
-			return CastBACnetTimeStampSequence(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetTimeStamp); ok {
-			return CastBACnetTimeStampSequence(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetTimeStampSequence); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTimeStampSequence); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetTimeStamp); ok {
+		return CastBACnetTimeStampSequence(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetTimeStamp); ok {
+		return CastBACnetTimeStampSequence(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetTimeStampSequence) GetTypeName() string {

@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandTerminalLevels() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandTerminalLevels(structType interface{}) *IdentifyReplyCommandTerminalLevels {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandTerminalLevels {
-		if casted, ok := typ.(IdentifyReplyCommandTerminalLevels); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandTerminalLevels); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandTerminalLevels(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandTerminalLevels(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandTerminalLevels); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandTerminalLevels); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandTerminalLevels(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandTerminalLevels(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandTerminalLevels) GetTypeName() string {

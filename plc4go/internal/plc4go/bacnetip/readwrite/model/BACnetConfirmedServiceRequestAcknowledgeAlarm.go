@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(len uint16) *BACnetConfirm
 }
 
 func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAcknowledgeAlarm {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {

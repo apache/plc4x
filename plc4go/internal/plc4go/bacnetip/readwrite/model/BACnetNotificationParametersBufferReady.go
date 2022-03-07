@@ -120,22 +120,19 @@ func NewBACnetNotificationParametersBufferReady(innerOpeningTag *BACnetOpeningTa
 }
 
 func CastBACnetNotificationParametersBufferReady(structType interface{}) *BACnetNotificationParametersBufferReady {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersBufferReady {
-		if casted, ok := typ.(BACnetNotificationParametersBufferReady); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersBufferReady); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersBufferReady(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersBufferReady(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersBufferReady); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersBufferReady); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersBufferReady(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersBufferReady(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersBufferReady) GetTypeName() string {

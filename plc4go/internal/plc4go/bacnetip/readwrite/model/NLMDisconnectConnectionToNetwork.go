@@ -85,22 +85,19 @@ func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendo
 }
 
 func CastNLMDisconnectConnectionToNetwork(structType interface{}) *NLMDisconnectConnectionToNetwork {
-	castFunc := func(typ interface{}) *NLMDisconnectConnectionToNetwork {
-		if casted, ok := typ.(NLMDisconnectConnectionToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMDisconnectConnectionToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMDisconnectConnectionToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMDisconnectConnectionToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMDisconnectConnectionToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMDisconnectConnectionToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMDisconnectConnectionToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMDisconnectConnectionToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMDisconnectConnectionToNetwork) GetTypeName() string {

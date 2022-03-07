@@ -87,22 +87,19 @@ func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedVal
 }
 
 func CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(structType interface{}) *BACnetNotificationParametersChangeOfValueNewValueChangedValue {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersChangeOfValueNewValueChangedValue {
-		if casted, ok := typ.(BACnetNotificationParametersChangeOfValueNewValueChangedValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersChangeOfValueNewValueChangedValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParametersChangeOfValueNewValue); ok {
-			return CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersChangeOfValueNewValue); ok {
-			return CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersChangeOfValueNewValueChangedValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersChangeOfValueNewValueChangedValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParametersChangeOfValueNewValue); ok {
+		return CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParametersChangeOfValueNewValue); ok {
+		return CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetTypeName() string {

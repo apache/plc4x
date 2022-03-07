@@ -75,16 +75,13 @@ func NewConfirmation(alpha *Alpha) *Confirmation {
 }
 
 func CastConfirmation(structType interface{}) *Confirmation {
-	castFunc := func(typ interface{}) *Confirmation {
-		if casted, ok := typ.(Confirmation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Confirmation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Confirmation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Confirmation) GetTypeName() string {

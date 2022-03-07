@@ -91,22 +91,19 @@ func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, data
 }
 
 func CastApduDataDeviceDescriptorResponse(structType interface{}) *ApduDataDeviceDescriptorResponse {
-	castFunc := func(typ interface{}) *ApduDataDeviceDescriptorResponse {
-		if casted, ok := typ.(ApduDataDeviceDescriptorResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataDeviceDescriptorResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataDeviceDescriptorResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataDeviceDescriptorResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataDeviceDescriptorResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataDeviceDescriptorResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataDeviceDescriptorResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataDeviceDescriptorResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataDeviceDescriptorResponse) GetTypeName() string {

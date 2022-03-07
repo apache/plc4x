@@ -74,16 +74,13 @@ func NewBACnetTagPayloadBoolean(actualLength uint32) *BACnetTagPayloadBoolean {
 }
 
 func CastBACnetTagPayloadBoolean(structType interface{}) *BACnetTagPayloadBoolean {
-	castFunc := func(typ interface{}) *BACnetTagPayloadBoolean {
-		if casted, ok := typ.(BACnetTagPayloadBoolean); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadBoolean); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadBoolean); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadBoolean); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadBoolean) GetTypeName() string {

@@ -93,16 +93,13 @@ func NewBACnetConstructedData(openingTag *BACnetOpeningTag, closingTag *BACnetCl
 }
 
 func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
-	castFunc := func(typ interface{}) *BACnetConstructedData {
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetConstructedData) GetTypeName() string {

@@ -60,16 +60,13 @@ func NewNetworkNumber(number uint8) *NetworkNumber {
 }
 
 func CastNetworkNumber(structType interface{}) *NetworkNumber {
-	castFunc := func(typ interface{}) *NetworkNumber {
-		if casted, ok := typ.(NetworkNumber); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NetworkNumber); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NetworkNumber); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NetworkNumber); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NetworkNumber) GetTypeName() string {

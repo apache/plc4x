@@ -72,16 +72,13 @@ func NewCEMI(size uint16) *CEMI {
 }
 
 func CastCEMI(structType interface{}) *CEMI {
-	castFunc := func(typ interface{}) *CEMI {
-		if casted, ok := typ.(CEMI); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CEMI); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CEMI); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CEMI) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewApduDataExtOpenRoutingTableRequest(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtOpenRoutingTableRequest(structType interface{}) *ApduDataExtOpenRoutingTableRequest {
-	castFunc := func(typ interface{}) *ApduDataExtOpenRoutingTableRequest {
-		if casted, ok := typ.(ApduDataExtOpenRoutingTableRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtOpenRoutingTableRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtOpenRoutingTableRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtOpenRoutingTableRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtOpenRoutingTableRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtOpenRoutingTableRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtOpenRoutingTableRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtOpenRoutingTableRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) GetTypeName() string {

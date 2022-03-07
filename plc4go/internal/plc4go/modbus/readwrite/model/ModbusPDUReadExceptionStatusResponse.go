@@ -96,22 +96,19 @@ func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDU {
 }
 
 func CastModbusPDUReadExceptionStatusResponse(structType interface{}) *ModbusPDUReadExceptionStatusResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadExceptionStatusResponse {
-		if casted, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadExceptionStatusResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadExceptionStatusResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadExceptionStatusResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadExceptionStatusResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadExceptionStatusResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadExceptionStatusResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadExceptionStatusResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) GetTypeName() string {

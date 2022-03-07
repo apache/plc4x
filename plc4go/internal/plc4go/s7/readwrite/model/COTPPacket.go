@@ -86,16 +86,13 @@ func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message, cotpLen uint
 }
 
 func CastCOTPPacket(structType interface{}) *COTPPacket {
-	castFunc := func(typ interface{}) *COTPPacket {
-		if casted, ok := typ.(COTPPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(COTPPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *COTPPacket) GetTypeName() string {

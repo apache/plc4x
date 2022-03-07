@@ -75,22 +75,19 @@ func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEn
 }
 
 func CastBACnetErrorConfirmedEventNotification(structType interface{}) *BACnetErrorConfirmedEventNotification {
-	castFunc := func(typ interface{}) *BACnetErrorConfirmedEventNotification {
-		if casted, ok := typ.(BACnetErrorConfirmedEventNotification); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorConfirmedEventNotification); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorConfirmedEventNotification(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorConfirmedEventNotification(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorConfirmedEventNotification); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorConfirmedEventNotification); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorConfirmedEventNotification(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorConfirmedEventNotification(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorConfirmedEventNotification) GetTypeName() string {

@@ -97,16 +97,13 @@ func NewBACnetTimeStamp(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTag
 }
 
 func CastBACnetTimeStamp(structType interface{}) *BACnetTimeStamp {
-	castFunc := func(typ interface{}) *BACnetTimeStamp {
-		if casted, ok := typ.(BACnetTimeStamp); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTimeStamp); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTimeStamp); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTimeStamp); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTimeStamp) GetTypeName() string {

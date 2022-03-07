@@ -96,22 +96,19 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiData
 }
 
 func CastConnectionRequest(structType interface{}) *ConnectionRequest {
-	castFunc := func(typ interface{}) *ConnectionRequest {
-		if casted, ok := typ.(ConnectionRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastConnectionRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastConnectionRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastConnectionRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastConnectionRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionRequest) GetTypeName() string {

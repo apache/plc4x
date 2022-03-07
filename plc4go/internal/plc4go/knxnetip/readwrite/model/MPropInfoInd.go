@@ -75,22 +75,19 @@ func NewMPropInfoInd(size uint16) *CEMI {
 }
 
 func CastMPropInfoInd(structType interface{}) *MPropInfoInd {
-	castFunc := func(typ interface{}) *MPropInfoInd {
-		if casted, ok := typ.(MPropInfoInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropInfoInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropInfoInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropInfoInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropInfoInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropInfoInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropInfoInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropInfoInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropInfoInd) GetTypeName() string {

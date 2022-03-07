@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestVTOpen(len uint16) *BACnetConfirmedServiceR
 }
 
 func CastBACnetConfirmedServiceRequestVTOpen(structType interface{}) *BACnetConfirmedServiceRequestVTOpen {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestVTOpen {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestVTOpen(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestVTOpen); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestVTOpen); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestVTOpen(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestVTOpen(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestVTOpen) GetTypeName() string {

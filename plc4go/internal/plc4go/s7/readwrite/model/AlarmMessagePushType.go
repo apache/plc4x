@@ -81,16 +81,13 @@ func NewAlarmMessagePushType(TimeStamp *DateAndTime, functionId uint8, numberOfO
 }
 
 func CastAlarmMessagePushType(structType interface{}) *AlarmMessagePushType {
-	castFunc := func(typ interface{}) *AlarmMessagePushType {
-		if casted, ok := typ.(AlarmMessagePushType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessagePushType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessagePushType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessagePushType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessagePushType) GetTypeName() string {

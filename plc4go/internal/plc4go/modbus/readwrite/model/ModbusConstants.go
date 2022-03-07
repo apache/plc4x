@@ -58,16 +58,13 @@ func NewModbusConstants() *ModbusConstants {
 }
 
 func CastModbusConstants(structType interface{}) *ModbusConstants {
-	castFunc := func(typ interface{}) *ModbusConstants {
-		if casted, ok := typ.(ModbusConstants); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusConstants); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusConstants); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusConstants); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusConstants) GetTypeName() string {

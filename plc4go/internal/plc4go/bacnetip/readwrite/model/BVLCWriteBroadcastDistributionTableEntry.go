@@ -74,16 +74,13 @@ func NewBVLCWriteBroadcastDistributionTableEntry(ip []uint8, port uint16, broadc
 }
 
 func CastBVLCWriteBroadcastDistributionTableEntry(structType interface{}) *BVLCWriteBroadcastDistributionTableEntry {
-	castFunc := func(typ interface{}) *BVLCWriteBroadcastDistributionTableEntry {
-		if casted, ok := typ.(BVLCWriteBroadcastDistributionTableEntry); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCWriteBroadcastDistributionTableEntry); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BVLCWriteBroadcastDistributionTableEntry); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCWriteBroadcastDistributionTableEntry); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTableEntry) GetTypeName() string {

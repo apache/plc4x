@@ -83,22 +83,19 @@ func NewFirmataMessageCommand(command *FirmataCommand, response bool) *FirmataMe
 }
 
 func CastFirmataMessageCommand(structType interface{}) *FirmataMessageCommand {
-	castFunc := func(typ interface{}) *FirmataMessageCommand {
-		if casted, ok := typ.(FirmataMessageCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageCommand); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageCommand(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageCommand(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageCommand); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageCommand(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageCommand(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageCommand) GetTypeName() string {

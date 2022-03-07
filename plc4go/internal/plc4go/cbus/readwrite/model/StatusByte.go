@@ -81,16 +81,13 @@ func NewStatusByte(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) *
 }
 
 func CastStatusByte(structType interface{}) *StatusByte {
-	castFunc := func(typ interface{}) *StatusByte {
-		if casted, ok := typ.(StatusByte); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StatusByte); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(StatusByte); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StatusByte); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *StatusByte) GetTypeName() string {

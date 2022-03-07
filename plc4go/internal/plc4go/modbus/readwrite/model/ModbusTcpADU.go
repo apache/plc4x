@@ -81,16 +81,13 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *Mo
 }
 
 func CastModbusTcpADU(structType interface{}) *ModbusTcpADU {
-	castFunc := func(typ interface{}) *ModbusTcpADU {
-		if casted, ok := typ.(ModbusTcpADU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusTcpADU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusTcpADU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusTcpADU); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusTcpADU) GetTypeName() string {

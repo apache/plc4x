@@ -87,22 +87,19 @@ func NewBACnetApplicationTagBoolean(payload *BACnetTagPayloadBoolean, header *BA
 }
 
 func CastBACnetApplicationTagBoolean(structType interface{}) *BACnetApplicationTagBoolean {
-	castFunc := func(typ interface{}) *BACnetApplicationTagBoolean {
-		if casted, ok := typ.(BACnetApplicationTagBoolean); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagBoolean); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagBoolean(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagBoolean(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagBoolean); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagBoolean); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagBoolean(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagBoolean(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagBoolean) GetTypeName() string {

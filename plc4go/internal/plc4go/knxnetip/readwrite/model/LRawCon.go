@@ -75,22 +75,19 @@ func NewLRawCon(size uint16) *CEMI {
 }
 
 func CastLRawCon(structType interface{}) *LRawCon {
-	castFunc := func(typ interface{}) *LRawCon {
-		if casted, ok := typ.(LRawCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LRawCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLRawCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLRawCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LRawCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LRawCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLRawCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLRawCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *LRawCon) GetTypeName() string {

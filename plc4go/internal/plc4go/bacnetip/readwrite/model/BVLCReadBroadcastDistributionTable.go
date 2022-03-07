@@ -72,22 +72,19 @@ func NewBVLCReadBroadcastDistributionTable() *BVLC {
 }
 
 func CastBVLCReadBroadcastDistributionTable(structType interface{}) *BVLCReadBroadcastDistributionTable {
-	castFunc := func(typ interface{}) *BVLCReadBroadcastDistributionTable {
-		if casted, ok := typ.(BVLCReadBroadcastDistributionTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCReadBroadcastDistributionTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCReadBroadcastDistributionTable(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCReadBroadcastDistributionTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCReadBroadcastDistributionTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCReadBroadcastDistributionTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCReadBroadcastDistributionTable(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCReadBroadcastDistributionTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCReadBroadcastDistributionTable) GetTypeName() string {

@@ -152,22 +152,19 @@ func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatu
 }
 
 func CastIdentifyReplyCommandDSIStatus(structType interface{}) *IdentifyReplyCommandDSIStatus {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandDSIStatus {
-		if casted, ok := typ.(IdentifyReplyCommandDSIStatus); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandDSIStatus); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandDSIStatus(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandDSIStatus(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandDSIStatus); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandDSIStatus); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandDSIStatus(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandDSIStatus(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandDSIStatus) GetTypeName() string {

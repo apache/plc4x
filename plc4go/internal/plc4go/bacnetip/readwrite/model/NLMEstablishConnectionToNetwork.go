@@ -93,22 +93,19 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 }
 
 func CastNLMEstablishConnectionToNetwork(structType interface{}) *NLMEstablishConnectionToNetwork {
-	castFunc := func(typ interface{}) *NLMEstablishConnectionToNetwork {
-		if casted, ok := typ.(NLMEstablishConnectionToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMEstablishConnectionToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMEstablishConnectionToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMEstablishConnectionToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMEstablishConnectionToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMEstablishConnectionToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMEstablishConnectionToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMEstablishConnectionToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMEstablishConnectionToNetwork) GetTypeName() string {

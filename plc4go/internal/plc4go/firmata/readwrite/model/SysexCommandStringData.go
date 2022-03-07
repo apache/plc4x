@@ -80,22 +80,19 @@ func NewSysexCommandStringData() *SysexCommand {
 }
 
 func CastSysexCommandStringData(structType interface{}) *SysexCommandStringData {
-	castFunc := func(typ interface{}) *SysexCommandStringData {
-		if casted, ok := typ.(SysexCommandStringData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandStringData); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandStringData(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandStringData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandStringData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandStringData); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandStringData(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandStringData(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandStringData) GetTypeName() string {

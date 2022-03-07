@@ -87,22 +87,19 @@ func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, openingTag *BACnetO
 }
 
 func CastBACnetTimeStampTime(structType interface{}) *BACnetTimeStampTime {
-	castFunc := func(typ interface{}) *BACnetTimeStampTime {
-		if casted, ok := typ.(BACnetTimeStampTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTimeStampTime); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetTimeStamp); ok {
-			return CastBACnetTimeStampTime(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetTimeStamp); ok {
-			return CastBACnetTimeStampTime(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetTimeStampTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTimeStampTime); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetTimeStamp); ok {
+		return CastBACnetTimeStampTime(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetTimeStamp); ok {
+		return CastBACnetTimeStampTime(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetTimeStampTime) GetTypeName() string {

@@ -78,22 +78,19 @@ func NewBACnetOpeningTag(header *BACnetTagHeader, tagNumberArgument uint8, actua
 }
 
 func CastBACnetOpeningTag(structType interface{}) *BACnetOpeningTag {
-	castFunc := func(typ interface{}) *BACnetOpeningTag {
-		if casted, ok := typ.(BACnetOpeningTag); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetOpeningTag); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetOpeningTag(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetOpeningTag(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetOpeningTag); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetOpeningTag); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetOpeningTag(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetOpeningTag(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetOpeningTag) GetTypeName() string {

@@ -73,16 +73,13 @@ func NewKnxNetIpMessage() *KnxNetIpMessage {
 }
 
 func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
-	castFunc := func(typ interface{}) *KnxNetIpMessage {
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *KnxNetIpMessage) GetTypeName() string {

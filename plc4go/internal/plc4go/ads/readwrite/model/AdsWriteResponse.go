@@ -88,22 +88,19 @@ func NewAdsWriteResponse(result ReturnCode) *AdsData {
 }
 
 func CastAdsWriteResponse(structType interface{}) *AdsWriteResponse {
-	castFunc := func(typ interface{}) *AdsWriteResponse {
-		if casted, ok := typ.(AdsWriteResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsWriteResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsWriteResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsWriteResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsWriteResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsWriteResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsWriteResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsWriteResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsWriteResponse) GetTypeName() string {

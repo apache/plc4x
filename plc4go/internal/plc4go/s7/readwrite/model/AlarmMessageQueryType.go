@@ -92,16 +92,13 @@ func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCod
 }
 
 func CastAlarmMessageQueryType(structType interface{}) *AlarmMessageQueryType {
-	castFunc := func(typ interface{}) *AlarmMessageQueryType {
-		if casted, ok := typ.(AlarmMessageQueryType); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AlarmMessageQueryType); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AlarmMessageQueryType); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AlarmMessageQueryType); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AlarmMessageQueryType) GetTypeName() string {

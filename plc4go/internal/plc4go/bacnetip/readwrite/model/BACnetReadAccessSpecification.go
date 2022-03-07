@@ -81,16 +81,13 @@ func NewBACnetReadAccessSpecification(objectIdentifier *BACnetContextTagObjectId
 }
 
 func CastBACnetReadAccessSpecification(structType interface{}) *BACnetReadAccessSpecification {
-	castFunc := func(typ interface{}) *BACnetReadAccessSpecification {
-		if casted, ok := typ.(BACnetReadAccessSpecification); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetReadAccessSpecification); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetReadAccessSpecification); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetReadAccessSpecification); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetReadAccessSpecification) GetTypeName() string {

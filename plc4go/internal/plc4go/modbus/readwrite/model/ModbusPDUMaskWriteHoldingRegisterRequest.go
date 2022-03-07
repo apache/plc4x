@@ -112,22 +112,19 @@ func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMas
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) *ModbusPDUMaskWriteHoldingRegisterRequest {
-	castFunc := func(typ interface{}) *ModbusPDUMaskWriteHoldingRegisterRequest {
-		if casted, ok := typ.(ModbusPDUMaskWriteHoldingRegisterRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUMaskWriteHoldingRegisterRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUMaskWriteHoldingRegisterRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUMaskWriteHoldingRegisterRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUMaskWriteHoldingRegisterRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetTypeName() string {

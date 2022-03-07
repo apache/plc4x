@@ -73,22 +73,19 @@ func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirm
 }
 
 func CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(structType interface{}) *BACnetConfirmedServiceACKRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKRemovedReadPropertyConditional {
-		if casted, ok := typ.(BACnetConfirmedServiceACKRemovedReadPropertyConditional); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKRemovedReadPropertyConditional); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKRemovedReadPropertyConditional); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKRemovedReadPropertyConditional); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetTypeName() string {

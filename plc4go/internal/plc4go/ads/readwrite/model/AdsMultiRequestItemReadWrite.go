@@ -104,22 +104,19 @@ func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint
 }
 
 func CastAdsMultiRequestItemReadWrite(structType interface{}) *AdsMultiRequestItemReadWrite {
-	castFunc := func(typ interface{}) *AdsMultiRequestItemReadWrite {
-		if casted, ok := typ.(AdsMultiRequestItemReadWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItemReadWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemReadWrite(casted.Child)
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemReadWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsMultiRequestItemReadWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsMultiRequestItemReadWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemReadWrite(casted.Child)
+	}
+	if casted, ok := structType.(*AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemReadWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsMultiRequestItemReadWrite) GetTypeName() string {

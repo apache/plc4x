@@ -93,22 +93,19 @@ func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitali
 }
 
 func CastNLMInitalizeRoutingTable(structType interface{}) *NLMInitalizeRoutingTable {
-	castFunc := func(typ interface{}) *NLMInitalizeRoutingTable {
-		if casted, ok := typ.(NLMInitalizeRoutingTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMInitalizeRoutingTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMInitalizeRoutingTable(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMInitalizeRoutingTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMInitalizeRoutingTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMInitalizeRoutingTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMInitalizeRoutingTable(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMInitalizeRoutingTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMInitalizeRoutingTable) GetTypeName() string {

@@ -116,22 +116,19 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 }
 
 func CastAPDUSegmentAck(structType interface{}) *APDUSegmentAck {
-	castFunc := func(typ interface{}) *APDUSegmentAck {
-		if casted, ok := typ.(APDUSegmentAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUSegmentAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUSegmentAck(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUSegmentAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUSegmentAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUSegmentAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUSegmentAck(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUSegmentAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUSegmentAck) GetTypeName() string {

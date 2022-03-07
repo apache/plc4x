@@ -116,22 +116,19 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 }
 
 func CastMultipleServiceResponse(structType interface{}) *MultipleServiceResponse {
-	castFunc := func(typ interface{}) *MultipleServiceResponse {
-		if casted, ok := typ.(MultipleServiceResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MultipleServiceResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastMultipleServiceResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastMultipleServiceResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MultipleServiceResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MultipleServiceResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastMultipleServiceResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastMultipleServiceResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *MultipleServiceResponse) GetTypeName() string {

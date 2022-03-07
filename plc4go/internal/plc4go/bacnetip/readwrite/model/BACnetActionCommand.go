@@ -117,16 +117,13 @@ func NewBACnetActionCommand(deviceIdentifier *BACnetContextTagObjectIdentifier, 
 }
 
 func CastBACnetActionCommand(structType interface{}) *BACnetActionCommand {
-	castFunc := func(typ interface{}) *BACnetActionCommand {
-		if casted, ok := typ.(BACnetActionCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetActionCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetActionCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetActionCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetActionCommand) GetTypeName() string {

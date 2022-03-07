@@ -91,22 +91,19 @@ func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, c
 }
 
 func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
-	castFunc := func(typ interface{}) *TunnelingRequest {
-		if casted, ok := typ.(TunnelingRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastTunnelingRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastTunnelingRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TunnelingRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastTunnelingRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastTunnelingRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *TunnelingRequest) GetTypeName() string {

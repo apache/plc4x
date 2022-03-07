@@ -77,22 +77,19 @@ func NewBACnetContextTagEmpty(header *BACnetTagHeader, tagNumberArgument uint8) 
 }
 
 func CastBACnetContextTagEmpty(structType interface{}) *BACnetContextTagEmpty {
-	castFunc := func(typ interface{}) *BACnetContextTagEmpty {
-		if casted, ok := typ.(BACnetContextTagEmpty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagEmpty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagEmpty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagEmpty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagEmpty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagEmpty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagEmpty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagEmpty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagEmpty) GetTypeName() string {

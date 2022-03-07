@@ -74,22 +74,19 @@ func NewCALDataRequestReset(commandTypeContainer CALCommandTypeContainer) *CALDa
 }
 
 func CastCALDataRequestReset(structType interface{}) *CALDataRequestReset {
-	castFunc := func(typ interface{}) *CALDataRequestReset {
-		if casted, ok := typ.(CALDataRequestReset); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataRequestReset); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataRequestReset(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataRequestReset(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataRequestReset); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataRequestReset); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataRequestReset(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataRequestReset(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataRequestReset) GetTypeName() string {

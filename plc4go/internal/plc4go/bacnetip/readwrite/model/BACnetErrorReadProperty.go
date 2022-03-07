@@ -75,22 +75,19 @@ func NewBACnetErrorReadProperty(errorClass *BACnetApplicationTagEnumerated, erro
 }
 
 func CastBACnetErrorReadProperty(structType interface{}) *BACnetErrorReadProperty {
-	castFunc := func(typ interface{}) *BACnetErrorReadProperty {
-		if casted, ok := typ.(BACnetErrorReadProperty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorReadProperty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorReadProperty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorReadProperty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorReadProperty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorReadProperty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorReadProperty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorReadProperty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorReadProperty) GetTypeName() string {

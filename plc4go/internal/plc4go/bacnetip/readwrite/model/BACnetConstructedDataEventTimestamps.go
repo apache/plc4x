@@ -111,22 +111,19 @@ func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetContextTagTime, 
 }
 
 func CastBACnetConstructedDataEventTimestamps(structType interface{}) *BACnetConstructedDataEventTimestamps {
-	castFunc := func(typ interface{}) *BACnetConstructedDataEventTimestamps {
-		if casted, ok := typ.(BACnetConstructedDataEventTimestamps); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataEventTimestamps); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return CastBACnetConstructedDataEventTimestamps(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return CastBACnetConstructedDataEventTimestamps(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataEventTimestamps); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataEventTimestamps); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return CastBACnetConstructedDataEventTimestamps(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return CastBACnetConstructedDataEventTimestamps(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataEventTimestamps) GetTypeName() string {

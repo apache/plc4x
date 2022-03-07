@@ -68,22 +68,19 @@ func NewCALReplyShort(calType byte, calData *CALData) *CALReply {
 }
 
 func CastCALReplyShort(structType interface{}) *CALReplyShort {
-	castFunc := func(typ interface{}) *CALReplyShort {
-		if casted, ok := typ.(CALReplyShort); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALReplyShort); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALReply); ok {
-			return CastCALReplyShort(casted.Child)
-		}
-		if casted, ok := typ.(*CALReply); ok {
-			return CastCALReplyShort(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALReplyShort); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALReplyShort); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALReply); ok {
+		return CastCALReplyShort(casted.Child)
+	}
+	if casted, ok := structType.(*CALReply); ok {
+		return CastCALReplyShort(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALReplyShort) GetTypeName() string {

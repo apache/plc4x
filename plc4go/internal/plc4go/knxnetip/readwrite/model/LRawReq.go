@@ -75,22 +75,19 @@ func NewLRawReq(size uint16) *CEMI {
 }
 
 func CastLRawReq(structType interface{}) *LRawReq {
-	castFunc := func(typ interface{}) *LRawReq {
-		if casted, ok := typ.(LRawReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LRawReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLRawReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLRawReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LRawReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LRawReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLRawReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLRawReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *LRawReq) GetTypeName() string {

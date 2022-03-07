@@ -69,16 +69,13 @@ func NewS7Address() *S7Address {
 }
 
 func CastS7Address(structType interface{}) *S7Address {
-	castFunc := func(typ interface{}) *S7Address {
-		if casted, ok := typ.(S7Address); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7Address); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7Address); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7Address); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7Address) GetTypeName() string {

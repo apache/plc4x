@@ -88,22 +88,19 @@ func NewModbusPDUGetComEventLogRequest() *ModbusPDU {
 }
 
 func CastModbusPDUGetComEventLogRequest(structType interface{}) *ModbusPDUGetComEventLogRequest {
-	castFunc := func(typ interface{}) *ModbusPDUGetComEventLogRequest {
-		if casted, ok := typ.(ModbusPDUGetComEventLogRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUGetComEventLogRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUGetComEventLogRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUGetComEventLogRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUGetComEventLogRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUGetComEventLogRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUGetComEventLogRequest) GetTypeName() string {

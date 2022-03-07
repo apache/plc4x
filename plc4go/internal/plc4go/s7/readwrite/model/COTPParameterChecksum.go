@@ -83,22 +83,19 @@ func NewCOTPParameterChecksum(crc uint8, rest uint8) *COTPParameter {
 }
 
 func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {
-	castFunc := func(typ interface{}) *COTPParameterChecksum {
-		if casted, ok := typ.(COTPParameterChecksum); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameterChecksum); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPParameter); ok {
-			return CastCOTPParameterChecksum(casted.Child)
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return CastCOTPParameterChecksum(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPParameterChecksum); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameterChecksum); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPParameter); ok {
+		return CastCOTPParameterChecksum(casted.Child)
+	}
+	if casted, ok := structType.(*COTPParameter); ok {
+		return CastCOTPParameterChecksum(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPParameterChecksum) GetTypeName() string {

@@ -100,22 +100,19 @@ func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord *BACnetApplicationT
 }
 
 func CastBACnetServiceAckAtomicReadFileRecord(structType interface{}) *BACnetServiceAckAtomicReadFileRecord {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicReadFileRecord {
-		if casted, ok := typ.(BACnetServiceAckAtomicReadFileRecord); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicReadFileRecord); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
-			return CastBACnetServiceAckAtomicReadFileRecord(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
-			return CastBACnetServiceAckAtomicReadFileRecord(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicReadFileRecord); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicReadFileRecord); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
+		return CastBACnetServiceAckAtomicReadFileRecord(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
+		return CastBACnetServiceAckAtomicReadFileRecord(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {

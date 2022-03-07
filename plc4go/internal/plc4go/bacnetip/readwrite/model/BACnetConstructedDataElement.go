@@ -133,16 +133,13 @@ func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicati
 }
 
 func CastBACnetConstructedDataElement(structType interface{}) *BACnetConstructedDataElement {
-	castFunc := func(typ interface{}) *BACnetConstructedDataElement {
-		if casted, ok := typ.(BACnetConstructedDataElement); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataElement); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataElement); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataElement); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataElement) GetTypeName() string {

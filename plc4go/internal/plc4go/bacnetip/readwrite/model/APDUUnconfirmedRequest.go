@@ -84,22 +84,19 @@ func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, 
 }
 
 func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest {
-	castFunc := func(typ interface{}) *APDUUnconfirmedRequest {
-		if casted, ok := typ.(APDUUnconfirmedRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDUUnconfirmedRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(APDU); ok {
-			return CastAPDUUnconfirmedRequest(casted.Child)
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return CastAPDUUnconfirmedRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(APDUUnconfirmedRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDUUnconfirmedRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(APDU); ok {
+		return CastAPDUUnconfirmedRequest(casted.Child)
+	}
+	if casted, ok := structType.(*APDU); ok {
+		return CastAPDUUnconfirmedRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *APDUUnconfirmedRequest) GetTypeName() string {

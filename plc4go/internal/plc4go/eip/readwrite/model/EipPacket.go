@@ -96,16 +96,13 @@ func NewEipPacket(sessionHandle uint32, status uint32, senderContext []uint8, op
 }
 
 func CastEipPacket(structType interface{}) *EipPacket {
-	castFunc := func(typ interface{}) *EipPacket {
-		if casted, ok := typ.(EipPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*EipPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(EipPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*EipPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *EipPacket) GetTypeName() string {

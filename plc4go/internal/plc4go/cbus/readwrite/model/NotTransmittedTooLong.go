@@ -74,22 +74,19 @@ func NewNotTransmittedTooLong(alpha *Alpha) *Confirmation {
 }
 
 func CastNotTransmittedTooLong(structType interface{}) *NotTransmittedTooLong {
-	castFunc := func(typ interface{}) *NotTransmittedTooLong {
-		if casted, ok := typ.(NotTransmittedTooLong); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NotTransmittedTooLong); ok {
-			return casted
-		}
-		if casted, ok := typ.(Confirmation); ok {
-			return CastNotTransmittedTooLong(casted.Child)
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return CastNotTransmittedTooLong(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NotTransmittedTooLong); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NotTransmittedTooLong); ok {
+		return casted
+	}
+	if casted, ok := structType.(Confirmation); ok {
+		return CastNotTransmittedTooLong(casted.Child)
+	}
+	if casted, ok := structType.(*Confirmation); ok {
+		return CastNotTransmittedTooLong(casted.Child)
+	}
+	return nil
 }
 
 func (m *NotTransmittedTooLong) GetTypeName() string {

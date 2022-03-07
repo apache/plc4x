@@ -75,22 +75,19 @@ func NewLPollDataCon(size uint16) *CEMI {
 }
 
 func CastLPollDataCon(structType interface{}) *LPollDataCon {
-	castFunc := func(typ interface{}) *LPollDataCon {
-		if casted, ok := typ.(LPollDataCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LPollDataCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLPollDataCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLPollDataCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LPollDataCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LPollDataCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLPollDataCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLPollDataCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *LPollDataCon) GetTypeName() string {

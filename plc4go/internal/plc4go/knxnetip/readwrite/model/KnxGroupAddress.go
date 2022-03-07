@@ -69,16 +69,13 @@ func NewKnxGroupAddress() *KnxGroupAddress {
 }
 
 func CastKnxGroupAddress(structType interface{}) *KnxGroupAddress {
-	castFunc := func(typ interface{}) *KnxGroupAddress {
-		if casted, ok := typ.(KnxGroupAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxGroupAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(KnxGroupAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxGroupAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *KnxGroupAddress) GetTypeName() string {

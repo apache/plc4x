@@ -91,22 +91,19 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *Firmat
 }
 
 func CastFirmataCommandSetPinMode(structType interface{}) *FirmataCommandSetPinMode {
-	castFunc := func(typ interface{}) *FirmataCommandSetPinMode {
-		if casted, ok := typ.(FirmataCommandSetPinMode); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSetPinMode); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSetPinMode(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSetPinMode(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSetPinMode); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSetPinMode); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSetPinMode(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSetPinMode(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSetPinMode) GetTypeName() string {

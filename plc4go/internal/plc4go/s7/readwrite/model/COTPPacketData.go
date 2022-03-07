@@ -94,22 +94,19 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, pay
 }
 
 func CastCOTPPacketData(structType interface{}) *COTPPacketData {
-	castFunc := func(typ interface{}) *COTPPacketData {
-		if casted, ok := typ.(COTPPacketData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketData); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketData(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketData); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketData(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketData(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketData) GetTypeName() string {

@@ -74,16 +74,13 @@ func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList Sz
 }
 
 func CastSzlId(structType interface{}) *SzlId {
-	castFunc := func(typ interface{}) *SzlId {
-		if casted, ok := typ.(SzlId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SzlId); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SzlId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SzlId); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SzlId) GetTypeName() string {

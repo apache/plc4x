@@ -69,16 +69,13 @@ func NewApduControl() *ApduControl {
 }
 
 func CastApduControl(structType interface{}) *ApduControl {
-	castFunc := func(typ interface{}) *ApduControl {
-		if casted, ok := typ.(ApduControl); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ApduControl); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControl); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ApduControl) GetTypeName() string {

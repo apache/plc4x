@@ -75,22 +75,19 @@ func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode 
 }
 
 func CastBACnetErrorVTOpen(structType interface{}) *BACnetErrorVTOpen {
-	castFunc := func(typ interface{}) *BACnetErrorVTOpen {
-		if casted, ok := typ.(BACnetErrorVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorVTOpen(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorVTOpen); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorVTOpen); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorVTOpen(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorVTOpen(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorVTOpen) GetTypeName() string {

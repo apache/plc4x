@@ -112,22 +112,19 @@ func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fi
 }
 
 func CastDF1RequestProtectedTypedLogicalRead(structType interface{}) *DF1RequestProtectedTypedLogicalRead {
-	castFunc := func(typ interface{}) *DF1RequestProtectedTypedLogicalRead {
-		if casted, ok := typ.(DF1RequestProtectedTypedLogicalRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1RequestProtectedTypedLogicalRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1RequestCommand); ok {
-			return CastDF1RequestProtectedTypedLogicalRead(casted.Child)
-		}
-		if casted, ok := typ.(*DF1RequestCommand); ok {
-			return CastDF1RequestProtectedTypedLogicalRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1RequestProtectedTypedLogicalRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1RequestProtectedTypedLogicalRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1RequestCommand); ok {
+		return CastDF1RequestProtectedTypedLogicalRead(casted.Child)
+	}
+	if casted, ok := structType.(*DF1RequestCommand); ok {
+		return CastDF1RequestProtectedTypedLogicalRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) GetTypeName() string {

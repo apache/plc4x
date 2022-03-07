@@ -67,16 +67,13 @@ func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
 }
 
 func CastBACnetAddress(structType interface{}) *BACnetAddress {
-	castFunc := func(typ interface{}) *BACnetAddress {
-		if casted, ok := typ.(BACnetAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetAddress) GetTypeName() string {

@@ -86,16 +86,13 @@ func NewMonitoredSAL(salType byte, salData *SALData) *MonitoredSAL {
 }
 
 func CastMonitoredSAL(structType interface{}) *MonitoredSAL {
-	castFunc := func(typ interface{}) *MonitoredSAL {
-		if casted, ok := typ.(MonitoredSAL); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MonitoredSAL); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(MonitoredSAL); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MonitoredSAL); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *MonitoredSAL) GetTypeName() string {

@@ -88,22 +88,19 @@ func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DI
 }
 
 func CastDescriptionResponse(structType interface{}) *DescriptionResponse {
-	castFunc := func(typ interface{}) *DescriptionResponse {
-		if casted, ok := typ.(DescriptionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DescriptionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDescriptionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDescriptionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DescriptionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DescriptionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDescriptionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDescriptionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *DescriptionResponse) GetTypeName() string {

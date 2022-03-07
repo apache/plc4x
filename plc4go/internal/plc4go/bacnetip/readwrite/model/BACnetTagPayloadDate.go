@@ -146,16 +146,13 @@ func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8,
 }
 
 func CastBACnetTagPayloadDate(structType interface{}) *BACnetTagPayloadDate {
-	castFunc := func(typ interface{}) *BACnetTagPayloadDate {
-		if casted, ok := typ.(BACnetTagPayloadDate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadDate); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadDate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadDate); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadDate) GetTypeName() string {

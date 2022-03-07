@@ -91,22 +91,19 @@ func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, re
 }
 
 func CastFirmataCommandProtocolVersion(structType interface{}) *FirmataCommandProtocolVersion {
-	castFunc := func(typ interface{}) *FirmataCommandProtocolVersion {
-		if casted, ok := typ.(FirmataCommandProtocolVersion); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandProtocolVersion); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandProtocolVersion(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandProtocolVersion(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandProtocolVersion); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandProtocolVersion); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandProtocolVersion(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandProtocolVersion(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandProtocolVersion) GetTypeName() string {

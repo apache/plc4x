@@ -74,22 +74,19 @@ func NewNotTransmittedSyncLoss(alpha *Alpha) *Confirmation {
 }
 
 func CastNotTransmittedSyncLoss(structType interface{}) *NotTransmittedSyncLoss {
-	castFunc := func(typ interface{}) *NotTransmittedSyncLoss {
-		if casted, ok := typ.(NotTransmittedSyncLoss); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NotTransmittedSyncLoss); ok {
-			return casted
-		}
-		if casted, ok := typ.(Confirmation); ok {
-			return CastNotTransmittedSyncLoss(casted.Child)
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return CastNotTransmittedSyncLoss(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NotTransmittedSyncLoss); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NotTransmittedSyncLoss); ok {
+		return casted
+	}
+	if casted, ok := structType.(Confirmation); ok {
+		return CastNotTransmittedSyncLoss(casted.Child)
+	}
+	if casted, ok := structType.(*Confirmation); ok {
+		return CastNotTransmittedSyncLoss(casted.Child)
+	}
+	return nil
 }
 
 func (m *NotTransmittedSyncLoss) GetTypeName() string {

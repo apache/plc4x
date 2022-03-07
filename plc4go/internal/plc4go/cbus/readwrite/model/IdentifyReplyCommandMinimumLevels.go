@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandMinimumLevels() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandMinimumLevels(structType interface{}) *IdentifyReplyCommandMinimumLevels {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandMinimumLevels {
-		if casted, ok := typ.(IdentifyReplyCommandMinimumLevels); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandMinimumLevels); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandMinimumLevels(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandMinimumLevels(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandMinimumLevels); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandMinimumLevels); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandMinimumLevels(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandMinimumLevels(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandMinimumLevels) GetTypeName() string {

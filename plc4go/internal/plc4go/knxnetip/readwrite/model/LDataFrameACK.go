@@ -86,22 +86,19 @@ func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, a
 }
 
 func CastLDataFrameACK(structType interface{}) *LDataFrameACK {
-	castFunc := func(typ interface{}) *LDataFrameACK {
-		if casted, ok := typ.(LDataFrameACK); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataFrameACK); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLDataFrameACK(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLDataFrameACK(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataFrameACK); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataFrameACK); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLDataFrameACK(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLDataFrameACK(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataFrameACK) GetTypeName() string {

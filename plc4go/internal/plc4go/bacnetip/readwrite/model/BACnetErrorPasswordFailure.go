@@ -75,22 +75,19 @@ func NewBACnetErrorPasswordFailure(errorClass *BACnetApplicationTagEnumerated, e
 }
 
 func CastBACnetErrorPasswordFailure(structType interface{}) *BACnetErrorPasswordFailure {
-	castFunc := func(typ interface{}) *BACnetErrorPasswordFailure {
-		if casted, ok := typ.(BACnetErrorPasswordFailure); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorPasswordFailure); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorPasswordFailure(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorPasswordFailure(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorPasswordFailure); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorPasswordFailure); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorPasswordFailure(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorPasswordFailure(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorPasswordFailure) GetTypeName() string {

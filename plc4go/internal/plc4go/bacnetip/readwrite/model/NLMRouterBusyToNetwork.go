@@ -85,22 +85,19 @@ func NewNLMRouterBusyToNetwork(destinationNetworkAddress []uint16, vendorId *uin
 }
 
 func CastNLMRouterBusyToNetwork(structType interface{}) *NLMRouterBusyToNetwork {
-	castFunc := func(typ interface{}) *NLMRouterBusyToNetwork {
-		if casted, ok := typ.(NLMRouterBusyToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMRouterBusyToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMRouterBusyToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMRouterBusyToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMRouterBusyToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMRouterBusyToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMRouterBusyToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMRouterBusyToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMRouterBusyToNetwork) GetTypeName() string {

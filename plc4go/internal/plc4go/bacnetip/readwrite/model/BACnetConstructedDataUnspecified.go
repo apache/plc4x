@@ -121,22 +121,19 @@ func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, p
 }
 
 func CastBACnetConstructedDataUnspecified(structType interface{}) *BACnetConstructedDataUnspecified {
-	castFunc := func(typ interface{}) *BACnetConstructedDataUnspecified {
-		if casted, ok := typ.(BACnetConstructedDataUnspecified); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataUnspecified); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return CastBACnetConstructedDataUnspecified(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return CastBACnetConstructedDataUnspecified(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataUnspecified); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataUnspecified); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return CastBACnetConstructedDataUnspecified(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return CastBACnetConstructedDataUnspecified(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataUnspecified) GetTypeName() string {

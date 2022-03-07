@@ -80,22 +80,19 @@ func NewSysexCommandExtendedAnalog() *SysexCommand {
 }
 
 func CastSysexCommandExtendedAnalog(structType interface{}) *SysexCommandExtendedAnalog {
-	castFunc := func(typ interface{}) *SysexCommandExtendedAnalog {
-		if casted, ok := typ.(SysexCommandExtendedAnalog); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandExtendedAnalog); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandExtendedAnalog(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandExtendedAnalog(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandExtendedAnalog); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandExtendedAnalog); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandExtendedAnalog(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandExtendedAnalog(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandExtendedAnalog) GetTypeName() string {

@@ -123,22 +123,19 @@ func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyI
 }
 
 func CastMPropReadCon(structType interface{}) *MPropReadCon {
-	castFunc := func(typ interface{}) *MPropReadCon {
-		if casted, ok := typ.(MPropReadCon); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropReadCon); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropReadCon(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropReadCon(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropReadCon); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropReadCon); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropReadCon(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropReadCon(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropReadCon) GetTypeName() string {

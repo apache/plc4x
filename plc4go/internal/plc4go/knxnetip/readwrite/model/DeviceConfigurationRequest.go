@@ -91,22 +91,19 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceCo
 }
 
 func CastDeviceConfigurationRequest(structType interface{}) *DeviceConfigurationRequest {
-	castFunc := func(typ interface{}) *DeviceConfigurationRequest {
-		if casted, ok := typ.(DeviceConfigurationRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceConfigurationRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDeviceConfigurationRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDeviceConfigurationRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DeviceConfigurationRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceConfigurationRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDeviceConfigurationRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDeviceConfigurationRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DeviceConfigurationRequest) GetTypeName() string {

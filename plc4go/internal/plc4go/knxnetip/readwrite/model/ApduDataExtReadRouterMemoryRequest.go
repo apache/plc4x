@@ -75,22 +75,19 @@ func NewApduDataExtReadRouterMemoryRequest(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtReadRouterMemoryRequest(structType interface{}) *ApduDataExtReadRouterMemoryRequest {
-	castFunc := func(typ interface{}) *ApduDataExtReadRouterMemoryRequest {
-		if casted, ok := typ.(ApduDataExtReadRouterMemoryRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtReadRouterMemoryRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtReadRouterMemoryRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtReadRouterMemoryRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtReadRouterMemoryRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtReadRouterMemoryRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtReadRouterMemoryRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtReadRouterMemoryRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtReadRouterMemoryRequest) GetTypeName() string {

@@ -99,16 +99,13 @@ func NewBACnetDeviceObjectPropertyReference(openingTag *BACnetOpeningTag, object
 }
 
 func CastBACnetDeviceObjectPropertyReference(structType interface{}) *BACnetDeviceObjectPropertyReference {
-	castFunc := func(typ interface{}) *BACnetDeviceObjectPropertyReference {
-		if casted, ok := typ.(BACnetDeviceObjectPropertyReference); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetDeviceObjectPropertyReference); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetDeviceObjectPropertyReference); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetDeviceObjectPropertyReference); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetDeviceObjectPropertyReference) GetTypeName() string {

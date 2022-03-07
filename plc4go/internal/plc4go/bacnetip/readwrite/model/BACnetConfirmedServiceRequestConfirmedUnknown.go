@@ -84,22 +84,19 @@ func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len u
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedUnknown(structType interface{}) *BACnetConfirmedServiceRequestConfirmedUnknown {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedUnknown {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedUnknown); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedUnknown); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedUnknown); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestConfirmedUnknown); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestConfirmedUnknown(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetTypeName() string {

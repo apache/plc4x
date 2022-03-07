@@ -97,16 +97,13 @@ func NewBACnetPropertyStates(openingTag *BACnetOpeningTag, peekedTagHeader *BACn
 }
 
 func CastBACnetPropertyStates(structType interface{}) *BACnetPropertyStates {
-	castFunc := func(typ interface{}) *BACnetPropertyStates {
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStates) GetTypeName() string {

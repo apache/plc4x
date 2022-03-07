@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestCreateObject(len uint16) *BACnetConfirmedSe
 }
 
 func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) *BACnetConfirmedServiceRequestCreateObject {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestCreateObject {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestCreateObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestCreateObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestCreateObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestCreateObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestCreateObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestCreateObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestCreateObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestCreateObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestCreateObject) GetTypeName() string {

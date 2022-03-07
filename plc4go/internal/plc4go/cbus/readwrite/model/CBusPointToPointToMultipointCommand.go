@@ -90,16 +90,13 @@ func NewCBusPointToPointToMultipointCommand(bridgeAddress *BridgeAddress, networ
 }
 
 func CastCBusPointToPointToMultipointCommand(structType interface{}) *CBusPointToPointToMultipointCommand {
-	castFunc := func(typ interface{}) *CBusPointToPointToMultipointCommand {
-		if casted, ok := typ.(CBusPointToPointToMultipointCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToPointToMultipointCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToPointToMultipointCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToPointToMultipointCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusPointToPointToMultipointCommand) GetTypeName() string {

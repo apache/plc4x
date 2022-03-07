@@ -83,22 +83,19 @@ func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 func CastEipConnectionRequest(structType interface{}) *EipConnectionRequest {
-	castFunc := func(typ interface{}) *EipConnectionRequest {
-		if casted, ok := typ.(EipConnectionRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*EipConnectionRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(EipPacket); ok {
-			return CastEipConnectionRequest(casted.Child)
-		}
-		if casted, ok := typ.(*EipPacket); ok {
-			return CastEipConnectionRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(EipConnectionRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*EipConnectionRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(EipPacket); ok {
+		return CastEipConnectionRequest(casted.Child)
+	}
+	if casted, ok := structType.(*EipPacket); ok {
+		return CastEipConnectionRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *EipConnectionRequest) GetTypeName() string {

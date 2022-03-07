@@ -73,16 +73,13 @@ func NewDF1Symbol() *DF1Symbol {
 }
 
 func CastDF1Symbol(structType interface{}) *DF1Symbol {
-	castFunc := func(typ interface{}) *DF1Symbol {
-		if casted, ok := typ.(DF1Symbol); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1Symbol); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1Symbol); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1Symbol); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DF1Symbol) GetTypeName() string {

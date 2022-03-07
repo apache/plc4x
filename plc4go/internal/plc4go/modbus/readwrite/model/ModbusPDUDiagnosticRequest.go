@@ -104,22 +104,19 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *ModbusPDU {
 }
 
 func CastModbusPDUDiagnosticRequest(structType interface{}) *ModbusPDUDiagnosticRequest {
-	castFunc := func(typ interface{}) *ModbusPDUDiagnosticRequest {
-		if casted, ok := typ.(ModbusPDUDiagnosticRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUDiagnosticRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUDiagnosticRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUDiagnosticRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUDiagnosticRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUDiagnosticRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUDiagnosticRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUDiagnosticRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUDiagnosticRequest) GetTypeName() string {

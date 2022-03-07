@@ -75,22 +75,19 @@ func NewCALReplyReply(isA *CALReply, magicByte byte) *Reply {
 }
 
 func CastCALReplyReply(structType interface{}) *CALReplyReply {
-	castFunc := func(typ interface{}) *CALReplyReply {
-		if casted, ok := typ.(CALReplyReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALReplyReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastCALReplyReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastCALReplyReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALReplyReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALReplyReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastCALReplyReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastCALReplyReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALReplyReply) GetTypeName() string {

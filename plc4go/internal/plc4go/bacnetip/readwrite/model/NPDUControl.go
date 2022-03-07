@@ -89,16 +89,13 @@ func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sou
 }
 
 func CastNPDUControl(structType interface{}) *NPDUControl {
-	castFunc := func(typ interface{}) *NPDUControl {
-		if casted, ok := typ.(NPDUControl); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NPDUControl); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NPDUControl); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NPDUControl); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NPDUControl) GetTypeName() string {

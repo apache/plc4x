@@ -68,16 +68,13 @@ func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) 
 }
 
 func CastNetworkProtocolControlInformation(structType interface{}) *NetworkProtocolControlInformation {
-	castFunc := func(typ interface{}) *NetworkProtocolControlInformation {
-		if casted, ok := typ.(NetworkProtocolControlInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NetworkProtocolControlInformation); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NetworkProtocolControlInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NetworkProtocolControlInformation); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NetworkProtocolControlInformation) GetTypeName() string {

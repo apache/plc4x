@@ -74,16 +74,13 @@ func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCo
 }
 
 func CastDeviceConfigurationAckDataBlock(structType interface{}) *DeviceConfigurationAckDataBlock {
-	castFunc := func(typ interface{}) *DeviceConfigurationAckDataBlock {
-		if casted, ok := typ.(DeviceConfigurationAckDataBlock); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceConfigurationAckDataBlock); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DeviceConfigurationAckDataBlock); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceConfigurationAckDataBlock); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DeviceConfigurationAckDataBlock) GetTypeName() string {

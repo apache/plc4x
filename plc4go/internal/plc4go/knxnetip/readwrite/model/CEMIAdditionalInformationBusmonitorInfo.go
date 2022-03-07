@@ -125,22 +125,19 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 }
 
 func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) *CEMIAdditionalInformationBusmonitorInfo {
-	castFunc := func(typ interface{}) *CEMIAdditionalInformationBusmonitorInfo {
-		if casted, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CEMIAdditionalInformationBusmonitorInfo); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMIAdditionalInformation); ok {
-			return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
-		}
-		if casted, ok := typ.(*CEMIAdditionalInformation); ok {
-			return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CEMIAdditionalInformationBusmonitorInfo); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CEMIAdditionalInformationBusmonitorInfo); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMIAdditionalInformation); ok {
+		return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
+	}
+	if casted, ok := structType.(*CEMIAdditionalInformation); ok {
+		return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
+	}
+	return nil
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {

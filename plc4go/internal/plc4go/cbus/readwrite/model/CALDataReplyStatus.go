@@ -98,22 +98,19 @@ func NewCALDataReplyStatus(application ApplicationIdContainer, blockStart uint8,
 }
 
 func CastCALDataReplyStatus(structType interface{}) *CALDataReplyStatus {
-	castFunc := func(typ interface{}) *CALDataReplyStatus {
-		if casted, ok := typ.(CALDataReplyStatus); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataReplyStatus); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataReplyStatus(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataReplyStatus(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataReplyStatus); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataReplyStatus); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataReplyStatus(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataReplyStatus(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataReplyStatus) GetTypeName() string {

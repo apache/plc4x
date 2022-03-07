@@ -88,22 +88,19 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status) *KnxNetI
 }
 
 func CastDisconnectResponse(structType interface{}) *DisconnectResponse {
-	castFunc := func(typ interface{}) *DisconnectResponse {
-		if casted, ok := typ.(DisconnectResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DisconnectResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDisconnectResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDisconnectResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DisconnectResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DisconnectResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDisconnectResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDisconnectResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *DisconnectResponse) GetTypeName() string {

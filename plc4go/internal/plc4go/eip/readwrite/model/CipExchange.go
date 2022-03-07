@@ -69,16 +69,13 @@ func NewCipExchange(service *CipService, exchangeLen uint16) *CipExchange {
 }
 
 func CastCipExchange(structType interface{}) *CipExchange {
-	castFunc := func(typ interface{}) *CipExchange {
-		if casted, ok := typ.(CipExchange); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipExchange); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CipExchange); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipExchange); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CipExchange) GetTypeName() string {

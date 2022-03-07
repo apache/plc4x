@@ -104,22 +104,19 @@ func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *
 }
 
 func CastSysexCommandPinStateResponse(structType interface{}) *SysexCommandPinStateResponse {
-	castFunc := func(typ interface{}) *SysexCommandPinStateResponse {
-		if casted, ok := typ.(SysexCommandPinStateResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandPinStateResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandPinStateResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandPinStateResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandPinStateResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandPinStateResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandPinStateResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandPinStateResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandPinStateResponse) GetTypeName() string {

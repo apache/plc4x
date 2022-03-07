@@ -89,22 +89,19 @@ func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize
 }
 
 func CastS7MessageObjectResponse(structType interface{}) *S7MessageObjectResponse {
-	castFunc := func(typ interface{}) *S7MessageObjectResponse {
-		if casted, ok := typ.(S7MessageObjectResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7MessageObjectResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7DataAlarmMessage); ok {
-			return CastS7MessageObjectResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7DataAlarmMessage); ok {
-			return CastS7MessageObjectResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7MessageObjectResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7MessageObjectResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7DataAlarmMessage); ok {
+		return CastS7MessageObjectResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7DataAlarmMessage); ok {
+		return CastS7MessageObjectResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7MessageObjectResponse) GetTypeName() string {

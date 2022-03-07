@@ -76,22 +76,19 @@ func NewBACnetConfirmedServiceRequestGetEventInformation(len uint16) *BACnetConf
 }
 
 func CastBACnetConfirmedServiceRequestGetEventInformation(structType interface{}) *BACnetConfirmedServiceRequestGetEventInformation {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestGetEventInformation {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestGetEventInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestGetEventInformation); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestGetEventInformation(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-			return CastBACnetConfirmedServiceRequestGetEventInformation(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEventInformation); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestGetEventInformation); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestGetEventInformation(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
+		return CastBACnetConfirmedServiceRequestGetEventInformation(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string {

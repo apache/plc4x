@@ -120,16 +120,13 @@ func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData *CALData,
 }
 
 func CastCBusPointToPointCommand(structType interface{}) *CBusPointToPointCommand {
-	castFunc := func(typ interface{}) *CBusPointToPointCommand {
-		if casted, ok := typ.(CBusPointToPointCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToPointCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToPointCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToPointCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusPointToPointCommand) GetTypeName() string {

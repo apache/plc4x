@@ -72,22 +72,19 @@ func NewApduControlDisconnect() *ApduControl {
 }
 
 func CastApduControlDisconnect(structType interface{}) *ApduControlDisconnect {
-	castFunc := func(typ interface{}) *ApduControlDisconnect {
-		if casted, ok := typ.(ApduControlDisconnect); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlDisconnect); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduControl); ok {
-			return CastApduControlDisconnect(casted.Child)
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return CastApduControlDisconnect(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlDisconnect); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlDisconnect); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduControl); ok {
+		return CastApduControlDisconnect(casted.Child)
+	}
+	if casted, ok := structType.(*ApduControl); ok {
+		return CastApduControlDisconnect(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlDisconnect) GetTypeName() string {

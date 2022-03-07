@@ -116,16 +116,13 @@ func NewAmsPacket(targetAmsNetId *AmsNetId, targetAmsPort uint16, sourceAmsNetId
 }
 
 func CastAmsPacket(structType interface{}) *AmsPacket {
-	castFunc := func(typ interface{}) *AmsPacket {
-		if casted, ok := typ.(AmsPacket); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsPacket); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsPacket); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsPacket); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsPacket) GetTypeName() string {

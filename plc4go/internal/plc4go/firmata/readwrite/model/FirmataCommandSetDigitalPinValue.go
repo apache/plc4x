@@ -92,22 +92,19 @@ func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *Fir
 }
 
 func CastFirmataCommandSetDigitalPinValue(structType interface{}) *FirmataCommandSetDigitalPinValue {
-	castFunc := func(typ interface{}) *FirmataCommandSetDigitalPinValue {
-		if casted, ok := typ.(FirmataCommandSetDigitalPinValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSetDigitalPinValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSetDigitalPinValue(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSetDigitalPinValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSetDigitalPinValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSetDigitalPinValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSetDigitalPinValue(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSetDigitalPinValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) GetTypeName() string {

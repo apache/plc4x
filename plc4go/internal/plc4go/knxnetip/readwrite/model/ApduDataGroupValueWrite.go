@@ -91,22 +91,19 @@ func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint
 }
 
 func CastApduDataGroupValueWrite(structType interface{}) *ApduDataGroupValueWrite {
-	castFunc := func(typ interface{}) *ApduDataGroupValueWrite {
-		if casted, ok := typ.(ApduDataGroupValueWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataGroupValueWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataGroupValueWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataGroupValueWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataGroupValueWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataGroupValueWrite) GetTypeName() string {

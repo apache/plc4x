@@ -67,16 +67,13 @@ func NewNetworkRoute(routeType RouteType, additionalBridgeAddresses []*BridgeAdd
 }
 
 func CastNetworkRoute(structType interface{}) *NetworkRoute {
-	castFunc := func(typ interface{}) *NetworkRoute {
-		if casted, ok := typ.(NetworkRoute); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NetworkRoute); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NetworkRoute); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NetworkRoute); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NetworkRoute) GetTypeName() string {

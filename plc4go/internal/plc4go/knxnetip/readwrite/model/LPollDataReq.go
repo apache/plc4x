@@ -75,22 +75,19 @@ func NewLPollDataReq(size uint16) *CEMI {
 }
 
 func CastLPollDataReq(structType interface{}) *LPollDataReq {
-	castFunc := func(typ interface{}) *LPollDataReq {
-		if casted, ok := typ.(LPollDataReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LPollDataReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLPollDataReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLPollDataReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LPollDataReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LPollDataReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLPollDataReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLPollDataReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *LPollDataReq) GetTypeName() string {

@@ -131,22 +131,19 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress *UnitAddress, bridgeAdd
 }
 
 func CastCALReplyLong(structType interface{}) *CALReplyLong {
-	castFunc := func(typ interface{}) *CALReplyLong {
-		if casted, ok := typ.(CALReplyLong); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALReplyLong); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALReply); ok {
-			return CastCALReplyLong(casted.Child)
-		}
-		if casted, ok := typ.(*CALReply); ok {
-			return CastCALReplyLong(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALReplyLong); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALReplyLong); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALReply); ok {
+		return CastCALReplyLong(casted.Child)
+	}
+	if casted, ok := structType.(*CALReply); ok {
+		return CastCALReplyLong(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALReplyLong) GetTypeName() string {

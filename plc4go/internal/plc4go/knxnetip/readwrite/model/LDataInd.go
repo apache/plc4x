@@ -99,22 +99,19 @@ func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEM
 }
 
 func CastLDataInd(structType interface{}) *LDataInd {
-	castFunc := func(typ interface{}) *LDataInd {
-		if casted, ok := typ.(LDataInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLDataInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLDataInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLDataInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLDataInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataInd) GetTypeName() string {

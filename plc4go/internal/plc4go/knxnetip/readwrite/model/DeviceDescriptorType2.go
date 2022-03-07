@@ -123,16 +123,13 @@ func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version 
 }
 
 func CastDeviceDescriptorType2(structType interface{}) *DeviceDescriptorType2 {
-	castFunc := func(typ interface{}) *DeviceDescriptorType2 {
-		if casted, ok := typ.(DeviceDescriptorType2); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceDescriptorType2); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DeviceDescriptorType2); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceDescriptorType2); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DeviceDescriptorType2) GetTypeName() string {

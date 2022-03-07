@@ -73,16 +73,13 @@ func NewReply(magicByte byte) *Reply {
 }
 
 func CastReply(structType interface{}) *Reply {
-	castFunc := func(typ interface{}) *Reply {
-		if casted, ok := typ.(Reply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Reply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Reply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Reply) GetTypeName() string {

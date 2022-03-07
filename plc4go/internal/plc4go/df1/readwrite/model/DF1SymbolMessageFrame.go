@@ -101,22 +101,19 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 }
 
 func CastDF1SymbolMessageFrame(structType interface{}) *DF1SymbolMessageFrame {
-	castFunc := func(typ interface{}) *DF1SymbolMessageFrame {
-		if casted, ok := typ.(DF1SymbolMessageFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1SymbolMessageFrame); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1Symbol); ok {
-			return CastDF1SymbolMessageFrame(casted.Child)
-		}
-		if casted, ok := typ.(*DF1Symbol); ok {
-			return CastDF1SymbolMessageFrame(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1SymbolMessageFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1SymbolMessageFrame); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1Symbol); ok {
+		return CastDF1SymbolMessageFrame(casted.Child)
+	}
+	if casted, ok := structType.(*DF1Symbol); ok {
+		return CastDF1SymbolMessageFrame(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1SymbolMessageFrame) GetTypeName() string {

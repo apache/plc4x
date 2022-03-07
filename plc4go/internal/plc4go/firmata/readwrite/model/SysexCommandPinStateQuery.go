@@ -88,22 +88,19 @@ func NewSysexCommandPinStateQuery(pin uint8) *SysexCommand {
 }
 
 func CastSysexCommandPinStateQuery(structType interface{}) *SysexCommandPinStateQuery {
-	castFunc := func(typ interface{}) *SysexCommandPinStateQuery {
-		if casted, ok := typ.(SysexCommandPinStateQuery); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandPinStateQuery); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandPinStateQuery(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandPinStateQuery(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandPinStateQuery); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandPinStateQuery); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandPinStateQuery(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandPinStateQuery(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandPinStateQuery) GetTypeName() string {

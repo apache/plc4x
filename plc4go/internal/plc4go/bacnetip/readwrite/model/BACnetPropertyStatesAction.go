@@ -88,22 +88,19 @@ func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeni
 }
 
 func CastBACnetPropertyStatesAction(structType interface{}) *BACnetPropertyStatesAction {
-	castFunc := func(typ interface{}) *BACnetPropertyStatesAction {
-		if casted, ok := typ.(BACnetPropertyStatesAction); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStatesAction); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesAction(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesAction(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStatesAction); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStatesAction); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesAction(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesAction(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStatesAction) GetTypeName() string {

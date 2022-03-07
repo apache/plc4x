@@ -91,22 +91,19 @@ func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, tran
 }
 
 func CastDF1UnprotectedReadRequest(structType interface{}) *DF1UnprotectedReadRequest {
-	castFunc := func(typ interface{}) *DF1UnprotectedReadRequest {
-		if casted, ok := typ.(DF1UnprotectedReadRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1UnprotectedReadRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1Command); ok {
-			return CastDF1UnprotectedReadRequest(casted.Child)
-		}
-		if casted, ok := typ.(*DF1Command); ok {
-			return CastDF1UnprotectedReadRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1UnprotectedReadRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1UnprotectedReadRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1Command); ok {
+		return CastDF1UnprotectedReadRequest(casted.Child)
+	}
+	if casted, ok := structType.(*DF1Command); ok {
+		return CastDF1UnprotectedReadRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1UnprotectedReadRequest) GetTypeName() string {

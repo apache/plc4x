@@ -74,16 +74,13 @@ func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data
 }
 
 func CastAdsNotificationSample(structType interface{}) *AdsNotificationSample {
-	castFunc := func(typ interface{}) *AdsNotificationSample {
-		if casted, ok := typ.(AdsNotificationSample); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsNotificationSample); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsNotificationSample); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsNotificationSample); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsNotificationSample) GetTypeName() string {

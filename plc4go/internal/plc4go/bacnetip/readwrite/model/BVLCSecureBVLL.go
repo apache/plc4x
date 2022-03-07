@@ -72,22 +72,19 @@ func NewBVLCSecureBVLL() *BVLC {
 }
 
 func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {
-	castFunc := func(typ interface{}) *BVLCSecureBVLL {
-		if casted, ok := typ.(BVLCSecureBVLL); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCSecureBVLL); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCSecureBVLL); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCSecureBVLL); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCSecureBVLL(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCSecureBVLL(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCSecureBVLL) GetTypeName() string {

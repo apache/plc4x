@@ -96,22 +96,19 @@ func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *ModbusPDU {
 }
 
 func CastModbusPDUReadFifoQueueResponse(structType interface{}) *ModbusPDUReadFifoQueueResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadFifoQueueResponse {
-		if casted, ok := typ.(ModbusPDUReadFifoQueueResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadFifoQueueResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadFifoQueueResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadFifoQueueResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadFifoQueueResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadFifoQueueResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadFifoQueueResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadFifoQueueResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) GetTypeName() string {

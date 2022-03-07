@@ -67,16 +67,13 @@ func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber ui
 }
 
 func CastProjectInstallationIdentifier(structType interface{}) *ProjectInstallationIdentifier {
-	castFunc := func(typ interface{}) *ProjectInstallationIdentifier {
-		if casted, ok := typ.(ProjectInstallationIdentifier); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ProjectInstallationIdentifier); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ProjectInstallationIdentifier); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ProjectInstallationIdentifier); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ProjectInstallationIdentifier) GetTypeName() string {

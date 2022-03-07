@@ -88,22 +88,19 @@ func NewMultipleServiceRequest(data *Services, serviceLen uint16) *CipService {
 }
 
 func CastMultipleServiceRequest(structType interface{}) *MultipleServiceRequest {
-	castFunc := func(typ interface{}) *MultipleServiceRequest {
-		if casted, ok := typ.(MultipleServiceRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MultipleServiceRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastMultipleServiceRequest(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastMultipleServiceRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MultipleServiceRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MultipleServiceRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastMultipleServiceRequest(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastMultipleServiceRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *MultipleServiceRequest) GetTypeName() string {

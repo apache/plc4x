@@ -75,22 +75,19 @@ func NewMResetReq(size uint16) *CEMI {
 }
 
 func CastMResetReq(structType interface{}) *MResetReq {
-	castFunc := func(typ interface{}) *MResetReq {
-		if casted, ok := typ.(MResetReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MResetReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMResetReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMResetReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MResetReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MResetReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMResetReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMResetReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MResetReq) GetTypeName() string {

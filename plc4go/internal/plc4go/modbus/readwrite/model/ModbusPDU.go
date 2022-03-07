@@ -73,16 +73,13 @@ func NewModbusPDU() *ModbusPDU {
 }
 
 func CastModbusPDU(structType interface{}) *ModbusPDU {
-	castFunc := func(typ interface{}) *ModbusPDU {
-		if casted, ok := typ.(ModbusPDU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusPDU) GetTypeName() string {

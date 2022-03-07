@@ -100,16 +100,13 @@ func NewExtendedFormatStatusReply(statusHeader *ExtendedStatusHeader, coding Sta
 }
 
 func CastExtendedFormatStatusReply(structType interface{}) *ExtendedFormatStatusReply {
-	castFunc := func(typ interface{}) *ExtendedFormatStatusReply {
-		if casted, ok := typ.(ExtendedFormatStatusReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ExtendedFormatStatusReply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ExtendedFormatStatusReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ExtendedFormatStatusReply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ExtendedFormatStatusReply) GetTypeName() string {

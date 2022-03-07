@@ -108,22 +108,19 @@ func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode,
 }
 
 func CastCipReadResponse(structType interface{}) *CipReadResponse {
-	castFunc := func(typ interface{}) *CipReadResponse {
-		if casted, ok := typ.(CipReadResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CipReadResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CipService); ok {
-			return CastCipReadResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CipService); ok {
-			return CastCipReadResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CipReadResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CipReadResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CipService); ok {
+		return CastCipReadResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CipService); ok {
+		return CastCipReadResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *CipReadResponse) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewTDataConnectedInd(size uint16) *CEMI {
 }
 
 func CastTDataConnectedInd(structType interface{}) *TDataConnectedInd {
-	castFunc := func(typ interface{}) *TDataConnectedInd {
-		if casted, ok := typ.(TDataConnectedInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TDataConnectedInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastTDataConnectedInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastTDataConnectedInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TDataConnectedInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TDataConnectedInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastTDataConnectedInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastTDataConnectedInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *TDataConnectedInd) GetTypeName() string {

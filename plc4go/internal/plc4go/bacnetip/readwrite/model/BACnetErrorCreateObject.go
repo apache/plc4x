@@ -75,22 +75,19 @@ func NewBACnetErrorCreateObject(errorClass *BACnetApplicationTagEnumerated, erro
 }
 
 func CastBACnetErrorCreateObject(structType interface{}) *BACnetErrorCreateObject {
-	castFunc := func(typ interface{}) *BACnetErrorCreateObject {
-		if casted, ok := typ.(BACnetErrorCreateObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorCreateObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorCreateObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorCreateObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorCreateObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorCreateObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorCreateObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorCreateObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorCreateObject) GetTypeName() string {

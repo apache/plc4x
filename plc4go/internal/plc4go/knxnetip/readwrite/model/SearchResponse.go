@@ -96,22 +96,19 @@ func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *
 }
 
 func CastSearchResponse(structType interface{}) *SearchResponse {
-	castFunc := func(typ interface{}) *SearchResponse {
-		if casted, ok := typ.(SearchResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SearchResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastSearchResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastSearchResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SearchResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SearchResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastSearchResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastSearchResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SearchResponse) GetTypeName() string {

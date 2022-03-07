@@ -73,16 +73,13 @@ func NewStatusRequest(statusType byte) *StatusRequest {
 }
 
 func CastStatusRequest(structType interface{}) *StatusRequest {
-	castFunc := func(typ interface{}) *StatusRequest {
-		if casted, ok := typ.(StatusRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StatusRequest); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(StatusRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StatusRequest); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *StatusRequest) GetTypeName() string {

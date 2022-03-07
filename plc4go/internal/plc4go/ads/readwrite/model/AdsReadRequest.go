@@ -104,22 +104,19 @@ func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *Ad
 }
 
 func CastAdsReadRequest(structType interface{}) *AdsReadRequest {
-	castFunc := func(typ interface{}) *AdsReadRequest {
-		if casted, ok := typ.(AdsReadRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsReadRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsReadRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsReadRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsReadRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsReadRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsReadRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsReadRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsReadRequest) GetTypeName() string {

@@ -74,22 +74,19 @@ func NewNotTransmittedCorruption(alpha *Alpha) *Confirmation {
 }
 
 func CastNotTransmittedCorruption(structType interface{}) *NotTransmittedCorruption {
-	castFunc := func(typ interface{}) *NotTransmittedCorruption {
-		if casted, ok := typ.(NotTransmittedCorruption); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NotTransmittedCorruption); ok {
-			return casted
-		}
-		if casted, ok := typ.(Confirmation); ok {
-			return CastNotTransmittedCorruption(casted.Child)
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return CastNotTransmittedCorruption(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NotTransmittedCorruption); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NotTransmittedCorruption); ok {
+		return casted
+	}
+	if casted, ok := structType.(Confirmation); ok {
+		return CastNotTransmittedCorruption(casted.Child)
+	}
+	if casted, ok := structType.(*Confirmation); ok {
+		return CastNotTransmittedCorruption(casted.Child)
+	}
+	return nil
 }
 
 func (m *NotTransmittedCorruption) GetTypeName() string {

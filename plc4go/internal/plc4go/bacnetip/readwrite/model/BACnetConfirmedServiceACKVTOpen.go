@@ -72,22 +72,19 @@ func NewBACnetConfirmedServiceACKVTOpen() *BACnetConfirmedServiceACK {
 }
 
 func CastBACnetConfirmedServiceACKVTOpen(structType interface{}) *BACnetConfirmedServiceACKVTOpen {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKVTOpen {
-		if casted, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceACKVTOpen); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceACKVTOpen); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConfirmedServiceACK); ok {
+		return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) GetTypeName() string {

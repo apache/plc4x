@@ -105,22 +105,19 @@ func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIde
 }
 
 func CastBACnetServiceAckReadProperty(structType interface{}) *BACnetServiceAckReadProperty {
-	castFunc := func(typ interface{}) *BACnetServiceAckReadProperty {
-		if casted, ok := typ.(BACnetServiceAckReadProperty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckReadProperty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadProperty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckReadProperty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckReadProperty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckReadProperty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadProperty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckReadProperty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckReadProperty) GetTypeName() string {

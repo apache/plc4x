@@ -128,22 +128,19 @@ func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag *BACnetOpening
 }
 
 func CastBACnetNotificationParametersFloatingLimit(structType interface{}) *BACnetNotificationParametersFloatingLimit {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersFloatingLimit {
-		if casted, ok := typ.(BACnetNotificationParametersFloatingLimit); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersFloatingLimit); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersFloatingLimit(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersFloatingLimit(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersFloatingLimit); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersFloatingLimit); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersFloatingLimit(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersFloatingLimit(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersFloatingLimit) GetTypeName() string {

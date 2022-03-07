@@ -99,22 +99,19 @@ func NewS7PayloadNotify(alarmMessage *AlarmMessagePushType, returnCode DataTrans
 }
 
 func CastS7PayloadNotify(structType interface{}) *S7PayloadNotify {
-	castFunc := func(typ interface{}) *S7PayloadNotify {
-		if casted, ok := typ.(S7PayloadNotify); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadNotify); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return CastS7PayloadNotify(casted.Child)
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return CastS7PayloadNotify(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadNotify); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadNotify); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return CastS7PayloadNotify(casted.Child)
+	}
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return CastS7PayloadNotify(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadNotify) GetTypeName() string {

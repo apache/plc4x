@@ -83,22 +83,19 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *COTPParameter 
 }
 
 func CastCOTPParameterTpduSize(structType interface{}) *COTPParameterTpduSize {
-	castFunc := func(typ interface{}) *COTPParameterTpduSize {
-		if casted, ok := typ.(COTPParameterTpduSize); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameterTpduSize); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPParameter); ok {
-			return CastCOTPParameterTpduSize(casted.Child)
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return CastCOTPParameterTpduSize(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPParameterTpduSize); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameterTpduSize); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPParameter); ok {
+		return CastCOTPParameterTpduSize(casted.Child)
+	}
+	if casted, ok := structType.(*COTPParameter); ok {
+		return CastCOTPParameterTpduSize(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPParameterTpduSize) GetTypeName() string {

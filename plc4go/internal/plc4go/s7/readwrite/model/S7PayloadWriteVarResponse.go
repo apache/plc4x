@@ -91,22 +91,19 @@ func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, parameter S7P
 }
 
 func CastS7PayloadWriteVarResponse(structType interface{}) *S7PayloadWriteVarResponse {
-	castFunc := func(typ interface{}) *S7PayloadWriteVarResponse {
-		if casted, ok := typ.(S7PayloadWriteVarResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadWriteVarResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Payload); ok {
-			return CastS7PayloadWriteVarResponse(casted.Child)
-		}
-		if casted, ok := typ.(*S7Payload); ok {
-			return CastS7PayloadWriteVarResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadWriteVarResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadWriteVarResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Payload); ok {
+		return CastS7PayloadWriteVarResponse(casted.Child)
+	}
+	if casted, ok := structType.(*S7Payload); ok {
+		return CastS7PayloadWriteVarResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadWriteVarResponse) GetTypeName() string {

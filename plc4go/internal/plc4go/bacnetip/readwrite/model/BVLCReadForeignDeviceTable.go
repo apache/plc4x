@@ -72,22 +72,19 @@ func NewBVLCReadForeignDeviceTable() *BVLC {
 }
 
 func CastBVLCReadForeignDeviceTable(structType interface{}) *BVLCReadForeignDeviceTable {
-	castFunc := func(typ interface{}) *BVLCReadForeignDeviceTable {
-		if casted, ok := typ.(BVLCReadForeignDeviceTable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCReadForeignDeviceTable); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCReadForeignDeviceTable(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCReadForeignDeviceTable(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BVLCReadForeignDeviceTable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLCReadForeignDeviceTable); ok {
+		return casted
+	}
+	if casted, ok := structType.(BVLC); ok {
+		return CastBVLCReadForeignDeviceTable(casted.Child)
+	}
+	if casted, ok := structType.(*BVLC); ok {
+		return CastBVLCReadForeignDeviceTable(casted.Child)
+	}
+	return nil
 }
 
 func (m *BVLCReadForeignDeviceTable) GetTypeName() string {

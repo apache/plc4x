@@ -134,22 +134,19 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 }
 
 func CastLDataExtended(structType interface{}) *LDataExtended {
-	castFunc := func(typ interface{}) *LDataExtended {
-		if casted, ok := typ.(LDataExtended); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LDataExtended); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLDataExtended(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLDataExtended(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LDataExtended); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LDataExtended); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLDataExtended(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLDataExtended(casted.Child)
+	}
+	return nil
 }
 
 func (m *LDataExtended) GetTypeName() string {

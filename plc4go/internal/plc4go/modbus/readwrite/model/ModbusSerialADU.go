@@ -70,16 +70,13 @@ func NewModbusSerialADU(address uint8, pdu *ModbusPDU, response bool) *ModbusSer
 }
 
 func CastModbusSerialADU(structType interface{}) *ModbusSerialADU {
-	castFunc := func(typ interface{}) *ModbusSerialADU {
-		if casted, ok := typ.(ModbusSerialADU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusSerialADU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ModbusSerialADU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusSerialADU); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ModbusSerialADU) GetTypeName() string {

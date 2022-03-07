@@ -111,22 +111,19 @@ func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpecte
 }
 
 func CastLPollData(structType interface{}) *LPollData {
-	castFunc := func(typ interface{}) *LPollData {
-		if casted, ok := typ.(LPollData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LPollData); ok {
-			return casted
-		}
-		if casted, ok := typ.(LDataFrame); ok {
-			return CastLPollData(casted.Child)
-		}
-		if casted, ok := typ.(*LDataFrame); ok {
-			return CastLPollData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LPollData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LPollData); ok {
+		return casted
+	}
+	if casted, ok := structType.(LDataFrame); ok {
+		return CastLPollData(casted.Child)
+	}
+	if casted, ok := structType.(*LDataFrame); ok {
+		return CastLPollData(casted.Child)
+	}
+	return nil
 }
 
 func (m *LPollData) GetTypeName() string {

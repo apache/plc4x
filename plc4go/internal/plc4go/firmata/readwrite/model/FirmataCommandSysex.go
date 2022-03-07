@@ -84,22 +84,19 @@ func NewFirmataCommandSysex(command *SysexCommand, response bool) *FirmataComman
 }
 
 func CastFirmataCommandSysex(structType interface{}) *FirmataCommandSysex {
-	castFunc := func(typ interface{}) *FirmataCommandSysex {
-		if casted, ok := typ.(FirmataCommandSysex); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSysex); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSysex(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSysex(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSysex); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSysex); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSysex(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSysex(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSysex) GetTypeName() string {

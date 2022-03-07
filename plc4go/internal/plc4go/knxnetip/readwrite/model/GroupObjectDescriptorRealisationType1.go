@@ -110,16 +110,13 @@ func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable 
 }
 
 func CastGroupObjectDescriptorRealisationType1(structType interface{}) *GroupObjectDescriptorRealisationType1 {
-	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationType1 {
-		if casted, ok := typ.(GroupObjectDescriptorRealisationType1); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*GroupObjectDescriptorRealisationType1); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(GroupObjectDescriptorRealisationType1); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*GroupObjectDescriptorRealisationType1); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *GroupObjectDescriptorRealisationType1) GetTypeName() string {

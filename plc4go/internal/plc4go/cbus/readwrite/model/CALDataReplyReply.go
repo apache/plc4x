@@ -90,22 +90,19 @@ func NewCALDataReplyReply(paramNumber uint8, data []byte, commandTypeContainer C
 }
 
 func CastCALDataReplyReply(structType interface{}) *CALDataReplyReply {
-	castFunc := func(typ interface{}) *CALDataReplyReply {
-		if casted, ok := typ.(CALDataReplyReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataReplyReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataReplyReply(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataReplyReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataReplyReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataReplyReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataReplyReply(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataReplyReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataReplyReply) GetTypeName() string {

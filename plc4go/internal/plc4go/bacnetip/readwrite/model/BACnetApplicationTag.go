@@ -86,16 +86,13 @@ func NewBACnetApplicationTag(header *BACnetTagHeader) *BACnetApplicationTag {
 }
 
 func CastBACnetApplicationTag(structType interface{}) *BACnetApplicationTag {
-	castFunc := func(typ interface{}) *BACnetApplicationTag {
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTag) GetTypeName() string {

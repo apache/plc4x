@@ -88,22 +88,19 @@ func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPV, openingTag 
 }
 
 func CastBACnetPropertyStatesBinaryValue(structType interface{}) *BACnetPropertyStatesBinaryValue {
-	castFunc := func(typ interface{}) *BACnetPropertyStatesBinaryValue {
-		if casted, ok := typ.(BACnetPropertyStatesBinaryValue); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyStatesBinaryValue); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesBinaryValue(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetPropertyStates); ok {
-			return CastBACnetPropertyStatesBinaryValue(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyStatesBinaryValue); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyStatesBinaryValue); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesBinaryValue(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetPropertyStates); ok {
+		return CastBACnetPropertyStatesBinaryValue(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetPropertyStatesBinaryValue) GetTypeName() string {

@@ -78,16 +78,13 @@ func NewBACnetPropertyValues(innerOpeningTag *BACnetOpeningTag, data []*BACnetPr
 }
 
 func CastBACnetPropertyValues(structType interface{}) *BACnetPropertyValues {
-	castFunc := func(typ interface{}) *BACnetPropertyValues {
-		if casted, ok := typ.(BACnetPropertyValues); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetPropertyValues); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetPropertyValues); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetPropertyValues); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetPropertyValues) GetTypeName() string {

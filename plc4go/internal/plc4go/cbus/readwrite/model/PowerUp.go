@@ -60,16 +60,13 @@ func NewPowerUp() *PowerUp {
 }
 
 func CastPowerUp(structType interface{}) *PowerUp {
-	castFunc := func(typ interface{}) *PowerUp {
-		if casted, ok := typ.(PowerUp); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*PowerUp); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(PowerUp); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*PowerUp); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *PowerUp) GetTypeName() string {

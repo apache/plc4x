@@ -85,22 +85,19 @@ func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress 
 }
 
 func CastDF1CommandRequestMessage(structType interface{}) *DF1CommandRequestMessage {
-	castFunc := func(typ interface{}) *DF1CommandRequestMessage {
-		if casted, ok := typ.(DF1CommandRequestMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1CommandRequestMessage); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1RequestMessage); ok {
-			return CastDF1CommandRequestMessage(casted.Child)
-		}
-		if casted, ok := typ.(*DF1RequestMessage); ok {
-			return CastDF1CommandRequestMessage(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1CommandRequestMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1CommandRequestMessage); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1RequestMessage); ok {
+		return CastDF1CommandRequestMessage(casted.Child)
+	}
+	if casted, ok := structType.(*DF1RequestMessage); ok {
+		return CastDF1CommandRequestMessage(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1CommandRequestMessage) GetTypeName() string {

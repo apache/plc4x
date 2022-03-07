@@ -72,22 +72,19 @@ func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) *BACnetServiceAckGetEnrollmentSummary {
-	castFunc := func(typ interface{}) *BACnetServiceAckGetEnrollmentSummary {
-		if casted, ok := typ.(BACnetServiceAckGetEnrollmentSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckGetEnrollmentSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckGetEnrollmentSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckGetEnrollmentSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckGetEnrollmentSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {

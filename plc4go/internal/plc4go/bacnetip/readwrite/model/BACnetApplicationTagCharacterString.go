@@ -87,22 +87,19 @@ func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterSt
 }
 
 func CastBACnetApplicationTagCharacterString(structType interface{}) *BACnetApplicationTagCharacterString {
-	castFunc := func(typ interface{}) *BACnetApplicationTagCharacterString {
-		if casted, ok := typ.(BACnetApplicationTagCharacterString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagCharacterString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagCharacterString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagCharacterString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagCharacterString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagCharacterString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagCharacterString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagCharacterString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagCharacterString) GetTypeName() string {

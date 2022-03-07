@@ -80,22 +80,19 @@ func NewKnxNetIpRouting(version uint8) *ServiceId {
 }
 
 func CastKnxNetIpRouting(structType interface{}) *KnxNetIpRouting {
-	castFunc := func(typ interface{}) *KnxNetIpRouting {
-		if casted, ok := typ.(KnxNetIpRouting); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetIpRouting); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetIpRouting(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetIpRouting(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetIpRouting); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetIpRouting); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetIpRouting(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetIpRouting(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetIpRouting) GetTypeName() string {

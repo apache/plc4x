@@ -98,16 +98,13 @@ func NewBACnetNotificationParameters(openingTag *BACnetOpeningTag, peekedTagHead
 }
 
 func CastBACnetNotificationParameters(structType interface{}) *BACnetNotificationParameters {
-	castFunc := func(typ interface{}) *BACnetNotificationParameters {
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParameters) GetTypeName() string {

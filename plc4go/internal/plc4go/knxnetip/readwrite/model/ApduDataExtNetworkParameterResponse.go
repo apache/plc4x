@@ -75,22 +75,19 @@ func NewApduDataExtNetworkParameterResponse(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtNetworkParameterResponse(structType interface{}) *ApduDataExtNetworkParameterResponse {
-	castFunc := func(typ interface{}) *ApduDataExtNetworkParameterResponse {
-		if casted, ok := typ.(ApduDataExtNetworkParameterResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtNetworkParameterResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtNetworkParameterResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtNetworkParameterResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtNetworkParameterResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtNetworkParameterResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtNetworkParameterResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtNetworkParameterResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtNetworkParameterResponse) GetTypeName() string {

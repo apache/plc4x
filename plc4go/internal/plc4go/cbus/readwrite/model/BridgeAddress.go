@@ -60,16 +60,13 @@ func NewBridgeAddress(address byte) *BridgeAddress {
 }
 
 func CastBridgeAddress(structType interface{}) *BridgeAddress {
-	castFunc := func(typ interface{}) *BridgeAddress {
-		if casted, ok := typ.(BridgeAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BridgeAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BridgeAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BridgeAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BridgeAddress) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewBACnetErrorRemovedAuthenticate(errorClass *BACnetApplicationTagEnumerate
 }
 
 func CastBACnetErrorRemovedAuthenticate(structType interface{}) *BACnetErrorRemovedAuthenticate {
-	castFunc := func(typ interface{}) *BACnetErrorRemovedAuthenticate {
-		if casted, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorRemovedAuthenticate); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorRemovedAuthenticate(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorRemovedAuthenticate(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorRemovedAuthenticate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorRemovedAuthenticate); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorRemovedAuthenticate(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorRemovedAuthenticate(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorRemovedAuthenticate) GetTypeName() string {

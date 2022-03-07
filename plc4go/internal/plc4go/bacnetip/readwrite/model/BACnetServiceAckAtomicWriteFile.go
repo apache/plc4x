@@ -80,22 +80,19 @@ func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSigne
 }
 
 func CastBACnetServiceAckAtomicWriteFile(structType interface{}) *BACnetServiceAckAtomicWriteFile {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicWriteFile {
-		if casted, ok := typ.(BACnetServiceAckAtomicWriteFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicWriteFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicWriteFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicWriteFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicWriteFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicWriteFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicWriteFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicWriteFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) GetTypeName() string {

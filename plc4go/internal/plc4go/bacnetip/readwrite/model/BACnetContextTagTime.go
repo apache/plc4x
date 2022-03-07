@@ -86,22 +86,19 @@ func NewBACnetContextTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHea
 }
 
 func CastBACnetContextTagTime(structType interface{}) *BACnetContextTagTime {
-	castFunc := func(typ interface{}) *BACnetContextTagTime {
-		if casted, ok := typ.(BACnetContextTagTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagTime); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagTime(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagTime(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagTime); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagTime(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagTime(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagTime) GetTypeName() string {

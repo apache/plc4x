@@ -105,22 +105,19 @@ func NewCBusPointToPointCommandIndirect(bridgeAddress *BridgeAddress, networkRou
 }
 
 func CastCBusPointToPointCommandIndirect(structType interface{}) *CBusPointToPointCommandIndirect {
-	castFunc := func(typ interface{}) *CBusPointToPointCommandIndirect {
-		if casted, ok := typ.(CBusPointToPointCommandIndirect); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToPointCommandIndirect); ok {
-			return casted
-		}
-		if casted, ok := typ.(CBusPointToPointCommand); ok {
-			return CastCBusPointToPointCommandIndirect(casted.Child)
-		}
-		if casted, ok := typ.(*CBusPointToPointCommand); ok {
-			return CastCBusPointToPointCommandIndirect(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToPointCommandIndirect); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToPointCommandIndirect); ok {
+		return casted
+	}
+	if casted, ok := structType.(CBusPointToPointCommand); ok {
+		return CastCBusPointToPointCommandIndirect(casted.Child)
+	}
+	if casted, ok := structType.(*CBusPointToPointCommand); ok {
+		return CastCBusPointToPointCommandIndirect(casted.Child)
+	}
+	return nil
 }
 
 func (m *CBusPointToPointCommandIndirect) GetTypeName() string {

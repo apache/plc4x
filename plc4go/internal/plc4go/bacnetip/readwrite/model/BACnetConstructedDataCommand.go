@@ -111,22 +111,19 @@ func NewBACnetConstructedDataCommand(innerOpeningTag *BACnetOpeningTag, action [
 }
 
 func CastBACnetConstructedDataCommand(structType interface{}) *BACnetConstructedDataCommand {
-	castFunc := func(typ interface{}) *BACnetConstructedDataCommand {
-		if casted, ok := typ.(BACnetConstructedDataCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConstructedDataCommand); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConstructedData); ok {
-			return CastBACnetConstructedDataCommand(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConstructedData); ok {
-			return CastBACnetConstructedDataCommand(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetConstructedDataCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConstructedDataCommand); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetConstructedData); ok {
+		return CastBACnetConstructedDataCommand(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetConstructedData); ok {
+		return CastBACnetConstructedDataCommand(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetConstructedDataCommand) GetTypeName() string {

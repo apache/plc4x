@@ -75,22 +75,19 @@ func NewApduDataExtDomainAddressRead(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtDomainAddressRead(structType interface{}) *ApduDataExtDomainAddressRead {
-	castFunc := func(typ interface{}) *ApduDataExtDomainAddressRead {
-		if casted, ok := typ.(ApduDataExtDomainAddressRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtDomainAddressRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtDomainAddressRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtDomainAddressRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtDomainAddressRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtDomainAddressRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtDomainAddressRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtDomainAddressRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtDomainAddressRead) GetTypeName() string {

@@ -85,22 +85,19 @@ func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId
 }
 
 func CastNLMRouterAvailableToNetwork(structType interface{}) *NLMRouterAvailableToNetwork {
-	castFunc := func(typ interface{}) *NLMRouterAvailableToNetwork {
-		if casted, ok := typ.(NLMRouterAvailableToNetwork); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMRouterAvailableToNetwork); ok {
-			return casted
-		}
-		if casted, ok := typ.(NLM); ok {
-			return CastNLMRouterAvailableToNetwork(casted.Child)
-		}
-		if casted, ok := typ.(*NLM); ok {
-			return CastNLMRouterAvailableToNetwork(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(NLMRouterAvailableToNetwork); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMRouterAvailableToNetwork); ok {
+		return casted
+	}
+	if casted, ok := structType.(NLM); ok {
+		return CastNLMRouterAvailableToNetwork(casted.Child)
+	}
+	if casted, ok := structType.(*NLM); ok {
+		return CastNLMRouterAvailableToNetwork(casted.Child)
+	}
+	return nil
 }
 
 func (m *NLMRouterAvailableToNetwork) GetTypeName() string {

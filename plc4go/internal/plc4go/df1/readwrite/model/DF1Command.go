@@ -82,16 +82,13 @@ func NewDF1Command(status uint8, transactionCounter uint16) *DF1Command {
 }
 
 func CastDF1Command(structType interface{}) *DF1Command {
-	castFunc := func(typ interface{}) *DF1Command {
-		if casted, ok := typ.(DF1Command); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1Command); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1Command); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1Command); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DF1Command) GetTypeName() string {

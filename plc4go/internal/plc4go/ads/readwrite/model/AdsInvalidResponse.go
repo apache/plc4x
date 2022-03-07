@@ -80,22 +80,19 @@ func NewAdsInvalidResponse() *AdsData {
 }
 
 func CastAdsInvalidResponse(structType interface{}) *AdsInvalidResponse {
-	castFunc := func(typ interface{}) *AdsInvalidResponse {
-		if casted, ok := typ.(AdsInvalidResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsInvalidResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsInvalidResponse(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsInvalidResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsInvalidResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsInvalidResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsInvalidResponse(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsInvalidResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsInvalidResponse) GetTypeName() string {

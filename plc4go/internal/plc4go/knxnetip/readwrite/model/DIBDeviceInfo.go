@@ -116,16 +116,13 @@ func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *
 }
 
 func CastDIBDeviceInfo(structType interface{}) *DIBDeviceInfo {
-	castFunc := func(typ interface{}) *DIBDeviceInfo {
-		if casted, ok := typ.(DIBDeviceInfo); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DIBDeviceInfo); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DIBDeviceInfo); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DIBDeviceInfo); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DIBDeviceInfo) GetTypeName() string {

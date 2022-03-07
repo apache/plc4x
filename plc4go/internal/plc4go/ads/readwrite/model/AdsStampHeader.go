@@ -74,16 +74,13 @@ func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples 
 }
 
 func CastAdsStampHeader(structType interface{}) *AdsStampHeader {
-	castFunc := func(typ interface{}) *AdsStampHeader {
-		if casted, ok := typ.(AdsStampHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsStampHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AdsStampHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsStampHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AdsStampHeader) GetTypeName() string {

@@ -140,22 +140,19 @@ func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationL
 }
 
 func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) *ModbusPDUReadDeviceIdentificationResponse {
-	castFunc := func(typ interface{}) *ModbusPDUReadDeviceIdentificationResponse {
-		if casted, ok := typ.(ModbusPDUReadDeviceIdentificationResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadDeviceIdentificationResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadDeviceIdentificationResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadDeviceIdentificationResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {

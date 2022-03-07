@@ -109,16 +109,13 @@ func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor b
 }
 
 func CastCBusOptions(structType interface{}) *CBusOptions {
-	castFunc := func(typ interface{}) *CBusOptions {
-		if casted, ok := typ.(CBusOptions); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusOptions); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusOptions); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusOptions); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusOptions) GetTypeName() string {

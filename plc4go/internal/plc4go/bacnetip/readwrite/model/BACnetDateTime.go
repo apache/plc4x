@@ -84,16 +84,13 @@ func NewBACnetDateTime(openingTag *BACnetOpeningTag, dateValue *BACnetApplicatio
 }
 
 func CastBACnetDateTime(structType interface{}) *BACnetDateTime {
-	castFunc := func(typ interface{}) *BACnetDateTime {
-		if casted, ok := typ.(BACnetDateTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetDateTime); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetDateTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetDateTime); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetDateTime) GetTypeName() string {

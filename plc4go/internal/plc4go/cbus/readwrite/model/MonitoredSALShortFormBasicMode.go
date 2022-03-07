@@ -109,22 +109,19 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, ne
 }
 
 func CastMonitoredSALShortFormBasicMode(structType interface{}) *MonitoredSALShortFormBasicMode {
-	castFunc := func(typ interface{}) *MonitoredSALShortFormBasicMode {
-		if casted, ok := typ.(MonitoredSALShortFormBasicMode); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MonitoredSALShortFormBasicMode); ok {
-			return casted
-		}
-		if casted, ok := typ.(MonitoredSAL); ok {
-			return CastMonitoredSALShortFormBasicMode(casted.Child)
-		}
-		if casted, ok := typ.(*MonitoredSAL); ok {
-			return CastMonitoredSALShortFormBasicMode(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MonitoredSALShortFormBasicMode); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MonitoredSALShortFormBasicMode); ok {
+		return casted
+	}
+	if casted, ok := structType.(MonitoredSAL); ok {
+		return CastMonitoredSALShortFormBasicMode(casted.Child)
+	}
+	if casted, ok := structType.(*MonitoredSAL); ok {
+		return CastMonitoredSALShortFormBasicMode(casted.Child)
+	}
+	return nil
 }
 
 func (m *MonitoredSALShortFormBasicMode) GetTypeName() string {

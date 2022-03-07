@@ -80,16 +80,13 @@ func NewCALData(commandTypeContainer CALCommandTypeContainer) *CALData {
 }
 
 func CastCALData(structType interface{}) *CALData {
-	castFunc := func(typ interface{}) *CALData {
-		if casted, ok := typ.(CALData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CALData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALData); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CALData) GetTypeName() string {

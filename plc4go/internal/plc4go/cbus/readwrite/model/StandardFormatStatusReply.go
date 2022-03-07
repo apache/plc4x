@@ -93,16 +93,13 @@ func NewStandardFormatStatusReply(statusHeader *StatusHeader, application Applic
 }
 
 func CastStandardFormatStatusReply(structType interface{}) *StandardFormatStatusReply {
-	castFunc := func(typ interface{}) *StandardFormatStatusReply {
-		if casted, ok := typ.(StandardFormatStatusReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StandardFormatStatusReply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(StandardFormatStatusReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StandardFormatStatusReply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *StandardFormatStatusReply) GetTypeName() string {

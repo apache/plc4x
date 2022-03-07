@@ -75,22 +75,19 @@ func NewTDataIndividualReq(size uint16) *CEMI {
 }
 
 func CastTDataIndividualReq(structType interface{}) *TDataIndividualReq {
-	castFunc := func(typ interface{}) *TDataIndividualReq {
-		if casted, ok := typ.(TDataIndividualReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TDataIndividualReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastTDataIndividualReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastTDataIndividualReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(TDataIndividualReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TDataIndividualReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastTDataIndividualReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastTDataIndividualReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *TDataIndividualReq) GetTypeName() string {

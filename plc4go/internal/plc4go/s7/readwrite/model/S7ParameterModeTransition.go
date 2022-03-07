@@ -121,22 +121,19 @@ func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFuncti
 }
 
 func CastS7ParameterModeTransition(structType interface{}) *S7ParameterModeTransition {
-	castFunc := func(typ interface{}) *S7ParameterModeTransition {
-		if casted, ok := typ.(S7ParameterModeTransition); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7ParameterModeTransition); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Parameter); ok {
-			return CastS7ParameterModeTransition(casted.Child)
-		}
-		if casted, ok := typ.(*S7Parameter); ok {
-			return CastS7ParameterModeTransition(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7ParameterModeTransition); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7ParameterModeTransition); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Parameter); ok {
+		return CastS7ParameterModeTransition(casted.Child)
+	}
+	if casted, ok := structType.(*S7Parameter); ok {
+		return CastS7ParameterModeTransition(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7ParameterModeTransition) GetTypeName() string {

@@ -115,22 +115,19 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 }
 
 func CastMPropReadReq(structType interface{}) *MPropReadReq {
-	castFunc := func(typ interface{}) *MPropReadReq {
-		if casted, ok := typ.(MPropReadReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MPropReadReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMPropReadReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMPropReadReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MPropReadReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MPropReadReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMPropReadReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMPropReadReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MPropReadReq) GetTypeName() string {

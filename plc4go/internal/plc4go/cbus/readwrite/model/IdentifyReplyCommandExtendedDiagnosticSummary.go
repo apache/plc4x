@@ -226,22 +226,19 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication Application
 }
 
 func CastIdentifyReplyCommandExtendedDiagnosticSummary(structType interface{}) *IdentifyReplyCommandExtendedDiagnosticSummary {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandExtendedDiagnosticSummary {
-		if casted, ok := typ.(IdentifyReplyCommandExtendedDiagnosticSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandExtendedDiagnosticSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandExtendedDiagnosticSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandExtendedDiagnosticSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {

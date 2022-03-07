@@ -69,16 +69,13 @@ func NewIdentifyReplyCommand() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommand(structType interface{}) *IdentifyReplyCommand {
-	castFunc := func(typ interface{}) *IdentifyReplyCommand {
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommand) GetTypeName() string {

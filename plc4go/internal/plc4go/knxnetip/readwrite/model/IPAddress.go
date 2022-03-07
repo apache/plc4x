@@ -60,16 +60,13 @@ func NewIPAddress(addr []byte) *IPAddress {
 }
 
 func CastIPAddress(structType interface{}) *IPAddress {
-	castFunc := func(typ interface{}) *IPAddress {
-		if casted, ok := typ.(IPAddress); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IPAddress); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(IPAddress); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IPAddress); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *IPAddress) GetTypeName() string {

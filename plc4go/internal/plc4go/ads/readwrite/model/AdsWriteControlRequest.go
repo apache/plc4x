@@ -104,22 +104,19 @@ func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte)
 }
 
 func CastAdsWriteControlRequest(structType interface{}) *AdsWriteControlRequest {
-	castFunc := func(typ interface{}) *AdsWriteControlRequest {
-		if casted, ok := typ.(AdsWriteControlRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsWriteControlRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsData); ok {
-			return CastAdsWriteControlRequest(casted.Child)
-		}
-		if casted, ok := typ.(*AdsData); ok {
-			return CastAdsWriteControlRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsWriteControlRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsWriteControlRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsData); ok {
+		return CastAdsWriteControlRequest(casted.Child)
+	}
+	if casted, ok := structType.(*AdsData); ok {
+		return CastAdsWriteControlRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsWriteControlRequest) GetTypeName() string {

@@ -81,22 +81,19 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *Con
 }
 
 func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *ConnectionResponseDataBlockTunnelConnection {
-	castFunc := func(typ interface{}) *ConnectionResponseDataBlockTunnelConnection {
-		if casted, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlockTunnelConnection); ok {
-			return casted
-		}
-		if casted, ok := typ.(ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
-			return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionResponseDataBlockTunnelConnection); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionResponseDataBlockTunnelConnection); ok {
+		return casted
+	}
+	if casted, ok := structType.(ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
+	}
+	if casted, ok := structType.(*ConnectionResponseDataBlock); ok {
+		return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {

@@ -80,22 +80,19 @@ func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescript
 }
 
 func CastComObjectTableRealisationType6(structType interface{}) *ComObjectTableRealisationType6 {
-	castFunc := func(typ interface{}) *ComObjectTableRealisationType6 {
-		if casted, ok := typ.(ComObjectTableRealisationType6); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ComObjectTableRealisationType6); ok {
-			return casted
-		}
-		if casted, ok := typ.(ComObjectTable); ok {
-			return CastComObjectTableRealisationType6(casted.Child)
-		}
-		if casted, ok := typ.(*ComObjectTable); ok {
-			return CastComObjectTableRealisationType6(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ComObjectTableRealisationType6); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ComObjectTableRealisationType6); ok {
+		return casted
+	}
+	if casted, ok := structType.(ComObjectTable); ok {
+		return CastComObjectTableRealisationType6(casted.Child)
+	}
+	if casted, ok := structType.(*ComObjectTable); ok {
+		return CastComObjectTableRealisationType6(casted.Child)
+	}
+	return nil
 }
 
 func (m *ComObjectTableRealisationType6) GetTypeName() string {

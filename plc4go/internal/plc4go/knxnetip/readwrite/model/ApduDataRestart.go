@@ -75,22 +75,19 @@ func NewApduDataRestart(dataLength uint8) *ApduData {
 }
 
 func CastApduDataRestart(structType interface{}) *ApduDataRestart {
-	castFunc := func(typ interface{}) *ApduDataRestart {
-		if casted, ok := typ.(ApduDataRestart); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataRestart); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataRestart(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataRestart(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataRestart); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataRestart); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataRestart(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataRestart(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataRestart) GetTypeName() string {

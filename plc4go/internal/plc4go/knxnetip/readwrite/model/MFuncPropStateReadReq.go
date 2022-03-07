@@ -75,22 +75,19 @@ func NewMFuncPropStateReadReq(size uint16) *CEMI {
 }
 
 func CastMFuncPropStateReadReq(structType interface{}) *MFuncPropStateReadReq {
-	castFunc := func(typ interface{}) *MFuncPropStateReadReq {
-		if casted, ok := typ.(MFuncPropStateReadReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropStateReadReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropStateReadReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropStateReadReq(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MFuncPropStateReadReq); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MFuncPropStateReadReq); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastMFuncPropStateReadReq(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastMFuncPropStateReadReq(casted.Child)
+	}
+	return nil
 }
 
 func (m *MFuncPropStateReadReq) GetTypeName() string {

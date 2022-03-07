@@ -75,22 +75,19 @@ func NewApduDataIndividualAddressRead(dataLength uint8) *ApduData {
 }
 
 func CastApduDataIndividualAddressRead(structType interface{}) *ApduDataIndividualAddressRead {
-	castFunc := func(typ interface{}) *ApduDataIndividualAddressRead {
-		if casted, ok := typ.(ApduDataIndividualAddressRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataIndividualAddressRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataIndividualAddressRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataIndividualAddressRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataIndividualAddressRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataIndividualAddressRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataIndividualAddressRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataIndividualAddressRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataIndividualAddressRead) GetTypeName() string {

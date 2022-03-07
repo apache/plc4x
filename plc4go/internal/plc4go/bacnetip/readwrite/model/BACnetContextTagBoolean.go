@@ -99,22 +99,19 @@ func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, h
 }
 
 func CastBACnetContextTagBoolean(structType interface{}) *BACnetContextTagBoolean {
-	castFunc := func(typ interface{}) *BACnetContextTagBoolean {
-		if casted, ok := typ.(BACnetContextTagBoolean); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagBoolean); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagBoolean(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagBoolean(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagBoolean); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagBoolean); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagBoolean(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagBoolean(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagBoolean) GetTypeName() string {

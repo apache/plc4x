@@ -86,22 +86,19 @@ func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter ui
 }
 
 func CastApduControlContainer(structType interface{}) *ApduControlContainer {
-	castFunc := func(typ interface{}) *ApduControlContainer {
-		if casted, ok := typ.(ApduControlContainer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlContainer); ok {
-			return casted
-		}
-		if casted, ok := typ.(Apdu); ok {
-			return CastApduControlContainer(casted.Child)
-		}
-		if casted, ok := typ.(*Apdu); ok {
-			return CastApduControlContainer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlContainer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlContainer); ok {
+		return casted
+	}
+	if casted, ok := structType.(Apdu); ok {
+		return CastApduControlContainer(casted.Child)
+	}
+	if casted, ok := structType.(*Apdu); ok {
+		return CastApduControlContainer(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlContainer) GetTypeName() string {

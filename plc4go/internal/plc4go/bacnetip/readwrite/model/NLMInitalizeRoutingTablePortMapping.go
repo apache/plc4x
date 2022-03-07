@@ -81,16 +81,13 @@ func NewNLMInitalizeRoutingTablePortMapping(destinationNetworkAddress uint16, po
 }
 
 func CastNLMInitalizeRoutingTablePortMapping(structType interface{}) *NLMInitalizeRoutingTablePortMapping {
-	castFunc := func(typ interface{}) *NLMInitalizeRoutingTablePortMapping {
-		if casted, ok := typ.(NLMInitalizeRoutingTablePortMapping); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NLMInitalizeRoutingTablePortMapping); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NLMInitalizeRoutingTablePortMapping); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NLMInitalizeRoutingTablePortMapping); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NLMInitalizeRoutingTablePortMapping) GetTypeName() string {

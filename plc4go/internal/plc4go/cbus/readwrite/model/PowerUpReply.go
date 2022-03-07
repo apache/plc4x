@@ -75,22 +75,19 @@ func NewPowerUpReply(isA *PowerUp, magicByte byte) *Reply {
 }
 
 func CastPowerUpReply(structType interface{}) *PowerUpReply {
-	castFunc := func(typ interface{}) *PowerUpReply {
-		if casted, ok := typ.(PowerUpReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*PowerUpReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastPowerUpReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastPowerUpReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(PowerUpReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*PowerUpReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastPowerUpReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastPowerUpReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *PowerUpReply) GetTypeName() string {

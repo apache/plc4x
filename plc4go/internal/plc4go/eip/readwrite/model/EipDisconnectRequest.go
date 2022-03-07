@@ -77,22 +77,19 @@ func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext 
 }
 
 func CastEipDisconnectRequest(structType interface{}) *EipDisconnectRequest {
-	castFunc := func(typ interface{}) *EipDisconnectRequest {
-		if casted, ok := typ.(EipDisconnectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*EipDisconnectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(EipPacket); ok {
-			return CastEipDisconnectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*EipPacket); ok {
-			return CastEipDisconnectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(EipDisconnectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*EipDisconnectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(EipPacket); ok {
+		return CastEipDisconnectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*EipPacket); ok {
+		return CastEipDisconnectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *EipDisconnectRequest) GetTypeName() string {

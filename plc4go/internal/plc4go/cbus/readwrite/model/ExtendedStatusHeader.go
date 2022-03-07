@@ -61,16 +61,13 @@ func NewExtendedStatusHeader(numberOfCharacterPairs uint8) *ExtendedStatusHeader
 }
 
 func CastExtendedStatusHeader(structType interface{}) *ExtendedStatusHeader {
-	castFunc := func(typ interface{}) *ExtendedStatusHeader {
-		if casted, ok := typ.(ExtendedStatusHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ExtendedStatusHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ExtendedStatusHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ExtendedStatusHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ExtendedStatusHeader) GetTypeName() string {

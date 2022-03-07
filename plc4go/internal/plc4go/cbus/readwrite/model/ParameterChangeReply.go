@@ -75,22 +75,19 @@ func NewParameterChangeReply(isA *ParameterChange, magicByte byte) *Reply {
 }
 
 func CastParameterChangeReply(structType interface{}) *ParameterChangeReply {
-	castFunc := func(typ interface{}) *ParameterChangeReply {
-		if casted, ok := typ.(ParameterChangeReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ParameterChangeReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastParameterChangeReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastParameterChangeReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ParameterChangeReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ParameterChangeReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastParameterChangeReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastParameterChangeReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *ParameterChangeReply) GetTypeName() string {

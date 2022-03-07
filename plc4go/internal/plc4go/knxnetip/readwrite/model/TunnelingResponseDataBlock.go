@@ -74,16 +74,13 @@ func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter
 }
 
 func CastTunnelingResponseDataBlock(structType interface{}) *TunnelingResponseDataBlock {
-	castFunc := func(typ interface{}) *TunnelingResponseDataBlock {
-		if casted, ok := typ.(TunnelingResponseDataBlock); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*TunnelingResponseDataBlock); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(TunnelingResponseDataBlock); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*TunnelingResponseDataBlock); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *TunnelingResponseDataBlock) GetTypeName() string {

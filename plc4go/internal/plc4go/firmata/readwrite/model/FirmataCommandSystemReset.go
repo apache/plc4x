@@ -75,22 +75,19 @@ func NewFirmataCommandSystemReset(response bool) *FirmataCommand {
 }
 
 func CastFirmataCommandSystemReset(structType interface{}) *FirmataCommandSystemReset {
-	castFunc := func(typ interface{}) *FirmataCommandSystemReset {
-		if casted, ok := typ.(FirmataCommandSystemReset); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataCommandSystemReset); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataCommand); ok {
-			return CastFirmataCommandSystemReset(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataCommand); ok {
-			return CastFirmataCommandSystemReset(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataCommandSystemReset); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataCommandSystemReset); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataCommand); ok {
+		return CastFirmataCommandSystemReset(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataCommand); ok {
+		return CastFirmataCommandSystemReset(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataCommandSystemReset) GetTypeName() string {

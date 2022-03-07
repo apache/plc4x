@@ -80,16 +80,13 @@ func NewSALData(commandTypeContainer SALCommandTypeContainer) *SALData {
 }
 
 func CastSALData(structType interface{}) *SALData {
-	castFunc := func(typ interface{}) *SALData {
-		if casted, ok := typ.(SALData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SALData); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SALData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SALData); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SALData) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewApduDataExtMemoryBitWrite(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtMemoryBitWrite(structType interface{}) *ApduDataExtMemoryBitWrite {
-	castFunc := func(typ interface{}) *ApduDataExtMemoryBitWrite {
-		if casted, ok := typ.(ApduDataExtMemoryBitWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtMemoryBitWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtMemoryBitWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtMemoryBitWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtMemoryBitWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtMemoryBitWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtMemoryBitWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtMemoryBitWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtMemoryBitWrite) GetTypeName() string {

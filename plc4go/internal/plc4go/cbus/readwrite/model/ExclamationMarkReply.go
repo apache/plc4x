@@ -75,22 +75,19 @@ func NewExclamationMarkReply(isA *ExclamationMark, magicByte byte) *Reply {
 }
 
 func CastExclamationMarkReply(structType interface{}) *ExclamationMarkReply {
-	castFunc := func(typ interface{}) *ExclamationMarkReply {
-		if casted, ok := typ.(ExclamationMarkReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ExclamationMarkReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastExclamationMarkReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastExclamationMarkReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ExclamationMarkReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ExclamationMarkReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastExclamationMarkReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastExclamationMarkReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *ExclamationMarkReply) GetTypeName() string {

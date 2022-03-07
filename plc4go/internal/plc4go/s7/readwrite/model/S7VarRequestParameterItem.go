@@ -69,16 +69,13 @@ func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
 }
 
 func CastS7VarRequestParameterItem(structType interface{}) *S7VarRequestParameterItem {
-	castFunc := func(typ interface{}) *S7VarRequestParameterItem {
-		if casted, ok := typ.(S7VarRequestParameterItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7VarRequestParameterItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7VarRequestParameterItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7VarRequestParameterItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7VarRequestParameterItem) GetTypeName() string {

@@ -82,22 +82,19 @@ func NewSALDataTerminateRamp(group byte, commandTypeContainer SALCommandTypeCont
 }
 
 func CastSALDataTerminateRamp(structType interface{}) *SALDataTerminateRamp {
-	castFunc := func(typ interface{}) *SALDataTerminateRamp {
-		if casted, ok := typ.(SALDataTerminateRamp); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SALDataTerminateRamp); ok {
-			return casted
-		}
-		if casted, ok := typ.(SALData); ok {
-			return CastSALDataTerminateRamp(casted.Child)
-		}
-		if casted, ok := typ.(*SALData); ok {
-			return CastSALDataTerminateRamp(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SALDataTerminateRamp); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SALDataTerminateRamp); ok {
+		return casted
+	}
+	if casted, ok := structType.(SALData); ok {
+		return CastSALDataTerminateRamp(casted.Child)
+	}
+	if casted, ok := structType.(*SALData); ok {
+		return CastSALDataTerminateRamp(casted.Child)
+	}
+	return nil
 }
 
 func (m *SALDataTerminateRamp) GetTypeName() string {

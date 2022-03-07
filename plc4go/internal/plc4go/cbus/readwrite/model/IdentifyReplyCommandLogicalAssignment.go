@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandLogicalAssignment() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandLogicalAssignment(structType interface{}) *IdentifyReplyCommandLogicalAssignment {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandLogicalAssignment {
-		if casted, ok := typ.(IdentifyReplyCommandLogicalAssignment); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandLogicalAssignment); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandLogicalAssignment(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandLogicalAssignment(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandLogicalAssignment); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandLogicalAssignment); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandLogicalAssignment(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandLogicalAssignment(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandLogicalAssignment) GetTypeName() string {

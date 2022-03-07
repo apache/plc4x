@@ -72,22 +72,19 @@ func NewApduControlConnect() *ApduControl {
 }
 
 func CastApduControlConnect(structType interface{}) *ApduControlConnect {
-	castFunc := func(typ interface{}) *ApduControlConnect {
-		if casted, ok := typ.(ApduControlConnect); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlConnect); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduControl); ok {
-			return CastApduControlConnect(casted.Child)
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return CastApduControlConnect(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlConnect); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlConnect); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduControl); ok {
+		return CastApduControlConnect(casted.Child)
+	}
+	if casted, ok := structType.(*ApduControl); ok {
+		return CastApduControlConnect(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlConnect) GetTypeName() string {

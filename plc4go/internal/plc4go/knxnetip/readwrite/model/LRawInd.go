@@ -75,22 +75,19 @@ func NewLRawInd(size uint16) *CEMI {
 }
 
 func CastLRawInd(structType interface{}) *LRawInd {
-	castFunc := func(typ interface{}) *LRawInd {
-		if casted, ok := typ.(LRawInd); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*LRawInd); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastLRawInd(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastLRawInd(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(LRawInd); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*LRawInd); ok {
+		return casted
+	}
+	if casted, ok := structType.(CEMI); ok {
+		return CastLRawInd(casted.Child)
+	}
+	if casted, ok := structType.(*CEMI); ok {
+		return CastLRawInd(casted.Child)
+	}
+	return nil
 }
 
 func (m *LRawInd) GetTypeName() string {

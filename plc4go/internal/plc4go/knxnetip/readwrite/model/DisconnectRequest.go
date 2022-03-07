@@ -89,22 +89,19 @@ func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPA
 }
 
 func CastDisconnectRequest(structType interface{}) *DisconnectRequest {
-	castFunc := func(typ interface{}) *DisconnectRequest {
-		if casted, ok := typ.(DisconnectRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DisconnectRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDisconnectRequest(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDisconnectRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DisconnectRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DisconnectRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDisconnectRequest(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDisconnectRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *DisconnectRequest) GetTypeName() string {

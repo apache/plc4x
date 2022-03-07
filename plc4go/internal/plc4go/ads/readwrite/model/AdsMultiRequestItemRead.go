@@ -96,22 +96,19 @@ func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, i
 }
 
 func CastAdsMultiRequestItemRead(structType interface{}) *AdsMultiRequestItemRead {
-	castFunc := func(typ interface{}) *AdsMultiRequestItemRead {
-		if casted, ok := typ.(AdsMultiRequestItemRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItemRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemRead(casted.Child)
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(AdsMultiRequestItemRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AdsMultiRequestItemRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemRead(casted.Child)
+	}
+	if casted, ok := structType.(*AdsMultiRequestItem); ok {
+		return CastAdsMultiRequestItemRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *AdsMultiRequestItemRead) GetTypeName() string {

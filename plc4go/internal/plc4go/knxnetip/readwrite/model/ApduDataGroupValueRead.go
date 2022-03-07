@@ -77,22 +77,19 @@ func NewApduDataGroupValueRead(dataLength uint8) *ApduData {
 }
 
 func CastApduDataGroupValueRead(structType interface{}) *ApduDataGroupValueRead {
-	castFunc := func(typ interface{}) *ApduDataGroupValueRead {
-		if casted, ok := typ.(ApduDataGroupValueRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueRead(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueRead(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataGroupValueRead); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataGroupValueRead); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduData); ok {
+		return CastApduDataGroupValueRead(casted.Child)
+	}
+	if casted, ok := structType.(*ApduData); ok {
+		return CastApduDataGroupValueRead(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataGroupValueRead) GetTypeName() string {

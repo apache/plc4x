@@ -97,16 +97,13 @@ func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status 
 }
 
 func CastDF1RequestMessage(structType interface{}) *DF1RequestMessage {
-	castFunc := func(typ interface{}) *DF1RequestMessage {
-		if casted, ok := typ.(DF1RequestMessage); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1RequestMessage); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(DF1RequestMessage); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1RequestMessage); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *DF1RequestMessage) GetTypeName() string {

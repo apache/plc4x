@@ -96,22 +96,19 @@ func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDU {
 }
 
 func CastModbusPDUError(structType interface{}) *ModbusPDUError {
-	castFunc := func(typ interface{}) *ModbusPDUError {
-		if casted, ok := typ.(ModbusPDUError); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUError); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUError(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUError(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUError); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUError); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUError(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUError(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUError) GetTypeName() string {

@@ -193,16 +193,13 @@ func NewNPDU(protocolVersionNumber uint8, control *NPDUControl, destinationNetwo
 }
 
 func CastNPDU(structType interface{}) *NPDU {
-	castFunc := func(typ interface{}) *NPDU {
-		if casted, ok := typ.(NPDU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*NPDU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(NPDU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*NPDU); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *NPDU) GetTypeName() string {

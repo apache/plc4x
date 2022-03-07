@@ -90,22 +90,19 @@ func NewSALDataRampToLevel(group byte, level byte, commandTypeContainer SALComma
 }
 
 func CastSALDataRampToLevel(structType interface{}) *SALDataRampToLevel {
-	castFunc := func(typ interface{}) *SALDataRampToLevel {
-		if casted, ok := typ.(SALDataRampToLevel); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SALDataRampToLevel); ok {
-			return casted
-		}
-		if casted, ok := typ.(SALData); ok {
-			return CastSALDataRampToLevel(casted.Child)
-		}
-		if casted, ok := typ.(*SALData); ok {
-			return CastSALDataRampToLevel(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SALDataRampToLevel); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SALDataRampToLevel); ok {
+		return casted
+	}
+	if casted, ok := structType.(SALData); ok {
+		return CastSALDataRampToLevel(casted.Child)
+	}
+	if casted, ok := structType.(*SALData); ok {
+		return CastSALDataRampToLevel(casted.Child)
+	}
+	return nil
 }
 
 func (m *SALDataRampToLevel) GetTypeName() string {

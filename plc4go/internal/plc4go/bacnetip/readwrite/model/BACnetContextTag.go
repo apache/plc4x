@@ -95,16 +95,13 @@ func NewBACnetContextTag(header *BACnetTagHeader, tagNumberArgument uint8) *BACn
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
-	castFunc := func(typ interface{}) *BACnetContextTag {
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetContextTag) GetTypeName() string {

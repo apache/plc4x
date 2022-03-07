@@ -105,22 +105,19 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 }
 
 func CastConnectionResponse(structType interface{}) *ConnectionResponse {
-	castFunc := func(typ interface{}) *ConnectionResponse {
-		if casted, ok := typ.(ConnectionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastConnectionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastConnectionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConnectionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastConnectionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastConnectionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConnectionResponse) GetTypeName() string {

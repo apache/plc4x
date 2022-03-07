@@ -85,22 +85,19 @@ func NewCBusCommandPointToPoint(command *CBusPointToPointCommand, header *CBusHe
 }
 
 func CastCBusCommandPointToPoint(structType interface{}) *CBusCommandPointToPoint {
-	castFunc := func(typ interface{}) *CBusCommandPointToPoint {
-		if casted, ok := typ.(CBusCommandPointToPoint); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusCommandPointToPoint); ok {
-			return casted
-		}
-		if casted, ok := typ.(CBusCommand); ok {
-			return CastCBusCommandPointToPoint(casted.Child)
-		}
-		if casted, ok := typ.(*CBusCommand); ok {
-			return CastCBusCommandPointToPoint(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CBusCommandPointToPoint); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusCommandPointToPoint); ok {
+		return casted
+	}
+	if casted, ok := structType.(CBusCommand); ok {
+		return CastCBusCommandPointToPoint(casted.Child)
+	}
+	if casted, ok := structType.(*CBusCommand); ok {
+		return CastCBusCommandPointToPoint(casted.Child)
+	}
+	return nil
 }
 
 func (m *CBusCommandPointToPoint) GetTypeName() string {

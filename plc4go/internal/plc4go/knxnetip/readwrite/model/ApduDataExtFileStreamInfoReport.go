@@ -75,22 +75,19 @@ func NewApduDataExtFileStreamInfoReport(length uint8) *ApduDataExt {
 }
 
 func CastApduDataExtFileStreamInfoReport(structType interface{}) *ApduDataExtFileStreamInfoReport {
-	castFunc := func(typ interface{}) *ApduDataExtFileStreamInfoReport {
-		if casted, ok := typ.(ApduDataExtFileStreamInfoReport); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtFileStreamInfoReport); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtFileStreamInfoReport(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtFileStreamInfoReport(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtFileStreamInfoReport); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtFileStreamInfoReport); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtFileStreamInfoReport(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtFileStreamInfoReport(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtFileStreamInfoReport) GetTypeName() string {

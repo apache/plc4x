@@ -86,22 +86,19 @@ func NewBACnetContextTagDate(payload *BACnetTagPayloadDate, header *BACnetTagHea
 }
 
 func CastBACnetContextTagDate(structType interface{}) *BACnetContextTagDate {
-	castFunc := func(typ interface{}) *BACnetContextTagDate {
-		if casted, ok := typ.(BACnetContextTagDate); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagDate); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagDate(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagDate(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagDate); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagDate); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagDate(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagDate(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagDate) GetTypeName() string {

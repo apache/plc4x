@@ -69,16 +69,13 @@ func NewConnectionResponseDataBlock() *ConnectionResponseDataBlock {
 }
 
 func CastConnectionResponseDataBlock(structType interface{}) *ConnectionResponseDataBlock {
-	castFunc := func(typ interface{}) *ConnectionResponseDataBlock {
-		if casted, ok := typ.(ConnectionResponseDataBlock); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ConnectionResponseDataBlock); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConnectionResponseDataBlock); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ConnectionResponseDataBlock) GetTypeName() string {

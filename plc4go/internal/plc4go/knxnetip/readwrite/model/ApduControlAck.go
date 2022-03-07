@@ -72,22 +72,19 @@ func NewApduControlAck() *ApduControl {
 }
 
 func CastApduControlAck(structType interface{}) *ApduControlAck {
-	castFunc := func(typ interface{}) *ApduControlAck {
-		if casted, ok := typ.(ApduControlAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduControlAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduControl); ok {
-			return CastApduControlAck(casted.Child)
-		}
-		if casted, ok := typ.(*ApduControl); ok {
-			return CastApduControlAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduControlAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduControlAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduControl); ok {
+		return CastApduControlAck(casted.Child)
+	}
+	if casted, ok := structType.(*ApduControl); ok {
+		return CastApduControlAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduControlAck) GetTypeName() string {

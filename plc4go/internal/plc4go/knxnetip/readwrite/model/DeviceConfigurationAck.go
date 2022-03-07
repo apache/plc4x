@@ -80,22 +80,19 @@ func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurat
 }
 
 func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck {
-	castFunc := func(typ interface{}) *DeviceConfigurationAck {
-		if casted, ok := typ.(DeviceConfigurationAck); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DeviceConfigurationAck); ok {
-			return casted
-		}
-		if casted, ok := typ.(KnxNetIpMessage); ok {
-			return CastDeviceConfigurationAck(casted.Child)
-		}
-		if casted, ok := typ.(*KnxNetIpMessage); ok {
-			return CastDeviceConfigurationAck(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DeviceConfigurationAck); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DeviceConfigurationAck); ok {
+		return casted
+	}
+	if casted, ok := structType.(KnxNetIpMessage); ok {
+		return CastDeviceConfigurationAck(casted.Child)
+	}
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return CastDeviceConfigurationAck(casted.Child)
+	}
+	return nil
 }
 
 func (m *DeviceConfigurationAck) GetTypeName() string {

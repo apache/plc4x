@@ -60,16 +60,13 @@ func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
 }
 
 func CastRelativeTimestamp(structType interface{}) *RelativeTimestamp {
-	castFunc := func(typ interface{}) *RelativeTimestamp {
-		if casted, ok := typ.(RelativeTimestamp); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*RelativeTimestamp); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(RelativeTimestamp); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*RelativeTimestamp); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *RelativeTimestamp) GetTypeName() string {

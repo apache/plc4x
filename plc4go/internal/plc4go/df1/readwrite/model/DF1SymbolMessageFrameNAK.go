@@ -72,22 +72,19 @@ func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
 }
 
 func CastDF1SymbolMessageFrameNAK(structType interface{}) *DF1SymbolMessageFrameNAK {
-	castFunc := func(typ interface{}) *DF1SymbolMessageFrameNAK {
-		if casted, ok := typ.(DF1SymbolMessageFrameNAK); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*DF1SymbolMessageFrameNAK); ok {
-			return casted
-		}
-		if casted, ok := typ.(DF1Symbol); ok {
-			return CastDF1SymbolMessageFrameNAK(casted.Child)
-		}
-		if casted, ok := typ.(*DF1Symbol); ok {
-			return CastDF1SymbolMessageFrameNAK(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(DF1SymbolMessageFrameNAK); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*DF1SymbolMessageFrameNAK); ok {
+		return casted
+	}
+	if casted, ok := structType.(DF1Symbol); ok {
+		return CastDF1SymbolMessageFrameNAK(casted.Child)
+	}
+	if casted, ok := structType.(*DF1Symbol); ok {
+		return CastDF1SymbolMessageFrameNAK(casted.Child)
+	}
+	return nil
 }
 
 func (m *DF1SymbolMessageFrameNAK) GetTypeName() string {

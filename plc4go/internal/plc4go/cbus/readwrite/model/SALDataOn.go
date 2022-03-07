@@ -82,22 +82,19 @@ func NewSALDataOn(group byte, commandTypeContainer SALCommandTypeContainer) *SAL
 }
 
 func CastSALDataOn(structType interface{}) *SALDataOn {
-	castFunc := func(typ interface{}) *SALDataOn {
-		if casted, ok := typ.(SALDataOn); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SALDataOn); ok {
-			return casted
-		}
-		if casted, ok := typ.(SALData); ok {
-			return CastSALDataOn(casted.Child)
-		}
-		if casted, ok := typ.(*SALData); ok {
-			return CastSALDataOn(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SALDataOn); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SALDataOn); ok {
+		return casted
+	}
+	if casted, ok := structType.(SALData); ok {
+		return CastSALDataOn(casted.Child)
+	}
+	if casted, ok := structType.(*SALData); ok {
+		return CastSALDataOn(casted.Child)
+	}
+	return nil
 }
 
 func (m *SALDataOn) GetTypeName() string {

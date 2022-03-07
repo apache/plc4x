@@ -72,16 +72,13 @@ func NewAPDU(apduLength uint16) *APDU {
 }
 
 func CastAPDU(structType interface{}) *APDU {
-	castFunc := func(typ interface{}) *APDU {
-		if casted, ok := typ.(APDU); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*APDU); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(APDU); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*APDU); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *APDU) GetTypeName() string {

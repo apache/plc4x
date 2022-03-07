@@ -74,22 +74,19 @@ func NewConfirmationSuccessful(alpha *Alpha) *Confirmation {
 }
 
 func CastConfirmationSuccessful(structType interface{}) *ConfirmationSuccessful {
-	castFunc := func(typ interface{}) *ConfirmationSuccessful {
-		if casted, ok := typ.(ConfirmationSuccessful); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConfirmationSuccessful); ok {
-			return casted
-		}
-		if casted, ok := typ.(Confirmation); ok {
-			return CastConfirmationSuccessful(casted.Child)
-		}
-		if casted, ok := typ.(*Confirmation); ok {
-			return CastConfirmationSuccessful(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConfirmationSuccessful); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConfirmationSuccessful); ok {
+		return casted
+	}
+	if casted, ok := structType.(Confirmation); ok {
+		return CastConfirmationSuccessful(casted.Child)
+	}
+	if casted, ok := structType.(*Confirmation); ok {
+		return CastConfirmationSuccessful(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConfirmationSuccessful) GetTypeName() string {

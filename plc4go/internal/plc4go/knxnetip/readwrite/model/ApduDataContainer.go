@@ -86,22 +86,19 @@ func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8, data
 }
 
 func CastApduDataContainer(structType interface{}) *ApduDataContainer {
-	castFunc := func(typ interface{}) *ApduDataContainer {
-		if casted, ok := typ.(ApduDataContainer); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataContainer); ok {
-			return casted
-		}
-		if casted, ok := typ.(Apdu); ok {
-			return CastApduDataContainer(casted.Child)
-		}
-		if casted, ok := typ.(*Apdu); ok {
-			return CastApduDataContainer(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataContainer); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataContainer); ok {
+		return casted
+	}
+	if casted, ok := structType.(Apdu); ok {
+		return CastApduDataContainer(casted.Child)
+	}
+	if casted, ok := structType.(*Apdu); ok {
+		return CastApduDataContainer(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataContainer) GetTypeName() string {

@@ -77,16 +77,13 @@ func NewServices(serviceNb uint16, offsets []uint16, services []*CipService, ser
 }
 
 func CastServices(structType interface{}) *Services {
-	castFunc := func(typ interface{}) *Services {
-		if casted, ok := typ.(Services); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*Services); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(Services); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*Services); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *Services) GetTypeName() string {

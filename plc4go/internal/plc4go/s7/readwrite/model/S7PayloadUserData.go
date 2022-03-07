@@ -91,22 +91,19 @@ func NewS7PayloadUserData(items []*S7PayloadUserDataItem, parameter S7Parameter)
 }
 
 func CastS7PayloadUserData(structType interface{}) *S7PayloadUserData {
-	castFunc := func(typ interface{}) *S7PayloadUserData {
-		if casted, ok := typ.(S7PayloadUserData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserData); ok {
-			return casted
-		}
-		if casted, ok := typ.(S7Payload); ok {
-			return CastS7PayloadUserData(casted.Child)
-		}
-		if casted, ok := typ.(*S7Payload); ok {
-			return CastS7PayloadUserData(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserData); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserData); ok {
+		return casted
+	}
+	if casted, ok := structType.(S7Payload); ok {
+		return CastS7PayloadUserData(casted.Child)
+	}
+	if casted, ok := structType.(*S7Payload); ok {
+		return CastS7PayloadUserData(casted.Child)
+	}
+	return nil
 }
 
 func (m *S7PayloadUserData) GetTypeName() string {

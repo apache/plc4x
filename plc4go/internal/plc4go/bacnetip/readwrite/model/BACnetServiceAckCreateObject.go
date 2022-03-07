@@ -72,22 +72,19 @@ func NewBACnetServiceAckCreateObject() *BACnetServiceAck {
 }
 
 func CastBACnetServiceAckCreateObject(structType interface{}) *BACnetServiceAckCreateObject {
-	castFunc := func(typ interface{}) *BACnetServiceAckCreateObject {
-		if casted, ok := typ.(BACnetServiceAckCreateObject); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckCreateObject); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckCreateObject(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckCreateObject(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckCreateObject); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckCreateObject); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckCreateObject(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckCreateObject(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckCreateObject) GetTypeName() string {

@@ -86,16 +86,13 @@ func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize D
 }
 
 func CastS7PayloadUserDataItem(structType interface{}) *S7PayloadUserDataItem {
-	castFunc := func(typ interface{}) *S7PayloadUserDataItem {
-		if casted, ok := typ.(S7PayloadUserDataItem); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*S7PayloadUserDataItem); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(S7PayloadUserDataItem); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *S7PayloadUserDataItem) GetTypeName() string {

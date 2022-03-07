@@ -175,16 +175,13 @@ func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint
 }
 
 func CastBACnetTagHeader(structType interface{}) *BACnetTagHeader {
-	castFunc := func(typ interface{}) *BACnetTagHeader {
-		if casted, ok := typ.(BACnetTagHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagHeader) GetTypeName() string {

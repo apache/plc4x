@@ -102,22 +102,19 @@ func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReferenc
 }
 
 func CastCOTPPacketConnectionResponse(structType interface{}) *COTPPacketConnectionResponse {
-	castFunc := func(typ interface{}) *COTPPacketConnectionResponse {
-		if casted, ok := typ.(COTPPacketConnectionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPPacketConnectionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(COTPPacket); ok {
-			return CastCOTPPacketConnectionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*COTPPacket); ok {
-			return CastCOTPPacketConnectionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(COTPPacketConnectionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPPacketConnectionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(COTPPacket); ok {
+		return CastCOTPPacketConnectionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*COTPPacket); ok {
+		return CastCOTPPacketConnectionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *COTPPacketConnectionResponse) GetTypeName() string {

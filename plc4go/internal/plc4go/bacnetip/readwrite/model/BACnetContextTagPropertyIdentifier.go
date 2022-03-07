@@ -100,22 +100,19 @@ func NewBACnetContextTagPropertyIdentifier(propertyIdentifier BACnetPropertyIden
 }
 
 func CastBACnetContextTagPropertyIdentifier(structType interface{}) *BACnetContextTagPropertyIdentifier {
-	castFunc := func(typ interface{}) *BACnetContextTagPropertyIdentifier {
-		if casted, ok := typ.(BACnetContextTagPropertyIdentifier); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagPropertyIdentifier); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagPropertyIdentifier(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagPropertyIdentifier(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagPropertyIdentifier); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagPropertyIdentifier); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagPropertyIdentifier(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagPropertyIdentifier(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagPropertyIdentifier) GetTypeName() string {

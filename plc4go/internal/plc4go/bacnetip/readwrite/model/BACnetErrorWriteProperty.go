@@ -75,22 +75,19 @@ func NewBACnetErrorWriteProperty(errorClass *BACnetApplicationTagEnumerated, err
 }
 
 func CastBACnetErrorWriteProperty(structType interface{}) *BACnetErrorWriteProperty {
-	castFunc := func(typ interface{}) *BACnetErrorWriteProperty {
-		if casted, ok := typ.(BACnetErrorWriteProperty); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorWriteProperty); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorWriteProperty(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorWriteProperty(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetErrorWriteProperty); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetErrorWriteProperty); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetError); ok {
+		return CastBACnetErrorWriteProperty(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetError); ok {
+		return CastBACnetErrorWriteProperty(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetErrorWriteProperty) GetTypeName() string {

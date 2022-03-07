@@ -68,16 +68,13 @@ func NewCBusHeader(priorityClass PriorityClass, destinationAddressType Destinati
 }
 
 func CastCBusHeader(structType interface{}) *CBusHeader {
-	castFunc := func(typ interface{}) *CBusHeader {
-		if casted, ok := typ.(CBusHeader); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusHeader); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(CBusHeader); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusHeader); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *CBusHeader) GetTypeName() string {

@@ -75,22 +75,19 @@ func NewConfirmationReply(isA *Confirmation, magicByte byte) *Reply {
 }
 
 func CastConfirmationReply(structType interface{}) *ConfirmationReply {
-	castFunc := func(typ interface{}) *ConfirmationReply {
-		if casted, ok := typ.(ConfirmationReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ConfirmationReply); ok {
-			return casted
-		}
-		if casted, ok := typ.(Reply); ok {
-			return CastConfirmationReply(casted.Child)
-		}
-		if casted, ok := typ.(*Reply); ok {
-			return CastConfirmationReply(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ConfirmationReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ConfirmationReply); ok {
+		return casted
+	}
+	if casted, ok := structType.(Reply); ok {
+		return CastConfirmationReply(casted.Child)
+	}
+	if casted, ok := structType.(*Reply); ok {
+		return CastConfirmationReply(casted.Child)
+	}
+	return nil
 }
 
 func (m *ConfirmationReply) GetTypeName() string {

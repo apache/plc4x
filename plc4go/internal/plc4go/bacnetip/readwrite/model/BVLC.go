@@ -78,16 +78,13 @@ func NewBVLC() *BVLC {
 }
 
 func CastBVLC(structType interface{}) *BVLC {
-	castFunc := func(typ interface{}) *BVLC {
-		if casted, ok := typ.(BVLC); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BVLC); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BVLC); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BVLC) GetTypeName() string {

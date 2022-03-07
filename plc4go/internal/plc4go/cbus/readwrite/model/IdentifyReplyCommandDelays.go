@@ -72,22 +72,19 @@ func NewIdentifyReplyCommandDelays() *IdentifyReplyCommand {
 }
 
 func CastIdentifyReplyCommandDelays(structType interface{}) *IdentifyReplyCommandDelays {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandDelays {
-		if casted, ok := typ.(IdentifyReplyCommandDelays); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandDelays); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandDelays(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandDelays(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandDelays); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandDelays); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandDelays(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandDelays(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandDelays) GetTypeName() string {

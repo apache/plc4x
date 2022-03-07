@@ -72,16 +72,13 @@ func NewCOTPParameter(rest uint8) *COTPParameter {
 }
 
 func CastCOTPParameter(structType interface{}) *COTPParameter {
-	castFunc := func(typ interface{}) *COTPParameter {
-		if casted, ok := typ.(COTPParameter); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*COTPParameter); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(COTPParameter); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*COTPParameter); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *COTPParameter) GetTypeName() string {

@@ -88,22 +88,19 @@ func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommand {
 }
 
 func CastSysexCommandAnalogMappingQueryResponse(structType interface{}) *SysexCommandAnalogMappingQueryResponse {
-	castFunc := func(typ interface{}) *SysexCommandAnalogMappingQueryResponse {
-		if casted, ok := typ.(SysexCommandAnalogMappingQueryResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommandAnalogMappingQueryResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(SysexCommand); ok {
-			return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(SysexCommandAnalogMappingQueryResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommandAnalogMappingQueryResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(SysexCommand); ok {
+		return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
+	}
+	if casted, ok := structType.(*SysexCommand); ok {
+		return CastSysexCommandAnalogMappingQueryResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) GetTypeName() string {

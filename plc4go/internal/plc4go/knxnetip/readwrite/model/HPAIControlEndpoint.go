@@ -74,16 +74,13 @@ func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddr
 }
 
 func CastHPAIControlEndpoint(structType interface{}) *HPAIControlEndpoint {
-	castFunc := func(typ interface{}) *HPAIControlEndpoint {
-		if casted, ok := typ.(HPAIControlEndpoint); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*HPAIControlEndpoint); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(HPAIControlEndpoint); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*HPAIControlEndpoint); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *HPAIControlEndpoint) GetTypeName() string {

@@ -112,22 +112,19 @@ func NewBACnetNotificationParametersChangeOfBitString(innerOpeningTag *BACnetOpe
 }
 
 func CastBACnetNotificationParametersChangeOfBitString(structType interface{}) *BACnetNotificationParametersChangeOfBitString {
-	castFunc := func(typ interface{}) *BACnetNotificationParametersChangeOfBitString {
-		if casted, ok := typ.(BACnetNotificationParametersChangeOfBitString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetNotificationParametersChangeOfBitString); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetNotificationParameters); ok {
-			return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetNotificationParametersChangeOfBitString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetNotificationParametersChangeOfBitString); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetNotificationParameters); ok {
+		return CastBACnetNotificationParametersChangeOfBitString(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetNotificationParametersChangeOfBitString) GetTypeName() string {

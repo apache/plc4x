@@ -77,22 +77,19 @@ func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, 
 }
 
 func CastCIPEncapsulationConnectionResponse(structType interface{}) *CIPEncapsulationConnectionResponse {
-	castFunc := func(typ interface{}) *CIPEncapsulationConnectionResponse {
-		if casted, ok := typ.(CIPEncapsulationConnectionResponse); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CIPEncapsulationConnectionResponse); ok {
-			return casted
-		}
-		if casted, ok := typ.(CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationConnectionResponse(casted.Child)
-		}
-		if casted, ok := typ.(*CIPEncapsulationPacket); ok {
-			return CastCIPEncapsulationConnectionResponse(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CIPEncapsulationConnectionResponse); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CIPEncapsulationConnectionResponse); ok {
+		return casted
+	}
+	if casted, ok := structType.(CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationConnectionResponse(casted.Child)
+	}
+	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
+		return CastCIPEncapsulationConnectionResponse(casted.Child)
+	}
+	return nil
 }
 
 func (m *CIPEncapsulationConnectionResponse) GetTypeName() string {

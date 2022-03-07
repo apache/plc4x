@@ -71,16 +71,13 @@ func NewSysexCommand() *SysexCommand {
 }
 
 func CastSysexCommand(structType interface{}) *SysexCommand {
-	castFunc := func(typ interface{}) *SysexCommand {
-		if casted, ok := typ.(SysexCommand); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*SysexCommand); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(SysexCommand); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*SysexCommand); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *SysexCommand) GetTypeName() string {

@@ -87,16 +87,13 @@ func NewBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawData *BA
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(structType interface{}) *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {
-		if casted, ok := typ.(BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetTypeName() string {

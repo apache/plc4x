@@ -131,22 +131,19 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress *UnitA
 }
 
 func CastMonitoredSALLongFormSmartMode(structType interface{}) *MonitoredSALLongFormSmartMode {
-	castFunc := func(typ interface{}) *MonitoredSALLongFormSmartMode {
-		if casted, ok := typ.(MonitoredSALLongFormSmartMode); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MonitoredSALLongFormSmartMode); ok {
-			return casted
-		}
-		if casted, ok := typ.(MonitoredSAL); ok {
-			return CastMonitoredSALLongFormSmartMode(casted.Child)
-		}
-		if casted, ok := typ.(*MonitoredSAL); ok {
-			return CastMonitoredSALLongFormSmartMode(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MonitoredSALLongFormSmartMode); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MonitoredSALLongFormSmartMode); ok {
+		return casted
+	}
+	if casted, ok := structType.(MonitoredSAL); ok {
+		return CastMonitoredSALLongFormSmartMode(casted.Child)
+	}
+	if casted, ok := structType.(*MonitoredSAL); ok {
+		return CastMonitoredSALLongFormSmartMode(casted.Child)
+	}
+	return nil
 }
 
 func (m *MonitoredSALLongFormSmartMode) GetTypeName() string {

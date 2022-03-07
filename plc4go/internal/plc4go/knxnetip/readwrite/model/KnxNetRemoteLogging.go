@@ -80,22 +80,19 @@ func NewKnxNetRemoteLogging(version uint8) *ServiceId {
 }
 
 func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {
-	castFunc := func(typ interface{}) *KnxNetRemoteLogging {
-		if casted, ok := typ.(KnxNetRemoteLogging); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*KnxNetRemoteLogging); ok {
-			return casted
-		}
-		if casted, ok := typ.(ServiceId); ok {
-			return CastKnxNetRemoteLogging(casted.Child)
-		}
-		if casted, ok := typ.(*ServiceId); ok {
-			return CastKnxNetRemoteLogging(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(KnxNetRemoteLogging); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*KnxNetRemoteLogging); ok {
+		return casted
+	}
+	if casted, ok := structType.(ServiceId); ok {
+		return CastKnxNetRemoteLogging(casted.Child)
+	}
+	if casted, ok := structType.(*ServiceId); ok {
+		return CastKnxNetRemoteLogging(casted.Child)
+	}
+	return nil
 }
 
 func (m *KnxNetRemoteLogging) GetTypeName() string {

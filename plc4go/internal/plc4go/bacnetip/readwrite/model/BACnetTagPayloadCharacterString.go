@@ -75,16 +75,13 @@ func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value 
 }
 
 func CastBACnetTagPayloadCharacterString(structType interface{}) *BACnetTagPayloadCharacterString {
-	castFunc := func(typ interface{}) *BACnetTagPayloadCharacterString {
-		if casted, ok := typ.(BACnetTagPayloadCharacterString); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetTagPayloadCharacterString); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetTagPayloadCharacterString); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetTagPayloadCharacterString); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetTagPayloadCharacterString) GetTypeName() string {

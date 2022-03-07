@@ -72,16 +72,13 @@ func NewBACnetUnconfirmedServiceRequest(len uint16) *BACnetUnconfirmedServiceReq
 }
 
 func CastBACnetUnconfirmedServiceRequest(structType interface{}) *BACnetUnconfirmedServiceRequest {
-	castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequest {
-		if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(BACnetUnconfirmedServiceRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *BACnetUnconfirmedServiceRequest) GetTypeName() string {

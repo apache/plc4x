@@ -82,22 +82,19 @@ func NewBACnetApplicationTagTime(payload *BACnetTagPayloadTime, header *BACnetTa
 }
 
 func CastBACnetApplicationTagTime(structType interface{}) *BACnetApplicationTagTime {
-	castFunc := func(typ interface{}) *BACnetApplicationTagTime {
-		if casted, ok := typ.(BACnetApplicationTagTime); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetApplicationTagTime); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagTime(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetApplicationTag); ok {
-			return CastBACnetApplicationTagTime(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetApplicationTagTime); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetApplicationTagTime); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagTime(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetApplicationTag); ok {
+		return CastBACnetApplicationTagTime(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetApplicationTagTime) GetTypeName() string {

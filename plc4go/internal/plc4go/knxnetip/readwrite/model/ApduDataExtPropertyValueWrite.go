@@ -115,22 +115,19 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 }
 
 func CastApduDataExtPropertyValueWrite(structType interface{}) *ApduDataExtPropertyValueWrite {
-	castFunc := func(typ interface{}) *ApduDataExtPropertyValueWrite {
-		if casted, ok := typ.(ApduDataExtPropertyValueWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataExtPropertyValueWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduDataExt); ok {
-			return CastApduDataExtPropertyValueWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduDataExt); ok {
-			return CastApduDataExtPropertyValueWrite(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ApduDataExtPropertyValueWrite); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ApduDataExtPropertyValueWrite); ok {
+		return casted
+	}
+	if casted, ok := structType.(ApduDataExt); ok {
+		return CastApduDataExtPropertyValueWrite(casted.Child)
+	}
+	if casted, ok := structType.(*ApduDataExt); ok {
+		return CastApduDataExtPropertyValueWrite(casted.Child)
+	}
+	return nil
 }
 
 func (m *ApduDataExtPropertyValueWrite) GetTypeName() string {

@@ -88,22 +88,19 @@ func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, a
 }
 
 func CastBACnetServiceAckAtomicReadFile(structType interface{}) *BACnetServiceAckAtomicReadFile {
-	castFunc := func(typ interface{}) *BACnetServiceAckAtomicReadFile {
-		if casted, ok := typ.(BACnetServiceAckAtomicReadFile); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetServiceAckAtomicReadFile); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicReadFile(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetServiceAck); ok {
-			return CastBACnetServiceAckAtomicReadFile(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetServiceAckAtomicReadFile); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetServiceAckAtomicReadFile); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicReadFile(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetServiceAck); ok {
+		return CastBACnetServiceAckAtomicReadFile(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetServiceAckAtomicReadFile) GetTypeName() string {

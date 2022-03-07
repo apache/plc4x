@@ -95,16 +95,13 @@ func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 
 }
 
 func CastAmsNetId(structType interface{}) *AmsNetId {
-	castFunc := func(typ interface{}) *AmsNetId {
-		if casted, ok := typ.(AmsNetId); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsNetId); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsNetId); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsNetId); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsNetId) GetTypeName() string {

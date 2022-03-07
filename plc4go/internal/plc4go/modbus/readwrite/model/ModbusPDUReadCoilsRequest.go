@@ -104,22 +104,19 @@ func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *Modb
 }
 
 func CastModbusPDUReadCoilsRequest(structType interface{}) *ModbusPDUReadCoilsRequest {
-	castFunc := func(typ interface{}) *ModbusPDUReadCoilsRequest {
-		if casted, ok := typ.(ModbusPDUReadCoilsRequest); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ModbusPDUReadCoilsRequest); ok {
-			return casted
-		}
-		if casted, ok := typ.(ModbusPDU); ok {
-			return CastModbusPDUReadCoilsRequest(casted.Child)
-		}
-		if casted, ok := typ.(*ModbusPDU); ok {
-			return CastModbusPDUReadCoilsRequest(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(ModbusPDUReadCoilsRequest); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ModbusPDUReadCoilsRequest); ok {
+		return casted
+	}
+	if casted, ok := structType.(ModbusPDU); ok {
+		return CastModbusPDUReadCoilsRequest(casted.Child)
+	}
+	if casted, ok := structType.(*ModbusPDU); ok {
+		return CastModbusPDUReadCoilsRequest(casted.Child)
+	}
+	return nil
 }
 
 func (m *ModbusPDUReadCoilsRequest) GetTypeName() string {

@@ -86,22 +86,19 @@ func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHe
 }
 
 func CastBACnetContextTagDeviceState(structType interface{}) *BACnetContextTagDeviceState {
-	castFunc := func(typ interface{}) *BACnetContextTagDeviceState {
-		if casted, ok := typ.(BACnetContextTagDeviceState); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetContextTagDeviceState); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetContextTag); ok {
-			return CastBACnetContextTagDeviceState(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetContextTag); ok {
-			return CastBACnetContextTagDeviceState(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(BACnetContextTagDeviceState); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*BACnetContextTagDeviceState); ok {
+		return casted
+	}
+	if casted, ok := structType.(BACnetContextTag); ok {
+		return CastBACnetContextTagDeviceState(casted.Child)
+	}
+	if casted, ok := structType.(*BACnetContextTag); ok {
+		return CastBACnetContextTagDeviceState(casted.Child)
+	}
+	return nil
 }
 
 func (m *BACnetContextTagDeviceState) GetTypeName() string {

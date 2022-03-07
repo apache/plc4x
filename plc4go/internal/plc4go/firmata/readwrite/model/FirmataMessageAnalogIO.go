@@ -91,22 +91,19 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *FirmataMe
 }
 
 func CastFirmataMessageAnalogIO(structType interface{}) *FirmataMessageAnalogIO {
-	castFunc := func(typ interface{}) *FirmataMessageAnalogIO {
-		if casted, ok := typ.(FirmataMessageAnalogIO); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*FirmataMessageAnalogIO); ok {
-			return casted
-		}
-		if casted, ok := typ.(FirmataMessage); ok {
-			return CastFirmataMessageAnalogIO(casted.Child)
-		}
-		if casted, ok := typ.(*FirmataMessage); ok {
-			return CastFirmataMessageAnalogIO(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(FirmataMessageAnalogIO); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*FirmataMessageAnalogIO); ok {
+		return casted
+	}
+	if casted, ok := structType.(FirmataMessage); ok {
+		return CastFirmataMessageAnalogIO(casted.Child)
+	}
+	if casted, ok := structType.(*FirmataMessage); ok {
+		return CastFirmataMessageAnalogIO(casted.Child)
+	}
+	return nil
 }
 
 func (m *FirmataMessageAnalogIO) GetTypeName() string {

@@ -95,16 +95,13 @@ func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, r
 }
 
 func CastAmsSerialAcknowledgeFrame(structType interface{}) *AmsSerialAcknowledgeFrame {
-	castFunc := func(typ interface{}) *AmsSerialAcknowledgeFrame {
-		if casted, ok := typ.(AmsSerialAcknowledgeFrame); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AmsSerialAcknowledgeFrame); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(AmsSerialAcknowledgeFrame); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*AmsSerialAcknowledgeFrame); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *AmsSerialAcknowledgeFrame) GetTypeName() string {
