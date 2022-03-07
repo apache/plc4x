@@ -196,7 +196,6 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
 </#list>
 <#list type.virtualFields as field>
-    <#if !type.isDiscriminatorField(field.name)>
     public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
@@ -210,7 +209,6 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         return (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         </#if>
     }
-    </#if>
 
 </#list>
 
