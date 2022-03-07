@@ -156,13 +156,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case VSTRING:
                 return "string";
             case TIME:
-                return "Time";
             case DATE:
-                return "Date";
             case DATETIME:
-                return "Date";
+                emitRequiredImport("time");
+                return "time.Time";
+            default:
+                throw new RuntimeException("Unsupported simple type");
         }
-        throw new RuntimeException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
@@ -229,8 +229,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "values.NewPlcDATE";
             case DATETIME:
                 return "values.NewPlcDATE_AND_TIME";
+            default:
+                throw new FreemarkerException("Unsupported simple type" + simpleTypeReference.getBaseType());
         }
-        throw new FreemarkerException("Unsupported simple type" + simpleTypeReference.getBaseType());
     }
 
     @Override
@@ -358,8 +359,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 String lengthExpression = toExpression(field, field.getType(), vstringTypeReference.getLengthExpression(), null, null, false, false);
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
             }
+            case TIME:
+                return "readBuffer.ReadTime(\"" + logicalName + "\")";
+            case DATE:
+                return "readBuffer.ReadDate(\"" + logicalName + "\")";
+            case DATETIME:
+                return "readBuffer.ReadDateTime(\"" + logicalName + "\")";
+            default:
+                throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
         }
-        throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
     }
 
     @Override
@@ -458,8 +466,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
+            case DATE:
+                return "writeBuffer.WriteDate(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
+            case TIME:
+                return "writeBuffer.WriteTime(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
+            case DATETIME:
+                return "writeBuffer.WriteDateTime(\"" + logicalName + "\"" + fieldName + writerArgsString + ")";
+            default:
+                throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
         }
-        throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
     }
 
     public String getReservedValue(ReservedField reservedField) {
