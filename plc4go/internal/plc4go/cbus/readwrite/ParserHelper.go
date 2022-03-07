@@ -42,8 +42,6 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ExclamationMarkParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
-	case "Application":
-		return model.ApplicationParse(io)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "StandardFormatStatusReply":

@@ -34,7 +34,7 @@ const StandardFormatStatusReply_LF byte = 0x0A
 // The data-structure of this message
 type StandardFormatStatusReply struct {
 	StatusHeader *StatusHeader
-	Application  *Application
+	Application  ApplicationIdContainer
 	BlockStart   uint8
 	StatusBytes  []*StatusByte
 	Crc          *Checksum
@@ -45,7 +45,7 @@ type IStandardFormatStatusReply interface {
 	// GetStatusHeader returns StatusHeader
 	GetStatusHeader() *StatusHeader
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes
@@ -67,7 +67,7 @@ func (m *StandardFormatStatusReply) GetStatusHeader() *StatusHeader {
 	return m.StatusHeader
 }
 
-func (m *StandardFormatStatusReply) GetApplication() *Application {
+func (m *StandardFormatStatusReply) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -88,7 +88,7 @@ func (m *StandardFormatStatusReply) GetCrc() *Checksum {
 ///////////////////////////////////////////////////////////
 
 // NewStandardFormatStatusReply factory function for StandardFormatStatusReply
-func NewStandardFormatStatusReply(statusHeader *StatusHeader, application *Application, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *StandardFormatStatusReply {
+func NewStandardFormatStatusReply(statusHeader *StatusHeader, application ApplicationIdContainer, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *StandardFormatStatusReply {
 	return &StandardFormatStatusReply{StatusHeader: statusHeader, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
 }
 
@@ -120,7 +120,7 @@ func (m *StandardFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	lengthInBits += m.StatusHeader.GetLengthInBits()
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (blockStart)
 	lengthInBits += 8
@@ -173,11 +173,11 @@ func StandardFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*StandardForma
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}

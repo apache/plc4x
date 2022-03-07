@@ -148,7 +148,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
   // Discriminator Field (addressType)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_s7_address_get_discriminator(_message->_type).addressType);
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any: {
 

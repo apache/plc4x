@@ -107,14 +107,14 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
   }
   (*_message)->tpdu_reference = tpduReference;
 
-  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t parameterLength = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &parameterLength);
   if(_res != OK) {
     return _res;
   }
 
-  // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t payloadLength = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &payloadLength);
   if(_res != OK) {
@@ -229,7 +229,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
     return _res;
   }
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request: {
 

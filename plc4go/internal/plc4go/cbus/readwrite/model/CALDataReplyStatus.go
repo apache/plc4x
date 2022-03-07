@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type CALDataReplyStatus struct {
 	*CALData
-	Application *Application
+	Application ApplicationIdContainer
 	BlockStart  uint8
 	Data        []byte
 }
@@ -37,7 +37,7 @@ type CALDataReplyStatus struct {
 // The corresponding interface
 type ICALDataReplyStatus interface {
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart
 	GetBlockStart() uint8
 	// GetData returns Data
@@ -68,7 +68,7 @@ func (m *CALDataReplyStatus) InitializeParent(parent *CALData, commandTypeContai
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
 ///////////////////////////////////////////////////////////
-func (m *CALDataReplyStatus) GetApplication() *Application {
+func (m *CALDataReplyStatus) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -85,7 +85,7 @@ func (m *CALDataReplyStatus) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyStatus factory function for CALDataReplyStatus
-func NewCALDataReplyStatus(application *Application, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
+func NewCALDataReplyStatus(application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
 	child := &CALDataReplyStatus{
 		Application: application,
 		BlockStart:  blockStart,
@@ -127,7 +127,7 @@ func (m *CALDataReplyStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (blockStart)
 	lengthInBits += 8
@@ -155,11 +155,11 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -183,7 +183,7 @@ func CALDataReplyStatusParse(readBuffer utils.ReadBuffer, commandTypeContainer C
 
 	// Create a partially initialized instance
 	_child := &CALDataReplyStatus{
-		Application: CastApplication(application),
+		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
 		CALData:     &CALData{},

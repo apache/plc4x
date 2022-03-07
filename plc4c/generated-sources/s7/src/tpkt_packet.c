@@ -64,7 +64,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* r
     }
   }
 
-  // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t len = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &len);
   if(_res != OK) {

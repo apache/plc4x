@@ -617,8 +617,11 @@ const (
 	KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES                    KnxManufacturer = 579
 	KnxManufacturer_M_COMFORTCLICK                                       KnxManufacturer = 580
 	KnxManufacturer_M_DORBAS_ELECTRIC                                    KnxManufacturer = 581
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 582
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 583
+	KnxManufacturer_M_REMKO_GMBH_AND_CO__KG                              KnxManufacturer = 582
+	KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD   KnxManufacturer = 583
+	KnxManufacturer_M_ANDAS                                              KnxManufacturer = 584
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 585
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 586
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1208,6 +1211,9 @@ func init() {
 		KnxManufacturer_M_HONEYWELL_BUILDING_TECHNOLOGIES,
 		KnxManufacturer_M_COMFORTCLICK,
 		KnxManufacturer_M_DORBAS_ELECTRIC,
+		KnxManufacturer_M_REMKO_GMBH_AND_CO__KG,
+		KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_ANDAS,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3365,10 +3371,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 582:
 		{ /* '582' */
-			return 43954
+			return 640
 		}
 	case 583:
 		{ /* '583' */
+			return 641
+		}
+	case 584:
+		{ /* '584' */
+			return 642
+		}
+	case 585:
+		{ /* '585' */
+			return 43954
+		}
+	case 586:
+		{ /* '586' */
 			return 43959
 		}
 	case 59:
@@ -5719,10 +5737,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 582:
 		{ /* '582' */
-			return "ABB - reserved"
+			return "REMKO GmbH & Co. KG"
 		}
 	case 583:
 		{ /* '583' */
+			return "Shenzhen Congxun Intelligent Technology Co., LTD"
+		}
+	case 584:
+		{ /* '584' */
+			return "ANDAS"
+		}
+	case 585:
+		{ /* '585' */
+			return "ABB - reserved"
+		}
+	case 586:
+		{ /* '586' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 59:
@@ -6997,8 +7027,14 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 581:
 		return KnxManufacturer_M_DORBAS_ELECTRIC
 	case 582:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
 	case 583:
+		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
+	case 584:
+		return KnxManufacturer_M_ANDAS
+	case 585:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 586:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 59:
 		return KnxManufacturer_M_ELECTRAK
@@ -8170,6 +8206,12 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_COMFORTCLICK
 	case "M_DORBAS_ELECTRIC":
 		return KnxManufacturer_M_DORBAS_ELECTRIC
+	case "M_REMKO_GMBH_AND_CO__KG":
+		return KnxManufacturer_M_REMKO_GMBH_AND_CO__KG
+	case "M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD
+	case "M_ANDAS":
+		return KnxManufacturer_M_ANDAS
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9383,6 +9425,12 @@ func (e KnxManufacturer) name() string {
 		return "M_COMFORTCLICK"
 	case KnxManufacturer_M_DORBAS_ELECTRIC:
 		return "M_DORBAS_ELECTRIC"
+	case KnxManufacturer_M_REMKO_GMBH_AND_CO__KG:
+		return "M_REMKO_GMBH_AND_CO__KG"
+	case KnxManufacturer_M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD:
+		return "M_SHENZHEN_CONGXUN_INTELLIGENT_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_ANDAS:
+		return "M_ANDAS"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

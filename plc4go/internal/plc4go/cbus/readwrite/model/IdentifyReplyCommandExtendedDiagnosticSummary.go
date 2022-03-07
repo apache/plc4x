@@ -30,8 +30,8 @@ import (
 // The data-structure of this message
 type IdentifyReplyCommandExtendedDiagnosticSummary struct {
 	*IdentifyReplyCommand
-	LowApplication         *Application
-	HighApplication        *Application
+	LowApplication         ApplicationIdContainer
+	HighApplication        ApplicationIdContainer
 	Area                   byte
 	Crc                    uint16
 	SerialNumber           uint32
@@ -54,9 +54,9 @@ type IdentifyReplyCommandExtendedDiagnosticSummary struct {
 // The corresponding interface
 type IIdentifyReplyCommandExtendedDiagnosticSummary interface {
 	// GetLowApplication returns LowApplication
-	GetLowApplication() *Application
+	GetLowApplication() ApplicationIdContainer
 	// GetHighApplication returns HighApplication
-	GetHighApplication() *Application
+	GetHighApplication() ApplicationIdContainer
 	// GetArea returns Area
 	GetArea() byte
 	// GetCrc returns Crc
@@ -116,11 +116,11 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) InitializeParent(parent 
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetLowApplication() *Application {
+func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetLowApplication() ApplicationIdContainer {
 	return m.LowApplication
 }
 
-func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetHighApplication() *Application {
+func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetHighApplication() ApplicationIdContainer {
 	return m.HighApplication
 }
 
@@ -197,7 +197,7 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetInstallationMMIError(
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandExtendedDiagnosticSummary factory function for IdentifyReplyCommandExtendedDiagnosticSummary
-func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication *Application, highApplication *Application, area byte, crc uint16, serialNumber uint32, networkVoltage byte, outputUnit bool, enableChecksumAlarm bool, networkVoltageMarginal bool, networkVoltageLow bool, unitInLearnMode bool, microPowerReset bool, internalStackOverflow bool, commsTxError bool, microReset bool, EEDataError bool, EEChecksumError bool, EEWriteError bool, installationMMIError bool) *IdentifyReplyCommand {
+func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, outputUnit bool, enableChecksumAlarm bool, networkVoltageMarginal bool, networkVoltageLow bool, unitInLearnMode bool, microPowerReset bool, internalStackOverflow bool, commsTxError bool, microReset bool, EEDataError bool, EEChecksumError bool, EEWriteError bool, installationMMIError bool) *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandExtendedDiagnosticSummary{
 		LowApplication:         lowApplication,
 		HighApplication:        highApplication,
@@ -255,10 +255,10 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBitsCondition
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (lowApplication)
-	lengthInBits += m.LowApplication.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (highApplication)
-	lengthInBits += m.HighApplication.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (area)
 	lengthInBits += 8
@@ -338,11 +338,11 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("lowApplication"); pullErr != nil {
 		return nil, pullErr
 	}
-	_lowApplication, _lowApplicationErr := ApplicationParse(readBuffer)
+	_lowApplication, _lowApplicationErr := ApplicationIdContainerParse(readBuffer)
 	if _lowApplicationErr != nil {
 		return nil, errors.Wrap(_lowApplicationErr, "Error parsing 'lowApplication' field")
 	}
-	lowApplication := CastApplication(_lowApplication)
+	lowApplication := _lowApplication
 	if closeErr := readBuffer.CloseContext("lowApplication"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -351,11 +351,11 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("highApplication"); pullErr != nil {
 		return nil, pullErr
 	}
-	_highApplication, _highApplicationErr := ApplicationParse(readBuffer)
+	_highApplication, _highApplicationErr := ApplicationIdContainerParse(readBuffer)
 	if _highApplicationErr != nil {
 		return nil, errors.Wrap(_highApplicationErr, "Error parsing 'highApplication' field")
 	}
-	highApplication := CastApplication(_highApplication)
+	highApplication := _highApplication
 	if closeErr := readBuffer.CloseContext("highApplication"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -527,8 +527,8 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &IdentifyReplyCommandExtendedDiagnosticSummary{
-		LowApplication:         CastApplication(lowApplication),
-		HighApplication:        CastApplication(highApplication),
+		LowApplication:         lowApplication,
+		HighApplication:        highApplication,
 		Area:                   area,
 		Crc:                    crc,
 		SerialNumber:           serialNumber,

@@ -66,7 +66,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     return NO_MEMORY;
   }
 
-  // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t headerLength = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &headerLength);
   if(_res != OK) {
@@ -278,7 +278,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   // Discriminator Field (tpduCode)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data: {
 

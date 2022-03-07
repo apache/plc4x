@@ -34,7 +34,7 @@ type MonitoredSALShortFormBasicMode struct {
 	BridgeCount   *BridgeCount
 	NetworkNumber *NetworkNumber
 	NoCounts      *byte
-	Application   *Application
+	Application   ApplicationIdContainer
 }
 
 // The corresponding interface
@@ -48,7 +48,7 @@ type IMonitoredSALShortFormBasicMode interface {
 	// GetNoCounts returns NoCounts
 	GetNoCounts() *byte
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -85,7 +85,7 @@ func (m *MonitoredSALShortFormBasicMode) GetNoCounts() *byte {
 	return m.NoCounts
 }
 
-func (m *MonitoredSALShortFormBasicMode) GetApplication() *Application {
+func (m *MonitoredSALShortFormBasicMode) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -94,7 +94,7 @@ func (m *MonitoredSALShortFormBasicMode) GetApplication() *Application {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, networkNumber *NetworkNumber, noCounts *byte, application *Application, salType byte, salData *SALData) *MonitoredSAL {
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, networkNumber *NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData *SALData) *MonitoredSAL {
 	child := &MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
@@ -153,7 +153,7 @@ func (m *MonitoredSALShortFormBasicMode) GetLengthInBitsConditional(lastItem boo
 	}
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	return lengthInBits
 }
@@ -234,11 +234,11 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -253,7 +253,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 		BridgeCount:   CastBridgeCount(bridgeCount),
 		NetworkNumber: CastNetworkNumber(networkNumber),
 		NoCounts:      noCounts,
-		Application:   CastApplication(application),
+		Application:   application,
 		MonitoredSAL:  &MonitoredSAL{},
 	}
 	_child.MonitoredSAL.Child = _child

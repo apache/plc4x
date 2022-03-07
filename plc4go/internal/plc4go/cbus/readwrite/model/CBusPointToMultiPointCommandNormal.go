@@ -35,7 +35,7 @@ const CBusPointToMultiPointCommandNormal_CR byte = 0xD
 // The data-structure of this message
 type CBusPointToMultiPointCommandNormal struct {
 	*CBusPointToMultiPointCommand
-	Application *Application
+	Application ApplicationIdContainer
 	SalData     *SALData
 	Crc         *Checksum
 	PeekAlpha   byte
@@ -48,7 +48,7 @@ type CBusPointToMultiPointCommandNormal struct {
 // The corresponding interface
 type ICBusPointToMultiPointCommandNormal interface {
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetSalData returns SalData
 	GetSalData() *SALData
 	// GetCrc returns Crc
@@ -76,7 +76,7 @@ func (m *CBusPointToMultiPointCommandNormal) InitializeParent(parent *CBusPointT
 ///////////////////////////////////////////////////////////
 // Accessors for property fields.
 ///////////////////////////////////////////////////////////
-func (m *CBusPointToMultiPointCommandNormal) GetApplication() *Application {
+func (m *CBusPointToMultiPointCommandNormal) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -101,7 +101,7 @@ func (m *CBusPointToMultiPointCommandNormal) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandNormal factory function for CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application *Application, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommand {
+func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommand {
 	child := &CBusPointToMultiPointCommandNormal{
 		Application:                  application,
 		SalData:                      salData,
@@ -145,7 +145,7 @@ func (m *CBusPointToMultiPointCommandNormal) GetLengthInBitsConditional(lastItem
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -184,11 +184,11 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -286,7 +286,7 @@ func CBusPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, srchk 
 
 	// Create a partially initialized instance
 	_child := &CBusPointToMultiPointCommandNormal{
-		Application:                  CastApplication(application),
+		Application:                  application,
 		SalData:                      CastSALData(salData),
 		Crc:                          CastChecksum(crc),
 		PeekAlpha:                    peekAlpha,

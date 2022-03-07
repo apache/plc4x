@@ -193,7 +193,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x02 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x02 ) && ( response == true ) ) { /* ModbusPDUReadDiscreteInputsResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -245,7 +245,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x01 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x01 ) && ( response == true ) ) { /* ModbusPDUReadCoilsResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_coils_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -335,7 +335,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x0F ) && ( response == false ) 
   (*_message)->modbus_pdu_write_multiple_coils_request_quantity = quantity;
 
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -407,7 +407,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x04 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x04 ) && ( response == true ) ) { /* ModbusPDUReadInputRegistersResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_input_registers_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -459,7 +459,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x03 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x03 ) && ( response == true ) ) { /* ModbusPDUReadHoldingRegistersResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -549,7 +549,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x10 ) && ( response == false ) 
   (*_message)->modbus_pdu_write_multiple_holding_registers_request_quantity = quantity;
 
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -637,7 +637,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x17 ) && ( response == false ) 
   (*_message)->modbus_pdu_read_write_multiple_holding_registers_request_write_quantity = writeQuantity;
 
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -669,7 +669,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x17 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x17 ) && ( response == true ) ) { /* ModbusPDUReadWriteMultipleHoldingRegistersResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -770,7 +770,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x18 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x18 ) && ( response == true ) ) { /* ModbusPDUReadFifoQueueResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &byteCount);
   if(_res != OK) {
@@ -778,7 +778,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x18 ) && ( response == true ) )
   }
 
 
-  // Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t fifoCount = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &fifoCount);
   if(_res != OK) {
@@ -810,7 +810,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x18 ) && ( response == true ) )
 if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == false ) ) { /* ModbusPDUReadFileRecordRequest */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_file_record_request;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -842,7 +842,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == true ) ) { /* ModbusPDUReadFileRecordResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_file_record_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -874,7 +874,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x14 ) && ( response == true ) )
 if( ( errorFlag == false ) && ( functionFlag == 0x15 ) && ( response == false ) ) { /* ModbusPDUWriteFileRecordRequest */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_write_file_record_request;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -906,7 +906,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x15 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x15 ) && ( response == true ) ) { /* ModbusPDUWriteFileRecordResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_write_file_record_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -1018,7 +1018,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x0C ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x0C ) && ( response == true ) ) { /* ModbusPDUGetComEventLogResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -1080,7 +1080,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x11 ) && ( response == false ) 
 if( ( errorFlag == false ) && ( functionFlag == 0x11 ) && ( response == true ) ) { /* ModbusPDUReportServerIdResponse */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_response;
 
-  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &byteCount);
   if(_res != OK) {
@@ -1201,7 +1201,7 @@ if( ( errorFlag == false ) && ( functionFlag == 0x2B ) && ( response == true ) )
   (*_message)->modbus_pdu_read_device_identification_response_next_object_id = nextObjectId;
 
 
-  // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numberOfObjects = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numberOfObjects);
   if(_res != OK) {
@@ -1243,7 +1243,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   // Discriminator Field (functionFlag)
   plc4c_spi_write_unsigned_byte(writeBuffer, 7, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).functionFlag);
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 

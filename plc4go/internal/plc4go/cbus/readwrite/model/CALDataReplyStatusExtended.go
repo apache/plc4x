@@ -30,7 +30,7 @@ import (
 type CALDataReplyStatusExtended struct {
 	*CALData
 	Encoding    uint8
-	Application *Application
+	Application ApplicationIdContainer
 	BlockStart  uint8
 	Data        []byte
 }
@@ -40,7 +40,7 @@ type ICALDataReplyStatusExtended interface {
 	// GetEncoding returns Encoding
 	GetEncoding() uint8
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart
 	GetBlockStart() uint8
 	// GetData returns Data
@@ -75,7 +75,7 @@ func (m *CALDataReplyStatusExtended) GetEncoding() uint8 {
 	return m.Encoding
 }
 
-func (m *CALDataReplyStatusExtended) GetApplication() *Application {
+func (m *CALDataReplyStatusExtended) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -92,7 +92,7 @@ func (m *CALDataReplyStatusExtended) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyStatusExtended factory function for CALDataReplyStatusExtended
-func NewCALDataReplyStatusExtended(encoding uint8, application *Application, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
+func NewCALDataReplyStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
 	child := &CALDataReplyStatusExtended{
 		Encoding:    encoding,
 		Application: application,
@@ -138,7 +138,7 @@ func (m *CALDataReplyStatusExtended) GetLengthInBitsConditional(lastItem bool) u
 	lengthInBits += 8
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (blockStart)
 	lengthInBits += 8
@@ -173,11 +173,11 @@ func CALDataReplyStatusExtendedParse(readBuffer utils.ReadBuffer, commandTypeCon
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -202,7 +202,7 @@ func CALDataReplyStatusExtendedParse(readBuffer utils.ReadBuffer, commandTypeCon
 	// Create a partially initialized instance
 	_child := &CALDataReplyStatusExtended{
 		Encoding:    encoding,
-		Application: CastApplication(application),
+		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
 		CALData:     &CALData{},

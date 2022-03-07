@@ -136,7 +136,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   }
   (*_message)->transport_size = *transportSize;
 
-  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &dataLength);
   if(_res != OK) {
@@ -339,7 +339,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
   }
 
 
-  // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t szlItemCount = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &szlItemCount);
   if(_res != OK) {
@@ -514,7 +514,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
   (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_function_id = functionId;
 
 
-  // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numberOfObjects = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numberOfObjects);
   if(_res != OK) {
@@ -555,7 +555,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
   (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_response_function_id = functionId;
 
 
-  // Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numberOfObjects = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numberOfObjects);
   if(_res != OK) {
@@ -769,7 +769,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     return _res;
   }
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message: {
 

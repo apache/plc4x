@@ -35,7 +35,7 @@ const ExtendedFormatStatusReply_LF byte = 0x0A
 type ExtendedFormatStatusReply struct {
 	StatusHeader *ExtendedStatusHeader
 	Coding       StatusCoding
-	Application  *Application
+	Application  ApplicationIdContainer
 	BlockStart   uint8
 	StatusBytes  []*StatusByte
 	Crc          *Checksum
@@ -48,7 +48,7 @@ type IExtendedFormatStatusReply interface {
 	// GetCoding returns Coding
 	GetCoding() StatusCoding
 	// GetApplication returns Application
-	GetApplication() *Application
+	GetApplication() ApplicationIdContainer
 	// GetBlockStart returns BlockStart
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes
@@ -74,7 +74,7 @@ func (m *ExtendedFormatStatusReply) GetCoding() StatusCoding {
 	return m.Coding
 }
 
-func (m *ExtendedFormatStatusReply) GetApplication() *Application {
+func (m *ExtendedFormatStatusReply) GetApplication() ApplicationIdContainer {
 	return m.Application
 }
 
@@ -95,7 +95,7 @@ func (m *ExtendedFormatStatusReply) GetCrc() *Checksum {
 ///////////////////////////////////////////////////////////
 
 // NewExtendedFormatStatusReply factory function for ExtendedFormatStatusReply
-func NewExtendedFormatStatusReply(statusHeader *ExtendedStatusHeader, coding StatusCoding, application *Application, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *ExtendedFormatStatusReply {
+func NewExtendedFormatStatusReply(statusHeader *ExtendedStatusHeader, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []*StatusByte, crc *Checksum) *ExtendedFormatStatusReply {
 	return &ExtendedFormatStatusReply{StatusHeader: statusHeader, Coding: coding, Application: application, BlockStart: blockStart, StatusBytes: statusBytes, Crc: crc}
 }
 
@@ -130,7 +130,7 @@ func (m *ExtendedFormatStatusReply) GetLengthInBitsConditional(lastItem bool) ui
 	lengthInBits += 8
 
 	// Simple field (application)
-	lengthInBits += m.Application.GetLengthInBits()
+	lengthInBits += 8
 
 	// Simple field (blockStart)
 	lengthInBits += 8
@@ -196,11 +196,11 @@ func ExtendedFormatStatusReplyParse(readBuffer utils.ReadBuffer) (*ExtendedForma
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, pullErr
 	}
-	_application, _applicationErr := ApplicationParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
 	}
-	application := CastApplication(_application)
+	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
 		return nil, closeErr
 	}

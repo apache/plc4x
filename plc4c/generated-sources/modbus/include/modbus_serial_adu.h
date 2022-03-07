@@ -37,8 +37,6 @@ extern "C" {
 
 struct plc4c_modbus_read_write_modbus_serial_adu {
   /* Properties */
-  uint16_t transaction_id;
-  uint16_t length;
   uint8_t address;
   plc4c_modbus_read_write_modbus_pdu* pdu;
 };

@@ -133,23 +133,25 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     return NO_MEMORY;
   }
   {
-            <#if field.isCountArrayField()>
+            <#if arrayField.isCountArrayField()>
     // Count array
     uint16_t itemCount = (uint16_t) ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)};
     for(int curItem = 0; curItem < itemCount; curItem++) {
       <#if !elementTypeReference.isSimpleTypeReference()>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if elementTypeReference.isSimpleTypeReference()>
+    <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
       ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}));
-      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "_value", field)};
+      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "_value", arrayField)};
       if(_res != OK) {
         return _res;
       }
       plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
 <#else>
+    <#assign nonSimpleTypeReference = elementTypeReference.asNonSimpleTypeReference().orElseThrow()>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      ${helper.getCTypeName(nonSimpleTypeReference.name)}* _value = NULL;
+      _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -164,16 +166,18 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     while(plc4c_spi_read_get_pos(readBuffer) < ${arrayField.name}EndPos) {
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if elementTypeReference.isSimpleTypeReference()>
+    <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
       ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} _value = ${helper.getNullValueForTypeReference(elementTypeReference)};
-      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "&_value", arrayField)};
+      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_value", arrayField)};
       if(_res != OK) {
         return _res;
       }
       plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
 <#else>
+    <#assign nonSimpleTypeReference = elementTypeReference.asNonSimpleTypeReference().orElseThrow()>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      ${helper.getCTypeName(nonSimpleTypeReference.name)}* _value = NULL;
+      _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -187,16 +191,18 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if elementTypeReference.isSimpleTypeReference()>
+    <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
       ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} _value = ${helper.getNullValueForTypeReference(elementTypeReference)};
-      _res = ${helper.getReadBufferReadMethodCall(elementTypeReference, "&_value", field)};
+      _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_value", arrayField)};
       if(_res != OK) {
         return _res;
       }
       plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
 <#else>
+    <#assign nonSimpleTypeReference = elementTypeReference.asNonSimpleTypeReference().orElseThrow()>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getCTypeName(elementTypeReference.name)}* _value = NULL;
-      _res = ${helper.getCTypeName(elementTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      ${helper.getCTypeName(nonSimpleTypeReference.name)}* _value = NULL;
+      _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(readBuffer<#if elementTypeReference.isNonSimpleTypeReference() && elementTypeReference.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list elementTypeReference.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, arrayField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -215,9 +221,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   // Checksum Field (${checksumField.name})
   {
     // Create an array of all the bytes read in this message element so far.
-    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(readBuffer, startPos, plc4c_spi_read_get_pos(readBuffer));
     ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getNullValueForTypeReference(checksumField.type)};
-    _res = ${helper.getReadBufferReadMethodCall(checksumField.type, "&_checksumRef", field)};
+    _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&_checksumRef", checksumField)};
     if(_res != OK) {
       return _res;
     }
@@ -234,7 +239,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
   // Const Field (${constField.name})
   ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getNullValueForTypeReference(constField.type)};
-  _res = ${helper.getReadBufferReadMethodCall(constField.type, "&" + constField.name, field)};
+  _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&" + constField.name, constField)};
   if(_res != OK) {
     return _res;
   }
@@ -268,7 +273,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getNullValueForTypeReference(enumField.type)};
   {
     ${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))} _constantValue = ${helper.getNullValueForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))};
-    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "&_constantValue", field)};
+    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "&_constantValue", enumField)};
     if(_res != OK) {
       return _res;
     }
@@ -278,11 +283,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "implicit">
             <#assign implicitField = field.asImplicitField().orElseThrow()>
-            <#assign simpleTypeReference = implicitField.type>
+            <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
 
-  // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (${implicitField.name}) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getNullValueForTypeReference(implicitField.type)};
-  _res = ${helper.getReadBufferReadMethodCall(implicitField.type, "&" + implicitField.name, field)};
+  _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&" + implicitField.name, implicitField)};
   if(_res != OK) {
     return _res;
   }
@@ -308,14 +313,16 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   if(${helper.toParseExpression(baseType, field, optionalField.conditionExpression.get(), parserArguments)}) {
             </#if>
         <#if optionalField.type.isSimpleTypeReference()>
+            <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
     ${optionalField.name} = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}));
     if(${optionalField.name} == NULL) {
       return NO_MEMORY;
     }
     *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
-    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name, field)};
+    _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, optionalField.name, optionalField)};
         <#else>
-    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(readBuffer<#if optionalField.type.isNonSimpleTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
+            <#assign nonSimpleTypeReference = optionalField.type.asNonSimpleTypeReference().orElseThrow()>
+    _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(readBuffer<#if optionalField.type.isNonSimpleTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
         </#if>
     if(_res != OK) {
       return _res;
@@ -366,12 +373,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   // Simple Field (${simpleField.name})
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
             <#if simpleField.type.isSimpleTypeReference()>
-  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-  _res = ${helper.getReadBufferReadMethodCall(simpleField.type, "&" + simpleField.name, simpleField)};
+                <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
+  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleTypeReference)};
+  _res = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "&" + simpleField.name, simpleField)};
             <#else>
+                <#assign nonSimpleTypeReference = simpleField.type.asNonSimpleTypeReference().orElseThrow()>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
   ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};
-  _res = ${helper.getCTypeName(simpleField.type.name)}_parse(readBuffer<#if simpleField.type.isNonSimpleTypeReference() && simpleField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list simpleField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
+  _res = ${helper.getCTypeName(nonSimpleTypeReference.name)}_parse(readBuffer<#if simpleField.type.isNonSimpleTypeReference() && simpleField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list simpleField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
             </#if>
   if(_res != OK) {
     return _res;
@@ -468,45 +477,41 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#break>
         <#case "checksum">
             <#assign checksumField = field.asChecksumField().orElseThrow()>
-            <#assign simpleTypeReference = checksumField.type>
+            <#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
 
   // Checksum Field (${checksumField.name})
   {
     // Create an array of all the bytes read in this message element so far.
-    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(writeBuffer, startPos, plc4c_spi_read_get_pos(writeBuffer));
-    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference, checksumField)};
-    ${helper.getLanguageTypeNameForField(field)} _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, checksumField, checksumField.checksumExpression, parserArguments)});
-    if(_checksum != _checksumRef) {
-      return PARSE_ERROR;
-      // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_checksumRef & 0xFFFF, _checksum & 0xFFFF));
-    }
+    ${helper.getLanguageTypeNameForField(field)} _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(baseType, checksumField, checksumField.checksumExpression, parserArguments)});
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_checksum", checksumField)};
   }
             <#break>
         <#case "const">
             <#assign constField = field.asConstField().orElseThrow()>
-            <#assign simpleTypeReference = constField.type>
+            <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
 
   // Const Field (${constField.name})
-  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()", field)};
+  ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()", constField)};
             <#break>
         <#case "discriminator">
-            <#assign discriminatorField = field>
+            <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
         <#if helper.isEnumField(field)>
 
   // Enumerated Discriminator Field (${discriminatorField.name})
-  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, field)};
+  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, discriminatorField)};
         <#else>
-            <#assign simpleTypeReference = discriminatorField.type>
+            <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
 
   // Discriminator Field (${discriminatorField.name})
-  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, field)};
+  ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, discriminatorField)};
         </#if>
             <#break>
         <#case "enum">
             <#assign enumField = field.asEnumField().orElseThrow()>
+            <#assign enumTypeReference = enumField.type.asEnumTypeReference().orElseThrow()>
 
   // Enum field (${enumField.name})
-  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), helper.getLanguageTypeNameForTypeReference(enumField.type) + "_get_" + helper.camelCaseToSnakeCase(enumField.fieldName) + "(_message->" + helper.getFieldName(baseType, enumField) + ")", field)};
+  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumTypeReference, enumField.fieldName), helper.getLanguageTypeNameForTypeReference(enumField.type) + "_get_" + helper.camelCaseToSnakeCase(enumField.fieldName) + "(_message->" + helper.getFieldName(baseType, enumField) + ")", enumField)};
   if(_res != OK) {
     return _res;
   }
@@ -516,7 +521,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
 
   // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.toSerializationExpression(baseType, implicitField, implicitField.serializeExpression, parserArguments), field)};
+  _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.toSerializationExpression(baseType, implicitField, implicitField.serializeExpression, parserArguments), implicitField)};
   if(_res != OK) {
     return _res;
   }
@@ -541,7 +546,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
   // Optional Field (${optionalField.name})
   if(_message-><@fieldName baseType=baseType field=optionalField/> != NULL) {
             <#if optionalField.type.isSimpleTypeReference()>
-    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type.asSimpleTypeReference().orElseThrow(), "*_message->" + helper.getFieldName(baseType, optionalField), field)};
+    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type.asSimpleTypeReference().orElseThrow(), "*_message->" + helper.getFieldName(baseType, optionalField), optionalField)};
             <#else>
     _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
@@ -560,7 +565,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
     int _timesPadding = (int) (${helper.toSerializationExpression(baseType, paddingField, paddingField.paddingCondition, parserArguments)});
     while (_timesPadding-- > 0) {
       // Just output the default padding data
-      _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.toParseExpression(baseType, paddingField, paddingField.paddingValue, parserArguments), field)};
+      _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.toParseExpression(baseType, paddingField, paddingField.paddingValue, parserArguments), paddingField)};
       if(_res != OK) {
         return _res;
       }
@@ -572,7 +577,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
 
   // Reserved Field
-  _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, reservedField.referenceValue, field)};
+  _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, reservedField.referenceValue, reservedField)};
   if(_res != OK) {
     return _res;
   }
@@ -582,9 +587,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 
   // Simple Field (${simpleField.name})
             <#if simpleField.type.isSimpleTypeReference()>
-  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField), field)};
+                <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
+  _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_message->" + helper.getFieldName(baseType, simpleField), simpleField)};
             <#else>
-  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, <#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
+                <#assign nonSimpleTypeRererence = simpleField.type.asNonSimpleTypeReference().orElseThrow()>
+  _res = ${helper.getCTypeName(nonSimpleTypeRererence.name)}_serialize(writeBuffer, <#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
   if(_res != OK) {
     return _res;
@@ -593,7 +600,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
         <#case "switch">
             <#assign switchField = field.asSwitchField().orElseThrow()>
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
         <#list switchField.cases as case>
     case ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)}: {
@@ -652,7 +659,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#break>
             <#case "const">
                 <#assign constField = field.asConstField().orElseThrow()>
-                <#assign simpleTypeReference = constField.type>
+                <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
 
   // Const Field (${constField.name})
   lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -663,13 +670,15 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
   // Discriminator Field (${discriminatorField.name})
         <#if discriminatorField.type.isSimpleTypeReference()>
             <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-            <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-  lengthInBits +=  ${helper.toParseExpression(type, discriminatorField, simpleTypeReference.getLengthExpression(), parserArguments)};
+            <#if simpleTypeReference.isVstringTypeReference()>
+                <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
+  lengthInBits +=  ${helper.toParseExpression(type, discriminatorField, vstringTypeReference.lengthExpression, parserArguments)};
             <#else>
   lengthInBits += ${simpleTypeReference.sizeInBits};
             </#if>
         <#elseif helper.isEnumField(field)>
-  lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+            <#assign enumTypeReference = discriminatorField.type.asEnumTypeReference().orElseThrow()>
+  lengthInBits += ${enumTypeReference.baseTypeReference.orElseThrow().sizeInBits};
         <#else>
   lengthInBits += ${discriminatorField.name}.getLengthInBits();
         </#if>
@@ -688,7 +697,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
   lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#break>
             <#case "manualArray">
-                <#assign manualArrayField = field>
+                <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
 
   // Manual Array Field (${manualArrayField.name})
   lengthInBits += ${helper.toParseExpression(type, manualArrayField, manualArrayField.lengthExpression, parserArguments)};
@@ -705,7 +714,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
   // Optional Field (${optionalField.name})
   if(_message-><@fieldName baseType=baseType field=optionalField/> != NULL) {
                 <#if optionalField.type.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = optionalField.type>
+                    <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
     lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#else>
     lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(optionalField)}(_message-><@fieldName baseType=baseType field=optionalField/>);
@@ -714,7 +723,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#break>
             <#case "padding">
                 <#assign paddingField = field.asPaddingField().orElseThrow()>
-                <#assign simpleTypeReference = paddingField.type>
+                <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
   // Padding Field (padding)
             <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
@@ -725,7 +734,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#break>
             <#case "reserved">
                 <#assign reservedField = field.asReservedField().orElseThrow()>
-                <#assign simpleTypeReference = reservedField.type>
+                <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
 
   // Reserved Field (reserved)
   lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -735,7 +744,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
 
   // Simple field (${simpleField.name})
                 <#if simpleField.type.isSimpleTypeReference()>
-                    <#assign simpleTypeReference = simpleField.type>
+                    <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
   lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#else>
   lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(<#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);

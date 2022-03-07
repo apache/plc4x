@@ -888,12 +888,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
-		checksum, _checksumErr := ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
-		}
+		checksum := ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
 		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %d but got %d", (checksumRef & 0xFFFF), (checksum & 0xFFFF))<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -1515,11 +1512,8 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Checksum Field (checksum) (Calculated)
 	{
-		_checksum, _checksumErr := ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
-		if _checksumErr != nil {
-			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
-		}
-		_checksumErr = ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", checksumField)}
+		_checksum := ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
+		_checksumErr := ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", checksumField)}
 		if _checksumErr != nil {
 			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}

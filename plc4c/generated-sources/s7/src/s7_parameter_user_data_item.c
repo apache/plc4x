@@ -68,7 +68,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 if( itemType == 0x12 ) { /* S7ParameterUserDataItemCPUFunctions */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions;
 
-  // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t itemLength = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &itemLength);
   if(_res != OK) {
@@ -184,7 +184,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_serialize(plc4
   // Discriminator Field (itemType)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(_message->_type).itemType);
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions: {
 

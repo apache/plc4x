@@ -72,7 +72,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     return _res;
   }
 
-  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t parameterLength = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &parameterLength);
   if(_res != OK) {
@@ -164,7 +164,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     return _res;
   }
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 

@@ -60,7 +60,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
     // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER + " but got " + protocolIdentifier);
   }
 
-  // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint16_t length = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &length);
   if(_res != OK) {

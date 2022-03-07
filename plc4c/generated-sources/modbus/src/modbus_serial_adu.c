@@ -35,34 +35,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
     return NO_MEMORY;
   }
 
-  // Simple Field (transactionId)
-  uint16_t transactionId = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &transactionId);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->transaction_id = transactionId;
-
-  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-  {
-    uint16_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &_reserved);
-    if(_res != OK) {
-      return _res;
-    }
-    if(_reserved != 0x0000) {
-      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0000, _reserved);
-    }
-  }
-
-  // Simple Field (length)
-  uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &length);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->length = length;
-
   // Simple Field (address)
   uint8_t address = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &address);
@@ -79,29 +51,26 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   }
   (*_message)->pdu = pdu;
 
+  // Checksum Field (crc)
+  {
+    // Create an array of all the bytes read in this message element so far.
+    uint16_t _checksumRef = 0;
+    _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &_checksumRef);
+    if(_res != OK) {
+      return _res;
+    }
+    uint16_t _checksum = (uint16_t) (plc4c_modbus_read_write_crc_check(address, pdu));
+    if(_checksum != _checksumRef) {
+      return PARSE_ERROR;
+      // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_checksumRef & 0xFFFF, _checksum & 0xFFFF));
+    }
+  }
+
   return OK;
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_serial_adu* _message) {
   plc4c_return_code _res = OK;
-
-  // Simple Field (transactionId)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->transaction_id);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Reserved Field
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, 0x0000);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Simple Field (length)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->length);
-  if(_res != OK) {
-    return _res;
-  }
 
   // Simple Field (address)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->address);
@@ -115,6 +84,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_
     return _res;
   }
 
+  // Checksum Field (crc)
+  {
+    // Create an array of all the bytes read in this message element so far.
+    uint16_t _checksum = (uint16_t) (plc4c_modbus_read_write_crc_check(_message->address, _message->pdu));
+    plc4c_spi_write_unsigned_short(writeBuffer, 16, _checksum);
+  }
+
   return OK;
 }
 
@@ -125,20 +101,14 @@ uint16_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bytes(plc4c_modbus_
 uint16_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(plc4c_modbus_read_write_modbus_serial_adu* _message) {
   uint16_t lengthInBits = 0;
 
-  // Simple field (transactionId)
-  lengthInBits += 16;
-
-  // Reserved Field (reserved)
-  lengthInBits += 16;
-
-  // Simple field (length)
-  lengthInBits += 16;
-
   // Simple field (address)
   lengthInBits += 8;
 
   // Simple field (pdu)
   lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message->pdu);
+
+  // Checksum Field (checksum)
+  lengthInBits += 16;
 
   return lengthInBits;
 }

@@ -52,8 +52,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ExclamationMarkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Application":
-		return model.ApplicationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StandardFormatStatusReply":

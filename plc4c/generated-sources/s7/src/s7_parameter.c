@@ -122,7 +122,7 @@ if( parameterType == 0xF0 ) { /* S7ParameterSetupCommunication */
 if( ( parameterType == 0x04 ) && ( messageType == 0x01 ) ) { /* S7ParameterReadVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
 
-  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numItems = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numItems);
   if(_res != OK) {
@@ -165,7 +165,7 @@ if( ( parameterType == 0x04 ) && ( messageType == 0x03 ) ) { /* S7ParameterReadV
 if( ( parameterType == 0x05 ) && ( messageType == 0x01 ) ) { /* S7ParameterWriteVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
 
-  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numItems = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numItems);
   if(_res != OK) {
@@ -208,7 +208,7 @@ if( ( parameterType == 0x05 ) && ( messageType == 0x03 ) ) { /* S7ParameterWrite
 if( ( parameterType == 0x00 ) && ( messageType == 0x07 ) ) { /* S7ParameterUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data;
 
-  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t numItems = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numItems);
   if(_res != OK) {
@@ -253,7 +253,7 @@ if( ( parameterType == 0x01 ) && ( messageType == 0x07 ) ) { /* S7ParameterModeT
   }
 
 
-  // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
   uint8_t itemLength = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &itemLength);
   if(_res != OK) {
@@ -315,7 +315,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_s7_parameter_get_discriminator(_message->_type).parameterType);
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication: {
 

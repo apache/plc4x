@@ -224,7 +224,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_serialize(plc4c_spi_
   // Const Field (numberMessageObj)
   plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ());
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request: {
 

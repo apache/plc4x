@@ -166,7 +166,7 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
 plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload* _message) {
   plc4c_return_code _res = OK;
 
-  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response: {
 

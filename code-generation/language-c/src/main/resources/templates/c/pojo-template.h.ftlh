@@ -156,7 +156,7 @@ struct ${helper.getCTypeName(type.name)} {
             </#if>
         </#list>
   };
-    <#elseif (field.isTypedField() && field.type.isSimpleTypeReference() || helper.isEnumField(field)) && !field.isOptionalField() && !field.isArrayField() && !field.isManualArrayField()>
+    <#elseif (field.isTypedField() && field.asTypedField().orElseThrow().type.isSimpleTypeReference() || helper.isEnumField(field)) && !field.isOptionalField() && !field.isArrayField() && !field.isManualArrayField()>
         <#assign namedField = field.asNamedField().orElseThrow()>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(namedField.name)}${helper.getTypeSizeForField(field.asTypedField().orElseThrow())}<#if field.loopType??>${helper.getLoopExpressionSuffix(field.asTypedField().orElseThrow())}</#if>;
     <#elseif field.isArrayField() || field.isManualArrayField()>

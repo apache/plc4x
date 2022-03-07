@@ -621,7 +621,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 <#break>
             <#case "const">
                 <#assign constField = field.asConstField().orElseThrow()>
