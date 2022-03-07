@@ -61,16 +61,8 @@ type IS7ParameterModeTransition interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterModeTransition) ParameterType() uint8 {
-	return 0x01
-}
-
 func (m *S7ParameterModeTransition) GetParameterType() uint8 {
 	return 0x01
-}
-
-func (m *S7ParameterModeTransition) MessageType() uint8 {
-	return 0x07
 }
 
 func (m *S7ParameterModeTransition) GetMessageType() uint8 {

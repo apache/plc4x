@@ -47,10 +47,6 @@ type IApduDataExtFileStreamInfoReport interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtFileStreamInfoReport) ExtApciType() uint8 {
-	return 0x30
-}
-
 func (m *ApduDataExtFileStreamInfoReport) GetExtApciType() uint8 {
 	return 0x30
 }

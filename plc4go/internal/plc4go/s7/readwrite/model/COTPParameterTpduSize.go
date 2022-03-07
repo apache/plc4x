@@ -51,10 +51,6 @@ type ICOTPParameterTpduSize interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterTpduSize) ParameterType() uint8 {
-	return 0xC0
-}
-
 func (m *COTPParameterTpduSize) GetParameterType() uint8 {
 	return 0xC0
 }

@@ -75,10 +75,6 @@ type IIdentifyReplyCommandDSIStatus interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandDSIStatus) Attribute() Attribute {
-	return Attribute_DSIStatus
-}
-
 func (m *IdentifyReplyCommandDSIStatus) GetAttribute() Attribute {
 	return Attribute_DSIStatus
 }

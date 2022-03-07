@@ -47,10 +47,6 @@ type IApduDataExtDomainAddressSerialNumberResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtDomainAddressSerialNumberResponse) ExtApciType() uint8 {
-	return 0x2D
-}
-
 func (m *ApduDataExtDomainAddressSerialNumberResponse) GetExtApciType() uint8 {
 	return 0x2D
 }

@@ -58,10 +58,6 @@ type IBACnetContextTagPropertyIdentifier interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagPropertyIdentifier) DataType() BACnetDataType {
-	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
-}
-
 func (m *BACnetContextTagPropertyIdentifier) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }

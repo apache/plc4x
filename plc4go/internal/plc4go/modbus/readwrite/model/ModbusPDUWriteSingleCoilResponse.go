@@ -51,24 +51,12 @@ type IModbusPDUWriteSingleCoilResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUWriteSingleCoilResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUWriteSingleCoilResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteSingleCoilResponse) FunctionFlag() uint8 {
-	return 0x05
-}
-
 func (m *ModbusPDUWriteSingleCoilResponse) GetFunctionFlag() uint8 {
 	return 0x05
-}
-
-func (m *ModbusPDUWriteSingleCoilResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) GetResponse() bool {

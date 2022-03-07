@@ -48,10 +48,6 @@ type IIdentifyReplyCommandGAVValuesStored interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandGAVValuesStored) Attribute() Attribute {
-	return Attribute_GAVValuesStored
-}
-
 func (m *IdentifyReplyCommandGAVValuesStored) GetAttribute() Attribute {
 	return Attribute_GAVValuesStored
 }

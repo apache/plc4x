@@ -44,10 +44,6 @@ type INotTransmittedToManyReTransmissions interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NotTransmittedToManyReTransmissions) ConfirmationType() byte {
-	return 0x23
-}
-
 func (m *NotTransmittedToManyReTransmissions) GetConfirmationType() byte {
 	return 0x23
 }

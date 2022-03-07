@@ -52,10 +52,6 @@ type IBACnetContextTagCharacterString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagCharacterString) DataType() BACnetDataType {
-	return BACnetDataType_CHARACTER_STRING
-}
-
 func (m *BACnetContextTagCharacterString) GetDataType() BACnetDataType {
 	return BACnetDataType_CHARACTER_STRING
 }

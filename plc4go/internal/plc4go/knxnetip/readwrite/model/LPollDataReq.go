@@ -47,10 +47,6 @@ type ILPollDataReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LPollDataReq) MessageCode() uint8 {
-	return 0x13
-}
-
 func (m *LPollDataReq) GetMessageCode() uint8 {
 	return 0x13
 }

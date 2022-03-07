@@ -44,10 +44,6 @@ type IBACnetConfirmedServiceACKAtomicWriteFile interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKAtomicWriteFile) ServiceChoice() uint8 {
-	return 0x07
-}
-
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetServiceChoice() uint8 {
 	return 0x07
 }

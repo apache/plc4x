@@ -48,24 +48,12 @@ type IModbusPDUReadFileRecordRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadFileRecordRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadFileRecordRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadFileRecordRequest) FunctionFlag() uint8 {
-	return 0x14
-}
-
 func (m *ModbusPDUReadFileRecordRequest) GetFunctionFlag() uint8 {
 	return 0x14
-}
-
-func (m *ModbusPDUReadFileRecordRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUReadFileRecordRequest) GetResponse() bool {

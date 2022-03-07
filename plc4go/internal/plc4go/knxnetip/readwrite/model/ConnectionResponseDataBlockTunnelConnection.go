@@ -48,10 +48,6 @@ type IConnectionResponseDataBlockTunnelConnection interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionResponseDataBlockTunnelConnection) ConnectionType() uint8 {
-	return 0x04
-}
-
 func (m *ConnectionResponseDataBlockTunnelConnection) GetConnectionType() uint8 {
 	return 0x04
 }

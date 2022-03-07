@@ -47,10 +47,6 @@ type IDF1UnprotectedReadResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1UnprotectedReadResponse) CommandCode() uint8 {
-	return 0x41
-}
-
 func (m *DF1UnprotectedReadResponse) GetCommandCode() uint8 {
 	return 0x41
 }

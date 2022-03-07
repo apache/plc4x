@@ -48,10 +48,6 @@ type IDF1CommandRequestMessage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1CommandRequestMessage) CommandCode() uint8 {
-	return 0x0F
-}
-
 func (m *DF1CommandRequestMessage) GetCommandCode() uint8 {
 	return 0x0F
 }

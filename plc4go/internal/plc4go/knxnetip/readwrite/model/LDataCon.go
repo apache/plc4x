@@ -57,10 +57,6 @@ type ILDataCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataCon) MessageCode() uint8 {
-	return 0x2E
-}
-
 func (m *LDataCon) GetMessageCode() uint8 {
 	return 0x2E
 }

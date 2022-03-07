@@ -63,10 +63,6 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoice() uint8 {
-	return 0x02
-}
-
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetServiceChoice() uint8 {
 	return 0x02
 }

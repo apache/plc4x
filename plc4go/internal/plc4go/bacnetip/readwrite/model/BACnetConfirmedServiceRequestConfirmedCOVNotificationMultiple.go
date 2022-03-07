@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) ServiceChoice() uint8 {
-	return 0x1F
-}
-
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetServiceChoice() uint8 {
 	return 0x1F
 }

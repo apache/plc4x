@@ -47,10 +47,6 @@ type IApduDataIndividualAddressRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataIndividualAddressRead) ApciType() uint8 {
-	return 0x4
-}
-
 func (m *ApduDataIndividualAddressRead) GetApciType() uint8 {
 	return 0x4
 }

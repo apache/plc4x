@@ -54,10 +54,6 @@ type IApduDataExtAuthorizeRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtAuthorizeRequest) ExtApciType() uint8 {
-	return 0x11
-}
-
 func (m *ApduDataExtAuthorizeRequest) GetExtApciType() uint8 {
 	return 0x11
 }

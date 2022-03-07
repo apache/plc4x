@@ -44,10 +44,6 @@ type IRoutingIndication interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *RoutingIndication) MsgType() uint16 {
-	return 0x0530
-}
-
 func (m *RoutingIndication) GetMsgType() uint16 {
 	return 0x0530
 }

@@ -47,10 +47,6 @@ type ILRawInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LRawInd) MessageCode() uint8 {
-	return 0x2D
-}
-
 func (m *LRawInd) GetMessageCode() uint8 {
 	return 0x2D
 }

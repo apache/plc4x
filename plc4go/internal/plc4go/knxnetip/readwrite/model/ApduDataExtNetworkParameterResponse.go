@@ -47,10 +47,6 @@ type IApduDataExtNetworkParameterResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtNetworkParameterResponse) ExtApciType() uint8 {
-	return 0x1B
-}
-
 func (m *ApduDataExtNetworkParameterResponse) GetExtApciType() uint8 {
 	return 0x1B
 }

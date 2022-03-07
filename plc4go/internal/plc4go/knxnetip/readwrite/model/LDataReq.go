@@ -57,10 +57,6 @@ type ILDataReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataReq) MessageCode() uint8 {
-	return 0x11
-}
-
 func (m *LDataReq) GetMessageCode() uint8 {
 	return 0x11
 }

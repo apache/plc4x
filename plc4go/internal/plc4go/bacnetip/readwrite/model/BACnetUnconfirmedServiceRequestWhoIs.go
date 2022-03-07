@@ -55,10 +55,6 @@ type IBACnetUnconfirmedServiceRequestWhoIs interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
-	return 0x08
-}
-
 func (m *BACnetUnconfirmedServiceRequestWhoIs) GetServiceChoice() uint8 {
 	return 0x08
 }

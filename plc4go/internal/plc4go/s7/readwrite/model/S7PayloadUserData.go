@@ -51,16 +51,8 @@ type IS7PayloadUserData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserData) ParameterParameterType() uint8 {
-	return 0x00
-}
-
 func (m *S7PayloadUserData) GetParameterParameterType() uint8 {
 	return 0x00
-}
-
-func (m *S7PayloadUserData) MessageType() uint8 {
-	return 0x07
 }
 
 func (m *S7PayloadUserData) GetMessageType() uint8 {

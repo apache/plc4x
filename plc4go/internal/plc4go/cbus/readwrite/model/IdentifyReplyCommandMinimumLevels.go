@@ -44,10 +44,6 @@ type IIdentifyReplyCommandMinimumLevels interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandMinimumLevels) Attribute() Attribute {
-	return Attribute_MinimumLevels
-}
-
 func (m *IdentifyReplyCommandMinimumLevels) GetAttribute() Attribute {
 	return Attribute_MinimumLevels
 }

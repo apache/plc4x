@@ -52,10 +52,6 @@ type IS7MessageObjectResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7MessageObjectResponse) CpuFunctionType() uint8 {
-	return 0x08
-}
-
 func (m *S7MessageObjectResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }

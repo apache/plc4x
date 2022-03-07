@@ -54,10 +54,6 @@ type IIdentifyReplyCommandFirmwareSummary interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandFirmwareSummary) Attribute() Attribute {
-	return Attribute_Summary
-}
-
 func (m *IdentifyReplyCommandFirmwareSummary) GetAttribute() Attribute {
 	return Attribute_Summary
 }

@@ -58,10 +58,6 @@ type IAPDUAbort interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUAbort) ApduType() uint8 {
-	return 0x7
-}
-
 func (m *APDUAbort) GetApduType() uint8 {
 	return 0x7
 }

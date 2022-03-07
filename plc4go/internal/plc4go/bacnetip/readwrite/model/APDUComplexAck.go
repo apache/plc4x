@@ -74,10 +74,6 @@ type IAPDUComplexAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUComplexAck) ApduType() uint8 {
-	return 0x3
-}
-
 func (m *APDUComplexAck) GetApduType() uint8 {
 	return 0x3
 }

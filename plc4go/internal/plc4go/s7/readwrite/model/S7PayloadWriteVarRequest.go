@@ -51,16 +51,8 @@ type IS7PayloadWriteVarRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadWriteVarRequest) ParameterParameterType() uint8 {
-	return 0x05
-}
-
 func (m *S7PayloadWriteVarRequest) GetParameterParameterType() uint8 {
 	return 0x05
-}
-
-func (m *S7PayloadWriteVarRequest) MessageType() uint8 {
-	return 0x01
 }
 
 func (m *S7PayloadWriteVarRequest) GetMessageType() uint8 {

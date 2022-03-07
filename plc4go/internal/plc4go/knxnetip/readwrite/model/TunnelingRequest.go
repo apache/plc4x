@@ -54,10 +54,6 @@ type ITunnelingRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TunnelingRequest) MsgType() uint16 {
-	return 0x0420
-}
-
 func (m *TunnelingRequest) GetMsgType() uint16 {
 	return 0x0420
 }

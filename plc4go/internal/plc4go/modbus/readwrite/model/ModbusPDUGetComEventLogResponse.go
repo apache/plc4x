@@ -57,24 +57,12 @@ type IModbusPDUGetComEventLogResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUGetComEventLogResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
-	return 0x0C
-}
-
 func (m *ModbusPDUGetComEventLogResponse) GetFunctionFlag() uint8 {
 	return 0x0C
-}
-
-func (m *ModbusPDUGetComEventLogResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) GetResponse() bool {

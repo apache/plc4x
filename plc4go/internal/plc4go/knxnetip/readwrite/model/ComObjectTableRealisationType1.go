@@ -54,10 +54,6 @@ type IComObjectTableRealisationType1 interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ComObjectTableRealisationType1) FirmwareType() FirmwareType {
-	return FirmwareType_SYSTEM_1
-}
-
 func (m *ComObjectTableRealisationType1) GetFirmwareType() FirmwareType {
 	return FirmwareType_SYSTEM_1
 }

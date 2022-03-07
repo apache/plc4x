@@ -54,10 +54,6 @@ type ICOTPPacketData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketData) TpduCode() uint8 {
-	return 0xF0
-}
-
 func (m *COTPPacketData) GetTpduCode() uint8 {
 	return 0xF0
 }

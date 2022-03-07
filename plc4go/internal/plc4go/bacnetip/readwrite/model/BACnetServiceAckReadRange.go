@@ -44,10 +44,6 @@ type IBACnetServiceAckReadRange interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckReadRange) ServiceChoice() uint8 {
-	return 0x1A
-}
-
 func (m *BACnetServiceAckReadRange) GetServiceChoice() uint8 {
 	return 0x1A
 }

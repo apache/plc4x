@@ -57,10 +57,6 @@ type IBVLCForwardedNPDU interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCForwardedNPDU) BvlcFunction() uint8 {
-	return 0x04
-}
-
 func (m *BVLCForwardedNPDU) GetBvlcFunction() uint8 {
 	return 0x04
 }

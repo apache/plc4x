@@ -60,10 +60,6 @@ type IDF1RequestProtectedTypedLogicalRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1RequestProtectedTypedLogicalRead) FunctionCode() uint8 {
-	return 0xA2
-}
-
 func (m *DF1RequestProtectedTypedLogicalRead) GetFunctionCode() uint8 {
 	return 0xA2
 }

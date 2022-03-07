@@ -48,10 +48,6 @@ type IKnxNetRemoteConfigurationAndDiagnosis interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
-	return 0x07
-}
-
 func (m *KnxNetRemoteConfigurationAndDiagnosis) GetServiceType() uint8 {
 	return 0x07
 }

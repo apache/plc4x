@@ -44,10 +44,6 @@ type IBACnetErrorDeviceCommunicationProtocol interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorDeviceCommunicationProtocol) ServiceChoice() uint8 {
-	return 0x11
-}
-
 func (m *BACnetErrorDeviceCommunicationProtocol) GetServiceChoice() uint8 {
 	return 0x11
 }

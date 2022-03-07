@@ -51,24 +51,12 @@ type IModbusPDUReadInputRegistersRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadInputRegistersRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadInputRegistersRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadInputRegistersRequest) FunctionFlag() uint8 {
-	return 0x04
-}
-
 func (m *ModbusPDUReadInputRegistersRequest) GetFunctionFlag() uint8 {
 	return 0x04
-}
-
-func (m *ModbusPDUReadInputRegistersRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUReadInputRegistersRequest) GetResponse() bool {

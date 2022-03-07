@@ -56,10 +56,6 @@ type IMultipleServiceRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MultipleServiceRequest) Service() uint8 {
-	return 0x0A
-}
-
 func (m *MultipleServiceRequest) GetService() uint8 {
 	return 0x0A
 }

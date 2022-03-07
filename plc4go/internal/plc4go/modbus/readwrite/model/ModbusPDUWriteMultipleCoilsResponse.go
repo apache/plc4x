@@ -51,24 +51,12 @@ type IModbusPDUWriteMultipleCoilsResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUWriteMultipleCoilsResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUWriteMultipleCoilsResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteMultipleCoilsResponse) FunctionFlag() uint8 {
-	return 0x0F
-}
-
 func (m *ModbusPDUWriteMultipleCoilsResponse) GetFunctionFlag() uint8 {
 	return 0x0F
-}
-
-func (m *ModbusPDUWriteMultipleCoilsResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsResponse) GetResponse() bool {

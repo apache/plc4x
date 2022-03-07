@@ -51,24 +51,12 @@ type IModbusPDUDiagnosticRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUDiagnosticRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUDiagnosticRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUDiagnosticRequest) FunctionFlag() uint8 {
-	return 0x08
-}
-
 func (m *ModbusPDUDiagnosticRequest) GetFunctionFlag() uint8 {
 	return 0x08
-}
-
-func (m *ModbusPDUDiagnosticRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUDiagnosticRequest) GetResponse() bool {

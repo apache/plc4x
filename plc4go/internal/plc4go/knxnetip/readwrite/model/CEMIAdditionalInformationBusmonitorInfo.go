@@ -67,10 +67,6 @@ type ICEMIAdditionalInformationBusmonitorInfo interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIAdditionalInformationBusmonitorInfo) AdditionalInformationType() uint8 {
-	return 0x03
-}
-
 func (m *CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType() uint8 {
 	return 0x03
 }

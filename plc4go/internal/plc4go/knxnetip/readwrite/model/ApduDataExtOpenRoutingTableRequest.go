@@ -47,10 +47,6 @@ type IApduDataExtOpenRoutingTableRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtOpenRoutingTableRequest) ExtApciType() uint8 {
-	return 0x00
-}
-
 func (m *ApduDataExtOpenRoutingTableRequest) GetExtApciType() uint8 {
 	return 0x00
 }

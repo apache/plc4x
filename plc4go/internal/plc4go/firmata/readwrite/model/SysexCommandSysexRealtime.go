@@ -44,16 +44,8 @@ type ISysexCommandSysexRealtime interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandSysexRealtime) CommandType() uint8 {
-	return 0x7F
-}
-
 func (m *SysexCommandSysexRealtime) GetCommandType() uint8 {
 	return 0x7F
-}
-
-func (m *SysexCommandSysexRealtime) Response() bool {
-	return false
 }
 
 func (m *SysexCommandSysexRealtime) GetResponse() bool {

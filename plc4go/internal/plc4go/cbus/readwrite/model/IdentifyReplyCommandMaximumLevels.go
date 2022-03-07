@@ -44,10 +44,6 @@ type IIdentifyReplyCommandMaximumLevels interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandMaximumLevels) Attribute() Attribute {
-	return Attribute_MaximumLevels
-}
-
 func (m *IdentifyReplyCommandMaximumLevels) GetAttribute() Attribute {
 	return Attribute_MaximumLevels
 }

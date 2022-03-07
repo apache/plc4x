@@ -54,10 +54,6 @@ type IBACnetContextTagReal interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagReal) DataType() BACnetDataType {
-	return BACnetDataType_REAL
-}
-
 func (m *BACnetContextTagReal) GetDataType() BACnetDataType {
 	return BACnetDataType_REAL
 }

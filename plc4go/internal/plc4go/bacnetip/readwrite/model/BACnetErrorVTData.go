@@ -44,10 +44,6 @@ type IBACnetErrorVTData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorVTData) ServiceChoice() uint8 {
-	return 0x17
-}
-
 func (m *BACnetErrorVTData) GetServiceChoice() uint8 {
 	return 0x17
 }

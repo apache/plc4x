@@ -51,10 +51,6 @@ type INLMRouterAvailableToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMRouterAvailableToNetwork) MessageType() uint8 {
-	return 0x05
-}
-
 func (m *NLMRouterAvailableToNetwork) GetMessageType() uint8 {
 	return 0x05
 }

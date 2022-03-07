@@ -44,16 +44,8 @@ type ISysexCommandExtendedAnalog interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandExtendedAnalog) CommandType() uint8 {
-	return 0x6F
-}
-
 func (m *SysexCommandExtendedAnalog) GetCommandType() uint8 {
 	return 0x6F
-}
-
-func (m *SysexCommandExtendedAnalog) Response() bool {
-	return false
 }
 
 func (m *SysexCommandExtendedAnalog) GetResponse() bool {

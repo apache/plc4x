@@ -47,10 +47,6 @@ type IApduDataExtGroupPropertyValueInfoReport interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtGroupPropertyValueInfoReport) ExtApciType() uint8 {
-	return 0x2B
-}
-
 func (m *ApduDataExtGroupPropertyValueInfoReport) GetExtApciType() uint8 {
 	return 0x2B
 }

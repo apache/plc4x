@@ -62,10 +62,6 @@ type ICipUnconnectedRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CipUnconnectedRequest) Service() uint8 {
-	return 0x52
-}
-
 func (m *CipUnconnectedRequest) GetService() uint8 {
 	return 0x52
 }

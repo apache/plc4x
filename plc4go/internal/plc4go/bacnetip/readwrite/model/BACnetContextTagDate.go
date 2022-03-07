@@ -52,10 +52,6 @@ type IBACnetContextTagDate interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagDate) DataType() BACnetDataType {
-	return BACnetDataType_DATE
-}
-
 func (m *BACnetContextTagDate) GetDataType() BACnetDataType {
 	return BACnetDataType_DATE
 }

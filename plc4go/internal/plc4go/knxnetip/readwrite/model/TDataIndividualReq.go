@@ -47,10 +47,6 @@ type ITDataIndividualReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TDataIndividualReq) MessageCode() uint8 {
-	return 0x4A
-}
-
 func (m *TDataIndividualReq) GetMessageCode() uint8 {
 	return 0x4A
 }

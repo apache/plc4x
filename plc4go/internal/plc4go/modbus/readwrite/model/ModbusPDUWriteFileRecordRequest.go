@@ -48,24 +48,12 @@ type IModbusPDUWriteFileRecordRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUWriteFileRecordRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUWriteFileRecordRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteFileRecordRequest) FunctionFlag() uint8 {
-	return 0x15
-}
-
 func (m *ModbusPDUWriteFileRecordRequest) GetFunctionFlag() uint8 {
 	return 0x15
-}
-
-func (m *ModbusPDUWriteFileRecordRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUWriteFileRecordRequest) GetResponse() bool {

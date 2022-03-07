@@ -52,10 +52,6 @@ type IDisconnectRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DisconnectRequest) MsgType() uint16 {
-	return 0x0209
-}
-
 func (m *DisconnectRequest) GetMsgType() uint16 {
 	return 0x0209
 }

@@ -47,10 +47,6 @@ type ILPollDataCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LPollDataCon) MessageCode() uint8 {
-	return 0x25
-}
-
 func (m *LPollDataCon) GetMessageCode() uint8 {
 	return 0x25
 }

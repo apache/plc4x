@@ -47,10 +47,6 @@ type IMFuncPropCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MFuncPropCon) MessageCode() uint8 {
-	return 0xFA
-}
-
 func (m *MFuncPropCon) GetMessageCode() uint8 {
 	return 0xFA
 }

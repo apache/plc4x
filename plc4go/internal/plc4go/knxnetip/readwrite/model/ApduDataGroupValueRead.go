@@ -49,10 +49,6 @@ type IApduDataGroupValueRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataGroupValueRead) ApciType() uint8 {
-	return 0x0
-}
-
 func (m *ApduDataGroupValueRead) GetApciType() uint8 {
 	return 0x0
 }

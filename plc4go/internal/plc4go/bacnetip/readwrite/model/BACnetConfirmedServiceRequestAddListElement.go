@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestAddListElement interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestAddListElement) ServiceChoice() uint8 {
-	return 0x08
-}
-
 func (m *BACnetConfirmedServiceRequestAddListElement) GetServiceChoice() uint8 {
 	return 0x08
 }

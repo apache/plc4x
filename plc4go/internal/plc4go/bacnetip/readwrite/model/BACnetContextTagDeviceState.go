@@ -52,10 +52,6 @@ type IBACnetContextTagDeviceState interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagDeviceState) DataType() BACnetDataType {
-	return BACnetDataType_BACNET_DEVICE_STATE
-}
-
 func (m *BACnetContextTagDeviceState) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_DEVICE_STATE
 }

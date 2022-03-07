@@ -62,24 +62,12 @@ type IS7PayloadUserDataItemCpuFunctionAlarmQuery interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuFunctionType() uint8 {
-	return 0x04
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuFunctionType() uint8 {
 	return 0x04
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) CpuSubfunction() uint8 {
-	return 0x13
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetCpuSubfunction() uint8 {
 	return 0x13
-}
-
-func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) DataLength() uint16 {
-	return 0
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetDataLength() uint16 {

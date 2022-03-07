@@ -55,10 +55,6 @@ type IBACnetConfirmedServiceRequestReinitializeDevice interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestReinitializeDevice) ServiceChoice() uint8 {
-	return 0x14
-}
-
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetServiceChoice() uint8 {
 	return 0x14
 }

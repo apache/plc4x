@@ -47,10 +47,6 @@ type IApduDataUserMessage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataUserMessage) ApciType() uint8 {
-	return 0xB
-}
-
 func (m *ApduDataUserMessage) GetApciType() uint8 {
 	return 0xB
 }

@@ -103,10 +103,6 @@ type IIdentifyReplyCommandExtendedDiagnosticSummary interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Attribute() Attribute {
-	return Attribute_ExtendedDiagnosticSummary
-}
-
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetAttribute() Attribute {
 	return Attribute_ExtendedDiagnosticSummary
 }

@@ -54,10 +54,6 @@ type IBACnetContextTagEnumerated interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagEnumerated) DataType() BACnetDataType {
-	return BACnetDataType_ENUMERATED
-}
-
 func (m *BACnetContextTagEnumerated) GetDataType() BACnetDataType {
 	return BACnetDataType_ENUMERATED
 }

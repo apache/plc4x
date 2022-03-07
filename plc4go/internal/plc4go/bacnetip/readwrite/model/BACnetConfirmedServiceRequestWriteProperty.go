@@ -64,10 +64,6 @@ type IBACnetConfirmedServiceRequestWriteProperty interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestWriteProperty) ServiceChoice() uint8 {
-	return 0x0F
-}
-
 func (m *BACnetConfirmedServiceRequestWriteProperty) GetServiceChoice() uint8 {
 	return 0x0F
 }

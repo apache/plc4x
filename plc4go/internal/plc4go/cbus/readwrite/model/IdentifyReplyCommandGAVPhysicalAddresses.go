@@ -48,10 +48,6 @@ type IIdentifyReplyCommandGAVPhysicalAddresses interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandGAVPhysicalAddresses) Attribute() Attribute {
-	return Attribute_GAVPhysicalAddresses
-}
-
 func (m *IdentifyReplyCommandGAVPhysicalAddresses) GetAttribute() Attribute {
 	return Attribute_GAVPhysicalAddresses
 }

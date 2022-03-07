@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestRemovedRequestKey interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestRemovedRequestKey) ServiceChoice() uint8 {
-	return 0x19
-}
-
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetServiceChoice() uint8 {
 	return 0x19
 }

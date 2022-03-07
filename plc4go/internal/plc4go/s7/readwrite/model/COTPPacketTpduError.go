@@ -54,10 +54,6 @@ type ICOTPPacketTpduError interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketTpduError) TpduCode() uint8 {
-	return 0x70
-}
-
 func (m *COTPPacketTpduError) GetTpduCode() uint8 {
 	return 0x70
 }

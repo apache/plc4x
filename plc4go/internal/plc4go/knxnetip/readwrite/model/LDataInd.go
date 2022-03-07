@@ -57,10 +57,6 @@ type ILDataInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataInd) MessageCode() uint8 {
-	return 0x29
-}
-
 func (m *LDataInd) GetMessageCode() uint8 {
 	return 0x29
 }

@@ -54,10 +54,6 @@ type IBACnetContextTagDouble interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagDouble) DataType() BACnetDataType {
-	return BACnetDataType_DOUBLE
-}
-
 func (m *BACnetContextTagDouble) GetDataType() BACnetDataType {
 	return BACnetDataType_DOUBLE
 }

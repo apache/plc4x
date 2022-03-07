@@ -56,10 +56,6 @@ type IIdentifyReplyCommandNetworkVoltage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandNetworkVoltage) Attribute() Attribute {
-	return Attribute_NetworkVoltage
-}
-
 func (m *IdentifyReplyCommandNetworkVoltage) GetAttribute() Attribute {
 	return Attribute_NetworkVoltage
 }

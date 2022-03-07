@@ -54,24 +54,12 @@ type IModbusPDUMaskWriteHoldingRegisterResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) FunctionFlag() uint8 {
-	return 0x16
-}
-
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetFunctionFlag() uint8 {
 	return 0x16
-}
-
-func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetResponse() bool {

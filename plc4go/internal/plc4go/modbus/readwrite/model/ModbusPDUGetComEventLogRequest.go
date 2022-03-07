@@ -44,24 +44,12 @@ type IModbusPDUGetComEventLogRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUGetComEventLogRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUGetComEventLogRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUGetComEventLogRequest) FunctionFlag() uint8 {
-	return 0x0C
-}
-
 func (m *ModbusPDUGetComEventLogRequest) GetFunctionFlag() uint8 {
 	return 0x0C
-}
-
-func (m *ModbusPDUGetComEventLogRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventLogRequest) GetResponse() bool {

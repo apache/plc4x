@@ -44,10 +44,6 @@ type IBVLCDeleteForeignDeviceTableEntry interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
-	return 0x08
-}
-
 func (m *BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
 	return 0x08
 }

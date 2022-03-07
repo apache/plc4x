@@ -44,10 +44,6 @@ type INotTransmittedSyncLoss interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NotTransmittedSyncLoss) ConfirmationType() byte {
-	return 0x25
-}
-
 func (m *NotTransmittedSyncLoss) GetConfirmationType() byte {
 	return 0x25
 }

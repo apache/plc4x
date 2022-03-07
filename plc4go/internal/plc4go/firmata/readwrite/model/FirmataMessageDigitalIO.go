@@ -54,10 +54,6 @@ type IFirmataMessageDigitalIO interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageDigitalIO) MessageType() uint8 {
-	return 0x9
-}
-
 func (m *FirmataMessageDigitalIO) GetMessageType() uint8 {
 	return 0x9
 }

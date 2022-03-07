@@ -55,10 +55,6 @@ type IAPDUError interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUError) ApduType() uint8 {
-	return 0x5
-}
-
 func (m *APDUError) GetApduType() uint8 {
 	return 0x5
 }

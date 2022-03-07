@@ -54,10 +54,6 @@ type IFirmataMessageAnalogIO interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageAnalogIO) MessageType() uint8 {
-	return 0xE
-}
-
 func (m *FirmataMessageAnalogIO) GetMessageType() uint8 {
 	return 0xE
 }

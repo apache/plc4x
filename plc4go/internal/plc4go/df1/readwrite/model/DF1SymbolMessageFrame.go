@@ -59,10 +59,6 @@ type IDF1SymbolMessageFrame interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1SymbolMessageFrame) SymbolType() uint8 {
-	return 0x02
-}
-
 func (m *DF1SymbolMessageFrame) GetSymbolType() uint8 {
 	return 0x02
 }

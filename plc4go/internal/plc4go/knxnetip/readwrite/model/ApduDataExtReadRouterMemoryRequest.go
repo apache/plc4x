@@ -47,10 +47,6 @@ type IApduDataExtReadRouterMemoryRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtReadRouterMemoryRequest) ExtApciType() uint8 {
-	return 0x08
-}
-
 func (m *ApduDataExtReadRouterMemoryRequest) GetExtApciType() uint8 {
 	return 0x08
 }

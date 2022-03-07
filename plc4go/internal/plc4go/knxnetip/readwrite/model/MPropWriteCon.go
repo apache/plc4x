@@ -47,10 +47,6 @@ type IMPropWriteCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropWriteCon) MessageCode() uint8 {
-	return 0xF5
-}
-
 func (m *MPropWriteCon) GetMessageCode() uint8 {
 	return 0xF5
 }

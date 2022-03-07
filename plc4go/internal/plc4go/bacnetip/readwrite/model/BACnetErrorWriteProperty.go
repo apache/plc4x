@@ -44,10 +44,6 @@ type IBACnetErrorWriteProperty interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorWriteProperty) ServiceChoice() uint8 {
-	return 0x0F
-}
-
 func (m *BACnetErrorWriteProperty) GetServiceChoice() uint8 {
 	return 0x0F
 }

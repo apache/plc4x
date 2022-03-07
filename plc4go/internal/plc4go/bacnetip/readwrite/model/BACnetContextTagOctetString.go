@@ -52,10 +52,6 @@ type IBACnetContextTagOctetString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagOctetString) DataType() BACnetDataType {
-	return BACnetDataType_OCTET_STRING
-}
-
 func (m *BACnetContextTagOctetString) GetDataType() BACnetDataType {
 	return BACnetDataType_OCTET_STRING
 }

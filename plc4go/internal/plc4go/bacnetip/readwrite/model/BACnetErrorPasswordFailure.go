@@ -44,10 +44,6 @@ type IBACnetErrorPasswordFailure interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorPasswordFailure) ServiceChoice() uint8 {
-	return 0x14
-}
-
 func (m *BACnetErrorPasswordFailure) GetServiceChoice() uint8 {
 	return 0x14
 }

@@ -47,10 +47,6 @@ type ITDataConnectedInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TDataConnectedInd) MessageCode() uint8 {
-	return 0x89
-}
-
 func (m *TDataConnectedInd) GetMessageCode() uint8 {
 	return 0x89
 }

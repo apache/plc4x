@@ -48,24 +48,12 @@ type IModbusPDUReadFifoQueueResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadFifoQueueResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadFifoQueueResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadFifoQueueResponse) FunctionFlag() uint8 {
-	return 0x18
-}
-
 func (m *ModbusPDUReadFifoQueueResponse) GetFunctionFlag() uint8 {
 	return 0x18
-}
-
-func (m *ModbusPDUReadFifoQueueResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) GetResponse() bool {

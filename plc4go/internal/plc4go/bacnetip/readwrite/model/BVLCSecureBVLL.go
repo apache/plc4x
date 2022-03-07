@@ -44,10 +44,6 @@ type IBVLCSecureBVLL interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCSecureBVLL) BvlcFunction() uint8 {
-	return 0x0C
-}
-
 func (m *BVLCSecureBVLL) GetBvlcFunction() uint8 {
 	return 0x0C
 }

@@ -51,10 +51,6 @@ type IAPDUUnknown interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUUnknown) ApduType() uint8 {
-	return 0
-}
-
 func (m *APDUUnknown) GetApduType() uint8 {
 	return 0
 }

@@ -47,10 +47,6 @@ type IApduDataExtReadRouterStatusRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtReadRouterStatusRequest) ExtApciType() uint8 {
-	return 0x0D
-}
-
 func (m *ApduDataExtReadRouterStatusRequest) GetExtApciType() uint8 {
 	return 0x0D
 }

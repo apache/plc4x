@@ -48,10 +48,6 @@ type IDeviceConfigurationAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DeviceConfigurationAck) MsgType() uint16 {
-	return 0x0311
-}
-
 func (m *DeviceConfigurationAck) GetMsgType() uint16 {
 	return 0x0311
 }

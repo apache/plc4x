@@ -57,10 +57,6 @@ type IAdsMultiRequestItemReadWrite interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsMultiRequestItemReadWrite) IndexGroup() uint32 {
-	return uint32(61570)
-}
-
 func (m *AdsMultiRequestItemReadWrite) GetIndexGroup() uint32 {
 	return uint32(61570)
 }

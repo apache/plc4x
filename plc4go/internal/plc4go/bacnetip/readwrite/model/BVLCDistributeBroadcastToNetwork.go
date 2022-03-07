@@ -51,10 +51,6 @@ type IBVLCDistributeBroadcastToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCDistributeBroadcastToNetwork) BvlcFunction() uint8 {
-	return 0x09
-}
-
 func (m *BVLCDistributeBroadcastToNetwork) GetBvlcFunction() uint8 {
 	return 0x09
 }

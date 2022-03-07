@@ -58,10 +58,6 @@ type IBACnetConstructedDataCommand interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConstructedDataCommand) ObjectType() BACnetObjectType {
-	return BACnetObjectType_COMMAND
-}
-
 func (m *BACnetConstructedDataCommand) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_COMMAND
 }

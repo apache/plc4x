@@ -44,10 +44,6 @@ type IBACnetServiceAckConfirmedPrivateTransfer interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
-	return 0x12
-}
-
 func (m *BACnetServiceAckConfirmedPrivateTransfer) GetServiceChoice() uint8 {
 	return 0x12
 }

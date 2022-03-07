@@ -44,10 +44,6 @@ type IConfirmationSuccessful interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConfirmationSuccessful) ConfirmationType() byte {
-	return 0x2E
-}
-
 func (m *ConfirmationSuccessful) GetConfirmationType() byte {
 	return 0x2E
 }

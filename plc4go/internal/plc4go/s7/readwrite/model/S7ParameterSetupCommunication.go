@@ -55,16 +55,8 @@ type IS7ParameterSetupCommunication interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterSetupCommunication) ParameterType() uint8 {
-	return 0xF0
-}
-
 func (m *S7ParameterSetupCommunication) GetParameterType() uint8 {
 	return 0xF0
-}
-
-func (m *S7ParameterSetupCommunication) MessageType() uint8 {
-	return 0
 }
 
 func (m *S7ParameterSetupCommunication) GetMessageType() uint8 {

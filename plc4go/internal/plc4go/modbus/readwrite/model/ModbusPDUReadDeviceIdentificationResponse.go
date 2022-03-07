@@ -67,24 +67,12 @@ type IModbusPDUReadDeviceIdentificationResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadDeviceIdentificationResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadDeviceIdentificationResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) FunctionFlag() uint8 {
-	return 0x2B
-}
-
 func (m *ModbusPDUReadDeviceIdentificationResponse) GetFunctionFlag() uint8 {
 	return 0x2B
-}
-
-func (m *ModbusPDUReadDeviceIdentificationResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) GetResponse() bool {

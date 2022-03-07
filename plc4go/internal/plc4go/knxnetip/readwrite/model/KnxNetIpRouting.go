@@ -48,10 +48,6 @@ type IKnxNetIpRouting interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpRouting) ServiceType() uint8 {
-	return 0x05
-}
-
 func (m *KnxNetIpRouting) GetServiceType() uint8 {
 	return 0x05
 }

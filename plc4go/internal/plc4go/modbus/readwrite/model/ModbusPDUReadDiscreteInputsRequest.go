@@ -51,24 +51,12 @@ type IModbusPDUReadDiscreteInputsRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadDiscreteInputsRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadDiscreteInputsRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadDiscreteInputsRequest) FunctionFlag() uint8 {
-	return 0x02
-}
-
 func (m *ModbusPDUReadDiscreteInputsRequest) GetFunctionFlag() uint8 {
 	return 0x02
-}
-
-func (m *ModbusPDUReadDiscreteInputsRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUReadDiscreteInputsRequest) GetResponse() bool {

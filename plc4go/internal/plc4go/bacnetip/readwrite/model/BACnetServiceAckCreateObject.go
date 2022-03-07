@@ -44,10 +44,6 @@ type IBACnetServiceAckCreateObject interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckCreateObject) ServiceChoice() uint8 {
-	return 0x0A
-}
-
 func (m *BACnetServiceAckCreateObject) GetServiceChoice() uint8 {
 	return 0x0A
 }

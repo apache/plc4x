@@ -58,10 +58,6 @@ type IBACnetContextTagEventState interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagEventState) DataType() BACnetDataType {
-	return BACnetDataType_EVENT_STATE
-}
-
 func (m *BACnetContextTagEventState) GetDataType() BACnetDataType {
 	return BACnetDataType_EVENT_STATE
 }

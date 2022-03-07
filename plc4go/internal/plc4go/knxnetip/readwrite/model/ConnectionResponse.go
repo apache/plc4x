@@ -58,10 +58,6 @@ type IConnectionResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionResponse) MsgType() uint16 {
-	return 0x0206
-}
-
 func (m *ConnectionResponse) GetMsgType() uint16 {
 	return 0x0206
 }

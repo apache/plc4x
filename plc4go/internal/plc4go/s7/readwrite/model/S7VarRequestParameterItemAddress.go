@@ -48,10 +48,6 @@ type IS7VarRequestParameterItemAddress interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7VarRequestParameterItemAddress) ItemType() uint8 {
-	return 0x12
-}
-
 func (m *S7VarRequestParameterItemAddress) GetItemType() uint8 {
 	return 0x12
 }

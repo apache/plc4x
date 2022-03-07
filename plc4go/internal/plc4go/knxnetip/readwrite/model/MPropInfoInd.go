@@ -47,10 +47,6 @@ type IMPropInfoInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropInfoInd) MessageCode() uint8 {
-	return 0xF7
-}
-
 func (m *MPropInfoInd) GetMessageCode() uint8 {
 	return 0xF7
 }

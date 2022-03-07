@@ -51,16 +51,8 @@ type IS7PayloadReadVarResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadReadVarResponse) ParameterParameterType() uint8 {
-	return 0x04
-}
-
 func (m *S7PayloadReadVarResponse) GetParameterParameterType() uint8 {
 	return 0x04
-}
-
-func (m *S7PayloadReadVarResponse) MessageType() uint8 {
-	return 0x03
 }
 
 func (m *S7PayloadReadVarResponse) GetMessageType() uint8 {

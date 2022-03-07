@@ -63,16 +63,8 @@ type ILDataExtended interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataExtended) NotAckFrame() bool {
-	return bool(true)
-}
-
 func (m *LDataExtended) GetNotAckFrame() bool {
 	return bool(true)
-}
-
-func (m *LDataExtended) Polling() bool {
-	return bool(false)
 }
 
 func (m *LDataExtended) GetPolling() bool {

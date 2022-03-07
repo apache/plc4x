@@ -48,10 +48,6 @@ type IKnxNetIpTunneling interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpTunneling) ServiceType() uint8 {
-	return 0x04
-}
-
 func (m *KnxNetIpTunneling) GetServiceType() uint8 {
 	return 0x04
 }

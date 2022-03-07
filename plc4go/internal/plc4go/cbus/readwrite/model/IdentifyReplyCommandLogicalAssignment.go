@@ -44,10 +44,6 @@ type IIdentifyReplyCommandLogicalAssignment interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandLogicalAssignment) Attribute() Attribute {
-	return Attribute_LogicalAssignment
-}
-
 func (m *IdentifyReplyCommandLogicalAssignment) GetAttribute() Attribute {
 	return Attribute_LogicalAssignment
 }

@@ -51,10 +51,6 @@ type IFirmataMessageCommand interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageCommand) MessageType() uint8 {
-	return 0xF
-}
-
 func (m *FirmataMessageCommand) GetMessageType() uint8 {
 	return 0xF
 }

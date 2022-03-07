@@ -47,10 +47,6 @@ type IMFuncPropStateReadReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MFuncPropStateReadReq) MessageCode() uint8 {
-	return 0xF9
-}
-
 func (m *MFuncPropStateReadReq) GetMessageCode() uint8 {
 	return 0xF9
 }

@@ -49,10 +49,6 @@ type IConnectionRequestInformationTunnelConnection interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
-	return 0x04
-}
-
 func (m *ConnectionRequestInformationTunnelConnection) GetConnectionType() uint8 {
 	return 0x04
 }

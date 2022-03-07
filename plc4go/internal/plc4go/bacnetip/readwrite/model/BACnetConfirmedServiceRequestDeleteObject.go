@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestDeleteObject interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestDeleteObject) ServiceChoice() uint8 {
-	return 0x0B
-}
-
 func (m *BACnetConfirmedServiceRequestDeleteObject) GetServiceChoice() uint8 {
 	return 0x0B
 }

@@ -48,16 +48,8 @@ type ISysexCommandPinStateQuery interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandPinStateQuery) CommandType() uint8 {
-	return 0x6D
-}
-
 func (m *SysexCommandPinStateQuery) GetCommandType() uint8 {
 	return 0x6D
-}
-
-func (m *SysexCommandPinStateQuery) Response() bool {
-	return false
 }
 
 func (m *SysexCommandPinStateQuery) GetResponse() bool {

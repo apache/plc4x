@@ -52,10 +52,6 @@ type IBACnetContextTagBitString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagBitString) DataType() BACnetDataType {
-	return BACnetDataType_BIT_STRING
-}
-
 func (m *BACnetContextTagBitString) GetDataType() BACnetDataType {
 	return BACnetDataType_BIT_STRING
 }

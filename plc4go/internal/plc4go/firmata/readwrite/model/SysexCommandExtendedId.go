@@ -48,16 +48,8 @@ type ISysexCommandExtendedId interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandExtendedId) CommandType() uint8 {
-	return 0x00
-}
-
 func (m *SysexCommandExtendedId) GetCommandType() uint8 {
 	return 0x00
-}
-
-func (m *SysexCommandExtendedId) Response() bool {
-	return false
 }
 
 func (m *SysexCommandExtendedId) GetResponse() bool {

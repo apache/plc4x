@@ -64,10 +64,6 @@ type IS7AddressAny interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7AddressAny) AddressType() uint8 {
-	return 0x10
-}
-
 func (m *S7AddressAny) GetAddressType() uint8 {
 	return 0x10
 }

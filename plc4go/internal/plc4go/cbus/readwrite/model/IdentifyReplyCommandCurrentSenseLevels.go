@@ -44,10 +44,6 @@ type IIdentifyReplyCommandCurrentSenseLevels interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandCurrentSenseLevels) Attribute() Attribute {
-	return Attribute_CurrentSenseLevels
-}
-
 func (m *IdentifyReplyCommandCurrentSenseLevels) GetAttribute() Attribute {
 	return Attribute_CurrentSenseLevels
 }

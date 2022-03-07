@@ -50,10 +50,6 @@ type IEipConnectionRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *EipConnectionRequest) Command() uint16 {
-	return 0x0065
-}
-
 func (m *EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }

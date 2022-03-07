@@ -44,24 +44,12 @@ type IS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) CpuFunctionType() uint8 {
-	return 0x08
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) CpuSubfunction() uint8 {
-	return 0x02
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuSubfunction() uint8 {
 	return 0x02
-}
-
-func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) DataLength() uint16 {
-	return 0x00
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetDataLength() uint16 {

@@ -51,10 +51,6 @@ type IDF1UnprotectedReadRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1UnprotectedReadRequest) CommandCode() uint8 {
-	return 0x01
-}
-
 func (m *DF1UnprotectedReadRequest) GetCommandCode() uint8 {
 	return 0x01
 }

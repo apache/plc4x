@@ -51,10 +51,6 @@ type IDF1CommandResponseMessageProtectedTypedLogicalRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) CommandCode() uint8 {
-	return 0x4F
-}
-
 func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetCommandCode() uint8 {
 	return 0x4F
 }

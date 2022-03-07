@@ -47,10 +47,6 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) ServiceChoice() uint8 {
-	return 0x05
-}
-
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetServiceChoice() uint8 {
 	return 0x05
 }

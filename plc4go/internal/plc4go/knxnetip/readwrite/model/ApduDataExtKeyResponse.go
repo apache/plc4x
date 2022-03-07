@@ -47,10 +47,6 @@ type IApduDataExtKeyResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtKeyResponse) ExtApciType() uint8 {
-	return 0x14
-}
-
 func (m *ApduDataExtKeyResponse) GetExtApciType() uint8 {
 	return 0x14
 }

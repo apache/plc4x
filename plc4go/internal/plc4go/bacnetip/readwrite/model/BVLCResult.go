@@ -48,10 +48,6 @@ type IBVLCResult interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCResult) BvlcFunction() uint8 {
-	return 0x00
-}
-
 func (m *BVLCResult) GetBvlcFunction() uint8 {
 	return 0x00
 }

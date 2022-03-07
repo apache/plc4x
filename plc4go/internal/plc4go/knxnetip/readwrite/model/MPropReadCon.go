@@ -66,10 +66,6 @@ type IMPropReadCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropReadCon) MessageCode() uint8 {
-	return 0xFB
-}
-
 func (m *MPropReadCon) GetMessageCode() uint8 {
 	return 0xFB
 }

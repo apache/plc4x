@@ -44,10 +44,6 @@ type INotTransmittedTooLong interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NotTransmittedTooLong) ConfirmationType() byte {
-	return 0x27
-}
-
 func (m *NotTransmittedTooLong) GetConfirmationType() byte {
 	return 0x27
 }

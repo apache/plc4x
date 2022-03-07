@@ -44,10 +44,6 @@ type INotTransmittedCorruption interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NotTransmittedCorruption) ConfirmationType() byte {
-	return 0x24
-}
-
 func (m *NotTransmittedCorruption) GetConfirmationType() byte {
 	return 0x24
 }

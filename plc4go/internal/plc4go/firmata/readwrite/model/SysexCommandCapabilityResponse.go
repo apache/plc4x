@@ -44,16 +44,8 @@ type ISysexCommandCapabilityResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandCapabilityResponse) CommandType() uint8 {
-	return 0x6C
-}
-
 func (m *SysexCommandCapabilityResponse) GetCommandType() uint8 {
 	return 0x6C
-}
-
-func (m *SysexCommandCapabilityResponse) Response() bool {
-	return false
 }
 
 func (m *SysexCommandCapabilityResponse) GetResponse() bool {

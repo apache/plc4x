@@ -48,24 +48,12 @@ type IS7PayloadNotify8 interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadNotify8) CpuFunctionType() uint8 {
-	return 0x00
-}
-
 func (m *S7PayloadNotify8) GetCpuFunctionType() uint8 {
 	return 0x00
 }
 
-func (m *S7PayloadNotify8) CpuSubfunction() uint8 {
-	return 0x16
-}
-
 func (m *S7PayloadNotify8) GetCpuSubfunction() uint8 {
 	return 0x16
-}
-
-func (m *S7PayloadNotify8) DataLength() uint16 {
-	return 0
 }
 
 func (m *S7PayloadNotify8) GetDataLength() uint16 {

@@ -63,10 +63,6 @@ type IMPropReadReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropReadReq) MessageCode() uint8 {
-	return 0xFC
-}
-
 func (m *MPropReadReq) GetMessageCode() uint8 {
 	return 0xFC
 }

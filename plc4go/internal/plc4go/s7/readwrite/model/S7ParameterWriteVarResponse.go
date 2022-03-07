@@ -48,16 +48,8 @@ type IS7ParameterWriteVarResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterWriteVarResponse) ParameterType() uint8 {
-	return 0x05
-}
-
 func (m *S7ParameterWriteVarResponse) GetParameterType() uint8 {
 	return 0x05
-}
-
-func (m *S7ParameterWriteVarResponse) MessageType() uint8 {
-	return 0x03
 }
 
 func (m *S7ParameterWriteVarResponse) GetMessageType() uint8 {

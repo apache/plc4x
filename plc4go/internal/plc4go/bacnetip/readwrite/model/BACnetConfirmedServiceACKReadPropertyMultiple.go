@@ -44,10 +44,6 @@ type IBACnetConfirmedServiceACKReadPropertyMultiple interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
-	return 0x0E
-}
-
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x0E
 }

@@ -48,10 +48,6 @@ type IKnxNetRemoteLogging interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetRemoteLogging) ServiceType() uint8 {
-	return 0x06
-}
-
 func (m *KnxNetRemoteLogging) GetServiceType() uint8 {
 	return 0x06
 }

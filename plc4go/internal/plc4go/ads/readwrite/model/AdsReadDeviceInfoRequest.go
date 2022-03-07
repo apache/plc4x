@@ -44,16 +44,8 @@ type IAdsReadDeviceInfoRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsReadDeviceInfoRequest) CommandId() CommandId {
-	return CommandId_ADS_READ_DEVICE_INFO
-}
-
 func (m *AdsReadDeviceInfoRequest) GetCommandId() CommandId {
 	return CommandId_ADS_READ_DEVICE_INFO
-}
-
-func (m *AdsReadDeviceInfoRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *AdsReadDeviceInfoRequest) GetResponse() bool {

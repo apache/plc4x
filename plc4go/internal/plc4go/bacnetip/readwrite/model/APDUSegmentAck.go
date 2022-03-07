@@ -64,10 +64,6 @@ type IAPDUSegmentAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUSegmentAck) ApduType() uint8 {
-	return 0x4
-}
-
 func (m *APDUSegmentAck) GetApduType() uint8 {
 	return 0x4
 }

@@ -54,10 +54,6 @@ type IApduDataMemoryRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataMemoryRead) ApciType() uint8 {
-	return 0x8
-}
-
 func (m *ApduDataMemoryRead) GetApciType() uint8 {
 	return 0x8
 }

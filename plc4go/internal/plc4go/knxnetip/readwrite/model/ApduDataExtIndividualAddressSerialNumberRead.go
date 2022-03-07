@@ -47,10 +47,6 @@ type IApduDataExtIndividualAddressSerialNumberRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtIndividualAddressSerialNumberRead) ExtApciType() uint8 {
-	return 0x1C
-}
-
 func (m *ApduDataExtIndividualAddressSerialNumberRead) GetExtApciType() uint8 {
 	return 0x1C
 }

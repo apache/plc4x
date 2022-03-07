@@ -48,16 +48,8 @@ type IS7ParameterUserData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterUserData) ParameterType() uint8 {
-	return 0x00
-}
-
 func (m *S7ParameterUserData) GetParameterType() uint8 {
 	return 0x00
-}
-
-func (m *S7ParameterUserData) MessageType() uint8 {
-	return 0x07
 }
 
 func (m *S7ParameterUserData) GetMessageType() uint8 {

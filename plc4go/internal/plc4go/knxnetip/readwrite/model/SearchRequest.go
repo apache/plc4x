@@ -48,10 +48,6 @@ type ISearchRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SearchRequest) MsgType() uint16 {
-	return 0x0201
-}
-
 func (m *SearchRequest) GetMsgType() uint16 {
 	return 0x0201
 }

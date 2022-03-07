@@ -147,31 +147,6 @@ type I${type.name} interface {
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
-func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-			<@compress single_line=true>
-	return
-				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
-					<#if typeRef.isNonSimpleTypeReference()>
-						<#if typeRef.isEnumTypeReference()>
-                            <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
-                            <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
-                            <#assign enumTypeTraces=tracer.extractTraces(enumType)>
-                            <#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)>
-                            <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
-                            <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
-						<#else>
-							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
-						</#if>
-					<#else>
-						${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
-					</#if>
-				<#else>
-					${helper.getNullValueForTypeReference(typeRef)}
-				</#if>
-			</@compress>
-}
-
 func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 				return

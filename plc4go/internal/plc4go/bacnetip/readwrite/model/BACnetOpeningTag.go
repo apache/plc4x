@@ -48,10 +48,6 @@ type IBACnetOpeningTag interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetOpeningTag) DataType() BACnetDataType {
-	return BACnetDataType_OPENING_TAG
-}
-
 func (m *BACnetOpeningTag) GetDataType() BACnetDataType {
 	return BACnetDataType_OPENING_TAG
 }

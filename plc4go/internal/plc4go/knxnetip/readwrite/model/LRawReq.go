@@ -47,10 +47,6 @@ type ILRawReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LRawReq) MessageCode() uint8 {
-	return 0x10
-}
-
 func (m *LRawReq) GetMessageCode() uint8 {
 	return 0x10
 }

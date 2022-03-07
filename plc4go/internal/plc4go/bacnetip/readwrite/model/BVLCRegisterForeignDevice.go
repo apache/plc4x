@@ -48,10 +48,6 @@ type IBVLCRegisterForeignDevice interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCRegisterForeignDevice) BvlcFunction() uint8 {
-	return 0x05
-}
-
 func (m *BVLCRegisterForeignDevice) GetBvlcFunction() uint8 {
 	return 0x05
 }

@@ -44,10 +44,6 @@ type IBACnetErrorReadPropertyMultiple interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
-	return 0x0E
-}
-
 func (m *BACnetErrorReadPropertyMultiple) GetServiceChoice() uint8 {
 	return 0x0E
 }

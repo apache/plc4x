@@ -51,10 +51,6 @@ type INLMWhoIsRouterToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMWhoIsRouterToNetwork) MessageType() uint8 {
-	return 0x00
-}
-
 func (m *NLMWhoIsRouterToNetwork) GetMessageType() uint8 {
 	return 0x00
 }

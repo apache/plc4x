@@ -52,10 +52,6 @@ type IBACnetContextTagTime interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagTime) DataType() BACnetDataType {
-	return BACnetDataType_TIME
-}
-
 func (m *BACnetContextTagTime) GetDataType() BACnetDataType {
 	return BACnetDataType_TIME
 }

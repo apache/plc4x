@@ -53,10 +53,6 @@ type IBACnetContextTagNotifyType interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagNotifyType) DataType() BACnetDataType {
-	return BACnetDataType_NOTIFY_TYPE
-}
-
 func (m *BACnetContextTagNotifyType) GetDataType() BACnetDataType {
 	return BACnetDataType_NOTIFY_TYPE
 }

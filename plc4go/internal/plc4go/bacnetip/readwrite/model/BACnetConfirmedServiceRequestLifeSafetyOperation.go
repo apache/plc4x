@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestLifeSafetyOperation interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) ServiceChoice() uint8 {
-	return 0x1B
-}
-
 func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) GetServiceChoice() uint8 {
 	return 0x1B
 }

@@ -54,10 +54,6 @@ type IBACnetContextTagUnsignedInteger interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagUnsignedInteger) DataType() BACnetDataType {
-	return BACnetDataType_UNSIGNED_INTEGER
-}
-
 func (m *BACnetContextTagUnsignedInteger) GetDataType() BACnetDataType {
 	return BACnetDataType_UNSIGNED_INTEGER
 }

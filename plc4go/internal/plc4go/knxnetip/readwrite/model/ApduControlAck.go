@@ -44,10 +44,6 @@ type IApduControlAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduControlAck) ControlType() uint8 {
-	return 0x2
-}
-
 func (m *ApduControlAck) GetControlType() uint8 {
 	return 0x2
 }

@@ -51,16 +51,8 @@ type IAdsAddDeviceNotificationResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsAddDeviceNotificationResponse) CommandId() CommandId {
-	return CommandId_ADS_ADD_DEVICE_NOTIFICATION
-}
-
 func (m *AdsAddDeviceNotificationResponse) GetCommandId() CommandId {
 	return CommandId_ADS_ADD_DEVICE_NOTIFICATION
-}
-
-func (m *AdsAddDeviceNotificationResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *AdsAddDeviceNotificationResponse) GetResponse() bool {

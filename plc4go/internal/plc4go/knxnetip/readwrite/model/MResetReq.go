@@ -47,10 +47,6 @@ type IMResetReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MResetReq) MessageCode() uint8 {
-	return 0xF1
-}
-
 func (m *MResetReq) GetMessageCode() uint8 {
 	return 0xF1
 }

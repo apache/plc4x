@@ -47,10 +47,6 @@ type IApduDataExtMemoryBitWrite interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtMemoryBitWrite) ExtApciType() uint8 {
-	return 0x10
-}
-
 func (m *ApduDataExtMemoryBitWrite) GetExtApciType() uint8 {
 	return 0x10
 }

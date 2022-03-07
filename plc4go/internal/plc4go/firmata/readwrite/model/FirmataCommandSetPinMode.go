@@ -54,10 +54,6 @@ type IFirmataCommandSetPinMode interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSetPinMode) CommandCode() uint8 {
-	return 0x4
-}
-
 func (m *FirmataCommandSetPinMode) GetCommandCode() uint8 {
 	return 0x4
 }

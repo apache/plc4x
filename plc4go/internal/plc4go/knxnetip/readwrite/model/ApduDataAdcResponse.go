@@ -47,10 +47,6 @@ type IApduDataAdcResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataAdcResponse) ApciType() uint8 {
-	return 0x7
-}
-
 func (m *ApduDataAdcResponse) GetApciType() uint8 {
 	return 0x7
 }

@@ -48,16 +48,8 @@ type ISysexCommandAnalogMappingQueryResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandAnalogMappingQueryResponse) CommandType() uint8 {
-	return 0x69
-}
-
 func (m *SysexCommandAnalogMappingQueryResponse) GetCommandType() uint8 {
 	return 0x69
-}
-
-func (m *SysexCommandAnalogMappingQueryResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) GetResponse() bool {

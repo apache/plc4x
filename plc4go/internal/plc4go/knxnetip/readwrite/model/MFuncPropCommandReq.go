@@ -47,10 +47,6 @@ type IMFuncPropCommandReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MFuncPropCommandReq) MessageCode() uint8 {
-	return 0xF8
-}
-
 func (m *MFuncPropCommandReq) GetMessageCode() uint8 {
 	return 0xF8
 }

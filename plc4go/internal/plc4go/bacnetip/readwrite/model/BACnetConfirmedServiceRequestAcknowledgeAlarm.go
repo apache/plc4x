@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) ServiceChoice() uint8 {
-	return 0x00
-}
-
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetServiceChoice() uint8 {
 	return 0x00
 }

@@ -54,10 +54,6 @@ type ICOTPPacketDisconnectResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPPacketDisconnectResponse) TpduCode() uint8 {
-	return 0xC0
-}
-
 func (m *COTPPacketDisconnectResponse) GetTpduCode() uint8 {
 	return 0xC0
 }

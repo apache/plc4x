@@ -54,10 +54,6 @@ type INLMInitalizeRoutingTable interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMInitalizeRoutingTable) MessageType() uint8 {
-	return 0x06
-}
-
 func (m *NLMInitalizeRoutingTable) GetMessageType() uint8 {
 	return 0x06
 }

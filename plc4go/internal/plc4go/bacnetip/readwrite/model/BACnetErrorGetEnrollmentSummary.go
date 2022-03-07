@@ -44,10 +44,6 @@ type IBACnetErrorGetEnrollmentSummary interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorGetEnrollmentSummary) ServiceChoice() uint8 {
-	return 0x04
-}
-
 func (m *BACnetErrorGetEnrollmentSummary) GetServiceChoice() uint8 {
 	return 0x04
 }

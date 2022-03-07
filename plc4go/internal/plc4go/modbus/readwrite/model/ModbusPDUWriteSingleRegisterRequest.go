@@ -51,24 +51,12 @@ type IModbusPDUWriteSingleRegisterRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUWriteSingleRegisterRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUWriteSingleRegisterRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUWriteSingleRegisterRequest) FunctionFlag() uint8 {
-	return 0x06
-}
-
 func (m *ModbusPDUWriteSingleRegisterRequest) GetFunctionFlag() uint8 {
 	return 0x06
-}
-
-func (m *ModbusPDUWriteSingleRegisterRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUWriteSingleRegisterRequest) GetResponse() bool {

@@ -44,10 +44,6 @@ type IBVLCReadBroadcastDistributionTableAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCReadBroadcastDistributionTableAck) BvlcFunction() uint8 {
-	return 0x03
-}
-
 func (m *BVLCReadBroadcastDistributionTableAck) GetBvlcFunction() uint8 {
 	return 0x03
 }

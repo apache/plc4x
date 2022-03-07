@@ -47,10 +47,6 @@ type ILRawCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LRawCon) MessageCode() uint8 {
-	return 0x2F
-}
-
 func (m *LRawCon) GetMessageCode() uint8 {
 	return 0x2F
 }

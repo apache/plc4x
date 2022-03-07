@@ -58,24 +58,12 @@ type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint8 {
-	return 0x08
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuSubfunction() uint8 {
-	return 0x01
-}
-
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetCpuSubfunction() uint8 {
 	return 0x01
-}
-
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) DataLength() uint16 {
-	return 0
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetDataLength() uint16 {

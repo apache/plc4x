@@ -58,10 +58,6 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) ServiceChoice() uint8 {
-	return 0x04
-}
-
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceChoice() uint8 {
 	return 0x04
 }

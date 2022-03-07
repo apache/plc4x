@@ -47,10 +47,6 @@ type IFirmataCommandSystemReset interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSystemReset) CommandCode() uint8 {
-	return 0xF
-}
-
 func (m *FirmataCommandSystemReset) GetCommandCode() uint8 {
 	return 0xF
 }

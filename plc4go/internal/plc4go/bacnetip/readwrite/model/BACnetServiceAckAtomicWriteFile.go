@@ -48,10 +48,6 @@ type IBACnetServiceAckAtomicWriteFile interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
-	return 0x07
-}
-
 func (m *BACnetServiceAckAtomicWriteFile) GetServiceChoice() uint8 {
 	return 0x07
 }

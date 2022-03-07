@@ -57,10 +57,6 @@ type IApduDataExtPropertyDescriptionRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtPropertyDescriptionRead) ExtApciType() uint8 {
-	return 0x18
-}
-
 func (m *ApduDataExtPropertyDescriptionRead) GetExtApciType() uint8 {
 	return 0x18
 }

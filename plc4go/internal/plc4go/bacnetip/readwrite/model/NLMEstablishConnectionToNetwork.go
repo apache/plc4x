@@ -54,10 +54,6 @@ type INLMEstablishConnectionToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMEstablishConnectionToNetwork) MessageType() uint8 {
-	return 0x08
-}
-
 func (m *NLMEstablishConnectionToNetwork) GetMessageType() uint8 {
 	return 0x08
 }

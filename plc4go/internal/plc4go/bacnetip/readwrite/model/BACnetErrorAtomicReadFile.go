@@ -44,10 +44,6 @@ type IBACnetErrorAtomicReadFile interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
-	return 0x06
-}
-
 func (m *BACnetErrorAtomicReadFile) GetServiceChoice() uint8 {
 	return 0x06
 }

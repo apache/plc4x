@@ -44,10 +44,6 @@ type IBACnetErrorUnknown interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorUnknown) ServiceChoice() uint8 {
-	return 0
-}
-
 func (m *BACnetErrorUnknown) GetServiceChoice() uint8 {
 	return 0
 }

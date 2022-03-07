@@ -51,10 +51,6 @@ type IApduDataContainer interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataContainer) Control() uint8 {
-	return uint8(0)
-}
-
 func (m *ApduDataContainer) GetControl() uint8 {
 	return uint8(0)
 }

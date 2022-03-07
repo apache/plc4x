@@ -55,10 +55,6 @@ type ICipWriteResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CipWriteResponse) Service() uint8 {
-	return 0xCD
-}
-
 func (m *CipWriteResponse) GetService() uint8 {
 	return 0xCD
 }

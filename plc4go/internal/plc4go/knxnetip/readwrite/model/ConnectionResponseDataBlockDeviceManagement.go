@@ -44,10 +44,6 @@ type IConnectionResponseDataBlockDeviceManagement interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionResponseDataBlockDeviceManagement) ConnectionType() uint8 {
-	return 0x03
-}
-
 func (m *ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8 {
 	return 0x03
 }

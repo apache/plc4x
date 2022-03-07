@@ -44,10 +44,6 @@ type IEipDisconnectRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *EipDisconnectRequest) Command() uint16 {
-	return 0x0066
-}
-
 func (m *EipDisconnectRequest) GetCommand() uint16 {
 	return 0x0066
 }

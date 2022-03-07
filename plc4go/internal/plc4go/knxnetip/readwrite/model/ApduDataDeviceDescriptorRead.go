@@ -51,10 +51,6 @@ type IApduDataDeviceDescriptorRead interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataDeviceDescriptorRead) ApciType() uint8 {
-	return 0xC
-}
-
 func (m *ApduDataDeviceDescriptorRead) GetApciType() uint8 {
 	return 0xC
 }

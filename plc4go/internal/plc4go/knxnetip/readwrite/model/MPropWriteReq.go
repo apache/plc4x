@@ -47,10 +47,6 @@ type IMPropWriteReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *MPropWriteReq) MessageCode() uint8 {
-	return 0xF6
-}
-
 func (m *MPropWriteReq) GetMessageCode() uint8 {
 	return 0xF6
 }

@@ -51,24 +51,12 @@ type IModbusPDUReadCoilsRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReadCoilsRequest) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReadCoilsRequest) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
-	return 0x01
-}
-
 func (m *ModbusPDUReadCoilsRequest) GetFunctionFlag() uint8 {
 	return 0x01
-}
-
-func (m *ModbusPDUReadCoilsRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *ModbusPDUReadCoilsRequest) GetResponse() bool {

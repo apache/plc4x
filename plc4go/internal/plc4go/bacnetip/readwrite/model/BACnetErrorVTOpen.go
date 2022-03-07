@@ -44,10 +44,6 @@ type IBACnetErrorVTOpen interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorVTOpen) ServiceChoice() uint8 {
-	return 0x15
-}
-
 func (m *BACnetErrorVTOpen) GetServiceChoice() uint8 {
 	return 0x15
 }

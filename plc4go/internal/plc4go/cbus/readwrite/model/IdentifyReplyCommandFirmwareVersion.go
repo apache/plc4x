@@ -48,10 +48,6 @@ type IIdentifyReplyCommandFirmwareVersion interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandFirmwareVersion) Attribute() Attribute {
-	return Attribute_FirmwareVersion
-}
-
 func (m *IdentifyReplyCommandFirmwareVersion) GetAttribute() Attribute {
 	return Attribute_FirmwareVersion
 }

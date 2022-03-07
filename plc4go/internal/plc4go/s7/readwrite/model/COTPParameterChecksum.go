@@ -51,10 +51,6 @@ type ICOTPParameterChecksum interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterChecksum) ParameterType() uint8 {
-	return 0xC3
-}
-
 func (m *COTPParameterChecksum) GetParameterType() uint8 {
 	return 0xC3
 }

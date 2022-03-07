@@ -51,10 +51,6 @@ type IDescriptionResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DescriptionResponse) MsgType() uint16 {
-	return 0x0204
-}
-
 func (m *DescriptionResponse) GetMsgType() uint16 {
 	return 0x0204
 }

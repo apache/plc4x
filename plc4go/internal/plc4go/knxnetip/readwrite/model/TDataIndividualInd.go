@@ -47,10 +47,6 @@ type ITDataIndividualInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TDataIndividualInd) MessageCode() uint8 {
-	return 0x94
-}
-
 func (m *TDataIndividualInd) GetMessageCode() uint8 {
 	return 0x94
 }

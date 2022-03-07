@@ -48,24 +48,12 @@ type IS7PayloadAlarmSC interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadAlarmSC) CpuFunctionType() uint8 {
-	return 0x00
-}
-
 func (m *S7PayloadAlarmSC) GetCpuFunctionType() uint8 {
 	return 0x00
 }
 
-func (m *S7PayloadAlarmSC) CpuSubfunction() uint8 {
-	return 0x13
-}
-
 func (m *S7PayloadAlarmSC) GetCpuSubfunction() uint8 {
 	return 0x13
-}
-
-func (m *S7PayloadAlarmSC) DataLength() uint16 {
-	return 0
 }
 
 func (m *S7PayloadAlarmSC) GetDataLength() uint16 {

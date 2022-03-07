@@ -52,10 +52,6 @@ type IAPDUUnconfirmedRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUUnconfirmedRequest) ApduType() uint8 {
-	return 0x1
-}
-
 func (m *APDUUnconfirmedRequest) GetApduType() uint8 {
 	return 0x1
 }

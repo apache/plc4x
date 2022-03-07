@@ -56,10 +56,6 @@ type IBACnetContextTagObjectIdentifier interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagObjectIdentifier) DataType() BACnetDataType {
-	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
-}
-
 func (m *BACnetContextTagObjectIdentifier) GetDataType() BACnetDataType {
 	return BACnetDataType_BACNET_OBJECT_IDENTIFIER
 }

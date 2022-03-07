@@ -54,10 +54,6 @@ type IBACnetUnconfirmedServiceRequestTimeSynchronization interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) ServiceChoice() uint8 {
-	return 0x06
-}
-
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) GetServiceChoice() uint8 {
 	return 0x06
 }

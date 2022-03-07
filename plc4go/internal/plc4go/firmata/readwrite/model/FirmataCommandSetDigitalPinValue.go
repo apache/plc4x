@@ -55,10 +55,6 @@ type IFirmataCommandSetDigitalPinValue interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSetDigitalPinValue) CommandCode() uint8 {
-	return 0x5
-}
-
 func (m *FirmataCommandSetDigitalPinValue) GetCommandCode() uint8 {
 	return 0x5
 }

@@ -48,10 +48,6 @@ type IIdentifyReplyCommandGAVValuesCurrent interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandGAVValuesCurrent) Attribute() Attribute {
-	return Attribute_GAVValuesCurrent
-}
-
 func (m *IdentifyReplyCommandGAVValuesCurrent) GetAttribute() Attribute {
 	return Attribute_GAVValuesCurrent
 }

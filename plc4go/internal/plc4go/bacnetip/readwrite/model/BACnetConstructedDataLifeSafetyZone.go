@@ -52,10 +52,6 @@ type IBACnetConstructedDataLifeSafetyZone interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConstructedDataLifeSafetyZone) ObjectType() BACnetObjectType {
-	return BACnetObjectType_LIFE_SAFETY_ZONE
-}
-
 func (m *BACnetConstructedDataLifeSafetyZone) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_ZONE
 }

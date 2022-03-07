@@ -48,10 +48,6 @@ type IKnxNetObjectServer interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetObjectServer) ServiceType() uint8 {
-	return 0x08
-}
-
 func (m *KnxNetObjectServer) GetServiceType() uint8 {
 	return 0x08
 }

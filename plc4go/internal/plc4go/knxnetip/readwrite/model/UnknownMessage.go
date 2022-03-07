@@ -51,10 +51,6 @@ type IUnknownMessage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *UnknownMessage) MsgType() uint16 {
-	return 0x020B
-}
-
 func (m *UnknownMessage) GetMsgType() uint16 {
 	return 0x020B
 }

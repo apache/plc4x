@@ -44,10 +44,6 @@ type IBACnetServiceAckRemovedReadPropertyConditional interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetServiceAckRemovedReadPropertyConditional) ServiceChoice() uint8 {
-	return 0x0D
-}
-
 func (m *BACnetServiceAckRemovedReadPropertyConditional) GetServiceChoice() uint8 {
 	return 0x0D
 }

@@ -51,10 +51,6 @@ type IS7MessageResponseData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7MessageResponseData) MessageType() uint8 {
-	return 0x03
-}
-
 func (m *S7MessageResponseData) GetMessageType() uint8 {
 	return 0x03
 }

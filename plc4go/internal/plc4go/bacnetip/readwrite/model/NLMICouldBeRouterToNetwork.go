@@ -54,10 +54,6 @@ type INLMICouldBeRouterToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMICouldBeRouterToNetwork) MessageType() uint8 {
-	return 0x02
-}
-
 func (m *NLMICouldBeRouterToNetwork) GetMessageType() uint8 {
 	return 0x02
 }

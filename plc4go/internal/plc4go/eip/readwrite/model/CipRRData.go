@@ -52,10 +52,6 @@ type ICipRRData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CipRRData) Command() uint16 {
-	return 0x006F
-}
-
 func (m *CipRRData) GetCommand() uint16 {
 	return 0x006F
 }

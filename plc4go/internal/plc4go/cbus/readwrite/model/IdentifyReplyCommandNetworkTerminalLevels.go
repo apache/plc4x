@@ -44,10 +44,6 @@ type IIdentifyReplyCommandNetworkTerminalLevels interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandNetworkTerminalLevels) Attribute() Attribute {
-	return Attribute_NetworkTerminalLevels
-}
-
 func (m *IdentifyReplyCommandNetworkTerminalLevels) GetAttribute() Attribute {
 	return Attribute_NetworkTerminalLevels
 }

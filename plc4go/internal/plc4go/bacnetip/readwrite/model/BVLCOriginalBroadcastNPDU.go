@@ -51,10 +51,6 @@ type IBVLCOriginalBroadcastNPDU interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCOriginalBroadcastNPDU) BvlcFunction() uint8 {
-	return 0x0B
-}
-
 func (m *BVLCOriginalBroadcastNPDU) GetBvlcFunction() uint8 {
 	return 0x0B
 }

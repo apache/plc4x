@@ -51,10 +51,6 @@ type INLMRouterBusyToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMRouterBusyToNetwork) MessageType() uint8 {
-	return 0x04
-}
-
 func (m *NLMRouterBusyToNetwork) GetMessageType() uint8 {
 	return 0x04
 }

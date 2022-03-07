@@ -54,16 +54,8 @@ type IAdsWriteRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *AdsWriteRequest) CommandId() CommandId {
-	return CommandId_ADS_WRITE
-}
-
 func (m *AdsWriteRequest) GetCommandId() CommandId {
 	return CommandId_ADS_WRITE
-}
-
-func (m *AdsWriteRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *AdsWriteRequest) GetResponse() bool {

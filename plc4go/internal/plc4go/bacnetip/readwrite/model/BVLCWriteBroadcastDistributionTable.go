@@ -51,10 +51,6 @@ type IBVLCWriteBroadcastDistributionTable interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCWriteBroadcastDistributionTable) BvlcFunction() uint8 {
-	return 0x01
-}
-
 func (m *BVLCWriteBroadcastDistributionTable) GetBvlcFunction() uint8 {
 	return 0x01
 }

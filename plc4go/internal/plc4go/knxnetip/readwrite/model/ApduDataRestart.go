@@ -47,10 +47,6 @@ type IApduDataRestart interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataRestart) ApciType() uint8 {
-	return 0xE
-}
-
 func (m *ApduDataRestart) GetApciType() uint8 {
 	return 0xE
 }

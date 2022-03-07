@@ -48,10 +48,6 @@ type IIdentifyReplyCommandManufacturer interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandManufacturer) Attribute() Attribute {
-	return Attribute_Manufacturer
-}
-
 func (m *IdentifyReplyCommandManufacturer) GetAttribute() Attribute {
 	return Attribute_Manufacturer
 }

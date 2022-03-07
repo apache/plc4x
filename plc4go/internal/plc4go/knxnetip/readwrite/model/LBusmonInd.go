@@ -60,10 +60,6 @@ type ILBusmonInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LBusmonInd) MessageCode() uint8 {
-	return 0x2B
-}
-
 func (m *LBusmonInd) GetMessageCode() uint8 {
 	return 0x2B
 }

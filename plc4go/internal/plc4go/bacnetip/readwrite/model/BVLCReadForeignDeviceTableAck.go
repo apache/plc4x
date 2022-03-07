@@ -44,10 +44,6 @@ type IBVLCReadForeignDeviceTableAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BVLCReadForeignDeviceTableAck) BvlcFunction() uint8 {
-	return 0x07
-}
-
 func (m *BVLCReadForeignDeviceTableAck) GetBvlcFunction() uint8 {
 	return 0x07
 }

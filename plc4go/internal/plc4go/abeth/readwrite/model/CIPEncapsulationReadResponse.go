@@ -51,10 +51,6 @@ type ICIPEncapsulationReadResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CIPEncapsulationReadResponse) CommandType() uint16 {
-	return 0x0207
-}
-
 func (m *CIPEncapsulationReadResponse) GetCommandType() uint16 {
 	return 0x0207
 }

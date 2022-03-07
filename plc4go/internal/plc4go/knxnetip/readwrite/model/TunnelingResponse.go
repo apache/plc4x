@@ -48,10 +48,6 @@ type ITunnelingResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *TunnelingResponse) MsgType() uint16 {
-	return 0x0421
-}
-
 func (m *TunnelingResponse) GetMsgType() uint16 {
 	return 0x0421
 }

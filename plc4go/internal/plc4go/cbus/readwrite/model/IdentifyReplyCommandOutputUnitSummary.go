@@ -44,10 +44,6 @@ type IIdentifyReplyCommandOutputUnitSummary interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandOutputUnitSummary) Attribute() Attribute {
-	return Attribute_OutputUnitSummary
-}
-
 func (m *IdentifyReplyCommandOutputUnitSummary) GetAttribute() Attribute {
 	return Attribute_OutputUnitSummary
 }

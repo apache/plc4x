@@ -66,24 +66,12 @@ type IS7PayloadDiagnosticMessage interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7PayloadDiagnosticMessage) CpuFunctionType() uint8 {
-	return 0x00
-}
-
 func (m *S7PayloadDiagnosticMessage) GetCpuFunctionType() uint8 {
 	return 0x00
 }
 
-func (m *S7PayloadDiagnosticMessage) CpuSubfunction() uint8 {
-	return 0x03
-}
-
 func (m *S7PayloadDiagnosticMessage) GetCpuSubfunction() uint8 {
 	return 0x03
-}
-
-func (m *S7PayloadDiagnosticMessage) DataLength() uint16 {
-	return 0
 }
 
 func (m *S7PayloadDiagnosticMessage) GetDataLength() uint16 {

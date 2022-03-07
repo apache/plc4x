@@ -44,10 +44,6 @@ type IIdentifyReplyCommandDelays interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *IdentifyReplyCommandDelays) Attribute() Attribute {
-	return Attribute_Delays
-}
-
 func (m *IdentifyReplyCommandDelays) GetAttribute() Attribute {
 	return Attribute_Delays
 }

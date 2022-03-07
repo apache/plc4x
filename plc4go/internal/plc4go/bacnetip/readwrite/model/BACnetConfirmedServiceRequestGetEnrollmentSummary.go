@@ -47,10 +47,6 @@ type IBACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) ServiceChoice() uint8 {
-	return 0x04
-}
-
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetServiceChoice() uint8 {
 	return 0x04
 }

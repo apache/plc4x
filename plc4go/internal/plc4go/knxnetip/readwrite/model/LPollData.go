@@ -55,15 +55,7 @@ type ILPollData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LPollData) NotAckFrame() bool {
-	return bool(true)
-}
-
 func (m *LPollData) GetNotAckFrame() bool {
-	return bool(true)
-}
-
-func (m *LPollData) Polling() bool {
 	return bool(true)
 }
 

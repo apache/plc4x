@@ -51,10 +51,6 @@ type ICOTPParameterDisconnectAdditionalInformation interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterDisconnectAdditionalInformation) ParameterType() uint8 {
-	return 0xE0
-}
-
 func (m *COTPParameterDisconnectAdditionalInformation) GetParameterType() uint8 {
 	return 0xE0
 }

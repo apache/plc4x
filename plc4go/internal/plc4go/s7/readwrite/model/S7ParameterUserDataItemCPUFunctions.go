@@ -69,10 +69,6 @@ type IS7ParameterUserDataItemCPUFunctions interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
-	return 0x12
-}
-
 func (m *S7ParameterUserDataItemCPUFunctions) GetItemType() uint8 {
 	return 0x12
 }

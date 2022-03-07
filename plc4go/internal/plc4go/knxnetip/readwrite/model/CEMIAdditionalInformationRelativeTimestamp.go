@@ -52,10 +52,6 @@ type ICEMIAdditionalInformationRelativeTimestamp interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIAdditionalInformationRelativeTimestamp) AdditionalInformationType() uint8 {
-	return 0x04
-}
-
 func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationType() uint8 {
 	return 0x04
 }

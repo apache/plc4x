@@ -61,10 +61,6 @@ type IBACnetConstructedDataUnspecified interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConstructedDataUnspecified) ObjectType() BACnetObjectType {
-	return 0
-}
-
 func (m *BACnetConstructedDataUnspecified) GetObjectType() BACnetObjectType {
 	return 0
 }

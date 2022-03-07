@@ -55,10 +55,6 @@ type IAPDUReject interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUReject) ApduType() uint8 {
-	return 0x6
-}
-
 func (m *APDUReject) GetApduType() uint8 {
 	return 0x6
 }

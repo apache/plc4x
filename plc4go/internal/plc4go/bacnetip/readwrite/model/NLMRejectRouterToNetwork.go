@@ -54,10 +54,6 @@ type INLMRejectRouterToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMRejectRouterToNetwork) MessageType() uint8 {
-	return 0x03
-}
-
 func (m *NLMRejectRouterToNetwork) GetMessageType() uint8 {
 	return 0x03
 }

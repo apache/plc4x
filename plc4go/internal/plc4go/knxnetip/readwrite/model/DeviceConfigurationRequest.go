@@ -54,10 +54,6 @@ type IDeviceConfigurationRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *DeviceConfigurationRequest) MsgType() uint16 {
-	return 0x0310
-}
-
 func (m *DeviceConfigurationRequest) GetMsgType() uint16 {
 	return 0x0310
 }

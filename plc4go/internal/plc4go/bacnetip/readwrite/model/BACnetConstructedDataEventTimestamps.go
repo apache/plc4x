@@ -58,10 +58,6 @@ type IBACnetConstructedDataEventTimestamps interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetConstructedDataEventTimestamps) ObjectType() BACnetObjectType {
-	return 0
-}
-
 func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
 	return 0
 }

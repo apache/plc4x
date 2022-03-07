@@ -47,10 +47,6 @@ type IApduDataMemoryWrite interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataMemoryWrite) ApciType() uint8 {
-	return 0xA
-}
-
 func (m *ApduDataMemoryWrite) GetApciType() uint8 {
 	return 0xA
 }

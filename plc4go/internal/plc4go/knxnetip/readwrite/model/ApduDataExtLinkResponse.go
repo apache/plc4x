@@ -47,10 +47,6 @@ type IApduDataExtLinkResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtLinkResponse) ExtApciType() uint8 {
-	return 0x26
-}
-
 func (m *ApduDataExtLinkResponse) GetExtApciType() uint8 {
 	return 0x26
 }

@@ -44,16 +44,8 @@ type ISysexCommandSamplingInterval interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandSamplingInterval) CommandType() uint8 {
-	return 0x7A
-}
-
 func (m *SysexCommandSamplingInterval) GetCommandType() uint8 {
 	return 0x7A
-}
-
-func (m *SysexCommandSamplingInterval) Response() bool {
-	return false
 }
 
 func (m *SysexCommandSamplingInterval) GetResponse() bool {

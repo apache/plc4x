@@ -55,10 +55,6 @@ type IAPDUSimpleAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *APDUSimpleAck) ApduType() uint8 {
-	return 0x2
-}
-
 func (m *APDUSimpleAck) GetApduType() uint8 {
 	return 0x2
 }

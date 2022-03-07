@@ -44,10 +44,6 @@ type IBACnetErrorRemovedAuthenticate interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetErrorRemovedAuthenticate) ServiceChoice() uint8 {
-	return 0x18
-}
-
 func (m *BACnetErrorRemovedAuthenticate) GetServiceChoice() uint8 {
 	return 0x18
 }

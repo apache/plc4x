@@ -51,10 +51,6 @@ type ICOTPParameterCalledTsap interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *COTPParameterCalledTsap) ParameterType() uint8 {
-	return 0xC2
-}
-
 func (m *COTPParameterCalledTsap) GetParameterType() uint8 {
 	return 0xC2
 }

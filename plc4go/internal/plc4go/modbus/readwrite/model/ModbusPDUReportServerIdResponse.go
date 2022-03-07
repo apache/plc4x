@@ -48,24 +48,12 @@ type IModbusPDUReportServerIdResponse interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ModbusPDUReportServerIdResponse) ErrorFlag() bool {
-	return bool(false)
-}
-
 func (m *ModbusPDUReportServerIdResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
-	return 0x11
-}
-
 func (m *ModbusPDUReportServerIdResponse) GetFunctionFlag() uint8 {
 	return 0x11
-}
-
-func (m *ModbusPDUReportServerIdResponse) Response() bool {
-	return bool(true)
 }
 
 func (m *ModbusPDUReportServerIdResponse) GetResponse() bool {

@@ -44,16 +44,8 @@ type ISysexCommandReportFirmwareRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *SysexCommandReportFirmwareRequest) CommandType() uint8 {
-	return 0x79
-}
-
 func (m *SysexCommandReportFirmwareRequest) GetCommandType() uint8 {
 	return 0x79
-}
-
-func (m *SysexCommandReportFirmwareRequest) Response() bool {
-	return bool(false)
 }
 
 func (m *SysexCommandReportFirmwareRequest) GetResponse() bool {

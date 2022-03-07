@@ -55,10 +55,6 @@ type IFirmataMessageSubscribeDigitalPinValue interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataMessageSubscribeDigitalPinValue) MessageType() uint8 {
-	return 0xD
-}
-
 func (m *FirmataMessageSubscribeDigitalPinValue) GetMessageType() uint8 {
 	return 0xD
 }

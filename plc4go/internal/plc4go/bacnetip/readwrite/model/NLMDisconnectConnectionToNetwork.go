@@ -51,10 +51,6 @@ type INLMDisconnectConnectionToNetwork interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *NLMDisconnectConnectionToNetwork) MessageType() uint8 {
-	return 0x09
-}
-
 func (m *NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
 	return 0x09
 }

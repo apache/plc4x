@@ -48,10 +48,6 @@ type IBACnetClosingTag interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetClosingTag) DataType() BACnetDataType {
-	return BACnetDataType_CLOSING_TAG
-}
-
 func (m *BACnetClosingTag) GetDataType() BACnetDataType {
 	return BACnetDataType_CLOSING_TAG
 }

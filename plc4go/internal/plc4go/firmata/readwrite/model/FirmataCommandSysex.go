@@ -52,10 +52,6 @@ type IFirmataCommandSysex interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandSysex) CommandCode() uint8 {
-	return 0x0
-}
-
 func (m *FirmataCommandSysex) GetCommandCode() uint8 {
 	return 0x0
 }

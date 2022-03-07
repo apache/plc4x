@@ -48,10 +48,6 @@ type IKnxNetIpCore interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxNetIpCore) ServiceType() uint8 {
-	return 0x02
-}
-
 func (m *KnxNetIpCore) GetServiceType() uint8 {
 	return 0x02
 }

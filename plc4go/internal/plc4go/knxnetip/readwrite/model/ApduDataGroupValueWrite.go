@@ -54,10 +54,6 @@ type IApduDataGroupValueWrite interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataGroupValueWrite) ApciType() uint8 {
-	return 0x2
-}
-
 func (m *ApduDataGroupValueWrite) GetApciType() uint8 {
 	return 0x2
 }

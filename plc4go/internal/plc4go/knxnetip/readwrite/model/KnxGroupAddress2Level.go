@@ -51,10 +51,6 @@ type IKnxGroupAddress2Level interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *KnxGroupAddress2Level) NumLevels() uint8 {
-	return uint8(2)
-}
-
 func (m *KnxGroupAddress2Level) GetNumLevels() uint8 {
 	return uint8(2)
 }

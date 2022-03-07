@@ -47,10 +47,6 @@ type IApduDataExtGroupPropertyValueWrite interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ApduDataExtGroupPropertyValueWrite) ExtApciType() uint8 {
-	return 0x2A
-}
-
 func (m *ApduDataExtGroupPropertyValueWrite) GetExtApciType() uint8 {
 	return 0x2A
 }

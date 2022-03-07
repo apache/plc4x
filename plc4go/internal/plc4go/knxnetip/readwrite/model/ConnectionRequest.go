@@ -54,10 +54,6 @@ type IConnectionRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *ConnectionRequest) MsgType() uint16 {
-	return 0x0205
-}
-
 func (m *ConnectionRequest) GetMsgType() uint16 {
 	return 0x0205
 }

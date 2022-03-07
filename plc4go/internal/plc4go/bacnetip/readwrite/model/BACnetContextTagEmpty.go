@@ -47,10 +47,6 @@ type IBACnetContextTagEmpty interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetContextTagEmpty) DataType() BACnetDataType {
-	return 0
-}
-
 func (m *BACnetContextTagEmpty) GetDataType() BACnetDataType {
 	return 0
 }

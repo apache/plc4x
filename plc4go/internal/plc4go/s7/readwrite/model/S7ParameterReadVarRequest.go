@@ -48,16 +48,8 @@ type IS7ParameterReadVarRequest interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *S7ParameterReadVarRequest) ParameterType() uint8 {
-	return 0x04
-}
-
 func (m *S7ParameterReadVarRequest) GetParameterType() uint8 {
 	return 0x04
-}
-
-func (m *S7ParameterReadVarRequest) MessageType() uint8 {
-	return 0x01
 }
 
 func (m *S7ParameterReadVarRequest) GetMessageType() uint8 {

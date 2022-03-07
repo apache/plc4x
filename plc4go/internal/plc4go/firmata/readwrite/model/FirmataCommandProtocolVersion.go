@@ -54,10 +54,6 @@ type IFirmataCommandProtocolVersion interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *FirmataCommandProtocolVersion) CommandCode() uint8 {
-	return 0x9
-}
-
 func (m *FirmataCommandProtocolVersion) GetCommandCode() uint8 {
 	return 0x9
 }
