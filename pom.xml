@@ -1675,6 +1675,10 @@
     -->
     <profile>
       <id>jenkins-build</id>
+      <properties>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
     </profile>
 
     <!--
