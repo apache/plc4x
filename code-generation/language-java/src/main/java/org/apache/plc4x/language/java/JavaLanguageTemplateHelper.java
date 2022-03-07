@@ -508,7 +508,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case DATE:
                 return "writeDate(writeBuffer)";
             case DATETIME:
-                return "writeDateTime(readBuffer)";
+                return "writeDateTime(writeBuffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
