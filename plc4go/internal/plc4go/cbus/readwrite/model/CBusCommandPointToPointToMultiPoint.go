@@ -61,6 +61,10 @@ func (m *CBusCommandPointToPointToMultiPoint) InitializeParent(parent *CBusComma
 	m.CBusCommand.Header = header
 }
 
+func (m *CBusCommandPointToPointToMultiPoint) GetParent() *CBusCommand {
+	return m.CBusCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

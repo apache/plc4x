@@ -56,6 +56,10 @@ func (m *BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
 
 func (m *BVLCReadForeignDeviceTable) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCReadForeignDeviceTable) GetParent() *BVLC {
+	return m.BVLC
+}
+
 // NewBVLCReadForeignDeviceTable factory function for BVLCReadForeignDeviceTable
 func NewBVLCReadForeignDeviceTable() *BVLC {
 	child := &BVLCReadForeignDeviceTable{

@@ -70,6 +70,10 @@ func (m *BACnetServiceAckReadProperty) GetServiceChoice() uint8 {
 
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckReadProperty) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

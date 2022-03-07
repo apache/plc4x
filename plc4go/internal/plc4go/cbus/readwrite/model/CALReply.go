@@ -60,6 +60,8 @@ type ICALReplyParent interface {
 type ICALReplyChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CALReply, calType byte, calData *CALData)
+	GetParent() *CALReply
+
 	GetTypeName() string
 	ICALReply
 }

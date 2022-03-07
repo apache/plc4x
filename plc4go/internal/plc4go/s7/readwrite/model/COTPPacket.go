@@ -61,6 +61,8 @@ type ICOTPPacketParent interface {
 type ICOTPPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message)
+	GetParent() *COTPPacket
+
 	GetTypeName() string
 	ICOTPPacket
 }

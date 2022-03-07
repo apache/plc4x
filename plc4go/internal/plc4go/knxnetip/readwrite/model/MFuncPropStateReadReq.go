@@ -59,6 +59,10 @@ func (m *MFuncPropStateReadReq) GetMessageCode() uint8 {
 
 func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {}
 
+func (m *MFuncPropStateReadReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMFuncPropStateReadReq factory function for MFuncPropStateReadReq
 func NewMFuncPropStateReadReq(size uint16) *CEMI {
 	child := &MFuncPropStateReadReq{

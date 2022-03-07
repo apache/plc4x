@@ -51,6 +51,8 @@ type IComObjectTableParent interface {
 type IComObjectTableChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ComObjectTable)
+	GetParent() *ComObjectTable
+
 	GetTypeName() string
 	IComObjectTable
 }

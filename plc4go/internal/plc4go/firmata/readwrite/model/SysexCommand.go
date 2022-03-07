@@ -53,6 +53,8 @@ type ISysexCommandParent interface {
 type ISysexCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *SysexCommand)
+	GetParent() *SysexCommand
+
 	GetTypeName() string
 	ISysexCommand
 }

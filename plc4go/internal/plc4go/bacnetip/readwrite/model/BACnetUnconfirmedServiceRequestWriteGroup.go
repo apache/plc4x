@@ -60,6 +60,10 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetServiceChoice() uint8 {
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
 // NewBACnetUnconfirmedServiceRequestWriteGroup factory function for BACnetUnconfirmedServiceRequestWriteGroup
 func NewBACnetUnconfirmedServiceRequestWriteGroup(len uint16) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestWriteGroup{

@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestVTOpen) GetServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceRequestVTOpen) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestVTOpen) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestVTOpen factory function for BACnetConfirmedServiceRequestVTOpen
 func NewBACnetConfirmedServiceRequestVTOpen(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestVTOpen{

@@ -57,6 +57,10 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetServiceChoice() u
 func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
+func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
 // NewBACnetConfirmedServiceACKConfirmedPrivateTransfer factory function for BACnetConfirmedServiceACKConfirmedPrivateTransfer
 func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{

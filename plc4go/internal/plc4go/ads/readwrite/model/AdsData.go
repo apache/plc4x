@@ -53,6 +53,8 @@ type IAdsDataParent interface {
 type IAdsDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *AdsData)
+	GetParent() *AdsData
+
 	GetTypeName() string
 	IAdsData
 }

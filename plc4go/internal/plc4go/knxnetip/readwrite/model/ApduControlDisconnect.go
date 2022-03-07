@@ -56,6 +56,10 @@ func (m *ApduControlDisconnect) GetControlType() uint8 {
 
 func (m *ApduControlDisconnect) InitializeParent(parent *ApduControl) {}
 
+func (m *ApduControlDisconnect) GetParent() *ApduControl {
+	return m.ApduControl
+}
+
 // NewApduControlDisconnect factory function for ApduControlDisconnect
 func NewApduControlDisconnect() *ApduControl {
 	child := &ApduControlDisconnect{

@@ -66,6 +66,8 @@ type IS7MessageParent interface {
 type IS7MessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload)
+	GetParent() *S7Message
+
 	GetTypeName() string
 	IS7Message
 }

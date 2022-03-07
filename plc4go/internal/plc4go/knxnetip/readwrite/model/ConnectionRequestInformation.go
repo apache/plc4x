@@ -51,6 +51,8 @@ type IConnectionRequestInformationParent interface {
 type IConnectionRequestInformationChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ConnectionRequestInformation)
+	GetParent() *ConnectionRequestInformation
+
 	GetTypeName() string
 	IConnectionRequestInformation
 }

@@ -72,6 +72,10 @@ func (m *COTPPacketDisconnectRequest) InitializeParent(parent *COTPPacket, param
 	m.COTPPacket.Payload = payload
 }
 
+func (m *COTPPacketDisconnectRequest) GetParent() *COTPPacket {
+	return m.COTPPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

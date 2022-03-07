@@ -56,6 +56,10 @@ func (m *BVLCSecureBVLL) GetBvlcFunction() uint8 {
 
 func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCSecureBVLL) GetParent() *BVLC {
+	return m.BVLC
+}
+
 // NewBVLCSecureBVLL factory function for BVLCSecureBVLL
 func NewBVLCSecureBVLL() *BVLC {
 	child := &BVLCSecureBVLL{

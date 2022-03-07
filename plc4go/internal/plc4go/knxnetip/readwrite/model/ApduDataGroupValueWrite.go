@@ -66,6 +66,10 @@ func (m *ApduDataGroupValueWrite) GetApciType() uint8 {
 
 func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataGroupValueWrite) GetParent() *ApduData {
+	return m.ApduData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

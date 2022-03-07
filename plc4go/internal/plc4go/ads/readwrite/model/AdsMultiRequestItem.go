@@ -51,6 +51,8 @@ type IAdsMultiRequestItemParent interface {
 type IAdsMultiRequestItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *AdsMultiRequestItem)
+	GetParent() *AdsMultiRequestItem
+
 	GetTypeName() string
 	IAdsMultiRequestItem
 }

@@ -59,6 +59,10 @@ func (m *ApduDataExtDomainAddressRead) GetExtApciType() uint8 {
 
 func (m *ApduDataExtDomainAddressRead) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtDomainAddressRead) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtDomainAddressRead factory function for ApduDataExtDomainAddressRead
 func NewApduDataExtDomainAddressRead(length uint8) *ApduDataExt {
 	child := &ApduDataExtDomainAddressRead{

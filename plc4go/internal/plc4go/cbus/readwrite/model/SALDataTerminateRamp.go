@@ -58,6 +58,10 @@ func (m *SALDataTerminateRamp) InitializeParent(parent *SALData, commandTypeCont
 	m.SALData.CommandTypeContainer = commandTypeContainer
 }
 
+func (m *SALDataTerminateRamp) GetParent() *SALData {
+	return m.SALData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -57,6 +57,10 @@ func (m *ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8 
 func (m *ConnectionResponseDataBlockDeviceManagement) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
 
+func (m *ConnectionResponseDataBlockDeviceManagement) GetParent() *ConnectionResponseDataBlock {
+	return m.ConnectionResponseDataBlock
+}
+
 // NewConnectionResponseDataBlockDeviceManagement factory function for ConnectionResponseDataBlockDeviceManagement
 func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
 	child := &ConnectionResponseDataBlockDeviceManagement{

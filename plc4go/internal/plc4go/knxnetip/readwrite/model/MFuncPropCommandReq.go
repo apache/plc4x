@@ -59,6 +59,10 @@ func (m *MFuncPropCommandReq) GetMessageCode() uint8 {
 
 func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {}
 
+func (m *MFuncPropCommandReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMFuncPropCommandReq factory function for MFuncPropCommandReq
 func NewMFuncPropCommandReq(size uint16) *CEMI {
 	child := &MFuncPropCommandReq{

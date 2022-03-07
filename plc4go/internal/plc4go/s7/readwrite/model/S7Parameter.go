@@ -53,6 +53,8 @@ type IS7ParameterParent interface {
 type IS7ParameterChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Parameter)
+	GetParent() *S7Parameter
+
 	GetTypeName() string
 	IS7Parameter
 }

@@ -72,6 +72,10 @@ func (m *DF1RequestProtectedTypedLogicalRead) GetFunctionCode() uint8 {
 
 func (m *DF1RequestProtectedTypedLogicalRead) InitializeParent(parent *DF1RequestCommand) {}
 
+func (m *DF1RequestProtectedTypedLogicalRead) GetParent() *DF1RequestCommand {
+	return m.DF1RequestCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

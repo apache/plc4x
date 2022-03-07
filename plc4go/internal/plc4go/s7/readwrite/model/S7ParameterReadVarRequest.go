@@ -64,6 +64,10 @@ func (m *S7ParameterReadVarRequest) GetMessageType() uint8 {
 
 func (m *S7ParameterReadVarRequest) InitializeParent(parent *S7Parameter) {}
 
+func (m *S7ParameterReadVarRequest) GetParent() *S7Parameter {
+	return m.S7Parameter
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

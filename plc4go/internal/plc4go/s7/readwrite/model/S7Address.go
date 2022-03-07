@@ -51,6 +51,8 @@ type IS7AddressParent interface {
 type IS7AddressChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Address)
+	GetParent() *S7Address
+
 	GetTypeName() string
 	IS7Address
 }

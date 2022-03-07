@@ -74,6 +74,10 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) InitializeP
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
+func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

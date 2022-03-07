@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) GetServiceChoice() u
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestSubscribeCOVProperty factory function for BACnetConfirmedServiceRequestSubscribeCOVProperty
 func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{

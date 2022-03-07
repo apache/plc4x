@@ -59,6 +59,10 @@ func (m *FirmataCommandSystemReset) GetCommandCode() uint8 {
 
 func (m *FirmataCommandSystemReset) InitializeParent(parent *FirmataCommand) {}
 
+func (m *FirmataCommandSystemReset) GetParent() *FirmataCommand {
+	return m.FirmataCommand
+}
+
 // NewFirmataCommandSystemReset factory function for FirmataCommandSystemReset
 func NewFirmataCommandSystemReset(response bool) *FirmataCommand {
 	child := &FirmataCommandSystemReset{

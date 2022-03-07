@@ -63,6 +63,10 @@ func (m *BVLCOriginalBroadcastNPDU) GetBvlcFunction() uint8 {
 
 func (m *BVLCOriginalBroadcastNPDU) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCOriginalBroadcastNPDU) GetParent() *BVLC {
+	return m.BVLC
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -72,6 +72,10 @@ func (m *LBusmonInd) GetMessageCode() uint8 {
 
 func (m *LBusmonInd) InitializeParent(parent *CEMI) {}
 
+func (m *LBusmonInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

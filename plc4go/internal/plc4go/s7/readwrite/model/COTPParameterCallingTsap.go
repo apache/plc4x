@@ -63,6 +63,10 @@ func (m *COTPParameterCallingTsap) GetParameterType() uint8 {
 
 func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {}
 
+func (m *COTPParameterCallingTsap) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

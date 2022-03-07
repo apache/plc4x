@@ -59,6 +59,10 @@ func (m *BACnetErrorDeviceCommunicationProtocol) InitializeParent(parent *BACnet
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorDeviceCommunicationProtocol) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorDeviceCommunicationProtocol factory function for BACnetErrorDeviceCommunicationProtocol
 func NewBACnetErrorDeviceCommunicationProtocol(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorDeviceCommunicationProtocol{

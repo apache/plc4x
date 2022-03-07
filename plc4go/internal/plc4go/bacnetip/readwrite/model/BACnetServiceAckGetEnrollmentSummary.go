@@ -56,6 +56,10 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetServiceChoice() uint8 {
 
 func (m *BACnetServiceAckGetEnrollmentSummary) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckGetEnrollmentSummary) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 // NewBACnetServiceAckGetEnrollmentSummary factory function for BACnetServiceAckGetEnrollmentSummary
 func NewBACnetServiceAckGetEnrollmentSummary() *BACnetServiceAck {
 	child := &BACnetServiceAckGetEnrollmentSummary{

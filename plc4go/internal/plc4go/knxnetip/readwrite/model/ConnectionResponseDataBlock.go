@@ -51,6 +51,8 @@ type IConnectionResponseDataBlockParent interface {
 type IConnectionResponseDataBlockChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ConnectionResponseDataBlock)
+	GetParent() *ConnectionResponseDataBlock
+
 	GetTypeName() string
 	IConnectionResponseDataBlock
 }

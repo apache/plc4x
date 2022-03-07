@@ -61,6 +61,8 @@ type ICBusCommandParent interface {
 type ICBusCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CBusCommand, header *CBusHeader)
+	GetParent() *CBusCommand
+
 	GetTypeName() string
 	ICBusCommand
 }

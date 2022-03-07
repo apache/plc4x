@@ -66,6 +66,10 @@ func (m *KnxGroupAddress3Level) GetNumLevels() uint8 {
 
 func (m *KnxGroupAddress3Level) InitializeParent(parent *KnxGroupAddress) {}
 
+func (m *KnxGroupAddress3Level) GetParent() *KnxGroupAddress {
+	return m.KnxGroupAddress
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -59,6 +59,10 @@ func (m *LRawInd) GetMessageCode() uint8 {
 
 func (m *LRawInd) InitializeParent(parent *CEMI) {}
 
+func (m *LRawInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewLRawInd factory function for LRawInd
 func NewLRawInd(size uint16) *CEMI {
 	child := &LRawInd{

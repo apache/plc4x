@@ -59,6 +59,10 @@ func (m *ApduDataExtFileStreamInfoReport) GetExtApciType() uint8 {
 
 func (m *ApduDataExtFileStreamInfoReport) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtFileStreamInfoReport) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtFileStreamInfoReport factory function for ApduDataExtFileStreamInfoReport
 func NewApduDataExtFileStreamInfoReport(length uint8) *ApduDataExt {
 	child := &ApduDataExtFileStreamInfoReport{

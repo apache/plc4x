@@ -60,6 +60,10 @@ func (m *DeviceConfigurationAck) GetMsgType() uint16 {
 
 func (m *DeviceConfigurationAck) InitializeParent(parent *KnxNetIpMessage) {}
 
+func (m *DeviceConfigurationAck) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

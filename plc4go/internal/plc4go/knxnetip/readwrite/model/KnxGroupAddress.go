@@ -51,6 +51,8 @@ type IKnxGroupAddressParent interface {
 type IKnxGroupAddressChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *KnxGroupAddress)
+	GetParent() *KnxGroupAddress
+
 	GetTypeName() string
 	IKnxGroupAddress
 }

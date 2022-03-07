@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetServiceChoice() u
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for BACnetConfirmedServiceRequestGetEnrollmentSummary
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestGetEnrollmentSummary{

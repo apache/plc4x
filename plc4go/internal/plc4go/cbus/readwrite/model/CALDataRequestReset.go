@@ -54,6 +54,10 @@ func (m *CALDataRequestReset) InitializeParent(parent *CALData, commandTypeConta
 	m.CALData.CommandTypeContainer = commandTypeContainer
 }
 
+func (m *CALDataRequestReset) GetParent() *CALData {
+	return m.CALData
+}
+
 // NewCALDataRequestReset factory function for CALDataRequestReset
 func NewCALDataRequestReset(commandTypeContainer CALCommandTypeContainer) *CALData {
 	child := &CALDataRequestReset{

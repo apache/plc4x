@@ -59,6 +59,10 @@ func (m *BACnetErrorConfirmedEventNotification) InitializeParent(parent *BACnetE
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorConfirmedEventNotification) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorConfirmedEventNotification factory function for BACnetErrorConfirmedEventNotification
 func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedEventNotification{

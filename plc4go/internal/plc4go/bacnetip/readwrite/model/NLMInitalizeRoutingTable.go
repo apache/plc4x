@@ -68,6 +68,10 @@ func (m *NLMInitalizeRoutingTable) InitializeParent(parent *NLM, vendorId *uint1
 	m.NLM.VendorId = vendorId
 }
 
+func (m *NLMInitalizeRoutingTable) GetParent() *NLM {
+	return m.NLM
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

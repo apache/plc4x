@@ -60,6 +60,10 @@ func (m *BVLCResult) GetBvlcFunction() uint8 {
 
 func (m *BVLCResult) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCResult) GetParent() *BVLC {
+	return m.BVLC
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

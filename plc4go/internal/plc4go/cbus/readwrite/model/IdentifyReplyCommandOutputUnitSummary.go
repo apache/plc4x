@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandOutputUnitSummary) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandOutputUnitSummary) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandOutputUnitSummary) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandOutputUnitSummary factory function for IdentifyReplyCommandOutputUnitSummary
 func NewIdentifyReplyCommandOutputUnitSummary() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandOutputUnitSummary{

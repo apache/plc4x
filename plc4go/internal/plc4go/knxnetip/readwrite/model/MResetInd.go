@@ -59,6 +59,10 @@ func (m *MResetInd) GetMessageCode() uint8 {
 
 func (m *MResetInd) InitializeParent(parent *CEMI) {}
 
+func (m *MResetInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMResetInd factory function for MResetInd
 func NewMResetInd(size uint16) *CEMI {
 	child := &MResetInd{

@@ -63,6 +63,10 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) Initializ
 	m.BACnetNotificationParametersChangeOfValueNewValue.ClosingTag = closingTag
 }
 
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetParent() *BACnetNotificationParametersChangeOfValueNewValue {
+	return m.BACnetNotificationParametersChangeOfValueNewValue
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

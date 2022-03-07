@@ -66,6 +66,10 @@ func (m *ApduDataMemoryRead) GetApciType() uint8 {
 
 func (m *ApduDataMemoryRead) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataMemoryRead) GetParent() *ApduData {
+	return m.ApduData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

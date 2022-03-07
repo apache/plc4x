@@ -64,6 +64,10 @@ func (m *SysexCommandExtendedId) GetResponse() bool {
 
 func (m *SysexCommandExtendedId) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandExtendedId) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

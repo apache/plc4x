@@ -76,6 +76,10 @@ func (m *APDUSegmentAck) GetApduType() uint8 {
 
 func (m *APDUSegmentAck) InitializeParent(parent *APDU) {}
 
+func (m *APDUSegmentAck) GetParent() *APDU {
+	return m.APDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

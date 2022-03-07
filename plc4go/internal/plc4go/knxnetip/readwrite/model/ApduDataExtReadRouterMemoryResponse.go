@@ -59,6 +59,10 @@ func (m *ApduDataExtReadRouterMemoryResponse) GetExtApciType() uint8 {
 
 func (m *ApduDataExtReadRouterMemoryResponse) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtReadRouterMemoryResponse) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtReadRouterMemoryResponse factory function for ApduDataExtReadRouterMemoryResponse
 func NewApduDataExtReadRouterMemoryResponse(length uint8) *ApduDataExt {
 	child := &ApduDataExtReadRouterMemoryResponse{

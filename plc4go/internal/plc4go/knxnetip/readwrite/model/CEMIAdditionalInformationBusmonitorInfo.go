@@ -80,6 +80,10 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetAdditionalInformationType()
 func (m *CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent *CEMIAdditionalInformation) {
 }
 
+func (m *CEMIAdditionalInformationBusmonitorInfo) GetParent() *CEMIAdditionalInformation {
+	return m.CEMIAdditionalInformation
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

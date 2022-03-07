@@ -60,6 +60,10 @@ func (m *AdsReadDeviceInfoRequest) GetResponse() bool {
 
 func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {}
 
+func (m *AdsReadDeviceInfoRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
 // NewAdsReadDeviceInfoRequest factory function for AdsReadDeviceInfoRequest
 func NewAdsReadDeviceInfoRequest() *AdsData {
 	child := &AdsReadDeviceInfoRequest{

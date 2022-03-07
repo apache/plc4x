@@ -71,6 +71,10 @@ func (m *DF1SymbolMessageFrame) GetSymbolType() uint8 {
 
 func (m *DF1SymbolMessageFrame) InitializeParent(parent *DF1Symbol) {}
 
+func (m *DF1SymbolMessageFrame) GetParent() *DF1Symbol {
+	return m.DF1Symbol
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -60,6 +60,8 @@ type IApduParent interface {
 type IApduChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *Apdu, numbered bool, counter uint8)
+	GetParent() *Apdu
+
 	GetTypeName() string
 	IApdu
 }

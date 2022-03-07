@@ -88,6 +88,10 @@ func (m *APDUConfirmedRequest) GetApduType() uint8 {
 
 func (m *APDUConfirmedRequest) InitializeParent(parent *APDU) {}
 
+func (m *APDUConfirmedRequest) GetParent() *APDU {
+	return m.APDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

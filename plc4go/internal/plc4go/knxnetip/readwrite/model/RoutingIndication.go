@@ -56,6 +56,10 @@ func (m *RoutingIndication) GetMsgType() uint16 {
 
 func (m *RoutingIndication) InitializeParent(parent *KnxNetIpMessage) {}
 
+func (m *RoutingIndication) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
 // NewRoutingIndication factory function for RoutingIndication
 func NewRoutingIndication() *KnxNetIpMessage {
 	child := &RoutingIndication{

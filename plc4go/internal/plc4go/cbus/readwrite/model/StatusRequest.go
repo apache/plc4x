@@ -52,6 +52,8 @@ type IStatusRequestParent interface {
 type IStatusRequestChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *StatusRequest, statusType byte)
+	GetParent() *StatusRequest
+
 	GetTypeName() string
 	IStatusRequest
 }

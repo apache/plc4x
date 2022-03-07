@@ -64,6 +64,8 @@ type IBACnetNotificationParametersParent interface {
 type IBACnetNotificationParametersChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	GetParent() *BACnetNotificationParameters
+
 	GetTypeName() string
 	IBACnetNotificationParameters
 }

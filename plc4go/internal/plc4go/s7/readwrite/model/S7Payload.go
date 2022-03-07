@@ -56,6 +56,8 @@ type IS7PayloadParent interface {
 type IS7PayloadChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7Payload)
+	GetParent() *S7Payload
+
 	GetTypeName() string
 	IS7Payload
 }

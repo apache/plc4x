@@ -58,6 +58,10 @@ func (m *SALDataOn) InitializeParent(parent *SALData, commandTypeContainer SALCo
 	m.SALData.CommandTypeContainer = commandTypeContainer
 }
 
+func (m *SALDataOn) GetParent() *SALData {
+	return m.SALData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

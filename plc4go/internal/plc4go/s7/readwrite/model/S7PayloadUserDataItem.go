@@ -61,6 +61,8 @@ type IS7PayloadUserDataItemParent interface {
 type IS7PayloadUserDataItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize)
+	GetParent() *S7PayloadUserDataItem
+
 	GetTypeName() string
 	IS7PayloadUserDataItem
 }

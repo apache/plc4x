@@ -75,6 +75,10 @@ func (m *ApduDataExtPropertyValueResponse) GetExtApciType() uint8 {
 
 func (m *ApduDataExtPropertyValueResponse) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtPropertyValueResponse) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

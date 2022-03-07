@@ -72,6 +72,10 @@ func (m *MonitoredSALShortFormBasicMode) InitializeParent(parent *MonitoredSAL, 
 	m.MonitoredSAL.SalData = salData
 }
 
+func (m *MonitoredSALShortFormBasicMode) GetParent() *MonitoredSAL {
+	return m.MonitoredSAL
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

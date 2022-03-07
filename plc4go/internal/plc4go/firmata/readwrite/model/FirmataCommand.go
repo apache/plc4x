@@ -54,6 +54,8 @@ type IFirmataCommandParent interface {
 type IFirmataCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *FirmataCommand)
+	GetParent() *FirmataCommand
+
 	GetTypeName() string
 	IFirmataCommand
 }

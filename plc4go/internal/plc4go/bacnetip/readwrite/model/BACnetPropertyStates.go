@@ -63,6 +63,8 @@ type IBACnetPropertyStatesParent interface {
 type IBACnetPropertyStatesChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	GetParent() *BACnetPropertyStates
+
 	GetTypeName() string
 	IBACnetPropertyStates
 }

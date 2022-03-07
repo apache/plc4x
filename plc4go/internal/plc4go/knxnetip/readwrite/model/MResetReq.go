@@ -59,6 +59,10 @@ func (m *MResetReq) GetMessageCode() uint8 {
 
 func (m *MResetReq) InitializeParent(parent *CEMI) {}
 
+func (m *MResetReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMResetReq factory function for MResetReq
 func NewMResetReq(size uint16) *CEMI {
 	child := &MResetReq{

@@ -68,6 +68,10 @@ func (m *CIPEncapsulationReadResponse) InitializeParent(parent *CIPEncapsulation
 	m.CIPEncapsulationPacket.Options = options
 }
 
+func (m *CIPEncapsulationReadResponse) GetParent() *CIPEncapsulationPacket {
+	return m.CIPEncapsulationPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

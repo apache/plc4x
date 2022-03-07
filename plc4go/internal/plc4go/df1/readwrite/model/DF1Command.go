@@ -57,6 +57,8 @@ type IDF1CommandParent interface {
 type IDF1CommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1Command, status uint8, transactionCounter uint16)
+	GetParent() *DF1Command
+
 	GetTypeName() string
 	IDF1Command
 }

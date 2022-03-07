@@ -59,6 +59,10 @@ func (m *MFuncPropCon) GetMessageCode() uint8 {
 
 func (m *MFuncPropCon) InitializeParent(parent *CEMI) {}
 
+func (m *MFuncPropCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMFuncPropCon factory function for MFuncPropCon
 func NewMFuncPropCon(size uint16) *CEMI {
 	child := &MFuncPropCon{

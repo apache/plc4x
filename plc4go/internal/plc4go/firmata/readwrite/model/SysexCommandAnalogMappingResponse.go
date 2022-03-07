@@ -60,6 +60,10 @@ func (m *SysexCommandAnalogMappingResponse) GetResponse() bool {
 
 func (m *SysexCommandAnalogMappingResponse) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandAnalogMappingResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandAnalogMappingResponse factory function for SysexCommandAnalogMappingResponse
 func NewSysexCommandAnalogMappingResponse() *SysexCommand {
 	child := &SysexCommandAnalogMappingResponse{

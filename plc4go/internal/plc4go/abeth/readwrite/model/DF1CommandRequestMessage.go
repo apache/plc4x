@@ -65,6 +65,10 @@ func (m *DF1CommandRequestMessage) InitializeParent(parent *DF1RequestMessage, d
 	m.DF1RequestMessage.TransactionCounter = transactionCounter
 }
 
+func (m *DF1CommandRequestMessage) GetParent() *DF1RequestMessage {
+	return m.DF1RequestMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

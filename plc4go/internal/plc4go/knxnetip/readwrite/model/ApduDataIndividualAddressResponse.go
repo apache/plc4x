@@ -59,6 +59,10 @@ func (m *ApduDataIndividualAddressResponse) GetApciType() uint8 {
 
 func (m *ApduDataIndividualAddressResponse) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataIndividualAddressResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
 // NewApduDataIndividualAddressResponse factory function for ApduDataIndividualAddressResponse
 func NewApduDataIndividualAddressResponse(dataLength uint8) *ApduData {
 	child := &ApduDataIndividualAddressResponse{

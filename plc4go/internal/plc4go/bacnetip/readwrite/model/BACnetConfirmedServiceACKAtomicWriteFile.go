@@ -57,6 +57,10 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetServiceChoice() uint8 {
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
 // NewBACnetConfirmedServiceACKAtomicWriteFile factory function for BACnetConfirmedServiceACKAtomicWriteFile
 func NewBACnetConfirmedServiceACKAtomicWriteFile() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKAtomicWriteFile{

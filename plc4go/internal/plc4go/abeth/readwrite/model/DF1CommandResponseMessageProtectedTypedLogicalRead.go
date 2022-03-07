@@ -68,6 +68,10 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) InitializeParent(pa
 	m.DF1ResponseMessage.TransactionCounter = transactionCounter
 }
 
+func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetParent() *DF1ResponseMessage {
+	return m.DF1ResponseMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

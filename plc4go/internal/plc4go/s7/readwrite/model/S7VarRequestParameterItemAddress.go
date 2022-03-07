@@ -60,6 +60,10 @@ func (m *S7VarRequestParameterItemAddress) GetItemType() uint8 {
 
 func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {}
 
+func (m *S7VarRequestParameterItemAddress) GetParent() *S7VarRequestParameterItem {
+	return m.S7VarRequestParameterItem
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

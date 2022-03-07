@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetServiceChoice() uint
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestRemovedRequestKey factory function for BACnetConfirmedServiceRequestRemovedRequestKey
 func NewBACnetConfirmedServiceRequestRemovedRequestKey(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestRemovedRequestKey{

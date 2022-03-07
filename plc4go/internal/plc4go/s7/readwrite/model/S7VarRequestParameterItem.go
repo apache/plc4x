@@ -51,6 +51,8 @@ type IS7VarRequestParameterItemParent interface {
 type IS7VarRequestParameterItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7VarRequestParameterItem)
+	GetParent() *S7VarRequestParameterItem
+
 	GetTypeName() string
 	IS7VarRequestParameterItem
 }

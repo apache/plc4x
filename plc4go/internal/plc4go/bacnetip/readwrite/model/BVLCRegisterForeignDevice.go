@@ -60,6 +60,10 @@ func (m *BVLCRegisterForeignDevice) GetBvlcFunction() uint8 {
 
 func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCRegisterForeignDevice) GetParent() *BVLC {
+	return m.BVLC
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

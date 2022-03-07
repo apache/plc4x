@@ -66,6 +66,10 @@ func (m *ApduControlContainer) InitializeParent(parent *Apdu, numbered bool, cou
 	m.Apdu.Counter = counter
 }
 
+func (m *ApduControlContainer) GetParent() *Apdu {
+	return m.Apdu
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

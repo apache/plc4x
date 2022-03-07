@@ -59,6 +59,10 @@ func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BAC
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorRemovedReadPropertyConditional) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorRemovedReadPropertyConditional factory function for BACnetErrorRemovedReadPropertyConditional
 func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorRemovedReadPropertyConditional{

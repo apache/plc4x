@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetServiceCh
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{

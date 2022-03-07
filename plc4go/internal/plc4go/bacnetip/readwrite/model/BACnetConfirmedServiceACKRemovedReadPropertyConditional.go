@@ -57,6 +57,10 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetServiceChoi
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
+func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
 // NewBACnetConfirmedServiceACKRemovedReadPropertyConditional factory function for BACnetConfirmedServiceACKRemovedReadPropertyConditional
 func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{

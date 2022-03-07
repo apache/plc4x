@@ -66,6 +66,10 @@ func (m *DF1UnprotectedReadRequest) InitializeParent(parent *DF1Command, status 
 	m.DF1Command.TransactionCounter = transactionCounter
 }
 
+func (m *DF1UnprotectedReadRequest) GetParent() *DF1Command {
+	return m.DF1Command
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -56,6 +56,10 @@ func (m *BVLCReadBroadcastDistributionTable) GetBvlcFunction() uint8 {
 
 func (m *BVLCReadBroadcastDistributionTable) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCReadBroadcastDistributionTable) GetParent() *BVLC {
+	return m.BVLC
+}
+
 // NewBVLCReadBroadcastDistributionTable factory function for BVLCReadBroadcastDistributionTable
 func NewBVLCReadBroadcastDistributionTable() *BVLC {
 	child := &BVLCReadBroadcastDistributionTable{

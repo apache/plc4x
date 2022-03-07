@@ -58,6 +58,10 @@ func (m *NotTransmittedSyncLoss) InitializeParent(parent *Confirmation, alpha *A
 	m.Confirmation.Alpha = alpha
 }
 
+func (m *NotTransmittedSyncLoss) GetParent() *Confirmation {
+	return m.Confirmation
+}
+
 // NewNotTransmittedSyncLoss factory function for NotTransmittedSyncLoss
 func NewNotTransmittedSyncLoss(alpha *Alpha) *Confirmation {
 	child := &NotTransmittedSyncLoss{

@@ -57,6 +57,8 @@ type IBVLCParent interface {
 type IBVLCChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BVLC)
+	GetParent() *BVLC
+
 	GetTypeName() string
 	IBVLC
 }

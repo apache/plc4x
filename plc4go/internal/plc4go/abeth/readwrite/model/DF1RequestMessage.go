@@ -64,6 +64,8 @@ type IDF1RequestMessageParent interface {
 type IDF1RequestMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1RequestMessage, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16)
+	GetParent() *DF1RequestMessage
+
 	GetTypeName() string
 	IDF1RequestMessage
 }

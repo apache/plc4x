@@ -60,6 +60,10 @@ func (m *AdsReadStateRequest) GetResponse() bool {
 
 func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {}
 
+func (m *AdsReadStateRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
 // NewAdsReadStateRequest factory function for AdsReadStateRequest
 func NewAdsReadStateRequest() *AdsData {
 	child := &AdsReadStateRequest{

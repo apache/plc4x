@@ -58,6 +58,10 @@ func (m *ConfirmationSuccessful) InitializeParent(parent *Confirmation, alpha *A
 	m.Confirmation.Alpha = alpha
 }
 
+func (m *ConfirmationSuccessful) GetParent() *Confirmation {
+	return m.Confirmation
+}
+
 // NewConfirmationSuccessful factory function for ConfirmationSuccessful
 func NewConfirmationSuccessful(alpha *Alpha) *Confirmation {
 	child := &ConfirmationSuccessful{

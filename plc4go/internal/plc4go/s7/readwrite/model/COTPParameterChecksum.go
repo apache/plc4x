@@ -63,6 +63,10 @@ func (m *COTPParameterChecksum) GetParameterType() uint8 {
 
 func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {}
 
+func (m *COTPParameterChecksum) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

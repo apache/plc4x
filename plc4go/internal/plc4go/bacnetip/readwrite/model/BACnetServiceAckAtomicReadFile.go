@@ -63,6 +63,10 @@ func (m *BACnetServiceAckAtomicReadFile) GetServiceChoice() uint8 {
 
 func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckAtomicReadFile) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

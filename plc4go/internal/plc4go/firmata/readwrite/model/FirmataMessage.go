@@ -54,6 +54,8 @@ type IFirmataMessageParent interface {
 type IFirmataMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *FirmataMessage)
+	GetParent() *FirmataMessage
+
 	GetTypeName() string
 	IFirmataMessage
 }

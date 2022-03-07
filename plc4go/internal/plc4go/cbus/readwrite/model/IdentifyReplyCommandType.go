@@ -60,6 +60,10 @@ func (m *IdentifyReplyCommandType) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandType) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandType) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

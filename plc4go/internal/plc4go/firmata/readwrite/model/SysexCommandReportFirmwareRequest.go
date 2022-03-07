@@ -60,6 +60,10 @@ func (m *SysexCommandReportFirmwareRequest) GetResponse() bool {
 
 func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandReportFirmwareRequest) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandReportFirmwareRequest factory function for SysexCommandReportFirmwareRequest
 func NewSysexCommandReportFirmwareRequest() *SysexCommand {
 	child := &SysexCommandReportFirmwareRequest{

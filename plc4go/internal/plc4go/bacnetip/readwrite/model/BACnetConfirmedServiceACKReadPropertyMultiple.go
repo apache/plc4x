@@ -57,6 +57,10 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetServiceChoice() uint8
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
 // NewBACnetConfirmedServiceACKReadPropertyMultiple factory function for BACnetConfirmedServiceACKReadPropertyMultiple
 func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKReadPropertyMultiple{

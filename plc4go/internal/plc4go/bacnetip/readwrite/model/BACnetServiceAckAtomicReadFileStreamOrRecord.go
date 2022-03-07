@@ -60,6 +60,8 @@ type IBACnetServiceAckAtomicReadFileStreamOrRecordParent interface {
 type IBACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
+	GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord
+
 	GetTypeName() string
 	IBACnetServiceAckAtomicReadFileStreamOrRecord
 }

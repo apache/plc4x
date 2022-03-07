@@ -79,6 +79,10 @@ func (m *CBusPointToMultiPointCommandNormal) InitializeParent(parent *CBusPointT
 	m.CBusPointToMultiPointCommand.PeekedApplication = peekedApplication
 }
 
+func (m *CBusPointToMultiPointCommandNormal) GetParent() *CBusPointToMultiPointCommand {
+	return m.CBusPointToMultiPointCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

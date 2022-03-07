@@ -58,6 +58,10 @@ func (m *BACnetApplicationTagBitString) InitializeParent(parent *BACnetApplicati
 	m.BACnetApplicationTag.Header = header
 }
 
+func (m *BACnetApplicationTagBitString) GetParent() *BACnetApplicationTag {
+	return m.BACnetApplicationTag
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

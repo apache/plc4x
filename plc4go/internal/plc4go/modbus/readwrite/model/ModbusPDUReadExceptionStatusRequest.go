@@ -64,6 +64,10 @@ func (m *ModbusPDUReadExceptionStatusRequest) GetResponse() bool {
 
 func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUReadExceptionStatusRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 // NewModbusPDUReadExceptionStatusRequest factory function for ModbusPDUReadExceptionStatusRequest
 func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
 	child := &ModbusPDUReadExceptionStatusRequest{

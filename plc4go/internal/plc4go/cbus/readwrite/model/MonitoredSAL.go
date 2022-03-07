@@ -61,6 +61,8 @@ type IMonitoredSALParent interface {
 type IMonitoredSALChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *MonitoredSAL, salType byte, salData *SALData)
+	GetParent() *MonitoredSAL
+
 	GetTypeName() string
 	IMonitoredSAL
 }

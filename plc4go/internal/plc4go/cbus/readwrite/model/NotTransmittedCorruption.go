@@ -58,6 +58,10 @@ func (m *NotTransmittedCorruption) InitializeParent(parent *Confirmation, alpha 
 	m.Confirmation.Alpha = alpha
 }
 
+func (m *NotTransmittedCorruption) GetParent() *Confirmation {
+	return m.Confirmation
+}
+
 // NewNotTransmittedCorruption factory function for NotTransmittedCorruption
 func NewNotTransmittedCorruption(alpha *Alpha) *Confirmation {
 	child := &NotTransmittedCorruption{

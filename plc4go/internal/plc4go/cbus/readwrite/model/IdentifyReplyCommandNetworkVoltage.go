@@ -68,6 +68,10 @@ func (m *IdentifyReplyCommandNetworkVoltage) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandNetworkVoltage) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandNetworkVoltage) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

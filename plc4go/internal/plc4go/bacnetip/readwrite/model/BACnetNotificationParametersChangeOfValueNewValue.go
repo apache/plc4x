@@ -63,6 +63,8 @@ type IBACnetNotificationParametersChangeOfValueNewValueParent interface {
 type IBACnetNotificationParametersChangeOfValueNewValueChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	GetParent() *BACnetNotificationParametersChangeOfValueNewValue
+
 	GetTypeName() string
 	IBACnetNotificationParametersChangeOfValueNewValue
 }

@@ -60,6 +60,8 @@ type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParent interface 
 type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
+	GetParent() *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+
 	GetTypeName() string
 	IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 }

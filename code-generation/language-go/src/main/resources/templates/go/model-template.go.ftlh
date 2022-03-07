@@ -202,6 +202,8 @@ type I${type.name}Child interface {
 	)
 </@compress>
 
+	GetParent() *${type.name}
+
 	GetTypeName() string
 	I${type.name}
 }
@@ -224,6 +226,10 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().
 	<#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
 	m.${type.parentType.orElseThrow().name}.${field.name?cap_first} = ${field.name}
 	</#list>
+}
+
+func(m *${type.name}) GetParent() *${type.parentType.orElseThrow().name} {
+	return m.${type.parentType.orElseThrow().name}
 }
 </#if>
 <#if type.propertyFields?has_content>

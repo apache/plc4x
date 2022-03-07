@@ -67,6 +67,10 @@ func (m *FirmataCommandSetDigitalPinValue) GetCommandCode() uint8 {
 
 func (m *FirmataCommandSetDigitalPinValue) InitializeParent(parent *FirmataCommand) {}
 
+func (m *FirmataCommandSetDigitalPinValue) GetParent() *FirmataCommand {
+	return m.FirmataCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

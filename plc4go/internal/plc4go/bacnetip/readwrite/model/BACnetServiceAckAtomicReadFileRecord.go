@@ -66,6 +66,10 @@ func (m *BACnetServiceAckAtomicReadFileRecord) InitializeParent(parent *BACnetSe
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.ClosingTag = closingTag
 }
 
+func (m *BACnetServiceAckAtomicReadFileRecord) GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord {
+	return m.BACnetServiceAckAtomicReadFileStreamOrRecord
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

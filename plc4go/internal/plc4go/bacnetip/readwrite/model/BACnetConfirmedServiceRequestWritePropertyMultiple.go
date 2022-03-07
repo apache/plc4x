@@ -60,6 +60,10 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceChoice() 
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
+func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetParent() *BACnetConfirmedServiceRequest {
+	return m.BACnetConfirmedServiceRequest
+}
+
 // NewBACnetConfirmedServiceRequestWritePropertyMultiple factory function for BACnetConfirmedServiceRequestWritePropertyMultiple
 func NewBACnetConfirmedServiceRequestWritePropertyMultiple(len uint16) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWritePropertyMultiple{

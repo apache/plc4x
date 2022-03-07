@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandLogicalAssignment) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandLogicalAssignment) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandLogicalAssignment) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandLogicalAssignment factory function for IdentifyReplyCommandLogicalAssignment
 func NewIdentifyReplyCommandLogicalAssignment() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandLogicalAssignment{

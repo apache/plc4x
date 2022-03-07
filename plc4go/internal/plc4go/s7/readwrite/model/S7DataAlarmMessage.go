@@ -56,6 +56,8 @@ type IS7DataAlarmMessageParent interface {
 type IS7DataAlarmMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7DataAlarmMessage)
+	GetParent() *S7DataAlarmMessage
+
 	GetTypeName() string
 	IS7DataAlarmMessage
 }

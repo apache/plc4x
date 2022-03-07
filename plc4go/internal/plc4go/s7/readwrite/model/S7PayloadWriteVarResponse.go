@@ -67,6 +67,10 @@ func (m *S7PayloadWriteVarResponse) GetMessageType() uint8 {
 
 func (m *S7PayloadWriteVarResponse) InitializeParent(parent *S7Payload) {}
 
+func (m *S7PayloadWriteVarResponse) GetParent() *S7Payload {
+	return m.S7Payload
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

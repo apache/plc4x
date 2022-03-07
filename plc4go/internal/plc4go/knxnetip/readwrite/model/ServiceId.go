@@ -51,6 +51,8 @@ type IServiceIdParent interface {
 type IServiceIdChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ServiceId)
+	GetParent() *ServiceId
+
 	GetTypeName() string
 	IServiceId
 }

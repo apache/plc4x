@@ -51,6 +51,8 @@ type IS7ParameterUserDataItemParent interface {
 type IS7ParameterUserDataItemChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *S7ParameterUserDataItem)
+	GetParent() *S7ParameterUserDataItem
+
 	GetTypeName() string
 	IS7ParameterUserDataItem
 }

@@ -68,6 +68,10 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetResponse() bool 
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

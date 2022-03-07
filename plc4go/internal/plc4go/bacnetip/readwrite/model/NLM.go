@@ -57,6 +57,8 @@ type INLMParent interface {
 type INLMChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *NLM, vendorId *uint16)
+	GetParent() *NLM
+
 	GetTypeName() string
 	INLM
 }

@@ -54,6 +54,8 @@ type IApduDataParent interface {
 type IApduDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ApduData)
+	GetParent() *ApduData
+
 	GetTypeName() string
 	IApduData
 }

@@ -56,6 +56,10 @@ func (m *BACnetConfirmedServiceACKVTOpen) GetServiceChoice() uint8 {
 
 func (m *BACnetConfirmedServiceACKVTOpen) InitializeParent(parent *BACnetConfirmedServiceACK) {}
 
+func (m *BACnetConfirmedServiceACKVTOpen) GetParent() *BACnetConfirmedServiceACK {
+	return m.BACnetConfirmedServiceACK
+}
+
 // NewBACnetConfirmedServiceACKVTOpen factory function for BACnetConfirmedServiceACKVTOpen
 func NewBACnetConfirmedServiceACKVTOpen() *BACnetConfirmedServiceACK {
 	child := &BACnetConfirmedServiceACKVTOpen{

@@ -78,6 +78,10 @@ func (m *MonitoredSALLongFormSmartMode) InitializeParent(parent *MonitoredSAL, s
 	m.MonitoredSAL.SalData = salData
 }
 
+func (m *MonitoredSALLongFormSmartMode) GetParent() *MonitoredSAL {
+	return m.MonitoredSAL
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

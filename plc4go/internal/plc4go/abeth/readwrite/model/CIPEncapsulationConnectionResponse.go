@@ -61,6 +61,10 @@ func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsu
 	m.CIPEncapsulationPacket.Options = options
 }
 
+func (m *CIPEncapsulationConnectionResponse) GetParent() *CIPEncapsulationPacket {
+	return m.CIPEncapsulationPacket
+}
+
 // NewCIPEncapsulationConnectionResponse factory function for CIPEncapsulationConnectionResponse
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
 	child := &CIPEncapsulationConnectionResponse{

@@ -68,6 +68,8 @@ type ILDataFrameParent interface {
 type ILDataFrameChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
+	GetParent() *LDataFrame
+
 	GetTypeName() string
 	ILDataFrame
 }

@@ -66,6 +66,10 @@ func (m *FirmataMessageAnalogIO) GetMessageType() uint8 {
 
 func (m *FirmataMessageAnalogIO) InitializeParent(parent *FirmataMessage) {}
 
+func (m *FirmataMessageAnalogIO) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

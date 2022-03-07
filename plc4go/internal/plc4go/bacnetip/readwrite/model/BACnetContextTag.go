@@ -63,6 +63,8 @@ type IBACnetContextTagParent interface {
 type IBACnetContextTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader)
+	GetParent() *BACnetContextTag
+
 	GetTypeName() string
 	IBACnetContextTag
 }

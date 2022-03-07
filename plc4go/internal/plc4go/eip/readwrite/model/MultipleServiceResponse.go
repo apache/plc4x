@@ -76,6 +76,10 @@ func (m *MultipleServiceResponse) GetService() uint8 {
 
 func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {}
 
+func (m *MultipleServiceResponse) GetParent() *CipService {
+	return m.CipService
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

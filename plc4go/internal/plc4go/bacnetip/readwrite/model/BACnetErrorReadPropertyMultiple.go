@@ -59,6 +59,10 @@ func (m *BACnetErrorReadPropertyMultiple) InitializeParent(parent *BACnetError, 
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorReadPropertyMultiple) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorReadPropertyMultiple factory function for BACnetErrorReadPropertyMultiple
 func NewBACnetErrorReadPropertyMultiple(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorReadPropertyMultiple{

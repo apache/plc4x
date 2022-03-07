@@ -54,6 +54,8 @@ type ICOTPParameterParent interface {
 type ICOTPParameterChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *COTPParameter)
+	GetParent() *COTPParameter
+
 	GetTypeName() string
 	ICOTPParameter
 }

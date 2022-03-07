@@ -75,6 +75,10 @@ func (m *MPropReadReq) GetMessageCode() uint8 {
 
 func (m *MPropReadReq) InitializeParent(parent *CEMI) {}
 
+func (m *MPropReadReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

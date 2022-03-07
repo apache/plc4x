@@ -56,6 +56,10 @@ func (m *ApduControlNack) GetControlType() uint8 {
 
 func (m *ApduControlNack) InitializeParent(parent *ApduControl) {}
 
+func (m *ApduControlNack) GetParent() *ApduControl {
+	return m.ApduControl
+}
+
 // NewApduControlNack factory function for ApduControlNack
 func NewApduControlNack() *ApduControl {
 	child := &ApduControlNack{

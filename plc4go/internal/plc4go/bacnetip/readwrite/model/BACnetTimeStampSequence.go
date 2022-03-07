@@ -63,6 +63,10 @@ func (m *BACnetTimeStampSequence) InitializeParent(parent *BACnetTimeStamp, open
 	m.BACnetTimeStamp.ClosingTag = closingTag
 }
 
+func (m *BACnetTimeStampSequence) GetParent() *BACnetTimeStamp {
+	return m.BACnetTimeStamp
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

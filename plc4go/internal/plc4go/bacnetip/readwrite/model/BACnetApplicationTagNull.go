@@ -54,6 +54,10 @@ func (m *BACnetApplicationTagNull) InitializeParent(parent *BACnetApplicationTag
 	m.BACnetApplicationTag.Header = header
 }
 
+func (m *BACnetApplicationTagNull) GetParent() *BACnetApplicationTag {
+	return m.BACnetApplicationTag
+}
+
 // NewBACnetApplicationTagNull factory function for BACnetApplicationTagNull
 func NewBACnetApplicationTagNull(header *BACnetTagHeader) *BACnetApplicationTag {
 	child := &BACnetApplicationTagNull{

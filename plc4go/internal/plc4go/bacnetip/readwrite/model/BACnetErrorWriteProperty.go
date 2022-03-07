@@ -59,6 +59,10 @@ func (m *BACnetErrorWriteProperty) InitializeParent(parent *BACnetError, errorCl
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorWriteProperty) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorWriteProperty factory function for BACnetErrorWriteProperty
 func NewBACnetErrorWriteProperty(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorWriteProperty{

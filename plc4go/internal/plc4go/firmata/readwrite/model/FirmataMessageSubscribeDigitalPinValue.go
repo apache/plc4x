@@ -67,6 +67,10 @@ func (m *FirmataMessageSubscribeDigitalPinValue) GetMessageType() uint8 {
 
 func (m *FirmataMessageSubscribeDigitalPinValue) InitializeParent(parent *FirmataMessage) {}
 
+func (m *FirmataMessageSubscribeDigitalPinValue) GetParent() *FirmataMessage {
+	return m.FirmataMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

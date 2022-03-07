@@ -76,6 +76,10 @@ func (m *S7AddressAny) GetAddressType() uint8 {
 
 func (m *S7AddressAny) InitializeParent(parent *S7Address) {}
 
+func (m *S7AddressAny) GetParent() *S7Address {
+	return m.S7Address
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

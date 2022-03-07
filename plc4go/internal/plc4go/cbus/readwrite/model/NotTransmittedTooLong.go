@@ -58,6 +58,10 @@ func (m *NotTransmittedTooLong) InitializeParent(parent *Confirmation, alpha *Al
 	m.Confirmation.Alpha = alpha
 }
 
+func (m *NotTransmittedTooLong) GetParent() *Confirmation {
+	return m.Confirmation
+}
+
 // NewNotTransmittedTooLong factory function for NotTransmittedTooLong
 func NewNotTransmittedTooLong(alpha *Alpha) *Confirmation {
 	child := &NotTransmittedTooLong{

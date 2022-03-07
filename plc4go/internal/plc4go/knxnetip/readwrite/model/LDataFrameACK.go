@@ -66,6 +66,10 @@ func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
+func (m *LDataFrameACK) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
 // NewLDataFrameACK factory function for LDataFrameACK
 func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LDataFrameACK{

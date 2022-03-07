@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandMaximumLevels) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandMaximumLevels) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandMaximumLevels) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandMaximumLevels factory function for IdentifyReplyCommandMaximumLevels
 func NewIdentifyReplyCommandMaximumLevels() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandMaximumLevels{

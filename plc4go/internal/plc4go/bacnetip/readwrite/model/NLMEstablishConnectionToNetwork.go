@@ -68,6 +68,10 @@ func (m *NLMEstablishConnectionToNetwork) InitializeParent(parent *NLM, vendorId
 	m.NLM.VendorId = vendorId
 }
 
+func (m *NLMEstablishConnectionToNetwork) GetParent() *NLM {
+	return m.NLM
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

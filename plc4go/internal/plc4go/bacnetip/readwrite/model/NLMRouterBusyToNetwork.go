@@ -65,6 +65,10 @@ func (m *NLMRouterBusyToNetwork) InitializeParent(parent *NLM, vendorId *uint16)
 	m.NLM.VendorId = vendorId
 }
 
+func (m *NLMRouterBusyToNetwork) GetParent() *NLM {
+	return m.NLM
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

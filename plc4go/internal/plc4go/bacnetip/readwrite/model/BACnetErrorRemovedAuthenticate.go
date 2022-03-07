@@ -59,6 +59,10 @@ func (m *BACnetErrorRemovedAuthenticate) InitializeParent(parent *BACnetError, e
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorRemovedAuthenticate) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorRemovedAuthenticate factory function for BACnetErrorRemovedAuthenticate
 func NewBACnetErrorRemovedAuthenticate(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorRemovedAuthenticate{

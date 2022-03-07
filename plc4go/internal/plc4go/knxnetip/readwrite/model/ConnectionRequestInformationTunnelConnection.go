@@ -62,6 +62,10 @@ func (m *ConnectionRequestInformationTunnelConnection) GetConnectionType() uint8
 func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
+func (m *ConnectionRequestInformationTunnelConnection) GetParent() *ConnectionRequestInformation {
+	return m.ConnectionRequestInformation
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

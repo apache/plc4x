@@ -66,6 +66,10 @@ func (m *AdsMultiRequestItemWrite) GetIndexGroup() uint32 {
 
 func (m *AdsMultiRequestItemWrite) InitializeParent(parent *AdsMultiRequestItem) {}
 
+func (m *AdsMultiRequestItemWrite) GetParent() *AdsMultiRequestItem {
+	return m.AdsMultiRequestItem
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

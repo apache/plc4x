@@ -59,6 +59,10 @@ func (m *LRawCon) GetMessageCode() uint8 {
 
 func (m *LRawCon) InitializeParent(parent *CEMI) {}
 
+func (m *LRawCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewLRawCon factory function for LRawCon
 func NewLRawCon(size uint16) *CEMI {
 	child := &LRawCon{

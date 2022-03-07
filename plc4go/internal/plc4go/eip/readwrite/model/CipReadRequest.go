@@ -69,6 +69,10 @@ func (m *CipReadRequest) GetService() uint8 {
 
 func (m *CipReadRequest) InitializeParent(parent *CipService) {}
 
+func (m *CipReadRequest) GetParent() *CipService {
+	return m.CipService
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

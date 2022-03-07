@@ -51,6 +51,8 @@ type ICEMIAdditionalInformationParent interface {
 type ICEMIAdditionalInformationChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CEMIAdditionalInformation)
+	GetParent() *CEMIAdditionalInformation
+
 	GetTypeName() string
 	ICEMIAdditionalInformation
 }

@@ -87,6 +87,10 @@ func (m *IdentifyReplyCommandDSIStatus) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandDSIStatus) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandDSIStatus) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

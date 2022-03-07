@@ -66,6 +66,10 @@ func (m *FirmataCommandProtocolVersion) GetCommandCode() uint8 {
 
 func (m *FirmataCommandProtocolVersion) InitializeParent(parent *FirmataCommand) {}
 
+func (m *FirmataCommandProtocolVersion) GetParent() *FirmataCommand {
+	return m.FirmataCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

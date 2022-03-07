@@ -70,6 +70,10 @@ func (m *SysexCommandPinStateResponse) GetResponse() bool {
 
 func (m *SysexCommandPinStateResponse) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandPinStateResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -60,6 +60,10 @@ func (m *KnxNetRemoteLogging) GetServiceType() uint8 {
 
 func (m *KnxNetRemoteLogging) InitializeParent(parent *ServiceId) {}
 
+func (m *KnxNetRemoteLogging) GetParent() *ServiceId {
+	return m.ServiceId
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

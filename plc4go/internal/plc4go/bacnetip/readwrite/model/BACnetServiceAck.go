@@ -51,6 +51,8 @@ type IBACnetServiceAckParent interface {
 type IBACnetServiceAckChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetServiceAck)
+	GetParent() *BACnetServiceAck
+
 	GetTypeName() string
 	IBACnetServiceAck
 }

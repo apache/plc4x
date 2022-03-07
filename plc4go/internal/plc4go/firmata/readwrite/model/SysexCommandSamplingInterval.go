@@ -60,6 +60,10 @@ func (m *SysexCommandSamplingInterval) GetResponse() bool {
 
 func (m *SysexCommandSamplingInterval) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandSamplingInterval) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandSamplingInterval factory function for SysexCommandSamplingInterval
 func NewSysexCommandSamplingInterval() *SysexCommand {
 	child := &SysexCommandSamplingInterval{

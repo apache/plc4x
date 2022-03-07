@@ -64,6 +64,10 @@ func (m *BACnetPropertyStatesBinaryValue) InitializeParent(parent *BACnetPropert
 	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
+func (m *BACnetPropertyStatesBinaryValue) GetParent() *BACnetPropertyStates {
+	return m.BACnetPropertyStates
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

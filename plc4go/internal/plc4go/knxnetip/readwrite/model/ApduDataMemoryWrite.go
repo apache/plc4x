@@ -59,6 +59,10 @@ func (m *ApduDataMemoryWrite) GetApciType() uint8 {
 
 func (m *ApduDataMemoryWrite) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataMemoryWrite) GetParent() *ApduData {
+	return m.ApduData
+}
+
 // NewApduDataMemoryWrite factory function for ApduDataMemoryWrite
 func NewApduDataMemoryWrite(dataLength uint8) *ApduData {
 	child := &ApduDataMemoryWrite{

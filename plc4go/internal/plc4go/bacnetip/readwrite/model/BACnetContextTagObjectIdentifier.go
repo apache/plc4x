@@ -70,6 +70,10 @@ func (m *BACnetContextTagObjectIdentifier) InitializeParent(parent *BACnetContex
 	m.BACnetContextTag.Header = header
 }
 
+func (m *BACnetContextTagObjectIdentifier) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

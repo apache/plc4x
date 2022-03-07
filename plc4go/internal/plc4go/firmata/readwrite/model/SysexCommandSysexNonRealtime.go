@@ -60,6 +60,10 @@ func (m *SysexCommandSysexNonRealtime) GetResponse() bool {
 
 func (m *SysexCommandSysexNonRealtime) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandSysexNonRealtime) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandSysexNonRealtime factory function for SysexCommandSysexNonRealtime
 func NewSysexCommandSysexNonRealtime() *SysexCommand {
 	child := &SysexCommandSysexNonRealtime{

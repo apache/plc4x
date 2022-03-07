@@ -59,6 +59,10 @@ func (m *TDataIndividualReq) GetMessageCode() uint8 {
 
 func (m *TDataIndividualReq) InitializeParent(parent *CEMI) {}
 
+func (m *TDataIndividualReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewTDataIndividualReq factory function for TDataIndividualReq
 func NewTDataIndividualReq(size uint16) *CEMI {
 	child := &TDataIndividualReq{

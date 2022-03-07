@@ -64,6 +64,10 @@ func (m *DisconnectRequest) GetMsgType() uint16 {
 
 func (m *DisconnectRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
+func (m *DisconnectRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -55,6 +55,8 @@ type ICBusPointToMultiPointCommandParent interface {
 type ICBusPointToMultiPointCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CBusPointToMultiPointCommand, peekedApplication byte)
+	GetParent() *CBusPointToMultiPointCommand
+
 	GetTypeName() string
 	ICBusPointToMultiPointCommand
 }

@@ -59,6 +59,10 @@ func (m *LPollDataCon) GetMessageCode() uint8 {
 
 func (m *LPollDataCon) InitializeParent(parent *CEMI) {}
 
+func (m *LPollDataCon) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewLPollDataCon factory function for LPollDataCon
 func NewLPollDataCon(size uint16) *CEMI {
 	child := &LPollDataCon{

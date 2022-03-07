@@ -61,6 +61,10 @@ func (m *CALDataRequestRecall) InitializeParent(parent *CALData, commandTypeCont
 	m.CALData.CommandTypeContainer = commandTypeContainer
 }
 
+func (m *CALDataRequestRecall) GetParent() *CALData {
+	return m.CALData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -63,6 +63,10 @@ func (m *BVLCDistributeBroadcastToNetwork) GetBvlcFunction() uint8 {
 
 func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCDistributeBroadcastToNetwork) GetParent() *BVLC {
+	return m.BVLC
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

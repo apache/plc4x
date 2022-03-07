@@ -70,6 +70,10 @@ func (m *APDUAbort) GetApduType() uint8 {
 
 func (m *APDUAbort) InitializeParent(parent *APDU) {}
 
+func (m *APDUAbort) GetParent() *APDU {
+	return m.APDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

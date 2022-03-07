@@ -64,6 +64,10 @@ func (m *ConnectionStateRequest) GetMsgType() uint16 {
 
 func (m *ConnectionStateRequest) InitializeParent(parent *KnxNetIpMessage) {}
 
+func (m *ConnectionStateRequest) GetParent() *KnxNetIpMessage {
+	return m.KnxNetIpMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

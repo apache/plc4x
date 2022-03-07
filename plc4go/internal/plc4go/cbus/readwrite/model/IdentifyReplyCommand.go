@@ -51,6 +51,8 @@ type IIdentifyReplyCommandParent interface {
 type IIdentifyReplyCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *IdentifyReplyCommand)
+	GetParent() *IdentifyReplyCommand
+
 	GetTypeName() string
 	IIdentifyReplyCommand
 }

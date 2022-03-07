@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandTerminalLevels) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandTerminalLevels) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandTerminalLevels) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandTerminalLevels factory function for IdentifyReplyCommandTerminalLevels
 func NewIdentifyReplyCommandTerminalLevels() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandTerminalLevels{

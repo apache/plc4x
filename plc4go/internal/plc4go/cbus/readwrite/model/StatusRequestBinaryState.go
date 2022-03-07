@@ -59,6 +59,10 @@ func (m *StatusRequestBinaryState) InitializeParent(parent *StatusRequest, statu
 	m.StatusRequest.StatusType = statusType
 }
 
+func (m *StatusRequestBinaryState) GetParent() *StatusRequest {
+	return m.StatusRequest
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

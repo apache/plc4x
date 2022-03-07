@@ -59,6 +59,10 @@ func (m *TDataConnectedInd) GetMessageCode() uint8 {
 
 func (m *TDataConnectedInd) InitializeParent(parent *CEMI) {}
 
+func (m *TDataConnectedInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewTDataConnectedInd factory function for TDataConnectedInd
 func NewTDataConnectedInd(size uint16) *CEMI {
 	child := &TDataConnectedInd{

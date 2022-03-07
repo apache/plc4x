@@ -59,6 +59,10 @@ func (m *MPropInfoInd) GetMessageCode() uint8 {
 
 func (m *MPropInfoInd) InitializeParent(parent *CEMI) {}
 
+func (m *MPropInfoInd) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMPropInfoInd factory function for MPropInfoInd
 func NewMPropInfoInd(size uint16) *CEMI {
 	child := &MPropInfoInd{

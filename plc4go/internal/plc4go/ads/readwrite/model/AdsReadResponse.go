@@ -67,6 +67,10 @@ func (m *AdsReadResponse) GetResponse() bool {
 
 func (m *AdsReadResponse) InitializeParent(parent *AdsData) {}
 
+func (m *AdsReadResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

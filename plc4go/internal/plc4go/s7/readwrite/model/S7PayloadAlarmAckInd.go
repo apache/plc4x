@@ -71,6 +71,10 @@ func (m *S7PayloadAlarmAckInd) InitializeParent(parent *S7PayloadUserDataItem, r
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
+func (m *S7PayloadAlarmAckInd) GetParent() *S7PayloadUserDataItem {
+	return m.S7PayloadUserDataItem
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

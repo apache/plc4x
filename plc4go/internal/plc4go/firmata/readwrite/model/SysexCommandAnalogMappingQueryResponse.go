@@ -64,6 +64,10 @@ func (m *SysexCommandAnalogMappingQueryResponse) GetResponse() bool {
 
 func (m *SysexCommandAnalogMappingQueryResponse) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandAnalogMappingQueryResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

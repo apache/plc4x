@@ -57,6 +57,10 @@ func (m *ConnectionRequestInformationDeviceManagement) GetConnectionType() uint8
 func (m *ConnectionRequestInformationDeviceManagement) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
+func (m *ConnectionRequestInformationDeviceManagement) GetParent() *ConnectionRequestInformation {
+	return m.ConnectionRequestInformation
+}
+
 // NewConnectionRequestInformationDeviceManagement factory function for ConnectionRequestInformationDeviceManagement
 func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
 	child := &ConnectionRequestInformationDeviceManagement{

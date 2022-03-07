@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandDelays) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandDelays) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandDelays) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandDelays factory function for IdentifyReplyCommandDelays
 func NewIdentifyReplyCommandDelays() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandDelays{

@@ -74,6 +74,10 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) GetResponse() bool {
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUWriteMultipleCoilsRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -58,6 +58,10 @@ func (m *NotTransmittedToManyReTransmissions) InitializeParent(parent *Confirmat
 	m.Confirmation.Alpha = alpha
 }
 
+func (m *NotTransmittedToManyReTransmissions) GetParent() *Confirmation {
+	return m.Confirmation
+}
+
 // NewNotTransmittedToManyReTransmissions factory function for NotTransmittedToManyReTransmissions
 func NewNotTransmittedToManyReTransmissions(alpha *Alpha) *Confirmation {
 	child := &NotTransmittedToManyReTransmissions{

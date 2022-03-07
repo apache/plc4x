@@ -57,6 +57,8 @@ type IBACnetErrorParent interface {
 type IBACnetErrorChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetError, errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated)
+	GetParent() *BACnetError
+
 	GetTypeName() string
 	IBACnetError
 }

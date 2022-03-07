@@ -55,6 +55,8 @@ type IModbusPDUParent interface {
 type IModbusPDUChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ModbusPDU)
+	GetParent() *ModbusPDU
+
 	GetTypeName() string
 	IModbusPDU
 }

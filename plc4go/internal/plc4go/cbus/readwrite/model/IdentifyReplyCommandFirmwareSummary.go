@@ -66,6 +66,10 @@ func (m *IdentifyReplyCommandFirmwareSummary) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandFirmwareSummary) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandFirmwareSummary) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

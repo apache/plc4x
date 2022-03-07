@@ -62,6 +62,10 @@ func (m *StatusRequestLevel) InitializeParent(parent *StatusRequest, statusType 
 	m.StatusRequest.StatusType = statusType
 }
 
+func (m *StatusRequestLevel) GetParent() *StatusRequest {
+	return m.StatusRequest
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

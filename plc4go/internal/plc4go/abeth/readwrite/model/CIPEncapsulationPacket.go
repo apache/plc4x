@@ -64,6 +64,8 @@ type ICIPEncapsulationPacketParent interface {
 type ICIPEncapsulationPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
+	GetParent() *CIPEncapsulationPacket
+
 	GetTypeName() string
 	ICIPEncapsulationPacket
 }

@@ -54,6 +54,8 @@ type IBACnetConfirmedServiceRequestParent interface {
 type IBACnetConfirmedServiceRequestChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetConfirmedServiceRequest)
+	GetParent() *BACnetConfirmedServiceRequest
+
 	GetTypeName() string
 	IBACnetConfirmedServiceRequest
 }

@@ -55,6 +55,8 @@ type IDF1SymbolParent interface {
 type IDF1SymbolChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1Symbol)
+	GetParent() *DF1Symbol
+
 	GetTypeName() string
 	IDF1Symbol
 }

@@ -60,6 +60,10 @@ func (m *AdsInvalidRequest) GetResponse() bool {
 
 func (m *AdsInvalidRequest) InitializeParent(parent *AdsData) {}
 
+func (m *AdsInvalidRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
 // NewAdsInvalidRequest factory function for AdsInvalidRequest
 func NewAdsInvalidRequest() *AdsData {
 	child := &AdsInvalidRequest{

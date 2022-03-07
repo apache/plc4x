@@ -67,6 +67,10 @@ func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetCon
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
+func (m *BACnetConstructedDataLifeSafetyZone) GetParent() *BACnetConstructedData {
+	return m.BACnetConstructedData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -54,6 +54,8 @@ type IConfirmationParent interface {
 type IConfirmationChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *Confirmation, alpha *Alpha)
+	GetParent() *Confirmation
+
 	GetTypeName() string
 	IConfirmation
 }

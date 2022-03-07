@@ -62,6 +62,10 @@ func (m *BACnetClosingTag) InitializeParent(parent *BACnetContextTag, header *BA
 	m.BACnetContextTag.Header = header
 }
 
+func (m *BACnetClosingTag) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
 // NewBACnetClosingTag factory function for BACnetClosingTag
 func NewBACnetClosingTag(header *BACnetTagHeader, tagNumberArgument uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetClosingTag{

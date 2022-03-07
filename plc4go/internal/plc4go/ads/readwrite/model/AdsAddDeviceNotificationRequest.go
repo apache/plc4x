@@ -80,6 +80,10 @@ func (m *AdsAddDeviceNotificationRequest) GetResponse() bool {
 
 func (m *AdsAddDeviceNotificationRequest) InitializeParent(parent *AdsData) {}
 
+func (m *AdsAddDeviceNotificationRequest) GetParent() *AdsData {
+	return m.AdsData
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

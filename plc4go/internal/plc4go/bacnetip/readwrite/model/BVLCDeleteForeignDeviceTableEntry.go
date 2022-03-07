@@ -56,6 +56,10 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetBvlcFunction() uint8 {
 
 func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {}
 
+func (m *BVLCDeleteForeignDeviceTableEntry) GetParent() *BVLC {
+	return m.BVLC
+}
+
 // NewBVLCDeleteForeignDeviceTableEntry factory function for BVLCDeleteForeignDeviceTableEntry
 func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
 	child := &BVLCDeleteForeignDeviceTableEntry{

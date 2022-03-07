@@ -72,6 +72,10 @@ func (m *S7MessageObjectRequest) GetCpuFunctionType() uint8 {
 
 func (m *S7MessageObjectRequest) InitializeParent(parent *S7DataAlarmMessage) {}
 
+func (m *S7MessageObjectRequest) GetParent() *S7DataAlarmMessage {
+	return m.S7DataAlarmMessage
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

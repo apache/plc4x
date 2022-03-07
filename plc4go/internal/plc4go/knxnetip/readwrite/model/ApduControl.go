@@ -51,6 +51,8 @@ type IApduControlParent interface {
 type IApduControlChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *ApduControl)
+	GetParent() *ApduControl
+
 	GetTypeName() string
 	IApduControl
 }

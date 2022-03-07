@@ -66,6 +66,10 @@ func (m *ComObjectTableRealisationType1) GetFirmwareType() FirmwareType {
 
 func (m *ComObjectTableRealisationType1) InitializeParent(parent *ComObjectTable) {}
 
+func (m *ComObjectTableRealisationType1) GetParent() *ComObjectTable {
+	return m.ComObjectTable
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -56,6 +56,10 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) GetServiceChoice() uint
 
 func (m *BACnetServiceAckRemovedReadPropertyConditional) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 // NewBACnetServiceAckRemovedReadPropertyConditional factory function for BACnetServiceAckRemovedReadPropertyConditional
 func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAck {
 	child := &BACnetServiceAckRemovedReadPropertyConditional{

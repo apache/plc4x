@@ -59,6 +59,10 @@ func (m *ApduDataExtMemoryBitWrite) GetExtApciType() uint8 {
 
 func (m *ApduDataExtMemoryBitWrite) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtMemoryBitWrite) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtMemoryBitWrite factory function for ApduDataExtMemoryBitWrite
 func NewApduDataExtMemoryBitWrite(length uint8) *ApduDataExt {
 	child := &ApduDataExtMemoryBitWrite{

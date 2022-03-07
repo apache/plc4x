@@ -81,6 +81,10 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetItemType() uint8 {
 
 func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {}
 
+func (m *S7ParameterUserDataItemCPUFunctions) GetParent() *S7ParameterUserDataItem {
+	return m.S7ParameterUserDataItem
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

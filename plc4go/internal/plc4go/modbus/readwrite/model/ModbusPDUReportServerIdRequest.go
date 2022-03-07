@@ -64,6 +64,10 @@ func (m *ModbusPDUReportServerIdRequest) GetResponse() bool {
 
 func (m *ModbusPDUReportServerIdRequest) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUReportServerIdRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 // NewModbusPDUReportServerIdRequest factory function for ModbusPDUReportServerIdRequest
 func NewModbusPDUReportServerIdRequest() *ModbusPDU {
 	child := &ModbusPDUReportServerIdRequest{

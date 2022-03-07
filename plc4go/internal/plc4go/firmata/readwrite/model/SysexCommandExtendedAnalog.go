@@ -60,6 +60,10 @@ func (m *SysexCommandExtendedAnalog) GetResponse() bool {
 
 func (m *SysexCommandExtendedAnalog) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandExtendedAnalog) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandExtendedAnalog factory function for SysexCommandExtendedAnalog
 func NewSysexCommandExtendedAnalog() *SysexCommand {
 	child := &SysexCommandExtendedAnalog{

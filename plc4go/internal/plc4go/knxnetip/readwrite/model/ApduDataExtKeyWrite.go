@@ -59,6 +59,10 @@ func (m *ApduDataExtKeyWrite) GetExtApciType() uint8 {
 
 func (m *ApduDataExtKeyWrite) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtKeyWrite) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtKeyWrite factory function for ApduDataExtKeyWrite
 func NewApduDataExtKeyWrite(length uint8) *ApduDataExt {
 	child := &ApduDataExtKeyWrite{

@@ -59,6 +59,10 @@ func (m *BACnetErrorAtomicWriteFile) InitializeParent(parent *BACnetError, error
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorAtomicWriteFile) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorAtomicWriteFile factory function for BACnetErrorAtomicWriteFile
 func NewBACnetErrorAtomicWriteFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorAtomicWriteFile{

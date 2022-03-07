@@ -59,6 +59,10 @@ func (m *MPropWriteReq) GetMessageCode() uint8 {
 
 func (m *MPropWriteReq) InitializeParent(parent *CEMI) {}
 
+func (m *MPropWriteReq) GetParent() *CEMI {
+	return m.CEMI
+}
+
 // NewMPropWriteReq factory function for MPropWriteReq
 func NewMPropWriteReq(size uint16) *CEMI {
 	child := &MPropWriteReq{

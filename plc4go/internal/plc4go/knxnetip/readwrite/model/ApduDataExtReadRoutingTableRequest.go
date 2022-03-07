@@ -59,6 +59,10 @@ func (m *ApduDataExtReadRoutingTableRequest) GetExtApciType() uint8 {
 
 func (m *ApduDataExtReadRoutingTableRequest) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtReadRoutingTableRequest) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtReadRoutingTableRequest factory function for ApduDataExtReadRoutingTableRequest
 func NewApduDataExtReadRoutingTableRequest(length uint8) *ApduDataExt {
 	child := &ApduDataExtReadRoutingTableRequest{

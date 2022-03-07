@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandMinimumLevels) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandMinimumLevels) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandMinimumLevels) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandMinimumLevels factory function for IdentifyReplyCommandMinimumLevels
 func NewIdentifyReplyCommandMinimumLevels() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandMinimumLevels{

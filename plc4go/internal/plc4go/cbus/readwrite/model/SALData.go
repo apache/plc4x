@@ -54,6 +54,8 @@ type ISALDataParent interface {
 type ISALDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *SALData, commandTypeContainer SALCommandTypeContainer)
+	GetParent() *SALData
+
 	GetTypeName() string
 	ISALData
 }

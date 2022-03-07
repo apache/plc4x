@@ -59,6 +59,10 @@ func (m *BACnetErrorPasswordFailure) InitializeParent(parent *BACnetError, error
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorPasswordFailure) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorPasswordFailure factory function for BACnetErrorPasswordFailure
 func NewBACnetErrorPasswordFailure(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorPasswordFailure{

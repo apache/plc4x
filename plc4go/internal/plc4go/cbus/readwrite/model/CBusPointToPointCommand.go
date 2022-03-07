@@ -74,6 +74,8 @@ type ICBusPointToPointCommandParent interface {
 type ICBusPointToPointCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData *CALData, crc *Checksum, peekAlpha byte, alpha *Alpha)
+	GetParent() *CBusPointToPointCommand
+
 	GetTypeName() string
 	ICBusPointToPointCommand
 }

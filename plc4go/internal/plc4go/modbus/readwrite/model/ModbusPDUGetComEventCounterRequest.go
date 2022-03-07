@@ -64,6 +64,10 @@ func (m *ModbusPDUGetComEventCounterRequest) GetResponse() bool {
 
 func (m *ModbusPDUGetComEventCounterRequest) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUGetComEventCounterRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 // NewModbusPDUGetComEventCounterRequest factory function for ModbusPDUGetComEventCounterRequest
 func NewModbusPDUGetComEventCounterRequest() *ModbusPDU {
 	child := &ModbusPDUGetComEventCounterRequest{

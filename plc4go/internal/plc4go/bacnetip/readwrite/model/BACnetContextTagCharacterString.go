@@ -66,6 +66,10 @@ func (m *BACnetContextTagCharacterString) InitializeParent(parent *BACnetContext
 	m.BACnetContextTag.Header = header
 }
 
+func (m *BACnetContextTagCharacterString) GetParent() *BACnetContextTag {
+	return m.BACnetContextTag
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -59,6 +59,10 @@ func (m *BACnetErrorGetEnrollmentSummary) InitializeParent(parent *BACnetError, 
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorGetEnrollmentSummary) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorGetEnrollmentSummary factory function for BACnetErrorGetEnrollmentSummary
 func NewBACnetErrorGetEnrollmentSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorGetEnrollmentSummary{

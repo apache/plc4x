@@ -59,6 +59,10 @@ func (m *ApduDataExtLinkRead) GetExtApciType() uint8 {
 
 func (m *ApduDataExtLinkRead) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtLinkRead) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtLinkRead factory function for ApduDataExtLinkRead
 func NewApduDataExtLinkRead(length uint8) *ApduDataExt {
 	child := &ApduDataExtLinkRead{

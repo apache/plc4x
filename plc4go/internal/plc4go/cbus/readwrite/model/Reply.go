@@ -52,6 +52,8 @@ type IReplyParent interface {
 type IReplyChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *Reply, magicByte byte)
+	GetParent() *Reply
+
 	GetTypeName() string
 	IReply
 }

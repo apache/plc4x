@@ -55,6 +55,8 @@ type IKnxNetIpMessageParent interface {
 type IKnxNetIpMessageChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *KnxNetIpMessage)
+	GetParent() *KnxNetIpMessage
+
 	GetTypeName() string
 	IKnxNetIpMessage
 }

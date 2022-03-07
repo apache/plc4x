@@ -60,6 +60,10 @@ func (m *S7MessageRequest) InitializeParent(parent *S7Message, tpduReference uin
 	m.S7Message.Payload = payload
 }
 
+func (m *S7MessageRequest) GetParent() *S7Message {
+	return m.S7Message
+}
+
 // NewS7MessageRequest factory function for S7MessageRequest
 func NewS7MessageRequest(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageRequest{

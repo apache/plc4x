@@ -69,6 +69,10 @@ func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []
 	m.COTPPacket.Payload = payload
 }
 
+func (m *COTPPacketTpduError) GetParent() *COTPPacket {
+	return m.COTPPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

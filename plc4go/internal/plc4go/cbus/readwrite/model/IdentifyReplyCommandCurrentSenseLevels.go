@@ -56,6 +56,10 @@ func (m *IdentifyReplyCommandCurrentSenseLevels) GetAttribute() Attribute {
 
 func (m *IdentifyReplyCommandCurrentSenseLevels) InitializeParent(parent *IdentifyReplyCommand) {}
 
+func (m *IdentifyReplyCommandCurrentSenseLevels) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 // NewIdentifyReplyCommandCurrentSenseLevels factory function for IdentifyReplyCommandCurrentSenseLevels
 func NewIdentifyReplyCommandCurrentSenseLevels() *IdentifyReplyCommand {
 	child := &IdentifyReplyCommandCurrentSenseLevels{

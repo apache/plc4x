@@ -71,6 +71,10 @@ func (m *ModbusPDUReadDiscreteInputsRequest) GetResponse() bool {
 
 func (m *ModbusPDUReadDiscreteInputsRequest) InitializeParent(parent *ModbusPDU) {}
 
+func (m *ModbusPDUReadDiscreteInputsRequest) GetParent() *ModbusPDU {
+	return m.ModbusPDU
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

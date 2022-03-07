@@ -59,6 +59,10 @@ func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetErr
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorConfirmedPrivateTransfer) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorConfirmedPrivateTransfer factory function for BACnetErrorConfirmedPrivateTransfer
 func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorConfirmedPrivateTransfer{

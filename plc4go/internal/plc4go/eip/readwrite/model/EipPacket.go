@@ -63,6 +63,8 @@ type IEipPacketParent interface {
 type IEipPacketChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
+	GetParent() *EipPacket
+
 	GetTypeName() string
 	IEipPacket
 }

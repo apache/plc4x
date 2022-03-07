@@ -56,6 +56,10 @@ func (m *BACnetServiceAckVTData) GetServiceChoice() uint8 {
 
 func (m *BACnetServiceAckVTData) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckVTData) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 // NewBACnetServiceAckVTData factory function for BACnetServiceAckVTData
 func NewBACnetServiceAckVTData() *BACnetServiceAck {
 	child := &BACnetServiceAckVTData{

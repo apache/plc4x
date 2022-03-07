@@ -61,6 +61,8 @@ type ICBusPointToPointToMultipointCommandParent interface {
 type ICBusPointToPointToMultipointCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CBusPointToPointToMultipointCommand, bridgeAddress *BridgeAddress, networkRoute *NetworkRoute, peekedApplication byte)
+	GetParent() *CBusPointToPointToMultipointCommand
+
 	GetTypeName() string
 	ICBusPointToPointToMultipointCommand
 }

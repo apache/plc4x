@@ -116,6 +116,10 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetAttribute() Attribute
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) InitializeParent(parent *IdentifyReplyCommand) {
 }
 
+func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetParent() *IdentifyReplyCommand {
+	return m.IdentifyReplyCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -60,6 +60,10 @@ func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference ui
 	m.S7Message.Payload = payload
 }
 
+func (m *S7MessageUserData) GetParent() *S7Message {
+	return m.S7Message
+}
+
 // NewS7MessageUserData factory function for S7MessageUserData
 func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
 	child := &S7MessageUserData{

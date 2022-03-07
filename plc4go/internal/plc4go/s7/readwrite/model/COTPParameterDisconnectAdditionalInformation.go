@@ -63,6 +63,10 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetParameterType() uint8 
 
 func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {}
 
+func (m *COTPParameterDisconnectAdditionalInformation) GetParent() *COTPParameter {
+	return m.COTPParameter
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

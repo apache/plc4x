@@ -54,6 +54,8 @@ type ICALDataParent interface {
 type ICALDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer)
+	GetParent() *CALData
+
 	GetTypeName() string
 	ICALData
 }

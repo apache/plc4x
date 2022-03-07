@@ -63,6 +63,8 @@ type IBACnetConstructedDataParent interface {
 type IBACnetConstructedDataChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag)
+	GetParent() *BACnetConstructedData
+
 	GetTypeName() string
 	IBACnetConstructedData
 }

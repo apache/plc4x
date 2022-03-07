@@ -71,6 +71,10 @@ func (m *CBusPointToPointCommandIndirect) InitializeParent(parent *CBusPointToPo
 	m.CBusPointToPointCommand.Alpha = alpha
 }
 
+func (m *CBusPointToPointCommandIndirect) GetParent() *CBusPointToPointCommand {
+	return m.CBusPointToPointCommand
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

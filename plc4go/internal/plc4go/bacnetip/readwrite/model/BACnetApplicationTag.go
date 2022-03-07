@@ -56,6 +56,8 @@ type IBACnetApplicationTagParent interface {
 type IBACnetApplicationTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetApplicationTag, header *BACnetTagHeader)
+	GetParent() *BACnetApplicationTag
+
 	GetTypeName() string
 	IBACnetApplicationTag
 }

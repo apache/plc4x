@@ -65,6 +65,10 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetAdditionalInformationTyp
 func (m *CEMIAdditionalInformationRelativeTimestamp) InitializeParent(parent *CEMIAdditionalInformation) {
 }
 
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetParent() *CEMIAdditionalInformation {
+	return m.CEMIAdditionalInformation
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

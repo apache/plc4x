@@ -51,6 +51,8 @@ type IDF1RequestCommandParent interface {
 type IDF1RequestCommandChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *DF1RequestCommand)
+	GetParent() *DF1RequestCommand
+
 	GetTypeName() string
 	IDF1RequestCommand
 }

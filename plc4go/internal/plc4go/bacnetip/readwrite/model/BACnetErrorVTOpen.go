@@ -59,6 +59,10 @@ func (m *BACnetErrorVTOpen) InitializeParent(parent *BACnetError, errorClass *BA
 	m.BACnetError.ErrorCode = errorCode
 }
 
+func (m *BACnetErrorVTOpen) GetParent() *BACnetError {
+	return m.BACnetError
+}
+
 // NewBACnetErrorVTOpen factory function for BACnetErrorVTOpen
 func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
 	child := &BACnetErrorVTOpen{

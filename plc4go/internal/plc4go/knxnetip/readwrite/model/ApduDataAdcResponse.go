@@ -59,6 +59,10 @@ func (m *ApduDataAdcResponse) GetApciType() uint8 {
 
 func (m *ApduDataAdcResponse) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataAdcResponse) GetParent() *ApduData {
+	return m.ApduData
+}
+
 // NewApduDataAdcResponse factory function for ApduDataAdcResponse
 func NewApduDataAdcResponse(dataLength uint8) *ApduData {
 	child := &ApduDataAdcResponse{

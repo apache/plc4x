@@ -59,6 +59,10 @@ func (m *ApduDataIndividualAddressWrite) GetApciType() uint8 {
 
 func (m *ApduDataIndividualAddressWrite) InitializeParent(parent *ApduData) {}
 
+func (m *ApduDataIndividualAddressWrite) GetParent() *ApduData {
+	return m.ApduData
+}
+
 // NewApduDataIndividualAddressWrite factory function for ApduDataIndividualAddressWrite
 func NewApduDataIndividualAddressWrite(dataLength uint8) *ApduData {
 	child := &ApduDataIndividualAddressWrite{

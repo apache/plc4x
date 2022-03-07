@@ -59,6 +59,10 @@ func (m *ApduDataExtNetworkParameterRead) GetExtApciType() uint8 {
 
 func (m *ApduDataExtNetworkParameterRead) InitializeParent(parent *ApduDataExt) {}
 
+func (m *ApduDataExtNetworkParameterRead) GetParent() *ApduDataExt {
+	return m.ApduDataExt
+}
+
 // NewApduDataExtNetworkParameterRead factory function for ApduDataExtNetworkParameterRead
 func NewApduDataExtNetworkParameterRead(length uint8) *ApduDataExt {
 	child := &ApduDataExtNetworkParameterRead{

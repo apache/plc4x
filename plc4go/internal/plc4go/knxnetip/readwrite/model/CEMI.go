@@ -54,6 +54,8 @@ type ICEMIParent interface {
 type ICEMIChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CEMI)
+	GetParent() *CEMI
+
 	GetTypeName() string
 	ICEMI
 }

@@ -54,6 +54,8 @@ type ICipServiceParent interface {
 type ICipServiceChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *CipService)
+	GetParent() *CipService
+
 	GetTypeName() string
 	ICipService
 }

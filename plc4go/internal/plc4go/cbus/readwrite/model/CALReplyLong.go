@@ -78,6 +78,10 @@ func (m *CALReplyLong) InitializeParent(parent *CALReply, calType byte, calData 
 	m.CALReply.CalData = calData
 }
 
+func (m *CALReplyLong) GetParent() *CALReply {
+	return m.CALReply
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

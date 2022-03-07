@@ -69,6 +69,10 @@ func (m *CipRRData) InitializeParent(parent *EipPacket, sessionHandle uint32, st
 	m.EipPacket.Options = options
 }
 
+func (m *CipRRData) GetParent() *EipPacket {
+	return m.EipPacket
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

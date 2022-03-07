@@ -77,6 +77,10 @@ func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepe
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
+func (m *LPollData) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

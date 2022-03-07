@@ -61,6 +61,10 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetConnectionType() uint8 
 func (m *ConnectionResponseDataBlockTunnelConnection) InitializeParent(parent *ConnectionResponseDataBlock) {
 }
 
+func (m *ConnectionResponseDataBlockTunnelConnection) GetParent() *ConnectionResponseDataBlock {
+	return m.ConnectionResponseDataBlock
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

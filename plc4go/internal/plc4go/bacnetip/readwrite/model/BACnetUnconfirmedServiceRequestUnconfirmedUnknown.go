@@ -64,6 +64,10 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedUnknown) GetServiceChoice() u
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedUnknown) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedUnknown) GetParent() *BACnetUnconfirmedServiceRequest {
+	return m.BACnetUnconfirmedServiceRequest
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

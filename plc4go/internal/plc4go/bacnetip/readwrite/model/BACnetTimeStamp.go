@@ -63,6 +63,8 @@ type IBACnetTimeStampParent interface {
 type IBACnetTimeStampChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag)
+	GetParent() *BACnetTimeStamp
+
 	GetTypeName() string
 	IBACnetTimeStamp
 }

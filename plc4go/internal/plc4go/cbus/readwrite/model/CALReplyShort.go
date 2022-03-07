@@ -55,6 +55,10 @@ func (m *CALReplyShort) InitializeParent(parent *CALReply, calType byte, calData
 	m.CALReply.CalData = calData
 }
 
+func (m *CALReplyShort) GetParent() *CALReply {
+	return m.CALReply
+}
+
 // NewCALReplyShort factory function for CALReplyShort
 func NewCALReplyShort(calType byte, calData *CALData) *CALReply {
 	child := &CALReplyShort{

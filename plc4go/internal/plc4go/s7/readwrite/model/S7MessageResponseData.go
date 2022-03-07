@@ -67,6 +67,10 @@ func (m *S7MessageResponseData) InitializeParent(parent *S7Message, tpduReferenc
 	m.S7Message.Payload = payload
 }
 
+func (m *S7MessageResponseData) GetParent() *S7Message {
+	return m.S7Message
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

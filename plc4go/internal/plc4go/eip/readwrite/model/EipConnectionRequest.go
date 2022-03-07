@@ -67,6 +67,10 @@ func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle
 	m.EipPacket.Options = options
 }
 
+func (m *EipConnectionRequest) GetParent() *EipPacket {
+	return m.EipPacket
+}
+
 // NewEipConnectionRequest factory function for EipConnectionRequest
 func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
 	child := &EipConnectionRequest{

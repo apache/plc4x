@@ -56,6 +56,10 @@ func (m *BACnetServiceAckRemovedAuthenticate) GetServiceChoice() uint8 {
 
 func (m *BACnetServiceAckRemovedAuthenticate) InitializeParent(parent *BACnetServiceAck) {}
 
+func (m *BACnetServiceAckRemovedAuthenticate) GetParent() *BACnetServiceAck {
+	return m.BACnetServiceAck
+}
+
 // NewBACnetServiceAckRemovedAuthenticate factory function for BACnetServiceAckRemovedAuthenticate
 func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAck {
 	child := &BACnetServiceAckRemovedAuthenticate{

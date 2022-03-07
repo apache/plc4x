@@ -85,6 +85,10 @@ func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.LDataFrame.ErrorFlag = errorFlag
 }
 
+func (m *LDataExtended) GetParent() *LDataFrame {
+	return m.LDataFrame
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -60,6 +60,10 @@ func (m *AdsDeviceNotificationResponse) GetResponse() bool {
 
 func (m *AdsDeviceNotificationResponse) InitializeParent(parent *AdsData) {}
 
+func (m *AdsDeviceNotificationResponse) GetParent() *AdsData {
+	return m.AdsData
+}
+
 // NewAdsDeviceNotificationResponse factory function for AdsDeviceNotificationResponse
 func NewAdsDeviceNotificationResponse() *AdsData {
 	child := &AdsDeviceNotificationResponse{

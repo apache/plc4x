@@ -60,6 +60,10 @@ func (m *SysexCommandCapabilityResponse) GetResponse() bool {
 
 func (m *SysexCommandCapabilityResponse) InitializeParent(parent *SysexCommand) {}
 
+func (m *SysexCommandCapabilityResponse) GetParent() *SysexCommand {
+	return m.SysexCommand
+}
+
 // NewSysexCommandCapabilityResponse factory function for SysexCommandCapabilityResponse
 func NewSysexCommandCapabilityResponse() *SysexCommand {
 	child := &SysexCommandCapabilityResponse{

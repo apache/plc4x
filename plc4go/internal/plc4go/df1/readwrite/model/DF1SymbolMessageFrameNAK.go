@@ -56,6 +56,10 @@ func (m *DF1SymbolMessageFrameNAK) GetSymbolType() uint8 {
 
 func (m *DF1SymbolMessageFrameNAK) InitializeParent(parent *DF1Symbol) {}
 
+func (m *DF1SymbolMessageFrameNAK) GetParent() *DF1Symbol {
+	return m.DF1Symbol
+}
+
 // NewDF1SymbolMessageFrameNAK factory function for DF1SymbolMessageFrameNAK
 func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
 	child := &DF1SymbolMessageFrameNAK{
