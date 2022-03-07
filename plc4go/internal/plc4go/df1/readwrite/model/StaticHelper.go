@@ -31,18 +31,20 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(destinationAddress uint8, sourceAddress uint8, command *DF1Command) (uint16, error) {
+func CrcCheck(destinationAddress uint8, sourceAddress uint8, command *DF1Command) uint16 {
 	df1Crc := table.InitCrc()
 	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
 	bufferByteBased := utils.NewWriteBufferByteBased()
 	err := command.Serialize(bufferByteBased)
 	if err != nil {
-		return 0, err
+		// TODO: handle error
+		_ = err
+		return 0
 	}
 	bytes := bufferByteBased.GetBytes()
 	df1Crc = table.UpdateCrc(df1Crc, bytes)
 	df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
-	return table.CRC16(df1Crc), nil
+	return table.CRC16(df1Crc)
 }
 
 func DataTerminate(io utils.ReadBuffer) bool {
@@ -57,7 +59,7 @@ func ReadData(io utils.ReadBuffer) uint8 {
 	// If we read a 0x10, this has to be followed by another 0x10, which is how
 	// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
 	if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
-		io.ReadUint8("", 8)
+		_, _ = io.ReadUint8("", 8)
 	}
 	data, _ := io.ReadUint8("", 8)
 	return data
@@ -66,9 +68,9 @@ func ReadData(io utils.ReadBuffer) uint8 {
 func WriteData(io utils.WriteBuffer, element uint8) {
 	if element == 0x10 {
 		// If a value is 0x10, this has to be duplicated in order to be escaped.
-		io.WriteUint8("", 8, element)
+		_ = io.WriteUint8("", 8, element)
 	}
-	io.WriteUint8("", 8, element)
+	_ = io.WriteUint8("", 8, element)
 }
 
 func DataLength(data []byte) uint16 {
