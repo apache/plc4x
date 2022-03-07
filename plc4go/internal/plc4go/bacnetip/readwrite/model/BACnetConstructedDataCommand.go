@@ -56,11 +56,17 @@ type IBACnetConstructedDataCommand interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *BACnetConstructedDataCommand) GetObjectType() BACnetObjectType {
 	return BACnetObjectType_COMMAND
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
@@ -68,8 +74,9 @@ func (m *BACnetConstructedDataCommand) InitializeParent(parent *BACnetConstructe
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConstructedDataCommand) GetInnerOpeningTag() *BACnetOpeningTag {
 	return m.InnerOpeningTag
 }
@@ -82,8 +89,9 @@ func (m *BACnetConstructedDataCommand) GetInnerClosingTag() *BACnetClosingTag {
 	return m.InnerClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommand factory function for BACnetConstructedDataCommand

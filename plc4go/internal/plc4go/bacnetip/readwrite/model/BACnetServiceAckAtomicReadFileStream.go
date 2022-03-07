@@ -49,7 +49,12 @@ type IBACnetServiceAckAtomicReadFileStream interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 func (m *BACnetServiceAckAtomicReadFileStream) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
@@ -59,8 +64,9 @@ func (m *BACnetServiceAckAtomicReadFileStream) InitializeParent(parent *BACnetSe
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetServiceAckAtomicReadFileStream) GetFileStartPosition() *BACnetApplicationTagSignedInteger {
 	return m.FileStartPosition
 }
@@ -69,8 +75,9 @@ func (m *BACnetServiceAckAtomicReadFileStream) GetFileData() *BACnetApplicationT
 	return m.FileData
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFileStream factory function for BACnetServiceAckAtomicReadFileStream

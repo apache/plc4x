@@ -48,8 +48,9 @@ type INetworkProtocolControlInformation interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *NetworkProtocolControlInformation) GetStackCounter() uint8 {
 	return m.StackCounter
 }
@@ -58,8 +59,9 @@ func (m *NetworkProtocolControlInformation) GetStackDepth() uint8 {
 	return m.StackDepth
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewNetworkProtocolControlInformation factory function for NetworkProtocolControlInformation

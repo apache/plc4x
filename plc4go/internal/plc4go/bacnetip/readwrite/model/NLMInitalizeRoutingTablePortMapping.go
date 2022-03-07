@@ -53,8 +53,9 @@ type INLMInitalizeRoutingTablePortMapping interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *NLMInitalizeRoutingTablePortMapping) GetDestinationNetworkAddress() uint16 {
 	return m.DestinationNetworkAddress
 }
@@ -71,8 +72,9 @@ func (m *NLMInitalizeRoutingTablePortMapping) GetPortInfo() []byte {
 	return m.PortInfo
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTablePortMapping factory function for NLMInitalizeRoutingTablePortMapping

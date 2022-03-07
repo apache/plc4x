@@ -53,8 +53,9 @@ type ILPollData interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *LPollData) GetNotAckFrame() bool {
 	return bool(true)
 }
@@ -62,6 +63,11 @@ func (m *LPollData) GetNotAckFrame() bool {
 func (m *LPollData) GetPolling() bool {
 	return bool(true)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
@@ -72,8 +78,9 @@ func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepe
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *LPollData) GetSourceAddress() *KnxAddress {
 	return m.SourceAddress
 }
@@ -86,8 +93,9 @@ func (m *LPollData) GetNumberExpectedPollData() uint8 {
 	return m.NumberExpectedPollData
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewLPollData factory function for LPollData

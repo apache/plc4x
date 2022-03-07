@@ -66,8 +66,9 @@ type IGroupObjectDescriptorRealisationType1 interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *GroupObjectDescriptorRealisationType1) GetDataPointer() uint8 {
 	return m.DataPointer
 }
@@ -100,8 +101,9 @@ func (m *GroupObjectDescriptorRealisationType1) GetValueType() ComObjectValueTyp
 	return m.ValueType
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewGroupObjectDescriptorRealisationType1 factory function for GroupObjectDescriptorRealisationType1

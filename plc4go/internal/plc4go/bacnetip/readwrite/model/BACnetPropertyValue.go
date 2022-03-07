@@ -57,8 +57,9 @@ type IBACnetPropertyValue interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetPropertyValue) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
 	return m.PropertyIdentifier
 }
@@ -75,8 +76,9 @@ func (m *BACnetPropertyValue) GetPriority() *BACnetContextTagUnsignedInteger {
 	return m.Priority
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyValue factory function for BACnetPropertyValue

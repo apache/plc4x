@@ -72,8 +72,9 @@ type IAlarmMessageObjectPushType interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *AlarmMessageObjectPushType) GetLengthSpec() uint8 {
 	return m.LengthSpec
 }
@@ -110,8 +111,9 @@ func (m *AlarmMessageObjectPushType) GetAssociatedValues() []*AssociatedValueTyp
 	return m.AssociatedValues
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewAlarmMessageObjectPushType factory function for AlarmMessageObjectPushType

@@ -50,8 +50,9 @@ type IDeviceConfigurationAckDataBlock interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *DeviceConfigurationAckDataBlock) GetCommunicationChannelId() uint8 {
 	return m.CommunicationChannelId
 }
@@ -64,8 +65,9 @@ func (m *DeviceConfigurationAckDataBlock) GetStatus() Status {
 	return m.Status
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewDeviceConfigurationAckDataBlock factory function for DeviceConfigurationAckDataBlock

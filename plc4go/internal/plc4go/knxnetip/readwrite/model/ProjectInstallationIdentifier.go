@@ -47,8 +47,9 @@ type IProjectInstallationIdentifier interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *ProjectInstallationIdentifier) GetProjectNumber() uint8 {
 	return m.ProjectNumber
 }
@@ -57,8 +58,9 @@ func (m *ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
 	return m.InstallationNumber
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewProjectInstallationIdentifier factory function for ProjectInstallationIdentifier

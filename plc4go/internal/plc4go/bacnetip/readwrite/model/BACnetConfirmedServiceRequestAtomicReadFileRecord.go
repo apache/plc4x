@@ -49,7 +49,12 @@ type IBACnetConfirmedServiceRequestAtomicReadFileRecord interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) InitializeParent(parent *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
@@ -59,8 +64,9 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) InitializeParent(par
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetFileStartRecord() *BACnetApplicationTagSignedInteger {
 	return m.FileStartRecord
 }
@@ -69,8 +75,9 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetRequestRecordCoun
 	return m.RequestRecordCount
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileRecord factory function for BACnetConfirmedServiceRequestAtomicReadFileRecord

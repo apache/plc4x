@@ -70,8 +70,9 @@ type IAlarmMessageObjectQueryType interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *AlarmMessageObjectQueryType) GetLengthDataset() uint8 {
 	return m.LengthDataset
 }
@@ -104,8 +105,9 @@ func (m *AlarmMessageObjectQueryType) GetValueGoing() *AssociatedValueType {
 	return m.ValueGoing
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewAlarmMessageObjectQueryType factory function for AlarmMessageObjectQueryType

@@ -86,8 +86,9 @@ type IBACnetTagPayloadUnsignedInteger interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetTagPayloadUnsignedInteger) GetValueUint8() *uint8 {
 	return m.ValueUint8
 }
@@ -120,9 +121,14 @@ func (m *BACnetTagPayloadUnsignedInteger) GetValueUint64() *uint64 {
 	return m.ValueUint64
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
 	valueUint8 := m.ValueUint8
 	_ = valueUint8
@@ -314,6 +320,11 @@ func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 		}).(uint64)))
 	}).(uint64)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetTagPayloadUnsignedInteger factory function for BACnetTagPayloadUnsignedInteger
 func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *BACnetTagPayloadUnsignedInteger {

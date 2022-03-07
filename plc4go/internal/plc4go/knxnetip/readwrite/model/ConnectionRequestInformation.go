@@ -55,14 +55,6 @@ type IConnectionRequestInformationChild interface {
 	IConnectionRequestInformation
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewConnectionRequestInformation factory function for ConnectionRequestInformation
 func NewConnectionRequestInformation() *ConnectionRequestInformation {
 	return &ConnectionRequestInformation{}

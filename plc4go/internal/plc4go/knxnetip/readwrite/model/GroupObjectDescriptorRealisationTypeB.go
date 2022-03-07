@@ -65,8 +65,9 @@ type IGroupObjectDescriptorRealisationTypeB interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *GroupObjectDescriptorRealisationTypeB) GetUpdateEnable() bool {
 	return m.UpdateEnable
 }
@@ -99,8 +100,9 @@ func (m *GroupObjectDescriptorRealisationTypeB) GetValueType() ComObjectValueTyp
 	return m.ValueType
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewGroupObjectDescriptorRealisationTypeB factory function for GroupObjectDescriptorRealisationTypeB

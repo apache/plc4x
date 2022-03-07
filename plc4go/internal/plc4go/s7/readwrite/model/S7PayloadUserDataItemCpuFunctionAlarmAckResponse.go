@@ -49,8 +49,9 @@ type IS7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetCpuFunctionType() uint8 {
 	return 0x08
 }
@@ -63,14 +64,20 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetDataLength() uint1
 	return 0
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
 	m.S7PayloadUserDataItem.ReturnCode = returnCode
 	m.S7PayloadUserDataItem.TransportSize = transportSize
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetFunctionId() uint8 {
 	return m.FunctionId
 }
@@ -79,8 +86,9 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetMessageObjects() [
 	return m.MessageObjects
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for S7PayloadUserDataItemCpuFunctionAlarmAckResponse

@@ -65,8 +65,9 @@ type IBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagHeader() *BACnetTagHeader {
 	return m.PeekedTagHeader
 }
@@ -79,12 +80,22 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetClosingTa
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
 	return m.GetPeekedTagHeader().GetActualTagNumber()
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord factory function for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {

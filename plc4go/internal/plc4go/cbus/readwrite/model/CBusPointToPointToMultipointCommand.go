@@ -66,8 +66,9 @@ type ICBusPointToPointToMultipointCommandChild interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *CBusPointToPointToMultipointCommand) GetBridgeAddress() *BridgeAddress {
 	return m.BridgeAddress
 }
@@ -80,8 +81,9 @@ func (m *CBusPointToPointToMultipointCommand) GetPeekedApplication() byte {
 	return m.PeekedApplication
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointToMultipointCommand factory function for CBusPointToPointToMultipointCommand

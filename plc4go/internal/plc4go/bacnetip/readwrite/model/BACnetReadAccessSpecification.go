@@ -53,8 +53,9 @@ type IBACnetReadAccessSpecification interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetReadAccessSpecification) GetObjectIdentifier() *BACnetContextTagObjectIdentifier {
 	return m.ObjectIdentifier
 }
@@ -71,8 +72,9 @@ func (m *BACnetReadAccessSpecification) GetClosingTag() *BACnetClosingTag {
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetReadAccessSpecification factory function for BACnetReadAccessSpecification

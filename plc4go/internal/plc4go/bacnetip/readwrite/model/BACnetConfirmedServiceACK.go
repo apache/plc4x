@@ -55,14 +55,6 @@ type IBACnetConfirmedServiceACKChild interface {
 	IBACnetConfirmedServiceACK
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewBACnetConfirmedServiceACK factory function for BACnetConfirmedServiceACK
 func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
 	return &BACnetConfirmedServiceACK{}

@@ -42,8 +42,9 @@ type ILDataFrameACK interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *LDataFrameACK) GetNotAckFrame() bool {
 	return bool(false)
 }
@@ -52,6 +53,11 @@ func (m *LDataFrameACK) GetPolling() bool {
 	return false
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
 	m.LDataFrame.NotRepeated = notRepeated
@@ -59,14 +65,6 @@ func (m *LDataFrameACK) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.LDataFrame.AcknowledgeRequested = acknowledgeRequested
 	m.LDataFrame.ErrorFlag = errorFlag
 }
-
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
 
 // NewLDataFrameACK factory function for LDataFrameACK
 func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {

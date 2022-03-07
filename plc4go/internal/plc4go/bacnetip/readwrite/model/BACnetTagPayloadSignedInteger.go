@@ -86,8 +86,9 @@ type IBACnetTagPayloadSignedInteger interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetTagPayloadSignedInteger) GetValueInt8() *int8 {
 	return m.ValueInt8
 }
@@ -120,9 +121,14 @@ func (m *BACnetTagPayloadSignedInteger) GetValueInt64() *int64 {
 	return m.ValueInt64
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetTagPayloadSignedInteger) GetIsInt8() bool {
 	valueInt8 := m.ValueInt8
 	_ = valueInt8
@@ -314,6 +320,11 @@ func (m *BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
 		}).(uint64)))
 	}).(uint64)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetTagPayloadSignedInteger factory function for BACnetTagPayloadSignedInteger
 func NewBACnetTagPayloadSignedInteger(valueInt8 *int8, valueInt16 *int16, valueInt24 *int32, valueInt32 *int32, valueInt40 *int64, valueInt48 *int64, valueInt56 *int64, valueInt64 *int64, actualLength uint32) *BACnetTagPayloadSignedInteger {

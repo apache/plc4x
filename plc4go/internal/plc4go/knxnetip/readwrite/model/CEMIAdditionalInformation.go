@@ -55,14 +55,6 @@ type ICEMIAdditionalInformationChild interface {
 	ICEMIAdditionalInformation
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewCEMIAdditionalInformation factory function for CEMIAdditionalInformation
 func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
 	return &CEMIAdditionalInformation{}

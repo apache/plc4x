@@ -48,8 +48,9 @@ type IDeviceConfigurationRequestDataBlock interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *DeviceConfigurationRequestDataBlock) GetCommunicationChannelId() uint8 {
 	return m.CommunicationChannelId
 }
@@ -58,8 +59,9 @@ func (m *DeviceConfigurationRequestDataBlock) GetSequenceCounter() uint8 {
 	return m.SequenceCounter
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewDeviceConfigurationRequestDataBlock factory function for DeviceConfigurationRequestDataBlock

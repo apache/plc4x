@@ -55,14 +55,6 @@ type IConnectionResponseDataBlockChild interface {
 	IConnectionResponseDataBlock
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewConnectionResponseDataBlock factory function for ConnectionResponseDataBlock
 func NewConnectionResponseDataBlock() *ConnectionResponseDataBlock {
 	return &ConnectionResponseDataBlock{}

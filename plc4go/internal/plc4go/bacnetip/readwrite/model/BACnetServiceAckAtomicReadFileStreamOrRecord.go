@@ -65,8 +65,9 @@ type IBACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetPeekedTagHeader() *BACnetTagHeader {
 	return m.PeekedTagHeader
 }
@@ -79,12 +80,22 @@ func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetClosingTag() *BACnetCl
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
 	return m.GetPeekedTagHeader().GetActualTagNumber()
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFileStreamOrRecord factory function for BACnetServiceAckAtomicReadFileStreamOrRecord
 func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetServiceAckAtomicReadFileStreamOrRecord {

@@ -39,14 +39,6 @@ type IGroupObjectDescriptorRealisationType6 interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewGroupObjectDescriptorRealisationType6 factory function for GroupObjectDescriptorRealisationType6
 func NewGroupObjectDescriptorRealisationType6() *GroupObjectDescriptorRealisationType6 {
 	return &GroupObjectDescriptorRealisationType6{}

@@ -42,11 +42,17 @@ type ICIPEncapsulationConnectionResponse interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *CIPEncapsulationConnectionResponse) GetCommandType() uint16 {
 	return 0x0201
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsulationPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.CIPEncapsulationPacket.SessionHandle = sessionHandle
@@ -54,14 +60,6 @@ func (m *CIPEncapsulationConnectionResponse) InitializeParent(parent *CIPEncapsu
 	m.CIPEncapsulationPacket.SenderContext = senderContext
 	m.CIPEncapsulationPacket.Options = options
 }
-
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
 
 // NewCIPEncapsulationConnectionResponse factory function for CIPEncapsulationConnectionResponse
 func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {

@@ -68,8 +68,9 @@ type IBACnetNotificationParametersChangeOfValueNewValueChild interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetNotificationParametersChangeOfValueNewValue) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
 }
@@ -82,12 +83,22 @@ func (m *BACnetNotificationParametersChangeOfValueNewValue) GetClosingTag() *BAC
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetNotificationParametersChangeOfValueNewValue) GetPeekedTagNumber() uint8 {
 	return m.GetPeekedTagHeader().GetActualTagNumber()
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfValueNewValue factory function for BACnetNotificationParametersChangeOfValueNewValue
 func NewBACnetNotificationParametersChangeOfValueNewValue(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {

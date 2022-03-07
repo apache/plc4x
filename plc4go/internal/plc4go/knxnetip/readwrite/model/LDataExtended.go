@@ -61,8 +61,9 @@ type ILDataExtended interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *LDataExtended) GetNotAckFrame() bool {
 	return bool(true)
 }
@@ -70,6 +71,11 @@ func (m *LDataExtended) GetNotAckFrame() bool {
 func (m *LDataExtended) GetPolling() bool {
 	return bool(false)
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
 	m.LDataFrame.FrameType = frameType
@@ -80,8 +86,9 @@ func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, not
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *LDataExtended) GetGroupAddress() bool {
 	return m.GroupAddress
 }
@@ -106,8 +113,9 @@ func (m *LDataExtended) GetApdu() *Apdu {
 	return m.Apdu
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewLDataExtended factory function for LDataExtended

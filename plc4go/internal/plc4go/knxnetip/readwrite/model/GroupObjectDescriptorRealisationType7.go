@@ -68,8 +68,9 @@ type IGroupObjectDescriptorRealisationType7 interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *GroupObjectDescriptorRealisationType7) GetDataAddress() uint16 {
 	return m.DataAddress
 }
@@ -106,8 +107,9 @@ func (m *GroupObjectDescriptorRealisationType7) GetValueType() ComObjectValueTyp
 	return m.ValueType
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewGroupObjectDescriptorRealisationType7 factory function for GroupObjectDescriptorRealisationType7

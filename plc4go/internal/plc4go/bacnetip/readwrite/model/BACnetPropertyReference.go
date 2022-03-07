@@ -48,8 +48,9 @@ type IBACnetPropertyReference interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetPropertyReference) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
 	return m.PropertyIdentifier
 }
@@ -58,8 +59,9 @@ func (m *BACnetPropertyReference) GetArrayIndex() *BACnetContextTagUnsignedInteg
 	return m.ArrayIndex
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyReference factory function for BACnetPropertyReference

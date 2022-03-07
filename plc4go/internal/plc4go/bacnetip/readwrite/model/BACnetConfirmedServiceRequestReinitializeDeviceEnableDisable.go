@@ -54,15 +54,21 @@ type IBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetRawData() *BACnetContextTagEnumerated {
 	return m.RawData
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsEnable() bool {
 	rawData := m.RawData
 	_ = rawData
@@ -80,6 +86,11 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisa
 	_ = rawData
 	return bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (2)))
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable factory function for BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
 func NewBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawData *BACnetContextTagEnumerated, tagNumber uint8) *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {

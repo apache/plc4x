@@ -53,8 +53,9 @@ type IModbusPDUWriteFileRecordResponseItem interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *ModbusPDUWriteFileRecordResponseItem) GetReferenceType() uint8 {
 	return m.ReferenceType
 }
@@ -71,8 +72,9 @@ func (m *ModbusPDUWriteFileRecordResponseItem) GetRecordData() []byte {
 	return m.RecordData
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteFileRecordResponseItem factory function for ModbusPDUWriteFileRecordResponseItem

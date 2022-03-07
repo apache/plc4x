@@ -58,14 +58,6 @@ type IBACnetUnconfirmedServiceRequestChild interface {
 	IBACnetUnconfirmedServiceRequest
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewBACnetUnconfirmedServiceRequest factory function for BACnetUnconfirmedServiceRequest
 func NewBACnetUnconfirmedServiceRequest(len uint16) *BACnetUnconfirmedServiceRequest {
 	return &BACnetUnconfirmedServiceRequest{Len: len}

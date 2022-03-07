@@ -58,14 +58,6 @@ type IBACnetConfirmedServiceRequestChild interface {
 	IBACnetConfirmedServiceRequest
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewBACnetConfirmedServiceRequest factory function for BACnetConfirmedServiceRequest
 func NewBACnetConfirmedServiceRequest(len uint16) *BACnetConfirmedServiceRequest {
 	return &BACnetConfirmedServiceRequest{Len: len}

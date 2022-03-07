@@ -48,8 +48,9 @@ type ITunnelingRequestDataBlock interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *TunnelingRequestDataBlock) GetCommunicationChannelId() uint8 {
 	return m.CommunicationChannelId
 }
@@ -58,8 +59,9 @@ func (m *TunnelingRequestDataBlock) GetSequenceCounter() uint8 {
 	return m.SequenceCounter
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewTunnelingRequestDataBlock factory function for TunnelingRequestDataBlock

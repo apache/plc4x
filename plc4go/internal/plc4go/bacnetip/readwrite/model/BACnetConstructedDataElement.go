@@ -66,8 +66,9 @@ type IBACnetConstructedDataElement interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConstructedDataElement) GetPeekedTagHeader() *BACnetTagHeader {
 	return m.PeekedTagHeader
 }
@@ -84,9 +85,14 @@ func (m *BACnetConstructedDataElement) GetConstructedData() *BACnetConstructedDa
 	return m.ConstructedData
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
 	applicationTag := m.ApplicationTag
 	_ = applicationTag
@@ -126,6 +132,11 @@ func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
 	_ = constructedData
 	return bool(!(m.GetIsConstructedData())) && bool(!(m.GetIsApplicationTag()))
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataElement factory function for BACnetConstructedDataElement
 func NewBACnetConstructedDataElement(peekedTagHeader *BACnetTagHeader, applicationTag *BACnetApplicationTag, contextTag *BACnetContextTag, constructedData *BACnetConstructedData, objectType BACnetObjectType, propertyIdentifier BACnetContextTagPropertyIdentifier) *BACnetConstructedDataElement {

@@ -55,14 +55,6 @@ type IS7VarRequestParameterItemChild interface {
 	IS7VarRequestParameterItem
 }
 
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
-
 // NewS7VarRequestParameterItem factory function for S7VarRequestParameterItem
 func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
 	return &S7VarRequestParameterItem{}

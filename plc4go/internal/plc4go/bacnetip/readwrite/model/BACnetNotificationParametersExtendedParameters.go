@@ -93,8 +93,9 @@ type IBACnetNotificationParametersExtendedParameters interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetNotificationParametersExtendedParameters) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
 }
@@ -159,8 +160,9 @@ func (m *BACnetNotificationParametersExtendedParameters) GetClosingTag() *BACnet
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersExtendedParameters factory function for BACnetNotificationParametersExtendedParameters

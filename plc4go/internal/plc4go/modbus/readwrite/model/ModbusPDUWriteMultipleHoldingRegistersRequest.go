@@ -52,8 +52,9 @@ type IModbusPDUWriteMultipleHoldingRegistersRequest interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetErrorFlag() bool {
 	return bool(false)
 }
@@ -66,11 +67,17 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetResponse() bool {
 	return bool(false)
 }
 
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {}
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetStartingAddress() uint16 {
 	return m.StartingAddress
 }
@@ -83,8 +90,9 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetValue() []byte {
 	return m.Value
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteMultipleHoldingRegistersRequest factory function for ModbusPDUWriteMultipleHoldingRegistersRequest

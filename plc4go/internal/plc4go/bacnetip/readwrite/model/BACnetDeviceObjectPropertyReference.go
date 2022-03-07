@@ -63,8 +63,9 @@ type IBACnetDeviceObjectPropertyReference interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetDeviceObjectPropertyReference) GetOpeningTag() *BACnetOpeningTag {
 	return m.OpeningTag
 }
@@ -89,8 +90,9 @@ func (m *BACnetDeviceObjectPropertyReference) GetClosingTag() *BACnetClosingTag 
 	return m.ClosingTag
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetDeviceObjectPropertyReference factory function for BACnetDeviceObjectPropertyReference

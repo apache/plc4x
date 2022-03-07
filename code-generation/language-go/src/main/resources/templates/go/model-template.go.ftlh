@@ -141,8 +141,9 @@ type I${type.name} interface {
 	<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorTerm>
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
@@ -174,6 +175,10 @@ func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSim
 
 		</#if>
 	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
 
@@ -221,31 +226,44 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().
 	</#list>
 }
 </#if>
+<#if type.propertyFields?has_content>
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
-<#list type.propertyFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
+/////////////////////// Accessors for property fields.
+///////////////////////
+	<#list type.propertyFields as field>
+    	<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 	return m.${field.name?cap_first}
 }
 
-</#list>
-
+	</#list>
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
-<#list type.virtualFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
+</#if>
+<#if type.virtualFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+	<#list type.virtualFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-    <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
+  	  <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
-    </#list>
+  	  </#list>
 	return ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)}
 }
 
-</#list>
+	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
 
 <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
     <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>

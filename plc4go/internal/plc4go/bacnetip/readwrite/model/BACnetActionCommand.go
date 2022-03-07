@@ -69,8 +69,9 @@ type IBACnetActionCommand interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetActionCommand) GetDeviceIdentifier() *BACnetContextTagObjectIdentifier {
 	return m.DeviceIdentifier
 }
@@ -107,8 +108,9 @@ func (m *BACnetActionCommand) GetWriteSuccessful() *BACnetContextTagBoolean {
 	return m.WriteSuccessful
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBACnetActionCommand factory function for BACnetActionCommand

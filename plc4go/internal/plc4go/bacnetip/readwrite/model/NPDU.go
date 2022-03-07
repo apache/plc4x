@@ -84,8 +84,9 @@ type INPDU interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *NPDU) GetProtocolVersionNumber() uint8 {
 	return m.ProtocolVersionNumber
 }
@@ -130,9 +131,14 @@ func (m *NPDU) GetApdu() *APDU {
 	return m.Apdu
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *NPDU) GetSourceLengthAddon() uint16 {
 	destinationNetworkAddress := m.DestinationNetworkAddress
 	_ = destinationNetworkAddress
@@ -186,6 +192,11 @@ func (m *NPDU) GetPayloadSubtraction() uint16 {
 	_ = apdu
 	return uint16(uint16(2)) + uint16(uint16(uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon()))+uint16(uint16(utils.InlineIf(bool(bool(m.GetControl().GetDestinationSpecified()) || bool(m.GetControl().GetSourceSpecified())), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewNPDU factory function for NPDU
 func NewNPDU(protocolVersionNumber uint8, control *NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU, npduLength uint16) *NPDU {

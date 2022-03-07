@@ -42,11 +42,17 @@ type IEipDisconnectRequest interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *EipDisconnectRequest) GetCommand() uint16 {
 	return 0x0066
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *EipDisconnectRequest) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
 	m.EipPacket.SessionHandle = sessionHandle
@@ -54,14 +60,6 @@ func (m *EipDisconnectRequest) InitializeParent(parent *EipPacket, sessionHandle
 	m.EipPacket.SenderContext = senderContext
 	m.EipPacket.Options = options
 }
-
-///////////////////////////////////////////////////////////
-// Accessors for property fields.
-///////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
-///////////////////////////////////////////////////////////
 
 // NewEipDisconnectRequest factory function for EipDisconnectRequest
 func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {

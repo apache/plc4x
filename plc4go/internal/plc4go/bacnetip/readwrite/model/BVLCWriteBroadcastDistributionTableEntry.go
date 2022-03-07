@@ -50,8 +50,9 @@ type IBVLCWriteBroadcastDistributionTableEntry interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BVLCWriteBroadcastDistributionTableEntry) GetIp() []uint8 {
 	return m.Ip
 }
@@ -64,8 +65,9 @@ func (m *BVLCWriteBroadcastDistributionTableEntry) GetBroadcastDistributionMap()
 	return m.BroadcastDistributionMap
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewBVLCWriteBroadcastDistributionTableEntry factory function for BVLCWriteBroadcastDistributionTableEntry

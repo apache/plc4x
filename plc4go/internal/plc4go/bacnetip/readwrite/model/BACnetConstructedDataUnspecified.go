@@ -59,11 +59,17 @@ type IBACnetConstructedDataUnspecified interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 func (m *BACnetConstructedDataUnspecified) GetObjectType() BACnetObjectType {
 	return 0
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
@@ -71,8 +77,9 @@ func (m *BACnetConstructedDataUnspecified) InitializeParent(parent *BACnetConstr
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *BACnetConstructedDataUnspecified) GetData() []*BACnetConstructedDataElement {
 	return m.Data
 }
@@ -85,9 +92,14 @@ func (m *BACnetConstructedDataUnspecified) GetContent() *BACnetApplicationTag {
 	return m.Content
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
 func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
 	propertyIdentifier := m.PropertyIdentifier
 	_ = propertyIdentifier
@@ -95,6 +107,11 @@ func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
 	_ = content
 	return bool((len(m.GetData())) == (0))
 }
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUnspecified factory function for BACnetConstructedDataUnspecified
 func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {

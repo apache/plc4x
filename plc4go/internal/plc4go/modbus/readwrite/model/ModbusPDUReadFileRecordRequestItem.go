@@ -53,8 +53,9 @@ type IModbusPDUReadFileRecordRequestItem interface {
 }
 
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
 func (m *ModbusPDUReadFileRecordRequestItem) GetReferenceType() uint8 {
 	return m.ReferenceType
 }
@@ -71,8 +72,9 @@ func (m *ModbusPDUReadFileRecordRequestItem) GetRecordLength() uint16 {
 	return m.RecordLength
 }
 
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadFileRecordRequestItem factory function for ModbusPDUReadFileRecordRequestItem
