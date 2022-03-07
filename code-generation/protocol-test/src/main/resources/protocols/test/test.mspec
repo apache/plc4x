@@ -69,7 +69,7 @@
 ]
 
 /*
- * TODO: doesn't compile in java
+ * TODO: doesn't compile in golang and c
 [type TimeTypeTest
     [simple time 8 timeField]
     [simple date 8 dateField]
