@@ -183,7 +183,7 @@ func (m *BACnetNotificationParametersOutOfRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersOutOfRange, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersOutOfRange"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -283,7 +283,7 @@ func BACnetNotificationParametersOutOfRangeParse(readBuffer utils.ReadBuffer, ta
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersOutOfRange) Serialize(writeBuffer utils.WriteBuffer) error {

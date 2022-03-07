@@ -140,7 +140,7 @@ func (m *FirmataMessageAnalogIO) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageAnalogIO, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -184,7 +184,7 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (*F
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error {

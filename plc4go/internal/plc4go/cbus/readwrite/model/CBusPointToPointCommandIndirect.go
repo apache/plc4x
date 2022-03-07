@@ -151,7 +151,7 @@ func (m *CBusPointToPointCommandIndirect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointCommand, error) {
+func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointCommandIndirect, error) {
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -209,7 +209,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 		CBusPointToPointCommand: &CBusPointToPointCommand{},
 	}
 	_child.CBusPointToPointCommand.Child = _child
-	return _child.CBusPointToPointCommand, nil
+	return _child, nil
 }
 
 func (m *CBusPointToPointCommandIndirect) Serialize(writeBuffer utils.WriteBuffer) error {

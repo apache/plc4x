@@ -104,7 +104,7 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKConfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer utils.Rea
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {

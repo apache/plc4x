@@ -139,7 +139,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -183,7 +183,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(readBuffer utils.ReadBuffe
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {

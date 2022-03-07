@@ -162,7 +162,7 @@ func (m *LPollData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LPollDataParse(readBuffer utils.ReadBuffer) (*LPollData, error) {
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -221,7 +221,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame:             &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {

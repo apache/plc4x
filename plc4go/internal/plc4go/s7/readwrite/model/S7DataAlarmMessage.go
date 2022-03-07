@@ -131,13 +131,17 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7DataAlarmMessage
+	type S7DataAlarmMessageChild interface {
+		InitializeParent(*S7DataAlarmMessage)
+		GetParent() *S7DataAlarmMessage
+	}
+	var _child S7DataAlarmMessageChild
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_parent, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
+		_child, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_parent, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
+		_child, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -151,8 +155,8 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7DataAlarmMessage) Serialize(writeBuffer utils.WriteBuffer) error {

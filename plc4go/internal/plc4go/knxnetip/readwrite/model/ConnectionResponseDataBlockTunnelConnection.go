@@ -125,7 +125,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlockTunnelConnection, error) {
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -155,7 +155,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
 	_child.ConnectionResponseDataBlock.Child = _child
-	return _child.ConnectionResponseDataBlock, nil
+	return _child, nil
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {

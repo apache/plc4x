@@ -181,15 +181,19 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetTimeStamp
+	type BACnetTimeStampChild interface {
+		InitializeParent(*BACnetTimeStamp, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		GetParent() *BACnetTimeStamp
+	}
+	var _child BACnetTimeStampChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		_parent, typeSwitchError = BACnetTimeStampTimeParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampTimeParse(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		_parent, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		_parent, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer, tagNumber)
+		_child, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer, tagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -216,8 +220,8 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnet
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetTimeStamp) Serialize(writeBuffer utils.WriteBuffer) error {

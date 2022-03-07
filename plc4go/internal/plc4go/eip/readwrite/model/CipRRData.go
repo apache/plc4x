@@ -139,7 +139,7 @@ func (m *CipRRData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error) {
+func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*CipRRData, error) {
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -197,7 +197,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error)
 		EipPacket: &EipPacket{},
 	}
 	_child.EipPacket.Child = _child
-	return _child.EipPacket, nil
+	return _child, nil
 }
 
 func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {

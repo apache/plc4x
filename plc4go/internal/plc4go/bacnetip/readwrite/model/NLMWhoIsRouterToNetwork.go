@@ -131,7 +131,7 @@ func (m *NLMWhoIsRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMWhoIsRouterToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMWhoIsRouterToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -169,7 +169,7 @@ func NLMWhoIsRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMWhoIsRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {

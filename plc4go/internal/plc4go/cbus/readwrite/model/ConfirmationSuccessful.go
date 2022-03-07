@@ -105,7 +105,7 @@ func (m *ConfirmationSuccessful) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationSuccessfulParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+func ConfirmationSuccessfulParse(readBuffer utils.ReadBuffer) (*ConfirmationSuccessful, error) {
 	if pullErr := readBuffer.PullContext("ConfirmationSuccessful"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,7 +121,7 @@ func ConfirmationSuccessfulParse(readBuffer utils.ReadBuffer) (*Confirmation, er
 		Confirmation: &Confirmation{},
 	}
 	_child.Confirmation.Child = _child
-	return _child.Confirmation, nil
+	return _child, nil
 }
 
 func (m *ConfirmationSuccessful) Serialize(writeBuffer utils.WriteBuffer) error {

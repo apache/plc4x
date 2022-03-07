@@ -205,11 +205,15 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *DF1RequestMessage
+	type DF1RequestMessageChild interface {
+		InitializeParent(*DF1RequestMessage, uint8, uint8, uint8, uint16)
+		GetParent() *DF1RequestMessage
+	}
+	var _child DF1RequestMessageChild
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		_parent, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
+		_child, typeSwitchError = DF1CommandRequestMessageParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -223,8 +227,8 @@ func DF1RequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, er
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, destinationAddress, sourceAddress, status, transactionCounter)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), destinationAddress, sourceAddress, status, transactionCounter)
+	return _child.GetParent(), nil
 }
 
 func (m *DF1RequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {

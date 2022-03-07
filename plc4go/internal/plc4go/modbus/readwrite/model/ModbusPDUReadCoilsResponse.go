@@ -137,7 +137,7 @@ func (m *ModbusPDUReadCoilsResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadCoilsResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -167,7 +167,7 @@ func ModbusPDUReadCoilsResponseParse(readBuffer utils.ReadBuffer, response bool)
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) error {

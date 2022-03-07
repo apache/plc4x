@@ -153,7 +153,7 @@ func (m *BACnetConstructedDataEventTimestamps) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
+func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataEventTimestamps, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimestamps"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -211,7 +211,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
-	return _child.BACnetConstructedData, nil
+	return _child, nil
 }
 
 func (m *BACnetConstructedDataEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -219,7 +219,7 @@ func (m *APDUComplexAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUComplexAck, error) {
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -339,7 +339,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 		APDU:                 &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUComplexAck) Serialize(writeBuffer utils.WriteBuffer) error {

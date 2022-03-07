@@ -172,7 +172,7 @@ func (m *BACnetNotificationParametersBufferReady) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersBufferReady, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersBufferReady"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -258,7 +258,7 @@ func BACnetNotificationParametersBufferReadyParse(readBuffer utils.ReadBuffer, t
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersBufferReady) Serialize(writeBuffer utils.WriteBuffer) error {

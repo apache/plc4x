@@ -107,7 +107,7 @@ func (m *S7MessageRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageRequestParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
+func S7MessageRequestParse(readBuffer utils.ReadBuffer) (*S7MessageRequest, error) {
 	if pullErr := readBuffer.PullContext("S7MessageRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func S7MessageRequestParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		S7Message: &S7Message{},
 	}
 	_child.S7Message.Child = _child
-	return _child.S7Message, nil
+	return _child, nil
 }
 
 func (m *S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {

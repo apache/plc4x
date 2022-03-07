@@ -103,7 +103,7 @@ func (m *BVLCSecureBVLL) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLCSecureBVLL, error) {
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BVLCSecureBVLLParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCSecureBVLL) Serialize(writeBuffer utils.WriteBuffer) error {

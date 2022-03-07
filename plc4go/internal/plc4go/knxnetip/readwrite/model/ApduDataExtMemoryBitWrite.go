@@ -106,7 +106,7 @@ func (m *ApduDataExtMemoryBitWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtMemoryBitWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtMemoryBitWrite) Serialize(writeBuffer utils.WriteBuffer) error {

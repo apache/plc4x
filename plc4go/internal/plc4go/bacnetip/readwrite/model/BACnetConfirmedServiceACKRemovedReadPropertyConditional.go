@@ -104,7 +104,7 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKRemovedReadPropertyConditional, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer uti
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(writeBuffer utils.WriteBuffer) error {

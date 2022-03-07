@@ -131,7 +131,7 @@ func (m *BACnetContextTagNotifyType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTagNotifyType, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagNotifyType"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -166,7 +166,7 @@ func BACnetContextTagNotifyTypeParse(readBuffer utils.ReadBuffer, tagNumberArgum
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {

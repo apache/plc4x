@@ -103,7 +103,7 @@ func (m *BACnetConfirmedServiceAddListElement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceAddListElementParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceAddListElementParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceAddListElement, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceAddListElement"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetConfirmedServiceAddListElementParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceAddListElement) Serialize(writeBuffer utils.WriteBuffer) error {

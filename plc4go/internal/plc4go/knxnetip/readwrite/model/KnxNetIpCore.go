@@ -124,7 +124,7 @@ func (m *KnxNetIpCore) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*KnxNetIpCore, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpCore) Serialize(writeBuffer utils.WriteBuffer) error {

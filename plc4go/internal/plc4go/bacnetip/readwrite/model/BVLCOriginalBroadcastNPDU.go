@@ -127,7 +127,7 @@ func (m *BVLCOriginalBroadcastNPDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCOriginalBroadcastNPDU, error) {
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -157,7 +157,7 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLeng
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) error {

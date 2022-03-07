@@ -131,7 +131,7 @@ func (m *BVLCWriteBroadcastDistributionTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCWriteBroadcastDistributionTable, error) {
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -169,7 +169,7 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		BVLC:  &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {

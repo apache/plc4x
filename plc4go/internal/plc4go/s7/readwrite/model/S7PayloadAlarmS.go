@@ -135,7 +135,7 @@ func (m *S7PayloadAlarmS) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadAlarmS, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmS"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -165,7 +165,7 @@ func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cp
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadAlarmS) Serialize(writeBuffer utils.WriteBuffer) error {

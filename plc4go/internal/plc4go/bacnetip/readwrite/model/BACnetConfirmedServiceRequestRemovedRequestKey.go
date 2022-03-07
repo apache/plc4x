@@ -107,7 +107,7 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemovedRequestKey, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedRequestKey"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetConfirmedServiceRequestRemovedRequestKeyParse(readBuffer utils.ReadBu
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(writeBuffer utils.WriteBuffer) error {

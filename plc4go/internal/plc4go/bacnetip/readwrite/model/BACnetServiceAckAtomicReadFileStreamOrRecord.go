@@ -178,13 +178,17 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetServiceAckAtomicReadFileStreamOrRecord
+	type BACnetServiceAckAtomicReadFileStreamOrRecordChild interface {
+		InitializeParent(*BACnetServiceAckAtomicReadFileStreamOrRecord, *BACnetTagHeader, *BACnetOpeningTag, *BACnetClosingTag)
+		GetParent() *BACnetServiceAckAtomicReadFileStreamOrRecord
+	}
+	var _child BACnetServiceAckAtomicReadFileStreamOrRecordChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0: // BACnetServiceAckAtomicReadFileStream
-		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParse(readBuffer)
+		_child, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParse(readBuffer)
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
-		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
+		_child, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -211,8 +215,8 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, peekedTagHeader, openingTag, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), peekedTagHeader, openingTag, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetServiceAckAtomicReadFileStreamOrRecord) Serialize(writeBuffer utils.WriteBuffer) error {

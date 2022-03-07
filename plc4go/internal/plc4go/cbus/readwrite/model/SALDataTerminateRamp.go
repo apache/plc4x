@@ -122,7 +122,7 @@ func (m *SALDataTerminateRamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALData, error) {
+func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALDataTerminateRamp, error) {
 	if pullErr := readBuffer.PullContext("SALDataTerminateRamp"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -146,7 +146,7 @@ func SALDataTerminateRampParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 		SALData: &SALData{},
 	}
 	_child.SALData.Child = _child
-	return _child.SALData, nil
+	return _child, nil
 }
 
 func (m *SALDataTerminateRamp) Serialize(writeBuffer utils.WriteBuffer) error {

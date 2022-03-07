@@ -122,7 +122,7 @@ func (m *BACnetApplicationTagTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTagTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (*BACnetApplicat
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagTime) Serialize(writeBuffer utils.WriteBuffer) error {

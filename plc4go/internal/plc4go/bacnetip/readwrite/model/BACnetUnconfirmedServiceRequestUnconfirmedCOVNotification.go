@@ -172,7 +172,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -258,7 +258,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(writeBuffer utils.WriteBuffer) error {

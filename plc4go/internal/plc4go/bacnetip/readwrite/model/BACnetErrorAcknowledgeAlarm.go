@@ -106,7 +106,7 @@ func (m *BACnetErrorAcknowledgeAlarm) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetErrorAcknowledgeAlarm, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorAcknowledgeAlarmParse(readBuffer utils.ReadBuffer) (*BACnetError
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorAcknowledgeAlarm) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -107,7 +107,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -106,7 +106,7 @@ func (m *BACnetErrorVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetErrorVTOpen, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorVTOpen"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorVTOpenParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {

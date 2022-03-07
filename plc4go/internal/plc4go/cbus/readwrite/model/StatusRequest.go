@@ -125,13 +125,17 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (*StatusRequest, error) {
 	readBuffer.Reset(currentPos)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *StatusRequest
+	type StatusRequestChild interface {
+		InitializeParent(*StatusRequest, byte)
+		GetParent() *StatusRequest
+	}
+	var _child StatusRequestChild
 	var typeSwitchError error
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		_parent, typeSwitchError = StatusRequestBinaryStateParse(readBuffer)
+		_child, typeSwitchError = StatusRequestBinaryStateParse(readBuffer)
 	case statusType == 0x73: // StatusRequestLevel
-		_parent, typeSwitchError = StatusRequestLevelParse(readBuffer)
+		_child, typeSwitchError = StatusRequestLevelParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -145,8 +149,8 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (*StatusRequest, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, statusType)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), statusType)
+	return _child.GetParent(), nil
 }
 
 func (m *StatusRequest) Serialize(writeBuffer utils.WriteBuffer) error {

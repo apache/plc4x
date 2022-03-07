@@ -104,7 +104,7 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer utils.ReadBuf
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(writeBuffer utils.WriteBuffer) error {

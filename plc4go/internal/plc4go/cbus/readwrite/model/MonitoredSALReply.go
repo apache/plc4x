@@ -122,7 +122,7 @@ func (m *MonitoredSALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (*MonitoredSALReply, error) {
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
 		Reply: &Reply{},
 	}
 	_child.Reply.Child = _child
-	return _child.Reply, nil
+	return _child, nil
 }
 
 func (m *MonitoredSALReply) Serialize(writeBuffer utils.WriteBuffer) error {

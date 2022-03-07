@@ -146,41 +146,45 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *KnxNetIpMessage
+	type KnxNetIpMessageChild interface {
+		InitializeParent(*KnxNetIpMessage)
+		GetParent() *KnxNetIpMessage
+	}
+	var _child KnxNetIpMessageChild
 	var typeSwitchError error
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		_parent, typeSwitchError = SearchRequestParse(readBuffer)
+		_child, typeSwitchError = SearchRequestParse(readBuffer)
 	case msgType == 0x0202: // SearchResponse
-		_parent, typeSwitchError = SearchResponseParse(readBuffer)
+		_child, typeSwitchError = SearchResponseParse(readBuffer)
 	case msgType == 0x0203: // DescriptionRequest
-		_parent, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_child, typeSwitchError = DescriptionRequestParse(readBuffer)
 	case msgType == 0x0204: // DescriptionResponse
-		_parent, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_child, typeSwitchError = DescriptionResponseParse(readBuffer)
 	case msgType == 0x0205: // ConnectionRequest
-		_parent, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_child, typeSwitchError = ConnectionRequestParse(readBuffer)
 	case msgType == 0x0206: // ConnectionResponse
-		_parent, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_child, typeSwitchError = ConnectionResponseParse(readBuffer)
 	case msgType == 0x0207: // ConnectionStateRequest
-		_parent, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_child, typeSwitchError = ConnectionStateRequestParse(readBuffer)
 	case msgType == 0x0208: // ConnectionStateResponse
-		_parent, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_child, typeSwitchError = ConnectionStateResponseParse(readBuffer)
 	case msgType == 0x0209: // DisconnectRequest
-		_parent, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_child, typeSwitchError = DisconnectRequestParse(readBuffer)
 	case msgType == 0x020A: // DisconnectResponse
-		_parent, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_child, typeSwitchError = DisconnectResponseParse(readBuffer)
 	case msgType == 0x020B: // UnknownMessage
-		_parent, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_child, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		_parent, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_child, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
 	case msgType == 0x0311: // DeviceConfigurationAck
-		_parent, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_child, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
 	case msgType == 0x0420: // TunnelingRequest
-		_parent, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_child, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
 	case msgType == 0x0421: // TunnelingResponse
-		_parent, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_child, typeSwitchError = TunnelingResponseParse(readBuffer)
 	case msgType == 0x0530: // RoutingIndication
-		_parent, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_child, typeSwitchError = RoutingIndicationParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -194,8 +198,8 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {

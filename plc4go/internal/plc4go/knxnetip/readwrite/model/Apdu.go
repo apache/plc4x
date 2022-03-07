@@ -156,13 +156,17 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	counter := _counter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *Apdu
+	type ApduChild interface {
+		InitializeParent(*Apdu, bool, uint8)
+		GetParent() *Apdu
+	}
+	var _child ApduChild
 	var typeSwitchError error
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		_parent, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
 	case control == uint8(0): // ApduDataContainer
-		_parent, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -176,8 +180,8 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, numbered, counter)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), numbered, counter)
+	return _child.GetParent(), nil
 }
 
 func (m *Apdu) Serialize(writeBuffer utils.WriteBuffer) error {

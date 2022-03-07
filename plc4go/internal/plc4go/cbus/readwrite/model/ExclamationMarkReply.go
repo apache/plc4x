@@ -122,7 +122,7 @@ func (m *ExclamationMarkReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*ExclamationMarkReply, error) {
 	if pullErr := readBuffer.PullContext("ExclamationMarkReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func ExclamationMarkReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
 		Reply: &Reply{},
 	}
 	_child.Reply.Child = _child
-	return _child.Reply, nil
+	return _child, nil
 }
 
 func (m *ExclamationMarkReply) Serialize(writeBuffer utils.WriteBuffer) error {

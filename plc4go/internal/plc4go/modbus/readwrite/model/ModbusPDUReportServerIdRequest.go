@@ -111,7 +111,7 @@ func (m *ModbusPDUReportServerIdRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReportServerIdRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -127,7 +127,7 @@ func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response b
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffer) error {

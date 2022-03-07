@@ -138,7 +138,7 @@ func (m *TunnelingRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*TunnelingRequest, error) {
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -182,7 +182,7 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 		KnxNetIpMessage:           &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *TunnelingRequest) Serialize(writeBuffer utils.WriteBuffer) error {

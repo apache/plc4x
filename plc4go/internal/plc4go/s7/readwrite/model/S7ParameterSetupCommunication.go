@@ -154,7 +154,7 @@ func (m *S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7ParameterSetupCommunication, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -208,7 +208,7 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 		S7Parameter:  &S7Parameter{},
 	}
 	_child.S7Parameter.Child = _child
-	return _child.S7Parameter, nil
+	return _child, nil
 }
 
 func (m *S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {

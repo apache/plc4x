@@ -103,7 +103,7 @@ func (m *BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEventInformation, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer) (*BAC
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {

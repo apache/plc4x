@@ -161,7 +161,7 @@ func (m *BACnetNotificationParametersChangeOfBitString) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersChangeOfBitString, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfBitString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -233,7 +233,7 @@ func BACnetNotificationParametersChangeOfBitStringParse(readBuffer utils.ReadBuf
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersChangeOfBitString) Serialize(writeBuffer utils.WriteBuffer) error {

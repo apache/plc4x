@@ -127,7 +127,7 @@ func (m *DF1UnprotectedReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, error) {
+func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1UnprotectedReadResponse, error) {
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -162,7 +162,7 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 		DF1Command: &DF1Command{},
 	}
 	_child.DF1Command.Child = _child
-	return _child.DF1Command, nil
+	return _child, nil
 }
 
 func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -122,7 +122,7 @@ func (m *PowerUpReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*PowerUpReply, error) {
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
 		Reply: &Reply{},
 	}
 	_child.Reply.Child = _child
-	return _child.Reply, nil
+	return _child, nil
 }
 
 func (m *PowerUpReply) Serialize(writeBuffer utils.WriteBuffer) error {

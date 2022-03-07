@@ -170,7 +170,7 @@ func (m *ModbusPDUGetComEventLogResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUGetComEventLogResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -224,7 +224,7 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer, response 
 		ModbusPDU:    &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffer) error {

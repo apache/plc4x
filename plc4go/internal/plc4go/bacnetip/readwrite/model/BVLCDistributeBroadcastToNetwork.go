@@ -127,7 +127,7 @@ func (m *BVLCDistributeBroadcastToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCDistributeBroadcastToNetwork, error) {
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -157,7 +157,7 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayl
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCDistributeBroadcastToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {

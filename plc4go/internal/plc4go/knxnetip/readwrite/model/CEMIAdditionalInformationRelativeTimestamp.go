@@ -132,7 +132,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformationRelativeTimestamp, error) {
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -171,7 +171,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
 	}
 	_child.CEMIAdditionalInformation.Child = _child
-	return _child.CEMIAdditionalInformation, nil
+	return _child, nil
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {

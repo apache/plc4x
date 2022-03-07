@@ -105,7 +105,7 @@ func (m *NotTransmittedCorruption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NotTransmittedCorruptionParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+func NotTransmittedCorruptionParse(readBuffer utils.ReadBuffer) (*NotTransmittedCorruption, error) {
 	if pullErr := readBuffer.PullContext("NotTransmittedCorruption"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,7 +121,7 @@ func NotTransmittedCorruptionParse(readBuffer utils.ReadBuffer) (*Confirmation, 
 		Confirmation: &Confirmation{},
 	}
 	_child.Confirmation.Child = _child
-	return _child.Confirmation, nil
+	return _child, nil
 }
 
 func (m *NotTransmittedCorruption) Serialize(writeBuffer utils.WriteBuffer) error {

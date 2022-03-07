@@ -127,7 +127,7 @@ func (m *ApduDataDeviceDescriptorRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataDeviceDescriptorRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -151,7 +151,7 @@ func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength u
 		ApduData:       &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer) error {

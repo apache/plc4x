@@ -153,7 +153,7 @@ func (m *LDataReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*LDataReq, error) {
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -213,7 +213,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI:                        &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LDataReq) Serialize(writeBuffer utils.WriteBuffer) error {

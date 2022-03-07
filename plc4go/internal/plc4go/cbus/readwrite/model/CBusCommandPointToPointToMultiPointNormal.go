@@ -180,7 +180,7 @@ func (m *CBusCommandPointToPointToMultiPointNormal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusPointToPointToMultipointCommand, error) {
+func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommandPointToPointToMultiPointNormal, error) {
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPointToMultiPointNormal"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -287,7 +287,7 @@ func CBusCommandPointToPointToMultiPointNormalParse(readBuffer utils.ReadBuffer,
 		CBusPointToPointToMultipointCommand: &CBusPointToPointToMultipointCommand{},
 	}
 	_child.CBusPointToPointToMultipointCommand.Child = _child
-	return _child.CBusPointToPointToMultipointCommand, nil
+	return _child, nil
 }
 
 func (m *CBusCommandPointToPointToMultiPointNormal) Serialize(writeBuffer utils.WriteBuffer) error {

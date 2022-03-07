@@ -194,7 +194,7 @@ func (m *LDataExtended) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataExtended, error) {
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -276,7 +276,7 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame:          &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -127,7 +127,7 @@ func (m *BACnetTimeStampTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStamp, error) {
+func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetTimeStampTime, error) {
 	if pullErr := readBuffer.PullContext("BACnetTimeStampTime"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -157,7 +157,7 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BA
 		BACnetTimeStamp: &BACnetTimeStamp{},
 	}
 	_child.BACnetTimeStamp.Child = _child
-	return _child.BACnetTimeStamp, nil
+	return _child, nil
 }
 
 func (m *BACnetTimeStampTime) Serialize(writeBuffer utils.WriteBuffer) error {

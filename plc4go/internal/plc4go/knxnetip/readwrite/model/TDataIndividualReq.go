@@ -106,7 +106,7 @@ func (m *TDataIndividualReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*TDataIndividualReq, error) {
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, e
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *TDataIndividualReq) Serialize(writeBuffer utils.WriteBuffer) error {

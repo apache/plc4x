@@ -171,7 +171,7 @@ func (m *MPropReadReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MPropReadReq, error) {
 	if pullErr := readBuffer.PullContext("MPropReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -227,7 +227,7 @@ func MPropReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI:                &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MPropReadReq) Serialize(writeBuffer utils.WriteBuffer) error {

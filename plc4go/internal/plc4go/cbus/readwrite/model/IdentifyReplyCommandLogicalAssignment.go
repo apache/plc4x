@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandLogicalAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandLogicalAssignment, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandLogicalAssignment) Serialize(writeBuffer utils.WriteBuffer) error {

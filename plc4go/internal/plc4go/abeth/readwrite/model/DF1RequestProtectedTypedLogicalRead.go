@@ -168,7 +168,7 @@ func (m *DF1RequestProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1RequestCommand, error) {
+func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1RequestProtectedTypedLogicalRead, error) {
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -224,7 +224,7 @@ func DF1RequestProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer) (*DF1
 		DF1RequestCommand: &DF1RequestCommand{},
 	}
 	_child.DF1RequestCommand.Child = _child
-	return _child.DF1RequestCommand, nil
+	return _child, nil
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteBuffer) error {

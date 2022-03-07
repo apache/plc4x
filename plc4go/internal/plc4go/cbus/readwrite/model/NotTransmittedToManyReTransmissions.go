@@ -105,7 +105,7 @@ func (m *NotTransmittedToManyReTransmissions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NotTransmittedToManyReTransmissionsParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+func NotTransmittedToManyReTransmissionsParse(readBuffer utils.ReadBuffer) (*NotTransmittedToManyReTransmissions, error) {
 	if pullErr := readBuffer.PullContext("NotTransmittedToManyReTransmissions"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,7 +121,7 @@ func NotTransmittedToManyReTransmissionsParse(readBuffer utils.ReadBuffer) (*Con
 		Confirmation: &Confirmation{},
 	}
 	_child.Confirmation.Child = _child
-	return _child.Confirmation, nil
+	return _child, nil
 }
 
 func (m *NotTransmittedToManyReTransmissions) Serialize(writeBuffer utils.WriteBuffer) error {

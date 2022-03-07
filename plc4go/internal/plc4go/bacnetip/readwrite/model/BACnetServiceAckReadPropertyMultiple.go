@@ -103,7 +103,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {

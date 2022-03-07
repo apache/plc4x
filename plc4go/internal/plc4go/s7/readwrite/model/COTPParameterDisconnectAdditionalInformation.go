@@ -129,7 +129,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterDisconnectAdditionalInformation, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {

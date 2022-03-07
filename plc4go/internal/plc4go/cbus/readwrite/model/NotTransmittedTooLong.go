@@ -105,7 +105,7 @@ func (m *NotTransmittedTooLong) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NotTransmittedTooLongParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+func NotTransmittedTooLongParse(readBuffer utils.ReadBuffer) (*NotTransmittedTooLong, error) {
 	if pullErr := readBuffer.PullContext("NotTransmittedTooLong"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,7 +121,7 @@ func NotTransmittedTooLongParse(readBuffer utils.ReadBuffer) (*Confirmation, err
 		Confirmation: &Confirmation{},
 	}
 	_child.Confirmation.Child = _child
-	return _child.Confirmation, nil
+	return _child, nil
 }
 
 func (m *NotTransmittedTooLong) Serialize(writeBuffer utils.WriteBuffer) error {

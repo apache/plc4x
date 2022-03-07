@@ -126,7 +126,7 @@ func (m *IdentifyReplyCommandGAVValuesStored) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandGAVValuesStored, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVValuesStored"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -149,7 +149,7 @@ func IdentifyReplyCommandGAVValuesStoredParse(readBuffer utils.ReadBuffer, attri
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandGAVValuesStored) Serialize(writeBuffer utils.WriteBuffer) error {

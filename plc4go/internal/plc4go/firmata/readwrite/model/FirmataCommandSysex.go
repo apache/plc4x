@@ -131,7 +131,7 @@ func (m *FirmataCommandSysex) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSysex, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -175,7 +175,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 		FirmataCommand: &FirmataCommand{},
 	}
 	_child.FirmataCommand.Child = _child
-	return _child.FirmataCommand, nil
+	return _child, nil
 }
 
 func (m *FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {

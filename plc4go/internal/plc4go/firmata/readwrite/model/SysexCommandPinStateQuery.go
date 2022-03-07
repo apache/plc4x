@@ -128,7 +128,7 @@ func (m *SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandPinStateQuery, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateQuery"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) 
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandPinStateQuery) Serialize(writeBuffer utils.WriteBuffer) error {

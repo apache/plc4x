@@ -106,7 +106,7 @@ func (m *BACnetErrorWriteProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorWritePropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorWritePropertyParse(readBuffer utils.ReadBuffer) (*BACnetErrorWriteProperty, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorWriteProperty"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorWritePropertyParse(readBuffer utils.ReadBuffer) (*BACnetError, e
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorWriteProperty) Serialize(writeBuffer utils.WriteBuffer) error {

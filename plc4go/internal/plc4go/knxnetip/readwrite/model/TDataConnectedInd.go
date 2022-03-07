@@ -106,7 +106,7 @@ func (m *TDataConnectedInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (*TDataConnectedInd, error) {
 	if pullErr := readBuffer.PullContext("TDataConnectedInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func TDataConnectedIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, er
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *TDataConnectedInd) Serialize(writeBuffer utils.WriteBuffer) error {

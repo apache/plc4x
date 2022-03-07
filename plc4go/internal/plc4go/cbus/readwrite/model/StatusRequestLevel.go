@@ -140,7 +140,7 @@ func (m *StatusRequestLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequest, error) {
+func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequestLevel, error) {
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -205,7 +205,7 @@ func StatusRequestLevelParse(readBuffer utils.ReadBuffer) (*StatusRequest, error
 		StatusRequest:             &StatusRequest{},
 	}
 	_child.StatusRequest.Child = _child
-	return _child.StatusRequest, nil
+	return _child, nil
 }
 
 func (m *StatusRequestLevel) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -110,13 +110,17 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CEMIAdditionalInformation
+	type CEMIAdditionalInformationChild interface {
+		InitializeParent(*CEMIAdditionalInformation)
+		GetParent() *CEMIAdditionalInformation
+	}
+	var _child CEMIAdditionalInformationChild
 	var typeSwitchError error
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
+		_child, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
+		_child, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -130,8 +134,8 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (*CEMIAdditiona
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *CEMIAdditionalInformation) Serialize(writeBuffer utils.WriteBuffer) error {

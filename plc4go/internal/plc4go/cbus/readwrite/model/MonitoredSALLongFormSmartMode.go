@@ -212,7 +212,7 @@ func (m *MonitoredSALLongFormSmartMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
+func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*MonitoredSALLongFormSmartMode, error) {
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -353,7 +353,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (*Monitored
 		MonitoredSAL:           &MonitoredSAL{},
 	}
 	_child.MonitoredSAL.Child = _child
-	return _child.MonitoredSAL, nil
+	return _child, nil
 }
 
 func (m *MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -107,7 +107,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestVTClose, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetConfirmedServiceRequestVTCloseParse(readBuffer utils.ReadBuffer, len 
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) Serialize(writeBuffer utils.WriteBuffer) error {

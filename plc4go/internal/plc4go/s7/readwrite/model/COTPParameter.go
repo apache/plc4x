@@ -123,19 +123,23 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *COTPParameter
+	type COTPParameterChild interface {
+		InitializeParent(*COTPParameter)
+		GetParent() *COTPParameter
+	}
+	var _child COTPParameterChild
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		_parent, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		_parent, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		_parent, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
 	case parameterType == 0xC3: // COTPParameterChecksum
-		_parent, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
+		_child, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -149,8 +153,8 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *COTPParameter) Serialize(writeBuffer utils.WriteBuffer) error {

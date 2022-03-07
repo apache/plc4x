@@ -106,7 +106,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtGroupPropertyValueResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtGroupPropertyValueResponseParse(readBuffer utils.ReadBuffer, len
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {

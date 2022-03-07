@@ -107,7 +107,7 @@ func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedAuthenticateParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedAuthenticateParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemovedAuthenticate, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetConfirmedServiceRequestRemovedAuthenticateParse(readBuffer utils.Read
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {

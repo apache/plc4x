@@ -135,7 +135,7 @@ func (m *CALDataReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer) (*CALData, error) {
+func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer) (*CALDataReplyReply, error) {
 	if pullErr := readBuffer.PullContext("CALDataReplyReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -166,7 +166,7 @@ func CALDataReplyReplyParse(readBuffer utils.ReadBuffer, commandTypeContainer CA
 		CALData:     &CALData{},
 	}
 	_child.CALData.Child = _child
-	return _child.CALData, nil
+	return _child, nil
 }
 
 func (m *CALDataReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {

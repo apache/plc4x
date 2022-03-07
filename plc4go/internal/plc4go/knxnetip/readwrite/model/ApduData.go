@@ -113,41 +113,45 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, er
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ApduData
+	type ApduDataChild interface {
+		InitializeParent(*ApduData)
+		GetParent() *ApduData
+	}
+	var _child ApduDataChild
 	var typeSwitchError error
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
-		_parent, typeSwitchError = ApduDataGroupValueReadParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataGroupValueReadParse(readBuffer, dataLength)
 	case apciType == 0x1: // ApduDataGroupValueResponse
-		_parent, typeSwitchError = ApduDataGroupValueResponseParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataGroupValueResponseParse(readBuffer, dataLength)
 	case apciType == 0x2: // ApduDataGroupValueWrite
-		_parent, typeSwitchError = ApduDataGroupValueWriteParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataGroupValueWriteParse(readBuffer, dataLength)
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
-		_parent, typeSwitchError = ApduDataIndividualAddressWriteParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataIndividualAddressWriteParse(readBuffer, dataLength)
 	case apciType == 0x4: // ApduDataIndividualAddressRead
-		_parent, typeSwitchError = ApduDataIndividualAddressReadParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataIndividualAddressReadParse(readBuffer, dataLength)
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
-		_parent, typeSwitchError = ApduDataIndividualAddressResponseParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataIndividualAddressResponseParse(readBuffer, dataLength)
 	case apciType == 0x6: // ApduDataAdcRead
-		_parent, typeSwitchError = ApduDataAdcReadParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataAdcReadParse(readBuffer, dataLength)
 	case apciType == 0x7: // ApduDataAdcResponse
-		_parent, typeSwitchError = ApduDataAdcResponseParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataAdcResponseParse(readBuffer, dataLength)
 	case apciType == 0x8: // ApduDataMemoryRead
-		_parent, typeSwitchError = ApduDataMemoryReadParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataMemoryReadParse(readBuffer, dataLength)
 	case apciType == 0x9: // ApduDataMemoryResponse
-		_parent, typeSwitchError = ApduDataMemoryResponseParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataMemoryResponseParse(readBuffer, dataLength)
 	case apciType == 0xA: // ApduDataMemoryWrite
-		_parent, typeSwitchError = ApduDataMemoryWriteParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataMemoryWriteParse(readBuffer, dataLength)
 	case apciType == 0xB: // ApduDataUserMessage
-		_parent, typeSwitchError = ApduDataUserMessageParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataUserMessageParse(readBuffer, dataLength)
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
-		_parent, typeSwitchError = ApduDataDeviceDescriptorReadParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataDeviceDescriptorReadParse(readBuffer, dataLength)
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
-		_parent, typeSwitchError = ApduDataDeviceDescriptorResponseParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataDeviceDescriptorResponseParse(readBuffer, dataLength)
 	case apciType == 0xE: // ApduDataRestart
-		_parent, typeSwitchError = ApduDataRestartParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataRestartParse(readBuffer, dataLength)
 	case apciType == 0xF: // ApduDataOther
-		_parent, typeSwitchError = ApduDataOtherParse(readBuffer, dataLength)
+		_child, typeSwitchError = ApduDataOtherParse(readBuffer, dataLength)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -161,8 +165,8 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, er
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ApduData) Serialize(writeBuffer utils.WriteBuffer) error {

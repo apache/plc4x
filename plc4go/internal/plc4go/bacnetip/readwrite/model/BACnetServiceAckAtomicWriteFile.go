@@ -124,7 +124,7 @@ func (m *BACnetServiceAckAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetS
 		BACnetServiceAck:  &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffer) error {

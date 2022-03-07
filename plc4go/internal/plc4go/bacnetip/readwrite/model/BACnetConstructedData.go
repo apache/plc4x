@@ -169,17 +169,21 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	_ = propertyIdentifierEnum
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetConstructedData
+	type BACnetConstructedDataChild interface {
+		InitializeParent(*BACnetConstructedData, *BACnetOpeningTag, *BACnetClosingTag)
+		GetParent() *BACnetConstructedData
+	}
+	var _child BACnetConstructedDataChild
 	var typeSwitchError error
 	switch {
 	case objectType == BACnetObjectType_COMMAND: // BACnetConstructedDataCommand
-		_parent, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case objectType == BACnetObjectType_LIFE_SAFETY_ZONE: // BACnetConstructedDataLifeSafetyZone
-		_parent, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetConstructedDataLifeSafetyZoneParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true && propertyIdentifierEnum == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimestamps
-		_parent, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	case true: // BACnetConstructedDataUnspecified
-		_parent, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
+		_child, typeSwitchError = BACnetConstructedDataUnspecifiedParse(readBuffer, tagNumber, objectType, propertyIdentifierArgument)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -206,8 +210,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetConstructedData) Serialize(writeBuffer utils.WriteBuffer) error {

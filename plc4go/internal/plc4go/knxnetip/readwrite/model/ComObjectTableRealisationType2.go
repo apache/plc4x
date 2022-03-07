@@ -151,7 +151,7 @@ func (m *ComObjectTableRealisationType2) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
+func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTableRealisationType2, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType2"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -203,7 +203,7 @@ func ComObjectTableRealisationType2Parse(readBuffer utils.ReadBuffer, firmwareTy
 		ComObjectTable:       &ComObjectTable{},
 	}
 	_child.ComObjectTable.Child = _child
-	return _child.ComObjectTable, nil
+	return _child, nil
 }
 
 func (m *ComObjectTableRealisationType2) Serialize(writeBuffer utils.WriteBuffer) error {

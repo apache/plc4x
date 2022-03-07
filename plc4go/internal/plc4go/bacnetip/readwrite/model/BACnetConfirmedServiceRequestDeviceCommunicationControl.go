@@ -155,7 +155,7 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -229,7 +229,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writeBuffer utils.WriteBuffer) error {

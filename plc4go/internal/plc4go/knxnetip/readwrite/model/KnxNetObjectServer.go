@@ -124,7 +124,7 @@ func (m *KnxNetObjectServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*KnxNetObjectServer, error) {
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {

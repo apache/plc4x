@@ -153,7 +153,7 @@ func (m *APDUAbort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUAbort, error) {
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -207,7 +207,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, erro
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -110,39 +110,43 @@ func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirm
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetConfirmedServiceACK
+	type BACnetConfirmedServiceACKChild interface {
+		InitializeParent(*BACnetConfirmedServiceACK)
+		GetParent() *BACnetConfirmedServiceACK
+	}
+	var _child BACnetConfirmedServiceACKChild
 	var typeSwitchError error
 	switch {
 	case serviceChoice == 0x03: // BACnetConfirmedServiceACKGetAlarmSummary
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(readBuffer)
 	case serviceChoice == 0x04: // BACnetConfirmedServiceACKGetEnrollmentSummary
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(readBuffer)
 	case serviceChoice == 0x1D: // BACnetConfirmedServiceACKGetEventInformation
-		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(readBuffer)
 	case serviceChoice == 0x06: // BACnetConfirmedServiceACKAtomicReadFile
-		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(readBuffer)
 	case serviceChoice == 0x07: // BACnetConfirmedServiceACKAtomicWriteFile
-		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(readBuffer)
 	case serviceChoice == 0x08: // BACnetConfirmedServiceAddListElement
-		_parent, typeSwitchError = BACnetConfirmedServiceAddListElementParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceAddListElementParse(readBuffer)
 	case serviceChoice == 0x0A: // BACnetConfirmedServiceACKCreateObject
-		_parent, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(readBuffer)
 	case serviceChoice == 0x0C: // BACnetConfirmedServiceACKReadProperty
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(readBuffer)
 	case serviceChoice == 0x0E: // BACnetConfirmedServiceACKReadPropertyMultiple
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer)
 	case serviceChoice == 0x1A: // BACnetConfirmedServiceACKReadRange
-		_parent, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(readBuffer)
 	case serviceChoice == 0x12: // BACnetConfirmedServiceACKConfirmedPrivateTransfer
-		_parent, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(readBuffer)
 	case serviceChoice == 0x15: // BACnetConfirmedServiceACKVTOpen
-		_parent, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(readBuffer)
 	case serviceChoice == 0x17: // BACnetConfirmedServiceACKVTData
-		_parent, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(readBuffer)
 	case serviceChoice == 0x18: // BACnetConfirmedServiceACKRemovedAuthenticate
-		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(readBuffer)
 	case serviceChoice == 0x0D: // BACnetConfirmedServiceACKRemovedReadPropertyConditional
-		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer)
+		_child, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -156,8 +160,8 @@ func BACnetConfirmedServiceACKParse(readBuffer utils.ReadBuffer) (*BACnetConfirm
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetConfirmedServiceACK) Serialize(writeBuffer utils.WriteBuffer) error {

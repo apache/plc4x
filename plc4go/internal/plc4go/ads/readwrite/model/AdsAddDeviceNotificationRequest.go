@@ -190,7 +190,7 @@ func (m *AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsAddDeviceNotificationRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -282,7 +282,7 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId
 		AdsData:          &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {

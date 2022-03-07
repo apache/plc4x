@@ -129,7 +129,7 @@ func (m *ConnectionRequestInformationTunnelConnection) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformationTunnelConnection, error) {
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -173,7 +173,7 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 		ConnectionRequestInformation: &ConnectionRequestInformation{},
 	}
 	_child.ConnectionRequestInformation.Child = _child
-	return _child.ConnectionRequestInformation, nil
+	return _child, nil
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer utils.WriteBuffer) error {

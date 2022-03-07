@@ -108,7 +108,7 @@ func (m *BACnetContextTagEmpty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTag, error) {
+func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetContextTagEmpty, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagEmpty"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -124,7 +124,7 @@ func BACnetContextTagEmptyParse(readBuffer utils.ReadBuffer, tagNumberArgument u
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagEmpty) Serialize(writeBuffer utils.WriteBuffer) error {

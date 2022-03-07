@@ -134,7 +134,7 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1ResponseMessage, error) {
+func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16) (*DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -172,7 +172,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 		DF1ResponseMessage: &DF1ResponseMessage{},
 	}
 	_child.DF1ResponseMessage.Child = _child
-	return _child.DF1ResponseMessage, nil
+	return _child, nil
 }
 
 func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteBuffer) error {

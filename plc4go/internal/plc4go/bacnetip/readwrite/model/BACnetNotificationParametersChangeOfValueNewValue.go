@@ -181,13 +181,17 @@ func BACnetNotificationParametersChangeOfValueNewValueParse(readBuffer utils.Rea
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetNotificationParametersChangeOfValueNewValue
+	type BACnetNotificationParametersChangeOfValueNewValueChild interface {
+		InitializeParent(*BACnetNotificationParametersChangeOfValueNewValue, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		GetParent() *BACnetNotificationParametersChangeOfValueNewValue
+	}
+	var _child BACnetNotificationParametersChangeOfValueNewValueChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfValueNewValueChangedBits
-		_parent, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfValueNewValueChangedValue
-		_parent, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(readBuffer, tagNumber, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -214,8 +218,8 @@ func BACnetNotificationParametersChangeOfValueNewValueParse(readBuffer utils.Rea
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetNotificationParametersChangeOfValueNewValue) Serialize(writeBuffer utils.WriteBuffer) error {

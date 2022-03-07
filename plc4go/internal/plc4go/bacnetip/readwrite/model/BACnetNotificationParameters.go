@@ -182,27 +182,31 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetNotificationParameters
+	type BACnetNotificationParametersChild interface {
+		InitializeParent(*BACnetNotificationParameters, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		GetParent() *BACnetNotificationParameters
+	}
+	var _child BACnetNotificationParametersChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfBitString
-		_parent, typeSwitchError = BACnetNotificationParametersChangeOfBitStringParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfBitStringParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfState
-		_parent, typeSwitchError = BACnetNotificationParametersChangeOfStateParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfStateParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(2): // BACnetNotificationParametersChangeOfValue
-		_parent, typeSwitchError = BACnetNotificationParametersChangeOfValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersChangeOfValueParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(4): // BACnetNotificationParametersFloatingLimit
-		_parent, typeSwitchError = BACnetNotificationParametersFloatingLimitParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersFloatingLimitParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(5): // BACnetNotificationParametersOutOfRange
-		_parent, typeSwitchError = BACnetNotificationParametersOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersOutOfRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(6): // BACnetNotificationParametersComplexEventType
-		_parent, typeSwitchError = BACnetNotificationParametersComplexEventTypeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersComplexEventTypeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(9): // BACnetNotificationParametersExtended
-		_parent, typeSwitchError = BACnetNotificationParametersExtendedParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersExtendedParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(10): // BACnetNotificationParametersBufferReady
-		_parent, typeSwitchError = BACnetNotificationParametersBufferReadyParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersBufferReadyParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	case peekedTagNumber == uint8(11): // BACnetNotificationParametersUnsignedRange
-		_parent, typeSwitchError = BACnetNotificationParametersUnsignedRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
+		_child, typeSwitchError = BACnetNotificationParametersUnsignedRangeParse(readBuffer, tagNumber, objectType, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -229,8 +233,8 @@ func BACnetNotificationParametersParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetNotificationParameters) Serialize(writeBuffer utils.WriteBuffer) error {

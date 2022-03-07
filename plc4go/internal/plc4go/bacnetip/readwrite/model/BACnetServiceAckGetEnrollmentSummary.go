@@ -103,7 +103,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckGetEnrollmentSummary, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetServiceAckGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -102,15 +102,19 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *KnxGroupAddress
+	type KnxGroupAddressChild interface {
+		InitializeParent(*KnxGroupAddress)
+		GetParent() *KnxGroupAddress
+	}
+	var _child KnxGroupAddressChild
 	var typeSwitchError error
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		_parent, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		_parent, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
+		_child, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -124,8 +128,8 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *KnxGroupAddress) Serialize(writeBuffer utils.WriteBuffer) error {

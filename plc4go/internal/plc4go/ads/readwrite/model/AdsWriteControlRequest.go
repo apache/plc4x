@@ -155,7 +155,7 @@ func (m *AdsWriteControlRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsWriteControlRequest, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -201,7 +201,7 @@ func AdsWriteControlRequestParse(readBuffer utils.ReadBuffer, commandId CommandI
 		AdsData:     &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsWriteControlRequest) Serialize(writeBuffer utils.WriteBuffer) error {

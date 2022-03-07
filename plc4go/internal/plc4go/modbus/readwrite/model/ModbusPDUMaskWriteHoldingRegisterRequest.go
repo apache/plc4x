@@ -154,7 +154,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUMaskWriteHoldingRegisterRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -194,7 +194,7 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(readBuffer utils.ReadBuffer, 
 		ModbusPDU:        &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -103,7 +103,7 @@ func (m *ApduControlConnect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControlConnect, error) {
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func ApduControlConnectParse(readBuffer utils.ReadBuffer) (*ApduControl, error) 
 		ApduControl: &ApduControl{},
 	}
 	_child.ApduControl.Child = _child
-	return _child.ApduControl, nil
+	return _child, nil
 }
 
 func (m *ApduControlConnect) Serialize(writeBuffer utils.WriteBuffer) error {

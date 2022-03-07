@@ -146,7 +146,7 @@ func (m *IdentifyReplyCommandNetworkVoltage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandNetworkVoltage, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkVoltage"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -196,7 +196,7 @@ func IdentifyReplyCommandNetworkVoltageParse(readBuffer utils.ReadBuffer, attrib
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandNetworkVoltage) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -139,7 +139,7 @@ func (m *S7MessageObjectResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {
+func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7MessageObjectResponse, error) {
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -197,7 +197,7 @@ func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType u
 		S7DataAlarmMessage: &S7DataAlarmMessage{},
 	}
 	_child.S7DataAlarmMessage.Child = _child
-	return _child.S7DataAlarmMessage, nil
+	return _child, nil
 }
 
 func (m *S7MessageObjectResponse) Serialize(writeBuffer utils.WriteBuffer) error {

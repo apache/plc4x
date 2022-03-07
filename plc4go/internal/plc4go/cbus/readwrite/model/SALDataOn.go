@@ -122,7 +122,7 @@ func (m *SALDataOn) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataOnParse(readBuffer utils.ReadBuffer) (*SALData, error) {
+func SALDataOnParse(readBuffer utils.ReadBuffer) (*SALDataOn, error) {
 	if pullErr := readBuffer.PullContext("SALDataOn"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -146,7 +146,7 @@ func SALDataOnParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 		SALData: &SALData{},
 	}
 	_child.SALData.Child = _child
-	return _child.SALData, nil
+	return _child, nil
 }
 
 func (m *SALDataOn) Serialize(writeBuffer utils.WriteBuffer) error {

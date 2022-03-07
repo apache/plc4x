@@ -136,7 +136,7 @@ func (m *S7PayloadWriteVarRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7PayloadWriteVarRequest, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -172,7 +172,7 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint
 		S7Payload: &S7Payload{},
 	}
 	_child.S7Payload.Child = _child
-	return _child.S7Payload, nil
+	return _child, nil
 }
 
 func (m *S7PayloadWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) error {

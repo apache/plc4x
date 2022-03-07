@@ -158,35 +158,39 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	_ = bvlcPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BVLC
+	type BVLCChild interface {
+		InitializeParent(*BVLC)
+		GetParent() *BVLC
+	}
+	var _child BVLCChild
 	var typeSwitchError error
 	switch {
 	case bvlcFunction == 0x00: // BVLCResult
-		_parent, typeSwitchError = BVLCResultParse(readBuffer)
+		_child, typeSwitchError = BVLCResultParse(readBuffer)
 	case bvlcFunction == 0x01: // BVLCWriteBroadcastDistributionTable
-		_parent, typeSwitchError = BVLCWriteBroadcastDistributionTableParse(readBuffer, bvlcPayloadLength)
+		_child, typeSwitchError = BVLCWriteBroadcastDistributionTableParse(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
-		_parent, typeSwitchError = BVLCReadBroadcastDistributionTableParse(readBuffer)
+		_child, typeSwitchError = BVLCReadBroadcastDistributionTableParse(readBuffer)
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
-		_parent, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(readBuffer)
+		_child, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(readBuffer)
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
-		_parent, typeSwitchError = BVLCForwardedNPDUParse(readBuffer, bvlcPayloadLength)
+		_child, typeSwitchError = BVLCForwardedNPDUParse(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
-		_parent, typeSwitchError = BVLCRegisterForeignDeviceParse(readBuffer)
+		_child, typeSwitchError = BVLCRegisterForeignDeviceParse(readBuffer)
 	case bvlcFunction == 0x06: // BVLCReadForeignDeviceTable
-		_parent, typeSwitchError = BVLCReadForeignDeviceTableParse(readBuffer)
+		_child, typeSwitchError = BVLCReadForeignDeviceTableParse(readBuffer)
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
-		_parent, typeSwitchError = BVLCReadForeignDeviceTableAckParse(readBuffer)
+		_child, typeSwitchError = BVLCReadForeignDeviceTableAckParse(readBuffer)
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
-		_parent, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(readBuffer)
+		_child, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(readBuffer)
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
-		_parent, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer, bvlcPayloadLength)
+		_child, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
-		_parent, typeSwitchError = BVLCOriginalUnicastNPDUParse(readBuffer, bvlcPayloadLength)
+		_child, typeSwitchError = BVLCOriginalUnicastNPDUParse(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
-		_parent, typeSwitchError = BVLCOriginalBroadcastNPDUParse(readBuffer, bvlcPayloadLength)
+		_child, typeSwitchError = BVLCOriginalBroadcastNPDUParse(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
-		_parent, typeSwitchError = BVLCSecureBVLLParse(readBuffer)
+		_child, typeSwitchError = BVLCSecureBVLLParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -200,8 +204,8 @@ func BVLCParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *BVLC) Serialize(writeBuffer utils.WriteBuffer) error {

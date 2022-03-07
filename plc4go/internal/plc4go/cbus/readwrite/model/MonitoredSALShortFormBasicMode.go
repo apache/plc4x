@@ -171,7 +171,7 @@ func (m *MonitoredSALShortFormBasicMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
+func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*MonitoredSALShortFormBasicMode, error) {
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -266,7 +266,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (*Monitore
 		MonitoredSAL:  &MonitoredSAL{},
 	}
 	_child.MonitoredSAL.Child = _child
-	return _child.MonitoredSAL, nil
+	return _child, nil
 }
 
 func (m *MonitoredSALShortFormBasicMode) Serialize(writeBuffer utils.WriteBuffer) error {

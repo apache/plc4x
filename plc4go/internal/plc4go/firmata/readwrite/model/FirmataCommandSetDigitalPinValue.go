@@ -142,7 +142,7 @@ func (m *FirmataCommandSetDigitalPinValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSetDigitalPinValue, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -188,7 +188,7 @@ func FirmataCommandSetDigitalPinValueParse(readBuffer utils.ReadBuffer, response
 		FirmataCommand: &FirmataCommand{},
 	}
 	_child.FirmataCommand.Child = _child
-	return _child.FirmataCommand, nil
+	return _child, nil
 }
 
 func (m *FirmataCommandSetDigitalPinValue) Serialize(writeBuffer utils.WriteBuffer) error {

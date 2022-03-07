@@ -122,7 +122,7 @@ func (m *ConfirmationReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (*ConfirmationReply, error) {
 	if pullErr := readBuffer.PullContext("ConfirmationReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func ConfirmationReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
 		Reply: &Reply{},
 	}
 	_child.Reply.Child = _child
-	return _child.Reply, nil
+	return _child, nil
 }
 
 func (m *ConfirmationReply) Serialize(writeBuffer utils.WriteBuffer) error {

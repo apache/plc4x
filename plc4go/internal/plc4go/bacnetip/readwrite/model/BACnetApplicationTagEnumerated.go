@@ -138,7 +138,7 @@ func (m *BACnetApplicationTagEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagEnumerated, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -173,7 +173,7 @@ func BACnetApplicationTagEnumeratedParse(readBuffer utils.ReadBuffer, header *BA
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {

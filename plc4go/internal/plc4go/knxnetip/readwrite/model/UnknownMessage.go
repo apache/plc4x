@@ -129,7 +129,7 @@ func (m *UnknownMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*UnknownMessage, error) {
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 		KnxNetIpMessage: &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {

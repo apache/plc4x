@@ -120,13 +120,17 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionR
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *ConnectionResponseDataBlock
+	type ConnectionResponseDataBlockChild interface {
+		InitializeParent(*ConnectionResponseDataBlock)
+		GetParent() *ConnectionResponseDataBlock
+	}
+	var _child ConnectionResponseDataBlockChild
 	var typeSwitchError error
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
-		_parent, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParse(readBuffer)
+		_child, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParse(readBuffer)
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
-		_parent, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParse(readBuffer)
+		_child, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -140,8 +144,8 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (*ConnectionR
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *ConnectionResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {

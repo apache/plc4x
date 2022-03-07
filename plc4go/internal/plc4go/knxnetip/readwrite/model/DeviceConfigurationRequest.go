@@ -138,7 +138,7 @@ func (m *DeviceConfigurationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*DeviceConfigurationRequest, error) {
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -182,7 +182,7 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 		KnxNetIpMessage:                     &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DeviceConfigurationRequest) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -140,7 +140,7 @@ func (m *ModbusPDUReadFifoQueueResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadFifoQueueResponse, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -190,7 +190,7 @@ func ModbusPDUReadFifoQueueResponseParse(readBuffer utils.ReadBuffer, response b
 		ModbusPDU: &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) Serialize(writeBuffer utils.WriteBuffer) error {

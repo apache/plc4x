@@ -129,7 +129,7 @@ func (m *NLMDisconnectConnectionToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMDisconnectConnectionToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -153,7 +153,7 @@ func NLMDisconnectConnectionToNetworkParse(readBuffer utils.ReadBuffer, apduLeng
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMDisconnectConnectionToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {

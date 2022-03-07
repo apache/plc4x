@@ -109,7 +109,7 @@ func (m *BACnetOpeningTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetOpeningTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -130,7 +130,7 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetOpeningTag) Serialize(writeBuffer utils.WriteBuffer) error {

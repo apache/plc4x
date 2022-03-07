@@ -138,7 +138,7 @@ func (m *MultipleServiceRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*MultipleServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -186,7 +186,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 		CipService: &CipService{},
 	}
 	_child.CipService.Child = _child
-	return _child.CipService, nil
+	return _child, nil
 }
 
 func (m *MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {

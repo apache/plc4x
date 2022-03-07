@@ -127,7 +127,7 @@ func (m *COTPParameterCalledTsap) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterCalledTsap, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -151,7 +151,7 @@ func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COT
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterCalledTsap) Serialize(writeBuffer utils.WriteBuffer) error {

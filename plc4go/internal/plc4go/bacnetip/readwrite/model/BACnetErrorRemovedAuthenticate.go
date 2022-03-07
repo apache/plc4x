@@ -106,7 +106,7 @@ func (m *BACnetErrorRemovedAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetErrorRemovedAuthenticate, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetEr
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorRemovedAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -153,25 +153,29 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 	_ = commandType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CALData
+	type CALDataChild interface {
+		InitializeParent(*CALData, CALCommandTypeContainer)
+		GetParent() *CALData
+	}
+	var _child CALDataChild
 	var typeSwitchError error
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataRequestReset
-		_parent, typeSwitchError = CALDataRequestResetParse(readBuffer)
+		_child, typeSwitchError = CALDataRequestResetParse(readBuffer)
 	case commandType == CALCommandType_RECALL: // CALDataRequestRecall
-		_parent, typeSwitchError = CALDataRequestRecallParse(readBuffer)
+		_child, typeSwitchError = CALDataRequestRecallParse(readBuffer)
 	case commandType == CALCommandType_IDENTIFY: // CALDataRequestIdentify
-		_parent, typeSwitchError = CALDataRequestIdentifyParse(readBuffer)
+		_child, typeSwitchError = CALDataRequestIdentifyParse(readBuffer)
 	case commandType == CALCommandType_GET_STATUS: // CALDataRequestGetStatus
-		_parent, typeSwitchError = CALDataRequestGetStatusParse(readBuffer)
+		_child, typeSwitchError = CALDataRequestGetStatusParse(readBuffer)
 	case commandType == CALCommandType_REPLY: // CALDataReplyReply
-		_parent, typeSwitchError = CALDataReplyReplyParse(readBuffer, commandTypeContainer)
+		_child, typeSwitchError = CALDataReplyReplyParse(readBuffer, commandTypeContainer)
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataReplyAcknowledge
-		_parent, typeSwitchError = CALDataReplyAcknowledgeParse(readBuffer)
+		_child, typeSwitchError = CALDataReplyAcknowledgeParse(readBuffer)
 	case commandType == CALCommandType_STATUS: // CALDataReplyStatus
-		_parent, typeSwitchError = CALDataReplyStatusParse(readBuffer, commandTypeContainer)
+		_child, typeSwitchError = CALDataReplyStatusParse(readBuffer, commandTypeContainer)
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataReplyStatusExtended
-		_parent, typeSwitchError = CALDataReplyStatusExtendedParse(readBuffer, commandTypeContainer)
+		_child, typeSwitchError = CALDataReplyStatusExtendedParse(readBuffer, commandTypeContainer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -185,8 +189,8 @@ func CALDataParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, commandTypeContainer)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), commandTypeContainer)
+	return _child.GetParent(), nil
 }
 
 func (m *CALData) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -181,7 +181,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -243,7 +243,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(readBuffer utils.Rea
 		ModbusPDU:            &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffer utils.WriteBuffer) error {

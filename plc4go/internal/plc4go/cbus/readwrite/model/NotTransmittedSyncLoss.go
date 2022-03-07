@@ -105,7 +105,7 @@ func (m *NotTransmittedSyncLoss) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NotTransmittedSyncLossParse(readBuffer utils.ReadBuffer) (*Confirmation, error) {
+func NotTransmittedSyncLossParse(readBuffer utils.ReadBuffer) (*NotTransmittedSyncLoss, error) {
 	if pullErr := readBuffer.PullContext("NotTransmittedSyncLoss"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,7 +121,7 @@ func NotTransmittedSyncLossParse(readBuffer utils.ReadBuffer) (*Confirmation, er
 		Confirmation: &Confirmation{},
 	}
 	_child.Confirmation.Child = _child
-	return _child.Confirmation, nil
+	return _child, nil
 }
 
 func (m *NotTransmittedSyncLoss) Serialize(writeBuffer utils.WriteBuffer) error {

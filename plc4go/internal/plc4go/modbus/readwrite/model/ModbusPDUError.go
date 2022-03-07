@@ -132,7 +132,7 @@ func (m *ModbusPDUError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUError, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -162,7 +162,7 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU
 		ModbusPDU:     &ModbusPDU{},
 	}
 	_child.ModbusPDU.Child = _child
-	return _child.ModbusPDU, nil
+	return _child, nil
 }
 
 func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {

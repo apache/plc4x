@@ -144,7 +144,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestWhoIs, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -204,7 +204,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len 
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -122,7 +122,7 @@ func (m *ParameterChangeReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
+func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (*ParameterChangeReply, error) {
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer) (*Reply, error) {
 		Reply: &Reply{},
 	}
 	_child.Reply.Child = _child
-	return _child.Reply, nil
+	return _child, nil
 }
 
 func (m *ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {

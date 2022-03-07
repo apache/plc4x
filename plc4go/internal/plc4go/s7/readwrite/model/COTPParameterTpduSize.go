@@ -127,7 +127,7 @@ func (m *COTPParameterTpduSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterTpduSize, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -157,7 +157,7 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {

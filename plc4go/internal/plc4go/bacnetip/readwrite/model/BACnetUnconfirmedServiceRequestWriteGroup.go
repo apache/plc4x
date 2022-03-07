@@ -107,7 +107,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequestWriteGroup, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 		BACnetUnconfirmedServiceRequest: &BACnetUnconfirmedServiceRequest{},
 	}
 	_child.BACnetUnconfirmedServiceRequest.Child = _child
-	return _child.BACnetUnconfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.WriteBuffer) error {

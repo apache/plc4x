@@ -700,7 +700,7 @@ func (m *${type.name}) GetLengthInBytes() uint16 {
 
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if>, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*${type.name}, error) {
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -1248,7 +1248,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign switchField = field.asSwitchField().orElseThrow()>
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *${type.name}
+	type ${type.name}Child interface {
+		InitializeParent(*${type.name}<#if type.propertyFields?has_content>, </#if> <#list type.propertyFields as field><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>)
+		GetParent() *${type.name}
+	}
+	var _child ${type.name}Child
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
@@ -1290,7 +1294,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						</#if>: // ${case.name}
                     </@compress>
 
-		_parent, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+		_child, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	default:
 		// TODO: return actual type
@@ -1389,7 +1393,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#if type.isDiscriminatedParentTypeDefinition()>
 	// Finish initializing
 		<@compress single_line=true>
-	_parent.Child.InitializeParent(_parent
+	_child.InitializeParent(_child.GetParent()
 			<#if type.propertyFields?has_content>, </#if>
 			<#list type.propertyFields as field>
 				${field.name}
@@ -1398,7 +1402,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			)
 		</@compress>
 
-	return _parent, nil
+	return _child.GetParent(), nil
 	<#elseif type.parentType.isPresent()>
 	// Create a partially initialized instance
 	_child := &${type.name}{
@@ -1408,7 +1412,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
         ${type.parentType.orElseThrow().name}: &${type.parentType.orElseThrow().name}{},
 	}
 	_child.${type.parentType.orElseThrow().name}.Child = _child
-	return _child.${type.parentType.orElseThrow().name}, nil
+	return _child, nil
 	<#else>
 	// Create the instance
 	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !arg.type.isEnumTypeReference()>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil

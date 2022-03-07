@@ -157,7 +157,7 @@ func (m *BACnetContextTagBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTag, error) {
+func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagBoolean, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -210,7 +210,7 @@ func BACnetContextTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagBoolean) Serialize(writeBuffer utils.WriteBuffer) error {

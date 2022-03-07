@@ -106,7 +106,7 @@ func (m *ApduDataExtNetworkParameterWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtNetworkParameterWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterWrite"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length u
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtNetworkParameterWrite) Serialize(writeBuffer utils.WriteBuffer) error {

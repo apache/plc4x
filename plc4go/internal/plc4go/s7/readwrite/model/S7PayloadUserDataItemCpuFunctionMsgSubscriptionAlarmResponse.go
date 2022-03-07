@@ -179,7 +179,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -241,7 +241,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffe
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serialize(writeBuffer utils.WriteBuffer) error {

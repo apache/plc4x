@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandCurrentSenseLevels, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandCurrentSenseLevelsParse(readBuffer utils.ReadBuffer, at
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandCurrentSenseLevels) Serialize(writeBuffer utils.WriteBuffer) error {

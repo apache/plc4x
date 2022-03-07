@@ -130,7 +130,7 @@ func (m *BACnetContextTagCharacterString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTag, error) {
+func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, header *BACnetTagHeader) (*BACnetContextTagCharacterString, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -165,7 +165,7 @@ func BACnetContextTagCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber
 		BACnetContextTag: &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {

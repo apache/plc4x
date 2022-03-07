@@ -103,7 +103,7 @@ func (m *DF1SymbolMessageFrameNAK) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error) {
+func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageFrameNAK, error) {
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameNAK"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (*DF1Symbol, err
 		DF1Symbol: &DF1Symbol{},
 	}
 	_child.DF1Symbol.Child = _child
-	return _child.DF1Symbol, nil
+	return _child, nil
 }
 
 func (m *DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -125,7 +125,7 @@ func (m *CBusCommandPointToPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, error) {
+func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommandPointToPoint, error) {
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -155,7 +155,7 @@ func CBusCommandPointToPointParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 		CBusCommand: &CBusCommand{},
 	}
 	_child.CBusCommand.Child = _child
-	return _child.CBusCommand, nil
+	return _child, nil
 }
 
 func (m *CBusCommandPointToPoint) Serialize(writeBuffer utils.WriteBuffer) error {

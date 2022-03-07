@@ -172,15 +172,19 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	_ = destinationAddressType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CBusCommand
+	type CBusCommandChild interface {
+		InitializeParent(*CBusCommand, *CBusHeader)
+		GetParent() *CBusCommand
+	}
+	var _child CBusCommandChild
 	var typeSwitchError error
 	switch {
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		_parent, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
+		_child, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		_parent, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
+		_child, typeSwitchError = CBusCommandPointToMultiPointParse(readBuffer, srchk)
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		_parent, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
+		_child, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -194,8 +198,8 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBusCommand, er
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), header)
+	return _child.GetParent(), nil
 }
 
 func (m *CBusCommand) Serialize(writeBuffer utils.WriteBuffer) error {

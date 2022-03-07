@@ -215,17 +215,21 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7Message
+	type S7MessageChild interface {
+		InitializeParent(*S7Message, uint16, *S7Parameter, *S7Payload)
+		GetParent() *S7Message
+	}
+	var _child S7MessageChild
 	var typeSwitchError error
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		_parent, typeSwitchError = S7MessageRequestParse(readBuffer)
+		_child, typeSwitchError = S7MessageRequestParse(readBuffer)
 	case messageType == 0x02: // S7MessageResponse
-		_parent, typeSwitchError = S7MessageResponseParse(readBuffer)
+		_child, typeSwitchError = S7MessageResponseParse(readBuffer)
 	case messageType == 0x03: // S7MessageResponseData
-		_parent, typeSwitchError = S7MessageResponseDataParse(readBuffer)
+		_child, typeSwitchError = S7MessageResponseDataParse(readBuffer)
 	case messageType == 0x07: // S7MessageUserData
-		_parent, typeSwitchError = S7MessageUserDataParse(readBuffer)
+		_child, typeSwitchError = S7MessageUserDataParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -281,8 +285,8 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, tpduReference, parameter, payload)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), tpduReference, parameter, payload)
+	return _child.GetParent(), nil
 }
 
 func (m *S7Message) Serialize(writeBuffer utils.WriteBuffer) error {

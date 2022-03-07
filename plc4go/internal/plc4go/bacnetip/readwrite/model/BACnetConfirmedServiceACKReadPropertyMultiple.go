@@ -104,7 +104,7 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKReadPropertyMultiple, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func BACnetConfirmedServiceACKReadPropertyMultipleParse(readBuffer utils.ReadBuf
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {

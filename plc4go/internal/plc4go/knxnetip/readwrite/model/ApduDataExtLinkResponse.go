@@ -106,7 +106,7 @@ func (m *ApduDataExtLinkResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtLinkResponse, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (*A
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtLinkResponse) Serialize(writeBuffer utils.WriteBuffer) error {

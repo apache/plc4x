@@ -106,7 +106,7 @@ func (m *LRawCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*LRawCon, error) {
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LRawCon) Serialize(writeBuffer utils.WriteBuffer) error {

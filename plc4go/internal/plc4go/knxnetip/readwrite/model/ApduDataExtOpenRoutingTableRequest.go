@@ -106,7 +106,7 @@ func (m *ApduDataExtOpenRoutingTableRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtOpenRoutingTableRequest, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtOpenRoutingTableRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtOpenRoutingTableRequestParse(readBuffer utils.ReadBuffer, length
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) Serialize(writeBuffer utils.WriteBuffer) error {

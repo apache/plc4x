@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandTerminalLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandTerminalLevels, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandTerminalLevels"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandTerminalLevelsParse(readBuffer utils.ReadBuffer, attrib
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandTerminalLevels) Serialize(writeBuffer utils.WriteBuffer) error {

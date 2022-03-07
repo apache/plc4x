@@ -212,7 +212,7 @@ func (m *CALReplyLong) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
+func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReplyLong, error) {
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -353,7 +353,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer) (*CALReply, error) {
 		CALReply:               &CALReply{},
 	}
 	_child.CALReply.Child = _child
-	return _child.CALReply, nil
+	return _child, nil
 }
 
 func (m *CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {

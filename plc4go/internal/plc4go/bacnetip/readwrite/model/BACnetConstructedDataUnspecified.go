@@ -182,7 +182,7 @@ func (m *BACnetConstructedDataUnspecified) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
+func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataUnspecified, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUnspecified"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -268,7 +268,7 @@ func BACnetConstructedDataUnspecifiedParse(readBuffer utils.ReadBuffer, tagNumbe
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
-	return _child.BACnetConstructedData, nil
+	return _child, nil
 }
 
 func (m *BACnetConstructedDataUnspecified) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -138,7 +138,7 @@ func (m *BACnetApplicationTagCharacterString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, header *BACnetTagHeader) (*BACnetApplicationTagCharacterString, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagCharacterString"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -173,7 +173,7 @@ func BACnetApplicationTagCharacterStringParse(readBuffer utils.ReadBuffer, heade
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {

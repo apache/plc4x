@@ -113,7 +113,7 @@ func (m *LDataFrameACK) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
+func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrameACK, error) {
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -129,7 +129,7 @@ func LDataFrameACKParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		LDataFrame: &LDataFrame{},
 	}
 	_child.LDataFrame.Child = _child
-	return _child.LDataFrame, nil
+	return _child, nil
 }
 
 func (m *LDataFrameACK) Serialize(writeBuffer utils.WriteBuffer) error {

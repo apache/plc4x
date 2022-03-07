@@ -142,7 +142,7 @@ func (m *FirmataMessageSubscribeAnalogPinValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
+func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessageSubscribeAnalogPinValue, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -188,7 +188,7 @@ func FirmataMessageSubscribeAnalogPinValueParse(readBuffer utils.ReadBuffer, res
 		FirmataMessage: &FirmataMessage{},
 	}
 	_child.FirmataMessage.Child = _child
-	return _child.FirmataMessage, nil
+	return _child, nil
 }
 
 func (m *FirmataMessageSubscribeAnalogPinValue) Serialize(writeBuffer utils.WriteBuffer) error {

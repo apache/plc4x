@@ -138,7 +138,7 @@ func (m *FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
+func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommandSetPinMode, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -176,7 +176,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 		FirmataCommand: &FirmataCommand{},
 	}
 	_child.FirmataCommand.Child = _child
-	return _child.FirmataCommand, nil
+	return _child, nil
 }
 
 func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) error {

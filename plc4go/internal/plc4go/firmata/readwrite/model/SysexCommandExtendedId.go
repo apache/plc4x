@@ -130,7 +130,7 @@ func (m *SysexCommandExtendedId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandExtendedId, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -166,7 +166,7 @@ func SysexCommandExtendedIdParse(readBuffer utils.ReadBuffer, response bool) (*S
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandExtendedId) Serialize(writeBuffer utils.WriteBuffer) error {

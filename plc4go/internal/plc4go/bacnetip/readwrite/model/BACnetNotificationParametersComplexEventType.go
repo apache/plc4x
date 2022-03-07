@@ -128,7 +128,7 @@ func (m *BACnetNotificationParametersComplexEventType) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParameters, error) {
+func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, peekedTagNumber uint8) (*BACnetNotificationParametersComplexEventType, error) {
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -158,7 +158,7 @@ func BACnetNotificationParametersComplexEventTypeParse(readBuffer utils.ReadBuff
 		BACnetNotificationParameters: &BACnetNotificationParameters{},
 	}
 	_child.BACnetNotificationParameters.Child = _child
-	return _child.BACnetNotificationParameters, nil
+	return _child, nil
 }
 
 func (m *BACnetNotificationParametersComplexEventType) Serialize(writeBuffer utils.WriteBuffer) error {

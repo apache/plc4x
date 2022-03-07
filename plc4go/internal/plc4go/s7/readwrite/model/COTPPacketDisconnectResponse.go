@@ -141,7 +141,7 @@ func (m *COTPPacketDisconnectResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacketDisconnectResponse, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -173,7 +173,7 @@ func COTPPacketDisconnectResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 		COTPPacket:           &COTPPacket{},
 	}
 	_child.COTPPacket.Child = _child
-	return _child.COTPPacket, nil
+	return _child, nil
 }
 
 func (m *COTPPacketDisconnectResponse) Serialize(writeBuffer utils.WriteBuffer) error {

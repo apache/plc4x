@@ -183,7 +183,7 @@ func (m *S7AddressAny) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
+func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7AddressAny, error) {
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -276,7 +276,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		S7Address:        &S7Address{},
 	}
 	_child.S7Address.Child = _child
-	return _child.S7Address, nil
+	return _child, nil
 }
 
 func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -106,7 +106,7 @@ func (m *ApduDataMemoryWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataMemoryWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*A
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataMemoryWrite) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -133,7 +133,7 @@ func (m *CALDataRequestRecall) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataRequestRecallParse(readBuffer utils.ReadBuffer) (*CALData, error) {
+func CALDataRequestRecallParse(readBuffer utils.ReadBuffer) (*CALDataRequestRecall, error) {
 	if pullErr := readBuffer.PullContext("CALDataRequestRecall"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -165,7 +165,7 @@ func CALDataRequestRecallParse(readBuffer utils.ReadBuffer) (*CALData, error) {
 		CALData: &CALData{},
 	}
 	_child.CALData.Child = _child
-	return _child.CALData, nil
+	return _child, nil
 }
 
 func (m *CALDataRequestRecall) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -151,7 +151,7 @@ func (m *SysexCommandReportFirmwareResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
+func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommandReportFirmwareResponse, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -202,7 +202,7 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 		SysexCommand: &SysexCommand{},
 	}
 	_child.SysexCommand.Child = _child
-	return _child.SysexCommand, nil
+	return _child, nil
 }
 
 func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBuffer) error {

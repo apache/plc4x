@@ -124,7 +124,7 @@ func (m *KnxGroupAddressFreeLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGroupAddressFreeLevel, error) {
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 		KnxGroupAddress: &KnxGroupAddress{},
 	}
 	_child.KnxGroupAddress.Child = _child
-	return _child.KnxGroupAddress, nil
+	return _child, nil
 }
 
 func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) error {

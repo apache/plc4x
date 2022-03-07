@@ -106,7 +106,7 @@ func (m *BACnetErrorPasswordFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorPasswordFailureParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorPasswordFailureParse(readBuffer utils.ReadBuffer) (*BACnetErrorPasswordFailure, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorPasswordFailure"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorPasswordFailureParse(readBuffer utils.ReadBuffer) (*BACnetError,
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorPasswordFailure) Serialize(writeBuffer utils.WriteBuffer) error {

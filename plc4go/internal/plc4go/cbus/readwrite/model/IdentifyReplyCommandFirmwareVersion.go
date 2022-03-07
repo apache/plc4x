@@ -124,7 +124,7 @@ func (m *IdentifyReplyCommandFirmwareVersion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandFirmwareVersion, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareVersion"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func IdentifyReplyCommandFirmwareVersionParse(readBuffer utils.ReadBuffer, attri
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandFirmwareVersion) Serialize(writeBuffer utils.WriteBuffer) error {

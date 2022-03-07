@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandMinimumLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandMinimumLevels, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMinimumLevels"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandMinimumLevelsParse(readBuffer utils.ReadBuffer, attribu
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandMinimumLevels) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -153,17 +153,21 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 	_ = commandType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *SALData
+	type SALDataChild interface {
+		InitializeParent(*SALData, SALCommandTypeContainer)
+		GetParent() *SALData
+	}
+	var _child SALDataChild
 	var typeSwitchError error
 	switch {
 	case commandType == SALCommandType_OFF: // SALDataOff
-		_parent, typeSwitchError = SALDataOffParse(readBuffer)
+		_child, typeSwitchError = SALDataOffParse(readBuffer)
 	case commandType == SALCommandType_ON: // SALDataOn
-		_parent, typeSwitchError = SALDataOnParse(readBuffer)
+		_child, typeSwitchError = SALDataOnParse(readBuffer)
 	case commandType == SALCommandType_RAMP_TO_LEVEL: // SALDataRampToLevel
-		_parent, typeSwitchError = SALDataRampToLevelParse(readBuffer)
+		_child, typeSwitchError = SALDataRampToLevelParse(readBuffer)
 	case commandType == SALCommandType_TERMINATE_RAMP: // SALDataTerminateRamp
-		_parent, typeSwitchError = SALDataTerminateRampParse(readBuffer)
+		_child, typeSwitchError = SALDataTerminateRampParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -177,8 +181,8 @@ func SALDataParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, commandTypeContainer)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), commandTypeContainer)
+	return _child.GetParent(), nil
 }
 
 func (m *SALData) Serialize(writeBuffer utils.WriteBuffer) error {

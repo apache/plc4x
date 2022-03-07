@@ -104,7 +104,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionResponseDataBlockDeviceManagement, error) {
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 		ConnectionResponseDataBlock: &ConnectionResponseDataBlock{},
 	}
 	_child.ConnectionResponseDataBlock.Child = _child
-	return _child.ConnectionResponseDataBlock, nil
+	return _child, nil
 }
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {

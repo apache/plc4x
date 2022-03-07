@@ -133,7 +133,7 @@ func (m *SALDataRampToLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALData, error) {
+func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALDataRampToLevel, error) {
 	if pullErr := readBuffer.PullContext("SALDataRampToLevel"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -165,7 +165,7 @@ func SALDataRampToLevelParse(readBuffer utils.ReadBuffer) (*SALData, error) {
 		SALData: &SALData{},
 	}
 	_child.SALData.Child = _child
-	return _child.SALData, nil
+	return _child, nil
 }
 
 func (m *SALDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {

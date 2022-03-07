@@ -142,7 +142,7 @@ func (m *APDUReject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUReject, error) {
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -188,7 +188,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, err
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {

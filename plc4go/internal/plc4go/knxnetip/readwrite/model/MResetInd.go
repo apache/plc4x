@@ -106,7 +106,7 @@ func (m *MResetInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (*MResetInd, error) {
 	if pullErr := readBuffer.PullContext("MResetInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {

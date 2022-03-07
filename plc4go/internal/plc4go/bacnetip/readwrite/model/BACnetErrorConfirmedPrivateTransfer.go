@@ -106,7 +106,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetErrorConfirmedPrivateTransfer, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BAC
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {

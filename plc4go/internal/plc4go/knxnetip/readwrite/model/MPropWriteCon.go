@@ -106,7 +106,7 @@ func (m *MPropWriteCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*MPropWriteCon, error) {
 	if pullErr := readBuffer.PullContext("MPropWriteCon"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func MPropWriteConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error)
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MPropWriteCon) Serialize(writeBuffer utils.WriteBuffer) error {

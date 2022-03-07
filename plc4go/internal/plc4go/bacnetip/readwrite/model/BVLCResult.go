@@ -124,7 +124,7 @@ func (m *BVLCResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLCResult, error) {
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {

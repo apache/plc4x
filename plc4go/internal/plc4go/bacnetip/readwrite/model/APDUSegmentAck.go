@@ -175,7 +175,7 @@ func (m *APDUSegmentAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUSegmentAck, error) {
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -245,7 +245,7 @@ func APDUSegmentAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU,
 		APDU:               &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUSegmentAck) Serialize(writeBuffer utils.WriteBuffer) error {

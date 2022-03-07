@@ -187,7 +187,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (*CEMIAdditionalInformationBusmonitorInfo, error) {
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -260,7 +260,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 		CEMIAdditionalInformation: &CEMIAdditionalInformation{},
 	}
 	_child.CEMIAdditionalInformation.Child = _child
-	return _child.CEMIAdditionalInformation, nil
+	return _child, nil
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.WriteBuffer) error {

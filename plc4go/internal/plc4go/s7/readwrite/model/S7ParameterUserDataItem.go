@@ -110,11 +110,15 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (*S7ParameterUser
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7ParameterUserDataItem
+	type S7ParameterUserDataItemChild interface {
+		InitializeParent(*S7ParameterUserDataItem)
+		GetParent() *S7ParameterUserDataItem
+	}
+	var _child S7ParameterUserDataItemChild
 	var typeSwitchError error
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
-		_parent, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(readBuffer)
+		_child, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -128,8 +132,8 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (*S7ParameterUser
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7ParameterUserDataItem) Serialize(writeBuffer utils.WriteBuffer) error {

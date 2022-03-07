@@ -174,7 +174,7 @@ func (m *AdsReadDeviceInfoResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
+func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsReadDeviceInfoResponse, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -235,7 +235,7 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId Comma
 		AdsData:      &AdsData{},
 	}
 	_child.AdsData.Child = _child
-	return _child.AdsData, nil
+	return _child, nil
 }
 
 func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) error {

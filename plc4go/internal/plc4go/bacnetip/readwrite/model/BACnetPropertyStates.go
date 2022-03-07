@@ -181,15 +181,19 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetPropertyStates
+	type BACnetPropertyStatesChild interface {
+		InitializeParent(*BACnetPropertyStates, *BACnetOpeningTag, *BACnetTagHeader, *BACnetClosingTag)
+		GetParent() *BACnetPropertyStates
+	}
+	var _child BACnetPropertyStatesChild
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
-		_parent, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBooleanParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(1): // BACnetPropertyStatesBinaryValue
-		_parent, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesBinaryValueParse(readBuffer, tagNumber, peekedTagNumber)
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
-		_parent, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
+		_child, typeSwitchError = BACnetPropertyStatesActionParse(readBuffer, tagNumber, peekedTagNumber)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -216,8 +220,8 @@ func BACnetPropertyStatesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*B
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, openingTag, peekedTagHeader, closingTag)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), openingTag, peekedTagHeader, closingTag)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetPropertyStates) Serialize(writeBuffer utils.WriteBuffer) error {

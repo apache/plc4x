@@ -106,7 +106,7 @@ func (m *BACnetErrorAtomicWriteFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetErrorAtomicWriteFile, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorAtomicWriteFile"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetError,
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffer) error {

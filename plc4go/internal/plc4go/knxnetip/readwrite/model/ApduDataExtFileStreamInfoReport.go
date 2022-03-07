@@ -106,7 +106,7 @@ func (m *ApduDataExtFileStreamInfoReport) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtFileStreamInfoReport, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length ui
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -202,13 +202,17 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	_ = isDirect
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CBusPointToPointCommand
+	type CBusPointToPointCommandChild interface {
+		InitializeParent(*CBusPointToPointCommand, uint16, *CALData, *Checksum, byte, *Alpha)
+		GetParent() *CBusPointToPointCommand
+	}
+	var _child CBusPointToPointCommandChild
 	var typeSwitchError error
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		_parent, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, srchk)
+		_child, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, srchk)
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		_parent, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, srchk)
+		_child, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, srchk)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -295,8 +299,8 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, srchk bool) (*CBu
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, bridgeAddressCountPeek, calData, crc, peekAlpha, alpha)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), bridgeAddressCountPeek, calData, crc, peekAlpha, alpha)
+	return _child.GetParent(), nil
 }
 
 func (m *CBusPointToPointCommand) Serialize(writeBuffer utils.WriteBuffer) error {

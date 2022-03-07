@@ -127,7 +127,7 @@ func (m *COTPParameterChecksum) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameterChecksum, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -151,7 +151,7 @@ func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPP
 		COTPParameter: &COTPParameter{},
 	}
 	_child.COTPParameter.Child = _child
-	return _child.COTPParameter, nil
+	return _child, nil
 }
 
 func (m *COTPParameterChecksum) Serialize(writeBuffer utils.WriteBuffer) error {

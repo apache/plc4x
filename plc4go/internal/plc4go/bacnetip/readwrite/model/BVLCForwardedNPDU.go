@@ -151,7 +151,7 @@ func (m *BVLCForwardedNPDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
+func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLCForwardedNPDU, error) {
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -209,7 +209,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint1
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCForwardedNPDU) Serialize(writeBuffer utils.WriteBuffer) error {

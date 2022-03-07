@@ -162,7 +162,7 @@ func (m *ConnectionResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*ConnectionResponse, error) {
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -244,7 +244,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		KnxNetIpMessage:             &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {

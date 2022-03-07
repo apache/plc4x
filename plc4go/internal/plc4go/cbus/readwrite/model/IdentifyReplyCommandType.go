@@ -124,7 +124,7 @@ func (m *IdentifyReplyCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandType, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func IdentifyReplyCommandTypeParse(readBuffer utils.ReadBuffer, attribute Attrib
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandType) Serialize(writeBuffer utils.WriteBuffer) error {

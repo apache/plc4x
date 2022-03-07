@@ -106,7 +106,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtIndividualAddressSerialNumberWrite, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberWrite"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtIndividualAddressSerialNumberWriteParse(readBuffer utils.ReadBuf
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -124,7 +124,7 @@ func (m *KnxNetRemoteLogging) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*KnxNetRemoteLogging, error) {
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func KnxNetRemoteLoggingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetRemoteLogging) Serialize(writeBuffer utils.WriteBuffer) error {

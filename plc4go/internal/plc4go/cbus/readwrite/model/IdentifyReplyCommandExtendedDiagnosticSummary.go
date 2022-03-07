@@ -333,7 +333,7 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandExtendedDiagnosticSummary, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -555,7 +555,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 		IdentifyReplyCommand:   &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer utils.WriteBuffer) error {

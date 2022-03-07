@@ -132,7 +132,7 @@ func (m *CIPEncapsulationReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) (*CIPEncapsulationPacket, error) {
+func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) (*CIPEncapsulationReadResponse, error) {
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -162,7 +162,7 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 		CIPEncapsulationPacket: &CIPEncapsulationPacket{},
 	}
 	_child.CIPEncapsulationPacket.Child = _child
-	return _child.CIPEncapsulationPacket, nil
+	return _child, nil
 }
 
 func (m *CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -130,7 +130,7 @@ func (m *ApduControlContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduControlContainer, error) {
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -160,7 +160,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*
 		Apdu:        &Apdu{},
 	}
 	_child.Apdu.Child = _child
-	return _child.Apdu, nil
+	return _child, nil
 }
 
 func (m *ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {

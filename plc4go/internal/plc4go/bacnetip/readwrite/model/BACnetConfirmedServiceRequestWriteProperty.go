@@ -177,7 +177,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestWriteProperty, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -279,7 +279,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils.WriteBuffer) error {

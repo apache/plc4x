@@ -124,7 +124,7 @@ func (m *SearchRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func SearchRequestParse(readBuffer utils.ReadBuffer) (*SearchRequest, error) {
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		KnxNetIpMessage:        &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *SearchRequest) Serialize(writeBuffer utils.WriteBuffer) error {

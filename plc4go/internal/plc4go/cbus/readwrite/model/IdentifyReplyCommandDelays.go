@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandDelays) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandDelays, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandDelays) Serialize(writeBuffer utils.WriteBuffer) error {

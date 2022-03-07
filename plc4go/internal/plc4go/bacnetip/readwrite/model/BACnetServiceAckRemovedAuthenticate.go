@@ -103,7 +103,7 @@ func (m *BACnetServiceAckRemovedAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckRemovedAuthenticate, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRemovedAuthenticate"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetServiceAckRemovedAuthenticateParse(readBuffer utils.ReadBuffer) (*BAC
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {

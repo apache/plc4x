@@ -104,7 +104,7 @@ func (m *ConnectionRequestInformationDeviceManagement) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationDeviceManagementParse(readBuffer utils.ReadBuffer) (*ConnectionRequestInformationDeviceManagement, error) {
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -120,7 +120,7 @@ func ConnectionRequestInformationDeviceManagementParse(readBuffer utils.ReadBuff
 		ConnectionRequestInformation: &ConnectionRequestInformation{},
 	}
 	_child.ConnectionRequestInformation.Child = _child
-	return _child.ConnectionRequestInformation, nil
+	return _child, nil
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {

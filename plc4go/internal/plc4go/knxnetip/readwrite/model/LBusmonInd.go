@@ -166,7 +166,7 @@ func (m *LBusmonInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*LBusmonInd, error) {
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -237,7 +237,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI:                        &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {

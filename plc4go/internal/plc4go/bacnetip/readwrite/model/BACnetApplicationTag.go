@@ -171,35 +171,39 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	_ = actualLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetApplicationTag
+	type BACnetApplicationTagChild interface {
+		InitializeParent(*BACnetApplicationTag, *BACnetTagHeader)
+		GetParent() *BACnetApplicationTag
+	}
+	var _child BACnetApplicationTagChild
 	var typeSwitchError error
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
-		_parent, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		_parent, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, header)
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		_parent, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, header)
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		_parent, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, header)
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
-		_parent, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
-		_parent, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		_parent, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, header)
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		_parent, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, header)
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		_parent, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, header)
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		_parent, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, header)
+		_child, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, header)
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
-		_parent, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
-		_parent, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
-		_parent, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
+		_child, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -213,8 +217,8 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (*BACnetApplicationT
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, header)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), header)
+	return _child.GetParent(), nil
 }
 
 func (m *BACnetApplicationTag) Serialize(writeBuffer utils.WriteBuffer) error {

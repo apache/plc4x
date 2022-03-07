@@ -146,7 +146,7 @@ func (m *BACnetApplicationTagObjectIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTag, error) {
+func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BACnetApplicationTagObjectIdentifier, error) {
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -186,7 +186,7 @@ func BACnetApplicationTagObjectIdentifierParse(readBuffer utils.ReadBuffer) (*BA
 		BACnetApplicationTag: &BACnetApplicationTag{},
 	}
 	_child.BACnetApplicationTag.Child = _child
-	return _child.BACnetApplicationTag, nil
+	return _child, nil
 }
 
 func (m *BACnetApplicationTagObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

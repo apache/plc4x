@@ -103,7 +103,7 @@ func (m *RoutingIndication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*RoutingIndication, error) {
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func RoutingIndicationParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 		KnxNetIpMessage: &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {

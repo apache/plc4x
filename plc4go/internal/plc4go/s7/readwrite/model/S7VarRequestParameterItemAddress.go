@@ -127,7 +127,7 @@ func (m *S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarRequestParameterItemAddress, error) {
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -164,7 +164,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (*S7VarR
 		S7VarRequestParameterItem: &S7VarRequestParameterItem{},
 	}
 	_child.S7VarRequestParameterItem.Child = _child
-	return _child.S7VarRequestParameterItem, nil
+	return _child, nil
 }
 
 func (m *S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -124,7 +124,7 @@ func (m *DescriptionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*DescriptionRequest, error) {
 	if pullErr := readBuffer.PullContext("DescriptionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func DescriptionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		KnxNetIpMessage:     &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DescriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {

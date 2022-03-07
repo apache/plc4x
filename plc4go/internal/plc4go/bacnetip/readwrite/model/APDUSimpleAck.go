@@ -142,7 +142,7 @@ func (m *APDUSimpleAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUSimpleAck, error) {
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -188,7 +188,7 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, 
 		APDU:             &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {

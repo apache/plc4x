@@ -113,19 +113,23 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *FirmataMessage
+	type FirmataMessageChild interface {
+		InitializeParent(*FirmataMessage)
+		GetParent() *FirmataMessage
+	}
+	var _child FirmataMessageChild
 	var typeSwitchError error
 	switch {
 	case messageType == 0xE: // FirmataMessageAnalogIO
-		_parent, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer, response)
+		_child, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer, response)
 	case messageType == 0x9: // FirmataMessageDigitalIO
-		_parent, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer, response)
+		_child, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer, response)
 	case messageType == 0xC: // FirmataMessageSubscribeAnalogPinValue
-		_parent, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer, response)
+		_child, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer, response)
 	case messageType == 0xD: // FirmataMessageSubscribeDigitalPinValue
-		_parent, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer, response)
+		_child, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer, response)
 	case messageType == 0xF: // FirmataMessageCommand
-		_parent, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
+		_child, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -139,8 +143,8 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *FirmataMessage) Serialize(writeBuffer utils.WriteBuffer) error {

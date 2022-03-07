@@ -103,7 +103,7 @@ func (m *IdentifyReplyCommandMaximumLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommand, error) {
+func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribute Attribute) (*IdentifyReplyCommandMaximumLevels, error) {
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMaximumLevels"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func IdentifyReplyCommandMaximumLevelsParse(readBuffer utils.ReadBuffer, attribu
 		IdentifyReplyCommand: &IdentifyReplyCommand{},
 	}
 	_child.IdentifyReplyCommand.Child = _child
-	return _child.IdentifyReplyCommand, nil
+	return _child, nil
 }
 
 func (m *IdentifyReplyCommandMaximumLevels) Serialize(writeBuffer utils.WriteBuffer) error {

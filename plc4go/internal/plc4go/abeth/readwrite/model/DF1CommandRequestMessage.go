@@ -129,7 +129,7 @@ func (m *DF1CommandRequestMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMessage, error) {
+func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1CommandRequestMessage, error) {
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -159,7 +159,7 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 		DF1RequestMessage: &DF1RequestMessage{},
 	}
 	_child.DF1RequestMessage.Child = _child
-	return _child.DF1RequestMessage, nil
+	return _child, nil
 }
 
 func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {

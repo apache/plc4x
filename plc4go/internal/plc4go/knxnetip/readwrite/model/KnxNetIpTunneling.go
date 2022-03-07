@@ -124,7 +124,7 @@ func (m *KnxNetIpTunneling) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*KnxNetIpTunneling, error) {
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -148,7 +148,7 @@ func KnxNetIpTunnelingParse(readBuffer utils.ReadBuffer) (*ServiceId, error) {
 		ServiceId: &ServiceId{},
 	}
 	_child.ServiceId.Child = _child
-	return _child.ServiceId, nil
+	return _child, nil
 }
 
 func (m *KnxNetIpTunneling) Serialize(writeBuffer utils.WriteBuffer) error {

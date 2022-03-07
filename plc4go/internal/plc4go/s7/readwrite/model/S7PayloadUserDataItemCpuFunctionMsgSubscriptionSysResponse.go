@@ -146,7 +146,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -178,7 +178,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer 
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -223,7 +223,7 @@ func (m *APDUConfirmedRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUConfirmedRequest, error) {
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -337,7 +337,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		APDU:                      &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {

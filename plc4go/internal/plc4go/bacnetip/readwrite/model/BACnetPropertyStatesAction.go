@@ -130,7 +130,7 @@ func (m *BACnetPropertyStatesAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStates, error) {
+func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesAction, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -168,7 +168,7 @@ func BACnetPropertyStatesActionParse(readBuffer utils.ReadBuffer, tagNumber uint
 		BACnetPropertyStates: &BACnetPropertyStates{},
 	}
 	_child.BACnetPropertyStates.Child = _child
-	return _child.BACnetPropertyStates, nil
+	return _child, nil
 }
 
 func (m *BACnetPropertyStatesAction) Serialize(writeBuffer utils.WriteBuffer) error {

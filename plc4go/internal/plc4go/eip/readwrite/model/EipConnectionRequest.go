@@ -120,7 +120,7 @@ func (m *EipConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
+func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionRequest, error) {
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) 
 		EipPacket: &EipPacket{},
 	}
 	_child.EipPacket.Child = _child
-	return _child.EipPacket, nil
+	return _child, nil
 }
 
 func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {

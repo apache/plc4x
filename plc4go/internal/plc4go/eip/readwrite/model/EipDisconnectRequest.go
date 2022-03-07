@@ -108,7 +108,7 @@ func (m *EipDisconnectRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) {
+func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipDisconnectRequest, error) {
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -124,7 +124,7 @@ func EipDisconnectRequestParse(readBuffer utils.ReadBuffer) (*EipPacket, error) 
 		EipPacket: &EipPacket{},
 	}
 	_child.EipPacket.Child = _child
-	return _child.EipPacket, nil
+	return _child, nil
 }
 
 func (m *EipDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {

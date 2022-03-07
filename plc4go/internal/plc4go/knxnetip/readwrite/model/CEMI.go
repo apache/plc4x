@@ -113,55 +113,59 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CEMI
+	type CEMIChild interface {
+		InitializeParent(*CEMI)
+		GetParent() *CEMI
+	}
+	var _child CEMIChild
 	var typeSwitchError error
 	switch {
 	case messageCode == 0x2B: // LBusmonInd
-		_parent, typeSwitchError = LBusmonIndParse(readBuffer, size)
+		_child, typeSwitchError = LBusmonIndParse(readBuffer, size)
 	case messageCode == 0x11: // LDataReq
-		_parent, typeSwitchError = LDataReqParse(readBuffer, size)
+		_child, typeSwitchError = LDataReqParse(readBuffer, size)
 	case messageCode == 0x29: // LDataInd
-		_parent, typeSwitchError = LDataIndParse(readBuffer, size)
+		_child, typeSwitchError = LDataIndParse(readBuffer, size)
 	case messageCode == 0x2E: // LDataCon
-		_parent, typeSwitchError = LDataConParse(readBuffer, size)
+		_child, typeSwitchError = LDataConParse(readBuffer, size)
 	case messageCode == 0x10: // LRawReq
-		_parent, typeSwitchError = LRawReqParse(readBuffer, size)
+		_child, typeSwitchError = LRawReqParse(readBuffer, size)
 	case messageCode == 0x2D: // LRawInd
-		_parent, typeSwitchError = LRawIndParse(readBuffer, size)
+		_child, typeSwitchError = LRawIndParse(readBuffer, size)
 	case messageCode == 0x2F: // LRawCon
-		_parent, typeSwitchError = LRawConParse(readBuffer, size)
+		_child, typeSwitchError = LRawConParse(readBuffer, size)
 	case messageCode == 0x13: // LPollDataReq
-		_parent, typeSwitchError = LPollDataReqParse(readBuffer, size)
+		_child, typeSwitchError = LPollDataReqParse(readBuffer, size)
 	case messageCode == 0x25: // LPollDataCon
-		_parent, typeSwitchError = LPollDataConParse(readBuffer, size)
+		_child, typeSwitchError = LPollDataConParse(readBuffer, size)
 	case messageCode == 0x41: // TDataConnectedReq
-		_parent, typeSwitchError = TDataConnectedReqParse(readBuffer, size)
+		_child, typeSwitchError = TDataConnectedReqParse(readBuffer, size)
 	case messageCode == 0x89: // TDataConnectedInd
-		_parent, typeSwitchError = TDataConnectedIndParse(readBuffer, size)
+		_child, typeSwitchError = TDataConnectedIndParse(readBuffer, size)
 	case messageCode == 0x4A: // TDataIndividualReq
-		_parent, typeSwitchError = TDataIndividualReqParse(readBuffer, size)
+		_child, typeSwitchError = TDataIndividualReqParse(readBuffer, size)
 	case messageCode == 0x94: // TDataIndividualInd
-		_parent, typeSwitchError = TDataIndividualIndParse(readBuffer, size)
+		_child, typeSwitchError = TDataIndividualIndParse(readBuffer, size)
 	case messageCode == 0xFC: // MPropReadReq
-		_parent, typeSwitchError = MPropReadReqParse(readBuffer, size)
+		_child, typeSwitchError = MPropReadReqParse(readBuffer, size)
 	case messageCode == 0xFB: // MPropReadCon
-		_parent, typeSwitchError = MPropReadConParse(readBuffer, size)
+		_child, typeSwitchError = MPropReadConParse(readBuffer, size)
 	case messageCode == 0xF6: // MPropWriteReq
-		_parent, typeSwitchError = MPropWriteReqParse(readBuffer, size)
+		_child, typeSwitchError = MPropWriteReqParse(readBuffer, size)
 	case messageCode == 0xF5: // MPropWriteCon
-		_parent, typeSwitchError = MPropWriteConParse(readBuffer, size)
+		_child, typeSwitchError = MPropWriteConParse(readBuffer, size)
 	case messageCode == 0xF7: // MPropInfoInd
-		_parent, typeSwitchError = MPropInfoIndParse(readBuffer, size)
+		_child, typeSwitchError = MPropInfoIndParse(readBuffer, size)
 	case messageCode == 0xF8: // MFuncPropCommandReq
-		_parent, typeSwitchError = MFuncPropCommandReqParse(readBuffer, size)
+		_child, typeSwitchError = MFuncPropCommandReqParse(readBuffer, size)
 	case messageCode == 0xF9: // MFuncPropStateReadReq
-		_parent, typeSwitchError = MFuncPropStateReadReqParse(readBuffer, size)
+		_child, typeSwitchError = MFuncPropStateReadReqParse(readBuffer, size)
 	case messageCode == 0xFA: // MFuncPropCon
-		_parent, typeSwitchError = MFuncPropConParse(readBuffer, size)
+		_child, typeSwitchError = MFuncPropConParse(readBuffer, size)
 	case messageCode == 0xF1: // MResetReq
-		_parent, typeSwitchError = MResetReqParse(readBuffer, size)
+		_child, typeSwitchError = MResetReqParse(readBuffer, size)
 	case messageCode == 0xF0: // MResetInd
-		_parent, typeSwitchError = MResetIndParse(readBuffer, size)
+		_child, typeSwitchError = MResetIndParse(readBuffer, size)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -175,8 +179,8 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *CEMI) Serialize(writeBuffer utils.WriteBuffer) error {

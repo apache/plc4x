@@ -153,7 +153,7 @@ func (m *LDataInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*LDataInd, error) {
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -213,7 +213,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 		CEMI:                        &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LDataInd) Serialize(writeBuffer utils.WriteBuffer) error {

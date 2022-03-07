@@ -89,27 +89,6 @@
 
 [type AbstractTypeTest
     //Abstract fields can only be used within discriminated base types.
-    [simple         uint 8 simpleField]
-    [abstract bit abstractBitField]
-    [abstract int 8 abstractIntField]
-    [abstract uint 8 abstractUintField]
-    [abstract float 32 abstractFloatField]
-    [abstract float 64 abstractDoubleField]
-    [abstract string 8 abstractStringField]
-    [typeSwitch simpleField
-        ['0' AbstractedType
-            [simple bit abstractBitField]
-            [simple int 8 abstractIntField]
-            [simple uint 8 abstractUintField]
-            [simple float 32 abstractFloatField]
-            [simple float 64 abstractDoubleField]
-            [simple string 8 abstractStringField]
-        ]
-    ]
-]
-
-[type AbstractTypeTest
-    //Abstract fields can only be used within discriminated base types.
     [simple   uint 8 simpleField]
     [abstract bit abstractBitField]
     [abstract int 8 abstractIntField]
@@ -118,8 +97,8 @@
     [abstract float 64 abstractDoubleField]
     [abstract string 8 abstractStringField]
     [typeSwitch simpleField
-        ['0' AbstractedType
-            //Abstract fields need to be overriden in child
+        ['0' AbstractTypeTestSubType
+            //Abstract fields need to be overridden in child
             [simple bit abstractBitField]
             [simple int 8 abstractIntField]
             [simple uint 8 abstractUintField]

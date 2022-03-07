@@ -106,7 +106,7 @@ func (m *LPollDataCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*LPollDataCon, error) {
 	if pullErr := readBuffer.PullContext("LPollDataCon"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func LPollDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *LPollDataCon) Serialize(writeBuffer utils.WriteBuffer) error {

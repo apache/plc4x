@@ -142,7 +142,7 @@ func (m *CipWriteResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
+func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipWriteResponse, error) {
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -188,7 +188,7 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*Cip
 		CipService: &CipService{},
 	}
 	_child.CipService.Child = _child
-	return _child.CipService, nil
+	return _child, nil
 }
 
 func (m *CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {

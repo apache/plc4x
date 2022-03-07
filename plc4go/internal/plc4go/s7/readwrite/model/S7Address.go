@@ -110,11 +110,15 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *S7Address
+	type S7AddressChild interface {
+		InitializeParent(*S7Address)
+		GetParent() *S7Address
+	}
+	var _child S7AddressChild
 	var typeSwitchError error
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		_parent, typeSwitchError = S7AddressAnyParse(readBuffer)
+		_child, typeSwitchError = S7AddressAnyParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -128,8 +132,8 @@ func S7AddressParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *S7Address) Serialize(writeBuffer utils.WriteBuffer) error {

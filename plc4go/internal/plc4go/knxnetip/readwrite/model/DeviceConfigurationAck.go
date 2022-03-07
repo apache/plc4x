@@ -124,7 +124,7 @@ func (m *DeviceConfigurationAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*DeviceConfigurationAck, error) {
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -154,7 +154,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 		KnxNetIpMessage:                 &KnxNetIpMessage{},
 	}
 	_child.KnxNetIpMessage.Child = _child
-	return _child.KnxNetIpMessage, nil
+	return _child, nil
 }
 
 func (m *DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error {

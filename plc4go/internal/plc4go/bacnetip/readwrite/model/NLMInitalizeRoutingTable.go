@@ -145,7 +145,7 @@ func (m *NLMInitalizeRoutingTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMInitalizeRoutingTable, error) {
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTable"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -189,7 +189,7 @@ func NLMInitalizeRoutingTableParse(readBuffer utils.ReadBuffer, apduLength uint1
 		NLM:           &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMInitalizeRoutingTable) Serialize(writeBuffer utils.WriteBuffer) error {

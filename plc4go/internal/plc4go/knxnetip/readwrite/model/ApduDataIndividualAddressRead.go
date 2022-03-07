@@ -106,7 +106,7 @@ func (m *ApduDataIndividualAddressRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduDataIndividualAddressRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength 
 		ApduData: &ApduData{},
 	}
 	_child.ApduData.Child = _child
-	return _child.ApduData, nil
+	return _child, nil
 }
 
 func (m *ApduDataIndividualAddressRead) Serialize(writeBuffer utils.WriteBuffer) error {

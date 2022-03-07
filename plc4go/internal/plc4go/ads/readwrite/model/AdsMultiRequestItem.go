@@ -102,15 +102,19 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	_ = currentPos
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *AdsMultiRequestItem
+	type AdsMultiRequestItemChild interface {
+		InitializeParent(*AdsMultiRequestItem)
+		GetParent() *AdsMultiRequestItem
+	}
+	var _child AdsMultiRequestItemChild
 	var typeSwitchError error
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
+		_child, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -124,8 +128,8 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent())
+	return _child.GetParent(), nil
 }
 
 func (m *AdsMultiRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {

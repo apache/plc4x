@@ -106,7 +106,7 @@ func (m *BACnetErrorDeviceCommunicationProtocol) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorDeviceCommunicationProtocolParse(readBuffer utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorDeviceCommunicationProtocolParse(readBuffer utils.ReadBuffer) (*BACnetErrorDeviceCommunicationProtocol, error) {
 	if pullErr := readBuffer.PullContext("BACnetErrorDeviceCommunicationProtocol"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func BACnetErrorDeviceCommunicationProtocolParse(readBuffer utils.ReadBuffer) (*
 		BACnetError: &BACnetError{},
 	}
 	_child.BACnetError.Child = _child
-	return _child.BACnetError, nil
+	return _child, nil
 }
 
 func (m *BACnetErrorDeviceCommunicationProtocol) Serialize(writeBuffer utils.WriteBuffer) error {

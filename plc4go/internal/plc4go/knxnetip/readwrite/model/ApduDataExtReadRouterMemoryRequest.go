@@ -106,7 +106,7 @@ func (m *ApduDataExtReadRouterMemoryRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtReadRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtReadRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtReadRouterMemoryRequest, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterMemoryRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func ApduDataExtReadRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtReadRouterMemoryRequest) Serialize(writeBuffer utils.WriteBuffer) error {

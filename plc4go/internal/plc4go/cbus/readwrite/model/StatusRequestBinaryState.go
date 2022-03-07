@@ -129,7 +129,7 @@ func (m *StatusRequestBinaryState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (*StatusRequest, error) {
+func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (*StatusRequestBinaryState, error) {
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryState"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -181,7 +181,7 @@ func StatusRequestBinaryStateParse(readBuffer utils.ReadBuffer) (*StatusRequest,
 		StatusRequest: &StatusRequest{},
 	}
 	_child.StatusRequest.Child = _child
-	return _child.StatusRequest, nil
+	return _child, nil
 }
 
 func (m *StatusRequestBinaryState) Serialize(writeBuffer utils.WriteBuffer) error {

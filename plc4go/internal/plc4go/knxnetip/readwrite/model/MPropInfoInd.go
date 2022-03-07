@@ -106,7 +106,7 @@ func (m *MPropInfoInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*MPropInfoInd, error) {
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func MPropInfoIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) 
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MPropInfoInd) Serialize(writeBuffer utils.WriteBuffer) error {

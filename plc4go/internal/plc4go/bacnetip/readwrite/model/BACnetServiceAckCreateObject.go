@@ -103,7 +103,7 @@ func (m *BACnetServiceAckCreateObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServiceAckCreateObject, error) {
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetServiceAckCreateObjectParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		BACnetServiceAck: &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
-	return _child.BACnetServiceAck, nil
+	return _child, nil
 }
 
 func (m *BACnetServiceAckCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {

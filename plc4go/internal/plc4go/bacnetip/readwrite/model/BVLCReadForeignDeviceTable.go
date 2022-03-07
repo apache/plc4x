@@ -103,7 +103,7 @@ func (m *BVLCReadForeignDeviceTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLC, error) {
+func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLCReadForeignDeviceTable, error) {
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BVLCReadForeignDeviceTableParse(readBuffer utils.ReadBuffer) (*BVLC, error)
 		BVLC: &BVLC{},
 	}
 	_child.BVLC.Child = _child
-	return _child.BVLC, nil
+	return _child, nil
 }
 
 func (m *BVLCReadForeignDeviceTable) Serialize(writeBuffer utils.WriteBuffer) error {

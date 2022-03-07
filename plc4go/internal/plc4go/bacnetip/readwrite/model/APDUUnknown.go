@@ -129,7 +129,7 @@ func (m *APDUUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDUUnknown, error) {
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -152,7 +152,7 @@ func APDUUnknownParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, er
 		APDU:         &APDU{},
 	}
 	_child.APDU.Child = _child
-	return _child.APDU, nil
+	return _child, nil
 }
 
 func (m *APDUUnknown) Serialize(writeBuffer utils.WriteBuffer) error {

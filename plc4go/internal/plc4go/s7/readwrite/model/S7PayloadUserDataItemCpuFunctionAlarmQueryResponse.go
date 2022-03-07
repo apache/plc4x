@@ -161,7 +161,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -237,7 +237,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 		S7PayloadUserDataItem: &S7PayloadUserDataItem{},
 	}
 	_child.S7PayloadUserDataItem.Child = _child
-	return _child.S7PayloadUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {

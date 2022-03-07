@@ -107,7 +107,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequestRemoveListElement, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,7 +123,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBu
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
-	return _child.BACnetConfirmedServiceRequest, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer utils.WriteBuffer) error {

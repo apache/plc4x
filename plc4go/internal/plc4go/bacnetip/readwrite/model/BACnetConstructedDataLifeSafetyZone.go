@@ -135,7 +135,7 @@ func (m *BACnetConstructedDataLifeSafetyZone) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedData, error) {
+func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectType BACnetObjectType, propertyIdentifierArgument *BACnetContextTagPropertyIdentifier) (*BACnetConstructedDataLifeSafetyZone, error) {
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyZone"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -172,7 +172,7 @@ func BACnetConstructedDataLifeSafetyZoneParse(readBuffer utils.ReadBuffer, tagNu
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
-	return _child.BACnetConstructedData, nil
+	return _child, nil
 }
 
 func (m *BACnetConstructedDataLifeSafetyZone) Serialize(writeBuffer utils.WriteBuffer) error {

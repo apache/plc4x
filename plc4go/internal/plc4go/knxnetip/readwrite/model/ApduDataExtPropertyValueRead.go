@@ -160,7 +160,7 @@ func (m *ApduDataExtPropertyValueRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExtPropertyValueRead, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueRead"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -208,7 +208,7 @@ func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8
 		ApduDataExt: &ApduDataExt{},
 	}
 	_child.ApduDataExt.Child = _child
-	return _child.ApduDataExt, nil
+	return _child, nil
 }
 
 func (m *ApduDataExtPropertyValueRead) Serialize(writeBuffer utils.WriteBuffer) error {

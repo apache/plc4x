@@ -161,21 +161,25 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *COTPPacket
+	type COTPPacketChild interface {
+		InitializeParent(*COTPPacket, []*COTPParameter, *S7Message)
+		GetParent() *COTPPacket
+	}
+	var _child COTPPacketChild
 	var typeSwitchError error
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_parent, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
+		_child, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -234,8 +238,8 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, parameters, payload)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), parameters, payload)
+	return _child.GetParent(), nil
 }
 
 func (m *COTPPacket) Serialize(writeBuffer utils.WriteBuffer) error {

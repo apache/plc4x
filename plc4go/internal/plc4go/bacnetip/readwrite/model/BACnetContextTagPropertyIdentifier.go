@@ -158,7 +158,7 @@ func (m *BACnetContextTagPropertyIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTag, error) {
+func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, isNotOpeningOrClosingTag bool, actualLength uint32) (*BACnetContextTagPropertyIdentifier, error) {
 	if pullErr := readBuffer.PullContext("BACnetContextTagPropertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -198,7 +198,7 @@ func BACnetContextTagPropertyIdentifierParse(readBuffer utils.ReadBuffer, tagNum
 		BACnetContextTag:   &BACnetContextTag{},
 	}
 	_child.BACnetContextTag.Child = _child
-	return _child.BACnetContextTag, nil
+	return _child, nil
 }
 
 func (m *BACnetContextTagPropertyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {

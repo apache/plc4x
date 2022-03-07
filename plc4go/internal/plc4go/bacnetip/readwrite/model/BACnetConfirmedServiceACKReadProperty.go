@@ -103,7 +103,7 @@ func (m *BACnetConfirmedServiceACKReadProperty) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceACKReadProperty, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceACKReadProperty"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func BACnetConfirmedServiceACKReadPropertyParse(readBuffer utils.ReadBuffer) (*B
 		BACnetConfirmedServiceACK: &BACnetConfirmedServiceACK{},
 	}
 	_child.BACnetConfirmedServiceACK.Child = _child
-	return _child.BACnetConfirmedServiceACK, nil
+	return _child, nil
 }
 
 func (m *BACnetConfirmedServiceACKReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {

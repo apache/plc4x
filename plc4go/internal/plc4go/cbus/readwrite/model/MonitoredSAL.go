@@ -149,13 +149,17 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	readBuffer.Reset(currentPos)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *MonitoredSAL
+	type MonitoredSALChild interface {
+		InitializeParent(*MonitoredSAL, byte, *SALData)
+		GetParent() *MonitoredSAL
+	}
+	var _child MonitoredSALChild
 	var typeSwitchError error
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		_parent, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer)
+		_child, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer)
 	case true: // MonitoredSALShortFormBasicMode
-		_parent, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer)
+		_child, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -208,8 +212,8 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer) (*MonitoredSAL, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, salType, salData)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), salType, salData)
+	return _child.GetParent(), nil
 }
 
 func (m *MonitoredSAL) Serialize(writeBuffer utils.WriteBuffer) error {

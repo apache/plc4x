@@ -210,7 +210,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7ParameterUserDataItemCPUFunctions, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -306,7 +306,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (*S7P
 		S7ParameterUserDataItem: &S7ParameterUserDataItem{},
 	}
 	_child.S7ParameterUserDataItem.Child = _child
-	return _child.S7ParameterUserDataItem, nil
+	return _child, nil
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteBuffer) error {

@@ -103,7 +103,7 @@ func (m *ApduControlNack) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControlNack, error) {
 	if pullErr := readBuffer.PullContext("ApduControlNack"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -119,7 +119,7 @@ func ApduControlNackParse(readBuffer utils.ReadBuffer) (*ApduControl, error) {
 		ApduControl: &ApduControl{},
 	}
 	_child.ApduControl.Child = _child
-	return _child.ApduControl, nil
+	return _child, nil
 }
 
 func (m *ApduControlNack) Serialize(writeBuffer utils.WriteBuffer) error {

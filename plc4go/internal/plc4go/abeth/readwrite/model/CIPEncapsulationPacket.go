@@ -229,17 +229,21 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *CIPEncapsulationPacket
+	type CIPEncapsulationPacketChild interface {
+		InitializeParent(*CIPEncapsulationPacket, uint32, uint32, []uint8, uint32)
+		GetParent() *CIPEncapsulationPacket
+	}
+	var _child CIPEncapsulationPacketChild
 	var typeSwitchError error
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		_parent, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		_parent, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		_parent, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
+		_child, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_parent, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
+		_child, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, len)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -253,8 +257,8 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (*CIPEncapsulation
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, sessionHandle, status, senderContext, options)
-	return _parent, nil
+	_child.InitializeParent(_child.GetParent(), sessionHandle, status, senderContext, options)
+	return _child.GetParent(), nil
 }
 
 func (m *CIPEncapsulationPacket) Serialize(writeBuffer utils.WriteBuffer) error {

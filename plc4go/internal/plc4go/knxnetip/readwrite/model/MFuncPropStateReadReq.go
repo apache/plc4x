@@ -106,7 +106,7 @@ func (m *MFuncPropStateReadReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
+func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*MFuncPropStateReadReq, error) {
 	if pullErr := readBuffer.PullContext("MFuncPropStateReadReq"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -122,7 +122,7 @@ func MFuncPropStateReadReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI
 		CEMI: &CEMI{},
 	}
 	_child.CEMI.Child = _child
-	return _child.CEMI, nil
+	return _child, nil
 }
 
 func (m *MFuncPropStateReadReq) Serialize(writeBuffer utils.WriteBuffer) error {

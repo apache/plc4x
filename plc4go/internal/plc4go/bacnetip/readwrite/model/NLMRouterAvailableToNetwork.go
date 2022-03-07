@@ -131,7 +131,7 @@ func (m *NLMRouterAvailableToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLMRouterAvailableToNetwork, error) {
 	if pullErr := readBuffer.PullContext("NLMRouterAvailableToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -169,7 +169,7 @@ func NLMRouterAvailableToNetworkParse(readBuffer utils.ReadBuffer, apduLength ui
 		NLM:                       &NLM{},
 	}
 	_child.NLM.Child = _child
-	return _child.NLM, nil
+	return _child, nil
 }
 
 func (m *NLMRouterAvailableToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
