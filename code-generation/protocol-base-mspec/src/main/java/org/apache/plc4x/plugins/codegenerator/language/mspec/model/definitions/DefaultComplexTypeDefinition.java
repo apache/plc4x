@@ -134,6 +134,16 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     }
 
     @Override
+    public List<VirtualField> getAllVirtualFields() {
+        List<VirtualField> fields = new LinkedList<>();
+        getParentType()
+            .map(ComplexTypeDefinition::getAllVirtualFields)
+            .map(fields::addAll);
+        fields.addAll(getVirtualFields());
+        return fields;
+    }
+
+    @Override
     public List<PropertyField> getParentPropertyFields() {
         return getParentType().map(ComplexTypeDefinition::getAllPropertyFields).orElse(Collections.emptyList());
     }
