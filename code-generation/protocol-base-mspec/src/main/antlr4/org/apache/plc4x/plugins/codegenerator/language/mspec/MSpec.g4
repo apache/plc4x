@@ -49,12 +49,12 @@ dataIoDefinition
 field
  : abstractField
  | arrayField
+ | assertField
  | checksumField
  | constField
  | discriminatorField
  | enumField
  | implicitField
- | assertField
  | manualArrayField
  | manualField
  | optionalField

@@ -56,8 +56,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template.h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template.c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/complex-type-template.c.ftlh"));
     }
 
     @Override

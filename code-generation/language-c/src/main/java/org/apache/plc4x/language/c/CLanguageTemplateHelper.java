@@ -697,6 +697,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
 
+        // If the literal is referencing a constant field, we need to reference the constant variable instead.
+        final Optional<NamedField> namedField = ((ComplexTypeDefinition) baseType).getNamedFieldByName(name);
+        if(namedField.isPresent() && namedField.get() instanceof ConstField) {
+            return getCTypeName(baseType.getName()).toUpperCase() + "_" + name.toUpperCase() + "()";
+        }
+
         // Try to find the type of the addressed property.
         Optional<TypeReference> propertyTypeOptional =
             ((ComplexTypeDefinition) baseType).getTypeReferenceForProperty(name);
@@ -716,7 +722,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
         final TypeReference propertyType = propertyTypeOptional.get();
 
-        // If it's a simple field, there is no sub-type to access.
+        // If it's a simple field, there is no subtype to access.
         if (propertyType instanceof SimpleTypeReference) {
             if (variableLiteral.getChild().isPresent()) {
                 throw new FreemarkerException("Simple property '" + name + "' doesn't have child properties.");

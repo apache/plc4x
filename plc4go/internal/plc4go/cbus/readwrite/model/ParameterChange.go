@@ -47,6 +47,31 @@ type IParameterChange interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *ParameterChange) GetSpecialChar1() byte {
+	return ParameterChange_SPECIALCHAR1
+}
+
+func (m *ParameterChange) GetSpecialChar2() byte {
+	return ParameterChange_SPECIALCHAR2
+}
+
+func (m *ParameterChange) GetCr() byte {
+	return ParameterChange_CR
+}
+
+func (m *ParameterChange) GetLf() byte {
+	return ParameterChange_LF
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewParameterChange factory function for ParameterChange
 func NewParameterChange() *ParameterChange {
 	return &ParameterChange{}

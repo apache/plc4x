@@ -100,6 +100,22 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPudicftransportS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetFunctionId() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_FUNCTIONID
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetNumberMessageObj() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponse_NUMBERMESSAGEOBJ
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode DataTransportErrorCode, pudicftransportSize DataTransportSize, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {

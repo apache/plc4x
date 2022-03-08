@@ -211,6 +211,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     }
 
 </#list>
+<#list type.constFields as field>
+    public ${helper.getLanguageTypeNameForField(field)} get${field.name?cap_first}() {
+        return ${field.name?upper_case};
+    }
+
+</#list>
 
     <#if outputFlavor != "passive">
 <#if type.isDiscriminatedChildTypeDefinition()>
@@ -612,7 +618,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
                 <#break>
             <#case "checksum">
                 <#assign checksumField = field.asChecksumField().orElseThrow()>

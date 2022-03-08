@@ -71,6 +71,23 @@ func (m *EipConnectionRequest) GetParent() *EipPacket {
 	return m.EipPacket
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *EipConnectionRequest) GetProtocolVersion() uint16 {
+	return EipConnectionRequest_PROTOCOLVERSION
+}
+
+func (m *EipConnectionRequest) GetFlags() uint16 {
+	return EipConnectionRequest_FLAGS
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewEipConnectionRequest factory function for EipConnectionRequest
 func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipConnectionRequest {
 	_result := &EipConnectionRequest{

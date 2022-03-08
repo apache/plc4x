@@ -109,6 +109,30 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetAlarmType() AlarmType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetFunctionId() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_FUNCTIONID
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetNumberMessageObj() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_NUMBERMESSAGEOBJ
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetVariableSpec() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_VARIABLESPEC
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLength() uint8 {
+	return S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmQuery factory function for S7PayloadUserDataItemCpuFunctionAlarmQuery
 func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmQuery {

@@ -188,7 +188,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
             <#elseif arrayField.isTerminatedArrayField()>
     // Terminated array
-    while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)}))) {
+    while(!((bool) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if elementTypeReference.isSimpleTypeReference()>
     <#assign simpleTypeReference = elementTypeReference.asSimpleTypeReference().orElseThrow()>
@@ -432,7 +432,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         <#case "virtual">
             <#assign virtualField = field.asVirtualField().orElseThrow()>
 
-  // Virtual field (Just declare a local variable so we can access it in the parser)
+  // Virtual field (Just declare a local variable, so we can access it in the parser)
   ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, virtualField, virtualField.valueExpression, parserArguments)});
             <#break>
     </#switch>
@@ -700,13 +700,13 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
 
   // Manual Array Field (${manualArrayField.name})
-  lengthInBits += ${helper.toParseExpression(type, manualArrayField, manualArrayField.lengthExpression, parserArguments)};
+  lengthInBits += ${helper.toSerializationExpression(type, manualArrayField, manualArrayField.lengthExpression, parserArguments)};
                 <#break>
             <#case "manual">
                 <#assign manualField = field.asManualField().orElseThrow()>
 
   // Manual Field (${manualField.name})
-  lengthInBits += ${helper.toParseExpression(type, manualField, manualField.lengthExpression, parserArguments)};
+  lengthInBits += ${helper.toSerializationExpression(type, manualField, manualField.lengthExpression, parserArguments)};
                 <#break>
             <#case "optional">
                 <#assign optionalField = field.asOptionalField().orElseThrow()>

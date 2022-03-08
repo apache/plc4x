@@ -31,21 +31,35 @@
 // end::SimpleBitTypeTest[]
 
 [type FieldTypeTest
-    [simple         uint 8 simpleField]
+    [simple         uint 8 simpleField                         ]
     //Abstract fields can only be used within discriminated base types.
-    //[abstract       unit 8  abstractField]
-    [array          uint 8  arrayField        count      '5']
-    [checksum       uint 8  checksumField     '100']
-    [const          uint 8  constField        5]
+    //[abstract       unit 8  abstractField                      ]
+    [array          uint 8  arrayFieldCount      count      '5'   ]
+    [array          uint 8  arrayFieldLength     length     '5'   ]
+    [array          uint 8  arrayFieldTerminated terminated 'true']
+    [assert         uint 8  assertField          '42'             ]
+    [checksum       uint 8  checksumField        '100'            ]
+    [const          uint 8  constField           5                ]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
-    [enum           EnumTypeParameters  enumField intType]
-    [implicit       uint 8  implicitField 'simpleField']
-    [optional       uint 8  optionalField 'simpleField == 5']
+    [enum           EnumTypeParameters  enumField intType      ]
+    [implicit       uint 8  implicitField 'simpleField'        ]
+    // TODO: Currently manual array seems to only support the flavor "terminated"
+    //[manualArray    uint 8  manualArrayField count      '1'    ] // TODO: Implement ...
+    //[manualArray    uint 8  manualArrayField length     '1'    ] // TODO: Implement ...
+    //[manualArray    uint 8  manualArrayField terminated '1'    ] // TODO: Implement ...
+    [manual         uint 8  manualField 'STATIC_CALL("readManualField", readBuffer, simpleField)'
+                                        'STATIC_CALL("writeManualField", writeBuffer, simpleField)'
+                                        'simpleField*8'                   ]
+    [optional       uint 8  optionalField 'simpleField == 5'   ]
     [padding        uint 8  paddingField  '0x00'  'simpleField']
-    [reserved       uint 8  '0x00']
+    [reserved       uint 8  '0x00'                             ]
     // TypeSwitch field can't be used in non discriminatedTypes
-    //[typeSwitch simpleField ]
+    //[typeSwitch simpleField                                    ]
+    [unknown        uint 8                                     ]
+    [virtual        uint 8  virtualField  'constField + 10'    ]
+    [validation     'false' "Validation Message"               ]
+    [peek           uint 8  peekField                          ]
 ]
 
 // If a type has an unknown field, the entire serializer is reduced to firing an exception
@@ -164,7 +178,6 @@
 
 [type ImplicitTypeTest
     //Implicit types have the requirement that the expression is of a similar type to the field
-    //TODO: i.e Integers can't be cast to Booleans
     [simple   uint 8 simpleField]
 
     [implicit bit bitField 'simpleField > 0']
@@ -172,8 +185,7 @@
     [implicit uint 8 uintField 'simpleField']
     [implicit float 32 floatField 'simpleField']
     [implicit float 64 doubleField 'simpleField']
-    //TODO: String literals can't be used in the expression
-    //[implicit string 8 stringField 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
+    [implicit string 8 stringField 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
 ]
 
 [type OptionalTypeTest
@@ -364,14 +376,14 @@
     ['0x11' BYTE_ARRAY]
 ]
 
-//TODO:  C doesn't support non integer switch fields
+//TODO:  C doesn't support non integer switch fields (However this feature might not make sense)
 //[enum float 32 EnumTypeFloat
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
 //]
 
-//TODO:  C doesn't support non integer switch fields
+//TODO:  C doesn't support non integer switch fields (However this feature might not make sense)
 //[enum float 64 EnumTypeDouble
 //    ['100.0' LOW]
 //    ['101.0' MID]
@@ -383,7 +395,7 @@
 //    ['Toddy1' TODDY]
 //]
 
-//TODO:  Fails to import the base Enum in C, need to find it in getComplexTypeReferences
+//TODO:  Fails to import the base Enum in C, need to find it in getComplexTypeReferences (However this feature might not make sense)
 //[enum EnumType EnumTypeEnum
 //    ['BOOL' BOOL]
 //    ['UINT' UINT]
@@ -396,7 +408,7 @@
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
-//TODO:  Keyword named parameters aren't allowed
+//TODO:  Keyword named parameters aren't allowed (This won't be fixed)
 //[enum int 8 EnumTypeIntTest(int 8 int)
 //    ['0x01' BOOL             ['1']]
 //    ['0x02' BYTE             ['2']]

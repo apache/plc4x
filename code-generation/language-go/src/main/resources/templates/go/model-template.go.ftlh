@@ -270,6 +270,23 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 </#if>
+<#if type.constFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+	<#list type.constFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+func (m *${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	return ${type.name}_${field.name?upper_case}
+}
+
+	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
 
 <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
     <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
@@ -450,14 +467,13 @@ func (m *${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 	                <#assign arrayElementType = manualArrayField.type.elementTypeReference>
 
 	// Manual Array Field (${manualArrayField.name})
-	${manualArrayField.name} := m.${manualArrayField.name?cap_first}<#-- TODO: ugly workaround for missing static evaluation-->
-	lengthInBits += uint16(${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.lengthExpression, parserArguments)})
+	lengthInBits += uint16(${helper.toSerializationExpression(manualArrayField, helper.intTypeReference, manualArrayField.lengthExpression, parserArguments)})
 					<#break>
 				<#case "manual">
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 	// Manual Field (${manualField.name})
-	lengthInBits += uint16(${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)})
+	lengthInBits += uint16(${helper.toSerializationExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)})
 					<#break>
 				<#case "optional">
 					<#assign optionalField = field.asOptionalField().orElseThrow()>

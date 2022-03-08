@@ -123,6 +123,18 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetObjects() []*ModbusDevice
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *ModbusPDUReadDeviceIdentificationResponse) GetMeiType() uint8 {
+	return ModbusPDUReadDeviceIdentificationResponse_MEITYPE
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadDeviceIdentificationResponse factory function for ModbusPDUReadDeviceIdentificationResponse
 func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []*ModbusDeviceInformationObject) *ModbusPDUReadDeviceIdentificationResponse {

@@ -62,6 +62,23 @@ type IS7DataAlarmMessageChild interface {
 	IS7DataAlarmMessage
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for conts fields.
+///////////////////////
+func (m *S7DataAlarmMessage) GetFunctionId() uint8 {
+	return S7DataAlarmMessage_FUNCTIONID
+}
+
+func (m *S7DataAlarmMessage) GetNumberMessageObj() uint8 {
+	return S7DataAlarmMessage_NUMBERMESSAGEOBJ
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewS7DataAlarmMessage factory function for S7DataAlarmMessage
 func NewS7DataAlarmMessage() *S7DataAlarmMessage {
 	return &S7DataAlarmMessage{}
