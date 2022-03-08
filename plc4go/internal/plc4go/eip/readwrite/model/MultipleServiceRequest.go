@@ -86,13 +86,13 @@ func (m *MultipleServiceRequest) GetData() *Services {
 ///////////////////////////////////////////////////////////
 
 // NewMultipleServiceRequest factory function for MultipleServiceRequest
-func NewMultipleServiceRequest(data *Services, serviceLen uint16) *CipService {
-	child := &MultipleServiceRequest{
+func NewMultipleServiceRequest(data *Services, serviceLen uint16) *MultipleServiceRequest {
+	_result := &MultipleServiceRequest{
 		Data:       data,
 		CipService: NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastMultipleServiceRequest(structType interface{}) *MultipleServiceRequest {

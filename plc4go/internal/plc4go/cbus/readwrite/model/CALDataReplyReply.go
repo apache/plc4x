@@ -83,14 +83,14 @@ func (m *CALDataReplyReply) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyReply factory function for CALDataReplyReply
-func NewCALDataReplyReply(paramNumber uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataReplyReply{
+func NewCALDataReplyReply(paramNumber uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALDataReplyReply {
+	_result := &CALDataReplyReply{
 		ParamNumber: paramNumber,
 		Data:        data,
 		CALData:     NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataReplyReply(structType interface{}) *CALDataReplyReply {

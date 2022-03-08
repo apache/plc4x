@@ -88,14 +88,14 @@ func (m *FirmataMessageAnalogIO) GetData() []int8 {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataMessageAnalogIO factory function for FirmataMessageAnalogIO
-func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *FirmataMessage {
-	child := &FirmataMessageAnalogIO{
+func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *FirmataMessageAnalogIO {
+	_result := &FirmataMessageAnalogIO{
 		Pin:            pin,
 		Data:           data,
 		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageAnalogIO(structType interface{}) *FirmataMessageAnalogIO {

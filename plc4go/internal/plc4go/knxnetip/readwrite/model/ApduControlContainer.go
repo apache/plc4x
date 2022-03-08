@@ -84,13 +84,13 @@ func (m *ApduControlContainer) GetControlApdu() *ApduControl {
 ///////////////////////////////////////////////////////////
 
 // NewApduControlContainer factory function for ApduControlContainer
-func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8, dataLength uint8) *Apdu {
-	child := &ApduControlContainer{
+func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8, dataLength uint8) *ApduControlContainer {
+	_result := &ApduControlContainer{
 		ControlApdu: controlApdu,
 		Apdu:        NewApdu(numbered, counter, dataLength),
 	}
-	child.Child = child
-	return child.Apdu
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlContainer(structType interface{}) *ApduControlContainer {

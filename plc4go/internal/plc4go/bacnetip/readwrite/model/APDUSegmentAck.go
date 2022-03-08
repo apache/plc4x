@@ -110,8 +110,8 @@ func (m *APDUSegmentAck) GetProposedWindowSize() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUSegmentAck factory function for APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8, apduLength uint16) *APDU {
-	child := &APDUSegmentAck{
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8, apduLength uint16) *APDUSegmentAck {
+	_result := &APDUSegmentAck{
 		NegativeAck:        negativeAck,
 		Server:             server,
 		OriginalInvokeId:   originalInvokeId,
@@ -119,8 +119,8 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 		ProposedWindowSize: proposedWindowSize,
 		APDU:               NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUSegmentAck(structType interface{}) *APDUSegmentAck {

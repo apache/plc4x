@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestReadRange) GetParent() *BACnetConfirmedSer
 }
 
 // NewBACnetConfirmedServiceRequestReadRange factory function for BACnetConfirmedServiceRequestReadRange
-func NewBACnetConfirmedServiceRequestReadRange(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestReadRange{
+func NewBACnetConfirmedServiceRequestReadRange(len uint16) *BACnetConfirmedServiceRequestReadRange {
+	_result := &BACnetConfirmedServiceRequestReadRange{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) *BACnetConfirmedServiceRequestReadRange {

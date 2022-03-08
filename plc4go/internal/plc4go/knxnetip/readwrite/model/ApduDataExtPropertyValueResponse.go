@@ -109,8 +109,8 @@ func (m *ApduDataExtPropertyValueResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtPropertyValueResponse factory function for ApduDataExtPropertyValueResponse
-func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *ApduDataExt {
-	child := &ApduDataExtPropertyValueResponse{
+func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *ApduDataExtPropertyValueResponse {
+	_result := &ApduDataExtPropertyValueResponse{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Count:       count,
@@ -118,8 +118,8 @@ func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, co
 		Data:        data,
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyValueResponse(structType interface{}) *ApduDataExtPropertyValueResponse {

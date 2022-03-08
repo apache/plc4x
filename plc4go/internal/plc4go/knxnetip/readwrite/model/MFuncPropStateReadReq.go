@@ -64,12 +64,12 @@ func (m *MFuncPropStateReadReq) GetParent() *CEMI {
 }
 
 // NewMFuncPropStateReadReq factory function for MFuncPropStateReadReq
-func NewMFuncPropStateReadReq(size uint16) *CEMI {
-	child := &MFuncPropStateReadReq{
+func NewMFuncPropStateReadReq(size uint16) *MFuncPropStateReadReq {
+	_result := &MFuncPropStateReadReq{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMFuncPropStateReadReq(structType interface{}) *MFuncPropStateReadReq {

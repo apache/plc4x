@@ -81,13 +81,13 @@ func (m *BVLCWriteBroadcastDistributionTable) GetTable() []*BVLCWriteBroadcastDi
 ///////////////////////////////////////////////////////////
 
 // NewBVLCWriteBroadcastDistributionTable factory function for BVLCWriteBroadcastDistributionTable
-func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCWriteBroadcastDistributionTable{
+func NewBVLCWriteBroadcastDistributionTable(table []*BVLCWriteBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *BVLCWriteBroadcastDistributionTable {
+	_result := &BVLCWriteBroadcastDistributionTable{
 		Table: table,
 		BVLC:  NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCWriteBroadcastDistributionTable(structType interface{}) *BVLCWriteBroadcastDistributionTable {

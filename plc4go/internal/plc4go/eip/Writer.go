@@ -93,7 +93,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				}
 				return
 			}
-			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, field.GetType(), elements, data, 0)
+			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, field.GetType(), elements, data, 0).GetParent()
 		}
 
 		if len(items) == 1 {
@@ -106,7 +106,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						m.configuration.backplane,
 						m.configuration.slot,
 						0,
-					),
+					).GetParent(),
 					0,
 				),
 				*m.sessionHandle,
@@ -199,11 +199,11 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			pkt := readWriteModel.NewCipRRData(
 				readWriteModel.NewCipExchange(
 					readWriteModel.NewCipUnconnectedRequest(
-						readWriteModel.NewMultipleServiceRequest(data, 0),
+						readWriteModel.NewMultipleServiceRequest(data, 0).GetParent(),
 						m.configuration.backplane,
 						m.configuration.slot,
 						0,
-					),
+					).GetParent(),
 					0,
 				),
 				*m.sessionHandle,

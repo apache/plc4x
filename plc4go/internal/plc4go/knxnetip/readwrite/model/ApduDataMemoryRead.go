@@ -88,14 +88,14 @@ func (m *ApduDataMemoryRead) GetAddress() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataMemoryRead factory function for ApduDataMemoryRead
-func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *ApduData {
-	child := &ApduDataMemoryRead{
+func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *ApduDataMemoryRead {
+	_result := &ApduDataMemoryRead{
 		NumBytes: numBytes,
 		Address:  address,
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataMemoryRead(structType interface{}) *ApduDataMemoryRead {

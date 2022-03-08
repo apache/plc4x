@@ -114,8 +114,8 @@ func (m *CBusCommandPointToPointToMultiPointNormal) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPointNormal factory function for CBusCommandPointToPointToMultiPointNormal
-func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdContainer, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, bridgeAddress *BridgeAddress, networkRoute *NetworkRoute, peekedApplication byte, srchk bool) *CBusPointToPointToMultipointCommand {
-	child := &CBusCommandPointToPointToMultiPointNormal{
+func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdContainer, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, bridgeAddress *BridgeAddress, networkRoute *NetworkRoute, peekedApplication byte, srchk bool) *CBusCommandPointToPointToMultiPointNormal {
+	_result := &CBusCommandPointToPointToMultiPointNormal{
 		Application:                         application,
 		SalData:                             salData,
 		Crc:                                 crc,
@@ -123,8 +123,8 @@ func NewCBusCommandPointToPointToMultiPointNormal(application ApplicationIdConta
 		Alpha:                               alpha,
 		CBusPointToPointToMultipointCommand: NewCBusPointToPointToMultipointCommand(bridgeAddress, networkRoute, peekedApplication, srchk),
 	}
-	child.Child = child
-	return child.CBusPointToPointToMultipointCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusCommandPointToPointToMultiPointNormal(structType interface{}) *CBusCommandPointToPointToMultiPointNormal {

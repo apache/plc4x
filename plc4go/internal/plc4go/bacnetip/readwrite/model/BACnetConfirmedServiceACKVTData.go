@@ -61,12 +61,12 @@ func (m *BACnetConfirmedServiceACKVTData) GetParent() *BACnetConfirmedServiceACK
 }
 
 // NewBACnetConfirmedServiceACKVTData factory function for BACnetConfirmedServiceACKVTData
-func NewBACnetConfirmedServiceACKVTData() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKVTData{
+func NewBACnetConfirmedServiceACKVTData() *BACnetConfirmedServiceACKVTData {
+	_result := &BACnetConfirmedServiceACKVTData{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKVTData(structType interface{}) *BACnetConfirmedServiceACKVTData {

@@ -86,13 +86,13 @@ func (m *ModbusPDUReadInputRegistersResponse) GetValue() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadInputRegistersResponse factory function for ModbusPDUReadInputRegistersResponse
-func NewModbusPDUReadInputRegistersResponse(value []byte) *ModbusPDU {
-	child := &ModbusPDUReadInputRegistersResponse{
+func NewModbusPDUReadInputRegistersResponse(value []byte) *ModbusPDUReadInputRegistersResponse {
+	_result := &ModbusPDUReadInputRegistersResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadInputRegistersResponse(structType interface{}) *ModbusPDUReadInputRegistersResponse {

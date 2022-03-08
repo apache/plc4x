@@ -88,14 +88,14 @@ func (m *FirmataMessageDigitalIO) GetData() []int8 {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataMessageDigitalIO factory function for FirmataMessageDigitalIO
-func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *FirmataMessage {
-	child := &FirmataMessageDigitalIO{
+func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *FirmataMessageDigitalIO {
+	_result := &FirmataMessageDigitalIO{
 		PinBlock:       pinBlock,
 		Data:           data,
 		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageDigitalIO(structType interface{}) *FirmataMessageDigitalIO {

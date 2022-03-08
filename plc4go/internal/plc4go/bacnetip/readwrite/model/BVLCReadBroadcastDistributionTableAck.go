@@ -61,12 +61,12 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetParent() *BVLC {
 }
 
 // NewBVLCReadBroadcastDistributionTableAck factory function for BVLCReadBroadcastDistributionTableAck
-func NewBVLCReadBroadcastDistributionTableAck() *BVLC {
-	child := &BVLCReadBroadcastDistributionTableAck{
+func NewBVLCReadBroadcastDistributionTableAck() *BVLCReadBroadcastDistributionTableAck {
+	_result := &BVLCReadBroadcastDistributionTableAck{
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) *BVLCReadBroadcastDistributionTableAck {

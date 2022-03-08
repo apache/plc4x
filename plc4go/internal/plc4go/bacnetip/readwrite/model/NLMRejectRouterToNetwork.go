@@ -90,14 +90,14 @@ func (m *NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRejectRouterToNetwork factory function for NLMRejectRouterToNetwork
-func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMRejectRouterToNetwork{
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMRejectRouterToNetwork {
+	_result := &NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMRejectRouterToNetwork(structType interface{}) *NLMRejectRouterToNetwork {

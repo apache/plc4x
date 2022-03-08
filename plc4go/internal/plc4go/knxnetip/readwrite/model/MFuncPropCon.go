@@ -64,12 +64,12 @@ func (m *MFuncPropCon) GetParent() *CEMI {
 }
 
 // NewMFuncPropCon factory function for MFuncPropCon
-func NewMFuncPropCon(size uint16) *CEMI {
-	child := &MFuncPropCon{
+func NewMFuncPropCon(size uint16) *MFuncPropCon {
+	_result := &MFuncPropCon{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMFuncPropCon(structType interface{}) *MFuncPropCon {

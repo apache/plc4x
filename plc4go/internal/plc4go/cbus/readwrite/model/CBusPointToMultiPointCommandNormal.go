@@ -113,8 +113,8 @@ func (m *CBusPointToMultiPointCommandNormal) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandNormal factory function for CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommand {
-	child := &CBusPointToMultiPointCommandNormal{
+func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData *SALData, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommandNormal {
+	_result := &CBusPointToMultiPointCommandNormal{
 		Application:                  application,
 		SalData:                      salData,
 		Crc:                          crc,
@@ -122,8 +122,8 @@ func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, s
 		Alpha:                        alpha,
 		CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
 	}
-	child.Child = child
-	return child.CBusPointToMultiPointCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusPointToMultiPointCommandNormal(structType interface{}) *CBusPointToMultiPointCommandNormal {

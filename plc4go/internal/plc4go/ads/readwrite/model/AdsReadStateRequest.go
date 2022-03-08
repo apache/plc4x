@@ -65,12 +65,12 @@ func (m *AdsReadStateRequest) GetParent() *AdsData {
 }
 
 // NewAdsReadStateRequest factory function for AdsReadStateRequest
-func NewAdsReadStateRequest() *AdsData {
-	child := &AdsReadStateRequest{
+func NewAdsReadStateRequest() *AdsReadStateRequest {
+	_result := &AdsReadStateRequest{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadStateRequest(structType interface{}) *AdsReadStateRequest {

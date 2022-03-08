@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetParent() *BACnetConfirmedServi
 }
 
 // NewBACnetConfirmedServiceRequestVTClose factory function for BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestVTClose{
+func NewBACnetConfirmedServiceRequestVTClose(len uint16) *BACnetConfirmedServiceRequestVTClose {
+	_result := &BACnetConfirmedServiceRequestVTClose{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) *BACnetConfirmedServiceRequestVTClose {

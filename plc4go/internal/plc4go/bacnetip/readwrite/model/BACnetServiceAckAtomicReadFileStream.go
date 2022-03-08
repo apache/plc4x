@@ -85,14 +85,14 @@ func (m *BACnetServiceAckAtomicReadFileStream) GetFileData() *BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFileStream factory function for BACnetServiceAckAtomicReadFileStream
-func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetServiceAckAtomicReadFileStreamOrRecord {
-	child := &BACnetServiceAckAtomicReadFileStream{
+func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition *BACnetApplicationTagSignedInteger, fileData *BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetServiceAckAtomicReadFileStream {
+	_result := &BACnetServiceAckAtomicReadFileStream{
 		FileStartPosition: fileStartPosition,
 		FileData:          fileData,
 		BACnetServiceAckAtomicReadFileStreamOrRecord: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 	}
-	child.Child = child
-	return child.BACnetServiceAckAtomicReadFileStreamOrRecord
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckAtomicReadFileStream(structType interface{}) *BACnetServiceAckAtomicReadFileStream {

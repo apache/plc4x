@@ -93,14 +93,14 @@ func (m *ModbusPDUReadHoldingRegistersRequest) GetQuantity() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadHoldingRegistersRequest factory function for ModbusPDUReadHoldingRegistersRequest
-func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16) *ModbusPDU {
-	child := &ModbusPDUReadHoldingRegistersRequest{
+func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16) *ModbusPDUReadHoldingRegistersRequest {
+	_result := &ModbusPDUReadHoldingRegistersRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadHoldingRegistersRequest(structType interface{}) *ModbusPDUReadHoldingRegistersRequest {

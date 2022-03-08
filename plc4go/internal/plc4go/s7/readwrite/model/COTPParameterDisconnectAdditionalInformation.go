@@ -81,13 +81,13 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPParameterDisconnectAdditionalInformation factory function for COTPParameterDisconnectAdditionalInformation
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *COTPParameter {
-	child := &COTPParameterDisconnectAdditionalInformation{
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *COTPParameterDisconnectAdditionalInformation {
+	_result := &COTPParameterDisconnectAdditionalInformation{
 		Data:          data,
 		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) *COTPParameterDisconnectAdditionalInformation {

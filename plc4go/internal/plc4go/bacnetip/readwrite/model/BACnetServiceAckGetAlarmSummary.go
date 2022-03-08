@@ -61,12 +61,12 @@ func (m *BACnetServiceAckGetAlarmSummary) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckGetAlarmSummary factory function for BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAck {
-	child := &BACnetServiceAckGetAlarmSummary{
+func NewBACnetServiceAckGetAlarmSummary() *BACnetServiceAckGetAlarmSummary {
+	_result := &BACnetServiceAckGetAlarmSummary{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckGetAlarmSummary(structType interface{}) *BACnetServiceAckGetAlarmSummary {

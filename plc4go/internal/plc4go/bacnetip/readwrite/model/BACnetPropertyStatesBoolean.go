@@ -82,13 +82,13 @@ func (m *BACnetPropertyStatesBoolean) GetBooleanValue() *BACnetContextTagBoolean
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBoolean factory function for BACnetPropertyStatesBoolean
-func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
-	child := &BACnetPropertyStatesBoolean{
+func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesBoolean {
+	_result := &BACnetPropertyStatesBoolean{
 		BooleanValue:         booleanValue,
 		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetPropertyStates
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetPropertyStatesBoolean(structType interface{}) *BACnetPropertyStatesBoolean {

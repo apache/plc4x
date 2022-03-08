@@ -93,14 +93,14 @@ func (m *ModbusPDUGetComEventCounterResponse) GetEventCount() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUGetComEventCounterResponse factory function for ModbusPDUGetComEventCounterResponse
-func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDU {
-	child := &ModbusPDUGetComEventCounterResponse{
+func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *ModbusPDUGetComEventCounterResponse {
+	_result := &ModbusPDUGetComEventCounterResponse{
 		Status:     status,
 		EventCount: eventCount,
 		ModbusPDU:  NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUGetComEventCounterResponse(structType interface{}) *ModbusPDUGetComEventCounterResponse {

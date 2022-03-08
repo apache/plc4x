@@ -82,13 +82,13 @@ func (m *AdsDeleteDeviceNotificationResponse) GetResult() ReturnCode {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDeleteDeviceNotificationResponse factory function for AdsDeleteDeviceNotificationResponse
-func NewAdsDeleteDeviceNotificationResponse(result ReturnCode) *AdsData {
-	child := &AdsDeleteDeviceNotificationResponse{
+func NewAdsDeleteDeviceNotificationResponse(result ReturnCode) *AdsDeleteDeviceNotificationResponse {
+	_result := &AdsDeleteDeviceNotificationResponse{
 		Result:  result,
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeleteDeviceNotificationResponse(structType interface{}) *AdsDeleteDeviceNotificationResponse {

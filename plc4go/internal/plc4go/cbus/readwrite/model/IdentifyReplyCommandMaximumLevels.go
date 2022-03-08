@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandMaximumLevels) GetParent() *IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandMaximumLevels factory function for IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandMaximumLevels{
+func NewIdentifyReplyCommandMaximumLevels() *IdentifyReplyCommandMaximumLevels {
+	_result := &IdentifyReplyCommandMaximumLevels{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandMaximumLevels(structType interface{}) *IdentifyReplyCommandMaximumLevels {

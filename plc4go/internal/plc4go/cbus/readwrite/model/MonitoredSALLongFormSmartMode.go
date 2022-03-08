@@ -136,8 +136,8 @@ func (m *MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALLongFormSmartMode factory function for MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress *UnitAddress, bridgeAddress *BridgeAddress, serialInterfaceAddress *SerialInterfaceAddress, reservedByte *byte, replyNetwork *ReplyNetwork, salType byte, salData *SALData) *MonitoredSAL {
-	child := &MonitoredSALLongFormSmartMode{
+func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress *UnitAddress, bridgeAddress *BridgeAddress, serialInterfaceAddress *SerialInterfaceAddress, reservedByte *byte, replyNetwork *ReplyNetwork, salType byte, salData *SALData) *MonitoredSALLongFormSmartMode {
+	_result := &MonitoredSALLongFormSmartMode{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,
@@ -146,8 +146,8 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress *UnitA
 		ReplyNetwork:           replyNetwork,
 		MonitoredSAL:           NewMonitoredSAL(salType, salData),
 	}
-	child.Child = child
-	return child.MonitoredSAL
+	_result.Child = _result
+	return _result
 }
 
 func CastMonitoredSALLongFormSmartMode(structType interface{}) *MonitoredSALLongFormSmartMode {

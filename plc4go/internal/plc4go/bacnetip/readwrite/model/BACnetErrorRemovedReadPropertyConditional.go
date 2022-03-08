@@ -64,12 +64,12 @@ func (m *BACnetErrorRemovedReadPropertyConditional) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorRemovedReadPropertyConditional factory function for BACnetErrorRemovedReadPropertyConditional
-func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorRemovedReadPropertyConditional{
+func NewBACnetErrorRemovedReadPropertyConditional(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorRemovedReadPropertyConditional {
+	_result := &BACnetErrorRemovedReadPropertyConditional{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) *BACnetErrorRemovedReadPropertyConditional {

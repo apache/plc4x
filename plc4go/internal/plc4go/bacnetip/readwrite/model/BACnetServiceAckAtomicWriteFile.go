@@ -78,13 +78,13 @@ func (m *BACnetServiceAckAtomicWriteFile) GetFileStartPosition() *BACnetContextT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicWriteFile factory function for BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAck {
-	child := &BACnetServiceAckAtomicWriteFile{
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAckAtomicWriteFile {
+	_result := &BACnetServiceAckAtomicWriteFile{
 		FileStartPosition: fileStartPosition,
 		BACnetServiceAck:  NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckAtomicWriteFile(structType interface{}) *BACnetServiceAckAtomicWriteFile {

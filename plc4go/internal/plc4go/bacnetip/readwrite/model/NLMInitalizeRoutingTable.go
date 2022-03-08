@@ -90,14 +90,14 @@ func (m *NLMInitalizeRoutingTable) GetPortMappings() []*NLMInitalizeRoutingTable
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTable factory function for NLMInitalizeRoutingTable
-func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMInitalizeRoutingTable{
+func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLMInitalizeRoutingTable {
+	_result := &NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 		NLM:           NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMInitalizeRoutingTable(structType interface{}) *NLMInitalizeRoutingTable {

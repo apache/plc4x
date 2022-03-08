@@ -69,6 +69,9 @@ func CastS7VarRequestParameterItem(structType interface{}) *S7VarRequestParamete
 	if casted, ok := structType.(*S7VarRequestParameterItem); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7VarRequestParameterItemChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

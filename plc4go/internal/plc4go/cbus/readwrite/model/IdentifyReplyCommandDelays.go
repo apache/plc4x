@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandDelays) GetParent() *IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandDelays factory function for IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandDelays{
+func NewIdentifyReplyCommandDelays() *IdentifyReplyCommandDelays {
+	_result := &IdentifyReplyCommandDelays{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandDelays(structType interface{}) *IdentifyReplyCommandDelays {

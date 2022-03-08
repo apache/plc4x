@@ -82,13 +82,13 @@ func (m *S7ParameterWriteVarRequest) GetItems() []*S7VarRequestParameterItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterWriteVarRequest factory function for S7ParameterWriteVarRequest
-func NewS7ParameterWriteVarRequest(items []*S7VarRequestParameterItem) *S7Parameter {
-	child := &S7ParameterWriteVarRequest{
+func NewS7ParameterWriteVarRequest(items []*S7VarRequestParameterItem) *S7ParameterWriteVarRequest {
+	_result := &S7ParameterWriteVarRequest{
 		Items:       items,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterWriteVarRequest(structType interface{}) *S7ParameterWriteVarRequest {

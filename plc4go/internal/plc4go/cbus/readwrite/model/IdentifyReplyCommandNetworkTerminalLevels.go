@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandNetworkTerminalLevels) GetParent() *IdentifyReplyCo
 }
 
 // NewIdentifyReplyCommandNetworkTerminalLevels factory function for IdentifyReplyCommandNetworkTerminalLevels
-func NewIdentifyReplyCommandNetworkTerminalLevels() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandNetworkTerminalLevels{
+func NewIdentifyReplyCommandNetworkTerminalLevels() *IdentifyReplyCommandNetworkTerminalLevels {
+	_result := &IdentifyReplyCommandNetworkTerminalLevels{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandNetworkTerminalLevels(structType interface{}) *IdentifyReplyCommandNetworkTerminalLevels {

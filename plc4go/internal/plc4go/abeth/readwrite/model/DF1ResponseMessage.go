@@ -110,6 +110,9 @@ func CastDF1ResponseMessage(structType interface{}) *DF1ResponseMessage {
 	if casted, ok := structType.(*DF1ResponseMessage); ok {
 		return casted
 	}
+	if casted, ok := structType.(IDF1ResponseMessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

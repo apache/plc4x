@@ -83,13 +83,13 @@ func (m *NLMRouterAvailableToNetwork) GetDestinationNetworkAddress() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRouterAvailableToNetwork factory function for NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMRouterAvailableToNetwork{
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddress []uint16, vendorId *uint16, apduLength uint16) *NLMRouterAvailableToNetwork {
+	_result := &NLMRouterAvailableToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMRouterAvailableToNetwork(structType interface{}) *NLMRouterAvailableToNetwork {

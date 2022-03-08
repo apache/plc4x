@@ -81,13 +81,13 @@ func (m *ApduDataExtAuthorizeResponse) GetLevel() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtAuthorizeResponse factory function for ApduDataExtAuthorizeResponse
-func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *ApduDataExt {
-	child := &ApduDataExtAuthorizeResponse{
+func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *ApduDataExtAuthorizeResponse {
+	_result := &ApduDataExtAuthorizeResponse{
 		Level:       level,
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtAuthorizeResponse(structType interface{}) *ApduDataExtAuthorizeResponse {

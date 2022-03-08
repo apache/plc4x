@@ -83,14 +83,14 @@ func (m *CALDataReplyAcknowledge) GetCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyAcknowledge factory function for CALDataReplyAcknowledge
-func NewCALDataReplyAcknowledge(paramNo uint8, code uint8, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataReplyAcknowledge{
+func NewCALDataReplyAcknowledge(paramNo uint8, code uint8, commandTypeContainer CALCommandTypeContainer) *CALDataReplyAcknowledge {
+	_result := &CALDataReplyAcknowledge{
 		ParamNo: paramNo,
 		Code:    code,
 		CALData: NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataReplyAcknowledge(structType interface{}) *CALDataReplyAcknowledge {

@@ -109,8 +109,8 @@ func (m *MPropReadReq) GetStartIndex() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewMPropReadReq factory function for MPropReadReq
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *CEMI {
-	child := &MPropReadReq{
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *MPropReadReq {
+	_result := &MPropReadReq{
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
@@ -118,8 +118,8 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		StartIndex:          startIndex,
 		CEMI:                NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMPropReadReq(structType interface{}) *MPropReadReq {

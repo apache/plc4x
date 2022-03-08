@@ -78,13 +78,13 @@ func (m *ComObjectTableRealisationType6) GetComObjectDescriptors() *GroupObjectD
 ///////////////////////////////////////////////////////////
 
 // NewComObjectTableRealisationType6 factory function for ComObjectTableRealisationType6
-func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTable {
-	child := &ComObjectTableRealisationType6{
+func NewComObjectTableRealisationType6(comObjectDescriptors *GroupObjectDescriptorRealisationType6) *ComObjectTableRealisationType6 {
+	_result := &ComObjectTableRealisationType6{
 		ComObjectDescriptors: comObjectDescriptors,
 		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Child = child
-	return child.ComObjectTable
+	_result.Child = _result
+	return _result
 }
 
 func CastComObjectTableRealisationType6(structType interface{}) *ComObjectTableRealisationType6 {

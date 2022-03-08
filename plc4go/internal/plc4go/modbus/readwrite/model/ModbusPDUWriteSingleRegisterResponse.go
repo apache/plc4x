@@ -93,14 +93,14 @@ func (m *ModbusPDUWriteSingleRegisterResponse) GetValue() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteSingleRegisterResponse factory function for ModbusPDUWriteSingleRegisterResponse
-func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) *ModbusPDU {
-	child := &ModbusPDUWriteSingleRegisterResponse{
+func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) *ModbusPDUWriteSingleRegisterResponse {
+	_result := &ModbusPDUWriteSingleRegisterResponse{
 		Address:   address,
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteSingleRegisterResponse(structType interface{}) *ModbusPDUWriteSingleRegisterResponse {

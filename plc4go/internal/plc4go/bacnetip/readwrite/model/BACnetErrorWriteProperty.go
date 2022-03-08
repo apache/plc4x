@@ -64,12 +64,12 @@ func (m *BACnetErrorWriteProperty) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorWriteProperty factory function for BACnetErrorWriteProperty
-func NewBACnetErrorWriteProperty(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorWriteProperty{
+func NewBACnetErrorWriteProperty(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorWriteProperty {
+	_result := &BACnetErrorWriteProperty{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorWriteProperty(structType interface{}) *BACnetErrorWriteProperty {

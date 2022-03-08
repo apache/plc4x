@@ -69,6 +69,9 @@ func CastAdsMultiRequestItem(structType interface{}) *AdsMultiRequestItem {
 	if casted, ok := structType.(*AdsMultiRequestItem); ok {
 		return casted
 	}
+	if casted, ok := structType.(IAdsMultiRequestItemChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -64,12 +64,12 @@ func (m *BACnetErrorAtomicWriteFile) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorAtomicWriteFile factory function for BACnetErrorAtomicWriteFile
-func NewBACnetErrorAtomicWriteFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorAtomicWriteFile{
+func NewBACnetErrorAtomicWriteFile(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorAtomicWriteFile {
+	_result := &BACnetErrorAtomicWriteFile{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorAtomicWriteFile(structType interface{}) *BACnetErrorAtomicWriteFile {

@@ -89,14 +89,14 @@ func (m *AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsAddDeviceNotificationResponse factory function for AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32) *AdsData {
-	child := &AdsAddDeviceNotificationResponse{
+func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32) *AdsAddDeviceNotificationResponse {
+	_result := &AdsAddDeviceNotificationResponse{
 		Result:             result,
 		NotificationHandle: notificationHandle,
 		AdsData:            NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsAddDeviceNotificationResponse(structType interface{}) *AdsAddDeviceNotificationResponse {

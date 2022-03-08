@@ -82,13 +82,13 @@ func (m *BACnetPropertyStatesAction) GetAction() *BACnetAction {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesAction factory function for BACnetPropertyStatesAction
-func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
-	child := &BACnetPropertyStatesAction{
+func NewBACnetPropertyStatesAction(action *BACnetAction, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesAction {
+	_result := &BACnetPropertyStatesAction{
 		Action:               action,
 		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetPropertyStates
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetPropertyStatesAction(structType interface{}) *BACnetPropertyStatesAction {

@@ -95,15 +95,15 @@ func (m *LDataCon) GetDataFrame() *LDataFrame {
 ///////////////////////////////////////////////////////////
 
 // NewLDataCon factory function for LDataCon
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *CEMI {
-	child := &LDataCon{
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *LDataCon {
+	_result := &LDataCon{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		CEMI:                        NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataCon(structType interface{}) *LDataCon {

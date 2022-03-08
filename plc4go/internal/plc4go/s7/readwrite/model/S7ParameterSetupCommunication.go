@@ -97,15 +97,15 @@ func (m *S7ParameterSetupCommunication) GetPduLength() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterSetupCommunication factory function for S7ParameterSetupCommunication
-func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7Parameter {
-	child := &S7ParameterSetupCommunication{
+func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *S7ParameterSetupCommunication {
+	_result := &S7ParameterSetupCommunication{
 		MaxAmqCaller: maxAmqCaller,
 		MaxAmqCallee: maxAmqCallee,
 		PduLength:    pduLength,
 		S7Parameter:  NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterSetupCommunication(structType interface{}) *S7ParameterSetupCommunication {

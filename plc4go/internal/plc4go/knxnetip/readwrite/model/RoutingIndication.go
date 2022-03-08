@@ -61,12 +61,12 @@ func (m *RoutingIndication) GetParent() *KnxNetIpMessage {
 }
 
 // NewRoutingIndication factory function for RoutingIndication
-func NewRoutingIndication() *KnxNetIpMessage {
-	child := &RoutingIndication{
+func NewRoutingIndication() *RoutingIndication {
+	_result := &RoutingIndication{
 		KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastRoutingIndication(structType interface{}) *RoutingIndication {

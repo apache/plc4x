@@ -81,13 +81,13 @@ func (m *FirmataMessageCommand) GetCommand() *FirmataCommand {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataMessageCommand factory function for FirmataMessageCommand
-func NewFirmataMessageCommand(command *FirmataCommand, response bool) *FirmataMessage {
-	child := &FirmataMessageCommand{
+func NewFirmataMessageCommand(command *FirmataCommand, response bool) *FirmataMessageCommand {
+	_result := &FirmataMessageCommand{
 		Command:        command,
 		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageCommand(structType interface{}) *FirmataMessageCommand {

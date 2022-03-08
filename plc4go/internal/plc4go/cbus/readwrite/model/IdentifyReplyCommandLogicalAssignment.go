@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandLogicalAssignment) GetParent() *IdentifyReplyComman
 }
 
 // NewIdentifyReplyCommandLogicalAssignment factory function for IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandLogicalAssignment{
+func NewIdentifyReplyCommandLogicalAssignment() *IdentifyReplyCommandLogicalAssignment {
+	_result := &IdentifyReplyCommandLogicalAssignment{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandLogicalAssignment(structType interface{}) *IdentifyReplyCommandLogicalAssignment {

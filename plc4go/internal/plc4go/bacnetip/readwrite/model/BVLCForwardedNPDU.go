@@ -95,15 +95,15 @@ func (m *BVLCForwardedNPDU) GetNpdu() *NPDU {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCForwardedNPDU factory function for BVLCForwardedNPDU
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCForwardedNPDU{
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, bvlcPayloadLength uint16) *BVLCForwardedNPDU {
+	_result := &BVLCForwardedNPDU{
 		Ip:   ip,
 		Port: port,
 		Npdu: npdu,
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCForwardedNPDU(structType interface{}) *BVLCForwardedNPDU {

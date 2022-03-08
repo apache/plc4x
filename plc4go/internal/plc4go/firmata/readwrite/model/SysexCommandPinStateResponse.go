@@ -96,15 +96,15 @@ func (m *SysexCommandPinStateResponse) GetPinState() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewSysexCommandPinStateResponse factory function for SysexCommandPinStateResponse
-func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommand {
-	child := &SysexCommandPinStateResponse{
+func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *SysexCommandPinStateResponse {
+	_result := &SysexCommandPinStateResponse{
 		Pin:          pin,
 		PinMode:      pinMode,
 		PinState:     pinState,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandPinStateResponse(structType interface{}) *SysexCommandPinStateResponse {

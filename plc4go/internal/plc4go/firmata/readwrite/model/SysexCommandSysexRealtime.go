@@ -65,12 +65,12 @@ func (m *SysexCommandSysexRealtime) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandSysexRealtime factory function for SysexCommandSysexRealtime
-func NewSysexCommandSysexRealtime() *SysexCommand {
-	child := &SysexCommandSysexRealtime{
+func NewSysexCommandSysexRealtime() *SysexCommandSysexRealtime {
+	_result := &SysexCommandSysexRealtime{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandSysexRealtime(structType interface{}) *SysexCommandSysexRealtime {

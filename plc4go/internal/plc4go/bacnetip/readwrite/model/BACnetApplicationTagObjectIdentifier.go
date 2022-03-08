@@ -96,13 +96,13 @@ func (m *BACnetApplicationTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagObjectIdentifier factory function for BACnetApplicationTagObjectIdentifier
-func NewBACnetApplicationTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagObjectIdentifier{
+func NewBACnetApplicationTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader) *BACnetApplicationTagObjectIdentifier {
+	_result := &BACnetApplicationTagObjectIdentifier{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagObjectIdentifier(structType interface{}) *BACnetApplicationTagObjectIdentifier {

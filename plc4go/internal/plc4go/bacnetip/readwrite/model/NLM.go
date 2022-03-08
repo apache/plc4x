@@ -88,6 +88,9 @@ func CastNLM(structType interface{}) *NLM {
 	if casted, ok := structType.(*NLM); ok {
 		return casted
 	}
+	if casted, ok := structType.(INLMChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

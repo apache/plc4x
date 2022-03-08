@@ -81,13 +81,13 @@ func (m *COTPParameterCalledTsap) GetTsapId() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPParameterCalledTsap factory function for COTPParameterCalledTsap
-func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *COTPParameter {
-	child := &COTPParameterCalledTsap{
+func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *COTPParameterCalledTsap {
+	_result := &COTPParameterCalledTsap{
 		TsapId:        tsapId,
 		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterCalledTsap(structType interface{}) *COTPParameterCalledTsap {

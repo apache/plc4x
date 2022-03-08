@@ -98,15 +98,15 @@ func (m *S7MessageObjectRequest) GetAlarmType() AlarmType {
 ///////////////////////////////////////////////////////////
 
 // NewS7MessageObjectRequest factory function for S7MessageObjectRequest
-func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7DataAlarmMessage {
-	child := &S7MessageObjectRequest{
+func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *S7MessageObjectRequest {
+	_result := &S7MessageObjectRequest{
 		SyntaxId:           syntaxId,
 		QueryType:          queryType,
 		AlarmType:          alarmType,
 		S7DataAlarmMessage: NewS7DataAlarmMessage(),
 	}
-	child.Child = child
-	return child.S7DataAlarmMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageObjectRequest(structType interface{}) *S7MessageObjectRequest {

@@ -96,6 +96,9 @@ func CastCOTPPacket(structType interface{}) *COTPPacket {
 	if casted, ok := structType.(*COTPPacket); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICOTPPacketChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

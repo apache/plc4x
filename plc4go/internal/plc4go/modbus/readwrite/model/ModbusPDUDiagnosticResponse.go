@@ -93,14 +93,14 @@ func (m *ModbusPDUDiagnosticResponse) GetData() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUDiagnosticResponse factory function for ModbusPDUDiagnosticResponse
-func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *ModbusPDU {
-	child := &ModbusPDUDiagnosticResponse{
+func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *ModbusPDUDiagnosticResponse {
+	_result := &ModbusPDUDiagnosticResponse{
 		SubFunction: subFunction,
 		Data:        data,
 		ModbusPDU:   NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUDiagnosticResponse(structType interface{}) *ModbusPDUDiagnosticResponse {

@@ -118,8 +118,8 @@ func (m *AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsAddDeviceNotificationRequest factory function for AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsData {
-	child := &AdsAddDeviceNotificationRequest{
+func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32) *AdsAddDeviceNotificationRequest {
+	_result := &AdsAddDeviceNotificationRequest{
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
 		Length:           length,
@@ -128,8 +128,8 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		CycleTime:        cycleTime,
 		AdsData:          NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsAddDeviceNotificationRequest(structType interface{}) *AdsAddDeviceNotificationRequest {

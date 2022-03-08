@@ -61,12 +61,12 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAck {
-	child := &BACnetServiceAckReadPropertyMultiple{
+func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAckReadPropertyMultiple {
+	_result := &BACnetServiceAckReadPropertyMultiple{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) *BACnetServiceAckReadPropertyMultiple {

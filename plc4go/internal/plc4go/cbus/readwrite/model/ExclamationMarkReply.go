@@ -76,13 +76,13 @@ func (m *ExclamationMarkReply) GetIsA() *ExclamationMark {
 ///////////////////////////////////////////////////////////
 
 // NewExclamationMarkReply factory function for ExclamationMarkReply
-func NewExclamationMarkReply(isA *ExclamationMark, magicByte byte) *Reply {
-	child := &ExclamationMarkReply{
+func NewExclamationMarkReply(isA *ExclamationMark, magicByte byte) *ExclamationMarkReply {
+	_result := &ExclamationMarkReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastExclamationMarkReply(structType interface{}) *ExclamationMarkReply {

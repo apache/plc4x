@@ -90,13 +90,13 @@ func (m *BACnetApplicationTagCharacterString) GetValue() string {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagCharacterString factory function for BACnetApplicationTagCharacterString
-func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterString, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagCharacterString{
+func NewBACnetApplicationTagCharacterString(payload *BACnetTagPayloadCharacterString, header *BACnetTagHeader) *BACnetApplicationTagCharacterString {
+	_result := &BACnetApplicationTagCharacterString{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagCharacterString(structType interface{}) *BACnetApplicationTagCharacterString {

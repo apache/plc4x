@@ -61,12 +61,12 @@ func (m *BACnetServiceAckReadRange) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckReadRange factory function for BACnetServiceAckReadRange
-func NewBACnetServiceAckReadRange() *BACnetServiceAck {
-	child := &BACnetServiceAckReadRange{
+func NewBACnetServiceAckReadRange() *BACnetServiceAckReadRange {
+	_result := &BACnetServiceAckReadRange{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckReadRange(structType interface{}) *BACnetServiceAckReadRange {

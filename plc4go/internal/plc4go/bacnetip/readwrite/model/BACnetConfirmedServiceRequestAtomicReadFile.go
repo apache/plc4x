@@ -89,14 +89,14 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() *BACnetC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicReadFile factory function for BACnetConfirmedServiceRequestAtomicReadFile
-func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestAtomicReadFile{
+func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier *BACnetApplicationTagObjectIdentifier, accessMethod *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, len uint16) *BACnetConfirmedServiceRequestAtomicReadFile {
+	_result := &BACnetConfirmedServiceRequestAtomicReadFile{
 		FileIdentifier:                fileIdentifier,
 		AccessMethod:                  accessMethod,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFile {

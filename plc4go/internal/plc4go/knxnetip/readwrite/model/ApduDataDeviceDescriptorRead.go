@@ -81,13 +81,13 @@ func (m *ApduDataDeviceDescriptorRead) GetDescriptorType() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataDeviceDescriptorRead factory function for ApduDataDeviceDescriptorRead
-func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *ApduData {
-	child := &ApduDataDeviceDescriptorRead{
+func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *ApduDataDeviceDescriptorRead {
+	_result := &ApduDataDeviceDescriptorRead{
 		DescriptorType: descriptorType,
 		ApduData:       NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataDeviceDescriptorRead(structType interface{}) *ApduDataDeviceDescriptorRead {

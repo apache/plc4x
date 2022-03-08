@@ -78,13 +78,13 @@ func (m *BVLCRegisterForeignDevice) GetTtl() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCRegisterForeignDevice factory function for BVLCRegisterForeignDevice
-func NewBVLCRegisterForeignDevice(ttl uint16) *BVLC {
-	child := &BVLCRegisterForeignDevice{
+func NewBVLCRegisterForeignDevice(ttl uint16) *BVLCRegisterForeignDevice {
+	_result := &BVLCRegisterForeignDevice{
 		Ttl:  ttl,
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCRegisterForeignDevice(structType interface{}) *BVLCRegisterForeignDevice {

@@ -78,13 +78,13 @@ func (m *KnxNetRemoteLogging) GetVersion() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewKnxNetRemoteLogging factory function for KnxNetRemoteLogging
-func NewKnxNetRemoteLogging(version uint8) *ServiceId {
-	child := &KnxNetRemoteLogging{
+func NewKnxNetRemoteLogging(version uint8) *KnxNetRemoteLogging {
+	_result := &KnxNetRemoteLogging{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {

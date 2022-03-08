@@ -100,15 +100,15 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) GetValue() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteMultipleCoilsRequest factory function for ModbusPDUWriteMultipleCoilsRequest
-func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *ModbusPDU {
-	child := &ModbusPDUWriteMultipleCoilsRequest{
+func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *ModbusPDUWriteMultipleCoilsRequest {
+	_result := &ModbusPDUWriteMultipleCoilsRequest{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		Value:           value,
 		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) *ModbusPDUWriteMultipleCoilsRequest {

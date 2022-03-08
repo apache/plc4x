@@ -100,15 +100,15 @@ func (m *CipUnconnectedRequest) GetSlot() int8 {
 ///////////////////////////////////////////////////////////
 
 // NewCipUnconnectedRequest factory function for CipUnconnectedRequest
-func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8, serviceLen uint16) *CipService {
-	child := &CipUnconnectedRequest{
+func NewCipUnconnectedRequest(unconnectedService *CipService, backPlane int8, slot int8, serviceLen uint16) *CipUnconnectedRequest {
+	_result := &CipUnconnectedRequest{
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
 		CipService:         NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipUnconnectedRequest(structType interface{}) *CipUnconnectedRequest {

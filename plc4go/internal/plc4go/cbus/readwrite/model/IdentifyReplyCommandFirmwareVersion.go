@@ -78,13 +78,13 @@ func (m *IdentifyReplyCommandFirmwareVersion) GetFirmwareVersion() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandFirmwareVersion factory function for IdentifyReplyCommandFirmwareVersion
-func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandFirmwareVersion{
+func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string) *IdentifyReplyCommandFirmwareVersion {
+	_result := &IdentifyReplyCommandFirmwareVersion{
 		FirmwareVersion:      firmwareVersion,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandFirmwareVersion(structType interface{}) *IdentifyReplyCommandFirmwareVersion {

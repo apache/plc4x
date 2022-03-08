@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestCreateObject) GetParent() *BACnetConfirmed
 }
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestCreateObject{
+func NewBACnetConfirmedServiceRequestCreateObject(len uint16) *BACnetConfirmedServiceRequestCreateObject {
+	_result := &BACnetConfirmedServiceRequestCreateObject{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) *BACnetConfirmedServiceRequestCreateObject {

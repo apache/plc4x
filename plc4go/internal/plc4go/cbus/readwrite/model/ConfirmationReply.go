@@ -76,13 +76,13 @@ func (m *ConfirmationReply) GetIsA() *Confirmation {
 ///////////////////////////////////////////////////////////
 
 // NewConfirmationReply factory function for ConfirmationReply
-func NewConfirmationReply(isA *Confirmation, magicByte byte) *Reply {
-	child := &ConfirmationReply{
+func NewConfirmationReply(isA *Confirmation, magicByte byte) *ConfirmationReply {
+	_result := &ConfirmationReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastConfirmationReply(structType interface{}) *ConfirmationReply {

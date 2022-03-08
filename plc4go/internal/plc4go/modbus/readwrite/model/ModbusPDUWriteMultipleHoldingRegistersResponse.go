@@ -93,14 +93,14 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) GetQuantity() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteMultipleHoldingRegistersResponse factory function for ModbusPDUWriteMultipleHoldingRegistersResponse
-func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, quantity uint16) *ModbusPDU {
-	child := &ModbusPDUWriteMultipleHoldingRegistersResponse{
+func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, quantity uint16) *ModbusPDUWriteMultipleHoldingRegistersResponse {
+	_result := &ModbusPDUWriteMultipleHoldingRegistersResponse{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) *ModbusPDUWriteMultipleHoldingRegistersResponse {

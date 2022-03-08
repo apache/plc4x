@@ -80,13 +80,13 @@ func (m *ConnectionRequestInformationTunnelConnection) GetKnxLayer() KnxLayer {
 ///////////////////////////////////////////////////////////
 
 // NewConnectionRequestInformationTunnelConnection factory function for ConnectionRequestInformationTunnelConnection
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *ConnectionRequestInformation {
-	child := &ConnectionRequestInformationTunnelConnection{
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *ConnectionRequestInformationTunnelConnection {
+	_result := &ConnectionRequestInformationTunnelConnection{
 		KnxLayer:                     knxLayer,
 		ConnectionRequestInformation: NewConnectionRequestInformation(),
 	}
-	child.Child = child
-	return child.ConnectionRequestInformation
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionRequestInformationTunnelConnection(structType interface{}) *ConnectionRequestInformationTunnelConnection {

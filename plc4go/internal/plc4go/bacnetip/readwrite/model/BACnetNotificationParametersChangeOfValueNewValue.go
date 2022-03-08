@@ -114,6 +114,9 @@ func CastBACnetNotificationParametersChangeOfValueNewValue(structType interface{
 	if casted, ok := structType.(*BACnetNotificationParametersChangeOfValueNewValue); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetNotificationParametersChangeOfValueNewValueChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

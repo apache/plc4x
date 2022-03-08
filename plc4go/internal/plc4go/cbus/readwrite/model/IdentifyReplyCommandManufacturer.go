@@ -78,13 +78,13 @@ func (m *IdentifyReplyCommandManufacturer) GetManufacturerName() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandManufacturer factory function for IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandManufacturer{
+func NewIdentifyReplyCommandManufacturer(manufacturerName string) *IdentifyReplyCommandManufacturer {
+	_result := &IdentifyReplyCommandManufacturer{
 		ManufacturerName:     manufacturerName,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandManufacturer(structType interface{}) *IdentifyReplyCommandManufacturer {

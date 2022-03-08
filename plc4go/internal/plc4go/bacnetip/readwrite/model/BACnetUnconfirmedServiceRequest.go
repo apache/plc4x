@@ -72,6 +72,9 @@ func CastBACnetUnconfirmedServiceRequest(structType interface{}) *BACnetUnconfir
 	if casted, ok := structType.(*BACnetUnconfirmedServiceRequest); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetUnconfirmedServiceRequestChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

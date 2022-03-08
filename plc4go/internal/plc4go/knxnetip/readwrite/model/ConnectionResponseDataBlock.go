@@ -69,6 +69,9 @@ func CastConnectionResponseDataBlock(structType interface{}) *ConnectionResponse
 	if casted, ok := structType.(*ConnectionResponseDataBlock); ok {
 		return casted
 	}
+	if casted, ok := structType.(IConnectionResponseDataBlockChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

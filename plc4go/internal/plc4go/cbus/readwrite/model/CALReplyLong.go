@@ -136,8 +136,8 @@ func (m *CALReplyLong) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyLong factory function for CALReplyLong
-func NewCALReplyLong(terminatingByte uint32, unitAddress *UnitAddress, bridgeAddress *BridgeAddress, serialInterfaceAddress *SerialInterfaceAddress, reservedByte *byte, replyNetwork *ReplyNetwork, calType byte, calData *CALData) *CALReply {
-	child := &CALReplyLong{
+func NewCALReplyLong(terminatingByte uint32, unitAddress *UnitAddress, bridgeAddress *BridgeAddress, serialInterfaceAddress *SerialInterfaceAddress, reservedByte *byte, replyNetwork *ReplyNetwork, calType byte, calData *CALData) *CALReplyLong {
+	_result := &CALReplyLong{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
 		BridgeAddress:          bridgeAddress,
@@ -146,8 +146,8 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress *UnitAddress, bridgeAdd
 		ReplyNetwork:           replyNetwork,
 		CALReply:               NewCALReply(calType, calData),
 	}
-	child.Child = child
-	return child.CALReply
+	_result.Child = _result
+	return _result
 }
 
 func CastCALReplyLong(structType interface{}) *CALReplyLong {

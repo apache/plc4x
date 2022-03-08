@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) GetParent() *BACnetConf
 }
 
 // NewBACnetConfirmedServiceRequestRemovedRequestKey factory function for BACnetConfirmedServiceRequestRemovedRequestKey
-func NewBACnetConfirmedServiceRequestRemovedRequestKey(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestRemovedRequestKey{
+func NewBACnetConfirmedServiceRequestRemovedRequestKey(len uint16) *BACnetConfirmedServiceRequestRemovedRequestKey {
+	_result := &BACnetConfirmedServiceRequestRemovedRequestKey{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestRemovedRequestKey(structType interface{}) *BACnetConfirmedServiceRequestRemovedRequestKey {

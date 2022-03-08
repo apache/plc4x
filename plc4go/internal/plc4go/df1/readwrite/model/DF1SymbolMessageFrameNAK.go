@@ -61,12 +61,12 @@ func (m *DF1SymbolMessageFrameNAK) GetParent() *DF1Symbol {
 }
 
 // NewDF1SymbolMessageFrameNAK factory function for DF1SymbolMessageFrameNAK
-func NewDF1SymbolMessageFrameNAK() *DF1Symbol {
-	child := &DF1SymbolMessageFrameNAK{
+func NewDF1SymbolMessageFrameNAK() *DF1SymbolMessageFrameNAK {
+	_result := &DF1SymbolMessageFrameNAK{
 		DF1Symbol: NewDF1Symbol(),
 	}
-	child.Child = child
-	return child.DF1Symbol
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1SymbolMessageFrameNAK(structType interface{}) *DF1SymbolMessageFrameNAK {

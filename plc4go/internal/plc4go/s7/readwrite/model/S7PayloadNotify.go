@@ -89,13 +89,13 @@ func (m *S7PayloadNotify) GetAlarmMessage() *AlarmMessagePushType {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadNotify factory function for S7PayloadNotify
-func NewS7PayloadNotify(alarmMessage *AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadNotify{
+func NewS7PayloadNotify(alarmMessage *AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadNotify {
+	_result := &S7PayloadNotify{
 		AlarmMessage:          alarmMessage,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadNotify(structType interface{}) *S7PayloadNotify {

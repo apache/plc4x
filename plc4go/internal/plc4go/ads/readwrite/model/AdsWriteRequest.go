@@ -96,15 +96,15 @@ func (m *AdsWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteRequest factory function for AdsWriteRequest
-func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *AdsData {
-	child := &AdsWriteRequest{
+func NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) *AdsWriteRequest {
+	_result := &AdsWriteRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Data:        data,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteRequest(structType interface{}) *AdsWriteRequest {

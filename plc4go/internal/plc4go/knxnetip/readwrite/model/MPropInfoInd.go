@@ -64,12 +64,12 @@ func (m *MPropInfoInd) GetParent() *CEMI {
 }
 
 // NewMPropInfoInd factory function for MPropInfoInd
-func NewMPropInfoInd(size uint16) *CEMI {
-	child := &MPropInfoInd{
+func NewMPropInfoInd(size uint16) *MPropInfoInd {
+	_result := &MPropInfoInd{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMPropInfoInd(structType interface{}) *MPropInfoInd {

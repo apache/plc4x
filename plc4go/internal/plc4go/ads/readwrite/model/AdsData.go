@@ -71,6 +71,9 @@ func CastAdsData(structType interface{}) *AdsData {
 	if casted, ok := structType.(*AdsData); ok {
 		return casted
 	}
+	if casted, ok := structType.(IAdsDataChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

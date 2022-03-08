@@ -66,12 +66,12 @@ func (m *EipDisconnectRequest) GetParent() *EipPacket {
 }
 
 // NewEipDisconnectRequest factory function for EipDisconnectRequest
-func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
-	child := &EipDisconnectRequest{
+func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipDisconnectRequest {
+	_result := &EipDisconnectRequest{
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.EipPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastEipDisconnectRequest(structType interface{}) *EipDisconnectRequest {

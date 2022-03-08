@@ -64,12 +64,12 @@ func (m *BACnetErrorGetAlarmSummary) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorGetAlarmSummary factory function for BACnetErrorGetAlarmSummary
-func NewBACnetErrorGetAlarmSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorGetAlarmSummary{
+func NewBACnetErrorGetAlarmSummary(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorGetAlarmSummary {
+	_result := &BACnetErrorGetAlarmSummary{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorGetAlarmSummary(structType interface{}) *BACnetErrorGetAlarmSummary {

@@ -64,12 +64,12 @@ func (m *ApduDataIndividualAddressResponse) GetParent() *ApduData {
 }
 
 // NewApduDataIndividualAddressResponse factory function for ApduDataIndividualAddressResponse
-func NewApduDataIndividualAddressResponse(dataLength uint8) *ApduData {
-	child := &ApduDataIndividualAddressResponse{
+func NewApduDataIndividualAddressResponse(dataLength uint8) *ApduDataIndividualAddressResponse {
+	_result := &ApduDataIndividualAddressResponse{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataIndividualAddressResponse(structType interface{}) *ApduDataIndividualAddressResponse {

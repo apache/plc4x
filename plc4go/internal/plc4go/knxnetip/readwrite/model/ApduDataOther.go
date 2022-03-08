@@ -81,13 +81,13 @@ func (m *ApduDataOther) GetExtendedApdu() *ApduDataExt {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataOther factory function for ApduDataOther
-func NewApduDataOther(extendedApdu *ApduDataExt, dataLength uint8) *ApduData {
-	child := &ApduDataOther{
+func NewApduDataOther(extendedApdu *ApduDataExt, dataLength uint8) *ApduDataOther {
+	_result := &ApduDataOther{
 		ExtendedApdu: extendedApdu,
 		ApduData:     NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataOther(structType interface{}) *ApduDataOther {

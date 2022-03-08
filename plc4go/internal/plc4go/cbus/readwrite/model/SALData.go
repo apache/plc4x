@@ -97,6 +97,9 @@ func CastSALData(structType interface{}) *SALData {
 	if casted, ok := structType.(*SALData); ok {
 		return casted
 	}
+	if casted, ok := structType.(ISALDataChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -64,12 +64,12 @@ func (m *ApduDataExtNetworkParameterResponse) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtNetworkParameterResponse factory function for ApduDataExtNetworkParameterResponse
-func NewApduDataExtNetworkParameterResponse(length uint8) *ApduDataExt {
-	child := &ApduDataExtNetworkParameterResponse{
+func NewApduDataExtNetworkParameterResponse(length uint8) *ApduDataExtNetworkParameterResponse {
+	_result := &ApduDataExtNetworkParameterResponse{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtNetworkParameterResponse(structType interface{}) *ApduDataExtNetworkParameterResponse {

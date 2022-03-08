@@ -107,16 +107,16 @@ func (m *ModbusPDUGetComEventLogResponse) GetEvents() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUGetComEventLogResponse factory function for ModbusPDUGetComEventLogResponse
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDU {
-	child := &ModbusPDUGetComEventLogResponse{
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDUGetComEventLogResponse {
+	_result := &ModbusPDUGetComEventLogResponse{
 		Status:       status,
 		EventCount:   eventCount,
 		MessageCount: messageCount,
 		Events:       events,
 		ModbusPDU:    NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUGetComEventLogResponse(structType interface{}) *ModbusPDUGetComEventLogResponse {

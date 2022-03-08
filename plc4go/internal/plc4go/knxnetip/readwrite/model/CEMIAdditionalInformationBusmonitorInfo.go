@@ -118,8 +118,8 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetSequenceNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCEMIAdditionalInformationBusmonitorInfo factory function for CEMIAdditionalInformationBusmonitorInfo
-func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformation {
-	child := &CEMIAdditionalInformationBusmonitorInfo{
+func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *CEMIAdditionalInformationBusmonitorInfo {
+	_result := &CEMIAdditionalInformationBusmonitorInfo{
 		FrameErrorFlag:            frameErrorFlag,
 		BitErrorFlag:              bitErrorFlag,
 		ParityErrorFlag:           parityErrorFlag,
@@ -128,8 +128,8 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 		SequenceNumber:            sequenceNumber,
 		CEMIAdditionalInformation: NewCEMIAdditionalInformation(),
 	}
-	child.Child = child
-	return child.CEMIAdditionalInformation
+	_result.Child = _result
+	return _result
 }
 
 func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) *CEMIAdditionalInformationBusmonitorInfo {

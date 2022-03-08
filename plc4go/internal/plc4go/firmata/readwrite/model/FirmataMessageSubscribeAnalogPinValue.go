@@ -89,14 +89,14 @@ func (m *FirmataMessageSubscribeAnalogPinValue) GetEnable() bool {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataMessageSubscribeAnalogPinValue factory function for FirmataMessageSubscribeAnalogPinValue
-func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *FirmataMessage {
-	child := &FirmataMessageSubscribeAnalogPinValue{
+func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *FirmataMessageSubscribeAnalogPinValue {
+	_result := &FirmataMessageSubscribeAnalogPinValue{
 		Pin:            pin,
 		Enable:         enable,
 		FirmataMessage: NewFirmataMessage(response),
 	}
-	child.Child = child
-	return child.FirmataMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataMessageSubscribeAnalogPinValue(structType interface{}) *FirmataMessageSubscribeAnalogPinValue {

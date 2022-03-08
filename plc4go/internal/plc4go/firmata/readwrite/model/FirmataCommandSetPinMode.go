@@ -88,14 +88,14 @@ func (m *FirmataCommandSetPinMode) GetMode() PinMode {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataCommandSetPinMode factory function for FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *FirmataCommand {
-	child := &FirmataCommandSetPinMode{
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *FirmataCommandSetPinMode {
+	_result := &FirmataCommandSetPinMode{
 		Pin:            pin,
 		Mode:           mode,
 		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSetPinMode(structType interface{}) *FirmataCommandSetPinMode {

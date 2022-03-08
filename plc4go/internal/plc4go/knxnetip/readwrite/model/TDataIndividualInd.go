@@ -64,12 +64,12 @@ func (m *TDataIndividualInd) GetParent() *CEMI {
 }
 
 // NewTDataIndividualInd factory function for TDataIndividualInd
-func NewTDataIndividualInd(size uint16) *CEMI {
-	child := &TDataIndividualInd{
+func NewTDataIndividualInd(size uint16) *TDataIndividualInd {
+	_result := &TDataIndividualInd{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastTDataIndividualInd(structType interface{}) *TDataIndividualInd {

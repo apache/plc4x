@@ -61,12 +61,12 @@ func (m *ApduControlAck) GetParent() *ApduControl {
 }
 
 // NewApduControlAck factory function for ApduControlAck
-func NewApduControlAck() *ApduControl {
-	child := &ApduControlAck{
+func NewApduControlAck() *ApduControlAck {
+	_result := &ApduControlAck{
 		ApduControl: NewApduControl(),
 	}
-	child.Child = child
-	return child.ApduControl
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlAck(structType interface{}) *ApduControlAck {

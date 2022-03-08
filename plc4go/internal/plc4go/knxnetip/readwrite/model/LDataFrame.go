@@ -115,6 +115,9 @@ func CastLDataFrame(structType interface{}) *LDataFrame {
 	if casted, ok := structType.(*LDataFrame); ok {
 		return casted
 	}
+	if casted, ok := structType.(ILDataFrameChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

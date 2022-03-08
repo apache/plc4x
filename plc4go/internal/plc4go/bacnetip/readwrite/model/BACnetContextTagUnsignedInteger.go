@@ -98,13 +98,13 @@ func (m *BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagUnsignedInteger factory function for BACnetContextTagUnsignedInteger
-func NewBACnetContextTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInteger, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagUnsignedInteger{
+func NewBACnetContextTagUnsignedInteger(payload *BACnetTagPayloadUnsignedInteger, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagUnsignedInteger {
+	_result := &BACnetContextTagUnsignedInteger{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagUnsignedInteger(structType interface{}) *BACnetContextTagUnsignedInteger {

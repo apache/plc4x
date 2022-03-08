@@ -88,6 +88,9 @@ func CastBVLC(structType interface{}) *BVLC {
 	if casted, ok := structType.(*BVLC); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBVLCChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -78,13 +78,13 @@ func (m *KnxNetObjectServer) GetVersion() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewKnxNetObjectServer factory function for KnxNetObjectServer
-func NewKnxNetObjectServer(version uint8) *ServiceId {
-	child := &KnxNetObjectServer{
+func NewKnxNetObjectServer(version uint8) *KnxNetObjectServer {
+	_result := &KnxNetObjectServer{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetObjectServer(structType interface{}) *KnxNetObjectServer {

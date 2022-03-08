@@ -64,12 +64,12 @@ func (m *ApduDataMemoryWrite) GetParent() *ApduData {
 }
 
 // NewApduDataMemoryWrite factory function for ApduDataMemoryWrite
-func NewApduDataMemoryWrite(dataLength uint8) *ApduData {
-	child := &ApduDataMemoryWrite{
+func NewApduDataMemoryWrite(dataLength uint8) *ApduDataMemoryWrite {
+	_result := &ApduDataMemoryWrite{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataMemoryWrite(structType interface{}) *ApduDataMemoryWrite {

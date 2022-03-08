@@ -88,14 +88,14 @@ func (m *TunnelingRequest) GetCemi() *CEMI {
 ///////////////////////////////////////////////////////////
 
 // NewTunnelingRequest factory function for TunnelingRequest
-func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI, totalLength uint16) *KnxNetIpMessage {
-	child := &TunnelingRequest{
+func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI, totalLength uint16) *TunnelingRequest {
+	_result := &TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
 		Cemi:                      cemi,
 		KnxNetIpMessage:           NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastTunnelingRequest(structType interface{}) *TunnelingRequest {

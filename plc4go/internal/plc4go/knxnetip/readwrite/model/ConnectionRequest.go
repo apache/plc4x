@@ -92,15 +92,15 @@ func (m *ConnectionRequest) GetConnectionRequestInformation() *ConnectionRequest
 ///////////////////////////////////////////////////////////
 
 // NewConnectionRequest factory function for ConnectionRequest
-func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *KnxNetIpMessage {
-	child := &ConnectionRequest{
+func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation) *ConnectionRequest {
+	_result := &ConnectionRequest{
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
 		HpaiDataEndpoint:             hpaiDataEndpoint,
 		ConnectionRequestInformation: connectionRequestInformation,
 		KnxNetIpMessage:              NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionRequest(structType interface{}) *ConnectionRequest {

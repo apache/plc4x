@@ -78,13 +78,13 @@ func (m *DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() *DeviceCon
 ///////////////////////////////////////////////////////////
 
 // NewDeviceConfigurationAck factory function for DeviceConfigurationAck
-func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *KnxNetIpMessage {
-	child := &DeviceConfigurationAck{
+func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock) *DeviceConfigurationAck {
+	_result := &DeviceConfigurationAck{
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
 		KnxNetIpMessage:                 NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck {

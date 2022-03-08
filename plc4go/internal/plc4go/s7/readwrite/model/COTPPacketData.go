@@ -91,14 +91,14 @@ func (m *COTPPacketData) GetTpduRef() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketData factory function for COTPPacketData
-func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
-	child := &COTPPacketData{
+func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketData {
+	_result := &COTPPacketData{
 		Eot:        eot,
 		TpduRef:    tpduRef,
 		COTPPacket: NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketData(structType interface{}) *COTPPacketData {

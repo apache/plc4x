@@ -116,8 +116,8 @@ func (m *MPropReadCon) GetData() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewMPropReadCon factory function for MPropReadCon
-func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *CEMI {
-	child := &MPropReadCon{
+func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *MPropReadCon {
+	_result := &MPropReadCon{
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
@@ -126,8 +126,8 @@ func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyI
 		Data:                data,
 		CEMI:                NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMPropReadCon(structType interface{}) *MPropReadCon {

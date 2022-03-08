@@ -83,14 +83,14 @@ func (m *CALDataRequestRecall) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRequestRecall factory function for CALDataRequestRecall
-func NewCALDataRequestRecall(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataRequestRecall{
+func NewCALDataRequestRecall(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer) *CALDataRequestRecall {
+	_result := &CALDataRequestRecall{
 		ParamNo: paramNo,
 		Count:   count,
 		CALData: NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataRequestRecall(structType interface{}) *CALDataRequestRecall {

@@ -86,13 +86,13 @@ func (m *ModbusPDUError) GetExceptionCode() ModbusErrorCode {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUError factory function for ModbusPDUError
-func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDU {
-	child := &ModbusPDUError{
+func NewModbusPDUError(exceptionCode ModbusErrorCode) *ModbusPDUError {
+	_result := &ModbusPDUError{
 		ExceptionCode: exceptionCode,
 		ModbusPDU:     NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUError(structType interface{}) *ModbusPDUError {

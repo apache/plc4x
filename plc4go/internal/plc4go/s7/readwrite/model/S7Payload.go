@@ -74,6 +74,9 @@ func CastS7Payload(structType interface{}) *S7Payload {
 	if casted, ok := structType.(*S7Payload); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7PayloadChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

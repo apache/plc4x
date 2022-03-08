@@ -64,12 +64,12 @@ func (m *BACnetErrorConfirmedEventNotification) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorConfirmedEventNotification factory function for BACnetErrorConfirmedEventNotification
-func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorConfirmedEventNotification{
+func NewBACnetErrorConfirmedEventNotification(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorConfirmedEventNotification {
+	_result := &BACnetErrorConfirmedEventNotification{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorConfirmedEventNotification(structType interface{}) *BACnetErrorConfirmedEventNotification {

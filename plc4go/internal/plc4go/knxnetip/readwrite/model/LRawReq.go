@@ -64,12 +64,12 @@ func (m *LRawReq) GetParent() *CEMI {
 }
 
 // NewLRawReq factory function for LRawReq
-func NewLRawReq(size uint16) *CEMI {
-	child := &LRawReq{
+func NewLRawReq(size uint16) *LRawReq {
+	_result := &LRawReq{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLRawReq(structType interface{}) *LRawReq {

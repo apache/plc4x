@@ -83,14 +83,14 @@ func (m *CALDataRequestGetStatus) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRequestGetStatus factory function for CALDataRequestGetStatus
-func NewCALDataRequestGetStatus(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataRequestGetStatus{
+func NewCALDataRequestGetStatus(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer) *CALDataRequestGetStatus {
+	_result := &CALDataRequestGetStatus{
 		ParamNo: paramNo,
 		Count:   count,
 		CALData: NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataRequestGetStatus(structType interface{}) *CALDataRequestGetStatus {

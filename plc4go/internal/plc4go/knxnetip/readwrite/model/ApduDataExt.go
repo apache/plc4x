@@ -72,6 +72,9 @@ func CastApduDataExt(structType interface{}) *ApduDataExt {
 	if casted, ok := structType.(*ApduDataExt); ok {
 		return casted
 	}
+	if casted, ok := structType.(IApduDataExtChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

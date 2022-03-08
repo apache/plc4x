@@ -81,13 +81,13 @@ func (m *BACnetTimeStampSequence) GetSequenceNumber() *BACnetContextTagUnsignedI
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampSequence factory function for BACnetTimeStampSequence
-func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStamp {
-	child := &BACnetTimeStampSequence{
+func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStampSequence {
+	_result := &BACnetTimeStampSequence{
 		SequenceNumber:  sequenceNumber,
 		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetTimeStamp
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetTimeStampSequence(structType interface{}) *BACnetTimeStampSequence {

@@ -64,12 +64,12 @@ func (m *ApduDataAdcRead) GetParent() *ApduData {
 }
 
 // NewApduDataAdcRead factory function for ApduDataAdcRead
-func NewApduDataAdcRead(dataLength uint8) *ApduData {
-	child := &ApduDataAdcRead{
+func NewApduDataAdcRead(dataLength uint8) *ApduDataAdcRead {
+	_result := &ApduDataAdcRead{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataAdcRead(structType interface{}) *ApduDataAdcRead {

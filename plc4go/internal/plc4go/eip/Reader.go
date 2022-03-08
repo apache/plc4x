@@ -72,7 +72,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				}
 				return
 			}
-			request := readWriteModel.NewCipReadRequest(getRequestSize(tag), ansi, elements, 0)
+			request := readWriteModel.NewCipReadRequest(getRequestSize(tag), ansi, elements, 0).GetParent()
 			requestItems[i] = request
 		}
 		if len(requestItems) > 1 {
@@ -94,11 +94,11 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			pkt := readWriteModel.NewCipRRData(
 				readWriteModel.NewCipExchange(
 					readWriteModel.NewCipUnconnectedRequest(
-						readWriteModel.NewMultipleServiceRequest(data, 0),
+						readWriteModel.NewMultipleServiceRequest(data, 0).GetParent(),
 						m.configuration.backplane,
 						m.configuration.slot,
 						0,
-					),
+					).GetParent(),
 					0,
 				),
 				*m.sessionHandle,
@@ -184,7 +184,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						m.configuration.backplane,
 						m.configuration.slot,
 						0,
-					),
+					).GetParent(),
 					0,
 				),
 				*m.sessionHandle,

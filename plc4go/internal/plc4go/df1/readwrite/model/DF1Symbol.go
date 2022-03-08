@@ -73,6 +73,9 @@ func CastDF1Symbol(structType interface{}) *DF1Symbol {
 	if casted, ok := structType.(*DF1Symbol); ok {
 		return casted
 	}
+	if casted, ok := structType.(IDF1SymbolChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

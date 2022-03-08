@@ -69,12 +69,12 @@ func (m *ModbusPDUReadExceptionStatusRequest) GetParent() *ModbusPDU {
 }
 
 // NewModbusPDUReadExceptionStatusRequest factory function for ModbusPDUReadExceptionStatusRequest
-func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
-	child := &ModbusPDUReadExceptionStatusRequest{
+func NewModbusPDUReadExceptionStatusRequest() *ModbusPDUReadExceptionStatusRequest {
+	_result := &ModbusPDUReadExceptionStatusRequest{
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadExceptionStatusRequest(structType interface{}) *ModbusPDUReadExceptionStatusRequest {

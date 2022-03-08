@@ -61,12 +61,12 @@ func (m *BVLCDeleteForeignDeviceTableEntry) GetParent() *BVLC {
 }
 
 // NewBVLCDeleteForeignDeviceTableEntry factory function for BVLCDeleteForeignDeviceTableEntry
-func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
-	child := &BVLCDeleteForeignDeviceTableEntry{
+func NewBVLCDeleteForeignDeviceTableEntry() *BVLCDeleteForeignDeviceTableEntry {
+	_result := &BVLCDeleteForeignDeviceTableEntry{
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteForeignDeviceTableEntry {

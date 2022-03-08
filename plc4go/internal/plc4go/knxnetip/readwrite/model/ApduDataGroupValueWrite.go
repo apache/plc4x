@@ -88,14 +88,14 @@ func (m *ApduDataGroupValueWrite) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataGroupValueWrite factory function for ApduDataGroupValueWrite
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *ApduData {
-	child := &ApduDataGroupValueWrite{
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *ApduDataGroupValueWrite {
+	_result := &ApduDataGroupValueWrite{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
 		ApduData:      NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataGroupValueWrite(structType interface{}) *ApduDataGroupValueWrite {

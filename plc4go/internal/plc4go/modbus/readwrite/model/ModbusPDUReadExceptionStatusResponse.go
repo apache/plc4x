@@ -86,13 +86,13 @@ func (m *ModbusPDUReadExceptionStatusResponse) GetValue() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadExceptionStatusResponse factory function for ModbusPDUReadExceptionStatusResponse
-func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDU {
-	child := &ModbusPDUReadExceptionStatusResponse{
+func NewModbusPDUReadExceptionStatusResponse(value uint8) *ModbusPDUReadExceptionStatusResponse {
+	_result := &ModbusPDUReadExceptionStatusResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadExceptionStatusResponse(structType interface{}) *ModbusPDUReadExceptionStatusResponse {

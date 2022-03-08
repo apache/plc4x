@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetParent() *BACnetC
 }
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for BACnetConfirmedServiceRequestConfirmedTextMessage
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestConfirmedTextMessage{
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(len uint16) *BACnetConfirmedServiceRequestConfirmedTextMessage {
+	_result := &BACnetConfirmedServiceRequestConfirmedTextMessage{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{}) *BACnetConfirmedServiceRequestConfirmedTextMessage {

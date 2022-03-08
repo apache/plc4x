@@ -69,6 +69,9 @@ func CastKnxGroupAddress(structType interface{}) *KnxGroupAddress {
 	if casted, ok := structType.(*KnxGroupAddress); ok {
 		return casted
 	}
+	if casted, ok := structType.(IKnxGroupAddressChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetParent() 
 }
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(len uint16) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+	_result := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType interface{}) *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {

@@ -89,14 +89,14 @@ func (m *FirmataCommandSetDigitalPinValue) GetOn() bool {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataCommandSetDigitalPinValue factory function for FirmataCommandSetDigitalPinValue
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *FirmataCommand {
-	child := &FirmataCommandSetDigitalPinValue{
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *FirmataCommandSetDigitalPinValue {
+	_result := &FirmataCommandSetDigitalPinValue{
 		Pin:            pin,
 		On:             on,
 		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSetDigitalPinValue(structType interface{}) *FirmataCommandSetDigitalPinValue {

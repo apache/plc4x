@@ -65,12 +65,12 @@ func (m *SysexCommandStringData) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandStringData factory function for SysexCommandStringData
-func NewSysexCommandStringData() *SysexCommand {
-	child := &SysexCommandStringData{
+func NewSysexCommandStringData() *SysexCommandStringData {
+	_result := &SysexCommandStringData{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandStringData(structType interface{}) *SysexCommandStringData {

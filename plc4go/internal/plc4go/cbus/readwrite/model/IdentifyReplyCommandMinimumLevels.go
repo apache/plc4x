@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandMinimumLevels) GetParent() *IdentifyReplyCommand {
 }
 
 // NewIdentifyReplyCommandMinimumLevels factory function for IdentifyReplyCommandMinimumLevels
-func NewIdentifyReplyCommandMinimumLevels() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandMinimumLevels{
+func NewIdentifyReplyCommandMinimumLevels() *IdentifyReplyCommandMinimumLevels {
+	_result := &IdentifyReplyCommandMinimumLevels{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandMinimumLevels(structType interface{}) *IdentifyReplyCommandMinimumLevels {

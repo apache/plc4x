@@ -69,12 +69,12 @@ func (m *ModbusPDUReportServerIdRequest) GetParent() *ModbusPDU {
 }
 
 // NewModbusPDUReportServerIdRequest factory function for ModbusPDUReportServerIdRequest
-func NewModbusPDUReportServerIdRequest() *ModbusPDU {
-	child := &ModbusPDUReportServerIdRequest{
+func NewModbusPDUReportServerIdRequest() *ModbusPDUReportServerIdRequest {
+	_result := &ModbusPDUReportServerIdRequest{
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReportServerIdRequest(structType interface{}) *ModbusPDUReportServerIdRequest {

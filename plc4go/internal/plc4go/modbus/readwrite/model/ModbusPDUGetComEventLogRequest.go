@@ -69,12 +69,12 @@ func (m *ModbusPDUGetComEventLogRequest) GetParent() *ModbusPDU {
 }
 
 // NewModbusPDUGetComEventLogRequest factory function for ModbusPDUGetComEventLogRequest
-func NewModbusPDUGetComEventLogRequest() *ModbusPDU {
-	child := &ModbusPDUGetComEventLogRequest{
+func NewModbusPDUGetComEventLogRequest() *ModbusPDUGetComEventLogRequest {
+	_result := &ModbusPDUGetComEventLogRequest{
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUGetComEventLogRequest(structType interface{}) *ModbusPDUGetComEventLogRequest {

@@ -93,14 +93,14 @@ func (m *ModbusPDUWriteSingleCoilRequest) GetValue() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteSingleCoilRequest factory function for ModbusPDUWriteSingleCoilRequest
-func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *ModbusPDU {
-	child := &ModbusPDUWriteSingleCoilRequest{
+func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *ModbusPDUWriteSingleCoilRequest {
+	_result := &ModbusPDUWriteSingleCoilRequest{
 		Address:   address,
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteSingleCoilRequest(structType interface{}) *ModbusPDUWriteSingleCoilRequest {

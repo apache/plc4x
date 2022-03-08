@@ -72,6 +72,9 @@ func CastCEMI(structType interface{}) *CEMI {
 	if casted, ok := structType.(*CEMI); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICEMIChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

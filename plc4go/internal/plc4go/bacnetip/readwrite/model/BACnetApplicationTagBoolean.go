@@ -90,13 +90,13 @@ func (m *BACnetApplicationTagBoolean) GetActualValue() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagBoolean factory function for BACnetApplicationTagBoolean
-func NewBACnetApplicationTagBoolean(payload *BACnetTagPayloadBoolean, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagBoolean{
+func NewBACnetApplicationTagBoolean(payload *BACnetTagPayloadBoolean, header *BACnetTagHeader) *BACnetApplicationTagBoolean {
+	_result := &BACnetApplicationTagBoolean{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagBoolean(structType interface{}) *BACnetApplicationTagBoolean {

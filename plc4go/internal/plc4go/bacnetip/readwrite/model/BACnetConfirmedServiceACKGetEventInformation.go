@@ -62,12 +62,12 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) GetParent() *BACnetConfir
 }
 
 // NewBACnetConfirmedServiceACKGetEventInformation factory function for BACnetConfirmedServiceACKGetEventInformation
-func NewBACnetConfirmedServiceACKGetEventInformation() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKGetEventInformation{
+func NewBACnetConfirmedServiceACKGetEventInformation() *BACnetConfirmedServiceACKGetEventInformation {
+	_result := &BACnetConfirmedServiceACKGetEventInformation{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKGetEventInformation(structType interface{}) *BACnetConfirmedServiceACKGetEventInformation {

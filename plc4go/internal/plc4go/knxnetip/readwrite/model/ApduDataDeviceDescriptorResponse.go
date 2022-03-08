@@ -88,14 +88,14 @@ func (m *ApduDataDeviceDescriptorResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataDeviceDescriptorResponse factory function for ApduDataDeviceDescriptorResponse
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *ApduData {
-	child := &ApduDataDeviceDescriptorResponse{
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *ApduDataDeviceDescriptorResponse {
+	_result := &ApduDataDeviceDescriptorResponse{
 		DescriptorType: descriptorType,
 		Data:           data,
 		ApduData:       NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataDeviceDescriptorResponse(structType interface{}) *ApduDataDeviceDescriptorResponse {

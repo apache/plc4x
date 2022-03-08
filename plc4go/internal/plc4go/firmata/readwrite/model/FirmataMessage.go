@@ -72,6 +72,9 @@ func CastFirmataMessage(structType interface{}) *FirmataMessage {
 	if casted, ok := structType.(*FirmataMessage); ok {
 		return casted
 	}
+	if casted, ok := structType.(IFirmataMessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

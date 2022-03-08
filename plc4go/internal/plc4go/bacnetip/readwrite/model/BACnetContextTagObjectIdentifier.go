@@ -104,13 +104,13 @@ func (m *BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagObjectIdentifier factory function for BACnetContextTagObjectIdentifier
-func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagObjectIdentifier{
+func NewBACnetContextTagObjectIdentifier(payload *BACnetTagPayloadObjectIdentifier, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagObjectIdentifier {
+	_result := &BACnetContextTagObjectIdentifier{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagObjectIdentifier(structType interface{}) *BACnetContextTagObjectIdentifier {

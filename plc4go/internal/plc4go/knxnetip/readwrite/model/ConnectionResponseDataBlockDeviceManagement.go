@@ -62,12 +62,12 @@ func (m *ConnectionResponseDataBlockDeviceManagement) GetParent() *ConnectionRes
 }
 
 // NewConnectionResponseDataBlockDeviceManagement factory function for ConnectionResponseDataBlockDeviceManagement
-func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlock {
-	child := &ConnectionResponseDataBlockDeviceManagement{
+func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlockDeviceManagement {
+	_result := &ConnectionResponseDataBlockDeviceManagement{
 		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Child = child
-	return child.ConnectionResponseDataBlock
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) *ConnectionResponseDataBlockDeviceManagement {

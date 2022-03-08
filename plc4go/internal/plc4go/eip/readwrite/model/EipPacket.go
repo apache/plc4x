@@ -106,6 +106,9 @@ func CastEipPacket(structType interface{}) *EipPacket {
 	if casted, ok := structType.(*EipPacket); ok {
 		return casted
 	}
+	if casted, ok := structType.(IEipPacketChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

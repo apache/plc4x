@@ -106,14 +106,14 @@ func (m *BACnetContextTagEventType) GetIsProprietary() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagEventType factory function for BACnetContextTagEventType
-func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTag {
-	child := &BACnetContextTagEventType{
+func NewBACnetContextTagEventType(eventType BACnetEventType, proprietaryValue uint32, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTagEventType {
+	_result := &BACnetContextTagEventType{
 		EventType:        eventType,
 		ProprietaryValue: proprietaryValue,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagEventType(structType interface{}) *BACnetContextTagEventType {

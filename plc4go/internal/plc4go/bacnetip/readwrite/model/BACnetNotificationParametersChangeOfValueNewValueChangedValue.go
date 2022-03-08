@@ -81,13 +81,13 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedValue) GetChang
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfValueNewValueChangedValue factory function for BACnetNotificationParametersChangeOfValueNewValueChangedValue
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue *BACnetContextTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
-	child := &BACnetNotificationParametersChangeOfValueNewValueChangedValue{
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedValue *BACnetContextTagReal, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValueChangedValue {
+	_result := &BACnetNotificationParametersChangeOfValueNewValueChangedValue{
 		ChangedValue: changedValue,
 		BACnetNotificationParametersChangeOfValueNewValue: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetNotificationParametersChangeOfValueNewValue
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(structType interface{}) *BACnetNotificationParametersChangeOfValueNewValueChangedValue {

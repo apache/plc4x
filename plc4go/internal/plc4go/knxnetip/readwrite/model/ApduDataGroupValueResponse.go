@@ -88,14 +88,14 @@ func (m *ApduDataGroupValueResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataGroupValueResponse factory function for ApduDataGroupValueResponse
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *ApduData {
-	child := &ApduDataGroupValueResponse{
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *ApduDataGroupValueResponse {
+	_result := &ApduDataGroupValueResponse{
 		DataFirstByte: dataFirstByte,
 		Data:          data,
 		ApduData:      NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataGroupValueResponse(structType interface{}) *ApduDataGroupValueResponse {

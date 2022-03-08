@@ -65,12 +65,12 @@ func (m *SysexCommandAnalogMappingResponse) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandAnalogMappingResponse factory function for SysexCommandAnalogMappingResponse
-func NewSysexCommandAnalogMappingResponse() *SysexCommand {
-	child := &SysexCommandAnalogMappingResponse{
+func NewSysexCommandAnalogMappingResponse() *SysexCommandAnalogMappingResponse {
+	_result := &SysexCommandAnalogMappingResponse{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandAnalogMappingResponse(structType interface{}) *SysexCommandAnalogMappingResponse {

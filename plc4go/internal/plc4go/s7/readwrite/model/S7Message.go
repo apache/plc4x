@@ -105,6 +105,9 @@ func CastS7Message(structType interface{}) *S7Message {
 	if casted, ok := structType.(*S7Message); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7MessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

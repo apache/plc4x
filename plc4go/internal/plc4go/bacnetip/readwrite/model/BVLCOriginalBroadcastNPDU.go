@@ -81,13 +81,13 @@ func (m *BVLCOriginalBroadcastNPDU) GetNpdu() *NPDU {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCOriginalBroadcastNPDU factory function for BVLCOriginalBroadcastNPDU
-func NewBVLCOriginalBroadcastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCOriginalBroadcastNPDU{
+func NewBVLCOriginalBroadcastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLCOriginalBroadcastNPDU {
+	_result := &BVLCOriginalBroadcastNPDU{
 		Npdu: npdu,
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCOriginalBroadcastNPDU(structType interface{}) *BVLCOriginalBroadcastNPDU {

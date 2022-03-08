@@ -65,12 +65,12 @@ func (m *AdsReadDeviceInfoRequest) GetParent() *AdsData {
 }
 
 // NewAdsReadDeviceInfoRequest factory function for AdsReadDeviceInfoRequest
-func NewAdsReadDeviceInfoRequest() *AdsData {
-	child := &AdsReadDeviceInfoRequest{
+func NewAdsReadDeviceInfoRequest() *AdsReadDeviceInfoRequest {
+	_result := &AdsReadDeviceInfoRequest{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadDeviceInfoRequest(structType interface{}) *AdsReadDeviceInfoRequest {

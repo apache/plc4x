@@ -104,6 +104,9 @@ func CastCBusCommand(structType interface{}) *CBusCommand {
 	if casted, ok := structType.(*CBusCommand); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICBusCommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

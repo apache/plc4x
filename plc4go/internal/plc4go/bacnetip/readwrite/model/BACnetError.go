@@ -92,6 +92,9 @@ func CastBACnetError(structType interface{}) *BACnetError {
 	if casted, ok := structType.(*BACnetError); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetErrorChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

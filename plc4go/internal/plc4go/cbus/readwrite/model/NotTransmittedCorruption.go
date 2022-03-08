@@ -63,12 +63,12 @@ func (m *NotTransmittedCorruption) GetParent() *Confirmation {
 }
 
 // NewNotTransmittedCorruption factory function for NotTransmittedCorruption
-func NewNotTransmittedCorruption(alpha *Alpha) *Confirmation {
-	child := &NotTransmittedCorruption{
+func NewNotTransmittedCorruption(alpha *Alpha) *NotTransmittedCorruption {
+	_result := &NotTransmittedCorruption{
 		Confirmation: NewConfirmation(alpha),
 	}
-	child.Child = child
-	return child.Confirmation
+	_result.Child = _result
+	return _result
 }
 
 func CastNotTransmittedCorruption(structType interface{}) *NotTransmittedCorruption {

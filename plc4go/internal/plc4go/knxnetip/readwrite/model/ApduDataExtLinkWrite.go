@@ -64,12 +64,12 @@ func (m *ApduDataExtLinkWrite) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtLinkWrite factory function for ApduDataExtLinkWrite
-func NewApduDataExtLinkWrite(length uint8) *ApduDataExt {
-	child := &ApduDataExtLinkWrite{
+func NewApduDataExtLinkWrite(length uint8) *ApduDataExtLinkWrite {
+	_result := &ApduDataExtLinkWrite{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtLinkWrite(structType interface{}) *ApduDataExtLinkWrite {

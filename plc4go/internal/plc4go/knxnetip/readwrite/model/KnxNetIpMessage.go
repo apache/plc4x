@@ -73,6 +73,9 @@ func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
 	if casted, ok := structType.(*KnxNetIpMessage); ok {
 		return casted
 	}
+	if casted, ok := structType.(IKnxNetIpMessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

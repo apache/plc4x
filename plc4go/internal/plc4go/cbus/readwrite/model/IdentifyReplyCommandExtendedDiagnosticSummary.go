@@ -206,8 +206,8 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetInstallationMMIError(
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandExtendedDiagnosticSummary factory function for IdentifyReplyCommandExtendedDiagnosticSummary
-func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, outputUnit bool, enableChecksumAlarm bool, networkVoltageMarginal bool, networkVoltageLow bool, unitInLearnMode bool, microPowerReset bool, internalStackOverflow bool, commsTxError bool, microReset bool, EEDataError bool, EEChecksumError bool, EEWriteError bool, installationMMIError bool) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandExtendedDiagnosticSummary{
+func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, outputUnit bool, enableChecksumAlarm bool, networkVoltageMarginal bool, networkVoltageLow bool, unitInLearnMode bool, microPowerReset bool, internalStackOverflow bool, commsTxError bool, microReset bool, EEDataError bool, EEChecksumError bool, EEWriteError bool, installationMMIError bool) *IdentifyReplyCommandExtendedDiagnosticSummary {
+	_result := &IdentifyReplyCommandExtendedDiagnosticSummary{
 		LowApplication:         lowApplication,
 		HighApplication:        highApplication,
 		Area:                   area,
@@ -229,8 +229,8 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication Application
 		InstallationMMIError:   installationMMIError,
 		IdentifyReplyCommand:   NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandExtendedDiagnosticSummary(structType interface{}) *IdentifyReplyCommandExtendedDiagnosticSummary {

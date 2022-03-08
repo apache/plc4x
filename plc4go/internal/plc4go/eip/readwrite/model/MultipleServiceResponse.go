@@ -110,8 +110,8 @@ func (m *MultipleServiceResponse) GetServicesData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewMultipleServiceResponse factory function for MultipleServiceResponse
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *CipService {
-	child := &MultipleServiceResponse{
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *MultipleServiceResponse {
+	_result := &MultipleServiceResponse{
 		Status:       status,
 		ExtStatus:    extStatus,
 		ServiceNb:    serviceNb,
@@ -119,8 +119,8 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 		ServicesData: servicesData,
 		CipService:   NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastMultipleServiceResponse(structType interface{}) *MultipleServiceResponse {

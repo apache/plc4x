@@ -65,12 +65,12 @@ func (m *S7MessageRequest) GetParent() *S7Message {
 }
 
 // NewS7MessageRequest factory function for S7MessageRequest
-func NewS7MessageRequest(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
-	child := &S7MessageRequest{
+func NewS7MessageRequest(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7MessageRequest {
+	_result := &S7MessageRequest{
 		S7Message: NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Child = child
-	return child.S7Message
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageRequest(structType interface{}) *S7MessageRequest {

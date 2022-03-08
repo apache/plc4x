@@ -72,6 +72,9 @@ func CastCOTPParameter(structType interface{}) *COTPParameter {
 	if casted, ok := structType.(*COTPParameter); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICOTPParameterChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

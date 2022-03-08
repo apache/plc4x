@@ -71,12 +71,12 @@ func (m *LDataFrameACK) GetParent() *LDataFrame {
 }
 
 // NewLDataFrameACK factory function for LDataFrameACK
-func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LDataFrameACK{
+func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrameACK {
+	_result := &LDataFrameACK{
 		LDataFrame: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataFrameACK(structType interface{}) *LDataFrameACK {

@@ -59,12 +59,12 @@ func (m *BACnetApplicationTagNull) GetParent() *BACnetApplicationTag {
 }
 
 // NewBACnetApplicationTagNull factory function for BACnetApplicationTagNull
-func NewBACnetApplicationTagNull(header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagNull{
+func NewBACnetApplicationTagNull(header *BACnetTagHeader) *BACnetApplicationTagNull {
+	_result := &BACnetApplicationTagNull{
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagNull(structType interface{}) *BACnetApplicationTagNull {

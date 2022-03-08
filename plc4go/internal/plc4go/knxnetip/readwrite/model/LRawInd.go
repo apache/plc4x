@@ -64,12 +64,12 @@ func (m *LRawInd) GetParent() *CEMI {
 }
 
 // NewLRawInd factory function for LRawInd
-func NewLRawInd(size uint16) *CEMI {
-	child := &LRawInd{
+func NewLRawInd(size uint16) *LRawInd {
+	_result := &LRawInd{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLRawInd(structType interface{}) *LRawInd {

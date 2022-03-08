@@ -67,12 +67,12 @@ func (m *BACnetOpeningTag) GetParent() *BACnetContextTag {
 }
 
 // NewBACnetOpeningTag factory function for BACnetOpeningTag
-func NewBACnetOpeningTag(header *BACnetTagHeader, tagNumberArgument uint8, actualLength uint32) *BACnetContextTag {
-	child := &BACnetOpeningTag{
+func NewBACnetOpeningTag(header *BACnetTagHeader, tagNumberArgument uint8, actualLength uint32) *BACnetOpeningTag {
+	_result := &BACnetOpeningTag{
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetOpeningTag(structType interface{}) *BACnetOpeningTag {

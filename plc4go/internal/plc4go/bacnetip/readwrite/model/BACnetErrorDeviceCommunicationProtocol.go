@@ -64,12 +64,12 @@ func (m *BACnetErrorDeviceCommunicationProtocol) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorDeviceCommunicationProtocol factory function for BACnetErrorDeviceCommunicationProtocol
-func NewBACnetErrorDeviceCommunicationProtocol(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorDeviceCommunicationProtocol{
+func NewBACnetErrorDeviceCommunicationProtocol(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorDeviceCommunicationProtocol {
+	_result := &BACnetErrorDeviceCommunicationProtocol{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorDeviceCommunicationProtocol(structType interface{}) *BACnetErrorDeviceCommunicationProtocol {

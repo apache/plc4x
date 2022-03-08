@@ -52,12 +52,12 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
+						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0).GetParent()},
 						model.NewS7MessageResponseData(
 							0,
 							0,
 							11,
-							model.NewS7ParameterReadVarResponse(1),
+							model.NewS7ParameterReadVarResponse(1).GetParent(),
 							model.NewS7PayloadReadVarResponse(
 								[]*model.S7VarPayloadDataItem{
 									model.NewS7VarPayloadDataItem(
@@ -67,10 +67,10 @@ func TestS7MessageBytes(t *testing.T) {
 									),
 								},
 								*model.NewS7Parameter(),
-							),
-						),
+							).GetParent(),
+						).GetParent(),
 						0,
-					),
+					).GetParent(),
 				),
 			},
 			wantStringSerialized: `
@@ -384,7 +384,7 @@ func TestS7MessageBytes(t *testing.T) {
 					model.NewCOTPPacketData(
 						false,
 						13,
-						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0)},
+						[]*model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 0).GetParent()},
 						model.NewS7MessageRequest(
 							13,
 							model.NewS7ParameterWriteVarRequest([]*model.S7VarRequestParameterItem{
@@ -395,8 +395,8 @@ func TestS7MessageBytes(t *testing.T) {
 									model.MemoryArea_INPUTS,
 									0,
 									0,
-								)),
-							}),
+								).GetParent()).GetParent(),
+							}).GetParent(),
 							model.NewS7PayloadWriteVarRequest(
 								[]*model.S7VarPayloadDataItem{
 									model.NewS7VarPayloadDataItem(
@@ -414,10 +414,10 @@ func TestS7MessageBytes(t *testing.T) {
 										},
 									),
 								},
-								*model.NewS7Parameter()),
-						),
+								*model.NewS7Parameter()).GetParent(),
+						).GetParent(),
 						0,
-					),
+					).GetParent(),
 				),
 			},
 			wantStringSerialized: `

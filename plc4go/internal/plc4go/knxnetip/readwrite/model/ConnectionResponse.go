@@ -100,16 +100,16 @@ func (m *ConnectionResponse) GetConnectionResponseDataBlock() *ConnectionRespons
 ///////////////////////////////////////////////////////////
 
 // NewConnectionResponse factory function for ConnectionResponse
-func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock) *KnxNetIpMessage {
-	child := &ConnectionResponse{
+func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock) *ConnectionResponse {
+	_result := &ConnectionResponse{
 		CommunicationChannelId:      communicationChannelId,
 		Status:                      status,
 		HpaiDataEndpoint:            hpaiDataEndpoint,
 		ConnectionResponseDataBlock: connectionResponseDataBlock,
 		KnxNetIpMessage:             NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionResponse(structType interface{}) *ConnectionResponse {

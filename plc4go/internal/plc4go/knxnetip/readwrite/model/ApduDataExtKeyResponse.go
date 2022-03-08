@@ -64,12 +64,12 @@ func (m *ApduDataExtKeyResponse) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtKeyResponse factory function for ApduDataExtKeyResponse
-func NewApduDataExtKeyResponse(length uint8) *ApduDataExt {
-	child := &ApduDataExtKeyResponse{
+func NewApduDataExtKeyResponse(length uint8) *ApduDataExtKeyResponse {
+	_result := &ApduDataExtKeyResponse{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtKeyResponse(structType interface{}) *ApduDataExtKeyResponse {

@@ -63,12 +63,12 @@ func (m *NotTransmittedToManyReTransmissions) GetParent() *Confirmation {
 }
 
 // NewNotTransmittedToManyReTransmissions factory function for NotTransmittedToManyReTransmissions
-func NewNotTransmittedToManyReTransmissions(alpha *Alpha) *Confirmation {
-	child := &NotTransmittedToManyReTransmissions{
+func NewNotTransmittedToManyReTransmissions(alpha *Alpha) *NotTransmittedToManyReTransmissions {
+	_result := &NotTransmittedToManyReTransmissions{
 		Confirmation: NewConfirmation(alpha),
 	}
-	child.Child = child
-	return child.Confirmation
+	_result.Child = _result
+	return _result
 }
 
 func CastNotTransmittedToManyReTransmissions(structType interface{}) *NotTransmittedToManyReTransmissions {

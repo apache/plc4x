@@ -69,6 +69,9 @@ func CastApduControl(structType interface{}) *ApduControl {
 	if casted, ok := structType.(*ApduControl); ok {
 		return casted
 	}
+	if casted, ok := structType.(IApduControlChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

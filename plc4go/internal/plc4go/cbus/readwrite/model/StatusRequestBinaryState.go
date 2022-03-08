@@ -77,13 +77,13 @@ func (m *StatusRequestBinaryState) GetApplication() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestBinaryState factory function for StatusRequestBinaryState
-func NewStatusRequestBinaryState(application byte, statusType byte) *StatusRequest {
-	child := &StatusRequestBinaryState{
+func NewStatusRequestBinaryState(application byte, statusType byte) *StatusRequestBinaryState {
+	_result := &StatusRequestBinaryState{
 		Application:   application,
 		StatusRequest: NewStatusRequest(statusType),
 	}
-	child.Child = child
-	return child.StatusRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastStatusRequestBinaryState(structType interface{}) *StatusRequestBinaryState {

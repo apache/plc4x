@@ -90,13 +90,13 @@ func (m *BACnetApplicationTagReal) GetActualValue() float32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagReal factory function for BACnetApplicationTagReal
-func NewBACnetApplicationTagReal(payload *BACnetTagPayloadReal, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagReal{
+func NewBACnetApplicationTagReal(payload *BACnetTagPayloadReal, header *BACnetTagHeader) *BACnetApplicationTagReal {
+	_result := &BACnetApplicationTagReal{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagReal(structType interface{}) *BACnetApplicationTagReal {

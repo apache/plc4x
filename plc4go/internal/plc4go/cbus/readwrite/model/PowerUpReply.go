@@ -76,13 +76,13 @@ func (m *PowerUpReply) GetIsA() *PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for PowerUpReply
-func NewPowerUpReply(isA *PowerUp, magicByte byte) *Reply {
-	child := &PowerUpReply{
+func NewPowerUpReply(isA *PowerUp, magicByte byte) *PowerUpReply {
+	_result := &PowerUpReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastPowerUpReply(structType interface{}) *PowerUpReply {

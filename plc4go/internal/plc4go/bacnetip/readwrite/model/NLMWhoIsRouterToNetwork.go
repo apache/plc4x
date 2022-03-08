@@ -83,13 +83,13 @@ func (m *NLMWhoIsRouterToNetwork) GetDestinationNetworkAddress() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMWhoIsRouterToNetwork factory function for NLMWhoIsRouterToNetwork
-func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMWhoIsRouterToNetwork{
+func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16, apduLength uint16) *NLMWhoIsRouterToNetwork {
+	_result := &NLMWhoIsRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMWhoIsRouterToNetwork(structType interface{}) *NLMWhoIsRouterToNetwork {

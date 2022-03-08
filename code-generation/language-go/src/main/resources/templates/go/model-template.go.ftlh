@@ -296,18 +296,18 @@ func New${type.name}(
             <#sep>, </#sep>
         </#list>
     </#if>
-	) *<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if> {
+	) *${type.name} {
 </@compress>
 
 <#if type.parentType.isPresent()>
-	child := &${type.name}{
+	_result := &${type.name}{
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
     	${type.parentType.orElseThrow().name}: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
-	child.Child = child
-	return child.${type.parentType.orElseThrow().name}
+	_result.Child = _result
+	return _result
 <#else>
 	<@compress single_line=true>
 	return &${type.name}{
@@ -342,6 +342,11 @@ func Cast${type.name}(structType interface{}) *${type.name} {
 	if casted, ok := structType.(*${type.parentType.orElseThrow().name}); ok {
 		return Cast${type.name}(casted.Child)
 	}
+	</#if>
+	<#if type.isDiscriminatedParentTypeDefinition()>
+		if casted, ok := structType.(I${type.name}Child); ok {
+			return casted.GetParent()
+		}
 	</#if>
 	return nil
 }

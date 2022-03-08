@@ -90,14 +90,14 @@ func (m *IdentifyReplyCommandNetworkVoltage) GetVoltsDecimalPlace() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandNetworkVoltage factory function for IdentifyReplyCommandNetworkVoltage
-func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandNetworkVoltage{
+func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string) *IdentifyReplyCommandNetworkVoltage {
+	_result := &IdentifyReplyCommandNetworkVoltage{
 		Volts:                volts,
 		VoltsDecimalPlace:    voltsDecimalPlace,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandNetworkVoltage(structType interface{}) *IdentifyReplyCommandNetworkVoltage {

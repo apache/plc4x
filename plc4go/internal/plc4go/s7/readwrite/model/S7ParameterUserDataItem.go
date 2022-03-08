@@ -69,6 +69,9 @@ func CastS7ParameterUserDataItem(structType interface{}) *S7ParameterUserDataIte
 	if casted, ok := structType.(*S7ParameterUserDataItem); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7ParameterUserDataItemChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

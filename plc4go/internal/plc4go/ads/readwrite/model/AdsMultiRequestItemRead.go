@@ -92,15 +92,15 @@ func (m *AdsMultiRequestItemRead) GetItemReadLength() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsMultiRequestItemRead factory function for AdsMultiRequestItemRead
-func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *AdsMultiRequestItem {
-	child := &AdsMultiRequestItemRead{
+func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *AdsMultiRequestItemRead {
+	_result := &AdsMultiRequestItemRead{
 		ItemIndexGroup:      itemIndexGroup,
 		ItemIndexOffset:     itemIndexOffset,
 		ItemReadLength:      itemReadLength,
 		AdsMultiRequestItem: NewAdsMultiRequestItem(),
 	}
-	child.Child = child
-	return child.AdsMultiRequestItem
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsMultiRequestItemRead(structType interface{}) *AdsMultiRequestItemRead {

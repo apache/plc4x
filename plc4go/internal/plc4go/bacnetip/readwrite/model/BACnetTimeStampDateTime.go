@@ -81,13 +81,13 @@ func (m *BACnetTimeStampDateTime) GetDateTimeValue() *BACnetDateTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampDateTime factory function for BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStamp {
-	child := &BACnetTimeStampDateTime{
+func NewBACnetTimeStampDateTime(dateTimeValue *BACnetDateTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetTimeStampDateTime {
+	_result := &BACnetTimeStampDateTime{
 		DateTimeValue:   dateTimeValue,
 		BACnetTimeStamp: NewBACnetTimeStamp(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetTimeStamp
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetTimeStampDateTime(structType interface{}) *BACnetTimeStampDateTime {

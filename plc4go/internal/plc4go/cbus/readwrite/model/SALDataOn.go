@@ -76,13 +76,13 @@ func (m *SALDataOn) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataOn factory function for SALDataOn
-func NewSALDataOn(group byte, commandTypeContainer SALCommandTypeContainer) *SALData {
-	child := &SALDataOn{
+func NewSALDataOn(group byte, commandTypeContainer SALCommandTypeContainer) *SALDataOn {
+	_result := &SALDataOn{
 		Group:   group,
 		SALData: NewSALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.SALData
+	_result.Child = _result
+	return _result
 }
 
 func CastSALDataOn(structType interface{}) *SALDataOn {

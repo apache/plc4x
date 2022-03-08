@@ -114,6 +114,9 @@ func CastBACnetPropertyStates(structType interface{}) *BACnetPropertyStates {
 	if casted, ok := structType.(*BACnetPropertyStates); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetPropertyStatesChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

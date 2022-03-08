@@ -81,13 +81,13 @@ func (m *UnknownMessage) GetUnknownData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewUnknownMessage factory function for UnknownMessage
-func NewUnknownMessage(unknownData []byte, totalLength uint16) *KnxNetIpMessage {
-	child := &UnknownMessage{
+func NewUnknownMessage(unknownData []byte, totalLength uint16) *UnknownMessage {
+	_result := &UnknownMessage{
 		UnknownData:     unknownData,
 		KnxNetIpMessage: NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastUnknownMessage(structType interface{}) *UnknownMessage {

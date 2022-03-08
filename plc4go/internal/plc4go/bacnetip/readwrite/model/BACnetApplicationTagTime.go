@@ -76,13 +76,13 @@ func (m *BACnetApplicationTagTime) GetPayload() *BACnetTagPayloadTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagTime factory function for BACnetApplicationTagTime
-func NewBACnetApplicationTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagTime{
+func NewBACnetApplicationTagTime(payload *BACnetTagPayloadTime, header *BACnetTagHeader) *BACnetApplicationTagTime {
+	_result := &BACnetApplicationTagTime{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagTime(structType interface{}) *BACnetApplicationTagTime {

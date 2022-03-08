@@ -62,12 +62,12 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetParent() *BACnetC
 }
 
 // NewBACnetConfirmedServiceACKConfirmedPrivateTransfer factory function for BACnetConfirmedServiceACKConfirmedPrivateTransfer
-func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{
+func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServiceACKConfirmedPrivateTransfer {
+	_result := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{}) *BACnetConfirmedServiceACKConfirmedPrivateTransfer {

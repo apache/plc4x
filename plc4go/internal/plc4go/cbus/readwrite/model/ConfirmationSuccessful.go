@@ -63,12 +63,12 @@ func (m *ConfirmationSuccessful) GetParent() *Confirmation {
 }
 
 // NewConfirmationSuccessful factory function for ConfirmationSuccessful
-func NewConfirmationSuccessful(alpha *Alpha) *Confirmation {
-	child := &ConfirmationSuccessful{
+func NewConfirmationSuccessful(alpha *Alpha) *ConfirmationSuccessful {
+	_result := &ConfirmationSuccessful{
 		Confirmation: NewConfirmation(alpha),
 	}
-	child.Child = child
-	return child.Confirmation
+	_result.Child = _result
+	return _result
 }
 
 func CastConfirmationSuccessful(structType interface{}) *ConfirmationSuccessful {

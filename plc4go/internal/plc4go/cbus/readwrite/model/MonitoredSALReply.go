@@ -76,13 +76,13 @@ func (m *MonitoredSALReply) GetIsA() *MonitoredSAL {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALReply factory function for MonitoredSALReply
-func NewMonitoredSALReply(isA *MonitoredSAL, magicByte byte) *Reply {
-	child := &MonitoredSALReply{
+func NewMonitoredSALReply(isA *MonitoredSAL, magicByte byte) *MonitoredSALReply {
+	_result := &MonitoredSALReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastMonitoredSALReply(structType interface{}) *MonitoredSALReply {

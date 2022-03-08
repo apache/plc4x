@@ -89,14 +89,14 @@ func (m *APDUSimpleAck) GetServiceChoice() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUSimpleAck factory function for APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, apduLength uint16) *APDU {
-	child := &APDUSimpleAck{
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, apduLength uint16) *APDUSimpleAck {
+	_result := &APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
 		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {

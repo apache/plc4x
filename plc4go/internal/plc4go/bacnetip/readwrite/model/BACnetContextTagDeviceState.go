@@ -84,13 +84,13 @@ func (m *BACnetContextTagDeviceState) GetState() BACnetDeviceState {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagDeviceState factory function for BACnetContextTagDeviceState
-func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagDeviceState{
+func NewBACnetContextTagDeviceState(state BACnetDeviceState, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagDeviceState {
+	_result := &BACnetContextTagDeviceState{
 		State:            state,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagDeviceState(structType interface{}) *BACnetContextTagDeviceState {

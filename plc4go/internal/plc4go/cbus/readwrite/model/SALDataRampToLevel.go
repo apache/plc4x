@@ -83,14 +83,14 @@ func (m *SALDataRampToLevel) GetLevel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataRampToLevel factory function for SALDataRampToLevel
-func NewSALDataRampToLevel(group byte, level byte, commandTypeContainer SALCommandTypeContainer) *SALData {
-	child := &SALDataRampToLevel{
+func NewSALDataRampToLevel(group byte, level byte, commandTypeContainer SALCommandTypeContainer) *SALDataRampToLevel {
+	_result := &SALDataRampToLevel{
 		Group:   group,
 		Level:   level,
 		SALData: NewSALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.SALData
+	_result.Child = _result
+	return _result
 }
 
 func CastSALDataRampToLevel(structType interface{}) *SALDataRampToLevel {

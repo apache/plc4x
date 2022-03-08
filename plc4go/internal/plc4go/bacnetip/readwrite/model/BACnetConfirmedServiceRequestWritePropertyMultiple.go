@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetParent() *BACnet
 }
 
 // NewBACnetConfirmedServiceRequestWritePropertyMultiple factory function for BACnetConfirmedServiceRequestWritePropertyMultiple
-func NewBACnetConfirmedServiceRequestWritePropertyMultiple(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestWritePropertyMultiple{
+func NewBACnetConfirmedServiceRequestWritePropertyMultiple(len uint16) *BACnetConfirmedServiceRequestWritePropertyMultiple {
+	_result := &BACnetConfirmedServiceRequestWritePropertyMultiple{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType interface{}) *BACnetConfirmedServiceRequestWritePropertyMultiple {

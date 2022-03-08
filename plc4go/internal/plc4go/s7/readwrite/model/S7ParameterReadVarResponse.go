@@ -82,13 +82,13 @@ func (m *S7ParameterReadVarResponse) GetNumItems() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterReadVarResponse factory function for S7ParameterReadVarResponse
-func NewS7ParameterReadVarResponse(numItems uint8) *S7Parameter {
-	child := &S7ParameterReadVarResponse{
+func NewS7ParameterReadVarResponse(numItems uint8) *S7ParameterReadVarResponse {
+	_result := &S7ParameterReadVarResponse{
 		NumItems:    numItems,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterReadVarResponse(structType interface{}) *S7ParameterReadVarResponse {

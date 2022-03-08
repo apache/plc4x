@@ -85,13 +85,13 @@ func (m *BACnetContextTagNotifyType) GetValue() BACnetNotifyType {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagNotifyType factory function for BACnetContextTagNotifyType
-func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTag {
-	child := &BACnetContextTagNotifyType{
+func NewBACnetContextTagNotifyType(value BACnetNotifyType, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool, actualLength uint32) *BACnetContextTagNotifyType {
+	_result := &BACnetContextTagNotifyType{
 		Value:            value,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagNotifyType(structType interface{}) *BACnetContextTagNotifyType {

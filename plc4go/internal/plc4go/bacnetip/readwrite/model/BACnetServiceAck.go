@@ -69,6 +69,9 @@ func CastBACnetServiceAck(structType interface{}) *BACnetServiceAck {
 	if casted, ok := structType.(*BACnetServiceAck); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetServiceAckChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

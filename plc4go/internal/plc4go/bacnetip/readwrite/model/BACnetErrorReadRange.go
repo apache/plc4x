@@ -64,12 +64,12 @@ func (m *BACnetErrorReadRange) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorReadRange factory function for BACnetErrorReadRange
-func NewBACnetErrorReadRange(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorReadRange{
+func NewBACnetErrorReadRange(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorReadRange {
+	_result := &BACnetErrorReadRange{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorReadRange(structType interface{}) *BACnetErrorReadRange {

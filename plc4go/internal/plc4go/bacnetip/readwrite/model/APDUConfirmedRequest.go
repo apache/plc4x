@@ -138,8 +138,8 @@ func (m *APDUConfirmedRequest) GetServiceRequest() *BACnetConfirmedServiceReques
 ///////////////////////////////////////////////////////////
 
 // NewAPDUConfirmedRequest factory function for APDUConfirmedRequest
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, apduLength uint16) *APDU {
-	child := &APDUConfirmedRequest{
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, apduLength uint16) *APDUConfirmedRequest {
+	_result := &APDUConfirmedRequest{
 		SegmentedMessage:          segmentedMessage,
 		MoreFollows:               moreFollows,
 		SegmentedResponseAccepted: segmentedResponseAccepted,
@@ -151,8 +151,8 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		ServiceRequest:            serviceRequest,
 		APDU:                      NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUConfirmedRequest(structType interface{}) *APDUConfirmedRequest {

@@ -66,12 +66,12 @@ func (m *ApduDataGroupValueRead) GetParent() *ApduData {
 }
 
 // NewApduDataGroupValueRead factory function for ApduDataGroupValueRead
-func NewApduDataGroupValueRead(dataLength uint8) *ApduData {
-	child := &ApduDataGroupValueRead{
+func NewApduDataGroupValueRead(dataLength uint8) *ApduDataGroupValueRead {
+	_result := &ApduDataGroupValueRead{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataGroupValueRead(structType interface{}) *ApduDataGroupValueRead {

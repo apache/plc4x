@@ -89,14 +89,14 @@ func (m *APDUError) GetError() *BACnetError {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUError factory function for APDUError
-func NewAPDUError(originalInvokeId uint8, error *BACnetError, apduLength uint16) *APDU {
-	child := &APDUError{
+func NewAPDUError(originalInvokeId uint8, error *BACnetError, apduLength uint16) *APDUError {
+	_result := &APDUError{
 		OriginalInvokeId: originalInvokeId,
 		Error:            error,
 		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUError(structType interface{}) *APDUError {

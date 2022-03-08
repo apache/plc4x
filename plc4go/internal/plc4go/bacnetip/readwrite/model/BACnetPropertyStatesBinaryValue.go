@@ -82,13 +82,13 @@ func (m *BACnetPropertyStatesBinaryValue) GetBinaryValue() *BACnetBinaryPV {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBinaryValue factory function for BACnetPropertyStatesBinaryValue
-func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStates {
-	child := &BACnetPropertyStatesBinaryValue{
+func NewBACnetPropertyStatesBinaryValue(binaryValue *BACnetBinaryPV, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesBinaryValue {
+	_result := &BACnetPropertyStatesBinaryValue{
 		BinaryValue:          binaryValue,
 		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
 	}
-	child.Child = child
-	return child.BACnetPropertyStates
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetPropertyStatesBinaryValue(structType interface{}) *BACnetPropertyStatesBinaryValue {

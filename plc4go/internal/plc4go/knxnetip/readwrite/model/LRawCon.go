@@ -64,12 +64,12 @@ func (m *LRawCon) GetParent() *CEMI {
 }
 
 // NewLRawCon factory function for LRawCon
-func NewLRawCon(size uint16) *CEMI {
-	child := &LRawCon{
+func NewLRawCon(size uint16) *LRawCon {
+	_result := &LRawCon{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLRawCon(structType interface{}) *LRawCon {

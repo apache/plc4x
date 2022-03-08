@@ -111,6 +111,9 @@ func CastBACnetServiceAckAtomicReadFileStreamOrRecord(structType interface{}) *B
 	if casted, ok := structType.(*BACnetServiceAckAtomicReadFileStreamOrRecord); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetServiceAckAtomicReadFileStreamOrRecordChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -69,6 +69,9 @@ func CastS7Address(structType interface{}) *S7Address {
 	if casted, ok := structType.(*S7Address); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7AddressChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

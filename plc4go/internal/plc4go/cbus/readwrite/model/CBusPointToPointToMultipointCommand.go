@@ -100,6 +100,9 @@ func CastCBusPointToPointToMultipointCommand(structType interface{}) *CBusPointT
 	if casted, ok := structType.(*CBusPointToPointToMultipointCommand); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICBusPointToPointToMultipointCommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

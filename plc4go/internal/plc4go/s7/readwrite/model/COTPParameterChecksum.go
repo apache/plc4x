@@ -81,13 +81,13 @@ func (m *COTPParameterChecksum) GetCrc() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPParameterChecksum factory function for COTPParameterChecksum
-func NewCOTPParameterChecksum(crc uint8, rest uint8) *COTPParameter {
-	child := &COTPParameterChecksum{
+func NewCOTPParameterChecksum(crc uint8, rest uint8) *COTPParameterChecksum {
+	_result := &COTPParameterChecksum{
 		Crc:           crc,
 		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {

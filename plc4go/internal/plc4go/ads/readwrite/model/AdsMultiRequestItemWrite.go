@@ -92,15 +92,15 @@ func (m *AdsMultiRequestItemWrite) GetItemWriteLength() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsMultiRequestItemWrite factory function for AdsMultiRequestItemWrite
-func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *AdsMultiRequestItem {
-	child := &AdsMultiRequestItemWrite{
+func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *AdsMultiRequestItemWrite {
+	_result := &AdsMultiRequestItemWrite{
 		ItemIndexGroup:      itemIndexGroup,
 		ItemIndexOffset:     itemIndexOffset,
 		ItemWriteLength:     itemWriteLength,
 		AdsMultiRequestItem: NewAdsMultiRequestItem(),
 	}
-	child.Child = child
-	return child.AdsMultiRequestItem
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsMultiRequestItemWrite(structType interface{}) *AdsMultiRequestItemWrite {

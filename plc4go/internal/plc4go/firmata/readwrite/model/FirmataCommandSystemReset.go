@@ -64,12 +64,12 @@ func (m *FirmataCommandSystemReset) GetParent() *FirmataCommand {
 }
 
 // NewFirmataCommandSystemReset factory function for FirmataCommandSystemReset
-func NewFirmataCommandSystemReset(response bool) *FirmataCommand {
-	child := &FirmataCommandSystemReset{
+func NewFirmataCommandSystemReset(response bool) *FirmataCommandSystemReset {
+	_result := &FirmataCommandSystemReset{
 		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSystemReset(structType interface{}) *FirmataCommandSystemReset {

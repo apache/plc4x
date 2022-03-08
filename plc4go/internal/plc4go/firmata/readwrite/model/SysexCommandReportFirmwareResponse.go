@@ -96,15 +96,15 @@ func (m *SysexCommandReportFirmwareResponse) GetFileName() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewSysexCommandReportFirmwareResponse factory function for SysexCommandReportFirmwareResponse
-func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
-	child := &SysexCommandReportFirmwareResponse{
+func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommandReportFirmwareResponse {
+	_result := &SysexCommandReportFirmwareResponse{
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
 		FileName:     fileName,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandReportFirmwareResponse(structType interface{}) *SysexCommandReportFirmwareResponse {

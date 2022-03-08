@@ -62,12 +62,12 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetParent() *B
 }
 
 // NewBACnetConfirmedServiceACKRemovedReadPropertyConditional factory function for BACnetConfirmedServiceACKRemovedReadPropertyConditional
-func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
+func NewBACnetConfirmedServiceACKRemovedReadPropertyConditional() *BACnetConfirmedServiceACKRemovedReadPropertyConditional {
+	_result := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKRemovedReadPropertyConditional(structType interface{}) *BACnetConfirmedServiceACKRemovedReadPropertyConditional {

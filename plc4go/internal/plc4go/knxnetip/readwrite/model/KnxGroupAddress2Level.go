@@ -85,14 +85,14 @@ func (m *KnxGroupAddress2Level) GetSubGroup() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewKnxGroupAddress2Level factory function for KnxGroupAddress2Level
-func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *KnxGroupAddress {
-	child := &KnxGroupAddress2Level{
+func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *KnxGroupAddress2Level {
+	_result := &KnxGroupAddress2Level{
 		MainGroup:       mainGroup,
 		SubGroup:        subGroup,
 		KnxGroupAddress: NewKnxGroupAddress(),
 	}
-	child.Child = child
-	return child.KnxGroupAddress
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxGroupAddress2Level(structType interface{}) *KnxGroupAddress2Level {

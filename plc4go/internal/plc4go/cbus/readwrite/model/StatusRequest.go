@@ -83,6 +83,9 @@ func CastStatusRequest(structType interface{}) *StatusRequest {
 	if casted, ok := structType.(*StatusRequest); ok {
 		return casted
 	}
+	if casted, ok := structType.(IStatusRequestChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

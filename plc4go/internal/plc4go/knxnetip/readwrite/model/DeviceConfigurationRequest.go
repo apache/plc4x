@@ -88,14 +88,14 @@ func (m *DeviceConfigurationRequest) GetCemi() *CEMI {
 ///////////////////////////////////////////////////////////
 
 // NewDeviceConfigurationRequest factory function for DeviceConfigurationRequest
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI, totalLength uint16) *KnxNetIpMessage {
-	child := &DeviceConfigurationRequest{
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI, totalLength uint16) *DeviceConfigurationRequest {
+	_result := &DeviceConfigurationRequest{
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
 		KnxNetIpMessage:                     NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDeviceConfigurationRequest(structType interface{}) *DeviceConfigurationRequest {

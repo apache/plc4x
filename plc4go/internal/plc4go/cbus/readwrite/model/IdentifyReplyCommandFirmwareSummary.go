@@ -92,15 +92,15 @@ func (m *IdentifyReplyCommandFirmwareSummary) GetVersion() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandFirmwareSummary factory function for IdentifyReplyCommandFirmwareSummary
-func NewIdentifyReplyCommandFirmwareSummary(firmwareVersion string, unitServiceType byte, version string) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandFirmwareSummary{
+func NewIdentifyReplyCommandFirmwareSummary(firmwareVersion string, unitServiceType byte, version string) *IdentifyReplyCommandFirmwareSummary {
+	_result := &IdentifyReplyCommandFirmwareSummary{
 		FirmwareVersion:      firmwareVersion,
 		UnitServiceType:      unitServiceType,
 		Version:              version,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandFirmwareSummary(structType interface{}) *IdentifyReplyCommandFirmwareSummary {

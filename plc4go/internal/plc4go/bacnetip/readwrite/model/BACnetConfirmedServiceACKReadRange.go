@@ -61,12 +61,12 @@ func (m *BACnetConfirmedServiceACKReadRange) GetParent() *BACnetConfirmedService
 }
 
 // NewBACnetConfirmedServiceACKReadRange factory function for BACnetConfirmedServiceACKReadRange
-func NewBACnetConfirmedServiceACKReadRange() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKReadRange{
+func NewBACnetConfirmedServiceACKReadRange() *BACnetConfirmedServiceACKReadRange {
+	_result := &BACnetConfirmedServiceACKReadRange{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKReadRange(structType interface{}) *BACnetConfirmedServiceACKReadRange {

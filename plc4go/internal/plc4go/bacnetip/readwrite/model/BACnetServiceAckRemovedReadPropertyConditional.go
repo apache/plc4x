@@ -61,12 +61,12 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) GetParent() *BACnetServ
 }
 
 // NewBACnetServiceAckRemovedReadPropertyConditional factory function for BACnetServiceAckRemovedReadPropertyConditional
-func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAck {
-	child := &BACnetServiceAckRemovedReadPropertyConditional{
+func NewBACnetServiceAckRemovedReadPropertyConditional() *BACnetServiceAckRemovedReadPropertyConditional {
+	_result := &BACnetServiceAckRemovedReadPropertyConditional{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) *BACnetServiceAckRemovedReadPropertyConditional {

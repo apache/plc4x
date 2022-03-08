@@ -85,14 +85,14 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileRecord) GetRequestRecordCoun
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileRecord factory function for BACnetConfirmedServiceRequestAtomicReadFileRecord
-func NewBACnetConfirmedServiceRequestAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, requestRecordCount *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
-	child := &BACnetConfirmedServiceRequestAtomicReadFileRecord{
+func NewBACnetConfirmedServiceRequestAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, requestRecordCount *BACnetApplicationTagUnsignedInteger, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) *BACnetConfirmedServiceRequestAtomicReadFileRecord {
+	_result := &BACnetConfirmedServiceRequestAtomicReadFileRecord{
 		FileStartRecord:    fileStartRecord,
 		RequestRecordCount: requestRecordCount,
 		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord: NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestAtomicReadFileRecord(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFileRecord {

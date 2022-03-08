@@ -97,14 +97,14 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) GetObjectId() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadDeviceIdentificationRequest factory function for ModbusPDUReadDeviceIdentificationRequest
-func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *ModbusPDU {
-	child := &ModbusPDUReadDeviceIdentificationRequest{
+func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *ModbusPDUReadDeviceIdentificationRequest {
+	_result := &ModbusPDUReadDeviceIdentificationRequest{
 		Level:     level,
 		ObjectId:  objectId,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) *ModbusPDUReadDeviceIdentificationRequest {

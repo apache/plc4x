@@ -100,15 +100,15 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetOrMask() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUMaskWriteHoldingRegisterResponse factory function for ModbusPDUMaskWriteHoldingRegisterResponse
-func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDU {
-	child := &ModbusPDUMaskWriteHoldingRegisterResponse{
+func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) *ModbusPDUMaskWriteHoldingRegisterResponse {
+	_result := &ModbusPDUMaskWriteHoldingRegisterResponse{
 		ReferenceAddress: referenceAddress,
 		AndMask:          andMask,
 		OrMask:           orMask,
 		ModbusPDU:        NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) *ModbusPDUMaskWriteHoldingRegisterResponse {

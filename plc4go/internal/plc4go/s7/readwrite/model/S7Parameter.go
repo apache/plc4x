@@ -71,6 +71,9 @@ func CastS7Parameter(structType interface{}) *S7Parameter {
 	if casted, ok := structType.(*S7Parameter); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7ParameterChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

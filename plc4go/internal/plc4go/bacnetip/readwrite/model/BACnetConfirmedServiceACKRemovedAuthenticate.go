@@ -62,12 +62,12 @@ func (m *BACnetConfirmedServiceACKRemovedAuthenticate) GetParent() *BACnetConfir
 }
 
 // NewBACnetConfirmedServiceACKRemovedAuthenticate factory function for BACnetConfirmedServiceACKRemovedAuthenticate
-func NewBACnetConfirmedServiceACKRemovedAuthenticate() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKRemovedAuthenticate{
+func NewBACnetConfirmedServiceACKRemovedAuthenticate() *BACnetConfirmedServiceACKRemovedAuthenticate {
+	_result := &BACnetConfirmedServiceACKRemovedAuthenticate{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) *BACnetConfirmedServiceACKRemovedAuthenticate {

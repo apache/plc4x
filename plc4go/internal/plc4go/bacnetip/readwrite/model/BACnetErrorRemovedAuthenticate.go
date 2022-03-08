@@ -64,12 +64,12 @@ func (m *BACnetErrorRemovedAuthenticate) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorRemovedAuthenticate factory function for BACnetErrorRemovedAuthenticate
-func NewBACnetErrorRemovedAuthenticate(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorRemovedAuthenticate{
+func NewBACnetErrorRemovedAuthenticate(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorRemovedAuthenticate {
+	_result := &BACnetErrorRemovedAuthenticate{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorRemovedAuthenticate(structType interface{}) *BACnetErrorRemovedAuthenticate {

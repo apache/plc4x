@@ -83,13 +83,13 @@ func (m *CIPEncapsulationReadRequest) GetRequest() *DF1RequestMessage {
 ///////////////////////////////////////////////////////////
 
 // NewCIPEncapsulationReadRequest factory function for CIPEncapsulationReadRequest
-func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
-	child := &CIPEncapsulationReadRequest{
+func NewCIPEncapsulationReadRequest(request *DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationReadRequest {
+	_result := &CIPEncapsulationReadRequest{
 		Request:                request,
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.CIPEncapsulationPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCIPEncapsulationReadRequest(structType interface{}) *CIPEncapsulationReadRequest {

@@ -73,6 +73,9 @@ func CastModbusPDU(structType interface{}) *ModbusPDU {
 	if casted, ok := structType.(*ModbusPDU); ok {
 		return casted
 	}
+	if casted, ok := structType.(IModbusPDUChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

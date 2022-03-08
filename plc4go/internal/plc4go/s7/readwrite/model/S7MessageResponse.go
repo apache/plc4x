@@ -89,14 +89,14 @@ func (m *S7MessageResponse) GetErrorCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewS7MessageResponse factory function for S7MessageResponse
-func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
-	child := &S7MessageResponse{
+func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7MessageResponse {
+	_result := &S7MessageResponse{
 		ErrorClass: errorClass,
 		ErrorCode:  errorCode,
 		S7Message:  NewS7Message(tpduReference, parameter, payload),
 	}
-	child.Child = child
-	return child.S7Message
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageResponse(structType interface{}) *S7MessageResponse {

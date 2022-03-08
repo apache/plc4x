@@ -76,13 +76,13 @@ func (m *SALDataTerminateRamp) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataTerminateRamp factory function for SALDataTerminateRamp
-func NewSALDataTerminateRamp(group byte, commandTypeContainer SALCommandTypeContainer) *SALData {
-	child := &SALDataTerminateRamp{
+func NewSALDataTerminateRamp(group byte, commandTypeContainer SALCommandTypeContainer) *SALDataTerminateRamp {
+	_result := &SALDataTerminateRamp{
 		Group:   group,
 		SALData: NewSALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.SALData
+	_result.Child = _result
+	return _result
 }
 
 func CastSALDataTerminateRamp(structType interface{}) *SALDataTerminateRamp {

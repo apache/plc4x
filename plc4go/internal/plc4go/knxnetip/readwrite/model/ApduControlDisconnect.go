@@ -61,12 +61,12 @@ func (m *ApduControlDisconnect) GetParent() *ApduControl {
 }
 
 // NewApduControlDisconnect factory function for ApduControlDisconnect
-func NewApduControlDisconnect() *ApduControl {
-	child := &ApduControlDisconnect{
+func NewApduControlDisconnect() *ApduControlDisconnect {
+	_result := &ApduControlDisconnect{
 		ApduControl: NewApduControl(),
 	}
-	child.Child = child
-	return child.ApduControl
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlDisconnect(structType interface{}) *ApduControlDisconnect {

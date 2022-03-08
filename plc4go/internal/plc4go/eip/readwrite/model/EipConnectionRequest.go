@@ -72,12 +72,12 @@ func (m *EipConnectionRequest) GetParent() *EipPacket {
 }
 
 // NewEipConnectionRequest factory function for EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipPacket {
-	child := &EipConnectionRequest{
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipConnectionRequest {
+	_result := &EipConnectionRequest{
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.EipPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastEipConnectionRequest(structType interface{}) *EipConnectionRequest {

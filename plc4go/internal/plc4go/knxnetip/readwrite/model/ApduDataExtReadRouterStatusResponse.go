@@ -64,12 +64,12 @@ func (m *ApduDataExtReadRouterStatusResponse) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtReadRouterStatusResponse factory function for ApduDataExtReadRouterStatusResponse
-func NewApduDataExtReadRouterStatusResponse(length uint8) *ApduDataExt {
-	child := &ApduDataExtReadRouterStatusResponse{
+func NewApduDataExtReadRouterStatusResponse(length uint8) *ApduDataExtReadRouterStatusResponse {
+	_result := &ApduDataExtReadRouterStatusResponse{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtReadRouterStatusResponse(structType interface{}) *ApduDataExtReadRouterStatusResponse {

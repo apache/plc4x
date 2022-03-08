@@ -78,13 +78,13 @@ func (m *BVLCResult) GetCode() BVLCResultCode {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCResult factory function for BVLCResult
-func NewBVLCResult(code BVLCResultCode) *BVLC {
-	child := &BVLCResult{
+func NewBVLCResult(code BVLCResultCode) *BVLCResult {
+	_result := &BVLCResult{
 		Code: code,
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCResult(structType interface{}) *BVLCResult {

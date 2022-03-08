@@ -89,14 +89,14 @@ func (m *APDUReject) GetRejectReason() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUReject factory function for APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason uint8, apduLength uint16) *APDU {
-	child := &APDUReject{
+func NewAPDUReject(originalInvokeId uint8, rejectReason uint8, apduLength uint16) *APDUReject {
+	_result := &APDUReject{
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
 		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUReject(structType interface{}) *APDUReject {

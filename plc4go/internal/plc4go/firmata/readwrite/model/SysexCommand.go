@@ -71,6 +71,9 @@ func CastSysexCommand(structType interface{}) *SysexCommand {
 	if casted, ok := structType.(*SysexCommand); ok {
 		return casted
 	}
+	if casted, ok := structType.(ISysexCommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

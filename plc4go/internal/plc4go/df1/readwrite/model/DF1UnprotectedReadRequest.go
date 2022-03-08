@@ -88,14 +88,14 @@ func (m *DF1UnprotectedReadRequest) GetSize() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewDF1UnprotectedReadRequest factory function for DF1UnprotectedReadRequest
-func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1Command {
-	child := &DF1UnprotectedReadRequest{
+func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *DF1UnprotectedReadRequest {
+	_result := &DF1UnprotectedReadRequest{
 		Address:    address,
 		Size:       size,
 		DF1Command: NewDF1Command(status, transactionCounter),
 	}
-	child.Child = child
-	return child.DF1Command
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1UnprotectedReadRequest(structType interface{}) *DF1UnprotectedReadRequest {

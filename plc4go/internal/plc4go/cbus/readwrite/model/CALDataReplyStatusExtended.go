@@ -97,16 +97,16 @@ func (m *CALDataReplyStatusExtended) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyStatusExtended factory function for CALDataReplyStatusExtended
-func NewCALDataReplyStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataReplyStatusExtended{
+func NewCALDataReplyStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALDataReplyStatusExtended {
+	_result := &CALDataReplyStatusExtended{
 		Encoding:    encoding,
 		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
 		CALData:     NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataReplyStatusExtended(structType interface{}) *CALDataReplyStatusExtended {

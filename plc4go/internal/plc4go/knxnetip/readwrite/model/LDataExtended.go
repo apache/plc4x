@@ -123,8 +123,8 @@ func (m *LDataExtended) GetApdu() *Apdu {
 ///////////////////////////////////////////////////////////
 
 // NewLDataExtended factory function for LDataExtended
-func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LDataExtended{
+func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataExtended {
+	_result := &LDataExtended{
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
@@ -133,8 +133,8 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 		Apdu:                apdu,
 		LDataFrame:          NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataExtended(structType interface{}) *LDataExtended {

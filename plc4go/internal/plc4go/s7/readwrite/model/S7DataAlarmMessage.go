@@ -74,6 +74,9 @@ func CastS7DataAlarmMessage(structType interface{}) *S7DataAlarmMessage {
 	if casted, ok := structType.(*S7DataAlarmMessage); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7DataAlarmMessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

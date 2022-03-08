@@ -91,14 +91,14 @@ func (m *COTPPacketDisconnectResponse) GetSourceReference() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketDisconnectResponse factory function for COTPPacketDisconnectResponse
-func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
-	child := &COTPPacketDisconnectResponse{
+func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketDisconnectResponse {
+	_result := &COTPPacketDisconnectResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketDisconnectResponse(structType interface{}) *COTPPacketDisconnectResponse {

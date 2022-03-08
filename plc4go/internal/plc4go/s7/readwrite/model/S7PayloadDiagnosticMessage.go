@@ -131,8 +131,8 @@ func (m *S7PayloadDiagnosticMessage) GetTimeStamp() *DateAndTime {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadDiagnosticMessage factory function for S7PayloadDiagnosticMessage
-func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadDiagnosticMessage{
+func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp *DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadDiagnosticMessage {
+	_result := &S7PayloadDiagnosticMessage{
 		EventId:               EventId,
 		PriorityClass:         PriorityClass,
 		ObNumber:              ObNumber,
@@ -142,8 +142,8 @@ func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber
 		TimeStamp:             TimeStamp,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadDiagnosticMessage(structType interface{}) *S7PayloadDiagnosticMessage {

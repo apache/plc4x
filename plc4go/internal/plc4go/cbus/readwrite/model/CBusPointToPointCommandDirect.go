@@ -84,13 +84,13 @@ func (m *CBusPointToPointCommandDirect) GetUnitAddress() *UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandDirect factory function for CBusPointToPointCommandDirect
-func NewCBusPointToPointCommandDirect(unitAddress *UnitAddress, bridgeAddressCountPeek uint16, calData *CALData, crc *Checksum, peekAlpha byte, alpha *Alpha, srchk bool) *CBusPointToPointCommand {
-	child := &CBusPointToPointCommandDirect{
+func NewCBusPointToPointCommandDirect(unitAddress *UnitAddress, bridgeAddressCountPeek uint16, calData *CALData, crc *Checksum, peekAlpha byte, alpha *Alpha, srchk bool) *CBusPointToPointCommandDirect {
+	_result := &CBusPointToPointCommandDirect{
 		UnitAddress:             unitAddress,
 		CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, peekAlpha, alpha, srchk),
 	}
-	child.Child = child
-	return child.CBusPointToPointCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusPointToPointCommandDirect(structType interface{}) *CBusPointToPointCommandDirect {

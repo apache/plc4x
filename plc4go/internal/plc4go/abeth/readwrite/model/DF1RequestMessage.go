@@ -107,6 +107,9 @@ func CastDF1RequestMessage(structType interface{}) *DF1RequestMessage {
 	if casted, ok := structType.(*DF1RequestMessage); ok {
 		return casted
 	}
+	if casted, ok := structType.(IDF1RequestMessageChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

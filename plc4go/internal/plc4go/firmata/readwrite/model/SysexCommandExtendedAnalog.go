@@ -65,12 +65,12 @@ func (m *SysexCommandExtendedAnalog) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandExtendedAnalog factory function for SysexCommandExtendedAnalog
-func NewSysexCommandExtendedAnalog() *SysexCommand {
-	child := &SysexCommandExtendedAnalog{
+func NewSysexCommandExtendedAnalog() *SysexCommandExtendedAnalog {
+	_result := &SysexCommandExtendedAnalog{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandExtendedAnalog(structType interface{}) *SysexCommandExtendedAnalog {

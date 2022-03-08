@@ -79,13 +79,13 @@ func (m *CBusCommandPointToPoint) GetCommand() *CBusPointToPointCommand {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPoint factory function for CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(command *CBusPointToPointCommand, header *CBusHeader, srchk bool) *CBusCommand {
-	child := &CBusCommandPointToPoint{
+func NewCBusCommandPointToPoint(command *CBusPointToPointCommand, header *CBusHeader, srchk bool) *CBusCommandPointToPoint {
+	_result := &CBusCommandPointToPoint{
 		Command:     command,
 		CBusCommand: NewCBusCommand(header, srchk),
 	}
-	child.Child = child
-	return child.CBusCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusCommandPointToPoint(structType interface{}) *CBusCommandPointToPoint {

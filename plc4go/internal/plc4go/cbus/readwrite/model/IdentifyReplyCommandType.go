@@ -78,13 +78,13 @@ func (m *IdentifyReplyCommandType) GetUnitType() string {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandType factory function for IdentifyReplyCommandType
-func NewIdentifyReplyCommandType(unitType string) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandType{
+func NewIdentifyReplyCommandType(unitType string) *IdentifyReplyCommandType {
+	_result := &IdentifyReplyCommandType{
 		UnitType:             unitType,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandType(structType interface{}) *IdentifyReplyCommandType {

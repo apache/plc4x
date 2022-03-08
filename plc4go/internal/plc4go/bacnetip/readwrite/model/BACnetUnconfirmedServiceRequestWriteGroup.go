@@ -65,12 +65,12 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetParent() *BACnetUnconfirm
 }
 
 // NewBACnetUnconfirmedServiceRequestWriteGroup factory function for BACnetUnconfirmedServiceRequestWriteGroup
-func NewBACnetUnconfirmedServiceRequestWriteGroup(len uint16) *BACnetUnconfirmedServiceRequest {
-	child := &BACnetUnconfirmedServiceRequestWriteGroup{
+func NewBACnetUnconfirmedServiceRequestWriteGroup(len uint16) *BACnetUnconfirmedServiceRequestWriteGroup {
+	_result := &BACnetUnconfirmedServiceRequestWriteGroup{
 		BACnetUnconfirmedServiceRequest: NewBACnetUnconfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetUnconfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) *BACnetUnconfirmedServiceRequestWriteGroup {

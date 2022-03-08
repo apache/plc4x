@@ -82,13 +82,13 @@ func (m *SysexCommandExtendedId) GetId() []int8 {
 ///////////////////////////////////////////////////////////
 
 // NewSysexCommandExtendedId factory function for SysexCommandExtendedId
-func NewSysexCommandExtendedId(id []int8) *SysexCommand {
-	child := &SysexCommandExtendedId{
+func NewSysexCommandExtendedId(id []int8) *SysexCommandExtendedId {
+	_result := &SysexCommandExtendedId{
 		Id:           id,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandExtendedId(structType interface{}) *SysexCommandExtendedId {

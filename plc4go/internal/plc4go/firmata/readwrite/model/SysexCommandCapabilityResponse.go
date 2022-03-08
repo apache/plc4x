@@ -65,12 +65,12 @@ func (m *SysexCommandCapabilityResponse) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandCapabilityResponse factory function for SysexCommandCapabilityResponse
-func NewSysexCommandCapabilityResponse() *SysexCommand {
-	child := &SysexCommandCapabilityResponse{
+func NewSysexCommandCapabilityResponse() *SysexCommandCapabilityResponse {
+	_result := &SysexCommandCapabilityResponse{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandCapabilityResponse(structType interface{}) *SysexCommandCapabilityResponse {

@@ -80,13 +80,13 @@ func (m *DF1UnprotectedReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewDF1UnprotectedReadResponse factory function for DF1UnprotectedReadResponse
-func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1Command {
-	child := &DF1UnprotectedReadResponse{
+func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1UnprotectedReadResponse {
+	_result := &DF1UnprotectedReadResponse{
 		Data:       data,
 		DF1Command: NewDF1Command(status, transactionCounter),
 	}
-	child.Child = child
-	return child.DF1Command
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1UnprotectedReadResponse(structType interface{}) *DF1UnprotectedReadResponse {

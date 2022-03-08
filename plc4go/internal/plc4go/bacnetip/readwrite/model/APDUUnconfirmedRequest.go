@@ -82,13 +82,13 @@ func (m *APDUUnconfirmedRequest) GetServiceRequest() *BACnetUnconfirmedServiceRe
 ///////////////////////////////////////////////////////////
 
 // NewAPDUUnconfirmedRequest factory function for APDUUnconfirmedRequest
-func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, apduLength uint16) *APDU {
-	child := &APDUUnconfirmedRequest{
+func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, apduLength uint16) *APDUUnconfirmedRequest {
+	_result := &APDUUnconfirmedRequest{
 		ServiceRequest: serviceRequest,
 		APDU:           NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest {

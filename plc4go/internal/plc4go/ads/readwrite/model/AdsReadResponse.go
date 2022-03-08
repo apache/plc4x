@@ -89,14 +89,14 @@ func (m *AdsReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadResponse factory function for AdsReadResponse
-func NewAdsReadResponse(result ReturnCode, data []byte) *AdsData {
-	child := &AdsReadResponse{
+func NewAdsReadResponse(result ReturnCode, data []byte) *AdsReadResponse {
+	_result := &AdsReadResponse{
 		Result:  result,
 		Data:    data,
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadResponse(structType interface{}) *AdsReadResponse {

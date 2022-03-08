@@ -69,6 +69,9 @@ func CastConnectionRequestInformation(structType interface{}) *ConnectionRequest
 	if casted, ok := structType.(*ConnectionRequestInformation); ok {
 		return casted
 	}
+	if casted, ok := structType.(IConnectionRequestInformationChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

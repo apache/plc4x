@@ -82,13 +82,13 @@ func (m *AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDeleteDeviceNotificationRequest factory function for AdsDeleteDeviceNotificationRequest
-func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
-	child := &AdsDeleteDeviceNotificationRequest{
+func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsDeleteDeviceNotificationRequest {
+	_result := &AdsDeleteDeviceNotificationRequest{
 		NotificationHandle: notificationHandle,
 		AdsData:            NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeleteDeviceNotificationRequest(structType interface{}) *AdsDeleteDeviceNotificationRequest {

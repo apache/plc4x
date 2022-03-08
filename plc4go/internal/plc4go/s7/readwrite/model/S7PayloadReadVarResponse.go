@@ -85,13 +85,13 @@ func (m *S7PayloadReadVarResponse) GetItems() []*S7VarPayloadDataItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadReadVarResponse factory function for S7PayloadReadVarResponse
-func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, parameter S7Parameter) *S7Payload {
-	child := &S7PayloadReadVarResponse{
+func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, parameter S7Parameter) *S7PayloadReadVarResponse {
+	_result := &S7PayloadReadVarResponse{
 		Items:     items,
 		S7Payload: NewS7Payload(parameter),
 	}
-	child.Child = child
-	return child.S7Payload
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadReadVarResponse(structType interface{}) *S7PayloadReadVarResponse {

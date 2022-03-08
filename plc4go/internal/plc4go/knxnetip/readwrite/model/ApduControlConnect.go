@@ -61,12 +61,12 @@ func (m *ApduControlConnect) GetParent() *ApduControl {
 }
 
 // NewApduControlConnect factory function for ApduControlConnect
-func NewApduControlConnect() *ApduControl {
-	child := &ApduControlConnect{
+func NewApduControlConnect() *ApduControlConnect {
+	_result := &ApduControlConnect{
 		ApduControl: NewApduControl(),
 	}
-	child.Child = child
-	return child.ApduControl
+	_result.Child = _result
+	return _result
 }
 
 func CastApduControlConnect(structType interface{}) *ApduControlConnect {

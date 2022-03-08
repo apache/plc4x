@@ -63,12 +63,12 @@ func (m *NotTransmittedTooLong) GetParent() *Confirmation {
 }
 
 // NewNotTransmittedTooLong factory function for NotTransmittedTooLong
-func NewNotTransmittedTooLong(alpha *Alpha) *Confirmation {
-	child := &NotTransmittedTooLong{
+func NewNotTransmittedTooLong(alpha *Alpha) *NotTransmittedTooLong {
+	_result := &NotTransmittedTooLong{
 		Confirmation: NewConfirmation(alpha),
 	}
-	child.Child = child
-	return child.Confirmation
+	_result.Child = _result
+	return _result
 }
 
 func CastNotTransmittedTooLong(structType interface{}) *NotTransmittedTooLong {

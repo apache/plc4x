@@ -114,8 +114,8 @@ func (m *S7AddressAny) GetBitAddress() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewS7AddressAny factory function for S7AddressAny
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7Address {
-	child := &S7AddressAny{
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *S7AddressAny {
+	_result := &S7AddressAny{
 		TransportSize:    transportSize,
 		NumberOfElements: numberOfElements,
 		DbNumber:         dbNumber,
@@ -124,8 +124,8 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 		BitAddress:       bitAddress,
 		S7Address:        NewS7Address(),
 	}
-	child.Child = child
-	return child.S7Address
+	_result.Child = _result
+	return _result
 }
 
 func CastS7AddressAny(structType interface{}) *S7AddressAny {

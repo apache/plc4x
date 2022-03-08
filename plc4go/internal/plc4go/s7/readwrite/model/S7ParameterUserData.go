@@ -82,13 +82,13 @@ func (m *S7ParameterUserData) GetItems() []*S7ParameterUserDataItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterUserData factory function for S7ParameterUserData
-func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7Parameter {
-	child := &S7ParameterUserData{
+func NewS7ParameterUserData(items []*S7ParameterUserDataItem) *S7ParameterUserData {
+	_result := &S7ParameterUserData{
 		Items:       items,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterUserData(structType interface{}) *S7ParameterUserData {

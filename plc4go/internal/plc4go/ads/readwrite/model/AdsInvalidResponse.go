@@ -65,12 +65,12 @@ func (m *AdsInvalidResponse) GetParent() *AdsData {
 }
 
 // NewAdsInvalidResponse factory function for AdsInvalidResponse
-func NewAdsInvalidResponse() *AdsData {
-	child := &AdsInvalidResponse{
+func NewAdsInvalidResponse() *AdsInvalidResponse {
+	_result := &AdsInvalidResponse{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsInvalidResponse(structType interface{}) *AdsInvalidResponse {

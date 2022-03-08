@@ -90,13 +90,13 @@ func (m *BACnetApplicationTagSignedInteger) GetActualValue() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagSignedInteger factory function for BACnetApplicationTagSignedInteger
-func NewBACnetApplicationTagSignedInteger(payload *BACnetTagPayloadSignedInteger, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagSignedInteger{
+func NewBACnetApplicationTagSignedInteger(payload *BACnetTagPayloadSignedInteger, header *BACnetTagHeader) *BACnetApplicationTagSignedInteger {
+	_result := &BACnetApplicationTagSignedInteger{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagSignedInteger(structType interface{}) *BACnetApplicationTagSignedInteger {

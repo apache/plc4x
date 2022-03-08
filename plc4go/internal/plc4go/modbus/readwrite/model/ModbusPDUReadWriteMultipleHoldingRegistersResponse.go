@@ -86,13 +86,13 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) GetValue() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadWriteMultipleHoldingRegistersResponse factory function for ModbusPDUReadWriteMultipleHoldingRegistersResponse
-func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []byte) *ModbusPDU {
-	child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{
+func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []byte) *ModbusPDUReadWriteMultipleHoldingRegistersResponse {
+	_result := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{
 		Value:     value,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface{}) *ModbusPDUReadWriteMultipleHoldingRegistersResponse {

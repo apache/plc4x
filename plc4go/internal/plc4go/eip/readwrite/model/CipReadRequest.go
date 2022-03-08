@@ -95,15 +95,15 @@ func (m *CipReadRequest) GetElementNb() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCipReadRequest factory function for CipReadRequest
-func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, serviceLen uint16) *CipService {
-	child := &CipReadRequest{
+func NewCipReadRequest(requestPathSize int8, tag []byte, elementNb uint16, serviceLen uint16) *CipReadRequest {
+	_result := &CipReadRequest{
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		ElementNb:       elementNb,
 		CipService:      NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipReadRequest(structType interface{}) *CipReadRequest {

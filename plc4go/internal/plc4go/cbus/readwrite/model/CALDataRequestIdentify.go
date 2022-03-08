@@ -76,13 +76,13 @@ func (m *CALDataRequestIdentify) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRequestIdentify factory function for CALDataRequestIdentify
-func NewCALDataRequestIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataRequestIdentify{
+func NewCALDataRequestIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer) *CALDataRequestIdentify {
+	_result := &CALDataRequestIdentify{
 		Attribute: attribute,
 		CALData:   NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataRequestIdentify(structType interface{}) *CALDataRequestIdentify {

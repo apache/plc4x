@@ -141,8 +141,8 @@ func (m *IdentifyReplyCommandDSIStatus) GetDimmingUCRevisionNumber() byte {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandDSIStatus factory function for IdentifyReplyCommandDSIStatus
-func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandDSIStatus{
+func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) *IdentifyReplyCommandDSIStatus {
+	_result := &IdentifyReplyCommandDSIStatus{
 		ChannelStatus1:          channelStatus1,
 		ChannelStatus2:          channelStatus2,
 		ChannelStatus3:          channelStatus3,
@@ -155,8 +155,8 @@ func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatu
 		DimmingUCRevisionNumber: dimmingUCRevisionNumber,
 		IdentifyReplyCommand:    NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandDSIStatus(structType interface{}) *IdentifyReplyCommandDSIStatus {

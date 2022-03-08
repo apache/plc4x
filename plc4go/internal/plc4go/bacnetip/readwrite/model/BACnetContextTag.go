@@ -114,6 +114,9 @@ func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
 	if casted, ok := structType.(*BACnetContextTag); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetContextTagChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

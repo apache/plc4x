@@ -84,13 +84,13 @@ func (m *BACnetContextTagDate) GetPayload() *BACnetTagPayloadDate {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagDate factory function for BACnetContextTagDate
-func NewBACnetContextTagDate(payload *BACnetTagPayloadDate, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagDate{
+func NewBACnetContextTagDate(payload *BACnetTagPayloadDate, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagDate {
+	_result := &BACnetContextTagDate{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagDate(structType interface{}) *BACnetContextTagDate {

@@ -64,12 +64,12 @@ func (m *TDataConnectedInd) GetParent() *CEMI {
 }
 
 // NewTDataConnectedInd factory function for TDataConnectedInd
-func NewTDataConnectedInd(size uint16) *CEMI {
-	child := &TDataConnectedInd{
+func NewTDataConnectedInd(size uint16) *TDataConnectedInd {
+	_result := &TDataConnectedInd{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastTDataConnectedInd(structType interface{}) *TDataConnectedInd {

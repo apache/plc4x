@@ -96,6 +96,9 @@ func CastMonitoredSAL(structType interface{}) *MonitoredSAL {
 	if casted, ok := structType.(*MonitoredSAL); ok {
 		return casted
 	}
+	if casted, ok := structType.(IMonitoredSALChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

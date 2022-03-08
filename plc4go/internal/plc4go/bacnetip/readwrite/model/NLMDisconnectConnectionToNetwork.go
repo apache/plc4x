@@ -83,13 +83,13 @@ func (m *NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint16
 ///////////////////////////////////////////////////////////
 
 // NewNLMDisconnectConnectionToNetwork factory function for NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMDisconnectConnectionToNetwork{
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *uint16, apduLength uint16) *NLMDisconnectConnectionToNetwork {
+	_result := &NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMDisconnectConnectionToNetwork(structType interface{}) *NLMDisconnectConnectionToNetwork {

@@ -87,13 +87,13 @@ func (m *CipRRData) GetExchange() *CipExchange {
 ///////////////////////////////////////////////////////////
 
 // NewCipRRData factory function for CipRRData
-func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *EipPacket {
-	child := &CipRRData{
+func NewCipRRData(exchange *CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, len uint16) *CipRRData {
+	_result := &CipRRData{
 		Exchange:  exchange,
 		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.EipPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCipRRData(structType interface{}) *CipRRData {

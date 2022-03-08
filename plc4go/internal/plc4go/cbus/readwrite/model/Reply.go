@@ -83,6 +83,9 @@ func CastReply(structType interface{}) *Reply {
 	if casted, ok := structType.(*Reply); ok {
 		return casted
 	}
+	if casted, ok := structType.(IReplyChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

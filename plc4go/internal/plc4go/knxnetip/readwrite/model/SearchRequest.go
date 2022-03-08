@@ -78,13 +78,13 @@ func (m *SearchRequest) GetHpaiIDiscoveryEndpoint() *HPAIDiscoveryEndpoint {
 ///////////////////////////////////////////////////////////
 
 // NewSearchRequest factory function for SearchRequest
-func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *KnxNetIpMessage {
-	child := &SearchRequest{
+func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint) *SearchRequest {
+	_result := &SearchRequest{
 		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastSearchRequest(structType interface{}) *SearchRequest {

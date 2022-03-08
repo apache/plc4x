@@ -98,13 +98,13 @@ func (m *BACnetContextTagEnumerated) GetActualValue() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagEnumerated factory function for BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagEnumerated{
+func NewBACnetContextTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagEnumerated {
+	_result := &BACnetContextTagEnumerated{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagEnumerated(structType interface{}) *BACnetContextTagEnumerated {

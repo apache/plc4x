@@ -106,16 +106,16 @@ func (m *CBusPointToMultiPointCommandStatus) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandStatus factory function for CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(statusRequest *StatusRequest, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommand {
-	child := &CBusPointToMultiPointCommandStatus{
+func NewCBusPointToMultiPointCommandStatus(statusRequest *StatusRequest, crc *Checksum, peekAlpha byte, alpha *Alpha, peekedApplication byte, srchk bool) *CBusPointToMultiPointCommandStatus {
+	_result := &CBusPointToMultiPointCommandStatus{
 		StatusRequest:                statusRequest,
 		Crc:                          crc,
 		PeekAlpha:                    peekAlpha,
 		Alpha:                        alpha,
 		CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, srchk),
 	}
-	child.Child = child
-	return child.CBusPointToMultiPointCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusPointToMultiPointCommandStatus(structType interface{}) *CBusPointToMultiPointCommandStatus {

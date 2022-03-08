@@ -110,8 +110,8 @@ func (m *AdsReadDeviceInfoResponse) GetDevice() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadDeviceInfoResponse factory function for AdsReadDeviceInfoResponse
-func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
-	child := &AdsReadDeviceInfoResponse{
+func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsReadDeviceInfoResponse {
+	_result := &AdsReadDeviceInfoResponse{
 		Result:       result,
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
@@ -119,8 +119,8 @@ func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVe
 		Device:       device,
 		AdsData:      NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadDeviceInfoResponse(structType interface{}) *AdsReadDeviceInfoResponse {

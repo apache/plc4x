@@ -64,12 +64,12 @@ func (m *ApduDataUserMessage) GetParent() *ApduData {
 }
 
 // NewApduDataUserMessage factory function for ApduDataUserMessage
-func NewApduDataUserMessage(dataLength uint8) *ApduData {
-	child := &ApduDataUserMessage{
+func NewApduDataUserMessage(dataLength uint8) *ApduDataUserMessage {
+	_result := &ApduDataUserMessage{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataUserMessage(structType interface{}) *ApduDataUserMessage {

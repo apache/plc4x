@@ -76,13 +76,13 @@ func (m *ParameterChangeReply) GetIsA() *ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for ParameterChangeReply
-func NewParameterChangeReply(isA *ParameterChange, magicByte byte) *Reply {
-	child := &ParameterChangeReply{
+func NewParameterChangeReply(isA *ParameterChange, magicByte byte) *ParameterChangeReply {
+	_result := &ParameterChangeReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastParameterChangeReply(structType interface{}) *ParameterChangeReply {

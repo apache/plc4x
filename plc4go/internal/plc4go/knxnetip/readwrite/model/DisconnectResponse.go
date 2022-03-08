@@ -85,14 +85,14 @@ func (m *DisconnectResponse) GetStatus() Status {
 ///////////////////////////////////////////////////////////
 
 // NewDisconnectResponse factory function for DisconnectResponse
-func NewDisconnectResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
-	child := &DisconnectResponse{
+func NewDisconnectResponse(communicationChannelId uint8, status Status) *DisconnectResponse {
+	_result := &DisconnectResponse{
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDisconnectResponse(structType interface{}) *DisconnectResponse {

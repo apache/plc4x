@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetParent() *BACnetConfirm
 }
 
 // NewBACnetConfirmedServiceRequestAddListElement factory function for BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestAddListElement{
+func NewBACnetConfirmedServiceRequestAddListElement(len uint16) *BACnetConfirmedServiceRequestAddListElement {
+	_result := &BACnetConfirmedServiceRequestAddListElement{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) *BACnetConfirmedServiceRequestAddListElement {

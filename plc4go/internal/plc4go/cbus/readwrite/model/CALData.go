@@ -97,6 +97,9 @@ func CastCALData(structType interface{}) *CALData {
 	if casted, ok := structType.(*CALData); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICALDataChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

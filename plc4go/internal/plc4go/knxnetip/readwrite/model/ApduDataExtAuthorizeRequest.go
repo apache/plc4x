@@ -88,14 +88,14 @@ func (m *ApduDataExtAuthorizeRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtAuthorizeRequest factory function for ApduDataExtAuthorizeRequest
-func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *ApduDataExt {
-	child := &ApduDataExtAuthorizeRequest{
+func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *ApduDataExtAuthorizeRequest {
+	_result := &ApduDataExtAuthorizeRequest{
 		Level:       level,
 		Data:        data,
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtAuthorizeRequest(structType interface{}) *ApduDataExtAuthorizeRequest {

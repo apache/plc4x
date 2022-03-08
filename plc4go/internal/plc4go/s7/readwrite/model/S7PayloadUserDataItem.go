@@ -96,6 +96,9 @@ func CastS7PayloadUserDataItem(structType interface{}) *S7PayloadUserDataItem {
 	if casted, ok := structType.(*S7PayloadUserDataItem); ok {
 		return casted
 	}
+	if casted, ok := structType.(IS7PayloadUserDataItemChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -78,13 +78,13 @@ func (m *KnxNetIpRouting) GetVersion() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewKnxNetIpRouting factory function for KnxNetIpRouting
-func NewKnxNetIpRouting(version uint8) *ServiceId {
-	child := &KnxNetIpRouting{
+func NewKnxNetIpRouting(version uint8) *KnxNetIpRouting {
+	_result := &KnxNetIpRouting{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpRouting(structType interface{}) *KnxNetIpRouting {

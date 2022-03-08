@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandCurrentSenseLevels) GetParent() *IdentifyReplyComma
 }
 
 // NewIdentifyReplyCommandCurrentSenseLevels factory function for IdentifyReplyCommandCurrentSenseLevels
-func NewIdentifyReplyCommandCurrentSenseLevels() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandCurrentSenseLevels{
+func NewIdentifyReplyCommandCurrentSenseLevels() *IdentifyReplyCommandCurrentSenseLevels {
+	_result := &IdentifyReplyCommandCurrentSenseLevels{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandCurrentSenseLevels(structType interface{}) *IdentifyReplyCommandCurrentSenseLevels {

@@ -106,8 +106,8 @@ func (m *MonitoredSALShortFormBasicMode) GetApplication() ApplicationIdContainer
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, networkNumber *NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData *SALData) *MonitoredSAL {
-	child := &MonitoredSALShortFormBasicMode{
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, networkNumber *NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData *SALData) *MonitoredSALShortFormBasicMode {
+	_result := &MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
 		NetworkNumber: networkNumber,
@@ -115,8 +115,8 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, ne
 		Application:   application,
 		MonitoredSAL:  NewMonitoredSAL(salType, salData),
 	}
-	child.Child = child
-	return child.MonitoredSAL
+	_result.Child = _result
+	return _result
 }
 
 func CastMonitoredSALShortFormBasicMode(structType interface{}) *MonitoredSALShortFormBasicMode {

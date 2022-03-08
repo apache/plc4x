@@ -86,13 +86,13 @@ func (m *DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for DF1CommandResponseMessageProtectedTypedLogicalRead
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *DF1ResponseMessage {
-	child := &DF1CommandResponseMessageProtectedTypedLogicalRead{
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *DF1CommandResponseMessageProtectedTypedLogicalRead {
+	_result := &DF1CommandResponseMessageProtectedTypedLogicalRead{
 		Data:               data,
 		DF1ResponseMessage: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
 	}
-	child.Child = child
-	return child.DF1ResponseMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType interface{}) *DF1CommandResponseMessageProtectedTypedLogicalRead {

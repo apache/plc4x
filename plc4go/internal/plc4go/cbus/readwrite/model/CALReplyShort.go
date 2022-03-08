@@ -60,12 +60,12 @@ func (m *CALReplyShort) GetParent() *CALReply {
 }
 
 // NewCALReplyShort factory function for CALReplyShort
-func NewCALReplyShort(calType byte, calData *CALData) *CALReply {
-	child := &CALReplyShort{
+func NewCALReplyShort(calType byte, calData *CALData) *CALReplyShort {
+	_result := &CALReplyShort{
 		CALReply: NewCALReply(calType, calData),
 	}
-	child.Child = child
-	return child.CALReply
+	_result.Child = _result
+	return _result
 }
 
 func CastCALReplyShort(structType interface{}) *CALReplyShort {

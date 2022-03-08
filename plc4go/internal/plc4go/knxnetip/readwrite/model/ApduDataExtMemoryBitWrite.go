@@ -64,12 +64,12 @@ func (m *ApduDataExtMemoryBitWrite) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtMemoryBitWrite factory function for ApduDataExtMemoryBitWrite
-func NewApduDataExtMemoryBitWrite(length uint8) *ApduDataExt {
-	child := &ApduDataExtMemoryBitWrite{
+func NewApduDataExtMemoryBitWrite(length uint8) *ApduDataExtMemoryBitWrite {
+	_result := &ApduDataExtMemoryBitWrite{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtMemoryBitWrite(structType interface{}) *ApduDataExtMemoryBitWrite {

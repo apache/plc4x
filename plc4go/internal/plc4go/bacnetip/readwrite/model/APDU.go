@@ -72,6 +72,9 @@ func CastAPDU(structType interface{}) *APDU {
 	if casted, ok := structType.(*APDU); ok {
 		return casted
 	}
+	if casted, ok := structType.(IAPDUChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -81,13 +81,13 @@ func (m *BVLCDistributeBroadcastToNetwork) GetNpdu() *NPDU {
 ///////////////////////////////////////////////////////////
 
 // NewBVLCDistributeBroadcastToNetwork factory function for BVLCDistributeBroadcastToNetwork
-func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
-	child := &BVLCDistributeBroadcastToNetwork{
+func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLCDistributeBroadcastToNetwork {
+	_result := &BVLCDistributeBroadcastToNetwork{
 		Npdu: npdu,
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCDistributeBroadcastToNetwork(structType interface{}) *BVLCDistributeBroadcastToNetwork {

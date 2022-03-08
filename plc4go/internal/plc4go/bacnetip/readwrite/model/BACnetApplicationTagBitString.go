@@ -76,13 +76,13 @@ func (m *BACnetApplicationTagBitString) GetPayload() *BACnetTagPayloadBitString 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagBitString factory function for BACnetApplicationTagBitString
-func NewBACnetApplicationTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagBitString{
+func NewBACnetApplicationTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader) *BACnetApplicationTagBitString {
+	_result := &BACnetApplicationTagBitString{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagBitString(structType interface{}) *BACnetApplicationTagBitString {

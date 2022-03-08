@@ -90,13 +90,13 @@ func (m *BACnetApplicationTagEnumerated) GetActualValue() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagEnumerated factory function for BACnetApplicationTagEnumerated
-func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader) *BACnetApplicationTag {
-	child := &BACnetApplicationTagEnumerated{
+func NewBACnetApplicationTagEnumerated(payload *BACnetTagPayloadEnumerated, header *BACnetTagHeader) *BACnetApplicationTagEnumerated {
+	_result := &BACnetApplicationTagEnumerated{
 		Payload:              payload,
 		BACnetApplicationTag: NewBACnetApplicationTag(header),
 	}
-	child.Child = child
-	return child.BACnetApplicationTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetApplicationTagEnumerated(structType interface{}) *BACnetApplicationTagEnumerated {

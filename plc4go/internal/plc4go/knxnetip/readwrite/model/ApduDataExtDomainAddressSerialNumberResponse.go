@@ -64,12 +64,12 @@ func (m *ApduDataExtDomainAddressSerialNumberResponse) GetParent() *ApduDataExt 
 }
 
 // NewApduDataExtDomainAddressSerialNumberResponse factory function for ApduDataExtDomainAddressSerialNumberResponse
-func NewApduDataExtDomainAddressSerialNumberResponse(length uint8) *ApduDataExt {
-	child := &ApduDataExtDomainAddressSerialNumberResponse{
+func NewApduDataExtDomainAddressSerialNumberResponse(length uint8) *ApduDataExtDomainAddressSerialNumberResponse {
+	_result := &ApduDataExtDomainAddressSerialNumberResponse{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtDomainAddressSerialNumberResponse(structType interface{}) *ApduDataExtDomainAddressSerialNumberResponse {

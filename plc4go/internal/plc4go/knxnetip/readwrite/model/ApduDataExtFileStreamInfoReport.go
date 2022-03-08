@@ -64,12 +64,12 @@ func (m *ApduDataExtFileStreamInfoReport) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtFileStreamInfoReport factory function for ApduDataExtFileStreamInfoReport
-func NewApduDataExtFileStreamInfoReport(length uint8) *ApduDataExt {
-	child := &ApduDataExtFileStreamInfoReport{
+func NewApduDataExtFileStreamInfoReport(length uint8) *ApduDataExtFileStreamInfoReport {
+	_result := &ApduDataExtFileStreamInfoReport{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtFileStreamInfoReport(structType interface{}) *ApduDataExtFileStreamInfoReport {

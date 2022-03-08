@@ -72,6 +72,9 @@ func CastCipService(structType interface{}) *CipService {
 	if casted, ok := structType.(*CipService); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICipServiceChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

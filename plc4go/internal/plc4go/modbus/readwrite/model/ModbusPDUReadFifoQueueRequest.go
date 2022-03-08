@@ -86,13 +86,13 @@ func (m *ModbusPDUReadFifoQueueRequest) GetFifoPointerAddress() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadFifoQueueRequest factory function for ModbusPDUReadFifoQueueRequest
-func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDU {
-	child := &ModbusPDUReadFifoQueueRequest{
+func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *ModbusPDUReadFifoQueueRequest {
+	_result := &ModbusPDUReadFifoQueueRequest{
 		FifoPointerAddress: fifoPointerAddress,
 		ModbusPDU:          NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadFifoQueueRequest(structType interface{}) *ModbusPDUReadFifoQueueRequest {

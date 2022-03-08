@@ -76,13 +76,13 @@ func (m *CALReplyReply) GetIsA() *CALReply {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyReply factory function for CALReplyReply
-func NewCALReplyReply(isA *CALReply, magicByte byte) *Reply {
-	child := &CALReplyReply{
+func NewCALReplyReply(isA *CALReply, magicByte byte) *CALReplyReply {
+	_result := &CALReplyReply{
 		IsA:   isA,
 		Reply: NewReply(magicByte),
 	}
-	child.Child = child
-	return child.Reply
+	_result.Child = _result
+	return _result
 }
 
 func CastCALReplyReply(structType interface{}) *CALReplyReply {

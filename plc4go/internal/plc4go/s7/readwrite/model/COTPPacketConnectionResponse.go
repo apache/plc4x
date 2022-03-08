@@ -98,15 +98,15 @@ func (m *COTPPacketConnectionResponse) GetProtocolClass() COTPProtocolClass {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketConnectionResponse factory function for COTPPacketConnectionResponse
-func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
-	child := &COTPPacketConnectionResponse{
+func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketConnectionResponse {
+	_result := &COTPPacketConnectionResponse{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
 		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketConnectionResponse(structType interface{}) *COTPPacketConnectionResponse {

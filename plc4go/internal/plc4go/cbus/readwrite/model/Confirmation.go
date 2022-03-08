@@ -85,6 +85,9 @@ func CastConfirmation(structType interface{}) *Confirmation {
 	if casted, ok := structType.(*Confirmation); ok {
 		return casted
 	}
+	if casted, ok := structType.(IConfirmationChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -92,15 +92,15 @@ func (m *SearchResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
 ///////////////////////////////////////////////////////////
 
 // NewSearchResponse factory function for SearchResponse
-func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
-	child := &SearchResponse{
+func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *SearchResponse {
+	_result := &SearchResponse{
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		DibDeviceInfo:       dibDeviceInfo,
 		DibSuppSvcFamilies:  dibSuppSvcFamilies,
 		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastSearchResponse(structType interface{}) *SearchResponse {

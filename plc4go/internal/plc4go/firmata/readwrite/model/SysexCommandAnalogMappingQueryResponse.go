@@ -82,13 +82,13 @@ func (m *SysexCommandAnalogMappingQueryResponse) GetPin() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewSysexCommandAnalogMappingQueryResponse factory function for SysexCommandAnalogMappingQueryResponse
-func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommand {
-	child := &SysexCommandAnalogMappingQueryResponse{
+func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *SysexCommandAnalogMappingQueryResponse {
+	_result := &SysexCommandAnalogMappingQueryResponse{
 		Pin:          pin,
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandAnalogMappingQueryResponse(structType interface{}) *SysexCommandAnalogMappingQueryResponse {

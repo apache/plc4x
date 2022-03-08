@@ -92,15 +92,15 @@ func (m *ComObjectTableRealisationType2) GetComObjectDescriptors() []*GroupObjec
 ///////////////////////////////////////////////////////////
 
 // NewComObjectTableRealisationType2 factory function for ComObjectTableRealisationType2
-func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []*GroupObjectDescriptorRealisationType2) *ComObjectTable {
-	child := &ComObjectTableRealisationType2{
+func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []*GroupObjectDescriptorRealisationType2) *ComObjectTableRealisationType2 {
+	_result := &ComObjectTableRealisationType2{
 		NumEntries:           numEntries,
 		RamFlagsTablePointer: ramFlagsTablePointer,
 		ComObjectDescriptors: comObjectDescriptors,
 		ComObjectTable:       NewComObjectTable(),
 	}
-	child.Child = child
-	return child.ComObjectTable
+	_result.Child = _result
+	return _result
 }
 
 func CastComObjectTableRealisationType2(structType interface{}) *ComObjectTableRealisationType2 {

@@ -88,14 +88,14 @@ func (m *ApduDataMemoryResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataMemoryResponse factory function for ApduDataMemoryResponse
-func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *ApduData {
-	child := &ApduDataMemoryResponse{
+func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *ApduDataMemoryResponse {
+	_result := &ApduDataMemoryResponse{
 		Address:  address,
 		Data:     data,
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataMemoryResponse(structType interface{}) *ApduDataMemoryResponse {

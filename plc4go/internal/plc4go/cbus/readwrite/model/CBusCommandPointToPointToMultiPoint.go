@@ -79,13 +79,13 @@ func (m *CBusCommandPointToPointToMultiPoint) GetCommand() *CBusPointToPointToMu
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPoint factory function for CBusCommandPointToPointToMultiPoint
-func NewCBusCommandPointToPointToMultiPoint(command *CBusPointToPointToMultipointCommand, header *CBusHeader, srchk bool) *CBusCommand {
-	child := &CBusCommandPointToPointToMultiPoint{
+func NewCBusCommandPointToPointToMultiPoint(command *CBusPointToPointToMultipointCommand, header *CBusHeader, srchk bool) *CBusCommandPointToPointToMultiPoint {
+	_result := &CBusCommandPointToPointToMultiPoint{
 		Command:     command,
 		CBusCommand: NewCBusCommand(header, srchk),
 	}
-	child.Child = child
-	return child.CBusCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusCommandPointToPointToMultiPoint(structType interface{}) *CBusCommandPointToPointToMultiPoint {

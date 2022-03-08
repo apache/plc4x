@@ -61,12 +61,12 @@ func (m *BACnetServiceAckGetEventInformation) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckGetEventInformation factory function for BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation() *BACnetServiceAck {
-	child := &BACnetServiceAckGetEventInformation{
+func NewBACnetServiceAckGetEventInformation() *BACnetServiceAckGetEventInformation {
+	_result := &BACnetServiceAckGetEventInformation{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckGetEventInformation(structType interface{}) *BACnetServiceAckGetEventInformation {

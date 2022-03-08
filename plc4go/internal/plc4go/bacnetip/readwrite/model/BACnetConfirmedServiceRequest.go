@@ -72,6 +72,9 @@ func CastBACnetConfirmedServiceRequest(structType interface{}) *BACnetConfirmedS
 	if casted, ok := structType.(*BACnetConfirmedServiceRequest); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetConfirmedServiceRequestChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -103,16 +103,16 @@ func (m *CipReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCipReadResponse factory function for CipReadResponse
-func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte, serviceLen uint16) *CipService {
-	child := &CipReadResponse{
+func NewCipReadResponse(status uint8, extStatus uint8, dataType CIPDataTypeCode, data []byte, serviceLen uint16) *CipReadResponse {
+	_result := &CipReadResponse{
 		Status:     status,
 		ExtStatus:  extStatus,
 		DataType:   dataType,
 		Data:       data,
 		CipService: NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipReadResponse(structType interface{}) *CipReadResponse {

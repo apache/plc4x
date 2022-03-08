@@ -96,15 +96,15 @@ func (m *AdsReadRequest) GetLength() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadRequest factory function for AdsReadRequest
-func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *AdsData {
-	child := &AdsReadRequest{
+func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) *AdsReadRequest {
+	_result := &AdsReadRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		Length:      length,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadRequest(structType interface{}) *AdsReadRequest {

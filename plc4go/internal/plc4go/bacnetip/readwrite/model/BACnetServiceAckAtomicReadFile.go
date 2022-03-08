@@ -85,14 +85,14 @@ func (m *BACnetServiceAckAtomicReadFile) GetAccessMethod() *BACnetServiceAckAtom
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAtomicReadFile factory function for BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAck {
-	child := &BACnetServiceAckAtomicReadFile{
+func NewBACnetServiceAckAtomicReadFile(endOfFile *BACnetApplicationTagBoolean, accessMethod *BACnetServiceAckAtomicReadFileStreamOrRecord) *BACnetServiceAckAtomicReadFile {
+	_result := &BACnetServiceAckAtomicReadFile{
 		EndOfFile:        endOfFile,
 		AccessMethod:     accessMethod,
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckAtomicReadFile(structType interface{}) *BACnetServiceAckAtomicReadFile {

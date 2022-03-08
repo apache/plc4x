@@ -109,8 +109,8 @@ func (m *ApduDataExtPropertyValueWrite) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtPropertyValueWrite factory function for ApduDataExtPropertyValueWrite
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *ApduDataExt {
-	child := &ApduDataExtPropertyValueWrite{
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *ApduDataExtPropertyValueWrite {
+	_result := &ApduDataExtPropertyValueWrite{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Count:       count,
@@ -118,8 +118,8 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 		Data:        data,
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyValueWrite(structType interface{}) *ApduDataExtPropertyValueWrite {

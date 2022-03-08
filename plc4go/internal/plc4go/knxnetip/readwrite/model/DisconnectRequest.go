@@ -86,14 +86,14 @@ func (m *DisconnectRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
 ///////////////////////////////////////////////////////////
 
 // NewDisconnectRequest factory function for DisconnectRequest
-func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &DisconnectRequest{
+func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *DisconnectRequest {
+	_result := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
 		HpaiControlEndpoint:    hpaiControlEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDisconnectRequest(structType interface{}) *DisconnectRequest {

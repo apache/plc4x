@@ -103,15 +103,15 @@ func (m *LPollData) GetNumberExpectedPollData() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewLPollData factory function for LPollData
-func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-	child := &LPollData{
+func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LPollData {
+	_result := &LPollData{
 		SourceAddress:          sourceAddress,
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
 		LDataFrame:             NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
-	child.Child = child
-	return child.LDataFrame
+	_result.Child = _result
+	return _result
 }
 
 func CastLPollData(structType interface{}) *LPollData {

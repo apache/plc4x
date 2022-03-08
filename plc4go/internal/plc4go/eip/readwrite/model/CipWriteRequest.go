@@ -109,8 +109,8 @@ func (m *CipWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCipWriteRequest factory function for CipWriteRequest
-func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *CipService {
-	child := &CipWriteRequest{
+func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *CipWriteRequest {
+	_result := &CipWriteRequest{
 		RequestPathSize: requestPathSize,
 		Tag:             tag,
 		DataType:        dataType,
@@ -118,8 +118,8 @@ func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCo
 		Data:            data,
 		CipService:      NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipWriteRequest(structType interface{}) *CipWriteRequest {

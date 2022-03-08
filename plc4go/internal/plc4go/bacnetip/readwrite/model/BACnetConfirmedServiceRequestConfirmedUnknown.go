@@ -82,13 +82,13 @@ func (m *BACnetConfirmedServiceRequestConfirmedUnknown) GetUnknownBytes() []byte
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedUnknown factory function for BACnetConfirmedServiceRequestConfirmedUnknown
-func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestConfirmedUnknown{
+func NewBACnetConfirmedServiceRequestConfirmedUnknown(unknownBytes []byte, len uint16) *BACnetConfirmedServiceRequestConfirmedUnknown {
+	_result := &BACnetConfirmedServiceRequestConfirmedUnknown{
 		UnknownBytes:                  unknownBytes,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedUnknown(structType interface{}) *BACnetConfirmedServiceRequestConfirmedUnknown {

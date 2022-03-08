@@ -86,14 +86,14 @@ func (m *S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 ///////////////////////////////////////////////////////////
 
 // NewS7MessageObjectResponse factory function for S7MessageObjectResponse
-func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7DataAlarmMessage {
-	child := &S7MessageObjectResponse{
+func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7MessageObjectResponse {
+	_result := &S7MessageObjectResponse{
 		ReturnCode:         returnCode,
 		TransportSize:      transportSize,
 		S7DataAlarmMessage: NewS7DataAlarmMessage(),
 	}
-	child.Child = child
-	return child.S7DataAlarmMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastS7MessageObjectResponse(structType interface{}) *S7MessageObjectResponse {

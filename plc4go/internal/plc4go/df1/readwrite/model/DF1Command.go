@@ -92,6 +92,9 @@ func CastDF1Command(structType interface{}) *DF1Command {
 	if casted, ok := structType.(*DF1Command); ok {
 		return casted
 	}
+	if casted, ok := structType.(IDF1CommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

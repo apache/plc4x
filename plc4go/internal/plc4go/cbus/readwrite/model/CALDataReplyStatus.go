@@ -90,15 +90,15 @@ func (m *CALDataReplyStatus) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataReplyStatus factory function for CALDataReplyStatus
-func NewCALDataReplyStatus(application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataReplyStatus{
+func NewCALDataReplyStatus(application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer) *CALDataReplyStatus {
+	_result := &CALDataReplyStatus{
 		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
 		CALData:     NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataReplyStatus(structType interface{}) *CALDataReplyStatus {

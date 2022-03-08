@@ -78,13 +78,13 @@ func (m *S7VarRequestParameterItemAddress) GetAddress() *S7Address {
 ///////////////////////////////////////////////////////////
 
 // NewS7VarRequestParameterItemAddress factory function for S7VarRequestParameterItemAddress
-func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItem {
-	child := &S7VarRequestParameterItemAddress{
+func NewS7VarRequestParameterItemAddress(address *S7Address) *S7VarRequestParameterItemAddress {
+	_result := &S7VarRequestParameterItemAddress{
 		Address:                   address,
 		S7VarRequestParameterItem: NewS7VarRequestParameterItem(),
 	}
-	child.Child = child
-	return child.S7VarRequestParameterItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7VarRequestParameterItemAddress(structType interface{}) *S7VarRequestParameterItemAddress {

@@ -110,8 +110,8 @@ func (m *AdsReadWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadWriteRequest factory function for AdsReadWriteRequest
-func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []*AdsMultiRequestItem, data []byte) *AdsData {
-	child := &AdsReadWriteRequest{
+func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []*AdsMultiRequestItem, data []byte) *AdsReadWriteRequest {
+	_result := &AdsReadWriteRequest{
 		IndexGroup:  indexGroup,
 		IndexOffset: indexOffset,
 		ReadLength:  readLength,
@@ -119,8 +119,8 @@ func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength ui
 		Data:        data,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadWriteRequest(structType interface{}) *AdsReadWriteRequest {

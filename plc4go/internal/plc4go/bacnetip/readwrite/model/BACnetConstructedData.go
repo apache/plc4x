@@ -110,6 +110,9 @@ func CastBACnetConstructedData(structType interface{}) *BACnetConstructedData {
 	if casted, ok := structType.(*BACnetConstructedData); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetConstructedDataChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

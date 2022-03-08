@@ -86,13 +86,13 @@ func (m *ModbusPDUWriteFileRecordResponse) GetItems() []*ModbusPDUWriteFileRecor
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteFileRecordResponse factory function for ModbusPDUWriteFileRecordResponse
-func NewModbusPDUWriteFileRecordResponse(items []*ModbusPDUWriteFileRecordResponseItem) *ModbusPDU {
-	child := &ModbusPDUWriteFileRecordResponse{
+func NewModbusPDUWriteFileRecordResponse(items []*ModbusPDUWriteFileRecordResponseItem) *ModbusPDUWriteFileRecordResponse {
+	_result := &ModbusPDUWriteFileRecordResponse{
 		Items:     items,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteFileRecordResponse(structType interface{}) *ModbusPDUWriteFileRecordResponse {

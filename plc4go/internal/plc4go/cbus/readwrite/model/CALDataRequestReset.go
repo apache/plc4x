@@ -59,12 +59,12 @@ func (m *CALDataRequestReset) GetParent() *CALData {
 }
 
 // NewCALDataRequestReset factory function for CALDataRequestReset
-func NewCALDataRequestReset(commandTypeContainer CALCommandTypeContainer) *CALData {
-	child := &CALDataRequestReset{
+func NewCALDataRequestReset(commandTypeContainer CALCommandTypeContainer) *CALDataRequestReset {
+	_result := &CALDataRequestReset{
 		CALData: NewCALData(commandTypeContainer),
 	}
-	child.Child = child
-	return child.CALData
+	_result.Child = _result
+	return _result
 }
 
 func CastCALDataRequestReset(structType interface{}) *CALDataRequestReset {

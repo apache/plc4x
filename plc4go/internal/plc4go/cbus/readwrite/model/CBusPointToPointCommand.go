@@ -137,6 +137,9 @@ func CastCBusPointToPointCommand(structType interface{}) *CBusPointToPointComman
 	if casted, ok := structType.(*CBusPointToPointCommand); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICBusPointToPointCommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

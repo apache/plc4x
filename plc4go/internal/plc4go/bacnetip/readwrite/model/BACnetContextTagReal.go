@@ -98,13 +98,13 @@ func (m *BACnetContextTagReal) GetActualValue() float32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagReal factory function for BACnetContextTagReal
-func NewBACnetContextTagReal(payload *BACnetTagPayloadReal, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagReal{
+func NewBACnetContextTagReal(payload *BACnetTagPayloadReal, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagReal {
+	_result := &BACnetContextTagReal{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagReal(structType interface{}) *BACnetContextTagReal {

@@ -95,15 +95,15 @@ func (m *LDataReq) GetDataFrame() *LDataFrame {
 ///////////////////////////////////////////////////////////
 
 // NewLDataReq factory function for LDataReq
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *CEMI {
-	child := &LDataReq{
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *LDataReq {
+	_result := &LDataReq{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		CEMI:                        NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataReq(structType interface{}) *LDataReq {

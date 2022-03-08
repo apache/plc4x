@@ -102,16 +102,16 @@ func (m *LBusmonInd) GetCrc() *uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewLBusmonInd factory function for LBusmonInd
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8, size uint16) *CEMI {
-	child := &LBusmonInd{
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8, size uint16) *LBusmonInd {
+	_result := &LBusmonInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		Crc:                         crc,
 		CEMI:                        NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLBusmonInd(structType interface{}) *LBusmonInd {

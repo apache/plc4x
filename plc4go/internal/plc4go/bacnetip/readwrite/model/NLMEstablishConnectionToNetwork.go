@@ -90,14 +90,14 @@ func (m *NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMEstablishConnectionToNetwork factory function for NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMEstablishConnectionToNetwork{
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *uint16, apduLength uint16) *NLMEstablishConnectionToNetwork {
+	_result := &NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMEstablishConnectionToNetwork(structType interface{}) *NLMEstablishConnectionToNetwork {

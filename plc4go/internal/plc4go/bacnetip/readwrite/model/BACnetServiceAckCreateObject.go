@@ -61,12 +61,12 @@ func (m *BACnetServiceAckCreateObject) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckCreateObject factory function for BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject() *BACnetServiceAck {
-	child := &BACnetServiceAckCreateObject{
+func NewBACnetServiceAckCreateObject() *BACnetServiceAckCreateObject {
+	_result := &BACnetServiceAckCreateObject{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckCreateObject(structType interface{}) *BACnetServiceAckCreateObject {

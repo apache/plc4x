@@ -66,12 +66,12 @@ func (m *CIPEncapsulationConnectionRequest) GetParent() *CIPEncapsulationPacket 
 }
 
 // NewCIPEncapsulationConnectionRequest factory function for CIPEncapsulationConnectionRequest
-func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationPacket {
-	child := &CIPEncapsulationConnectionRequest{
+func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *CIPEncapsulationConnectionRequest {
+	_result := &CIPEncapsulationConnectionRequest{
 		CIPEncapsulationPacket: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
-	child.Child = child
-	return child.CIPEncapsulationPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCIPEncapsulationConnectionRequest(structType interface{}) *CIPEncapsulationConnectionRequest {

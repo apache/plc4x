@@ -78,13 +78,13 @@ func (m *KnxNetIpCore) GetVersion() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewKnxNetIpCore factory function for KnxNetIpCore
-func NewKnxNetIpCore(version uint8) *ServiceId {
-	child := &KnxNetIpCore{
+func NewKnxNetIpCore(version uint8) *KnxNetIpCore {
+	_result := &KnxNetIpCore{
 		Version:   version,
 		ServiceId: NewServiceId(),
 	}
-	child.Child = child
-	return child.ServiceId
+	_result.Child = _result
+	return _result
 }
 
 func CastKnxNetIpCore(structType interface{}) *KnxNetIpCore {

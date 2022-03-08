@@ -63,12 +63,12 @@ func (m *NotTransmittedSyncLoss) GetParent() *Confirmation {
 }
 
 // NewNotTransmittedSyncLoss factory function for NotTransmittedSyncLoss
-func NewNotTransmittedSyncLoss(alpha *Alpha) *Confirmation {
-	child := &NotTransmittedSyncLoss{
+func NewNotTransmittedSyncLoss(alpha *Alpha) *NotTransmittedSyncLoss {
+	_result := &NotTransmittedSyncLoss{
 		Confirmation: NewConfirmation(alpha),
 	}
-	child.Child = child
-	return child.Confirmation
+	_result.Child = _result
+	return _result
 }
 
 func CastNotTransmittedSyncLoss(structType interface{}) *NotTransmittedSyncLoss {

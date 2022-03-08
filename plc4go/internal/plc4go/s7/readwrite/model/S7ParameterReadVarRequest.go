@@ -82,13 +82,13 @@ func (m *S7ParameterReadVarRequest) GetItems() []*S7VarRequestParameterItem {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterReadVarRequest factory function for S7ParameterReadVarRequest
-func NewS7ParameterReadVarRequest(items []*S7VarRequestParameterItem) *S7Parameter {
-	child := &S7ParameterReadVarRequest{
+func NewS7ParameterReadVarRequest(items []*S7VarRequestParameterItem) *S7ParameterReadVarRequest {
+	_result := &S7ParameterReadVarRequest{
 		Items:       items,
 		S7Parameter: NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterReadVarRequest(structType interface{}) *S7ParameterReadVarRequest {

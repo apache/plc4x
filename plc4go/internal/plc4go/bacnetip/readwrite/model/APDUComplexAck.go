@@ -132,8 +132,8 @@ func (m *APDUComplexAck) GetSegment() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUComplexAck factory function for APDUComplexAck
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck, segmentServiceChoice *uint8, segment []byte, apduLength uint16) *APDU {
-	child := &APDUComplexAck{
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck *BACnetServiceAck, segmentServiceChoice *uint8, segment []byte, apduLength uint16) *APDUComplexAck {
+	_result := &APDUComplexAck{
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
 		OriginalInvokeId:     originalInvokeId,
@@ -144,8 +144,8 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		Segment:              segment,
 		APDU:                 NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUComplexAck(structType interface{}) *APDUComplexAck {

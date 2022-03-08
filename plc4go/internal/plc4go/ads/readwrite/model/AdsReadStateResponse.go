@@ -96,15 +96,15 @@ func (m *AdsReadStateResponse) GetDeviceState() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadStateResponse factory function for AdsReadStateResponse
-func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsData {
-	child := &AdsReadStateResponse{
+func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16) *AdsReadStateResponse {
+	_result := &AdsReadStateResponse{
 		Result:      result,
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsReadStateResponse(structType interface{}) *AdsReadStateResponse {

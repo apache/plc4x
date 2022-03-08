@@ -86,13 +86,13 @@ func (m *ModbusPDUReadFileRecordRequest) GetItems() []*ModbusPDUReadFileRecordRe
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUReadFileRecordRequest factory function for ModbusPDUReadFileRecordRequest
-func NewModbusPDUReadFileRecordRequest(items []*ModbusPDUReadFileRecordRequestItem) *ModbusPDU {
-	child := &ModbusPDUReadFileRecordRequest{
+func NewModbusPDUReadFileRecordRequest(items []*ModbusPDUReadFileRecordRequestItem) *ModbusPDUReadFileRecordRequest {
+	_result := &ModbusPDUReadFileRecordRequest{
 		Items:     items,
 		ModbusPDU: NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUReadFileRecordRequest(structType interface{}) *ModbusPDUReadFileRecordRequest {

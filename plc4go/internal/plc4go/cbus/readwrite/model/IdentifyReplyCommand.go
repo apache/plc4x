@@ -69,6 +69,9 @@ func CastIdentifyReplyCommand(structType interface{}) *IdentifyReplyCommand {
 	if casted, ok := structType.(*IdentifyReplyCommand); ok {
 		return casted
 	}
+	if casted, ok := structType.(IIdentifyReplyCommandChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

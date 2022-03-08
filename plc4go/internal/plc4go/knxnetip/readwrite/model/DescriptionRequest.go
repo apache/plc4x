@@ -78,13 +78,13 @@ func (m *DescriptionRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
 ///////////////////////////////////////////////////////////
 
 // NewDescriptionRequest factory function for DescriptionRequest
-func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &DescriptionRequest{
+func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint) *DescriptionRequest {
+	_result := &DescriptionRequest{
 		HpaiControlEndpoint: hpaiControlEndpoint,
 		KnxNetIpMessage:     NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDescriptionRequest(structType interface{}) *DescriptionRequest {

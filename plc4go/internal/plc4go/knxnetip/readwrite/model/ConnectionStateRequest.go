@@ -86,14 +86,14 @@ func (m *ConnectionStateRequest) GetHpaiControlEndpoint() *HPAIControlEndpoint {
 ///////////////////////////////////////////////////////////
 
 // NewConnectionStateRequest factory function for ConnectionStateRequest
-func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *KnxNetIpMessage {
-	child := &ConnectionStateRequest{
+func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint *HPAIControlEndpoint) *ConnectionStateRequest {
+	_result := &ConnectionStateRequest{
 		CommunicationChannelId: communicationChannelId,
 		HpaiControlEndpoint:    hpaiControlEndpoint,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionStateRequest(structType interface{}) *ConnectionStateRequest {

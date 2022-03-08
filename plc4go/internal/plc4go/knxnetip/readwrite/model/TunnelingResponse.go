@@ -78,13 +78,13 @@ func (m *TunnelingResponse) GetTunnelingResponseDataBlock() *TunnelingResponseDa
 ///////////////////////////////////////////////////////////
 
 // NewTunnelingResponse factory function for TunnelingResponse
-func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *KnxNetIpMessage {
-	child := &TunnelingResponse{
+func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock) *TunnelingResponse {
+	_result := &TunnelingResponse{
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
 		KnxNetIpMessage:            NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastTunnelingResponse(structType interface{}) *TunnelingResponse {

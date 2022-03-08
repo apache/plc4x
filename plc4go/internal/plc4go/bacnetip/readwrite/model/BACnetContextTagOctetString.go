@@ -84,13 +84,13 @@ func (m *BACnetContextTagOctetString) GetPayload() *BACnetTagPayloadOctetString 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagOctetString factory function for BACnetContextTagOctetString
-func NewBACnetContextTagOctetString(payload *BACnetTagPayloadOctetString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagOctetString{
+func NewBACnetContextTagOctetString(payload *BACnetTagPayloadOctetString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagOctetString {
+	_result := &BACnetContextTagOctetString{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagOctetString(structType interface{}) *BACnetContextTagOctetString {

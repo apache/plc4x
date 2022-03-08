@@ -89,14 +89,14 @@ func (m *CipWriteResponse) GetExtStatus() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCipWriteResponse factory function for CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *CipService {
-	child := &CipWriteResponse{
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *CipWriteResponse {
+	_result := &CipWriteResponse{
 		Status:     status,
 		ExtStatus:  extStatus,
 		CipService: NewCipService(serviceLen),
 	}
-	child.Child = child
-	return child.CipService
+	_result.Child = _result
+	return _result
 }
 
 func CastCipWriteResponse(structType interface{}) *CipWriteResponse {

@@ -64,12 +64,12 @@ func (m *ApduDataRestart) GetParent() *ApduData {
 }
 
 // NewApduDataRestart factory function for ApduDataRestart
-func NewApduDataRestart(dataLength uint8) *ApduData {
-	child := &ApduDataRestart{
+func NewApduDataRestart(dataLength uint8) *ApduDataRestart {
+	_result := &ApduDataRestart{
 		ApduData: NewApduData(dataLength),
 	}
-	child.Child = child
-	return child.ApduData
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataRestart(structType interface{}) *ApduDataRestart {

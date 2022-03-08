@@ -65,12 +65,12 @@ func (m *AdsDeviceNotificationResponse) GetParent() *AdsData {
 }
 
 // NewAdsDeviceNotificationResponse factory function for AdsDeviceNotificationResponse
-func NewAdsDeviceNotificationResponse() *AdsData {
-	child := &AdsDeviceNotificationResponse{
+func NewAdsDeviceNotificationResponse() *AdsDeviceNotificationResponse {
+	_result := &AdsDeviceNotificationResponse{
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeviceNotificationResponse(structType interface{}) *AdsDeviceNotificationResponse {

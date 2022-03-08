@@ -111,8 +111,8 @@ func (m *S7ParameterModeTransition) GetSequenceNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterModeTransition factory function for S7ParameterModeTransition
-func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7Parameter {
-	child := &S7ParameterModeTransition{
+func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *S7ParameterModeTransition {
+	_result := &S7ParameterModeTransition{
 		Method:           method,
 		CpuFunctionType:  cpuFunctionType,
 		CpuFunctionGroup: cpuFunctionGroup,
@@ -120,8 +120,8 @@ func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFuncti
 		SequenceNumber:   sequenceNumber,
 		S7Parameter:      NewS7Parameter(),
 	}
-	child.Child = child
-	return child.S7Parameter
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterModeTransition(structType interface{}) *S7ParameterModeTransition {

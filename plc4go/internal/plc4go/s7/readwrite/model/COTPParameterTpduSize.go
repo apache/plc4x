@@ -81,13 +81,13 @@ func (m *COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPParameterTpduSize factory function for COTPParameterTpduSize
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *COTPParameter {
-	child := &COTPParameterTpduSize{
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *COTPParameterTpduSize {
+	_result := &COTPParameterTpduSize{
 		TpduSize:      tpduSize,
 		COTPParameter: NewCOTPParameter(rest),
 	}
-	child.Child = child
-	return child.COTPParameter
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPParameterTpduSize(structType interface{}) *COTPParameterTpduSize {

@@ -90,14 +90,14 @@ func (m *NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMICouldBeRouterToNetwork factory function for NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMICouldBeRouterToNetwork{
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *uint16, apduLength uint16) *NLMICouldBeRouterToNetwork {
+	_result := &NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
 		NLM:                       NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMICouldBeRouterToNetwork(structType interface{}) *NLMICouldBeRouterToNetwork {

@@ -95,15 +95,15 @@ func (m *ApduDataExtPropertyDescriptionRead) GetIndex() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtPropertyDescriptionRead factory function for ApduDataExtPropertyDescriptionRead
-func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *ApduDataExt {
-	child := &ApduDataExtPropertyDescriptionRead{
+func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *ApduDataExtPropertyDescriptionRead {
+	_result := &ApduDataExtPropertyDescriptionRead{
 		ObjectIndex: objectIndex,
 		PropertyId:  propertyId,
 		Index:       index,
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyDescriptionRead(structType interface{}) *ApduDataExtPropertyDescriptionRead {

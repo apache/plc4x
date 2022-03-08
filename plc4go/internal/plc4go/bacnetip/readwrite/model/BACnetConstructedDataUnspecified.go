@@ -118,15 +118,15 @@ func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUnspecified factory function for BACnetConstructedDataUnspecified
-func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedData {
-	child := &BACnetConstructedDataUnspecified{
+func NewBACnetConstructedDataUnspecified(data []*BACnetConstructedDataElement, propertyIdentifier *BACnetContextTagPropertyIdentifier, content *BACnetApplicationTag, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataUnspecified {
+	_result := &BACnetConstructedDataUnspecified{
 		Data:                  data,
 		PropertyIdentifier:    propertyIdentifier,
 		Content:               content,
 		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
 	}
-	child.Child = child
-	return child.BACnetConstructedData
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConstructedDataUnspecified(structType interface{}) *BACnetConstructedDataUnspecified {

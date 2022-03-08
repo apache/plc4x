@@ -64,12 +64,12 @@ func (m *ApduDataExtGroupPropertyValueWrite) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtGroupPropertyValueWrite factory function for ApduDataExtGroupPropertyValueWrite
-func NewApduDataExtGroupPropertyValueWrite(length uint8) *ApduDataExt {
-	child := &ApduDataExtGroupPropertyValueWrite{
+func NewApduDataExtGroupPropertyValueWrite(length uint8) *ApduDataExtGroupPropertyValueWrite {
+	_result := &ApduDataExtGroupPropertyValueWrite{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtGroupPropertyValueWrite(structType interface{}) *ApduDataExtGroupPropertyValueWrite {

@@ -108,16 +108,16 @@ func (m *CBusCommandPointToPointToMultiPointStatus) GetAlpha() *Alpha {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandPointToPointToMultiPointStatus factory function for CBusCommandPointToPointToMultiPointStatus
-func NewCBusCommandPointToPointToMultiPointStatus(statusRequest *StatusRequest, crc *Checksum, peekAlpha byte, alpha *Alpha, bridgeAddress *BridgeAddress, networkRoute *NetworkRoute, peekedApplication byte, srchk bool) *CBusPointToPointToMultipointCommand {
-	child := &CBusCommandPointToPointToMultiPointStatus{
+func NewCBusCommandPointToPointToMultiPointStatus(statusRequest *StatusRequest, crc *Checksum, peekAlpha byte, alpha *Alpha, bridgeAddress *BridgeAddress, networkRoute *NetworkRoute, peekedApplication byte, srchk bool) *CBusCommandPointToPointToMultiPointStatus {
+	_result := &CBusCommandPointToPointToMultiPointStatus{
 		StatusRequest:                       statusRequest,
 		Crc:                                 crc,
 		PeekAlpha:                           peekAlpha,
 		Alpha:                               alpha,
 		CBusPointToPointToMultipointCommand: NewCBusPointToPointToMultipointCommand(bridgeAddress, networkRoute, peekedApplication, srchk),
 	}
-	child.Child = child
-	return child.CBusPointToPointToMultipointCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastCBusCommandPointToPointToMultiPointStatus(structType interface{}) *CBusCommandPointToPointToMultiPointStatus {

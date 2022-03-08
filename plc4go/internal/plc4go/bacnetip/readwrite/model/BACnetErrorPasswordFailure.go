@@ -64,12 +64,12 @@ func (m *BACnetErrorPasswordFailure) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorPasswordFailure factory function for BACnetErrorPasswordFailure
-func NewBACnetErrorPasswordFailure(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorPasswordFailure{
+func NewBACnetErrorPasswordFailure(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorPasswordFailure {
+	_result := &BACnetErrorPasswordFailure{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorPasswordFailure(structType interface{}) *BACnetErrorPasswordFailure {

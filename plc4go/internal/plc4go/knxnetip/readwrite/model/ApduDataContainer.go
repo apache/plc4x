@@ -84,13 +84,13 @@ func (m *ApduDataContainer) GetDataApdu() *ApduData {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataContainer factory function for ApduDataContainer
-func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8, dataLength uint8) *Apdu {
-	child := &ApduDataContainer{
+func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8, dataLength uint8) *ApduDataContainer {
+	_result := &ApduDataContainer{
 		DataApdu: dataApdu,
 		Apdu:     NewApdu(numbered, counter, dataLength),
 	}
-	child.Child = child
-	return child.Apdu
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataContainer(structType interface{}) *ApduDataContainer {

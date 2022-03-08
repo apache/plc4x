@@ -63,22 +63,22 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				}
 				return
 			}
-			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address)
+			requestItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(address).GetParent()
 		}
 
 		// Create a read request template.
 		// tpuId will be inserted before sending in #readInternal so we insert 0 as dummy here
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			0,
-			readWriteModel.NewS7ParameterReadVarRequest(requestItems),
+			readWriteModel.NewS7ParameterReadVarRequest(requestItems).GetParent(),
 			nil,
-		)
+		).GetParent()
 
 		tpduId := m.tpduGenerator.getAndIncrement()
 
 		request := s7MessageRequest
 		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload)
+		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload).GetParent()
 
 		// Assemble the finished paket
 		log.Trace().Msg("Assemble paket")
@@ -89,7 +89,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				nil,
 				s7MessageRequest,
 				0,
-			),
+			).GetParent(),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction()
@@ -274,7 +274,7 @@ func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
 		s7Field.GetMemoryArea(),
 		s7Field.GetByteOffset(),
 		s7Field.GetBitOffset(),
-	), nil
+	).GetParent(), nil
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard

@@ -103,6 +103,9 @@ func CastBACnetApplicationTag(structType interface{}) *BACnetApplicationTag {
 	if casted, ok := structType.(*BACnetApplicationTag); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetApplicationTagChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

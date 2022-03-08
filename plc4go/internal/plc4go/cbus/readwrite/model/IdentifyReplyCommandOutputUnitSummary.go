@@ -61,12 +61,12 @@ func (m *IdentifyReplyCommandOutputUnitSummary) GetParent() *IdentifyReplyComman
 }
 
 // NewIdentifyReplyCommandOutputUnitSummary factory function for IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary() *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandOutputUnitSummary{
+func NewIdentifyReplyCommandOutputUnitSummary() *IdentifyReplyCommandOutputUnitSummary {
+	_result := &IdentifyReplyCommandOutputUnitSummary{
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandOutputUnitSummary(structType interface{}) *IdentifyReplyCommandOutputUnitSummary {

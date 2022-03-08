@@ -84,13 +84,13 @@ func (m *BACnetContextTagBitString) GetPayload() *BACnetTagPayloadBitString {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagBitString factory function for BACnetContextTagBitString
-func NewBACnetContextTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagBitString{
+func NewBACnetContextTagBitString(payload *BACnetTagPayloadBitString, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagBitString {
+	_result := &BACnetContextTagBitString{
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagBitString(structType interface{}) *BACnetContextTagBitString {

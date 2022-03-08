@@ -61,12 +61,12 @@ func (m *BVLCSecureBVLL) GetParent() *BVLC {
 }
 
 // NewBVLCSecureBVLL factory function for BVLCSecureBVLL
-func NewBVLCSecureBVLL() *BVLC {
-	child := &BVLCSecureBVLL{
+func NewBVLCSecureBVLL() *BVLCSecureBVLL {
+	_result := &BVLCSecureBVLL{
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {

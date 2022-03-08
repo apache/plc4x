@@ -131,8 +131,8 @@ func (m *ApduDataExtPropertyDescriptionResponse) GetWriteLevel() AccessLevel {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataExtPropertyDescriptionResponse factory function for ApduDataExtPropertyDescriptionResponse
-func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *ApduDataExt {
-	child := &ApduDataExtPropertyDescriptionResponse{
+func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *ApduDataExtPropertyDescriptionResponse {
+	_result := &ApduDataExtPropertyDescriptionResponse{
 		ObjectIndex:      objectIndex,
 		PropertyId:       propertyId,
 		Index:            index,
@@ -143,8 +143,8 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 		WriteLevel:       writeLevel,
 		ApduDataExt:      NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtPropertyDescriptionResponse(structType interface{}) *ApduDataExtPropertyDescriptionResponse {

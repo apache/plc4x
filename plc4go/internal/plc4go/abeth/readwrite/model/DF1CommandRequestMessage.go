@@ -83,13 +83,13 @@ func (m *DF1CommandRequestMessage) GetCommand() *DF1RequestCommand {
 ///////////////////////////////////////////////////////////
 
 // NewDF1CommandRequestMessage factory function for DF1CommandRequestMessage
-func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1RequestMessage {
-	child := &DF1CommandRequestMessage{
+func NewDF1CommandRequestMessage(command *DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *DF1CommandRequestMessage {
+	_result := &DF1CommandRequestMessage{
 		Command:           command,
 		DF1RequestMessage: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
 	}
-	child.Child = child
-	return child.DF1RequestMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1CommandRequestMessage(structType interface{}) *DF1CommandRequestMessage {

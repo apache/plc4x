@@ -78,13 +78,13 @@ func (m *IdentifyReplyCommandGAVValuesStored) GetValues() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewIdentifyReplyCommandGAVValuesStored factory function for IdentifyReplyCommandGAVValuesStored
-func NewIdentifyReplyCommandGAVValuesStored(values []byte) *IdentifyReplyCommand {
-	child := &IdentifyReplyCommandGAVValuesStored{
+func NewIdentifyReplyCommandGAVValuesStored(values []byte) *IdentifyReplyCommandGAVValuesStored {
+	_result := &IdentifyReplyCommandGAVValuesStored{
 		Values:               values,
 		IdentifyReplyCommand: NewIdentifyReplyCommand(),
 	}
-	child.Child = child
-	return child.IdentifyReplyCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastIdentifyReplyCommandGAVValuesStored(structType interface{}) *IdentifyReplyCommandGAVValuesStored {

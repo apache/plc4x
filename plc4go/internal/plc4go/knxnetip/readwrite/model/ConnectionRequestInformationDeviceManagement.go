@@ -62,12 +62,12 @@ func (m *ConnectionRequestInformationDeviceManagement) GetParent() *ConnectionRe
 }
 
 // NewConnectionRequestInformationDeviceManagement factory function for ConnectionRequestInformationDeviceManagement
-func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
-	child := &ConnectionRequestInformationDeviceManagement{
+func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformationDeviceManagement {
+	_result := &ConnectionRequestInformationDeviceManagement{
 		ConnectionRequestInformation: NewConnectionRequestInformation(),
 	}
-	child.Child = child
-	return child.ConnectionRequestInformation
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionRequestInformationDeviceManagement(structType interface{}) *ConnectionRequestInformationDeviceManagement {

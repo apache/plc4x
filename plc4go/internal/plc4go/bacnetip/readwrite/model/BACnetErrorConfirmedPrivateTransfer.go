@@ -64,12 +64,12 @@ func (m *BACnetErrorConfirmedPrivateTransfer) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorConfirmedPrivateTransfer factory function for BACnetErrorConfirmedPrivateTransfer
-func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorConfirmedPrivateTransfer{
+func NewBACnetErrorConfirmedPrivateTransfer(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorConfirmedPrivateTransfer {
+	_result := &BACnetErrorConfirmedPrivateTransfer{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) *BACnetErrorConfirmedPrivateTransfer {

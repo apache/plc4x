@@ -65,12 +65,12 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) GetParent(
 }
 
 // NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional factory function for BACnetConfirmedServiceRequestRemovedReadPropertyConditional
-func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional(len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
+func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional(len uint16) *BACnetConfirmedServiceRequestRemovedReadPropertyConditional {
+	_result := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestRemovedReadPropertyConditional(structType interface{}) *BACnetConfirmedServiceRequestRemovedReadPropertyConditional {

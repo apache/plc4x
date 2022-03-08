@@ -97,15 +97,15 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequest {
-	child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString, len uint16) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	_result := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		TimeDuration:                  timeDuration,
 		EnableDisable:                 enableDisable,
 		Password:                      password,
 		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(len),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {

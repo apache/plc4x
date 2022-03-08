@@ -96,15 +96,15 @@ func (m *APDUAbort) GetAbortReason() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUAbort factory function for APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, apduLength uint16) *APDU {
-	child := &APDUAbort{
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, apduLength uint16) *APDUAbort {
+	_result := &APDUAbort{
 		Server:           server,
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
 		APDU:             NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUAbort(structType interface{}) *APDUAbort {

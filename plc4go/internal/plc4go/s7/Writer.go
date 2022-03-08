@@ -62,7 +62,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				}
 				return
 			}
-			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
+			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address).GetParent()
 			value, err := serializePlcValue(field, plcValue)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
@@ -79,9 +79,9 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Create a new Request with correct tpuId (is not known before)
 		s7MessageRequest := readWriteModel.NewS7MessageRequest(
 			tpduId,
-			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems),
-			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, *readWriteModel.NewS7Parameter()),
-		)
+			readWriteModel.NewS7ParameterWriteVarRequest(parameterItems).GetParent(),
+			readWriteModel.NewS7PayloadWriteVarRequest(payloadItems, *readWriteModel.NewS7Parameter()).GetParent(),
+		).GetParent()
 
 		// Assemble the finished paket
 		log.Trace().Msg("Assemble paket")
@@ -93,7 +93,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				nil,
 				s7MessageRequest,
 				0,
-			),
+			).GetParent(),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)

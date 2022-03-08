@@ -82,13 +82,13 @@ func (m *FirmataCommandSysex) GetCommand() *SysexCommand {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataCommandSysex factory function for FirmataCommandSysex
-func NewFirmataCommandSysex(command *SysexCommand, response bool) *FirmataCommand {
-	child := &FirmataCommandSysex{
+func NewFirmataCommandSysex(command *SysexCommand, response bool) *FirmataCommandSysex {
+	_result := &FirmataCommandSysex{
 		Command:        command,
 		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandSysex(structType interface{}) *FirmataCommandSysex {

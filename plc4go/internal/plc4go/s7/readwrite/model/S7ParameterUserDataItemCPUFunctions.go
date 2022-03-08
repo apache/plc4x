@@ -127,8 +127,8 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewS7ParameterUserDataItemCPUFunctions factory function for S7ParameterUserDataItemCPUFunctions
-func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItem {
-	child := &S7ParameterUserDataItemCPUFunctions{
+func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *S7ParameterUserDataItemCPUFunctions {
+	_result := &S7ParameterUserDataItemCPUFunctions{
 		Method:                  method,
 		CpuFunctionType:         cpuFunctionType,
 		CpuFunctionGroup:        cpuFunctionGroup,
@@ -139,8 +139,8 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 		ErrorCode:               errorCode,
 		S7ParameterUserDataItem: NewS7ParameterUserDataItem(),
 	}
-	child.Child = child
-	return child.S7ParameterUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) *S7ParameterUserDataItemCPUFunctions {

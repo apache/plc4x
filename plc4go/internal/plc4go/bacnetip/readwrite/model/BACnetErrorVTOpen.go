@@ -64,12 +64,12 @@ func (m *BACnetErrorVTOpen) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorVTOpen factory function for BACnetErrorVTOpen
-func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorVTOpen{
+func NewBACnetErrorVTOpen(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorVTOpen {
+	_result := &BACnetErrorVTOpen{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorVTOpen(structType interface{}) *BACnetErrorVTOpen {

@@ -64,12 +64,12 @@ func (m *MResetInd) GetParent() *CEMI {
 }
 
 // NewMResetInd factory function for MResetInd
-func NewMResetInd(size uint16) *CEMI {
-	child := &MResetInd{
+func NewMResetInd(size uint16) *MResetInd {
+	_result := &MResetInd{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastMResetInd(structType interface{}) *MResetInd {

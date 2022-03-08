@@ -105,14 +105,14 @@ func (m *BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagBoolean factory function for BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTag {
-	child := &BACnetContextTagBoolean{
+func NewBACnetContextTagBoolean(value uint8, payload *BACnetTagPayloadBoolean, header *BACnetTagHeader, tagNumberArgument uint8, isNotOpeningOrClosingTag bool) *BACnetContextTagBoolean {
+	_result := &BACnetContextTagBoolean{
 		Value:            value,
 		Payload:          payload,
 		BACnetContextTag: NewBACnetContextTag(header, tagNumberArgument),
 	}
-	child.Child = child
-	return child.BACnetContextTag
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetContextTagBoolean(structType interface{}) *BACnetContextTagBoolean {

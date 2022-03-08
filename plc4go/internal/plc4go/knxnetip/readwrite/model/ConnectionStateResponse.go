@@ -85,14 +85,14 @@ func (m *ConnectionStateResponse) GetStatus() Status {
 ///////////////////////////////////////////////////////////
 
 // NewConnectionStateResponse factory function for ConnectionStateResponse
-func NewConnectionStateResponse(communicationChannelId uint8, status Status) *KnxNetIpMessage {
-	child := &ConnectionStateResponse{
+func NewConnectionStateResponse(communicationChannelId uint8, status Status) *ConnectionStateResponse {
+	_result := &ConnectionStateResponse{
 		CommunicationChannelId: communicationChannelId,
 		Status:                 status,
 		KnxNetIpMessage:        NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionStateResponse(structType interface{}) *ConnectionStateResponse {

@@ -84,14 +84,14 @@ func (m *StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestLevel factory function for StatusRequestLevel
-func NewStatusRequestLevel(application byte, startingGroupAddressLabel byte, statusType byte) *StatusRequest {
-	child := &StatusRequestLevel{
+func NewStatusRequestLevel(application byte, startingGroupAddressLabel byte, statusType byte) *StatusRequestLevel {
+	_result := &StatusRequestLevel{
 		Application:               application,
 		StartingGroupAddressLabel: startingGroupAddressLabel,
 		StatusRequest:             NewStatusRequest(statusType),
 	}
-	child.Child = child
-	return child.StatusRequest
+	_result.Child = _result
+	return _result
 }
 
 func CastStatusRequestLevel(structType interface{}) *StatusRequestLevel {

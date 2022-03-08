@@ -107,6 +107,9 @@ func CastCIPEncapsulationPacket(structType interface{}) *CIPEncapsulationPacket 
 	if casted, ok := structType.(*CIPEncapsulationPacket); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICIPEncapsulationPacketChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

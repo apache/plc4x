@@ -82,13 +82,13 @@ func (m *AdsWriteResponse) GetResult() ReturnCode {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteResponse factory function for AdsWriteResponse
-func NewAdsWriteResponse(result ReturnCode) *AdsData {
-	child := &AdsWriteResponse{
+func NewAdsWriteResponse(result ReturnCode) *AdsWriteResponse {
+	_result := &AdsWriteResponse{
 		Result:  result,
 		AdsData: NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteResponse(structType interface{}) *AdsWriteResponse {

@@ -98,15 +98,15 @@ func (m *COTPPacketDisconnectRequest) GetProtocolClass() COTPProtocolClass {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketDisconnectRequest factory function for COTPPacketDisconnectRequest
-func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacket {
-	child := &COTPPacketDisconnectRequest{
+func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message, cotpLen uint16) *COTPPacketDisconnectRequest {
+	_result := &COTPPacketDisconnectRequest{
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
 		COTPPacket:           NewCOTPPacket(parameters, payload, cotpLen),
 	}
-	child.Child = child
-	return child.COTPPacket
+	_result.Child = _result
+	return _result
 }
 
 func CastCOTPPacketDisconnectRequest(structType interface{}) *COTPPacketDisconnectRequest {

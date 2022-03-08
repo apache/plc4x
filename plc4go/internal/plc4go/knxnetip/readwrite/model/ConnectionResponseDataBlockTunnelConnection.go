@@ -79,13 +79,13 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() *KnxAddres
 ///////////////////////////////////////////////////////////
 
 // NewConnectionResponseDataBlockTunnelConnection factory function for ConnectionResponseDataBlockTunnelConnection
-func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlock {
-	child := &ConnectionResponseDataBlockTunnelConnection{
+func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress) *ConnectionResponseDataBlockTunnelConnection {
+	_result := &ConnectionResponseDataBlockTunnelConnection{
 		KnxAddress:                  knxAddress,
 		ConnectionResponseDataBlock: NewConnectionResponseDataBlock(),
 	}
-	child.Child = child
-	return child.ConnectionResponseDataBlock
+	_result.Child = _result
+	return _result
 }
 
 func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *ConnectionResponseDataBlockTunnelConnection {

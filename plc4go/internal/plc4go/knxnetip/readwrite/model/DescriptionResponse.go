@@ -85,14 +85,14 @@ func (m *DescriptionResponse) GetDibSuppSvcFamilies() *DIBSuppSvcFamilies {
 ///////////////////////////////////////////////////////////
 
 // NewDescriptionResponse factory function for DescriptionResponse
-func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *KnxNetIpMessage {
-	child := &DescriptionResponse{
+func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies) *DescriptionResponse {
+	_result := &DescriptionResponse{
 		DibDeviceInfo:      dibDeviceInfo,
 		DibSuppSvcFamilies: dibSuppSvcFamilies,
 		KnxNetIpMessage:    NewKnxNetIpMessage(),
 	}
-	child.Child = child
-	return child.KnxNetIpMessage
+	_result.Child = _result
+	return _result
 }
 
 func CastDescriptionResponse(structType interface{}) *DescriptionResponse {

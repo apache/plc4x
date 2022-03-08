@@ -93,14 +93,14 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) GetQuantity() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewModbusPDUWriteMultipleCoilsResponse factory function for ModbusPDUWriteMultipleCoilsResponse
-func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16) *ModbusPDU {
-	child := &ModbusPDUWriteMultipleCoilsResponse{
+func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16) *ModbusPDUWriteMultipleCoilsResponse {
+	_result := &ModbusPDUWriteMultipleCoilsResponse{
 		StartingAddress: startingAddress,
 		Quantity:        quantity,
 		ModbusPDU:       NewModbusPDU(),
 	}
-	child.Child = child
-	return child.ModbusPDU
+	_result.Child = _result
+	return _result
 }
 
 func CastModbusPDUWriteMultipleCoilsResponse(structType interface{}) *ModbusPDUWriteMultipleCoilsResponse {

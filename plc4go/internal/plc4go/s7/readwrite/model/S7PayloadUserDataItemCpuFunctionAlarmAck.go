@@ -96,14 +96,14 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAck) GetMessageObjects() []*AlarmM
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmAck factory function for S7PayloadUserDataItemCpuFunctionAlarmAck
-func NewS7PayloadUserDataItemCpuFunctionAlarmAck(functionId uint8, messageObjects []*AlarmMessageObjectAckType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionAlarmAck{
+func NewS7PayloadUserDataItemCpuFunctionAlarmAck(functionId uint8, messageObjects []*AlarmMessageObjectAckType, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionAlarmAck {
+	_result := &S7PayloadUserDataItemCpuFunctionAlarmAck{
 		FunctionId:            functionId,
 		MessageObjects:        messageObjects,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionAlarmAck(structType interface{}) *S7PayloadUserDataItemCpuFunctionAlarmAck {

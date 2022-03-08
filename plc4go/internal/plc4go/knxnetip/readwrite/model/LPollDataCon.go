@@ -64,12 +64,12 @@ func (m *LPollDataCon) GetParent() *CEMI {
 }
 
 // NewLPollDataCon factory function for LPollDataCon
-func NewLPollDataCon(size uint16) *CEMI {
-	child := &LPollDataCon{
+func NewLPollDataCon(size uint16) *LPollDataCon {
+	_result := &LPollDataCon{
 		CEMI: NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLPollDataCon(structType interface{}) *LPollDataCon {

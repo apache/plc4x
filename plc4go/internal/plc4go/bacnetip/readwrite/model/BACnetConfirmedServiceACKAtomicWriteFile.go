@@ -62,12 +62,12 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetParent() *BACnetConfirmedS
 }
 
 // NewBACnetConfirmedServiceACKAtomicWriteFile factory function for BACnetConfirmedServiceACKAtomicWriteFile
-func NewBACnetConfirmedServiceACKAtomicWriteFile() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKAtomicWriteFile{
+func NewBACnetConfirmedServiceACKAtomicWriteFile() *BACnetConfirmedServiceACKAtomicWriteFile {
+	_result := &BACnetConfirmedServiceACKAtomicWriteFile{
 		BACnetConfirmedServiceACK: NewBACnetConfirmedServiceACK(),
 	}
-	child.Child = child
-	return child.BACnetConfirmedServiceACK
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetConfirmedServiceACKAtomicWriteFile(structType interface{}) *BACnetConfirmedServiceACKAtomicWriteFile {

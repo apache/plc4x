@@ -64,12 +64,12 @@ func (m *BACnetErrorUnknown) GetParent() *BACnetError {
 }
 
 // NewBACnetErrorUnknown factory function for BACnetErrorUnknown
-func NewBACnetErrorUnknown(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetError {
-	child := &BACnetErrorUnknown{
+func NewBACnetErrorUnknown(errorClass *BACnetApplicationTagEnumerated, errorCode *BACnetApplicationTagEnumerated) *BACnetErrorUnknown {
+	_result := &BACnetErrorUnknown{
 		BACnetError: NewBACnetError(errorClass, errorCode),
 	}
-	child.Child = child
-	return child.BACnetError
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetErrorUnknown(structType interface{}) *BACnetErrorUnknown {

@@ -69,6 +69,9 @@ func CastCEMIAdditionalInformation(structType interface{}) *CEMIAdditionalInform
 	if casted, ok := structType.(*CEMIAdditionalInformation); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICEMIAdditionalInformationChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

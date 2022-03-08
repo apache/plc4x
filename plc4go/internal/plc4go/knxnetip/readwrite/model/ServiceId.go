@@ -69,6 +69,9 @@ func CastServiceId(structType interface{}) *ServiceId {
 	if casted, ok := structType.(*ServiceId); ok {
 		return casted
 	}
+	if casted, ok := structType.(IServiceIdChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

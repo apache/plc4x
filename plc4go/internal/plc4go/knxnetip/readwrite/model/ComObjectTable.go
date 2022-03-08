@@ -69,6 +69,9 @@ func CastComObjectTable(structType interface{}) *ComObjectTable {
 	if casted, ok := structType.(*ComObjectTable); ok {
 		return casted
 	}
+	if casted, ok := structType.(IComObjectTableChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

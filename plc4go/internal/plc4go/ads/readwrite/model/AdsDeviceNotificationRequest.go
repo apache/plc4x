@@ -96,15 +96,15 @@ func (m *AdsDeviceNotificationRequest) GetAdsStampHeaders() []*AdsStampHeader {
 ///////////////////////////////////////////////////////////
 
 // NewAdsDeviceNotificationRequest factory function for AdsDeviceNotificationRequest
-func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsData {
-	child := &AdsDeviceNotificationRequest{
+func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []*AdsStampHeader) *AdsDeviceNotificationRequest {
+	_result := &AdsDeviceNotificationRequest{
 		Length:          length,
 		Stamps:          stamps,
 		AdsStampHeaders: adsStampHeaders,
 		AdsData:         NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsDeviceNotificationRequest(structType interface{}) *AdsDeviceNotificationRequest {

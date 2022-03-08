@@ -96,14 +96,14 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetSzlIndex() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for S7PayloadUserDataItemCpuFunctionReadSzlRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId *SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
-	child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId *SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	_result := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
 		SzlId:                 szlId,
 		SzlIndex:              szlIndex,
 		S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
-	child.Child = child
-	return child.S7PayloadUserDataItem
+	_result.Child = _result
+	return _result
 }
 
 func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlRequest {

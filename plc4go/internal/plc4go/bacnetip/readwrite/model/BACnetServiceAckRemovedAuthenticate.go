@@ -61,12 +61,12 @@ func (m *BACnetServiceAckRemovedAuthenticate) GetParent() *BACnetServiceAck {
 }
 
 // NewBACnetServiceAckRemovedAuthenticate factory function for BACnetServiceAckRemovedAuthenticate
-func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAck {
-	child := &BACnetServiceAckRemovedAuthenticate{
+func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAckRemovedAuthenticate {
+	_result := &BACnetServiceAckRemovedAuthenticate{
 		BACnetServiceAck: NewBACnetServiceAck(),
 	}
-	child.Child = child
-	return child.BACnetServiceAck
+	_result.Child = _result
+	return _result
 }
 
 func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) *BACnetServiceAckRemovedAuthenticate {

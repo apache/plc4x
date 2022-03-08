@@ -65,12 +65,12 @@ func (m *SysexCommandSamplingInterval) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandSamplingInterval factory function for SysexCommandSamplingInterval
-func NewSysexCommandSamplingInterval() *SysexCommand {
-	child := &SysexCommandSamplingInterval{
+func NewSysexCommandSamplingInterval() *SysexCommandSamplingInterval {
+	_result := &SysexCommandSamplingInterval{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandSamplingInterval(structType interface{}) *SysexCommandSamplingInterval {

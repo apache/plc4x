@@ -95,6 +95,9 @@ func CastCALReply(structType interface{}) *CALReply {
 	if casted, ok := structType.(*CALReply); ok {
 		return casted
 	}
+	if casted, ok := structType.(ICALReplyChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 

@@ -88,14 +88,14 @@ func (m *FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewFirmataCommandProtocolVersion factory function for FirmataCommandProtocolVersion
-func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *FirmataCommand {
-	child := &FirmataCommandProtocolVersion{
+func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *FirmataCommandProtocolVersion {
+	_result := &FirmataCommandProtocolVersion{
 		MajorVersion:   majorVersion,
 		MinorVersion:   minorVersion,
 		FirmataCommand: NewFirmataCommand(response),
 	}
-	child.Child = child
-	return child.FirmataCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastFirmataCommandProtocolVersion(structType interface{}) *FirmataCommandProtocolVersion {

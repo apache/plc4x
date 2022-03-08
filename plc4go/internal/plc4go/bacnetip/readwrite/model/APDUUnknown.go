@@ -81,13 +81,13 @@ func (m *APDUUnknown) GetUnknownBytes() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUUnknown factory function for APDUUnknown
-func NewAPDUUnknown(unknownBytes []byte, apduLength uint16) *APDU {
-	child := &APDUUnknown{
+func NewAPDUUnknown(unknownBytes []byte, apduLength uint16) *APDUUnknown {
+	_result := &APDUUnknown{
 		UnknownBytes: unknownBytes,
 		APDU:         NewAPDU(apduLength),
 	}
-	child.Child = child
-	return child.APDU
+	_result.Child = _result
+	return _result
 }
 
 func CastAPDUUnknown(structType interface{}) *APDUUnknown {

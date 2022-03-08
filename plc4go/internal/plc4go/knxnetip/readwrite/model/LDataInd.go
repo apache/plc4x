@@ -95,15 +95,15 @@ func (m *LDataInd) GetDataFrame() *LDataFrame {
 ///////////////////////////////////////////////////////////
 
 // NewLDataInd factory function for LDataInd
-func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *CEMI {
-	child := &LDataInd{
+func NewLDataInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, size uint16) *LDataInd {
+	_result := &LDataInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
 		DataFrame:                   dataFrame,
 		CEMI:                        NewCEMI(size),
 	}
-	child.Child = child
-	return child.CEMI
+	_result.Child = _result
+	return _result
 }
 
 func CastLDataInd(structType interface{}) *LDataInd {

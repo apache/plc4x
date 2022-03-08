@@ -106,8 +106,8 @@ func (m *DF1RequestProtectedTypedLogicalRead) GetSubElementNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewDF1RequestProtectedTypedLogicalRead factory function for DF1RequestProtectedTypedLogicalRead
-func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestCommand {
-	child := &DF1RequestProtectedTypedLogicalRead{
+func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *DF1RequestProtectedTypedLogicalRead {
+	_result := &DF1RequestProtectedTypedLogicalRead{
 		ByteSize:          byteSize,
 		FileNumber:        fileNumber,
 		FileType:          fileType,
@@ -115,8 +115,8 @@ func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fi
 		SubElementNumber:  subElementNumber,
 		DF1RequestCommand: NewDF1RequestCommand(),
 	}
-	child.Child = child
-	return child.DF1RequestCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1RequestProtectedTypedLogicalRead(structType interface{}) *DF1RequestProtectedTypedLogicalRead {

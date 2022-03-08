@@ -61,12 +61,12 @@ func (m *BVLCReadForeignDeviceTable) GetParent() *BVLC {
 }
 
 // NewBVLCReadForeignDeviceTable factory function for BVLCReadForeignDeviceTable
-func NewBVLCReadForeignDeviceTable() *BVLC {
-	child := &BVLCReadForeignDeviceTable{
+func NewBVLCReadForeignDeviceTable() *BVLCReadForeignDeviceTable {
+	_result := &BVLCReadForeignDeviceTable{
 		BVLC: NewBVLC(),
 	}
-	child.Child = child
-	return child.BVLC
+	_result.Child = _result
+	return _result
 }
 
 func CastBVLCReadForeignDeviceTable(structType interface{}) *BVLCReadForeignDeviceTable {

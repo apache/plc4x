@@ -97,15 +97,15 @@ func (m *DF1SymbolMessageFrame) GetCommand() *DF1Command {
 ///////////////////////////////////////////////////////////
 
 // NewDF1SymbolMessageFrame factory function for DF1SymbolMessageFrame
-func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1Symbol {
-	child := &DF1SymbolMessageFrame{
+func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command *DF1Command) *DF1SymbolMessageFrame {
+	_result := &DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
 		Command:            command,
 		DF1Symbol:          NewDF1Symbol(),
 	}
-	child.Child = child
-	return child.DF1Symbol
+	_result.Child = _result
+	return _result
 }
 
 func CastDF1SymbolMessageFrame(structType interface{}) *DF1SymbolMessageFrame {

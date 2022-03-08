@@ -90,14 +90,14 @@ func (m *NLMInitalizeRoutingTableAck) GetPortMappings() []*NLMInitalizeRoutingTa
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTableAck factory function for NLMInitalizeRoutingTableAck
-func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLM {
-	child := &NLMInitalizeRoutingTableAck{
+func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []*NLMInitalizeRoutingTablePortMapping, vendorId *uint16, apduLength uint16) *NLMInitalizeRoutingTableAck {
+	_result := &NLMInitalizeRoutingTableAck{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 		NLM:           NewNLM(vendorId, apduLength),
 	}
-	child.Child = child
-	return child.NLM
+	_result.Child = _result
+	return _result
 }
 
 func CastNLMInitalizeRoutingTableAck(structType interface{}) *NLMInitalizeRoutingTableAck {

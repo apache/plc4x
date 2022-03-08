@@ -96,15 +96,15 @@ func (m *AdsWriteControlRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteControlRequest factory function for AdsWriteControlRequest
-func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsData {
-	child := &AdsWriteControlRequest{
+func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte) *AdsWriteControlRequest {
+	_result := &AdsWriteControlRequest{
 		AdsState:    adsState,
 		DeviceState: deviceState,
 		Data:        data,
 		AdsData:     NewAdsData(),
 	}
-	child.Child = child
-	return child.AdsData
+	_result.Child = _result
+	return _result
 }
 
 func CastAdsWriteControlRequest(structType interface{}) *AdsWriteControlRequest {

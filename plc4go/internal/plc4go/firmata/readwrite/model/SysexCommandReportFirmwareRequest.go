@@ -65,12 +65,12 @@ func (m *SysexCommandReportFirmwareRequest) GetParent() *SysexCommand {
 }
 
 // NewSysexCommandReportFirmwareRequest factory function for SysexCommandReportFirmwareRequest
-func NewSysexCommandReportFirmwareRequest() *SysexCommand {
-	child := &SysexCommandReportFirmwareRequest{
+func NewSysexCommandReportFirmwareRequest() *SysexCommandReportFirmwareRequest {
+	_result := &SysexCommandReportFirmwareRequest{
 		SysexCommand: NewSysexCommand(),
 	}
-	child.Child = child
-	return child.SysexCommand
+	_result.Child = _result
+	return _result
 }
 
 func CastSysexCommandReportFirmwareRequest(structType interface{}) *SysexCommandReportFirmwareRequest {

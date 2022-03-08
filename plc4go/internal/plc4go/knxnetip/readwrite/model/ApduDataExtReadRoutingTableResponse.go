@@ -64,12 +64,12 @@ func (m *ApduDataExtReadRoutingTableResponse) GetParent() *ApduDataExt {
 }
 
 // NewApduDataExtReadRoutingTableResponse factory function for ApduDataExtReadRoutingTableResponse
-func NewApduDataExtReadRoutingTableResponse(length uint8) *ApduDataExt {
-	child := &ApduDataExtReadRoutingTableResponse{
+func NewApduDataExtReadRoutingTableResponse(length uint8) *ApduDataExtReadRoutingTableResponse {
+	_result := &ApduDataExtReadRoutingTableResponse{
 		ApduDataExt: NewApduDataExt(length),
 	}
-	child.Child = child
-	return child.ApduDataExt
+	_result.Child = _result
+	return _result
 }
 
 func CastApduDataExtReadRoutingTableResponse(structType interface{}) *ApduDataExtReadRoutingTableResponse {

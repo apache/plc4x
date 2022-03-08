@@ -114,6 +114,9 @@ func CastBACnetTimeStamp(structType interface{}) *BACnetTimeStamp {
 	if casted, ok := structType.(*BACnetTimeStamp); ok {
 		return casted
 	}
+	if casted, ok := structType.(IBACnetTimeStampChild); ok {
+		return casted.GetParent()
+	}
 	return nil
 }
 
