@@ -63,4 +63,4 @@ jobs:
             }
 
       - name: Run mvnw
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -U -T 1C -B -P'with-sandbox,with-c,with-go' verify
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -U -T 1C -B -P'with-sandbox,with-c,with-go' validate
