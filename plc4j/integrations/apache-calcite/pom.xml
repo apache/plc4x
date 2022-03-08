@@ -182,6 +182,22 @@
         <artifactId>accessors-smart</artifactId>
         <version>2.4.7</version>
       </dependency>
+      <!-- Update from 1.5.31 Because of CVE-2022-24329 -->
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib</artifactId>
+        <version>1.6.10</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jdk7</artifactId>
+        <version>1.6.10</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jdk8</artifactId>
+        <version>1.6.10</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
