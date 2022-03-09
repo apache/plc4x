@@ -18,7 +18,14 @@
 # ----------------------------------------------------------------------------
 name: "Platform compatibility"
 
-on: push
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      forceUpdates:
+        description: "Forces a snapshot update"
+        required: false
+        default: 'false'
 
 jobs:
   test:
@@ -88,5 +95,19 @@ jobs:
               core.setOutput('platform_suffix', ``)
             }
 
+      - name: Set extra options
+        id: extra_options
+        uses: actions/github-script@v5.0.0
+        env:
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
+        with:
+          script: |
+            const { FORCE_UPDATE } = process.env
+            if (FORCE_UPDATE.includes("true")) {
+              core.setOutput('extra_options', `-U`)
+            } else {
+              core.setOutput('extra_options', ``)
+            }
+
       - name: Run mvnw
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} -T 1C -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_opts.outputs.platform_opts }} install
