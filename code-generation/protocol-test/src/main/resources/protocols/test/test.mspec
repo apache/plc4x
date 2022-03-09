@@ -202,16 +202,16 @@
     [reserved       uint 8  '0x00']
 ]
 
-//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
-//[type VirtualFieldTest
-//    [simple  uint 8 simpleField]
-//    [virtual bit  virtualBitField 'simpleField == 0']
-//    [virtual int 8  virtualIntField 'simpleField']
-//    [virtual uint 8  virtualUintField 'simpleField']
-//    [virtual float 32  virtualFloatField 'simpleField']
-//    [virtual float 64  virtualDoubleField 'simpleField']
-//    [virtual string 24  virtualStringField 'simpleField']
-//]
+// TODO: So far only trouble in GO, C seems OK.
+[type VirtualFieldTest
+    [simple  uint 8 simpleField]
+    [virtual bit  virtualBitField 'simpleField == 0']
+    [virtual int 8  virtualIntField 'simpleField']
+    [virtual uint 8  virtualUintField 'simpleField']
+    [virtual float 32  virtualFloatField 'simpleField']
+    [virtual float 64  virtualDoubleField 'simpleField']
+    [virtual string 24  virtualStringField 'simpleField']
+]
 
 //TODO: Virtual fields fail for GO, haven't checked C assuming fails.
 //[discriminatedType DiscriminatedVirtualTypeTest
@@ -247,8 +247,8 @@
     [simple uint 64 QuadIntField]
 ]
 
-//Specific test confirming a continous loop isn't formed when working out the length.
-[type LentghLoopTest
+//Specific test confirming a continuous loop isn't formed when working out the length.
+[type LengthLoopTest
     [simple        uint 16 commandType]
     [implicit      uint 16 len 'lengthInBytes - 8']
 ]
@@ -336,6 +336,7 @@
 
 
 //Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
+// TODO: Check why this is commented out
 //[discriminatedType SimpleDiscriminatedType
 //    [discriminator uint 8 discr]
 //    [typeSwitch discr
@@ -345,6 +346,7 @@
 //    ]
 //]
 
+// TODO: Check why this is commented out
 //[discriminatedType AnotherSimpleDiscriminatedType
 //    [discriminator uint 8 discr]
 //    [typeSwitch discr

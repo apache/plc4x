@@ -261,7 +261,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
   	  </#list>
-	return ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)}
+	return ${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
 }
 
 	</#list>
@@ -273,7 +273,7 @@ func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcce
 <#if type.constFields?has_content>
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-/////////////////////// Accessors for conts fields.
+/////////////////////// Accessors for const fields.
 ///////////////////////
 	<#list type.constFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
@@ -609,7 +609,7 @@ func (m *${type.name}) GetParentLengthInBits() uint16 {
 				<#if simpleTypeReference.isSimpleTypeReference()>
 					<#if discriminatorField.type.isVstringTypeReference()>
                         <#assign vstringTypeReference = discriminatorField.type.asVstringTypeReference().orElseThrow()>
-	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, helper.intTypeReference, discriminatorField.lengthExpression, parserArguments)})
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, helper.intTypeReference, vstringTypeReference.lengthExpression, parserArguments)})
 					<#else>
 	lengthInBits += ${simpleTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits};
 					</#if>
