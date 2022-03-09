@@ -124,6 +124,16 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     }
 
     @Override
+    public List<Field> getAllFields() {
+        List<Field> fields = new LinkedList<>();
+        getParentType()
+            .map(ComplexTypeDefinition::getAllFields)
+            .map(fields::addAll);
+        fields.addAll(getFields());
+        return fields;
+    }
+
+    @Override
     public List<PropertyField> getAllPropertyFields() {
         List<PropertyField> fields = new LinkedList<>();
         getParentType()

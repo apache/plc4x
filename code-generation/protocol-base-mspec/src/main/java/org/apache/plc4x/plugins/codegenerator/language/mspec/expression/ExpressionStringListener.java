@@ -154,8 +154,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
                 .map(DefaultTypedField.class::cast);
             // Check for other fields
             if (propertyFieldByName.isEmpty()) {
-                // TODO: do we need all fields from parent too?
-                propertyFieldByName = complexTypeDefinition.getFields().stream()
+                propertyFieldByName = complexTypeDefinition.getAllFields().stream()
                     .filter(NamedField.class::isInstance)
                     .map(NamedField.class::cast)
                     .filter(namedField -> propertyName.equals(namedField.getName()))
