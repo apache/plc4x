@@ -1676,7 +1676,15 @@
     <profile>
       <id>jenkins-build</id>
       <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
         <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>enable-all-checks</id>
+      <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
         <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
       </properties>
     </profile>
@@ -1734,6 +1742,11 @@
     -->
     <profile>
       <id>apache-release</id>
+      <!-- Ensure these are run as part of a release-build -->
+      <properties>
+        <skip-code-generation-tests>false</skip-code-generation-tests>
+        <skip-dependency-cve-scan>false</skip-dependency-cve-scan>
+      </properties>
       <build>
         <plugins>
           <!--
