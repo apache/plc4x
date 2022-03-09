@@ -77,7 +77,7 @@ func (m *SALData) GetCommandTypeContainer() SALCommandTypeContainer {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *SALData) GetCommandType() SALCommandType {
-	return m.GetCommandTypeContainer().CommandType()
+	return SALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 ///////////////////////

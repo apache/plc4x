@@ -81,7 +81,7 @@ func (m *BACnetApplicationTagEnumerated) GetPayload() *BACnetTagPayloadEnumerate
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTagEnumerated) GetActualValue() uint32 {
-	return m.GetPayload().GetActualValue()
+	return uint32(m.GetPayload().GetActualValue())
 }
 
 ///////////////////////

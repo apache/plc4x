@@ -81,7 +81,7 @@ func (m *BACnetApplicationTagReal) GetPayload() *BACnetTagPayloadReal {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTagReal) GetActualValue() float32 {
-	return m.GetPayload().GetValue()
+	return float32(m.GetPayload().GetValue())
 }
 
 ///////////////////////

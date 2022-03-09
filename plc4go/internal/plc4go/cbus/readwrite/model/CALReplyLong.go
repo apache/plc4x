@@ -127,7 +127,7 @@ func (m *CALReplyLong) GetIsUnitAddress() bool {
 	_ = reservedByte
 	replyNetwork := m.ReplyNetwork
 	_ = replyNetwork
-	return bool(((m.GetTerminatingByte()) & (0xff)) == (0x00))
+	return bool(bool(((m.GetTerminatingByte()) & (0xff)) == (0x00)))
 }
 
 ///////////////////////

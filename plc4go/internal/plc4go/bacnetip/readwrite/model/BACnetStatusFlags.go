@@ -71,19 +71,19 @@ func (m *BACnetStatusFlags) GetRawBits() *BACnetContextTagBitString {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetStatusFlags) GetInAlarm() bool {
-	return m.GetRawBits().GetPayload().GetData()[0]
+	return bool(m.GetRawBits().GetPayload().GetData()[0])
 }
 
 func (m *BACnetStatusFlags) GetFault() bool {
-	return m.GetRawBits().GetPayload().GetData()[1]
+	return bool(m.GetRawBits().GetPayload().GetData()[1])
 }
 
 func (m *BACnetStatusFlags) GetOverriden() bool {
-	return m.GetRawBits().GetPayload().GetData()[2]
+	return bool(m.GetRawBits().GetPayload().GetData()[2])
 }
 
 func (m *BACnetStatusFlags) GetOutOfService() bool {
-	return m.GetRawBits().GetPayload().GetData()[3]
+	return bool(m.GetRawBits().GetPayload().GetData()[3])
 }
 
 ///////////////////////

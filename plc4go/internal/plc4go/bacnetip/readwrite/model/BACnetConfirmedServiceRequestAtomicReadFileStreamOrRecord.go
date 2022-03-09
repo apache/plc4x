@@ -91,7 +91,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetClosingTa
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
-	return m.GetPeekedTagHeader().GetActualTagNumber()
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
 ///////////////////////

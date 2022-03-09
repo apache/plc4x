@@ -68,19 +68,19 @@ func (m *BACnetSegmentation) GetRawData() *BACnetApplicationTagEnumerated {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetSegmentation) GetIsSegmentedBoth() bool {
-	return bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (0)))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (0))))
 }
 
 func (m *BACnetSegmentation) GetIsSegmentedTransmit() bool {
-	return bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (1)))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (1))))
 }
 
 func (m *BACnetSegmentation) GetIsSegmentedReceive() bool {
-	return bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (3)))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (3))))
 }
 
 func (m *BACnetSegmentation) GetIsNoSegmentation() bool {
-	return bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (4)))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool((m.GetRawData().GetPayload().GetActualValue()) == (4))))
 }
 
 ///////////////////////

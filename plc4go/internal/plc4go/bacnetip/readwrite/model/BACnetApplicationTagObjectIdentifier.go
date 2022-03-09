@@ -83,11 +83,11 @@ func (m *BACnetApplicationTagObjectIdentifier) GetPayload() *BACnetTagPayloadObj
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTagObjectIdentifier) GetObjectType() BACnetObjectType {
-	return m.GetPayload().GetObjectType()
+	return BACnetObjectType(m.GetPayload().GetObjectType())
 }
 
 func (m *BACnetApplicationTagObjectIdentifier) GetInstanceNumber() uint32 {
-	return m.GetPayload().GetInstanceNumber()
+	return uint32(m.GetPayload().GetInstanceNumber())
 }
 
 ///////////////////////

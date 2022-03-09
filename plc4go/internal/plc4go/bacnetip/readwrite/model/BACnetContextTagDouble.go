@@ -89,7 +89,7 @@ func (m *BACnetContextTagDouble) GetPayload() *BACnetTagPayloadDouble {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetContextTagDouble) GetActualValue() float64 {
-	return m.GetPayload().GetValue()
+	return float64(m.GetPayload().GetValue())
 }
 
 ///////////////////////

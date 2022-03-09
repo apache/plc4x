@@ -96,7 +96,7 @@ func (m *BACnetContextTagBoolean) GetPayload() *BACnetTagPayloadBoolean {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetContextTagBoolean) GetActualValue() bool {
-	return m.GetPayload().GetValue()
+	return bool(m.GetPayload().GetValue())
 }
 
 ///////////////////////

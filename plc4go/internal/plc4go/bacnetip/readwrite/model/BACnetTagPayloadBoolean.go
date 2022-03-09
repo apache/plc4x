@@ -54,15 +54,15 @@ type IBACnetTagPayloadBoolean interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetTagPayloadBoolean) GetValue() bool {
-	return bool((m.ActualLength) == (1))
+	return bool(bool((m.ActualLength) == (1)))
 }
 
 func (m *BACnetTagPayloadBoolean) GetIsTrue() bool {
-	return m.GetValue()
+	return bool(m.GetValue())
 }
 
 func (m *BACnetTagPayloadBoolean) GetIsFalse() bool {
-	return !(m.GetValue())
+	return bool(!(m.GetValue()))
 }
 
 ///////////////////////

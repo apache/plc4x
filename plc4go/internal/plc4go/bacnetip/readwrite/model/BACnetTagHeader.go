@@ -120,7 +120,7 @@ func (m *BACnetTagHeader) GetActualTagNumber() uint8 {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() interface{} { return uint8(m.GetTagNumber()) }, func() interface{} { return uint8((*m.GetExtTagNumber())) }).(uint8)
+	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() interface{} { return uint8(m.GetTagNumber()) }, func() interface{} { return uint8((*m.GetExtTagNumber())) }).(uint8))
 }
 
 func (m *BACnetTagHeader) GetIsBoolean() bool {
@@ -132,7 +132,7 @@ func (m *BACnetTagHeader) GetIsBoolean() bool {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS)))
+	return bool(bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS))))
 }
 
 func (m *BACnetTagHeader) GetIsConstructed() bool {
@@ -144,7 +144,7 @@ func (m *BACnetTagHeader) GetIsConstructed() bool {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6)))
+	return bool(bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6))))
 }
 
 func (m *BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
@@ -156,7 +156,7 @@ func (m *BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean()))
+	return bool(bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean())))
 }
 
 func (m *BACnetTagHeader) GetActualLength() uint32 {
@@ -168,11 +168,11 @@ func (m *BACnetTagHeader) GetActualLength() uint32 {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
+	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
 		return uint32(uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
 			return uint32(uint32(utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
 		}).(uint32)))
-	}).(uint32)
+	}).(uint32))
 }
 
 ///////////////////////

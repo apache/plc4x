@@ -81,7 +81,7 @@ func (m *BACnetApplicationTagOctetString) GetPayload() *BACnetTagPayloadOctetStr
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTagOctetString) GetValue() string {
-	return m.GetPayload().GetValue()
+	return string(m.GetPayload().GetValue())
 }
 
 ///////////////////////

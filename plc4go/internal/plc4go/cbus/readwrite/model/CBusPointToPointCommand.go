@@ -117,7 +117,7 @@ func (m *CBusPointToPointCommand) GetIsDirect() bool {
 	_ = crc
 	alpha := m.Alpha
 	_ = alpha
-	return bool(((m.GetBridgeAddressCountPeek()) & (0x00FF)) == (0x0000))
+	return bool(bool(((m.GetBridgeAddressCountPeek()) & (0x00FF)) == (0x0000)))
 }
 
 ///////////////////////
@@ -126,7 +126,7 @@ func (m *CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-/////////////////////// Accessors for conts fields.
+/////////////////////// Accessors for const fields.
 ///////////////////////
 func (m *CBusPointToPointCommand) GetCr() byte {
 	return CBusPointToPointCommand_CR

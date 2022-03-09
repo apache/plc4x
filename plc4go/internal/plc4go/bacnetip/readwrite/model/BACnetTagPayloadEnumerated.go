@@ -65,7 +65,7 @@ func (m *BACnetTagPayloadEnumerated) GetData() []byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetTagPayloadEnumerated) GetActualValue() uint32 {
-	return ParseVarUint(m.GetData())
+	return uint32(ParseVarUint(m.GetData()))
 }
 
 ///////////////////////

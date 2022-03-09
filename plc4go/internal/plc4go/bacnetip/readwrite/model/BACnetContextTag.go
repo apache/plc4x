@@ -86,15 +86,15 @@ func (m *BACnetContextTag) GetHeader() *BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetContextTag) GetTagNumber() uint8 {
-	return m.GetHeader().GetTagNumber()
+	return uint8(m.GetHeader().GetTagNumber())
 }
 
 func (m *BACnetContextTag) GetActualLength() uint32 {
-	return m.GetHeader().GetActualLength()
+	return uint32(m.GetHeader().GetActualLength())
 }
 
 func (m *BACnetContextTag) GetIsNotOpeningOrClosingTag() bool {
-	return bool(bool((m.GetHeader().GetLengthValueType()) != (6))) && bool(bool((m.GetHeader().GetLengthValueType()) != (7)))
+	return bool(bool(bool((m.GetHeader().GetLengthValueType()) != (6))) && bool(bool((m.GetHeader().GetLengthValueType()) != (7))))
 }
 
 ///////////////////////

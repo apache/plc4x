@@ -90,7 +90,7 @@ func (m *BACnetConstructedData) GetClosingTag() *BACnetClosingTag {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetConstructedData) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
-	return m.PropertyIdentifierArgument.GetPropertyIdentifier()
+	return BACnetPropertyIdentifier(m.PropertyIdentifierArgument.GetPropertyIdentifier())
 }
 
 ///////////////////////

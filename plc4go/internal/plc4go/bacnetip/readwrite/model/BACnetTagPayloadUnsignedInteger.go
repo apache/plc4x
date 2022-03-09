@@ -146,7 +146,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (1))
+	return bool(bool((m.ActualLength) == (1)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
@@ -166,7 +166,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (2))
+	return bool(bool((m.ActualLength) == (2)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
@@ -186,7 +186,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (3))
+	return bool(bool((m.ActualLength) == (3)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
@@ -206,7 +206,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (4))
+	return bool(bool((m.ActualLength) == (4)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint40() bool {
@@ -226,7 +226,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint40() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (5))
+	return bool(bool((m.ActualLength) == (5)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint48() bool {
@@ -246,7 +246,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint48() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (6))
+	return bool(bool((m.ActualLength) == (6)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint56() bool {
@@ -266,7 +266,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint56() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (7))
+	return bool(bool((m.ActualLength) == (7)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetIsUint64() bool {
@@ -286,7 +286,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetIsUint64() bool {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return bool((m.ActualLength) == (8))
+	return bool(bool((m.ActualLength) == (8)))
 }
 
 func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
@@ -306,7 +306,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 	_ = valueUint56
 	valueUint64 := m.ValueUint64
 	_ = valueUint64
-	return utils.InlineIf(m.GetIsUint8(), func() interface{} { return uint64((*m.GetValueUint8())) }, func() interface{} {
+	return uint64(utils.InlineIf(m.GetIsUint8(), func() interface{} { return uint64((*m.GetValueUint8())) }, func() interface{} {
 		return uint64(uint64(utils.InlineIf(m.GetIsUint16(), func() interface{} { return uint64((*m.GetValueUint16())) }, func() interface{} {
 			return uint64(uint64(utils.InlineIf(m.GetIsUint24(), func() interface{} { return uint64((*m.GetValueUint24())) }, func() interface{} {
 				return uint64(uint64(utils.InlineIf(m.GetIsUint32(), func() interface{} { return uint64((*m.GetValueUint32())) }, func() interface{} {
@@ -318,7 +318,7 @@ func (m *BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 				}).(uint64)))
 			}).(uint64)))
 		}).(uint64)))
-	}).(uint64)
+	}).(uint64))
 }
 
 ///////////////////////

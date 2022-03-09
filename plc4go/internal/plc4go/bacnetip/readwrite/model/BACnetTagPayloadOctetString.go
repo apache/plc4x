@@ -65,7 +65,7 @@ func (m *BACnetTagPayloadOctetString) GetValue() string {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetTagPayloadOctetString) GetActualLengthInBit() uint16 {
-	return uint16(m.ActualLength) * uint16(uint16(8))
+	return uint16(uint16(m.ActualLength) * uint16(uint16(8)))
 }
 
 ///////////////////////

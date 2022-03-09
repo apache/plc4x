@@ -100,7 +100,7 @@ func (m *BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
 	_ = contextTag
 	constructedData := m.ConstructedData
 	_ = constructedData
-	return m.GetPeekedTagHeader().GetActualTagNumber()
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
 func (m *BACnetConstructedDataElement) GetIsApplicationTag() bool {
@@ -110,7 +110,7 @@ func (m *BACnetConstructedDataElement) GetIsApplicationTag() bool {
 	_ = contextTag
 	constructedData := m.ConstructedData
 	_ = constructedData
-	return bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_APPLICATION_TAGS))
+	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_APPLICATION_TAGS)))
 }
 
 func (m *BACnetConstructedDataElement) GetIsConstructedData() bool {
@@ -120,7 +120,7 @@ func (m *BACnetConstructedDataElement) GetIsConstructedData() bool {
 	_ = contextTag
 	constructedData := m.ConstructedData
 	_ = constructedData
-	return bool(!(m.GetIsApplicationTag())) && bool(bool((m.GetPeekedTagHeader().GetActualLength()) == (0x6)))
+	return bool(bool(!(m.GetIsApplicationTag())) && bool(bool((m.GetPeekedTagHeader().GetActualLength()) == (0x6))))
 }
 
 func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
@@ -130,7 +130,7 @@ func (m *BACnetConstructedDataElement) GetIsContextTag() bool {
 	_ = contextTag
 	constructedData := m.ConstructedData
 	_ = constructedData
-	return bool(!(m.GetIsConstructedData())) && bool(!(m.GetIsApplicationTag()))
+	return bool(bool(!(m.GetIsConstructedData())) && bool(!(m.GetIsApplicationTag())))
 }
 
 ///////////////////////

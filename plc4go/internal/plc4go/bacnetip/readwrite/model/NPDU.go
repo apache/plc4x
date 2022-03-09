@@ -154,7 +154,7 @@ func (m *NPDU) GetSourceLengthAddon() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return utils.InlineIf(m.GetControl().GetSourceSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetSourceLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	return uint16(utils.InlineIf(m.GetControl().GetSourceSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetSourceLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 }
 
 func (m *NPDU) GetDestinationLengthAddon() uint16 {
@@ -172,7 +172,7 @@ func (m *NPDU) GetDestinationLengthAddon() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetDestinationLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	return uint16(utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() interface{} { return uint16(uint16(uint16(3)) + uint16((*m.GetDestinationLength()))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 }
 
 func (m *NPDU) GetPayloadSubtraction() uint16 {
@@ -190,7 +190,7 @@ func (m *NPDU) GetPayloadSubtraction() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return uint16(uint16(2)) + uint16(uint16(uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon()))+uint16(uint16(utils.InlineIf(bool(bool(m.GetControl().GetDestinationSpecified()) || bool(m.GetControl().GetSourceSpecified())), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
+	return uint16(uint16(uint16(2)) + uint16(uint16(uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon()))+uint16(uint16(utils.InlineIf(bool(bool(m.GetControl().GetDestinationSpecified()) || bool(m.GetControl().GetSourceSpecified())), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 }
 
 ///////////////////////

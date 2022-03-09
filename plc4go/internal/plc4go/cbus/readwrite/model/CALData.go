@@ -77,7 +77,7 @@ func (m *CALData) GetCommandTypeContainer() CALCommandTypeContainer {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *CALData) GetCommandType() CALCommandType {
-	return m.GetCommandTypeContainer().CommandType()
+	return CALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 ///////////////////////

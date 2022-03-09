@@ -91,23 +91,23 @@ func (m *BACnetTagPayloadTime) GetFractional() uint8 {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetTagPayloadTime) GetWildcard() uint8 {
-	return 0xFF
+	return uint8(0xFF)
 }
 
 func (m *BACnetTagPayloadTime) GetHourIsWildcard() bool {
-	return bool((m.GetHour()) == (m.GetWildcard()))
+	return bool(bool((m.GetHour()) == (m.GetWildcard())))
 }
 
 func (m *BACnetTagPayloadTime) GetMinuteIsWildcard() bool {
-	return bool((m.GetMinute()) == (m.GetWildcard()))
+	return bool(bool((m.GetMinute()) == (m.GetWildcard())))
 }
 
 func (m *BACnetTagPayloadTime) GetSecondIsWildcard() bool {
-	return bool((m.GetSecond()) == (m.GetWildcard()))
+	return bool(bool((m.GetSecond()) == (m.GetWildcard())))
 }
 
 func (m *BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
-	return bool((m.GetFractional()) == (m.GetWildcard()))
+	return bool(bool((m.GetFractional()) == (m.GetWildcard())))
 }
 
 ///////////////////////

@@ -97,7 +97,7 @@ func (m *BACnetContextTagPropertyIdentifier) GetProprietaryValue() uint32 {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetContextTagPropertyIdentifier) GetIsProprietary() bool {
-	return bool((m.GetPropertyIdentifier()) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE))
+	return bool(bool((m.GetPropertyIdentifier()) == (BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE)))
 }
 
 ///////////////////////

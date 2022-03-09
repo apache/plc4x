@@ -76,7 +76,7 @@ func (m *BACnetTagPayloadObjectIdentifier) GetInstanceNumber() uint32 {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
-	return bool((m.GetObjectType()) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
+	return bool(bool((m.GetObjectType()) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE)))
 }
 
 ///////////////////////

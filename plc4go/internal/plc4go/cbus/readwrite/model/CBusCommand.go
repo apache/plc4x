@@ -84,7 +84,7 @@ func (m *CBusCommand) GetHeader() *CBusHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
-	return m.GetHeader().GetDestinationAddressType()
+	return DestinationAddressType(m.GetHeader().GetDestinationAddressType())
 }
 
 ///////////////////////
@@ -93,7 +93,7 @@ func (m *CBusCommand) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-/////////////////////// Accessors for conts fields.
+/////////////////////// Accessors for const fields.
 ///////////////////////
 func (m *CBusCommand) GetInitiator() byte {
 	return CBusCommand_INITIATOR

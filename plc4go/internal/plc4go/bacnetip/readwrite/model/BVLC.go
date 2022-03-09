@@ -68,7 +68,7 @@ type IBVLCChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BVLC) GetBvlcPayloadLength() uint16 {
-	return uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4))
+	return uint16(uint16(uint16(m.GetLengthInBytes())) - uint16(uint16(4)))
 }
 
 ///////////////////////
@@ -77,7 +77,7 @@ func (m *BVLC) GetBvlcPayloadLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-/////////////////////// Accessors for conts fields.
+/////////////////////// Accessors for const fields.
 ///////////////////////
 func (m *BVLC) GetBacnetType() uint8 {
 	return BVLC_BACNETTYPE

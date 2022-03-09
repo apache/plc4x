@@ -79,11 +79,11 @@ func (m *BACnetApplicationTag) GetHeader() *BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTag) GetActualTagNumber() uint8 {
-	return m.GetHeader().GetActualTagNumber()
+	return uint8(m.GetHeader().GetActualTagNumber())
 }
 
 func (m *BACnetApplicationTag) GetActualLength() uint32 {
-	return m.GetHeader().GetActualLength()
+	return uint32(m.GetHeader().GetActualLength())
 }
 
 ///////////////////////

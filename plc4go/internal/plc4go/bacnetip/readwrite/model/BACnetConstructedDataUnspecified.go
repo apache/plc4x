@@ -109,7 +109,7 @@ func (m *BACnetConstructedDataUnspecified) GetHasData() bool {
 	_ = propertyIdentifier
 	content := m.Content
 	_ = content
-	return bool((len(m.GetData())) == (0))
+	return bool(bool((len(m.GetData())) == (0)))
 }
 
 ///////////////////////

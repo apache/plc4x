@@ -81,7 +81,7 @@ func (m *BACnetApplicationTagUnsignedInteger) GetPayload() *BACnetTagPayloadUnsi
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetApplicationTagUnsignedInteger) GetActualValue() uint64 {
-	return m.GetPayload().GetActualValue()
+	return uint64(m.GetPayload().GetActualValue())
 }
 
 ///////////////////////

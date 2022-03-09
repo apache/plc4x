@@ -95,7 +95,7 @@ func (m *BACnetNotificationParameters) GetClosingTag() *BACnetClosingTag {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 func (m *BACnetNotificationParameters) GetPeekedTagNumber() uint8 {
-	return m.GetPeekedTagHeader().GetActualTagNumber()
+	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
 ///////////////////////
