@@ -59,8 +59,8 @@
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getNonSimpleTypeReferences()?has_content>
-    <#list helper.getNonSimpleTypeReferences() as typeReference>
+<#if helper.getTypeNamesForImportStatements()?has_content>
+    <#list helper.getTypeNamesForImportStatements() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>

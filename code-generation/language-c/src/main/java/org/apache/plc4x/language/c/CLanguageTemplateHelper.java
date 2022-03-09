@@ -118,11 +118,20 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         if (field.asArrayField().map(ArrayField::getLoopExpression).map(Term::isFixedValueExpression).orElse(false)) {
             return "plc4c_list";
         }
-        TypedField typedField = field.asTypedField().orElseThrow(IllegalStateException::new);
+        TypedField typedField = field.asTypedField().orElseThrow();
         TypeReference typeReference = typedField.getType();
-        if (typeReference.isNonSimpleTypeReference()) {
-            if (typeReference.asNonSimpleTypeReference().orElseThrow().getTypeDefinition() instanceof DataIoTypeDefinition) {
-                return "plc4c_data*";
+        if (typeReference.isDataIoTypeReference()) {
+            return "plc4c_data*";
+        }
+        // If we reference a complex type subtype, we need to return a reference
+        // to the parent as in C the subtypes don't actually exist.
+        if (typeReference.isComplexTypeReference()) {
+            final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow();
+            if (complexTypeReference.getTypeDefinition().isDiscriminatedChildTypeDefinition()) {
+                final DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = complexTypeReference.getTypeDefinition().asDiscriminatedComplexTypeDefinition().orElseThrow();
+                if(discriminatedComplexTypeDefinition.getParentType().isPresent()) {
+                    return getCTypeName(discriminatedComplexTypeDefinition.getParentType().orElseThrow().asComplexTypeDefinition().orElseThrow().getName());
+                }
             }
         }
         return getLanguageTypeNameForTypeReference(typeReference);
@@ -1207,6 +1216,88 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         String enumName = expression.substring(0, expression.indexOf('.'));
         String enumConstant = expression.substring(expression.indexOf('.') + 1);
         return getCTypeName(enumName) + "_" + enumConstant;
+    }
+
+    /**
+     * Helper for collecting referenced non simple types as these usually need to be
+     * imported in some way.
+     *
+     * @return Collection of all non simple type references used in fields or enum constants.
+     */
+    public Collection<String> getTypeNamesForImportStatements() {
+        return getTypeNamesForImportStatements(thisType);
+    }
+
+    /**
+     * Helper for collecting referenced non simple types as these usually need to be
+     * imported in some way.
+     *
+     * @param baseType the base type we want to get the type references from
+     * @return collection of non simple type references used in the type.
+     */
+    public Collection<String> getTypeNamesForImportStatements(TypeDefinition baseType) {
+        return getTypeNamesForImportStatements(baseType, new HashSet<>());
+    }
+
+    public Collection<String> getTypeNamesForImportStatements(TypeDefinition baseType, Set<String> nonSimpleTypeReferences) {
+        // We add ourselves to avoid a stackoverflow
+        nonSimpleTypeReferences.add(baseType.getName());
+        // If it's a complex type definition, add all the types referenced by any property fields
+        // (Includes any types referenced by subtypes in case this is a discriminated type parent)
+        if (baseType.isComplexTypeDefinition()) {
+            ComplexTypeDefinition complexTypeDefinition = baseType.asComplexTypeDefinition().orElseThrow();
+            for (Field field : complexTypeDefinition.getFields()) {
+                if (field.isPropertyField()) {
+                    PropertyField propertyField = field.asPropertyField().orElseThrow();
+                    TypeReference typeReference = propertyField.getType();
+                    if (typeReference.isArrayTypeReference()) {
+                        typeReference = typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference();
+                    }
+                    if (typeReference.isNonSimpleTypeReference()) {
+                        NonSimpleTypeReference nonSimpleTypeReference = typeReference.asNonSimpleTypeReference().orElseThrow();
+                        if(nonSimpleTypeReference.getTypeDefinition().isDiscriminatedComplexTypeDefinition()) {
+                            final Optional<DiscriminatedComplexTypeDefinition> discriminatedComplexTypeDefinition = nonSimpleTypeReference.getTypeDefinition().asDiscriminatedComplexTypeDefinition();
+                            if(discriminatedComplexTypeDefinition.orElseThrow().isDiscriminatedChildTypeDefinition()) {
+                                final ComplexTypeDefinition complexTypeDefinition1 = discriminatedComplexTypeDefinition.orElseThrow().getParentType().orElseThrow();
+                                nonSimpleTypeReferences.add(complexTypeDefinition1.getName());
+                            }
+                        } else {
+                            nonSimpleTypeReferences.add(nonSimpleTypeReference.getTypeDefinition().getName());
+                        }
+                    }
+                } else if (field.isSwitchField()) {
+                    SwitchField switchField = field.asSwitchField().orElseThrow();
+                    for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
+                        if (nonSimpleTypeReferences.contains(switchCase.getName())) {
+                            continue;
+                        }
+                        nonSimpleTypeReferences.addAll(getTypeNamesForImportStatements(switchCase, nonSimpleTypeReferences));
+                    }
+                }
+            }
+        } else if (baseType.isEnumTypeDefinition()) {// In case this is an enum type, we have to check all the constant types.
+            EnumTypeDefinition enumTypeDefinition = baseType.asEnumTypeDefinition().orElseThrow();
+            for (String constantName : enumTypeDefinition.getConstantNames()) {
+                final TypeReference constantType = enumTypeDefinition.getConstantType(constantName);
+                if (constantType.isNonSimpleTypeReference()) {
+                    NonSimpleTypeReference nonSimpleTypeReference = constantType.asNonSimpleTypeReference().orElseThrow();
+                    nonSimpleTypeReferences.add(nonSimpleTypeReference.getName());
+                }
+            }
+        }
+        // If the type has any parser arguments, these have to be checked too.
+        baseType.getParserArguments().ifPresent(arguments -> arguments.stream()
+            .map(Argument::getType)
+            .map(TypeReferenceConversions::asNonSimpleTypeReference)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(NonSimpleTypeReference::getName)
+            .forEach(nonSimpleTypeReferences::add)
+        );
+
+        // We remove ourselves to avoid a stackoverflow
+        nonSimpleTypeReferences.remove(baseType.getName());
+        return nonSimpleTypeReferences;
     }
 
 }
