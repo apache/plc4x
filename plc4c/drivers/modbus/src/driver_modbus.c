@@ -19,7 +19,7 @@
 
 #include "plc4c/driver_modbus.h"
 #include "plc4c/driver_modbus_sm.h"
-#include "plc4c/driver_s7_encode_decode.h"
+#include "plc4c/driver_modbus_encode_decode.h"
 
 plc4c_return_code plc4c_driver_modbus_configure_function(plc4c_list* parameters,
                                                      void** configuration) {
@@ -41,8 +41,8 @@ plc4c_return_code plc4c_driver_modbus_configure_function(plc4c_list* parameters,
 
 plc4c_driver *plc4c_driver_modbus_create() {
   plc4c_driver *driver = (plc4c_driver *)malloc(sizeof(plc4c_driver));
-  driver->protocol_code = "modbus";
-  driver->protocol_name = "Modbus";
+  driver->protocol_code = "modbus-tcp";
+  driver->protocol_name = "Modbus TCP";
   driver->default_transport_code = "tcp";
   driver->parse_address_function = &plc4c_driver_modbus_encode_address;
   driver->configure_function = &plc4c_driver_modbus_configure_function;

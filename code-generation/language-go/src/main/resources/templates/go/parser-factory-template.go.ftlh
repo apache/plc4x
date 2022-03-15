@@ -69,6 +69,8 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
+			<#elseif parserArgument.type.isEnumTypeReference()>
+        ${parserArgument.name} := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(arguments[${parserArgument?index}])
 			<#else>
 		var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 			</#if>

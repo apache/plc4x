@@ -40,7 +40,7 @@ struct plc4c_s7_read_write_s7_parameter_user_data_item_discriminator {
 };
 typedef struct plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_s7_parameter_user_data_item_type {
   plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions = 0};
 typedef enum plc4c_s7_read_write_s7_parameter_user_data_item_type plc4c_s7_read_write_s7_parameter_user_data_item_type;

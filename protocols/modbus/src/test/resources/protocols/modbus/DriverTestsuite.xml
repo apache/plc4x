@@ -27,7 +27,7 @@
   <protocolName>modbus</protocolName>
   <outputFlavor>read-write</outputFlavor>
 
-  <driver-name>modbus</driver-name>
+  <driver-name>modbus-tcp</driver-name>
 
   <testcase>
     <name>Single element read request</name>
@@ -44,45 +44,51 @@
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">2</quantity>
-              </ModbusPDUReadHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Read Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">7</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersResponse>
-                <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value dataType="byte" bitLength="32">0x40490fdb</value>
-              </ModbusPDUReadHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x40490fdb</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
@@ -125,45 +131,51 @@
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">4</quantity>
-              </ModbusPDUReadHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Read Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">11</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersResponse>
-                <byteCount dataType="uint" bitLength="8">8</byteCount>
-                <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
-              </ModbusPDUReadHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
@@ -213,87 +225,99 @@
       </api-request>
       <outgoing-plc-message name="Send First Item Modbus Input-Register Read Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">2</quantity>
-              </ModbusPDUReadHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive First Item Modbus Input-Register Read Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">7</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersResponse>
-                <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value dataType="byte" bitLength="32">0x40490fdb</value>
-              </ModbusPDUReadHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x40490fdb</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <outgoing-plc-message name="Send Second Item Modbus Input-Register Read Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">2</startingAddress>
-                <quantity dataType="uint" bitLength="16">2</quantity>
-              </ModbusPDUReadHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUReadHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Second Item Modbus Input-Register Read Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">7</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
-              <ModbusPDUReadHoldingRegistersResponse>
-                <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value dataType="byte" bitLength="32">0x40490fdb</value>
-              </ModbusPDUReadHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">7</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+                <ModbusPDUReadHoldingRegistersResponse>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x40490fdb</value>
+                </ModbusPDUReadHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
@@ -350,47 +374,53 @@
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Write Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">11</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
-              <ModbusPDUWriteMultipleHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">2</quantity>
-                <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value dataType="byte" bitLength="32">0x40490fdb</value>
-              </ModbusPDUWriteMultipleHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">11</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                  <byteCount dataType="uint" bitLength="8">4</byteCount>
+                  <value dataType="byte" bitLength="32">0x40490fdb</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Write Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
-              <ModbusPDUWriteMultipleHoldingRegistersResponse>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">2</quantity>
-              </ModbusPDUWriteMultipleHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">2</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>
@@ -431,47 +461,53 @@
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Write Request">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">15</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
-              <ModbusPDUWriteMultipleHoldingRegistersRequest>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">4</quantity>
-                <byteCount dataType="uint" bitLength="8">8</byteCount>
-                <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
-              </ModbusPDUWriteMultipleHoldingRegistersRequest>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">15</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                  <byteCount dataType="uint" bitLength="8">8</byteCount>
+                  <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
+                </ModbusPDUWriteMultipleHoldingRegistersRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Write Response">
         <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU>
-          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
-          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-          <length dataType="uint" bitLength="16">6</length>
-          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-          <pdu>
-            <ModbusPDU>
-              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
-              <ModbusPDUWriteMultipleHoldingRegistersResponse>
-                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
-                <quantity dataType="uint" bitLength="16">4</quantity>
-              </ModbusPDUWriteMultipleHoldingRegistersResponse>
-            </ModbusPDU>
-          </pdu>
-        </ModbusTcpADU>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">6</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+                <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                  <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                  <quantity dataType="uint" bitLength="16">4</quantity>
+                </ModbusPDUWriteMultipleHoldingRegistersResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
       </incoming-plc-message>
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>

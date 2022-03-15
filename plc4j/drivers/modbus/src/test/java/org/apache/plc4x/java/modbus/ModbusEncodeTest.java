@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.modbus;
 
-import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
-import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.junit.jupiter.api.Assertions;

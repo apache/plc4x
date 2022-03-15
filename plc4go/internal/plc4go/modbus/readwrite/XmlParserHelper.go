@@ -58,9 +58,6 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		return model.ModbusDeviceInformationObjectParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusConstants":
 		return model.ModbusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusTcpADU":
-		response := parserArguments[0] == "true"
-		return model.ModbusTcpADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return model.ModbusPDUWriteFileRecordResponseItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDU":
@@ -68,9 +65,10 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		return model.ModbusPDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusSerialADU":
-		response := parserArguments[0] == "true"
-		return model.ModbusSerialADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+	case "ModbusADU":
+		driverType := model.DriverTypeByName(parserArguments[0])
+		response := parserArguments[1] == "true"
+		return model.ModbusADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), driverType, response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

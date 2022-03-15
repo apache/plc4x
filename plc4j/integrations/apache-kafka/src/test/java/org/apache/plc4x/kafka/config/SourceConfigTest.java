@@ -63,7 +63,7 @@ public class SourceConfigTest {
             "sources.machineB.topic=heartbeat\n" +
             "sources.machineB.jobReferences=s7-heartbeat\n" +
             "\n" +
-            "sources.machineC.connectionString=modbus://192.168.1.1:502\n" +
+            "sources.machineC.connectionString=modbus-tcp://192.168.1.1:502\n" +
             "sources.machineC.topic=heartbeat\n" +
             "sources.machineC.jobReferences=ads-heartbeat\n" +
             "\n" +
@@ -108,7 +108,7 @@ public class SourceConfigTest {
             "sources.machineB.topic=heartbeat\n" +
             "sources.machineB.jobReferences=s7-heartbeat\n" +
             "\n" +
-            "sources.machineC.connectionString=modbus://127.0.0.1\n" +
+            "sources.machineC.connectionString=modbus-tcp://127.0.0.1\n" +
             "sources.machineC.topic=heartbeat\n" +
             "sources.machineC.jobReferences=ads-heartbeat\n" +
             "\n" +

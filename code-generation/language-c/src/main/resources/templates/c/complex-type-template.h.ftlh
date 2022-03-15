@@ -102,7 +102,7 @@ struct ${helper.getCTypeName(type.name)}_discriminator {
 };
 typedef struct ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum ${helper.getCTypeName(type.name)}_type {
     <#list type.getSubTypeDefinitions() as subtype>
   ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,

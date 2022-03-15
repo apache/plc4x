@@ -37,7 +37,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		var dataType model.BACnetDataType
+		dataType := model.BACnetDataTypeByName(arguments[1])
 		return model.BACnetContextTagParse(io, tagNumberArgument, dataType)
 	case "BACnetStatusFlags":
 		tagNumber, err := utils.StrToUint8(arguments[0])
@@ -98,7 +98,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		var objectType model.BACnetObjectType
+		objectType := model.BACnetObjectTypeByName(arguments[1])
 		var propertyIdentifierArgument model.BACnetContextTagPropertyIdentifier
 		return model.BACnetConstructedDataParse(io, tagNumber, objectType, &propertyIdentifierArgument)
 	case "BACnetSegmentation":
@@ -162,7 +162,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		var objectType model.BACnetObjectType
+		objectType := model.BACnetObjectTypeByName(arguments[1])
 		return model.BACnetNotificationParametersParse(io, tagNumber, objectType)
 	case "BACnetConfirmedServiceRequest":
 		len, err := utils.StrToUint16(arguments[0])
@@ -193,7 +193,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		return model.BACnetDeviceObjectPropertyReferenceParse(io, tagNumber)
 	case "BACnetConstructedDataElement":
-		var objectType model.BACnetObjectType
+		objectType := model.BACnetObjectTypeByName(arguments[0])
 		var propertyIdentifier model.BACnetContextTagPropertyIdentifier
 		return model.BACnetConstructedDataElementParse(io, objectType, &propertyIdentifier)
 	case "BACnetPropertyValues":
@@ -201,7 +201,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		var objectType model.BACnetObjectType
+		objectType := model.BACnetObjectTypeByName(arguments[1])
 		return model.BACnetPropertyValuesParse(io, tagNumber, objectType)
 	case "BACnetTagHeader":
 		return model.BACnetTagHeaderParse(io)
@@ -214,7 +214,7 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "BACnetTagPayloadDouble":
 		return model.BACnetTagPayloadDoubleParse(io)
 	case "BACnetPropertyValue":
-		var objectType model.BACnetObjectType
+		objectType := model.BACnetObjectTypeByName(arguments[0])
 		return model.BACnetPropertyValueParse(io, objectType)
 	case "NLMInitalizeRoutingTablePortMapping":
 		return model.NLMInitalizeRoutingTablePortMappingParse(io)

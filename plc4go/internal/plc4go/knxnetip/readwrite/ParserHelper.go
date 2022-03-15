@@ -33,7 +33,7 @@ type KnxnetipParserHelper struct {
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "KnxProperty":
-		var propertyType model.KnxPropertyDataType
+		propertyType := model.KnxPropertyDataTypeByName(arguments[0])
 		dataLengthInBytes, err := utils.StrToUint8(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
@@ -84,7 +84,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
-		var firmwareType model.FirmwareType
+		firmwareType := model.FirmwareTypeByName(arguments[0])
 		return model.ComObjectTableParse(io, firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)
@@ -131,7 +131,7 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io util
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(io)
 	case "KnxDatapoint":
-		var datapointType model.KnxDatapointType
+		datapointType := model.KnxDatapointTypeByName(arguments[0])
 		return model.KnxDatapointParse(io, datapointType)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

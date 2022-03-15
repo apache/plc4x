@@ -51,7 +51,7 @@ struct plc4c_modbus_read_write_modbus_pdu_discriminator {
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_modbus_read_write_modbus_pdu_type {
   plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error = 0,
   plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request = 1,

@@ -54,7 +54,7 @@ struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator {
 };
 typedef struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_s7_payload_user_data_item_type {
   plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message = 0,
   plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8 = 1,

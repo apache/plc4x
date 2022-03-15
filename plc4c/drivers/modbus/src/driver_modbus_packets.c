@@ -17,11 +17,10 @@
  * under the License.
  */
 
-#include <ctype.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 
-#include "modbus_tcp_adu.h"
+#include "modbus_adu.h"
 #include "plc4c/driver_modbus.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -52,10 +51,10 @@ int16_t plc4c_driver_modbus_select_message_function(uint8_t* buffer_data,
 
 plc4c_return_code plc4c_driver_modbus_send_packet(
     plc4c_connection* connection,
-    plc4c_modbus_read_write_modbus_tcp_adu* packet) {
+    plc4c_modbus_read_write_modbus_adu* packet) {
   // Get the size required to contain the serialized form of this packet.
   uint16_t packet_size =
-      plc4c_modbus_read_write_modbus_tcp_adu_length_in_bytes(packet);
+      plc4c_modbus_read_write_modbus_adu_length_in_bytes(packet);
 
   // Serialize this message to a byte-array.
   plc4c_spi_write_buffer* write_buffer;
@@ -64,7 +63,8 @@ plc4c_return_code plc4c_driver_modbus_send_packet(
   if (return_code != OK) {
     return return_code;
   }
-  return_code = plc4c_modbus_read_write_modbus_tcp_adu_serialize(write_buffer, packet);
+  return_code = plc4c_modbus_read_write_modbus_adu_serialize(
+      write_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }
@@ -81,7 +81,7 @@ plc4c_return_code plc4c_driver_modbus_send_packet(
 
 plc4c_return_code plc4c_driver_modbus_receive_packet(
     plc4c_connection* connection,
-    plc4c_modbus_read_write_modbus_tcp_adu** packet) {
+    plc4c_modbus_read_write_modbus_adu** packet) {
   // Check with the transport if there is a packet available.
   // If it is, get a read_buffer for reading it.
   plc4c_spi_read_buffer* read_buffer;
@@ -95,8 +95,12 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(
 
   // Parse the packet by consuming the read_buffer data.
   *packet = NULL;
+  plc4c_modbus_read_write_driver_type driver_type =
+      plc4c_modbus_read_write_driver_type_MODBUS_TCP;
+
   return_code =
-      plc4c_modbus_read_write_modbus_tcp_adu_parse(read_buffer, true, packet);
+      plc4c_modbus_read_write_modbus_adu_parse(
+          read_buffer,&driver_type, true, packet);
   if (return_code != OK) {
     return return_code;
   }
@@ -108,7 +112,7 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(
 plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
     plc4c_driver_modbus_config* modbus_config,
     plc4c_item* read_request_item,
-    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet) {
+    plc4c_modbus_read_write_modbus_adu** modbus_read_request_packet) {
 
   plc4c_modbus_read_write_modbus_pdu* pdu =
       malloc(sizeof(plc4c_modbus_read_write_modbus_pdu));
@@ -154,22 +158,23 @@ plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
     }
   }
 
-  plc4c_modbus_read_write_modbus_tcp_adu* tcp_adu =
-      malloc(sizeof(plc4c_modbus_read_write_modbus_tcp_adu));
-  if (tcp_adu == NULL) {
+  plc4c_modbus_read_write_modbus_adu* adu =
+      malloc(sizeof(plc4c_modbus_read_write_modbus_adu));
+  if (adu == NULL) {
     return NO_MEMORY;
   }
-  tcp_adu->transaction_identifier = modbus_config->communication_id_counter++;
-  tcp_adu->unit_identifier = modbus_config->unit_identifier;
-  tcp_adu->pdu = pdu;
-  *modbus_read_request_packet = tcp_adu;
+  adu->_type = plc4c_modbus_read_write_modbus_adu_type_plc4c_modbus_read_write_modbus_tcp_adu;
+  adu->modbus_tcp_adu_transaction_identifier = modbus_config->communication_id_counter++;
+  adu->modbus_tcp_adu_unit_identifier = modbus_config->unit_identifier;
+  adu->modbus_tcp_adu_pdu = pdu;
+  *modbus_read_request_packet = adu;
 
   return OK;
 }
 
 plc4c_return_code plc4c_driver_modbus_create_modbus_write_request(
     plc4c_write_request* write_request,
-    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet) {
+    plc4c_modbus_read_write_modbus_adu** modbus_read_request_packet) {
   // TODO: Implement this ...
 
   return OK;

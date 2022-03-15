@@ -234,7 +234,10 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1SymbolMessageF
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")
 		}
-		checksum := CrcCheck(destinationAddress, sourceAddress, command)
+		checksum, _checksumErr := CrcCheck(destinationAddress, sourceAddress, command)
+		if _checksumErr != nil {
+			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
+		}
 		if checksum != checksumRef {
 			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)
 		}
@@ -301,10 +304,13 @@ func (m *DF1SymbolMessageFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Checksum Field (checksum) (Calculated)
 		{
-			_checksum := CrcCheck(m.GetDestinationAddress(), m.GetSourceAddress(), m.GetCommand())
-			_checksumErr := writeBuffer.WriteUint16("checksum", 16, (_checksum))
+			_checksum, _checksumErr := CrcCheck(m.GetDestinationAddress(), m.GetSourceAddress(), m.GetCommand())
 			if _checksumErr != nil {
-				return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")
+				return errors.Wrap(_checksumErr, "Checksum calculation failed")
+			}
+			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, (_checksum))
+			if _checksumWriteErr != nil {
+				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
 			}
 		}
 

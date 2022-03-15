@@ -19,7 +19,10 @@
 
 package model
 
-func CrcCheck(address uint8, modbusPDU *ModbusPDU) uint16 {
-	// TODO: implement me
-	return 0
+func AsciiLrcCheck(address uint8, pdu *ModbusPDU) (uint8, error) {
+	return 0, nil
+}
+
+func RtuCrcCheck(address uint8, pdu *ModbusPDU) (uint16, error) {
+	return 0, nil
 }

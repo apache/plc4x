@@ -42,7 +42,7 @@ struct plc4c_s7_read_write_s7_message_discriminator {
 };
 typedef struct plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_s7_message_type {
   plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request = 0,
   plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response = 1,

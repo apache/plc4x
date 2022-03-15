@@ -45,7 +45,7 @@ struct plc4c_s7_read_write_s7_payload_discriminator {
 };
 typedef struct plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_s7_payload_type {
   plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response = 0,
   plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request = 1,

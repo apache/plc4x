@@ -44,8 +44,20 @@ func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
 	transports.RegisterUdpTransport(driverManager)
 }
 
-func RegisterModbusDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewDriver())
+func RegisterModbusTcpDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(modbus.NewModbusTcpDriver())
+	transports.RegisterTcpTransport(driverManager)
+}
+
+func RegisterModbusRtuDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(modbus.NewModbusRtuDriver())
+	transports.RegisterSerialTransport(driverManager)
+	transports.RegisterTcpTransport(driverManager)
+}
+
+func RegisterModbusAsciiDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(modbus.NewModbusAsciiDriver())
+	transports.RegisterSerialTransport(driverManager)
 	transports.RegisterTcpTransport(driverManager)
 }
 

@@ -5,8 +5,16 @@
 New Features
 ------------
 
+- The Modbus driver is now also available in the variants:
+  "modbus-rtu" and "modbus-ascii" (Both using Serial
+  communication, which however can be tunneled through a
+  "tcp" transport.
+
 Incompatible changes
 --------------------
+
+- The name of the Modbus TCP driver was changed from "modbus"
+  to "modbus-tcp".
 
 Bug Fixes
 ---------

@@ -5,7 +5,7 @@ import kotlin.system.exitProcess
 
 fun main() {
     PlcDriverManager()
-        .getConnection("modbus://localhost:502")
+        .getConnection("modbus-tcp://localhost:502")
         .use { conn ->
             if (!conn.metadata.canRead()) {
                 println("Cannot read!!")

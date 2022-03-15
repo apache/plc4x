@@ -28,27 +28,30 @@
   <testcase>
     <name>Read Input Registers Request</name>
     <raw>000000000006ff0408d20002</raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">0</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">6</length>
-        <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">4</functionFlag>
-            <ModbusPDUReadInputRegistersRequest>
-              <startingAddress dataType="uint" bitLength="16">2258</startingAddress>
-              <quantity dataType="uint" bitLength="16">2</quantity>
-            </ModbusPDUReadInputRegistersRequest>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">0</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">4</functionFlag>
+              <ModbusPDUReadInputRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">2258</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadInputRegistersRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 
@@ -57,105 +60,114 @@
     <raw>
       7cfe000000c9ff04c600000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000
     </raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>true</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">31998</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">201</length>
-        <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">4</functionFlag>
-            <ModbusPDUReadInputRegistersResponse>
-              <byteCount dataType="uint" bitLength="8">198</byteCount>
-              <value dataType="byte" bitLength="1584">0x00000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000</value>
-            </ModbusPDUReadInputRegistersResponse>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">31998</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">201</length>
+          <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">4</functionFlag>
+              <ModbusPDUReadInputRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">198</byteCount>
+                <value dataType="byte" bitLength="1584">0x00000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000</value>
+              </ModbusPDUReadInputRegistersResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 
   <testcase>
     <name>Read Extended Registers Request Split File Record</name>
     <raw>000a0000001101140e060003270e000206000400000008</raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">17</length>
-        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">20</functionFlag>
-            <ModbusPDUReadFileRecordRequest>
-              <byteCount dataType="uint" bitLength="8">14</byteCount>
-              <items isList="true">
-                <ModbusPDUReadFileRecordRequestItem>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <fileNumber dataType="uint" bitLength="16">3</fileNumber>
-                  <recordNumber dataType="uint" bitLength="16">9998</recordNumber>
-                  <recordLength dataType="uint" bitLength="16">2</recordLength>
-                </ModbusPDUReadFileRecordRequestItem>
-                <ModbusPDUReadFileRecordRequestItem>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <fileNumber dataType="uint" bitLength="16">4</fileNumber>
-                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
-                  <recordLength dataType="uint" bitLength="16">8</recordLength>
-                </ModbusPDUReadFileRecordRequestItem>
-              </items>
-            </ModbusPDUReadFileRecordRequest>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">17</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">20</functionFlag>
+              <ModbusPDUReadFileRecordRequest>
+                <byteCount dataType="uint" bitLength="8">14</byteCount>
+                <items isList="true">
+                  <ModbusPDUReadFileRecordRequestItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">3</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">9998</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">2</recordLength>
+                  </ModbusPDUReadFileRecordRequestItem>
+                  <ModbusPDUReadFileRecordRequestItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">4</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">8</recordLength>
+                  </ModbusPDUReadFileRecordRequestItem>
+                </items>
+              </ModbusPDUReadFileRecordRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 
   <testcase>
     <name>Read Extended Registers Response Split File Record</name>
     <raw>000a0000001b011418050600000000110600000000000000000000000000000000</raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>true</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">27</length>
-        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">20</functionFlag>
-            <ModbusPDUReadFileRecordResponse>
-              <byteCount dataType="uint" bitLength="8">24</byteCount>
-              <items isList="true">
-                <ModbusPDUReadFileRecordResponseItem>
-                  <dataLength dataType="uint" bitLength="8">5</dataLength>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data dataType="byte" bitLength="32">0x00000000</data>
-                </ModbusPDUReadFileRecordResponseItem>
-                <ModbusPDUReadFileRecordResponseItem>
-                  <dataLength dataType="uint" bitLength="8">17</dataLength>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data dataType="byte" bitLength="128">0x00000000000000000000000000000000</data>
-                </ModbusPDUReadFileRecordResponseItem>
-              </items>
-            </ModbusPDUReadFileRecordResponse>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">27</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">20</functionFlag>
+              <ModbusPDUReadFileRecordResponse>
+                <byteCount dataType="uint" bitLength="8">24</byteCount>
+                <items isList="true">
+                  <ModbusPDUReadFileRecordResponseItem>
+                    <dataLength dataType="uint" bitLength="8">5</dataLength>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <data dataType="byte" bitLength="32">0x00000000</data>
+                  </ModbusPDUReadFileRecordResponseItem>
+                  <ModbusPDUReadFileRecordResponseItem>
+                    <dataLength dataType="uint" bitLength="8">17</dataLength>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <data dataType="byte" bitLength="128">0x00000000000000000000000000000000</data>
+                  </ModbusPDUReadFileRecordResponseItem>
+                </items>
+              </ModbusPDUReadFileRecordResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 
@@ -163,77 +175,83 @@
     <name>Write Extended Registers Request File Record</name>
 
     <raw>000a0000000c011509060002000000010008</raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">12</length>
-        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">21</functionFlag>
-            <ModbusPDUWriteFileRecordRequest>
-              <byteCount dataType="uint" bitLength="8">9</byteCount>
-              <items isList="true">
-                <ModbusPDUWriteFileRecordRequestItem>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <fileNumber dataType="uint" bitLength="16">2</fileNumber>
-                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
-                  <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData dataType="byte" bitLength="16">0x0008</recordData>
-                </ModbusPDUWriteFileRecordRequestItem>
-              </items>
-            </ModbusPDUWriteFileRecordRequest>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">12</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">21</functionFlag>
+              <ModbusPDUWriteFileRecordRequest>
+                <byteCount dataType="uint" bitLength="8">9</byteCount>
+                <items isList="true">
+                  <ModbusPDUWriteFileRecordRequestItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">2</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">1</recordLength>
+                    <recordData dataType="byte" bitLength="16">0x0008</recordData>
+                  </ModbusPDUWriteFileRecordRequestItem>
+                </items>
+              </ModbusPDUWriteFileRecordRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 
   <testcase>
     <name>Write Extended Registers Request Split File Record</name>
     <raw>000a00000015011512060001270F00010000060002000000010000</raw>
-    <root-type>ModbusTcpADU</root-type>
+    <root-type>ModbusADU</root-type>
     <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU>
-        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
-        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
-        <length dataType="uint" bitLength="16">21</length>
-        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
-        <pdu>
-          <ModbusPDU>
-            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
-            <functionFlag dataType="uint" bitLength="7">21</functionFlag>
-            <ModbusPDUWriteFileRecordRequest>
-              <byteCount dataType="uint" bitLength="8">18</byteCount>
-              <items isList="true">
-                <ModbusPDUWriteFileRecordRequestItem>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <fileNumber dataType="uint" bitLength="16">1</fileNumber>
-                  <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
-                  <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData dataType="byte" bitLength="16">0x0000</recordData>
-                </ModbusPDUWriteFileRecordRequestItem>
-                <ModbusPDUWriteFileRecordRequestItem>
-                  <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <fileNumber dataType="uint" bitLength="16">2</fileNumber>
-                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
-                  <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData dataType="byte" bitLength="16">0x0000</recordData>
-                </ModbusPDUWriteFileRecordRequestItem>
-              </items>
-            </ModbusPDUWriteFileRecordRequest>
-          </ModbusPDU>
-        </pdu>
-      </ModbusTcpADU>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">21</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">21</functionFlag>
+              <ModbusPDUWriteFileRecordRequest>
+                <byteCount dataType="uint" bitLength="8">18</byteCount>
+                <items isList="true">
+                  <ModbusPDUWriteFileRecordRequestItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">1</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">1</recordLength>
+                    <recordData dataType="byte" bitLength="16">0x0000</recordData>
+                  </ModbusPDUWriteFileRecordRequestItem>
+                  <ModbusPDUWriteFileRecordRequestItem>
+                    <referenceType dataType="uint" bitLength="8">6</referenceType>
+                    <fileNumber dataType="uint" bitLength="16">2</fileNumber>
+                    <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                    <recordLength dataType="uint" bitLength="16">1</recordLength>
+                    <recordData dataType="byte" bitLength="16">0x0000</recordData>
+                  </ModbusPDUWriteFileRecordRequestItem>
+                </items>
+              </ModbusPDUWriteFileRecordRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
     </xml>
   </testcase>
 

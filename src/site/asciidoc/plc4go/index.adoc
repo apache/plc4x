@@ -100,7 +100,7 @@ func HellpPlc4go() {
 	driverManager.RegisterTransport(tcp.NewTcpTransport())
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus://192.168.23.30")
+	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc

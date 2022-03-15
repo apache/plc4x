@@ -57,7 +57,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		}
 		return model.CBusCommandParse(io, srchk)
 	case "IdentifyReplyCommand":
-		var attribute model.Attribute
+		attribute := model.AttributeByName(arguments[0])
 		return model.IdentifyReplyCommandParse(io, attribute)
 	case "BridgeCount":
 		return model.BridgeCountParse(io)

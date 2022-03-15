@@ -41,7 +41,7 @@ struct plc4c_s7_read_write_cotp_parameter_discriminator {
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminator;
 
-// Enum assigning each sub-type an individual id.
+// Enum assigning each subtype an individual id.
 enum plc4c_s7_read_write_cotp_parameter_type {
   plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size = 0,
   plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap = 1,
