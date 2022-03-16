@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 public class ManualModbusDiscoveryTest {
 
     public static void main(String[] args) throws Exception {
-        final PlcDriver modbusDriver = new PlcDriverManager().getDriver("modbus");
+        final PlcDriver modbusDriver = new PlcDriverManager().getDriver("modbus-tcp");
         final PlcDiscoveryResponse plcDiscoveryResponse = modbusDriver.discoveryRequestBuilder().build().execute().get();
         System.out.println(plcDiscoveryResponse);
     }

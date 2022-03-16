@@ -188,11 +188,11 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                     if (responseBytes != null) {
                         ReadBuffer readBuffer = new ReadBufferByteBased(responseBytes);
                         try {
-                            ModbusTcpADU response = (ModbusTcpADU) ModbusTcpADU.staticParse(readBuffer, true);
+                            ModbusTcpADU response = (ModbusTcpADU) ModbusTcpADU.staticParse(readBuffer, DriverType.MODBUS_TCP, true);
                             PlcDiscoveryItem discoveryItem;
                             if (!response.getPdu().getErrorFlag()) {
                                 discoveryItem = new DefaultPlcDiscoveryItem(
-                                    "modbus", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown");
+                                    "modbus-tcp", "tcp", possibleAddress.getHostAddress(), Collections.singletonMap("unit-identifier", Integer.toString(unitIdentifier)), "unknown");
                                 discoveryItems.add(discoveryItem);
 
                                 // Give a handler the chance to react on the found device.
