@@ -8,7 +8,7 @@ New Features
 - The Modbus driver is now also available in the variants:
   "modbus-rtu" and "modbus-ascii" (Both using Serial
   communication, which however can be tunneled through a
-  "tcp" transport.
+  "tcp" and "udp" transport)
 
 Incompatible changes
 --------------------
