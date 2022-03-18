@@ -47,7 +47,7 @@ public class StaticHelper {
         for (byte aByte : bytes) {
             lrc = (short) (lrc + aByte);
         }
-        lrc = (short) ((0xFF - lrc) + 1);
+        lrc = (short) -lrc;
         return (short) (lrc & 0xFF);
     }
 

@@ -122,7 +122,8 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     protected ProtocolStackConfigurer<ModbusTcpADU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(ModbusTcpADU.class, (io, args) -> (ModbusTcpADU) ModbusTcpADU.staticParse(io, args))
+        return SingleProtocolStackConfigurer.builder(ModbusTcpADU.class,
+                (io, args) -> (ModbusTcpADU) ModbusTcpADU.staticParse(io, args))
             .withProtocol(ModbusTcpProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.

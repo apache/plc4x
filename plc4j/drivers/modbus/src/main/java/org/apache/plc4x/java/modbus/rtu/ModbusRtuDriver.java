@@ -103,7 +103,8 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
     @Override
     protected ProtocolStackConfigurer<ModbusRtuADU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class,  (io, args) -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, args))
+        return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class,
+                (io, args) -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, args))
             .withProtocol(ModbusRtuProtocolLogic.class)
             .withPacketSizeEstimator(ModbusRtuDriver.ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.
@@ -115,8 +116,8 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
+            if (byteBuf.readableBytes() >= 1) {
+                return byteBuf.readableBytes();
             }
             return -1;
         }

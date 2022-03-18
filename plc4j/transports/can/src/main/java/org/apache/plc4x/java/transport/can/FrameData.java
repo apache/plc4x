@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.transport.can;
 
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.MessageInput;
 
 public interface FrameData {

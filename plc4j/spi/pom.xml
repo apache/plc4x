@@ -102,7 +102,7 @@
           <instructions>
             <Import-Package>
                 com.fasterxml.jackson.annotation;resolution:=optional,   
-                com.github.jinahya.bit.io;resolution:=optional,   
+                com.github.jinahya.bit.io;resolution:=optional,
                 *
             </Import-Package>
             <Private-Package>com.github.jinahya.bit.io</Private-Package>

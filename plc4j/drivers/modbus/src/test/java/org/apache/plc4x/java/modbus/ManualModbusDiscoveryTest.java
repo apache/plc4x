@@ -21,7 +21,9 @@ package org.apache.plc4x.java.modbus;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("Manual Test")
 public class ManualModbusDiscoveryTest {
 
     public static void main(String[] args) throws Exception {

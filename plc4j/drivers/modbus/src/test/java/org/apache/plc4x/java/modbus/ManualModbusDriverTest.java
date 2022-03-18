@@ -19,9 +19,11 @@
 package org.apache.plc4x.java.modbus;
 
 import org.apache.plc4x.test.manual.ManualTest;
+import org.junit.jupiter.api.Disabled;
 
 import java.util.Arrays;
 
+@Disabled("Manual Test")
 public class ManualModbusDriverTest extends ManualTest {
 
     /*

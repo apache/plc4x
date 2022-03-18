@@ -16,8 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.generation;
+package org.apache.plc4x.java.modbus;
 
-public interface MessageIO<PARSER_TYPE extends Message, SERIALIZER_TYPE extends Message> extends MessageInput<PARSER_TYPE>, MessageOutput<SERIALIZER_TYPE> {
+import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.modbus.readwrite.DriverType;
+import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.junit.jupiter.api.Disabled;
+
+@Disabled("Manual Test")
+public class ManualPacketTest {
+
+    public static void main(String[] args) throws Exception {
+        final byte[] bytes = Hex.decodeHex("0103140000000000000000000000000000000000000000a367");
+        final ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        final ModbusADU modbusADU = ModbusADU.staticParse(readBufferByteBased, DriverType.MODBUS_RTU, true);
+        System.out.println(modbusADU);
+    }
 
 }
