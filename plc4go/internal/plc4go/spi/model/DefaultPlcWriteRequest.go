@@ -165,6 +165,14 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 	return resultChannel
 }
 
+func (m DefaultPlcWriteRequest) GetWriter() spi.PlcWriter {
+	return m.writer
+}
+
+func (m DefaultPlcWriteRequest) GetWriteRequestInterceptor() interceptors.WriteRequestInterceptor {
+	return m.writeRequestInterceptor
+}
+
 func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
 	return m.values[name]
 }
