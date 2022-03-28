@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.modbus;
+package org.apache.plc4x.java.modbus.tcp;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-public class ModbusParserSerializerTest extends ParserSerializerTestsuiteRunner {
+public class ModbusTcpDriverIT extends DriverTestsuiteRunner {
 
-    public ModbusParserSerializerTest() {
-        super("/protocols/modbus/ParserSerializerTestsuite.xml");
+    public ModbusTcpDriverIT() {
+        super("/protocols/modbus/tcp/DriverTestsuite.xml");
     }
 
 }
