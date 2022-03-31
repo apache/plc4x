@@ -51,7 +51,10 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         	this.calledTsapId = configuration.remoteTsap;
         }
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
-        
+
+        // Initialize the parameters with initial version (Will be updated during the login process)
+        this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
+
         // The Siemens LOGO device seems to only work with very limited settings,
         // so we're overriding some of the defaults.
         if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
@@ -63,10 +66,9 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
             // I have never seen this happen in reality. Making is smaller would unnecessarily limit the
             // size, so we're setting it to the maximum that can be included.
             this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
+
+            throw new RuntimeException("Hutz");
         }
-        
-        // Initialize the parameters with initial version (Will be updated during the login process)
-        this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
 
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
