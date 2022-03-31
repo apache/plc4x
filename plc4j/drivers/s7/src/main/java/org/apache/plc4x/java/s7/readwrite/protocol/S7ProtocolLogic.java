@@ -714,10 +714,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
         return new COTPPacketConnectionRequest(
             Arrays.asList(
-                new COTPParameterCalledTsap(calledTsapId,null),
-                new COTPParameterCallingTsap(callingTsapId,null),
-                new COTPParameterTpduSize(cotpTpduSize,null)
-            ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0,null);
+                new COTPParameterCallingTsap(callingTsapId, null),
+                new COTPParameterCalledTsap(calledTsapId, null),
+                new COTPParameterTpduSize(cotpTpduSize, null)
+            ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0, null);
     }
 
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
