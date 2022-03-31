@@ -66,8 +66,6 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
             // I have never seen this happen in reality. Making is smaller would unnecessarily limit the
             // size, so we're setting it to the maximum that can be included.
             this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
-
-            throw new RuntimeException("Hutz");
         }
 
         this.maxAmqCaller = configuration.maxAmqCaller;
