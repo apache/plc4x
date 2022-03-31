@@ -255,10 +255,11 @@ func (d *defaultConnection) BlockingClose() {
 
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	log.Trace().Msg("close connection")
+	err := d.GetTransportInstance().Close()
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
-		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), nil)
+		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
 	}()
 	return ch
 }
