@@ -118,7 +118,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
             final Channel channel = f.channel();
 
-            // Add to Event Loop Group
+            // Add to event-loop group
             if (workerGroup != null) {
                 eventLoops.put(channel, workerGroup);
             }
@@ -137,8 +137,8 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error creating channel.", e);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error creating channel.", e);
+        } catch (Throwable t) {
+            throw new PlcConnectionException("Error creating channel.", t);
         }
     }
 

@@ -21,8 +21,11 @@ package org.apache.plc4x.java.spi.configuration;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -30,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,6 +48,8 @@ import static java.util.stream.Collectors.toList;
  * - (optional) path parameters
  */
 public class ConfigurationFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
     // TODO Respect Path Params
     public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
@@ -130,7 +134,12 @@ public class ConfigurationFactory {
                 if (configType instanceof Class) {
                     Class<?> configClass = (Class<?>) configType;
                     if (configClass.isAssignableFrom(configuration.getClass())) {
-                        ((HasConfiguration) obj).setConfiguration(configuration);
+                        try {
+                            ((HasConfiguration) obj).setConfiguration(configuration);
+                        } catch(Throwable t) {
+                            LOGGER.error("Error setting the configuration", t);
+                            throw new PlcRuntimeException("Error setting the configuration", t);
+                        }
                     }
                 }
             }
