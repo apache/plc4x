@@ -2032,8 +2032,8 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        byte k = (byte) ((stringLength > 250) ? 250 : stringLength);
-        byte m = (byte) value.getString().length();
+        int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
+        int m = 0xFF & value.getString().length();
         m = (m > k) ? k : m;
         byte[] chars = new byte[m];
         for (int i = 0; i < m; ++i) {
@@ -2042,8 +2042,8 @@ public class StaticHelper {
         }
 
         try {
-            io.writeByte(k);
-            io.writeByte(m);
+            io.writeByte((byte)(k & 0xFF));
+            io.writeByte((byte)(m & 0xFF));
             io.writeByteArray(chars);
         } catch (SerializationException ex) {
             Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
